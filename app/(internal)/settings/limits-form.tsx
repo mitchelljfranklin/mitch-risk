@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -8,15 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { saveSchedulingSettings } from "./actions";
 
-type ConfigurationProps = {
-  reminderOffsetDays: number[];
-  escalationAfterDays: number;
-  defaultDueInDays: number;
+type LimitsFormProps = {
+  loginRateLimitPerMin: number;
   auditRetentionDays: number;
   emailLogRetentionDays: number;
   maxUploadMb: number;
   allowedExtensions: string[];
-  loginRateLimitPerMin: number;
 };
 
 const ALL_EXTENSIONS = [
@@ -32,37 +29,20 @@ const ALL_EXTENSIONS = [
   "pptx",
 ];
 
-export function ConfigurationForm({
-  reminderOffsetDays,
-  escalationAfterDays,
-  defaultDueInDays,
+export function LimitsForm({
+  loginRateLimitPerMin,
   auditRetentionDays,
   emailLogRetentionDays,
   maxUploadMb,
   allowedExtensions,
-  loginRateLimitPerMin,
-}: ConfigurationProps) {
+}: LimitsFormProps) {
   const [state, action, isPending] = useActionState(
     saveSchedulingSettings,
     undefined,
   );
 
-  const [reminderDays, setReminderDays] = useState<string>(
-    reminderOffsetDays.join(", "),
-  );
-
   return (
     <form action={action} className="flex flex-col gap-6">
-      <input
-        type="hidden"
-        name="reminderDays"
-        value={reminderDays
-          .split(",")
-          .map((d) => d.trim())
-          .filter(Boolean)
-          .join(",")}
-      />
-
       <div className="flex flex-col gap-2">
         <Label htmlFor="loginRateLimit">Login rate limit (per minute)</Label>
         <p className="text-muted-foreground text-xs">
@@ -112,52 +92,10 @@ export function ConfigurationForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label>Reminder offset days</Label>
-        <p className="text-muted-foreground text-xs">
-          Comma-separated list of days before the due date to send reminders.
-          Example: 7, 1 sends reminders 7 days and 1 day before the due date.
-        </p>
-        <Input
-          value={reminderDays}
-          onChange={(e) => setReminderDays(e.target.value)}
-          placeholder="7, 1"
-          className="w-48"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="escalationDays">Escalation after (days)</Label>
-        <p className="text-muted-foreground text-xs">
-          Days after the due date before the reviewer receives an escalation
-          email.
-        </p>
-        <Input
-          id="escalationDays"
-          name="escalationDays"
-          type="number"
-          min={1}
-          defaultValue={escalationAfterDays}
-          className="w-32"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="defaultDueDays">Default assessment due (days)</Label>
-        <p className="text-muted-foreground text-xs">
-          New assessments default to this many days until the due date.
-        </p>
-        <Input
-          id="defaultDueDays"
-          name="defaultDueDays"
-          type="number"
-          min={1}
-          defaultValue={defaultDueInDays}
-          className="w-32"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
         <Label htmlFor="maxUploadMb">Maximum file upload size (MB)</Label>
+        <p className="text-muted-foreground text-xs">
+          Evidence files larger than this limit are rejected during upload.
+        </p>
         <Input
           id="maxUploadMb"
           name="maxUploadMb"
@@ -192,7 +130,7 @@ export function ConfigurationForm({
 
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending} size="sm">
-          {isPending ? "Saving..." : "Save configuration"}
+          {isPending ? "Saving..." : "Save limits"}
         </Button>
         {state?.message ? (
           <p

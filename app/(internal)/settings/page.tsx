@@ -47,7 +47,8 @@ import { SsoForm } from "./sso-form";
 import { AppearanceForm } from "./appearance-form";
 import { ApiForm } from "./api-form";
 import { AuditForm } from "./audit-form";
-import { ConfigurationForm } from "./configuration-form";
+import { SchedulingForm } from "./scheduling-form";
+import { LimitsForm } from "./limits-form";
 import { EmailTrackingForm } from "./email-tracking";
 import { listEmailLogs } from "@/lib/db/notifications";
 
@@ -150,7 +151,8 @@ export default async function SettingsPage({
           <TabsTrigger value="email">Email</TabsTrigger>
           <TabsTrigger value="email-tracking">Email Tracking</TabsTrigger>
           <TabsTrigger value="scoring">Scoring</TabsTrigger>
-          <TabsTrigger value="scheduling">Configuration</TabsTrigger>
+          <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
+          <TabsTrigger value="limits">Limits</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="sso">SSO</TabsTrigger>
           <TabsTrigger value="api">API</TabsTrigger>
@@ -297,22 +299,38 @@ export default async function SettingsPage({
         <TabsContent value="scheduling" className="mt-4 flex flex-col gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>Configuration</CardTitle>
+              <CardTitle>Scheduling</CardTitle>
               <CardDescription>
-                Configure automated reminders, escalations, audit log retention,
-                assessment defaults, and file upload limits.
+                Automated reminders before the due date and reviewer escalations
+                for overdue assessments.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ConfigurationForm
+              <SchedulingForm
                 reminderOffsetDays={assessment.reminderOffsetDays}
                 escalationAfterDays={assessment.escalationAfterDays}
                 defaultDueInDays={assessment.defaultDueInDays}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="limits" className="mt-4 flex flex-col gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Limits & retention</CardTitle>
+              <CardDescription>
+                Login rate limiting, data retention policies, and file upload
+                constraints.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <LimitsForm
+                loginRateLimitPerMin={assessment.loginRateLimitPerMin}
                 auditRetentionDays={auditRetention}
                 emailLogRetentionDays={emailLogRetention}
                 maxUploadMb={files.maxUploadMb}
                 allowedExtensions={files.allowedExtensions}
-                loginRateLimitPerMin={assessment.loginRateLimitPerMin}
               />
             </CardContent>
           </Card>
