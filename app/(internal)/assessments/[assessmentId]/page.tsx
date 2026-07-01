@@ -5,7 +5,13 @@ import type { Metadata } from "next";
 import { CopyLink } from "@/components/copy-link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -17,11 +23,8 @@ import { prisma } from "@/lib/prisma";
 import {
   deleteAssessmentAction,
   extendAssessmentAction,
-  generateLinkAction,
   regenerateAssessmentAction,
   revokeAssessmentAction,
-  sendAssessmentAction,
-  sendToCustomEmailAction,
 } from "@/lib/actions/assessments";
 import {
   addCommentAction,
@@ -30,6 +33,7 @@ import {
 } from "@/lib/actions/collaboration";
 import { FinalizeButton } from "./finalize-button";
 import { DraftEditor } from "./draft-editor";
+import { SendForms } from "./send-forms";
 import { requireUser } from "@/lib/auth";
 import { getAssessment } from "@/lib/db/assessments";
 import { env } from "@/lib/env";
@@ -137,73 +141,6 @@ export default async function AssessmentDetailPage({
             </Badge>
           </h1>
           <div className="flex flex-wrap items-center gap-2">
-            {isDraft ? (
-              <>
-                <form
-                  action={sendAssessmentAction}
-                  className="flex items-center gap-2"
-                >
-                  <input
-                    type="hidden"
-                    name="assessmentId"
-                    value={assessment.id}
-                  />
-                  <Button type="submit" size="sm">
-                    Send to vendor
-                  </Button>
-                  <input
-                    name="portalPassword"
-                    type="text"
-                    placeholder="Password (optional)"
-                    className="border-input bg-background h-9 w-40 rounded-md border px-3 text-xs"
-                  />
-                </form>
-                <form
-                  action={generateLinkAction}
-                  className="flex items-center gap-2"
-                >
-                  <input
-                    type="hidden"
-                    name="assessmentId"
-                    value={assessment.id}
-                  />
-                  <Button type="submit" variant="outline" size="sm">
-                    Generate link only
-                  </Button>
-                  <input
-                    name="portalPassword"
-                    type="text"
-                    placeholder="Password (optional)"
-                    className="border-input bg-background h-9 w-40 rounded-md border px-3 text-xs"
-                  />
-                </form>
-                <form
-                  action={sendToCustomEmailAction}
-                  className="flex items-center gap-2"
-                >
-                  <input
-                    type="hidden"
-                    name="assessmentId"
-                    value={assessment.id}
-                  />
-                  <input
-                    name="customEmail"
-                    type="text"
-                    placeholder="custom@example.com, …"
-                    className="border-input bg-background h-9 w-48 rounded-md border px-3 text-xs"
-                  />
-                  <input
-                    name="portalPassword"
-                    type="text"
-                    placeholder="Password (optional)"
-                    className="border-input bg-background h-9 w-40 rounded-md border px-3 text-xs"
-                  />
-                  <Button type="submit" variant="outline" size="sm">
-                    Send to
-                  </Button>
-                </form>
-              </>
-            ) : null}
             {isReviewable ? (
               <>
                 <form action={reopenAction}>
@@ -259,6 +196,21 @@ export default async function AssessmentDetailPage({
           {assessment.reviewer ? ` · reviewer ${assessment.reviewer.name}` : ""}
         </p>
       </div>
+
+      {isDraft ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Send questionnaire</CardTitle>
+            <CardDescription>
+              Generate a no‑login portal link for the vendor. Optionally set a
+              password to protect access.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SendForms assessmentId={assessment.id} />
+          </CardContent>
+        </Card>
+      ) : null}
 
       {isDraft ? (
         <DraftEditor
