@@ -446,7 +446,7 @@ export function PortalQuestionnaire({
   }).length;
 
   const expiresLabel = tokenExpiresAt
-    ? `Expires ${new Date(tokenExpiresAt).toLocaleDateString()}`
+    ? `Expires ${new Date(tokenExpiresAt).toISOString().slice(0, 10)}`
     : null;
 
   return (
