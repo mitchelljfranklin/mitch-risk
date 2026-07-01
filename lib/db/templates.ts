@@ -222,6 +222,13 @@ export function publishTemplate(id: string) {
   });
 }
 
+export function unpublishTemplate(id: string) {
+  return prisma.template.update({
+    where: { id },
+    data: { status: TemplateStatus.DRAFT },
+  });
+}
+
 export async function createNewVersion(templateId: string): Promise<string> {
   const source = await getTemplateForBuilder(templateId);
   if (!source) {

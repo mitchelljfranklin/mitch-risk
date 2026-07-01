@@ -16,6 +16,7 @@ import {
   deleteTemplate,
   getTemplateStatus,
   publishTemplate,
+  unpublishTemplate,
   updateQuestion,
   updateSection,
   updateTemplate,
@@ -191,6 +192,17 @@ export async function publishTemplateAction(formData: FormData) {
   const user = await getCurrentUser();
   if (user) {
     await logAudit(user.id, "PUBLISH_TEMPLATE", "Template", templateId);
+  }
+  revalidatePath(`/templates/${templateId}`);
+}
+
+export async function unpublishTemplateAction(formData: FormData) {
+  await requireUser();
+  const templateId = getField(formData, "templateId");
+  await unpublishTemplate(templateId);
+  const user = await getCurrentUser();
+  if (user) {
+    await logAudit(user.id, "UNPUBLISH_TEMPLATE", "Template", templateId);
   }
   revalidatePath(`/templates/${templateId}`);
 }

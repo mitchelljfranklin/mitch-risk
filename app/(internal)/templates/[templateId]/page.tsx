@@ -14,6 +14,7 @@ import {
   deleteSectionAction,
   deleteTemplateAction,
   publishTemplateAction,
+  unpublishTemplateAction,
   updateSectionAction,
   updateTemplateAction,
 } from "@/lib/actions/templates";
@@ -85,10 +86,26 @@ export default async function TemplateBuilderPage({
                 <Button type="submit">Publish</Button>
               </form>
             ) : (
-              <form action={createNewVersionAction}>
-                <input type="hidden" name="templateId" value={template.id} />
-                <Button type="submit">Create new version</Button>
-              </form>
+              <>
+                <form action={createNewVersionAction}>
+                  <input type="hidden" name="templateId" value={template.id} />
+                  <Button type="submit" variant="outline">
+                    Create new version
+                  </Button>
+                </form>
+                {template.status === "PUBLISHED" ? (
+                  <form action={unpublishTemplateAction}>
+                    <input
+                      type="hidden"
+                      name="templateId"
+                      value={template.id}
+                    />
+                    <Button type="submit" variant="ghost">
+                      Unpublish
+                    </Button>
+                  </form>
+                ) : null}
+              </>
             )}
             <form action={deleteTemplateAction}>
               <input type="hidden" name="templateId" value={template.id} />
