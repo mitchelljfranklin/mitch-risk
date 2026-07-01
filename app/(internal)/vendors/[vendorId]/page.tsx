@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,15 @@ export const dynamic = "force-dynamic";
 type VendorDetailPageProps = {
   params: Promise<{ vendorId: string }>;
 };
+
+export async function generateMetadata({
+  params,
+}: VendorDetailPageProps): Promise<Metadata> {
+  const { vendorId } = await params;
+  const vendor = await getVendor(vendorId);
+  if (!vendor) return { title: "Vendor not found" };
+  return { title: vendor.name };
+}
 
 export default async function VendorDetailPage({
   params,

@@ -470,11 +470,7 @@ export async function retryEmailSendAction(
 
   if (log.type === "TEST") {
     const { sendTestEmail } = await import("@/lib/email/mailer");
-    const result = await sendTestEmail(
-      log.sentTo,
-      sentById,
-      logId,
-    );
+    const result = await sendTestEmail(log.sentTo, sentById, logId);
     if (result.ok) {
       const user = await getCurrentUser();
       if (user)

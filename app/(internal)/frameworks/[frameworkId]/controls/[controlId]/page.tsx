@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +12,17 @@ export const dynamic = "force-dynamic";
 type ControlDetailPageProps = {
   params: Promise<{ frameworkId: string; controlId: string }>;
 };
+
+export async function generateMetadata({
+  params,
+}: ControlDetailPageProps): Promise<Metadata> {
+  const { frameworkId, controlId } = await params;
+  const control = await getControl(controlId);
+  if (!control || control.frameworkId !== frameworkId) {
+    return { title: "Control not found" };
+  }
+  return { title: `${control.code} — ${control.framework.name}` };
+}
 
 export default async function ControlDetailPage({
   params,

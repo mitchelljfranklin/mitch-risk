@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "mitch-risk",
+  title: { template: "%s — mitch-risk", default: "mitch-risk" },
   description: "Vendor risk management for small businesses",
 };
 

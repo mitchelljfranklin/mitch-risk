@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,8 @@ import {
   QUESTION_TYPE_LABELS,
   RISK_WEIGHT_LABELS,
 } from "@/lib/schemas/template";
+import { prisma } from "@/lib/prisma";
+
 import { formatDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -32,6 +35,18 @@ export const dynamic = "force-dynamic";
 type BuilderPageProps = {
   params: Promise<{ templateId: string }>;
 };
+
+export async function generateMetadata({
+  params,
+}: BuilderPageProps): Promise<Metadata> {
+  const { templateId } = await params;
+  const template = await prisma.template.findUnique({
+    where: { id: templateId },
+    select: { name: true },
+  });
+  if (!template) return { title: "Template not found" };
+  return { title: template.name };
+}
 
 export default async function TemplateBuilderPage({
   params,

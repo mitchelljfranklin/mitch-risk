@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
 import { requireUser } from "@/lib/auth";
@@ -13,6 +14,15 @@ export const dynamic = "force-dynamic";
 type HeatmapPageProps = {
   params: Promise<{ vendorId: string; frameworkId: string }>;
 };
+
+export async function generateMetadata({
+  params,
+}: HeatmapPageProps): Promise<Metadata> {
+  const { vendorId } = await params;
+  const vendor = await getVendor(vendorId);
+  if (!vendor) return { title: "Vendor not found" };
+  return { title: `Heatmap — ${vendor.name}` };
+}
 
 export default async function VendorHeatmapPage({ params }: HeatmapPageProps) {
   await requireUser();

@@ -109,21 +109,20 @@ export async function sendEmail(
   const resolvedSubject = replaceTokens(subject, tokens);
   const resolvedBody = replaceTokens(body, tokens);
 
-  const notificationLogId =
-    options?.updateLogId
-      ? options.updateLogId
-      : await createNotificationLog({
-          assessment: options?.assessmentId
-            ? { connect: { id: options.assessmentId } }
-            : undefined,
-          type: templateType.toUpperCase(),
-          sentTo: to,
-          subject: resolvedSubject,
-          status: "FAILED",
-          sentBy: options?.sentById
-            ? { connect: { id: options.sentById } }
-            : undefined,
-        });
+  const notificationLogId = options?.updateLogId
+    ? options.updateLogId
+    : await createNotificationLog({
+        assessment: options?.assessmentId
+          ? { connect: { id: options.assessmentId } }
+          : undefined,
+        type: templateType.toUpperCase(),
+        sentTo: to,
+        subject: resolvedSubject,
+        status: "FAILED",
+        sentBy: options?.sentById
+          ? { connect: { id: options.sentById } }
+          : undefined,
+      });
 
   const transport = await getTransporter();
   if (!transport) {
@@ -181,16 +180,15 @@ export async function sendTestEmail(
 
   const subject = "mitch-risk — SMTP test";
 
-  const notificationLogId =
-    updateLogId
-      ? updateLogId
-      : await createNotificationLog({
-          type: "TEST",
-          sentTo: to,
-          subject,
-          status: "FAILED",
-          sentBy: sentById ? { connect: { id: sentById } } : undefined,
-        });
+  const notificationLogId = updateLogId
+    ? updateLogId
+    : await createNotificationLog({
+        type: "TEST",
+        sentTo: to,
+        subject,
+        status: "FAILED",
+        sentBy: sentById ? { connect: { id: sentById } } : undefined,
+      });
 
   try {
     await transport.sendMail({

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 import { SearchInput } from "@/components/search-input";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +13,15 @@ type FrameworkDetailPageProps = {
   params: Promise<{ frameworkId: string }>;
   searchParams: Promise<{ q?: string }>;
 };
+
+export async function generateMetadata({
+  params,
+}: FrameworkDetailPageProps): Promise<Metadata> {
+  const { frameworkId } = await params;
+  const framework = await getFramework(frameworkId);
+  if (!framework) return { title: "Framework not found" };
+  return { title: framework.name };
+}
 
 export default async function FrameworkDetailPage({
   params,

@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 import { CopyLink } from "@/components/copy-link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { prisma } from "@/lib/prisma";
 import {
   deleteAssessmentAction,
   extendAssessmentAction,
@@ -33,6 +35,18 @@ export const dynamic = "force-dynamic";
 type AssessmentDetailPageProps = {
   params: Promise<{ assessmentId: string }>;
 };
+
+export async function generateMetadata({
+  params,
+}: AssessmentDetailPageProps): Promise<Metadata> {
+  const { assessmentId } = await params;
+  const assessment = await prisma.assessment.findUnique({
+    where: { id: assessmentId },
+    select: { title: true },
+  });
+  if (!assessment) return { title: "Assessment not found" };
+  return { title: assessment.title };
+}
 
 function formatResponseValue(value: unknown): string {
   if (value === null || value === undefined) {

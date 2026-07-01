@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
 import { requireUser } from "@/lib/auth";
@@ -15,6 +16,15 @@ type ComparePageProps = {
   params: Promise<{ vendorId: string }>;
   searchParams: Promise<{ left?: string; right?: string }>;
 };
+
+export async function generateMetadata({
+  params,
+}: ComparePageProps): Promise<Metadata> {
+  const { vendorId } = await params;
+  const vendor = await getVendor(vendorId);
+  if (!vendor) return { title: "Vendor not found" };
+  return { title: `Compare assessments — ${vendor.name}` };
+}
 
 export default async function ComparePage({
   params,
