@@ -17,6 +17,8 @@ type EmailTemplateFormProps = {
   reminderBody: string;
   escalationSubject: string;
   escalationBody: string;
+  submissionSubject: string;
+  submissionBody: string;
 };
 
 const initialState: SettingsActionState = undefined;
@@ -65,6 +67,8 @@ export function EmailTemplateForm({
   reminderBody,
   escalationSubject,
   escalationBody,
+  submissionSubject,
+  submissionBody,
 }: EmailTemplateFormProps) {
   const [state, formAction, isPending] = useActionState(
     saveEmailTemplateSettings,
@@ -94,6 +98,13 @@ export function EmailTemplateForm({
         subjectDefault={escalationSubject}
         bodyName="escalationBody"
         bodyDefault={escalationBody}
+      />
+      <TemplateSection
+        label="Submission received email"
+        subjectName="submissionSubject"
+        subjectDefault={submissionSubject}
+        bodyName="submissionBody"
+        bodyDefault={submissionBody}
       />
       <p className="text-muted-foreground text-xs">
         Tokens: {"{{"}vendorName{"}}"}, {"{{"}assessmentTitle{"}}"}, {"{{"}

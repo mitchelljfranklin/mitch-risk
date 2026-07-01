@@ -91,6 +91,8 @@ export async function saveEmailTemplateSettings(
     reminderBody: formData.get("reminderBody") ?? "",
     escalationSubject: formData.get("escalationSubject") ?? "",
     escalationBody: formData.get("escalationBody") ?? "",
+    submissionSubject: formData.get("submissionSubject") ?? "",
+    submissionBody: formData.get("submissionBody") ?? "",
   });
   if (!parsed.success) {
     return {

@@ -255,6 +255,8 @@ export default async function SettingsPage({
                 reminderBody={templates.reminderBody}
                 escalationSubject={templates.escalationSubject}
                 escalationBody={templates.escalationBody}
+                submissionSubject={templates.submissionSubject}
+                submissionBody={templates.submissionBody}
               />
             </CardContent>
           </Card>

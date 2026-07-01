@@ -13,6 +13,9 @@ import {
   submitAssessment,
 } from "@/lib/db/assessments";
 import { addComment } from "@/lib/db/collaboration";
+import { sendEmail } from "@/lib/email/mailer";
+import { env } from "@/lib/env";
+import { prisma } from "@/lib/prisma";
 import { saveProgressSchema } from "@/lib/schemas/portal";
 import { getFileSettings } from "@/lib/settings";
 import { storage } from "@/lib/storage";
@@ -130,7 +133,41 @@ export async function submitPortalAction(
   if (!rateLimit("submit", token, 5)) {
     return { ok: false, missing: -1 };
   }
-  return submitAssessment(token);
+
+  const result = await submitAssessment(token);
+  if (!result.ok) return result;
+
+  try {
+    const assessment = await prisma.assessment.findUnique({
+      where: { accessToken: token },
+      select: {
+        id: true,
+        title: true,
+        reviewerId: true,
+        vendor: { select: { name: true } },
+        reviewer: { select: { email: true, name: true } },
+      },
+    });
+
+    if (assessment?.reviewer?.email) {
+      const appUrl = env.APP_URL;
+      await sendEmail(
+        assessment.reviewer.email,
+        "submission",
+        {
+          reviewerName: assessment.reviewer.name ?? "Reviewer",
+          vendorName: assessment.vendor.name,
+          assessmentTitle: assessment.title,
+          assessmentUrl: `${appUrl}/assessments/${assessment.id}`,
+        },
+        { assessmentId: assessment.id },
+      );
+    }
+  } catch {
+    // Notification is best-effort — don't block submission
+  }
+
+  return result;
 }
 
 export async function vendorAddCommentAction(

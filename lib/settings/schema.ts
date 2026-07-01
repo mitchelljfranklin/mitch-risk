@@ -86,6 +86,14 @@ export const emailTemplateSchema = z.object({
     .default(
       "{{reviewerName}}, the questionnaire {{assessmentTitle}} sent to {{vendorName}} is now overdue.\n\nView the assessment: {{assessmentUrl}}",
     ),
+  submissionSubject: z
+    .string()
+    .default("{{vendorName}} submitted {{assessmentTitle}} for review"),
+  submissionBody: z
+    .string()
+    .default(
+      "{{reviewerName}}, {{vendorName}} has submitted their security questionnaire: {{assessmentTitle}}.\n\nView the assessment: {{assessmentUrl}}",
+    ),
 });
 
 export type EmailTemplateSettings = z.infer<typeof emailTemplateSchema>;

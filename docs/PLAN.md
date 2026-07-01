@@ -330,7 +330,11 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   with `--rag-green/amber/red/unscored` CSS variables and Appearance setting colour pickers;
   sidebar logo enlarged; missing detail-route loading skeletons added; border-radius slider
   and page-width selector in Appearance settings.
-- **Phase 39 — Bulk vendor onboarding.** CSV bulk import of multiple vendors at once with
+- **Phase 40 — Reviewer submission notification.** New `"submission"` email template
+  type sent to the reviewer when a vendor submits their questionnaire. Template editable
+  in Settings alongside invite/reminder/escalation. Email includes vendor name, assessment
+  title, and a direct link to the assessment detail. Notification is best-effort — if SMTP
+  is unavailable the submission still succeeds.
   preview and row-level validation; new `ImportVendorsForm` component with file upload and
   parsed-row count display. Bulk assessment sending: select multiple vendors on a new
   `/vendors/bulk-send` page, pick a template, set due date and reviewer, optionally set a

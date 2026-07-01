@@ -37,7 +37,7 @@ function replaceTokens(text: string, tokens: Record<string, string>): string {
   );
 }
 
-type TemplateType = "invite" | "reminder" | "escalation";
+type TemplateType = "invite" | "reminder" | "escalation" | "submission";
 
 export type SendEmailResult = {
   ok: boolean;
@@ -97,14 +97,18 @@ export async function sendEmail(
       ? templates.inviteSubject
       : templateType === "reminder"
         ? templates.reminderSubject
-        : templates.escalationSubject;
+        : templateType === "escalation"
+          ? templates.escalationSubject
+          : templates.submissionSubject;
 
   const body =
     templateType === "invite"
       ? templates.inviteBody
       : templateType === "reminder"
         ? templates.reminderBody
-        : templates.escalationBody;
+        : templateType === "escalation"
+          ? templates.escalationBody
+          : templates.submissionBody;
 
   const resolvedSubject = replaceTokens(subject, tokens);
   const resolvedBody = replaceTokens(body, tokens);
