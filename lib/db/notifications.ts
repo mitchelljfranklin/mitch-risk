@@ -72,6 +72,14 @@ export type EmailLogFilters = {
   fromDate?: string;
   toDate?: string;
   limit?: number;
+  page?: number;
+};
+
+export type EmailLogResult = {
+  entries: EmailLogEntry[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
 };
 
 export type EmailLogEntry = {
@@ -87,7 +95,11 @@ export type EmailLogEntry = {
   sentBy: { name: string } | null;
 };
 
-export function listEmailLogs(filters?: EmailLogFilters) {
+const EMAIL_LOG_PAGE_SIZE = 20;
+
+export async function listEmailLogs(
+  filters?: EmailLogFilters,
+): Promise<EmailLogResult> {
   const where: Record<string, unknown> = {};
 
   if (filters?.status) {
@@ -115,31 +127,40 @@ export function listEmailLogs(filters?: EmailLogFilters) {
     where.sentAt = sentAt;
   }
 
-  return prisma.notificationLog
-    .findMany({
-      where,
-      take: filters?.limit ?? 50,
-      orderBy: { sentAt: "desc" },
-      select: {
-        id: true,
-        type: true,
-        sentTo: true,
-        subject: true,
-        status: true,
-        errorMessage: true,
-        sentAt: true,
-        assessmentId: true,
-        assessment: { select: { title: true } },
-        sentBy: { select: { name: true } },
-      },
-    })
-    .then((logs) =>
-      logs.map((log) => ({
-        ...log,
-        assessmentTitle: log.assessment?.title ?? null,
-        assessment: undefined as never,
-      })),
-    );
+  const page = filters?.page ?? 1;
+  const pageSize = EMAIL_LOG_PAGE_SIZE;
+
+  const [entries, totalCount] = await Promise.all([
+    prisma.notificationLog
+      .findMany({
+        where,
+        take: pageSize,
+        skip: (page - 1) * pageSize,
+        orderBy: { sentAt: "desc" },
+        select: {
+          id: true,
+          type: true,
+          sentTo: true,
+          subject: true,
+          status: true,
+          errorMessage: true,
+          sentAt: true,
+          assessmentId: true,
+          assessment: { select: { title: true } },
+          sentBy: { select: { name: true } },
+        },
+      })
+      .then((logs) =>
+        logs.map((log) => ({
+          ...log,
+          assessmentTitle: log.assessment?.title ?? null,
+          assessment: undefined as never,
+        })),
+      ),
+    prisma.notificationLog.count({ where }),
+  ]);
+
+  return { entries, totalCount, page, pageSize };
 }
 
 export function getEmailLogById(id: string) {

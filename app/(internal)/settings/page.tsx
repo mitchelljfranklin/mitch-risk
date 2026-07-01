@@ -116,11 +116,12 @@ export default async function SettingsPage({
 
   const users = fullUsers.map((u) => ({ id: u.id, name: u.name }));
 
-  const logs = await listAuditLogs({
+  const auditLogs = await listAuditLogs({
     action: sp.action,
     userId: sp.userId,
     fromDate: sp.fromDate,
     toDate: sp.toDate,
+    page: sp.auditPage ? parseInt(sp.auditPage) : 1,
   });
 
   const emailLogs = await listEmailLogs({
@@ -129,6 +130,7 @@ export default async function SettingsPage({
     recipient: sp.recipient,
     fromDate: sp.fromDate,
     toDate: sp.toDate,
+    page: sp.emailLogPage ? parseInt(sp.emailLogPage) : 1,
   });
 
   const emailLogStatuses = ["SENT", "FAILED"];
@@ -272,7 +274,7 @@ export default async function SettingsPage({
             </CardHeader>
             <CardContent>
               <EmailTrackingForm
-                logs={emailLogs}
+                result={emailLogs}
                 statuses={emailLogStatuses}
                 types={emailLogTypes}
               />
@@ -461,7 +463,7 @@ export default async function SettingsPage({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <AuditForm logs={logs} actions={actions} users={users} />
+              <AuditForm result={auditLogs} actions={actions} users={users} />
             </CardContent>
           </Card>
         </TabsContent>

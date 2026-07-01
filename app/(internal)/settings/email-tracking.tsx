@@ -13,11 +13,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { EMAIL_TYPE_LABELS, type EmailLogEntry } from "@/lib/db/notifications";
+import type { EmailLogResult } from "@/lib/db/notifications";
 import { formatDate } from "@/lib/utils";
 import { retryEmailSendAction } from "./actions";
 
 type EmailTrackingFormProps = {
-  logs: EmailLogEntry[];
+  result: EmailLogResult;
   statuses: string[];
   types: string[];
 };
@@ -33,10 +34,13 @@ const TYPE_VARIANT: Record<
 };
 
 export function EmailTrackingForm({
-  logs,
+  result,
   statuses,
   types,
 }: EmailTrackingFormProps) {
+  const { entries, totalCount, page, pageSize } = result;
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -113,31 +117,65 @@ export function EmailTrackingForm({
         </Button>
       </form>
 
-      {logs.length === 0 ? (
+      {entries.length === 0 ? (
         <p className="text-muted-foreground text-sm">No email logs found.</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-muted/50 border-b">
-                <th className="p-3 text-left font-medium">Date</th>
-                <th className="p-3 text-left font-medium">Recipient</th>
-                <th className="p-3 text-left font-medium">Subject</th>
-                <th className="p-3 text-left font-medium">Type</th>
-                <th className="p-3 text-left font-medium">Status</th>
-                <th className="p-3 text-left font-medium">Detail</th>
-                <th className="p-3 text-left font-medium">Assessment</th>
-                <th className="p-3 text-left font-medium">Sent by</th>
-                <th className="p-3 text-left font-medium" />
-              </tr>
-            </thead>
-            <tbody>
-              {logs.map((log) => (
-                <EmailLogRow key={log.id} log={log} />
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <>
+          <div className="overflow-x-auto rounded-lg border">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-muted/50 border-b">
+                  <th className="p-3 text-left font-medium">Date</th>
+                  <th className="p-3 text-left font-medium">Recipient</th>
+                  <th className="p-3 text-left font-medium">Subject</th>
+                  <th className="p-3 text-left font-medium">Type</th>
+                  <th className="p-3 text-left font-medium">Status</th>
+                  <th className="p-3 text-left font-medium">Detail</th>
+                  <th className="p-3 text-left font-medium">Assessment</th>
+                  <th className="p-3 text-left font-medium">Sent by</th>
+                  <th className="p-3 text-left font-medium" />
+                </tr>
+              </thead>
+              <tbody>
+                {entries.map((log) => (
+                  <EmailLogRow key={log.id} log={log} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-muted-foreground text-xs">
+              Page {page} of {totalPages} ({totalCount} entries)
+            </span>
+            <div className="flex items-center gap-2">
+              <Button asChild variant="outline" size="sm" disabled={page <= 1}>
+                <a
+                  href={`/settings?tab=email-tracking&emailLogPage=${page - 1}`}
+                  onClick={(e) => {
+                    if (page <= 1) e.preventDefault();
+                  }}
+                >
+                  Previous
+                </a>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                disabled={page >= totalPages}
+              >
+                <a
+                  href={`/settings?tab=email-tracking&emailLogPage=${page + 1}`}
+                  onClick={(e) => {
+                    if (page >= totalPages) e.preventDefault();
+                  }}
+                >
+                  Next
+                </a>
+              </Button>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

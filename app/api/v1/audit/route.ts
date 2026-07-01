@@ -13,22 +13,17 @@ export async function GET(request: Request) {
   const userId = searchParams.get("userId") ?? undefined;
   const fromDate = searchParams.get("fromDate") ?? undefined;
   const toDate = searchParams.get("toDate") ?? undefined;
-  const limit = Math.min(
-    parseInt(searchParams.get("limit") ?? "100", 10) || 100,
-    500,
-  );
-  const offset = parseInt(searchParams.get("offset") ?? "0", 10) || 0;
+  const page = parseInt(searchParams.get("page") ?? "1", 10) || 1;
   const format = searchParams.get("format") ?? "json";
 
-  const logs = await listAuditLogs({
+  const result = await listAuditLogs({
     action,
     userId,
     fromDate,
     toDate,
-    limit: limit + offset,
+    page,
   });
-
-  const paged = logs.slice(offset);
+  const { entries, totalCount } = result;
 
   if (format === "csv") {
     const header = [
@@ -39,7 +34,7 @@ export async function GET(request: Request) {
       csvEscape("Entity ID"),
       csvEscape("Timestamp"),
     ].join(",");
-    const rows = paged.map((log) =>
+    const rows = entries.map((log) =>
       [
         csvEscape(log.id),
         csvEscape(AUDIT_ACTION_LABELS[log.action] ?? log.action),
@@ -58,8 +53,8 @@ export async function GET(request: Request) {
     });
   }
 
-  return Response.json(
-    paged.map((log) => ({
+  return Response.json({
+    entries: entries.map((log) => ({
       id: log.id,
       action: log.action,
       actionLabel: AUDIT_ACTION_LABELS[log.action] ?? log.action,
@@ -68,5 +63,8 @@ export async function GET(request: Request) {
       entityId: log.entityId,
       createdAt: log.createdAt,
     })),
-  );
+    page: result.page,
+    pageSize: result.pageSize,
+    totalCount,
+  });
 }

@@ -35,6 +35,14 @@ export type AuditLogFilters = {
   fromDate?: string;
   toDate?: string;
   limit?: number;
+  page?: number;
+};
+
+export type AuditLogResult = {
+  entries: AuditLogEntry[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
 };
 
 export type AuditLogEntry = {
@@ -46,7 +54,11 @@ export type AuditLogEntry = {
   user: { id: string; name: string };
 };
 
-export function listAuditLogs(filters?: AuditLogFilters) {
+const AUDIT_PAGE_SIZE = 20;
+
+export async function listAuditLogs(
+  filters?: AuditLogFilters,
+): Promise<AuditLogResult> {
   const where: Prisma.AuditLogWhereInput = {};
 
   if (filters?.action) {
@@ -74,12 +86,21 @@ export function listAuditLogs(filters?: AuditLogFilters) {
     }
   }
 
-  return prisma.auditLog.findMany({
-    where,
-    take: filters?.limit ?? 50,
-    orderBy: { createdAt: "desc" },
-    include: { user: { select: { id: true, name: true } } },
-  });
+  const page = filters?.page ?? 1;
+  const pageSize = AUDIT_PAGE_SIZE;
+
+  const [entries, totalCount] = await Promise.all([
+    prisma.auditLog.findMany({
+      where,
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+      orderBy: { createdAt: "desc" },
+      include: { user: { select: { id: true, name: true } } },
+    }),
+    prisma.auditLog.count({ where }),
+  ]);
+
+  return { entries, totalCount, page, pageSize };
 }
 
 export function listAuditActions() {
