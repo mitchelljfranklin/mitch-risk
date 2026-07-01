@@ -433,6 +433,54 @@ export function PortalQuestionnaire({
       );
     }
 
+    if (question.type === "URL") {
+      return (
+        <Input
+          type="url"
+          className="max-w-xs"
+          disabled={disabled}
+          value={typeof value === "string" ? value : ""}
+          onChange={(event) =>
+            setAnswer(question.id, { value: event.target.value })
+          }
+          placeholder="https://"
+        />
+      );
+    }
+
+    if (question.type === "EMAIL") {
+      return (
+        <Input
+          type="email"
+          className="max-w-xs"
+          disabled={disabled}
+          value={typeof value === "string" ? value : ""}
+          onChange={(event) =>
+            setAnswer(question.id, { value: event.target.value })
+          }
+          placeholder="name@example.com"
+        />
+      );
+    }
+
+    if (question.type === "CHECKBOX") {
+      return (
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id={`${question.id}-checkbox`}
+            checked={Boolean(value)}
+            disabled={disabled}
+            onCheckedChange={(checked) =>
+              setAnswer(question.id, { value: checked })
+            }
+          />
+          <Label htmlFor={`${question.id}-checkbox`}>
+            I confirm this statement
+          </Label>
+        </div>
+      );
+    }
+
     return null;
   }
 

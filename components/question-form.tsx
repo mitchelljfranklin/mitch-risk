@@ -216,10 +216,32 @@ export function QuestionForm({
         </div>
       ) : null}
 
-      {type === "FREE_TEXT" || type === "FILE_UPLOAD" || type === "DATE" ? (
+      {type === "FREE_TEXT" ||
+      type === "FILE_UPLOAD" ||
+      type === "DATE" ||
+      type === "URL" ||
+      type === "EMAIL" ? (
         <p className="text-muted-foreground text-sm">
           This answer type is scored manually during review.
         </p>
+      ) : null}
+
+      {type === "CHECKBOX" ? (
+        <div className="grid gap-2">
+          <Label htmlFor="expectedAnswer">Expected answer</Label>
+          <Select
+            name="expectedAnswer"
+            defaultValue={defaults?.expectedAnswer ? "true" : "false"}
+          >
+            <SelectTrigger id="expectedAnswer">
+              <SelectValue placeholder="Should be checked?" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="true">Checked</SelectItem>
+              <SelectItem value="false">Unchecked</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2">

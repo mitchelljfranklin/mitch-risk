@@ -30,7 +30,8 @@ function isAutoScorable(type: string): boolean {
     type === "NUMERIC" ||
     type === "COMBOBOX" ||
     type === "MULTI_SELECT" ||
-    type === "RATING"
+    type === "RATING" ||
+    type === "CHECKBOX"
   );
 }
 
@@ -71,6 +72,10 @@ export function isCompliant(
 
   if (type === "COMBOBOX") {
     return String(value) === String(expectedAnswer);
+  }
+
+  if (type === "CHECKBOX") {
+    return Boolean(value) === Boolean(expectedAnswer);
   }
 
   return String(value) === String(expectedAnswer);

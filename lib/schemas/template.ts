@@ -10,6 +10,9 @@ export const QUESTION_TYPES = [
   "COMBOBOX",
   "MULTI_SELECT",
   "RATING",
+  "URL",
+  "EMAIL",
+  "CHECKBOX",
 ] as const;
 
 export const RISK_WEIGHTS = ["CRITICAL", "HIGH", "MEDIUM", "LOW"] as const;
@@ -27,6 +30,9 @@ export const QUESTION_TYPE_LABELS: Record<
   COMBOBOX: "Combobox",
   MULTI_SELECT: "Multi‑select (pick many)",
   RATING: "Rating (1‑5)",
+  URL: "URL",
+  EMAIL: "Email",
+  CHECKBOX: "Checkbox (acknowledgment)",
 };
 
 export const RISK_WEIGHT_LABELS: Record<(typeof RISK_WEIGHTS)[number], string> =

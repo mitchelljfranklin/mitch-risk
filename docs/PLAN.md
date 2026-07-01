@@ -335,11 +335,10 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   in Settings alongside invite/reminder/escalation. Email includes vendor name, assessment
   title, and a direct link to the assessment detail. Notification is best-effort — if SMTP
   is unavailable the submission still succeeds.
-  preview and row-level validation; new `ImportVendorsForm` component with file upload and
-  parsed-row count display. Bulk assessment sending: select multiple vendors on a new
-  `/vendors/bulk-send` page, pick a template, set due date and reviewer, optionally set a
-  shared portal password, and send individual assessments to all selected vendors in
-  parallel. Each vendor gets their own assessment token and invite email.
+- **Phase 41 — Additional question types.** Extended the `QuestionType` enum with three new
+  answer types: URL (validated URL input, manually scored), EMAIL (validated email input,
+  manually scored), and CHECKBOX (single acknowledgment checkbox, auto-scorable). All three
+  integrate into the builder UI, portal questionnaire, autoscoring, and the review panel.
 
 ## 8. Out of scope (v1+)
 

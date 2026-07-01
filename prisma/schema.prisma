@@ -98,6 +98,9 @@ enum QuestionType {
   COMBOBOX
   MULTI_SELECT
   RATING
+  URL
+  EMAIL
+  CHECKBOX
 }
 
 enum RiskWeight {

@@ -28,7 +28,7 @@ docker compose up -d
 
 ## Features
 
-- Build, version, publish/unpublish security questionnaires (9 answer types)
+- Build, version, publish/unpublish security questionnaires (12 answer types)
 - Send to vendors via no-login, expiring, password-protected secure links
 - Bulk vendor onboarding (CSV import) and bulk assessment sending
 - Auto-score responses with weighted RAG scoring

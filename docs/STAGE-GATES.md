@@ -76,6 +76,7 @@ A phase cannot be marked **Ready for review** unless all of these are true:
 | 38 | UI/UX polish & consistency | Approved |
 | 39 | Bulk vendor onboarding | Ready for review |
 | 40 | Reviewer submission notification | Approved |
+| 41 | Additional question types (URL, EMAIL, CHECKBOX) | Approved |
 
 ---
 
@@ -1069,3 +1070,4 @@ for creating assessments and fetching scores.
 | 38 | Approved | User | 2026-07-01 | RAG color system + appearance expansion, loading skeletons for 6 detail routes, border-radius/page-width controls, custom scrollbar, gradient sidebar, animated stat cards, toast system, auth hero branding, empty state SVGs, keyboard shortcuts, trend indicators, calendar heatmap, collapsible sidebar, portal progress bar; 73 tests |
 | 39 | Approved | User | 2026-07-02 | CSV bulk vendor import, bulk assessment sending page, 4 new components; 73 tests |
 | 40 | Approved | User | 2026-07-02 | Submission notification email to reviewer, new email template type, Settings UI; 73 tests |
+| 41 | Approved | User | 2026-07-02 | URL, EMAIL, CHECKBOX question types; auto-scoring for CHECKBOX; 73 tests |
