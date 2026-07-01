@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { CopyLink } from "@/components/copy-link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import {
   Card,
   CardContent,
@@ -174,11 +175,20 @@ export default async function AssessmentDetailPage({
                 </a>
               </Button>
             ) : null}
-            <form action={deleteAssessmentAction}>
+            <form
+              id={`delete-assessment-${assessment.id}`}
+              action={deleteAssessmentAction}
+            >
               <input type="hidden" name="assessmentId" value={assessment.id} />
-              <Button type="submit" variant="outline">
-                Delete
-              </Button>
+              <ConfirmDialog
+                title="Delete assessment?"
+                description={`This will permanently delete "${assessment.title}" and all responses, findings, and evidence. This action cannot be undone.`}
+                formId={`delete-assessment-${assessment.id}`}
+              >
+                <Button type="button" variant="outline">
+                  Delete
+                </Button>
+              </ConfirmDialog>
             </form>
           </div>
         </div>
@@ -264,15 +274,26 @@ export default async function AssessmentDetailPage({
                   Regenerate link
                 </Button>
               </form>
-              <form action={revokeAssessmentAction}>
+              <form
+                id={`revoke-${assessment.id}`}
+                action={revokeAssessmentAction}
+              >
                 <input
                   type="hidden"
                   name="assessmentId"
                   value={assessment.id}
                 />
-                <Button type="submit" variant="ghost" size="sm">
-                  Revoke
-                </Button>
+                <ConfirmDialog
+                  title="Revoke portal link?"
+                  description="The vendor will no longer be able to access the questionnaire. You can regenerate the link later if needed."
+                  confirmLabel="Revoke"
+                  variant="destructive"
+                  formId={`revoke-${assessment.id}`}
+                >
+                  <Button type="button" variant="ghost" size="sm">
+                    Revoke
+                  </Button>
+                </ConfirmDialog>
               </form>
             </div>
           </CardContent>

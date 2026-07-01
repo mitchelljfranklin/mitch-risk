@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -107,11 +108,20 @@ export default async function TemplateBuilderPage({
                 ) : null}
               </>
             )}
-            <form action={deleteTemplateAction}>
+            <form
+              id={`delete-template-${template.id}`}
+              action={deleteTemplateAction}
+            >
               <input type="hidden" name="templateId" value={template.id} />
-              <Button type="submit" variant="outline">
-                Delete
-              </Button>
+              <ConfirmDialog
+                title="Delete template?"
+                description={`This will permanently delete "${template.name}" and all its sections and questions. Assessments using this template will lose the template link. This action cannot be undone.`}
+                formId={`delete-template-${template.id}`}
+              >
+                <Button type="button" variant="outline">
+                  Delete
+                </Button>
+              </ConfirmDialog>
             </form>
             <Button asChild variant="outline">
               <a href={`/api/templates/${template.id}/export`} download>
@@ -227,12 +237,21 @@ export default async function TemplateBuilderPage({
                 <CardTitle>{section.title}</CardTitle>
               )}
               {isDraft ? (
-                <form action={deleteSectionAction}>
+                <form
+                  id={`delete-section-${section.id}`}
+                  action={deleteSectionAction}
+                >
                   <input type="hidden" name="templateId" value={template.id} />
                   <input type="hidden" name="sectionId" value={section.id} />
-                  <Button type="submit" variant="ghost" size="sm">
-                    Delete section
-                  </Button>
+                  <ConfirmDialog
+                    title="Delete section?"
+                    description={`This will permanently delete "${section.title}" and all questions within it.`}
+                    formId={`delete-section-${section.id}`}
+                  >
+                    <Button type="button" variant="ghost" size="sm">
+                      Delete section
+                    </Button>
+                  </ConfirmDialog>
                 </form>
               ) : null}
             </div>
@@ -279,7 +298,10 @@ export default async function TemplateBuilderPage({
                           Edit
                         </Link>
                       </Button>
-                      <form action={deleteQuestionAction}>
+                      <form
+                        id={`delete-question-${question.id}`}
+                        action={deleteQuestionAction}
+                      >
                         <input
                           type="hidden"
                           name="templateId"
@@ -290,9 +312,15 @@ export default async function TemplateBuilderPage({
                           name="questionId"
                           value={question.id}
                         />
-                        <Button type="submit" variant="ghost" size="sm">
-                          Delete
-                        </Button>
+                        <ConfirmDialog
+                          title="Delete question?"
+                          description={`This will permanently delete "${question.text.slice(0, 60)}".`}
+                          formId={`delete-question-${question.id}`}
+                        >
+                          <Button type="button" variant="ghost" size="sm">
+                            Delete
+                          </Button>
+                        </ConfirmDialog>
                       </form>
                     </div>
                   ) : null}

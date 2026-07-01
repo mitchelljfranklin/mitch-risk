@@ -5,6 +5,7 @@ import { useActionState, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useFormToast } from "@/hooks/use-form-toast";
@@ -227,22 +228,41 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <form action={toggleApiKeyAction}>
+                  <form id={`toggle-key-${key.id}`} action={toggleApiKeyAction}>
                     <input type="hidden" name="keyId" value={key.id} />
                     <input
                       type="hidden"
                       name="disabled"
                       value={key.disabled ? "false" : "true"}
                     />
-                    <Button type="submit" size="sm" variant="ghost">
-                      {key.disabled ? "Enable" : "Revoke"}
-                    </Button>
+                    {key.disabled ? (
+                      <Button type="submit" size="sm" variant="ghost">
+                        Enable
+                      </Button>
+                    ) : (
+                      <ConfirmDialog
+                        title="Revoke API key?"
+                        description={`Any integrations using "${key.name}" will stop working immediately. This can be re-enabled later.`}
+                        confirmLabel="Revoke"
+                        formId={`toggle-key-${key.id}`}
+                      >
+                        <Button type="button" size="sm" variant="ghost">
+                          Revoke
+                        </Button>
+                      </ConfirmDialog>
+                    )}
                   </form>
-                  <form action={deleteApiKeyAction}>
+                  <form id={`delete-key-${key.id}`} action={deleteApiKeyAction}>
                     <input type="hidden" name="keyId" value={key.id} />
-                    <Button type="submit" size="sm" variant="ghost">
-                      Delete
-                    </Button>
+                    <ConfirmDialog
+                      title="Delete API key?"
+                      description={`"${key.name}" will be permanently deleted. Any integrations using this key will break permanently. This cannot be undone.`}
+                      formId={`delete-key-${key.id}`}
+                    >
+                      <Button type="button" size="sm" variant="ghost">
+                        Delete
+                      </Button>
+                    </ConfirmDialog>
                   </form>
                 </div>
               </div>

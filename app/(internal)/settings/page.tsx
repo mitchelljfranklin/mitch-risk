@@ -17,6 +17,7 @@ import {
 import { requireAdmin } from "@/lib/auth";
 import { listAuditLogs, listAuditActions } from "@/lib/db/audit";
 import { listUsersFull } from "@/lib/db/users";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { prisma } from "@/lib/prisma";
 import {
   getEmailSettings,
@@ -423,18 +424,35 @@ export default async function SettingsPage({
                           Change role
                         </Button>
                       </form>
-                      <form action={toggleUserAction}>
+                      <form
+                        id={`toggle-user-${user.id}`}
+                        action={toggleUserAction}
+                      >
                         <input type="hidden" name="userId" value={user.id} />
                         <input
                           type="hidden"
                           name="disabled"
                           value={user.disabled ? "false" : "true"}
                         />
-                        <Button type="submit" size="sm" variant="ghost">
-                          {user.disabled ? "Enable" : "Disable"}
-                        </Button>
+                        {user.disabled ? (
+                          <Button type="submit" size="sm" variant="ghost">
+                            Enable
+                          </Button>
+                        ) : (
+                          <ConfirmDialog
+                            title="Disable user?"
+                            description={`${user.name} will no longer be able to sign in. Their data will be preserved.`}
+                            confirmLabel="Disable"
+                            formId={`toggle-user-${user.id}`}
+                          >
+                            <Button type="button" size="sm" variant="ghost">
+                              Disable
+                            </Button>
+                          </ConfirmDialog>
+                        )}
                       </form>
                       <form
+                        id={`reset-password-${user.id}`}
                         action={resetPasswordAction}
                         className="flex items-center gap-1"
                       >
@@ -446,9 +464,16 @@ export default async function SettingsPage({
                           minLength={12}
                           className="border-input bg-background h-8 rounded-md border px-2 text-xs"
                         />
-                        <Button type="submit" size="sm" variant="ghost">
-                          Reset
-                        </Button>
+                        <ConfirmDialog
+                          title="Reset password?"
+                          description={`This will overwrite ${user.name}'s current password. They will need to use the new password to sign in.`}
+                          confirmLabel="Reset"
+                          formId={`reset-password-${user.id}`}
+                        >
+                          <Button type="button" size="sm" variant="ghost">
+                            Reset
+                          </Button>
+                        </ConfirmDialog>
                       </form>
                     </div>
                   </div>

@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useFormToast } from "@/hooks/use-form-toast";
@@ -93,7 +94,13 @@ export function AppearanceForm({
   useFormToast(state);
 
   return (
-    <form action={action} className="grid gap-6">
+    <form id="appearance-form" action={action} className="grid gap-6">
+      <input
+        id="removeLogoInput"
+        name="removeLogo"
+        type="hidden"
+        value="false"
+      />
       <div className="grid gap-2">
         <Label htmlFor="logoFile">Logo</Label>
         <Input
@@ -110,16 +117,27 @@ export function AppearanceForm({
               alt="Current logo"
               className="h-12 w-auto rounded-md border object-contain"
             />
-            <Button
-              type="submit"
-              name="removeLogo"
-              value="true"
-              variant="ghost"
-              size="sm"
-              className="text-destructive w-fit"
+            <ConfirmDialog
+              title="Remove logo?"
+              description="The current logo will be removed from all pages. You can upload a new logo at any time."
+              confirmLabel="Remove"
+              formId="appearance-form"
             >
-              Remove logo
-            </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="text-destructive w-fit"
+                onClick={() => {
+                  const input = document.getElementById(
+                    "removeLogoInput",
+                  ) as HTMLInputElement | null;
+                  if (input) input.value = "true";
+                }}
+              >
+                Remove logo
+              </Button>
+            </ConfirmDialog>
           </div>
         ) : (
           <p className="text-muted-foreground text-xs">

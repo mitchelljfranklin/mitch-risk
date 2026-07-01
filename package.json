@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
+    "@radix-ui/react-alert-dialog": "^1.1.18",
     "@react-email/components": "^1.0.12",
     "@react-pdf/renderer": "^4.5.1",
     "bcryptjs": "^3.0.3",

@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { deleteVendorAction } from "@/lib/actions/vendors";
 import { requireUser } from "@/lib/auth";
 import { getVendorProfile } from "@/lib/db/compliance";
@@ -69,11 +70,17 @@ export default async function VendorDetailPage({
                 Export CSV
               </a>
             </Button>
-            <form action={deleteVendorAction}>
+            <form id={`delete-vendor-${vendor.id}`} action={deleteVendorAction}>
               <input type="hidden" name="vendorId" value={vendor.id} />
-              <Button type="submit" variant="outline">
-                Delete
-              </Button>
+              <ConfirmDialog
+                title="Delete vendor?"
+                description={`This will permanently delete ${vendor.name} and all ${vendor.assessments.length} assessment(s). This action cannot be undone.`}
+                formId={`delete-vendor-${vendor.id}`}
+              >
+                <Button type="button" variant="outline">
+                  Delete
+                </Button>
+              </ConfirmDialog>
             </form>
           </div>
         </div>
