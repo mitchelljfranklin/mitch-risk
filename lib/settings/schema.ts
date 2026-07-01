@@ -113,6 +113,8 @@ export const appearanceSettingsSchema = z.object({
   ragAmberHex: z.string().default(""),
   ragRedHex: z.string().default(""),
   ragUnscoredHex: z.string().default(""),
+  borderRadius: z.coerce.number().min(0).max(16).default(10),
+  pageWidth: z.enum(["constrained", "full"]).default("constrained"),
 });
 
 export type AppearanceSettings = z.infer<typeof appearanceSettingsSchema>;

@@ -5,6 +5,13 @@ import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { saveAppearanceSettings } from "./actions";
 
 type AppearanceFormProps = {
@@ -15,6 +22,8 @@ type AppearanceFormProps = {
   ragAmberHex: string;
   ragRedHex: string;
   ragUnscoredHex: string;
+  borderRadius: number;
+  pageWidth: string;
 };
 
 function ColorField({
@@ -72,6 +81,8 @@ export function AppearanceForm({
   ragAmberHex,
   ragRedHex,
   ragUnscoredHex,
+  borderRadius,
+  pageWidth,
 }: AppearanceFormProps) {
   const [state, action, isPending] = useActionState(
     saveAppearanceSettings,
@@ -133,8 +144,7 @@ export function AppearanceForm({
       <div className="border-t pt-6">
         <p className="text-sm font-medium">RAG indicator colours</p>
         <p className="text-muted-foreground text-xs">
-          Used for score indicators, progress bars, and the vendor risk
-          heatmap.
+          Used for score indicators, progress bars, and the vendor risk heatmap.
         </p>
       </div>
 
@@ -167,6 +177,46 @@ export function AppearanceForm({
           defaultHex="#9ca3af"
           name="ragUnscoredHex"
         />
+      </div>
+
+      <div className="border-t pt-6">
+        <p className="text-sm font-medium">Layout</p>
+        <p className="text-muted-foreground text-xs">
+          Adjust the overall look and feel of the platform.
+        </p>
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-2">
+          <Label htmlFor="borderRadius">Border radius (px)</Label>
+          <p className="text-muted-foreground text-xs">
+            Controls how rounded corners are across the app.
+          </p>
+          <Input
+            id="borderRadius"
+            name="borderRadius"
+            type="number"
+            min={0}
+            max={16}
+            defaultValue={borderRadius}
+            className="w-32"
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="pageWidth">Page width</Label>
+          <p className="text-muted-foreground text-xs">
+            Constrain content to a readable width or use the full screen.
+          </p>
+          <Select name="pageWidth" defaultValue={pageWidth}>
+            <SelectTrigger id="pageWidth" className="w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="constrained">Constrained</SelectItem>
+              <SelectItem value="full">Full width</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="flex items-center gap-3">

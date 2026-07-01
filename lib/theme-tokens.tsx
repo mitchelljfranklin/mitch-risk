@@ -21,18 +21,20 @@ function relativeLuminance(hex: string): number {
 }
 
 function foregroundFor(hex: string): string {
-  return relativeLuminance(hex) > 0.4
-    ? "oklch(0.205 0 0)"
-    : "oklch(0.985 0 0)";
+  return relativeLuminance(hex) > 0.4 ? "oklch(0.205 0 0)" : "oklch(0.985 0 0)";
 }
 
 export async function ThemeTokens() {
   const appearance = await getAppearanceSettings();
-  const { primaryHex, secondaryHex, ragGreenHex, ragAmberHex, ragRedHex, ragUnscoredHex } =
-    appearance;
-
-  const hasColors = Boolean(primaryHex || secondaryHex || ragGreenHex || ragAmberHex || ragRedHex || ragUnscoredHex);
-  if (!hasColors) return null;
+  const {
+    primaryHex,
+    secondaryHex,
+    ragGreenHex,
+    ragAmberHex,
+    ragRedHex,
+    ragUnscoredHex,
+    borderRadius,
+  } = appearance;
 
   const tokens: string[] = [];
 
@@ -53,6 +55,10 @@ export async function ThemeTokens() {
   if (ragAmberHex) tokens.push(`--rag-amber: ${ragAmberHex};`);
   if (ragRedHex) tokens.push(`--rag-red: ${ragRedHex};`);
   if (ragUnscoredHex) tokens.push(`--rag-unscored: ${ragUnscoredHex};`);
+
+  tokens.push(`--radius: ${borderRadius / 16}rem;`);
+
+  if (tokens.length === 0) return null;
 
   return (
     <style

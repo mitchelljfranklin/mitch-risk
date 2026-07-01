@@ -169,9 +169,9 @@ export default async function VendorDetailPage({
                       {ratioPercent}%
                     </span>
                   </div>
-                    <div className="bg-muted h-2 overflow-hidden rounded-full">
-                      <div
-                        className={`h-full rounded-full ${ratioPercent >= 85 ? "bg-[var(--rag-green)]" : ratioPercent >= 60 ? "bg-[var(--rag-amber)]" : "bg-[var(--rag-red)]"}`}
+                  <div className="bg-muted h-2 overflow-hidden rounded-full">
+                    <div
+                      className={`h-full rounded-full ${ratioPercent >= 85 ? "bg-[var(--rag-green)]" : ratioPercent >= 60 ? "bg-[var(--rag-amber)]" : "bg-[var(--rag-red)]"}`}
                       style={{ width: `${ratioPercent}%` }}
                     />
                   </div>

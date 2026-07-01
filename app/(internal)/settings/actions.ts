@@ -193,6 +193,11 @@ export async function saveAppearanceSettings(
   const ragAmberHex = (formData.get("ragAmberHex") as string) || "";
   const ragRedHex = (formData.get("ragRedHex") as string) || "";
   const ragUnscoredHex = (formData.get("ragUnscoredHex") as string) || "";
+  const borderRadius = parseInt(
+    (formData.get("borderRadius") as string) || "10",
+    10,
+  );
+  const pageWidth = (formData.get("pageWidth") as string) || "constrained";
 
   if (primaryHex && !/^#[0-9a-fA-F]{6}$/.test(primaryHex)) {
     return {
@@ -248,6 +253,14 @@ export async function saveAppearanceSettings(
     ragAmberHex: ragAmberHex || "",
     ragRedHex: ragRedHex || "",
     ragUnscoredHex: ragUnscoredHex || "",
+    borderRadius:
+      isNaN(borderRadius) || borderRadius < 0 || borderRadius > 16
+        ? 10
+        : borderRadius,
+    pageWidth:
+      pageWidth === "constrained" || pageWidth === "full"
+        ? pageWidth
+        : "constrained",
   });
 
   revalidatePath("/", "layout");

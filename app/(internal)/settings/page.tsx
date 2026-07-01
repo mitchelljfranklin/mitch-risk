@@ -192,6 +192,8 @@ export default async function SettingsPage({
                 ragAmberHex={appearance.ragAmberHex}
                 ragRedHex={appearance.ragRedHex}
                 ragUnscoredHex={appearance.ragUnscoredHex}
+                borderRadius={appearance.borderRadius}
+                pageWidth={appearance.pageWidth}
               />
             </CardContent>
           </Card>

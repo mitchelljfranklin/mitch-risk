@@ -43,7 +43,10 @@ export default async function InternalLayout({
             role={user.role}
           />
         </header>
-        <main id="main-content" className="flex-1 p-6">
+        <main
+          id="main-content"
+          className={`flex-1 p-6 ${appearance.pageWidth === "constrained" ? "mx-auto w-full max-w-6xl" : ""}`}
+        >
           {children}
         </main>
       </SidebarInset>

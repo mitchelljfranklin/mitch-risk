@@ -90,6 +90,8 @@ describe("appearance settings persistence (integration)", () => {
       ragAmberHex: "",
       ragRedHex: "",
       ragUnscoredHex: "",
+      borderRadius: 10,
+      pageWidth: "constrained",
     });
 
     const appearance = await getAppearanceSettings();
@@ -107,6 +109,8 @@ describe("appearance settings persistence (integration)", () => {
       ragAmberHex: "",
       ragRedHex: "",
       ragUnscoredHex: "",
+      borderRadius: 10,
+      pageWidth: "constrained",
     });
 
     const appearance = await getAppearanceSettings();
