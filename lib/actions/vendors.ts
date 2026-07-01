@@ -7,7 +7,11 @@ import { requireUser, getCurrentUser } from "@/lib/auth";
 import { createVendor, deleteVendor, updateVendor } from "@/lib/db/vendors";
 import { logAudit } from "@/lib/db/audit";
 import { getField } from "@/lib/actions/helpers";
-import { vendorSchema } from "@/lib/schemas/vendor";
+import {
+  vendorSchema,
+  vendorCsvRowSchema,
+  type VendorInput,
+} from "@/lib/schemas/vendor";
 
 export type VendorFormState = { error: string } | undefined;
 
@@ -123,4 +127,122 @@ export async function importVendorAction(
   }
   revalidatePath("/vendors");
   return { ok: true, message: `Imported "${parsed.data.name}".` };
+}
+
+export type VendorsImportState =
+  | { ok: true; message: string; count: number; errors?: undefined }
+  | { ok: false; error: string; count?: undefined }
+  | undefined;
+
+function parseCsv(text: string): Record<string, string>[] {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+
+  const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
+  const rows: Record<string, string>[] = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const values = lines[i].split(",").map((v) => v.trim());
+    if (values.length === 0 || values.every((v) => v === "")) continue;
+    const row: Record<string, string> = {};
+    headers.forEach((h, j) => {
+      row[h] = values[j] ?? "";
+    });
+    rows.push(row);
+  }
+
+  return rows;
+}
+
+export async function importVendorsAction(
+  previousState: VendorsImportState,
+  formData: FormData,
+): Promise<VendorsImportState> {
+  await requireUser();
+
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return { ok: false, error: "No file selected." };
+  }
+
+  const text = await file.text();
+  const rows = parseCsv(text);
+  if (rows.length === 0) {
+    return {
+      ok: false,
+      error: "No rows found in CSV. The first row must be a header.",
+    };
+  }
+
+  const vendors: VendorInput[] = [];
+  const rowErrors: string[] = [];
+
+  for (let i = 0; i < rows.length; i++) {
+    const raw = rows[i];
+    const parsed = vendorCsvRowSchema.safeParse({
+      name: raw.name ?? "",
+      contactName: raw.contactname ?? raw.contactName ?? "",
+      contactEmail: raw.contactemail ?? raw.contactEmail ?? "",
+      tier: raw.tier ?? "",
+      website: raw.website ?? "",
+      notes: raw.notes ?? "",
+    });
+
+    if (parsed.success) {
+      const vendorInput: VendorInput = {
+        name: parsed.data.name,
+        contactName: parsed.data.contactName,
+        contactEmail: parsed.data.contactEmail,
+        tier: parsed.data.tier as VendorInput["tier"],
+        website: parsed.data.website,
+        notes: parsed.data.notes,
+      };
+      vendors.push(vendorInput);
+    } else {
+      rowErrors.push(
+        `Row ${i + 2}: ${parsed.error.issues[0]?.message ?? "invalid"}`,
+      );
+    }
+  }
+
+  if (vendors.length === 0) {
+    return {
+      ok: false,
+      error:
+        "No valid vendors found. First error: " + (rowErrors[0] ?? "unknown"),
+    };
+  }
+
+  let createdCount = 0;
+  const user = await getCurrentUser();
+
+  for (const vendorInput of vendors) {
+    try {
+      const vendor = await createVendor(vendorInput);
+      if (user) {
+        await logAudit(user.id, "IMPORT_VENDOR", "Vendor", vendor.id);
+      }
+      createdCount++;
+    } catch (err) {
+      rowErrors.push(
+        `${vendorInput.name}: ${err instanceof Error ? err.message : "failed"}`,
+      );
+    }
+  }
+
+  revalidatePath("/vendors");
+
+  if (rowErrors.length > 0) {
+    return {
+      ok: true,
+      message: `Imported ${createdCount} vendor${createdCount !== 1 ? "s" : ""}. ${rowErrors.length} row${rowErrors.length !== 1 ? "s" : ""} skipped.`,
+      count: createdCount,
+    };
+  }
+
+  return {
+    ok: true,
+    message: `Imported ${createdCount} vendor${createdCount !== 1 ? "s" : ""}.`,
+    count: createdCount,
+  };
 }

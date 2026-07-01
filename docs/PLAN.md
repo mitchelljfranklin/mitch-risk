@@ -330,6 +330,12 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   with `--rag-green/amber/red/unscored` CSS variables and Appearance setting colour pickers;
   sidebar logo enlarged; missing detail-route loading skeletons added; border-radius slider
   and page-width selector in Appearance settings.
+- **Phase 39 — Bulk vendor onboarding.** CSV bulk import of multiple vendors at once with
+  preview and row-level validation; new `ImportVendorsForm` component with file upload and
+  parsed-row count display. Bulk assessment sending: select multiple vendors on a new
+  `/vendors/bulk-send` page, pick a template, set due date and reviewer, optionally set a
+  shared portal password, and send individual assessments to all selected vendors in
+  parallel. Each vendor gets their own assessment token and invite email.
 
 ## 8. Out of scope (v1+)
 

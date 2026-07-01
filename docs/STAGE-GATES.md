@@ -74,6 +74,7 @@ A phase cannot be marked **Ready for review** unless all of these are true:
 | 36 | Polish & cleanup | Approved |
 | 37 | Email tracking | Approved |
 | 38 | UI/UX polish & consistency | Approved |
+| 39 | Bulk vendor onboarding | Ready for review |
 
 ---
 
@@ -1065,3 +1066,4 @@ for creating assessments and fetching scores.
 | 36 | Approved | User | 2026-07-01 | README.md + OVERDUE removed + "Finalizing…" + skip-to-content + loading=lazy + noscript + FindingStatus labels; 73 tests |
 | 37 | Approved | User | 2026-07-01 | Email tracking tab, NotificationLog SENT/FAILED, retry with token resolution + in-place update, tab persistence fix, no-auth SMTP support; 73 tests |
 | 38 | Approved | User | 2026-07-01 | RAG color system + appearance expansion, loading skeletons for 6 detail routes, border-radius/page-width controls, custom scrollbar, gradient sidebar, animated stat cards, toast system, auth hero branding, empty state SVGs, keyboard shortcuts, trend indicators, calendar heatmap, collapsible sidebar, portal progress bar; 73 tests |
+| 39 | Approved | User | 2026-07-02 | CSV bulk vendor import, bulk assessment sending page, 4 new components; 73 tests |

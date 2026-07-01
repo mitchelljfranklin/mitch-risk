@@ -28,19 +28,24 @@ docker compose up -d
 
 ## Features
 
-- Build, version, and publish security questionnaires (9 answer types)
-- Send to vendors via no-login, expiring secure links
+- Build, version, publish/unpublish security questionnaires (9 answer types)
+- Send to vendors via no-login, expiring, password-protected secure links
+- Bulk vendor onboarding (CSV import) and bulk assessment sending
 - Auto-score responses with weighted RAG scoring
 - Map answers to ISO 27001, SOC 2, NIST CSF 2.0, and Essential Eight controls
 - Generate findings from non-compliant answers
 - Track vendor risk profiles with trend history and domain compliance heatmaps
+- Side-by-side vendor assessment comparison (same vendor or cross-vendor)
 - Threaded reviewer/vendor collaboration with approve/reject/clarify workflow
-- Dashboard with portfolio metrics, charts, and top deficient controls
+- Dashboard with portfolio metrics, animated stat cards, donut/bar charts, calendar heatmap, and top deficient controls
 - REST API with session + API key authentication (Bearer tokens, IP allowlisting)
 - Interactive Swagger UI at `/docs`
 - PDF reports and CSV exports
 - In-app settings for all operational configuration (email, scoring, branding, scheduling)
 - Email tracking with SENT/FAILED status, per-send logging, retry, and retention
+- Keyboard shortcuts (`?` modal, `g`+letter navigation)
+- Toast notification system
+- Custom visual branding (logo, primary/secondary colours, RAG indicator colours, border radius, page width)
 - Audit trail for all administrative actions
 
 ## Framework libraries

@@ -49,6 +49,7 @@ components/          # shadcn ui primitives + domain composites
   empty-state.tsx    # SVG illustration empty states
   calendar-heatmap.tsx # GitHub-style activity grid
   keyboard-shortcuts.tsx # ? key modal with g+letter navigation
+  toast.tsx          # toast notification system (success/error/info)
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
   db/                # typed data-access layer (assessments, audit, collaboration,

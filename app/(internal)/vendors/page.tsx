@@ -20,6 +20,7 @@ import { requireUser } from "@/lib/auth";
 import { listVendors } from "@/lib/db/vendors";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 import { ImportVendorForm } from "./import-vendor-form";
+import { ImportVendorsForm } from "./import-vendors-form";
 
 export const dynamic = "force-dynamic";
 
@@ -47,8 +48,12 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
             Vendors you assess for security risk.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <ImportVendorsForm />
           <ImportVendorForm />
+          <Button asChild variant="outline">
+            <Link href="/vendors/bulk-send">Bulk send</Link>
+          </Button>
           <Button asChild>
             <Link href="/vendors/new">New vendor</Link>
           </Button>

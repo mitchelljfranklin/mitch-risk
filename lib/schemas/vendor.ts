@@ -23,3 +23,22 @@ export const vendorSchema = z.object({
 });
 
 export type VendorInput = z.infer<typeof vendorSchema>;
+
+export const vendorCsvRowSchema = z.object({
+  name: z.string().min(1, "Vendor name is required"),
+  contactName: z.string().optional().default(""),
+  contactEmail: z.string().min(1, "Contact email is required"),
+  tier: z
+    .string()
+    .optional()
+    .default("")
+    .transform((v) =>
+      VENDOR_TIERS.includes(v.toUpperCase() as (typeof VENDOR_TIERS)[number])
+        ? v.toUpperCase()
+        : "",
+    ),
+  website: z.string().optional().default(""),
+  notes: z.string().optional().default(""),
+});
+
+export type VendorCsvRow = z.infer<typeof vendorCsvRowSchema>;
