@@ -19,7 +19,6 @@ import {
 import { requireUser } from "@/lib/auth";
 import { listVendors } from "@/lib/db/vendors";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
-import { ImportVendorForm } from "./import-vendor-form";
 import { ImportVendorsForm } from "./import-vendors-form";
 
 export const dynamic = "force-dynamic";
@@ -50,7 +49,6 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <ImportVendorsForm />
-          <ImportVendorForm />
           <Button asChild variant="outline">
             <Link href="/vendors/bulk-send">Bulk send</Link>
           </Button>

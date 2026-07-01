@@ -76,59 +76,6 @@ export async function deleteVendorAction(formData: FormData) {
   redirect("/vendors");
 }
 
-export type VendorImportState =
-  | { ok: true; message: string; error?: undefined }
-  | { ok: false; error: string; message?: undefined }
-  | undefined;
-
-export async function importVendorAction(
-  previousState: VendorImportState,
-  formData: FormData,
-): Promise<VendorImportState> {
-  await requireUser();
-
-  const file = formData.get("file");
-  if (!(file instanceof File) || file.size === 0) {
-    return { ok: false, error: "No file selected." };
-  }
-
-  let data: unknown;
-  try {
-    data = JSON.parse(await file.text());
-  } catch {
-    return { ok: false, error: "Invalid JSON file." };
-  }
-
-  if (!data || typeof data !== "object" || Array.isArray(data)) {
-    return { ok: false, error: "Invalid vendor structure." };
-  }
-
-  const record = data as Record<string, unknown>;
-  const parsed = vendorSchema.safeParse({
-    name: record.name ?? "",
-    contactName: record.contactName ?? "",
-    contactEmail: record.contactEmail ?? "",
-    tier: record.tier ?? "",
-    website: record.website ?? "",
-    notes: record.notes ?? "",
-  });
-
-  if (!parsed.success) {
-    return {
-      ok: false,
-      error: parsed.error.issues[0]?.message ?? "Invalid vendor data.",
-    };
-  }
-
-  const vendor = await createVendor(parsed.data);
-  const user = await getCurrentUser();
-  if (user) {
-    await logAudit(user.id, "IMPORT_VENDOR", "Vendor", vendor.id);
-  }
-  revalidatePath("/vendors");
-  return { ok: true, message: `Imported "${parsed.data.name}".` };
-}
-
 export type VendorsImportState =
   | { ok: true; message: string; count: number; errors?: undefined }
   | { ok: false; error: string; count?: undefined }

@@ -66,7 +66,7 @@ export default async function VendorDetailPage({
             </Button>
             <Button asChild variant="outline" size="sm">
               <a href={`/api/v1/vendors/${vendor.id}/export`} download>
-                Export
+                Export CSV
               </a>
             </Button>
             <form action={deleteVendorAction}>

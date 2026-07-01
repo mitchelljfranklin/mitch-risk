@@ -1,5 +1,6 @@
 import { authenticateRequest } from "@/lib/api-auth";
 import { getVendorForExport } from "@/lib/db/vendors";
+import { csvEscape } from "@/lib/utils";
 
 export async function GET(
   _request: Request,
@@ -16,29 +17,42 @@ export async function GET(
     return Response.json({ error: "Not found" }, { status: 404 });
   }
 
-  const data = {
-    name: vendor.name,
-    contactName: vendor.contactName,
-    contactEmail: vendor.contactEmail,
-    tier: vendor.tier,
-    website: vendor.website,
-    notes: vendor.notes,
-    overallScore: vendor.overallScore,
-    lastAssessedAt: vendor.lastAssessedAt,
-    assessments: vendor.assessments.map((a) => ({
-      title: a.title,
-      status: a.status,
-      score: a.score,
-      submittedAt: a.submittedAt,
-      dueDate: a.dueDate,
-      templateName: a.template?.name ?? null,
-      templateVersion: a.template?.version ?? null,
-    })),
-  };
+  const header = [
+    csvEscape("Assessment Title"),
+    csvEscape("Status"),
+    csvEscape("Score"),
+    csvEscape("Submitted"),
+    csvEscape("Due Date"),
+    csvEscape("Template"),
+  ].join(",");
 
-  return Response.json(data, {
+  const rows = vendor.assessments.map((a) =>
+    [
+      csvEscape(a.title),
+      csvEscape(a.status),
+      a.score !== null ? Math.round(a.score * 100) + "%" : "",
+      csvEscape(a.submittedAt?.toISOString().slice(0, 10) ?? ""),
+      csvEscape(a.dueDate?.toISOString().slice(0, 10) ?? ""),
+      csvEscape(
+        a.template?.name ? `${a.template.name} v${a.template.version}` : "",
+      ),
+    ].join(","),
+  );
+
+  const summary = [
+    `Vendor:,${csvEscape(vendor.name)}`,
+    `Contact:,${csvEscape(vendor.contactEmail ?? "")}`,
+    `Tier:,${csvEscape(vendor.tier ?? "")}`,
+    `Overall Score:,${vendor.overallScore !== null ? Math.round(vendor.overallScore * 100) + "%" : ""}`,
+    "",
+  ].join("\n");
+
+  const csv = [summary, header, ...rows].join("\n");
+
+  return new Response(csv, {
     headers: {
-      "Content-Disposition": `attachment; filename="${vendor.name.replaceAll(" ", "-")}.json"`,
+      "Content-Type": "text/csv",
+      "Content-Disposition": `attachment; filename="${vendor.name.replaceAll(" ", "-")}.csv"`,
     },
   });
 }
