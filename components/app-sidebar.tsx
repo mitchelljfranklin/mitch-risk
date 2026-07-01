@@ -64,7 +64,7 @@ export function AppSidebar({
             <img
               src="/api/brand/logo"
               alt={orgName}
-              className="size-6 rounded object-contain"
+              className="h-8 w-auto max-w-[120px] rounded object-contain"
             />
           ) : (
             <ShieldCheck className="size-5" />

@@ -145,7 +145,7 @@ export default async function ComparePage({
                         lCompliant === false
                           ? "text-destructive"
                           : lCompliant === true
-                            ? "text-green-600"
+                            ? "text-[var(--rag-green)]"
                             : "text-muted-foreground"
                       }
                     >
@@ -160,7 +160,7 @@ export default async function ComparePage({
                         rCompliant === false
                           ? "text-destructive"
                           : rCompliant === true
-                            ? "text-green-600"
+                            ? "text-[var(--rag-green)]"
                             : "text-muted-foreground"
                       }
                     >

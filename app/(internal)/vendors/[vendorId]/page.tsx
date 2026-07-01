@@ -132,7 +132,7 @@ export default async function VendorDetailPage({
                               : "—"}
                           </span>
                           <div
-                            className={`w-full rounded-sm ${ratio >= 0.85 ? "bg-green-500" : ratio >= 0.6 ? "bg-amber-400" : "bg-red-500"} ${ratio === 0 ? "bg-muted" : ""}`}
+                            className={`w-full rounded-sm ${ratio >= 0.85 ? "bg-[var(--rag-green)]" : ratio >= 0.6 ? "bg-[var(--rag-amber)]" : "bg-[var(--rag-red)]"} ${ratio === 0 ? "bg-muted" : ""}`}
                             style={{ height: `${height}px` }}
                           />
                         </div>
@@ -169,9 +169,9 @@ export default async function VendorDetailPage({
                       {ratioPercent}%
                     </span>
                   </div>
-                  <div className="bg-muted h-2 overflow-hidden rounded-full">
-                    <div
-                      className={`h-full rounded-full ${ratioPercent >= 85 ? "bg-green-500" : ratioPercent >= 60 ? "bg-amber-400" : "bg-red-500"}`}
+                    <div className="bg-muted h-2 overflow-hidden rounded-full">
+                      <div
+                        className={`h-full rounded-full ${ratioPercent >= 85 ? "bg-[var(--rag-green)]" : ratioPercent >= 60 ? "bg-[var(--rag-amber)]" : "bg-[var(--rag-red)]"}`}
                       style={{ width: `${ratioPercent}%` }}
                     />
                   </div>

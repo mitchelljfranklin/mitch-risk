@@ -10,20 +10,20 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const DONUT_CONFIG = {
-  green: { label: "Green (≥85%)", color: "var(--color-green, #16a34a)" },
-  amber: { label: "Amber (60–84%)", color: "var(--color-amber, #d97706)" },
-  red: { label: "Red (<60%)", color: "var(--color-red, #dc2626)" },
-  unscored: { label: "Unscored", color: "var(--color-unscored, #9ca3af)" },
+  green: { label: "Green (≥85%)", color: "var(--rag-green, #16a34a)" },
+  amber: { label: "Amber (60–84%)", color: "var(--rag-amber, #d97706)" },
+  red: { label: "Red (<60%)", color: "var(--rag-red, #dc2626)" },
+  unscored: { label: "Unscored", color: "var(--rag-unscored, #9ca3af)" },
 };
 
 const BAR_CONFIG = {
   vendors: { label: "Vendors", color: "var(--primary, #3b82f6)" },
 };
 
-const GREEN_FILL = "var(--color-green, #16a34a)";
-const AMBER_FILL = "var(--color-amber, #d97706)";
-const RED_FILL = "var(--color-red, #dc2626)";
-const UNSCORED_FILL = "var(--color-unscored, #9ca3af)";
+const GREEN_FILL = "var(--rag-green, #16a34a)";
+const AMBER_FILL = "var(--rag-amber, #d97706)";
+const RED_FILL = "var(--rag-red, #dc2626)";
+const UNSCORED_FILL = "var(--rag-unscored, #9ca3af)";
 
 type ChartsProps = {
   scoreDistribution: {

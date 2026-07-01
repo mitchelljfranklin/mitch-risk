@@ -196,7 +196,7 @@ export default async function CompareVendorsPage({
                           aCompliant === false
                             ? "text-destructive"
                             : aCompliant === true
-                              ? "text-green-600"
+                              ? "text-[var(--rag-green)]"
                               : "text-muted-foreground"
                         }
                       >
@@ -215,7 +215,7 @@ export default async function CompareVendorsPage({
                           bCompliant === false
                             ? "text-destructive"
                             : bCompliant === true
-                              ? "text-green-600"
+                              ? "text-[var(--rag-green)]"
                               : "text-muted-foreground"
                         }
                       >

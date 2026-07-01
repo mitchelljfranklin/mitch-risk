@@ -86,6 +86,10 @@ describe("appearance settings persistence (integration)", () => {
       primaryHex: "#3b82f6",
       secondaryHex: "#f59e0b",
       logoKey: "test-logo-key",
+      ragGreenHex: "",
+      ragAmberHex: "",
+      ragRedHex: "",
+      ragUnscoredHex: "",
     });
 
     const appearance = await getAppearanceSettings();
@@ -99,6 +103,10 @@ describe("appearance settings persistence (integration)", () => {
       primaryHex: "",
       secondaryHex: "",
       logoKey: "",
+      ragGreenHex: "",
+      ragAmberHex: "",
+      ragRedHex: "",
+      ragUnscoredHex: "",
     });
 
     const appearance = await getAppearanceSettings();

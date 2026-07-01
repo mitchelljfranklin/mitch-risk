@@ -21,14 +21,18 @@ function relativeLuminance(hex: string): number {
 }
 
 function foregroundFor(hex: string): string {
-  return relativeLuminance(hex) > 0.4 ? "oklch(0.205 0 0)" : "oklch(0.985 0 0)";
+  return relativeLuminance(hex) > 0.4
+    ? "oklch(0.205 0 0)"
+    : "oklch(0.985 0 0)";
 }
 
 export async function ThemeTokens() {
   const appearance = await getAppearanceSettings();
-  const { primaryHex, secondaryHex } = appearance;
+  const { primaryHex, secondaryHex, ragGreenHex, ragAmberHex, ragRedHex, ragUnscoredHex } =
+    appearance;
 
-  if (!primaryHex && !secondaryHex) return null;
+  const hasColors = Boolean(primaryHex || secondaryHex || ragGreenHex || ragAmberHex || ragRedHex || ragUnscoredHex);
+  if (!hasColors) return null;
 
   const tokens: string[] = [];
 
@@ -36,12 +40,19 @@ export async function ThemeTokens() {
     tokens.push(`--primary: ${primaryHex};`);
     tokens.push(`--primary-foreground: ${foregroundFor(primaryHex)};`);
     tokens.push(`--ring: ${primaryHex};`);
+    tokens.push(`--sidebar-primary: ${primaryHex};`);
+    tokens.push(`--sidebar-primary-foreground: ${foregroundFor(primaryHex)};`);
   }
 
   if (secondaryHex) {
     tokens.push(`--secondary: ${secondaryHex};`);
     tokens.push(`--secondary-foreground: ${foregroundFor(secondaryHex)};`);
   }
+
+  if (ragGreenHex) tokens.push(`--rag-green: ${ragGreenHex};`);
+  if (ragAmberHex) tokens.push(`--rag-amber: ${ragAmberHex};`);
+  if (ragRedHex) tokens.push(`--rag-red: ${ragRedHex};`);
+  if (ragUnscoredHex) tokens.push(`--rag-unscored: ${ragUnscoredHex};`);
 
   return (
     <style

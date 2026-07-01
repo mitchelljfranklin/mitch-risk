@@ -189,6 +189,10 @@ export async function saveAppearanceSettings(
 
   const primaryHex = (formData.get("primaryHex") as string) || "";
   const secondaryHex = (formData.get("secondaryHex") as string) || "";
+  const ragGreenHex = (formData.get("ragGreenHex") as string) || "";
+  const ragAmberHex = (formData.get("ragAmberHex") as string) || "";
+  const ragRedHex = (formData.get("ragRedHex") as string) || "";
+  const ragUnscoredHex = (formData.get("ragUnscoredHex") as string) || "";
 
   if (primaryHex && !/^#[0-9a-fA-F]{6}$/.test(primaryHex)) {
     return {
@@ -201,6 +205,18 @@ export async function saveAppearanceSettings(
       ok: false,
       message: "Secondary color must be a valid hex color (e.g. #f59e0b).",
     };
+  }
+  if (ragGreenHex && !/^#[0-9a-fA-F]{6}$/.test(ragGreenHex)) {
+    return { ok: false, message: "RAG green must be a valid hex color." };
+  }
+  if (ragAmberHex && !/^#[0-9a-fA-F]{6}$/.test(ragAmberHex)) {
+    return { ok: false, message: "RAG amber must be a valid hex color." };
+  }
+  if (ragRedHex && !/^#[0-9a-fA-F]{6}$/.test(ragRedHex)) {
+    return { ok: false, message: "RAG red must be a valid hex color." };
+  }
+  if (ragUnscoredHex && !/^#[0-9a-fA-F]{6}$/.test(ragUnscoredHex)) {
+    return { ok: false, message: "RAG unscored must be a valid hex color." };
   }
 
   let logoKey = (formData.get("logoKey") as string) || "";
@@ -228,6 +244,10 @@ export async function saveAppearanceSettings(
     primaryHex: primaryHex || "",
     secondaryHex: secondaryHex || "",
     logoKey,
+    ragGreenHex: ragGreenHex || "",
+    ragAmberHex: ragAmberHex || "",
+    ragRedHex: ragRedHex || "",
+    ragUnscoredHex: ragUnscoredHex || "",
   });
 
   revalidatePath("/", "layout");

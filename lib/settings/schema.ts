@@ -109,6 +109,10 @@ export const appearanceSettingsSchema = z.object({
   primaryHex: z.string().default(""),
   secondaryHex: z.string().default(""),
   logoKey: z.string().default(""),
+  ragGreenHex: z.string().default(""),
+  ragAmberHex: z.string().default(""),
+  ragRedHex: z.string().default(""),
+  ragUnscoredHex: z.string().default(""),
 });
 
 export type AppearanceSettings = z.infer<typeof appearanceSettingsSchema>;

@@ -188,6 +188,10 @@ export default async function SettingsPage({
                 primaryHex={appearance.primaryHex}
                 secondaryHex={appearance.secondaryHex}
                 hasLogo={Boolean(appearance.logoKey)}
+                ragGreenHex={appearance.ragGreenHex}
+                ragAmberHex={appearance.ragAmberHex}
+                ragRedHex={appearance.ragRedHex}
+                ragUnscoredHex={appearance.ragUnscoredHex}
               />
             </CardContent>
           </Card>

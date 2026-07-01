@@ -153,7 +153,7 @@ export default async function PortalPage({ params }: PortalPageProps) {
                     <span
                       className={
                         review.decision === "APPROVED"
-                          ? "text-green-600"
+                          ? "text-[var(--rag-green)]"
                           : review.decision === "REJECTED"
                             ? "text-destructive"
                             : "text-muted-foreground"

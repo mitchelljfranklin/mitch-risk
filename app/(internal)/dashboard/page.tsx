@@ -265,10 +265,10 @@ export default async function DashboardPage({
                       className={`text-sm font-semibold tabular-nums ${
                         vendor.overallScore !== null
                           ? vendor.overallScore >= 0.85
-                            ? "text-green-600"
+                            ? "text-[var(--rag-green)]"
                             : vendor.overallScore >= 0.6
-                              ? "text-amber-500"
-                              : "text-red-500"
+                              ? "text-[var(--rag-amber)]"
+                              : "text-[var(--rag-red)]"
                           : "text-muted-foreground"
                       }`}
                     >
