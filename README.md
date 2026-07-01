@@ -63,9 +63,8 @@ Authenticated API endpoints under `/api/v1/`:
 - `GET /api/v1/vendors` — list/search vendors
 - `GET /api/v1/vendors/{id}` — vendor detail
 - `GET /api/v1/vendors/{id}/score` — score summary
-- `GET /api/v1/vendors/{id}/export` — download vendor JSON
-- `POST /api/v1/vendors/import` — create vendor from JSON
-- `GET /api/v1/audit` — query audit log (JSON or CSV)
+- `GET /api/v1/vendors/{id}/export` — download vendor CSV
+- `GET /api/v1/audit` — query audit log (JSON or CSV, page-based pagination)
 
 Full docs: **http://localhost:3000/docs** (authenticated)
 
