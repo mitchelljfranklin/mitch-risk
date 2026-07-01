@@ -1,4 +1,5 @@
 import { Prisma, type AssessmentStatus } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 import { getTemplateForBuilder } from "@/lib/db/templates";
 import { copyJson } from "@/lib/json";
@@ -112,7 +113,10 @@ export function deleteAssessment(id: string) {
   return prisma.assessment.delete({ where: { id } });
 }
 
-export async function sendAssessment(id: string): Promise<void> {
+export async function sendAssessment(
+  id: string,
+  portalPassword?: string,
+): Promise<void> {
   const assessment = await prisma.assessment.findUnique({
     where: { id },
     select: { templateId: true, status: true },
@@ -193,6 +197,9 @@ export async function sendAssessment(id: string): Promise<void> {
     }
 
     const token = generateAccessToken();
+    const passwordHash = portalPassword
+      ? bcrypt.hashSync(portalPassword, 10)
+      : null;
     await tx.assessment.update({
       where: { id },
       data: {
@@ -201,6 +208,7 @@ export async function sendAssessment(id: string): Promise<void> {
         accessToken: token,
         tokenHash: hashToken(token),
         tokenExpiresAt: expiryFromNow(),
+        portalPasswordHash: passwordHash,
       },
     });
   });

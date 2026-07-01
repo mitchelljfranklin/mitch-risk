@@ -139,7 +139,10 @@ export default async function AssessmentDetailPage({
           <div className="flex flex-wrap items-center gap-2">
             {isDraft ? (
               <>
-                <form action={sendAssessmentAction}>
+                <form
+                  action={sendAssessmentAction}
+                  className="flex items-center gap-2"
+                >
                   <input
                     type="hidden"
                     name="assessmentId"
@@ -148,8 +151,17 @@ export default async function AssessmentDetailPage({
                   <Button type="submit" size="sm">
                     Send to vendor
                   </Button>
+                  <input
+                    name="portalPassword"
+                    type="text"
+                    placeholder="Password (optional)"
+                    className="border-input bg-background h-9 w-40 rounded-md border px-3 text-xs"
+                  />
                 </form>
-                <form action={generateLinkAction}>
+                <form
+                  action={generateLinkAction}
+                  className="flex items-center gap-2"
+                >
                   <input
                     type="hidden"
                     name="assessmentId"
@@ -158,6 +170,12 @@ export default async function AssessmentDetailPage({
                   <Button type="submit" variant="outline" size="sm">
                     Generate link only
                   </Button>
+                  <input
+                    name="portalPassword"
+                    type="text"
+                    placeholder="Password (optional)"
+                    className="border-input bg-background h-9 w-40 rounded-md border px-3 text-xs"
+                  />
                 </form>
                 <form
                   action={sendToCustomEmailAction}
@@ -173,6 +191,12 @@ export default async function AssessmentDetailPage({
                     type="text"
                     placeholder="custom@example.com, …"
                     className="border-input bg-background h-9 w-48 rounded-md border px-3 text-xs"
+                  />
+                  <input
+                    name="portalPassword"
+                    type="text"
+                    placeholder="Password (optional)"
+                    className="border-input bg-background h-9 w-40 rounded-md border px-3 text-xs"
                   />
                   <Button type="submit" variant="outline" size="sm">
                     Send to
@@ -255,11 +279,18 @@ export default async function AssessmentDetailPage({
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
             <CopyLink value={portalUrl} />
-            <p className="text-muted-foreground text-xs">
-              {assessment.tokenExpiresAt
-                ? `Expires ${formatDate(assessment.tokenExpiresAt)}`
-                : "No expiry"}
-            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-muted-foreground text-xs">
+                {assessment.tokenExpiresAt
+                  ? `Expires ${formatDate(assessment.tokenExpiresAt)}`
+                  : "No expiry"}
+              </p>
+              {assessment.portalPasswordHash ? (
+                <Badge variant="secondary" className="text-[10px]">
+                  Password protected
+                </Badge>
+              ) : null}
+            </div>
             <div className="flex flex-wrap items-center gap-2">
               <form action={extendAssessmentAction}>
                 <input

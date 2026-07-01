@@ -19,13 +19,13 @@ export const QUESTION_TYPE_LABELS: Record<
   string
 > = {
   YES_NO: "Yes / No",
-  MULTIPLE_CHOICE: "Multiple choice",
+  MULTIPLE_CHOICE: "Single choice (pick one)",
   FREE_TEXT: "Free text",
   FILE_UPLOAD: "File upload",
   DATE: "Date",
   NUMERIC: "Numeric",
   COMBOBOX: "Combobox",
-  MULTI_SELECT: "Multi‑select",
+  MULTI_SELECT: "Multi‑select (pick many)",
   RATING: "Rating (1‑5)",
 };
 

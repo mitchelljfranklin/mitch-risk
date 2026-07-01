@@ -225,6 +225,7 @@ model Assessment {
   accessToken    String?              @unique
   tokenHash      String?              @unique
   tokenExpiresAt DateTime?
+  portalPasswordHash String?
   sentAt         DateTime?
   submittedAt    DateTime?
   recurrence     Recurrence           @default(NONE)

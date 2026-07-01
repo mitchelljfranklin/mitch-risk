@@ -1,8 +1,10 @@
+import { cookies } from "next/headers";
 import { getAssessmentByToken, isTokenExpired } from "@/lib/db/assessments";
 import { getAppearanceSettings } from "@/lib/settings";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 import { PortalQuestionnaire } from "./portal-questionnaire";
+import { PasswordGate } from "./password-gate";
 
 export const dynamic = "force-dynamic";
 
@@ -197,6 +199,18 @@ export default async function PortalPage({ params }: PortalPageProps) {
         logoUrl={logoUrl}
       />
     );
+  }
+
+  if (assessment.portalPasswordHash) {
+    const cookieStore = await cookies();
+    const portalAuthCookie = cookieStore.get("portal-auth");
+    if (!portalAuthCookie || portalAuthCookie.value !== token) {
+      return (
+        <PortalShell logoUrl={logoUrl}>
+          <PasswordGate token={token} />
+        </PortalShell>
+      );
+    }
   }
 
   const questions = assessment.questions.map((question) => ({

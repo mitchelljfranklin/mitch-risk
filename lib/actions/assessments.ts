@@ -48,7 +48,8 @@ export async function createAssessmentAction(
 export async function sendAssessmentAction(formData: FormData) {
   await requireUser();
   const assessmentId = getField(formData, "assessmentId");
-  await sendAssessment(assessmentId);
+  const portalPassword = getField(formData, "portalPassword") || undefined;
+  await sendAssessment(assessmentId, portalPassword);
   revalidatePath(`/assessments/${assessmentId}`);
 
   const user = await getCurrentUser();
@@ -76,7 +77,8 @@ export async function sendAssessmentAction(formData: FormData) {
 export async function generateLinkAction(formData: FormData) {
   await requireUser();
   const assessmentId = getField(formData, "assessmentId");
-  await sendAssessment(assessmentId);
+  const portalPassword = getField(formData, "portalPassword") || undefined;
+  await sendAssessment(assessmentId, portalPassword);
   revalidatePath(`/assessments/${assessmentId}`);
 
   const user = await getCurrentUser();
@@ -92,7 +94,8 @@ export async function sendToCustomEmailAction(formData: FormData) {
 
   if (!customEmail) return;
 
-  await sendAssessment(assessmentId);
+  const portalPassword = getField(formData, "portalPassword") || undefined;
+  await sendAssessment(assessmentId, portalPassword);
   revalidatePath(`/assessments/${assessmentId}`);
 
   const user = await getCurrentUser();
