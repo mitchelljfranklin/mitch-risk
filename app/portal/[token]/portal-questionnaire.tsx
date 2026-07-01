@@ -439,7 +439,8 @@ export function PortalQuestionnaire({
   const totalQuestions = questions.length;
   const answeredCount = questions.filter((q) => {
     const answer = answers[q.id];
-    if (!answer || answer.isNotApplicable) return true;
+    if (!answer) return false;
+    if (answer.isNotApplicable) return true;
     return (
       answer.value !== null && answer.value !== undefined && answer.value !== ""
     );
