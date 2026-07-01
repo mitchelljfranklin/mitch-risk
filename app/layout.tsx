@@ -3,7 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeTokens } from "@/lib/theme-tokens";
-import { getAppearanceSettings } from "@/lib/settings";
+import {
+  getAppearanceSettings,
+  getOrganizationSettings,
+} from "@/lib/settings";
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -15,10 +18,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: { template: "%s — mitch-risk", default: "mitch-risk" },
-  description: "Vendor risk management for small businesses",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const organization = await getOrganizationSettings();
+  const orgName = organization.name || "mitch-risk";
+  return {
+    title: { template: `%s — ${orgName}`, default: orgName },
+    description: "Vendor risk management for small businesses",
+  };
+}
 
 export default async function RootLayout({
   children,
