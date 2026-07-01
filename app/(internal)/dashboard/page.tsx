@@ -4,14 +4,34 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardCharts } from "@/components/dashboard-charts";
+import { StatCard, ScoreStatCard } from "@/components/stat-card";
+import { CalendarHeatmap } from "@/components/calendar-heatmap";
 import { requireUser } from "@/lib/auth";
 import { getDashboardData } from "@/lib/db/compliance";
+import { prisma } from "@/lib/prisma";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 import { formatDate, formatPercent } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Dashboard" };
+
+function generateContributionDays(dates: Date[]) {
+  const map = new Map<string, number>();
+  for (const date of dates) {
+    const key = date.toISOString().slice(0, 10);
+    map.set(key, (map.get(key) ?? 0) + 1);
+  }
+  const result: { date: string; count: number }[] = [];
+  const today = new Date();
+  for (let i = 365; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    result.push({ date: key, count: map.get(key) ?? 0 });
+  }
+  return result;
+}
 
 type DashboardPageProps = {
   searchParams: Promise<Record<string, string | undefined>>;
@@ -25,6 +45,17 @@ export default async function DashboardPage({
   const filter = sp.filter ?? "all";
 
   const data = await getDashboardData();
+
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+  const recentAssessments = await prisma.assessment.findMany({
+    where: { createdAt: { gte: oneYearAgo }, status: { not: "DRAFT" } },
+    select: { createdAt: true },
+  });
+
+  const contributionDays = generateContributionDays(
+    recentAssessments.map((a) => a.createdAt),
+  );
 
   const { scoreDistribution, topDeficientControls, vendors: portfolio } = data;
 
@@ -83,60 +114,16 @@ export default async function DashboardPage({
         <>
           {/* Summary stats */}
           <div className="grid gap-4 sm:grid-cols-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-muted-foreground text-xs font-normal">
-                  Vendors tracked
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-semibold tabular-nums">
-                  {data.vendorCount}
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-muted-foreground text-xs font-normal">
-                  Average score
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-semibold tabular-nums">
-                  {data.averageScore !== null
-                    ? formatPercent(data.averageScore)
-                    : "—"}
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-muted-foreground text-xs font-normal">
-                  Open findings
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-semibold tabular-nums">
-                  {data.openFindings}
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-muted-foreground text-xs font-normal">
-                  Needs attention
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-semibold tabular-nums">
-                  {data.needsAttention}
-                </p>
-              </CardContent>
-            </Card>
+            <StatCard label="Vendors tracked" value={data.vendorCount} />
+            <ScoreStatCard label="Average score" score={data.averageScore} />
+            <StatCard label="Open findings" value={data.openFindings} />
+            <StatCard label="Needs attention" value={data.needsAttention} />
           </div>
 
           {/* Charts */}
           <DashboardCharts scoreDistribution={scoreDistribution} />
+
+          <CalendarHeatmap days={contributionDays} />
 
           {/* Top deficient controls */}
           {topDeficientControls.length > 0 ? (

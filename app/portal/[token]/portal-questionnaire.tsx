@@ -70,6 +70,7 @@ type PortalQuestionnaireProps = {
   token: string;
   title: string;
   vendorName: string;
+  tokenExpiresAt: string | null;
   questions: PortalQuestion[];
   initialAnswers: PortalInitialAnswer[];
   initialEvidence: PortalEvidence[];
@@ -109,6 +110,7 @@ export function PortalQuestionnaire({
   token,
   title,
   vendorName,
+  tokenExpiresAt,
   questions,
   initialAnswers,
   initialEvidence,
@@ -434,22 +436,55 @@ export function PortalQuestionnaire({
     return null;
   }
 
+  const totalQuestions = questions.length;
+  const answeredCount = questions.filter((q) => {
+    const answer = answers[q.id];
+    if (!answer || answer.isNotApplicable) return true;
+    return (
+      answer.value !== null && answer.value !== undefined && answer.value !== ""
+    );
+  }).length;
+
+  const expiresLabel = tokenExpiresAt
+    ? `Expires ${new Date(tokenExpiresAt).toLocaleDateString()}`
+    : null;
+
   return (
     <div className="flex flex-col gap-6">
-      <header className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-          <p className="text-muted-foreground text-sm">{vendorName}</p>
+      <header className="flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+            <p className="text-muted-foreground text-sm">{vendorName}</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-muted-foreground text-xs">
+              {saveStatus === "saving"
+                ? "Saving…"
+                : saveStatus === "saved"
+                  ? "All changes saved"
+                  : ""}
+            </span>
+            <ThemeToggle />
+          </div>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-muted-foreground text-xs">
-            {saveStatus === "saving"
-              ? "Saving…"
-              : saveStatus === "saved"
-                ? "All changes saved"
-                : ""}
+          <div className="bg-muted h-2 flex-1 overflow-hidden rounded-full">
+            <div
+              className="bg-primary h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0}%`,
+              }}
+            />
+          </div>
+          <span className="text-muted-foreground shrink-0 text-xs tabular-nums">
+            {answeredCount}/{totalQuestions}
           </span>
-          <ThemeToggle />
+          {expiresLabel ? (
+            <span className="text-muted-foreground shrink-0 text-xs">
+              {expiresLabel}
+            </span>
+          ) : null}
         </div>
       </header>
 

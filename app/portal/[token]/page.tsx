@@ -251,6 +251,7 @@ export default async function PortalPage({ params }: PortalPageProps) {
         token={token}
         title={assessment.title}
         vendorName={assessment.vendor.name}
+        tokenExpiresAt={assessment.tokenExpiresAt?.toISOString() ?? null}
         questions={questions}
         initialAnswers={initialAnswers}
         initialEvidence={assessment.evidence}

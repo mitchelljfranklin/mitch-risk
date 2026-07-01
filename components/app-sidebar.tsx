@@ -18,17 +18,12 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-
-type NavItem = {
-  title: string;
-  href: string;
-  icon: typeof LayoutDashboard;
-};
 
 type AppSidebarProps = {
   orgName: string;
@@ -45,20 +40,9 @@ export function AppSidebar({
 }: AppSidebarProps) {
   const pathname = usePathname();
 
-  const navItems: NavItem[] = [
-    { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { title: "Vendors", href: "/vendors", icon: Building2 },
-    { title: "Assessments", href: "/assessments", icon: ClipboardCheck },
-    { title: "Frameworks", href: "/frameworks", icon: Library },
-    { title: "Templates", href: "/templates", icon: ClipboardList },
-    ...(isAdmin
-      ? [{ title: "Settings", href: "/settings", icon: Settings }]
-      : []),
-  ];
-
   return (
     <Sidebar>
-      <SidebarHeader>
+      <SidebarHeader className="from-primary/10 via-primary/5 bg-gradient-to-b to-transparent pb-2">
         <div className="flex items-center gap-2 px-2 py-1.5">
           {hasLogo ? (
             <img
@@ -76,7 +60,36 @@ export function AppSidebar({
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => {
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={
+                    pathname === "/dashboard" ||
+                    pathname.startsWith("/dashboard/")
+                  }
+                >
+                  <Link href="/dashboard">
+                    <LayoutDashboard />
+                    <span>Dashboard</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Risk</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {[
+                { title: "Vendors", href: "/vendors", icon: Building2 },
+                {
+                  title: "Assessments",
+                  href: "/assessments",
+                  icon: ClipboardCheck,
+                },
+              ].map((item) => {
                 const isActive =
                   pathname === item.href ||
                   pathname.startsWith(`${item.href}/`);
@@ -94,6 +107,60 @@ export function AppSidebar({
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Frameworks</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {[
+                { title: "Frameworks", href: "/frameworks", icon: Library },
+                {
+                  title: "Templates",
+                  href: "/templates",
+                  icon: ClipboardList,
+                },
+              ].map((item) => {
+                const isActive =
+                  pathname === item.href ||
+                  pathname.startsWith(`${item.href}/`);
+                return (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton asChild isActive={isActive}>
+                      <Link href={item.href}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {isAdmin ? (
+          <SidebarGroup>
+            <SidebarGroupLabel>Manage</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={
+                      pathname === "/settings" ||
+                      pathname.startsWith("/settings/")
+                    }
+                  >
+                    <Link href="/settings">
+                      <Settings />
+                      <span>Settings</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ) : null}
       </SidebarContent>
       {notificationCount > 0 ? (
         <SidebarFooter>
