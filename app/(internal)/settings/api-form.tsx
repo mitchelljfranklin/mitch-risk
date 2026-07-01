@@ -4,8 +4,16 @@ import { useActionState, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   createApiKeyAction,
   deleteApiKeyAction,
@@ -54,13 +62,7 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
     <div className="flex flex-col gap-6">
       <form action={saveAction} className="grid gap-4">
         <div className="flex items-center gap-3">
-          <input
-            id="apiEnabled"
-            name="enabled"
-            type="checkbox"
-            defaultChecked={enabled}
-            className="size-4"
-          />
+          <Checkbox id="apiEnabled" name="enabled" defaultChecked={enabled} />
           <Label htmlFor="apiEnabled">Enable API key authentication</Label>
         </div>
         <p className="text-muted-foreground text-xs">
@@ -147,18 +149,18 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
               <Label htmlFor="expiresIn" className="text-xs">
                 Expiry
               </Label>
-              <select
-                id="expiresIn"
-                name="expiresIn"
-                defaultValue="90"
-                className="border-input bg-background h-9 rounded-md border px-3 text-xs"
-              >
-                <option value="30">30 days</option>
-                <option value="90">90 days</option>
-                <option value="180">180 days</option>
-                <option value="365">1 year</option>
-                <option value="permanent">Permanent</option>
-              </select>
+              <Select name="expiresIn" defaultValue="90">
+                <SelectTrigger id="expiresIn" className="text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="30">30 days</SelectItem>
+                  <SelectItem value="90">90 days</SelectItem>
+                  <SelectItem value="180">180 days</SelectItem>
+                  <SelectItem value="365">1 year</SelectItem>
+                  <SelectItem value="permanent">Permanent</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="flex flex-col gap-1">
               <Label htmlFor="allowedIps" className="text-xs">

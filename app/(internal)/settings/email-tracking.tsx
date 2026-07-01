@@ -5,8 +5,15 @@ import { useActionState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatDate } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { EMAIL_TYPE_LABELS, type EmailLogEntry } from "@/lib/db/notifications";
+import { formatDate } from "@/lib/utils";
 import { retryEmailSendAction } from "./actions";
 
 type EmailTrackingFormProps = {
@@ -47,35 +54,35 @@ export function EmailTrackingForm({
           <label className="text-muted-foreground text-xs" htmlFor="status">
             Status
           </label>
-          <select
-            id="status"
-            name="status"
-            className="border-input bg-background h-9 rounded-md border px-3 text-sm"
-          >
-            <option value="">All</option>
-            {statuses.map((s) => (
-              <option key={s} value={s}>
-                {s === "SENT" ? "Sent" : s === "FAILED" ? "Failed" : s}
-              </option>
-            ))}
-          </select>
+          <Select name="status">
+            <SelectTrigger id="status" className="w-32">
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              {statuses.map((s) => (
+                <SelectItem key={s} value={s}>
+                  {s === "SENT" ? "Sent" : s === "FAILED" ? "Failed" : s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="type">
             Type
           </label>
-          <select
-            id="type"
-            name="type"
-            className="border-input bg-background h-9 rounded-md border px-3 text-sm"
-          >
-            <option value="">All types</option>
-            {types.map((t) => (
-              <option key={t} value={t}>
-                {EMAIL_TYPE_LABELS[t] ?? t}
-              </option>
-            ))}
-          </select>
+          <Select name="type">
+            <SelectTrigger id="type" className="w-40">
+              <SelectValue placeholder="All types" />
+            </SelectTrigger>
+            <SelectContent>
+              {types.map((t) => (
+                <SelectItem key={t} value={t}>
+                  {EMAIL_TYPE_LABELS[t] ?? t}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="recipient">
@@ -101,12 +108,9 @@ export function EmailTrackingForm({
           </label>
           <Input id="toDate" name="toDate" type="date" className="w-36" />
         </div>
-        <button
-          type="submit"
-          className="bg-primary text-primary-foreground hover:bg-primary/90 mb-px h-9 rounded-md px-3 text-sm font-medium"
-        >
+        <Button type="submit" size="sm">
           Filter
-        </button>
+        </Button>
       </form>
 
       {logs.length === 0 ? (

@@ -1,7 +1,15 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { AUDIT_ACTION_LABELS, type AuditLogEntry } from "@/lib/db/audit";
 import { formatDate } from "@/lib/utils";
 
@@ -46,35 +54,35 @@ export function AuditForm({ logs, actions, users }: AuditFormProps) {
           <label className="text-muted-foreground text-xs" htmlFor="action">
             Action
           </label>
-          <select
-            id="action"
-            name="action"
-            className="border-input bg-background h-9 rounded-md border px-3 text-sm"
-          >
-            <option value="">All actions</option>
-            {actions.map((a) => (
-              <option key={a} value={a}>
-                {AUDIT_ACTION_LABELS[a] ?? a}
-              </option>
-            ))}
-          </select>
+          <Select name="action">
+            <SelectTrigger id="action" className="w-44">
+              <SelectValue placeholder="All actions" />
+            </SelectTrigger>
+            <SelectContent>
+              {actions.map((a) => (
+                <SelectItem key={a} value={a}>
+                  {AUDIT_ACTION_LABELS[a] ?? a}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="userId">
             User
           </label>
-          <select
-            id="userId"
-            name="userId"
-            className="border-input bg-background h-9 rounded-md border px-3 text-sm"
-          >
-            <option value="">All users</option>
-            {users.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.name}
-              </option>
-            ))}
-          </select>
+          <Select name="userId">
+            <SelectTrigger id="userId" className="w-44">
+              <SelectValue placeholder="All users" />
+            </SelectTrigger>
+            <SelectContent>
+              {users.map((u) => (
+                <SelectItem key={u.id} value={u.id}>
+                  {u.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="fromDate">
@@ -88,12 +96,9 @@ export function AuditForm({ logs, actions, users }: AuditFormProps) {
           </label>
           <Input id="toDate" name="toDate" type="date" className="w-36" />
         </div>
-        <button
-          type="submit"
-          className="bg-primary text-primary-foreground hover:bg-primary/90 mb-px h-9 rounded-md px-3 text-sm font-medium"
-        >
+        <Button type="submit" size="sm">
           Filter
-        </button>
+        </Button>
       </form>
 
       {logs.length === 0 ? (

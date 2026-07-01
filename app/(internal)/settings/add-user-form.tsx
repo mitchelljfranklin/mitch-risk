@@ -5,12 +5,16 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { addUserAction, type UserActionState } from "@/lib/actions/users";
 
 const initialState: UserActionState = undefined;
-
-const SELECT_CLASS =
-  "border-input bg-background h-9 rounded-md border px-3 text-sm";
 
 export function AddUserForm() {
   const [state, formAction, isPending] = useActionState(
@@ -44,20 +48,20 @@ export function AddUserForm() {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="role">Role</Label>
-          <select
-            id="role"
-            name="role"
-            className={SELECT_CLASS}
-            defaultValue="REVIEWER"
-          >
-            <option value="REVIEWER">Reviewer</option>
-            <option value="ADMIN">Admin</option>
-          </select>
+          <Select name="role" defaultValue="REVIEWER">
+            <SelectTrigger id="role">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="REVIEWER">Reviewer</SelectItem>
+              <SelectItem value="ADMIN">Admin</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending} size="sm">
-          {isPending ? "Creating…" : "Create user"}
+          {isPending ? "Creating..." : "Create user"}
         </Button>
         {state ? (
           <span

@@ -1,10 +1,19 @@
 "use client";
 
+import { type ReactNode } from "react";
 import { useActionState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { type SettingsActionState, saveSsoSettings } from "./actions";
 
@@ -24,9 +33,6 @@ type SsoFormProps = {
   allowedDomain: string;
 };
 
-const SELECT_CLASS =
-  "border-input bg-background h-9 rounded-md border px-3 text-sm";
-
 const initialState: SettingsActionState = undefined;
 
 function ProviderSection({
@@ -37,6 +43,7 @@ function ProviderSection({
   clientIdDefault,
   clientSecretName,
   secretConfigured,
+  children,
 }: {
   label: string;
   enabledName: string;
@@ -45,46 +52,48 @@ function ProviderSection({
   clientIdDefault: string;
   clientSecretName: string;
   secretConfigured: boolean;
+  children?: ReactNode;
 }) {
   return (
     <div className="grid gap-3 rounded-md border p-3">
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium">{label}</p>
         <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            name={enabledName}
-            defaultChecked={enabledDefault}
-            className="size-4"
-          />
+          <Checkbox name={enabledName} defaultChecked={enabledDefault} />
           Enabled
         </label>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="grid gap-2">
-          <Label htmlFor={clientIdName}>Client ID</Label>
-          <Input
-            id={clientIdName}
-            name={clientIdName}
-            defaultValue={clientIdDefault}
-          />
+      {children ? (
+        children
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-2">
+            <Label htmlFor={clientIdName}>Client ID</Label>
+            <Input
+              id={clientIdName}
+              name={clientIdName}
+              defaultValue={clientIdDefault}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor={clientSecretName}>Client secret</Label>
+            <Input
+              id={clientSecretName}
+              name={clientSecretName}
+              type="password"
+              autoComplete="off"
+              placeholder={
+                secretConfigured
+                  ? "Leave blank to keep current"
+                  : "Client secret"
+              }
+            />
+            <p className="text-muted-foreground text-xs">
+              Stored encrypted at rest and never displayed.
+            </p>
+          </div>
         </div>
-        <div className="grid gap-2">
-          <Label htmlFor={clientSecretName}>Client secret</Label>
-          <Input
-            id={clientSecretName}
-            name={clientSecretName}
-            type="password"
-            autoComplete="off"
-            placeholder={
-              secretConfigured ? "Leave blank to keep current" : "Client secret"
-            }
-          />
-          <p className="text-muted-foreground text-xs">
-            Stored encrypted at rest and never displayed.
-          </p>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -131,19 +140,15 @@ export function SsoForm({
         secretConfigured={googleSecretConfigured}
       />
 
-      <div className="grid gap-3 rounded-md border p-3">
-        <div className="flex items-center justify-between">
-          <p className="text-sm font-medium">Custom OIDC</p>
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              name="oidcEnabled"
-              defaultChecked={oidcEnabled}
-              className="size-4"
-            />
-            Enabled
-          </label>
-        </div>
+      <ProviderSection
+        label="Custom OIDC"
+        enabledName="oidcEnabled"
+        enabledDefault={oidcEnabled}
+        clientIdName="oidcClientId"
+        clientIdDefault={oidcClientId}
+        clientSecretName="oidcClientSecret"
+        secretConfigured={oidcSecretConfigured}
+      >
         <div className="grid gap-2">
           <Label htmlFor="oidcName">Provider display name</Label>
           <Input
@@ -189,22 +194,22 @@ export function SsoForm({
             </p>
           </div>
         </div>
-      </div>
+      </ProviderSection>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="grid gap-2">
           <Label htmlFor="autoProvisionRole">
             Default role for new SSO users
           </Label>
-          <select
-            id="autoProvisionRole"
-            name="autoProvisionRole"
-            className={SELECT_CLASS}
-            defaultValue={autoProvisionRole}
-          >
-            <option value="REVIEWER">Reviewer</option>
-            <option value="ADMIN">Admin</option>
-          </select>
+          <Select name="autoProvisionRole" defaultValue={autoProvisionRole}>
+            <SelectTrigger id="autoProvisionRole">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="REVIEWER">Reviewer</SelectItem>
+              <SelectItem value="ADMIN">Admin</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div className="grid gap-2">
           <Label htmlFor="allowedDomain">Restrict to domain (optional)</Label>
@@ -219,7 +224,7 @@ export function SsoForm({
 
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending} size="sm">
-          {isPending ? "Saving…" : "Save SSO"}
+          {isPending ? "Saving..." : "Save SSO"}
         </Button>
         {state ? (
           <span

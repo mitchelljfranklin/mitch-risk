@@ -97,8 +97,8 @@ export function ScoringForm({
         </div>
       </div>
       <div className="flex items-center gap-3">
-        <Button type="submit" disabled={isPending}>
-          {isPending ? "Saving…" : "Save scoring"}
+        <Button type="submit" disabled={isPending} size="sm">
+          {isPending ? "Saving..." : "Save scoring"}
         </Button>
         {state ? (
           <span

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,11 @@ export function AppearanceForm({
   const [state, action, isPending] = useActionState(
     saveAppearanceSettings,
     undefined,
+  );
+
+  const [primaryColor, setPrimaryColor] = useState(primaryHex || "#0a0a0a");
+  const [secondaryColor, setSecondaryColor] = useState(
+    secondaryHex || "#f5f5f5",
   );
 
   return (
@@ -68,36 +73,23 @@ export function AppearanceForm({
           <input
             id="primaryHexColor"
             type="color"
-            defaultValue={primaryHex || "#0a0a0a"}
+            value={primaryColor}
+            onChange={(e) => setPrimaryColor(e.target.value)}
             className="h-9 w-14 cursor-pointer rounded border p-1"
-            onChange={(e) => {
-              const hex = document.getElementById(
-                "primaryHex",
-              ) as HTMLInputElement | null;
-              if (hex) hex.value = e.target.value;
-            }}
           />
           <Input
             id="primaryHex"
             name="primaryHex"
             placeholder="#3b82f6"
-            defaultValue={primaryHex}
+            value={primaryColor}
+            onChange={(e) => setPrimaryColor(e.target.value)}
             className="w-32 font-mono"
           />
           <Button
             type="button"
             variant="secondary"
             size="sm"
-            onClick={() => {
-              const hex = document.getElementById(
-                "primaryHex",
-              ) as HTMLInputElement | null;
-              const color = document.getElementById(
-                "primaryHexColor",
-              ) as HTMLInputElement | null;
-              if (hex) hex.value = "";
-              if (color) color.value = "#000000";
-            }}
+            onClick={() => setPrimaryColor("#0a0a0a")}
           >
             Reset
           </Button>
@@ -113,36 +105,23 @@ export function AppearanceForm({
           <input
             id="secondaryHexColor"
             type="color"
-            defaultValue={secondaryHex || "#f5f5f5"}
+            value={secondaryColor}
+            onChange={(e) => setSecondaryColor(e.target.value)}
             className="h-9 w-14 cursor-pointer rounded border p-1"
-            onChange={(e) => {
-              const hex = document.getElementById(
-                "secondaryHex",
-              ) as HTMLInputElement | null;
-              if (hex) hex.value = e.target.value;
-            }}
           />
           <Input
             id="secondaryHex"
             name="secondaryHex"
             placeholder="#f59e0b"
-            defaultValue={secondaryHex}
+            value={secondaryColor}
+            onChange={(e) => setSecondaryColor(e.target.value)}
             className="w-32 font-mono"
           />
           <Button
             type="button"
             variant="secondary"
             size="sm"
-            onClick={() => {
-              const hex = document.getElementById(
-                "secondaryHex",
-              ) as HTMLInputElement | null;
-              const color = document.getElementById(
-                "secondaryHexColor",
-              ) as HTMLInputElement | null;
-              if (hex) hex.value = "";
-              if (color) color.value = "#000000";
-            }}
+            onClick={() => setSecondaryColor("#f5f5f5")}
           >
             Reset
           </Button>
@@ -150,8 +129,8 @@ export function AppearanceForm({
       </div>
 
       <div className="flex items-center gap-3">
-        <Button type="submit" disabled={isPending}>
-          {isPending ? "Saving…" : "Save appearance"}
+        <Button type="submit" disabled={isPending} size="sm">
+          {isPending ? "Saving..." : "Save appearance"}
         </Button>
         {state?.message ? (
           <p

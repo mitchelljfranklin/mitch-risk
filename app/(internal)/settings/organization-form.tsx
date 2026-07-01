@@ -40,8 +40,8 @@ export function OrganizationForm({
         />
       </div>
       <div className="flex items-center gap-3">
-        <Button type="submit" disabled={isPending}>
-          {isPending ? "Saving…" : "Save"}
+        <Button type="submit" disabled={isPending} size="sm">
+          {isPending ? "Saving..." : "Save"}
         </Button>
         {state ? (
           <span

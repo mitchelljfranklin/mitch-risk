@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { saveSchedulingSettings } from "./actions";
@@ -172,17 +173,15 @@ export function ConfigurationForm({
         <p className="text-muted-foreground text-xs">
           File types vendors can upload as evidence. Select at least one.
         </p>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-3">
           {ALL_EXTENSIONS.map((ext) => {
             const checked = allowedExtensions.includes(ext);
             return (
-              <label key={ext} className="flex items-center gap-1 text-sm">
-                <input
-                  type="checkbox"
+              <label key={ext} className="flex items-center gap-2 text-sm">
+                <Checkbox
                   name="allowedExtensions"
                   value={ext}
                   defaultChecked={checked}
-                  className="size-4"
                 />
                 .{ext}
               </label>
@@ -192,7 +191,7 @@ export function ConfigurationForm({
       </div>
 
       <div className="flex items-center gap-3">
-        <Button type="submit" disabled={isPending}>
+        <Button type="submit" disabled={isPending} size="sm">
           {isPending ? "Saving..." : "Save configuration"}
         </Button>
         {state?.message ? (

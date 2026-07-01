@@ -7,6 +7,13 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { requireAdmin } from "@/lib/auth";
 import { listAuditLogs, listAuditActions } from "@/lib/db/audit";
 import { listUsersFull } from "@/lib/db/users";
@@ -47,9 +54,6 @@ import { listEmailLogs } from "@/lib/db/notifications";
 export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Settings" };
-
-const SELECT_CLASS =
-  "border-input bg-background h-8 rounded-md border px-2 text-xs";
 
 type SettingsPageProps = {
   searchParams: Promise<Record<string, string | undefined>>;
@@ -142,14 +146,14 @@ export default async function SettingsPage({
       <Tabs defaultValue={sp.tab ?? "general"}>
         <TabsList>
           <TabsTrigger value="general">General</TabsTrigger>
+          <TabsTrigger value="appearance">Appearance</TabsTrigger>
           <TabsTrigger value="email">Email</TabsTrigger>
           <TabsTrigger value="email-tracking">Email Tracking</TabsTrigger>
           <TabsTrigger value="scoring">Scoring</TabsTrigger>
           <TabsTrigger value="scheduling">Configuration</TabsTrigger>
-          <TabsTrigger value="appearance">Appearance</TabsTrigger>
-          <TabsTrigger value="api">API</TabsTrigger>
-          <TabsTrigger value="sso">SSO</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
+          <TabsTrigger value="sso">SSO</TabsTrigger>
+          <TabsTrigger value="api">API</TabsTrigger>
           <TabsTrigger value="audit">Audit</TabsTrigger>
         </TabsList>
 
@@ -376,14 +380,15 @@ export default async function SettingsPage({
                         className="flex items-center gap-1"
                       >
                         <input type="hidden" name="userId" value={user.id} />
-                        <select
-                          name="role"
-                          className={SELECT_CLASS}
-                          defaultValue={user.role}
-                        >
-                          <option value="REVIEWER">Reviewer</option>
-                          <option value="ADMIN">Admin</option>
-                        </select>
+                        <Select name="role" defaultValue={user.role}>
+                          <SelectTrigger className="h-8 w-28 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="REVIEWER">Reviewer</SelectItem>
+                            <SelectItem value="ADMIN">Admin</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <Button type="submit" size="sm" variant="ghost">
                           Change role
                         </Button>
