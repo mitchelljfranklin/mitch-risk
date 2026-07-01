@@ -61,14 +61,16 @@ export async function sendAssessmentAction(formData: FormData) {
   const sent = await getAssessmentForEmail(assessmentId);
   if (sent && sent.accessToken) {
     const portalUrl = `${env.APP_URL}/portal/${sent.accessToken}`;
+    const templateType = portalPassword ? "invite-password" : "invite";
     await sendEmail(
       sent.vendorContactEmail,
-      "invite",
+      templateType,
       {
         vendorName: sent.vendorName,
         assessmentTitle: sent.title,
         portalUrl,
         dueDate: sent.dueDate ? sent.dueDate.toISOString().slice(0, 10) : "",
+        portalPassword: portalPassword ?? "",
       },
       { assessmentId, sentById: user?.id },
     );
@@ -111,15 +113,17 @@ export async function sendToCustomEmailAction(formData: FormData) {
       .split(",")
       .map((email) => email.trim())
       .filter(Boolean);
+    const templateType = portalPassword ? "invite-password" : "invite";
     for (const email of emails) {
       await sendEmail(
         email,
-        "invite",
+        templateType,
         {
           vendorName: sent.vendorName,
           assessmentTitle: sent.title,
           portalUrl,
           dueDate: sent.dueDate ? sent.dueDate.toISOString().slice(0, 10) : "",
+          portalPassword: portalPassword ?? "",
         },
         { assessmentId, sentById: user?.id },
       );
@@ -262,12 +266,13 @@ export async function sendBulkAssessmentsAction(
           const portalUrl = `${env.APP_URL}/portal/${sent.accessToken}`;
           await sendEmail(
             vendor.contactEmail,
-            "invite",
+            portalPassword ? "invite-password" : "invite",
             {
               vendorName: vendor.name,
               assessmentTitle: sent.title,
               portalUrl,
               dueDate: dueDate,
+              portalPassword: portalPassword ?? "",
             },
             { assessmentId: assessment.id, sentById: user?.id },
           );

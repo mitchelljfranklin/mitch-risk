@@ -37,7 +37,8 @@ function replaceTokens(text: string, tokens: Record<string, string>): string {
   );
 }
 
-type TemplateType = "invite" | "reminder" | "escalation" | "submission";
+type TemplateType =
+  "invite" | "invite-password" | "reminder" | "escalation" | "submission";
 
 export type SendEmailResult = {
   ok: boolean;
@@ -93,22 +94,26 @@ export async function sendEmail(
   ]);
 
   const subject =
-    templateType === "invite"
-      ? templates.inviteSubject
-      : templateType === "reminder"
-        ? templates.reminderSubject
-        : templateType === "escalation"
-          ? templates.escalationSubject
-          : templates.submissionSubject;
+    templateType === "invite-password"
+      ? templates.invitePasswordSubject
+      : templateType === "invite"
+        ? templates.inviteSubject
+        : templateType === "reminder"
+          ? templates.reminderSubject
+          : templateType === "escalation"
+            ? templates.escalationSubject
+            : templates.submissionSubject;
 
   const body =
-    templateType === "invite"
-      ? templates.inviteBody
-      : templateType === "reminder"
-        ? templates.reminderBody
-        : templateType === "escalation"
-          ? templates.escalationBody
-          : templates.submissionBody;
+    templateType === "invite-password"
+      ? templates.invitePasswordBody
+      : templateType === "invite"
+        ? templates.inviteBody
+        : templateType === "reminder"
+          ? templates.reminderBody
+          : templateType === "escalation"
+            ? templates.escalationBody
+            : templates.submissionBody;
 
   const resolvedSubject = replaceTokens(subject, tokens);
   const resolvedBody = replaceTokens(body, tokens);

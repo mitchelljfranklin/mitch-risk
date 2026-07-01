@@ -87,6 +87,8 @@ export async function saveEmailTemplateSettings(
   const parsed = emailTemplateSchema.safeParse({
     inviteSubject: formData.get("inviteSubject") ?? "",
     inviteBody: formData.get("inviteBody") ?? "",
+    invitePasswordSubject: formData.get("invitePasswordSubject") ?? "",
+    invitePasswordBody: formData.get("invitePasswordBody") ?? "",
     reminderSubject: formData.get("reminderSubject") ?? "",
     reminderBody: formData.get("reminderBody") ?? "",
     escalationSubject: formData.get("escalationSubject") ?? "",

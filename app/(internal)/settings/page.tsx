@@ -251,6 +251,8 @@ export default async function SettingsPage({
               <EmailTemplateForm
                 inviteSubject={templates.inviteSubject}
                 inviteBody={templates.inviteBody}
+                invitePasswordSubject={templates.invitePasswordSubject}
+                invitePasswordBody={templates.invitePasswordBody}
                 reminderSubject={templates.reminderSubject}
                 reminderBody={templates.reminderBody}
                 escalationSubject={templates.escalationSubject}

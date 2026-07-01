@@ -94,6 +94,14 @@ export const emailTemplateSchema = z.object({
     .default(
       "{{reviewerName}}, {{vendorName}} has submitted their security questionnaire: {{assessmentTitle}}.\n\nView the assessment: {{assessmentUrl}}",
     ),
+  invitePasswordSubject: z
+    .string()
+    .default("Security questionnaire: {{assessmentTitle}}"),
+  invitePasswordBody: z
+    .string()
+    .default(
+      "{{vendorName}}, you have been asked to complete the security questionnaire: {{assessmentTitle}}. Please submit by {{dueDate}}.\n\nThis questionnaire is password protected.\nYour password: {{portalPassword}}\n\nOpen: {{portalUrl}}",
+    ),
 });
 
 export type EmailTemplateSettings = z.infer<typeof emailTemplateSchema>;

@@ -13,6 +13,8 @@ import { useFormToast } from "@/hooks/use-form-toast";
 type EmailTemplateFormProps = {
   inviteSubject: string;
   inviteBody: string;
+  invitePasswordSubject: string;
+  invitePasswordBody: string;
   reminderSubject: string;
   reminderBody: string;
   escalationSubject: string;
@@ -63,6 +65,8 @@ function TemplateSection({
 export function EmailTemplateForm({
   inviteSubject,
   inviteBody,
+  invitePasswordSubject,
+  invitePasswordBody,
   reminderSubject,
   reminderBody,
   escalationSubject,
@@ -84,6 +88,13 @@ export function EmailTemplateForm({
         subjectDefault={inviteSubject}
         bodyName="inviteBody"
         bodyDefault={inviteBody}
+      />
+      <TemplateSection
+        label="Invite email (password protected)"
+        subjectName="invitePasswordSubject"
+        subjectDefault={invitePasswordSubject}
+        bodyName="invitePasswordBody"
+        bodyDefault={invitePasswordBody}
       />
       <TemplateSection
         label="Reminder email"
@@ -109,7 +120,7 @@ export function EmailTemplateForm({
       <p className="text-muted-foreground text-xs">
         Tokens: {"{{"}vendorName{"}}"}, {"{{"}assessmentTitle{"}}"}, {"{{"}
         portalUrl{"}}"}, {"{{"}dueDate{"}}"}, {"{{"}reviewerName{"}}"}, {"{{"}
-        assessmentUrl{"}}"}.
+        assessmentUrl{"}}"}, {"{{"}portalPassword{"}}"}.
       </p>
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending} size="sm">
