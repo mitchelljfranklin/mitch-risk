@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+
 export default function ErrorPage({
   error,
 }: {
@@ -13,12 +15,7 @@ export default function ErrorPage({
       <p className="text-muted-foreground text-sm">
         An unexpected error occurred. Please try again or contact support.
       </p>
-      <button
-        onClick={() => window.location.reload()}
-        className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 text-sm font-medium"
-      >
-        Try again
-      </button>
+      <Button onClick={() => window.location.reload()}>Try again</Button>
     </div>
   );
 }

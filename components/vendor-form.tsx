@@ -6,6 +6,14 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { type VendorFormState } from "@/lib/actions/vendors";
 import { VENDOR_TIER_LABELS, VENDOR_TIERS } from "@/lib/schemas/vendor";
 
@@ -26,11 +34,6 @@ type VendorFormProps = {
     notes: string;
   };
 };
-
-const SELECT_CLASS =
-  "border-input bg-background h-9 rounded-md border px-3 text-sm";
-const TEXTAREA_CLASS =
-  "border-input bg-background min-h-24 rounded-md border px-3 py-2 text-sm";
 
 const initialState: VendorFormState = undefined;
 
@@ -70,19 +73,18 @@ export function VendorForm({ action, vendorId, defaults }: VendorFormProps) {
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="grid gap-2">
           <Label htmlFor="tier">Tier</Label>
-          <select
-            id="tier"
-            name="tier"
-            className={SELECT_CLASS}
-            defaultValue={defaults?.tier ?? ""}
-          >
-            <option value="">Unspecified</option>
-            {VENDOR_TIERS.map((tier) => (
-              <option key={tier} value={tier}>
-                {VENDOR_TIER_LABELS[tier]}
-              </option>
-            ))}
-          </select>
+          <Select name="tier" defaultValue={defaults?.tier ?? ""}>
+            <SelectTrigger id="tier">
+              <SelectValue placeholder="Unspecified" />
+            </SelectTrigger>
+            <SelectContent>
+              {VENDOR_TIERS.map((tier) => (
+                <SelectItem key={tier} value={tier}>
+                  {VENDOR_TIER_LABELS[tier]}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="grid gap-2">
           <Label htmlFor="website">Website</Label>
@@ -91,11 +93,11 @@ export function VendorForm({ action, vendorId, defaults }: VendorFormProps) {
       </div>
       <div className="grid gap-2">
         <Label htmlFor="notes">Notes</Label>
-        <textarea
+        <Textarea
           id="notes"
           name="notes"
-          className={TEXTAREA_CLASS}
           defaultValue={defaults?.notes}
+          rows={4}
         />
       </div>
       {state?.error ? (
@@ -105,7 +107,7 @@ export function VendorForm({ action, vendorId, defaults }: VendorFormProps) {
       ) : null}
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending}>
-          {isPending ? "Saving…" : "Save vendor"}
+          {isPending ? "Saving..." : "Save vendor"}
         </Button>
         <Button asChild variant="outline">
           <Link href={cancelHref}>Cancel</Link>

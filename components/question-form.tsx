@@ -5,8 +5,17 @@ import { useActionState, useState } from "react";
 
 import { ControlMultiSelect } from "@/components/control-multi-select";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { type FormState, saveQuestionAction } from "@/lib/actions/templates";
 import {
   QUESTION_TYPE_LABELS,
@@ -44,11 +53,6 @@ type QuestionFormProps = {
   otherQuestions: { id: string; text: string }[];
   defaults?: QuestionDefaults;
 };
-
-const CONTROL_CLASS =
-  "border-input bg-background h-9 rounded-md border px-3 text-sm";
-const TEXTAREA_CLASS =
-  "border-input bg-background min-h-24 rounded-md border px-3 py-2 text-sm";
 
 const initialState: FormState = undefined;
 
@@ -92,44 +96,45 @@ export function QuestionForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="grid gap-2">
           <Label htmlFor="type">Answer type</Label>
-          <select
-            id="type"
+          <Select
             name="type"
-            className={CONTROL_CLASS}
             value={type}
-            onChange={(event) => setType(event.target.value as QuestionType)}
+            onValueChange={(value) => setType(value as QuestionType)}
           >
-            {QUESTION_TYPES.map((value) => (
-              <option key={value} value={value}>
-                {QUESTION_TYPE_LABELS[value]}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger id="type">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {QUESTION_TYPES.map((value) => (
+                <SelectItem key={value} value={value}>
+                  {QUESTION_TYPE_LABELS[value]}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="grid gap-2">
           <Label htmlFor="riskWeight">Risk weight</Label>
-          <select
-            id="riskWeight"
+          <Select
             name="riskWeight"
-            className={CONTROL_CLASS}
             defaultValue={defaults?.riskWeight ?? "MEDIUM"}
           >
-            {RISK_WEIGHTS.map((value) => (
-              <option key={value} value={value}>
-                {RISK_WEIGHT_LABELS[value]}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger id="riskWeight">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {RISK_WEIGHTS.map((value) => (
+                <SelectItem key={value} value={value}>
+                  {RISK_WEIGHT_LABELS[value]}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       <label className="flex items-center gap-2 text-sm">
-        <input
-          type="checkbox"
-          name="required"
-          defaultChecked={defaults?.required ?? true}
-          className="size-4"
-        />
+        <Checkbox name="required" defaultChecked={defaults?.required ?? true} />
         Required
       </label>
 
@@ -138,11 +143,11 @@ export function QuestionForm({
       type === "MULTI_SELECT" ? (
         <div className="grid gap-2">
           <Label htmlFor="options">Options (one per line)</Label>
-          <textarea
+          <Textarea
             id="options"
             name="options"
-            className={TEXTAREA_CLASS}
             defaultValue={defaults?.options.join("\n")}
+            rows={4}
           />
         </div>
       ) : null}
@@ -150,16 +155,19 @@ export function QuestionForm({
       {type === "YES_NO" ? (
         <div className="grid gap-2">
           <Label htmlFor="expectedAnswer">Expected answer</Label>
-          <select
-            id="expectedAnswer"
+          <Select
             name="expectedAnswer"
-            className={CONTROL_CLASS}
             defaultValue={defaults?.expectedAnswer ?? ""}
           >
-            <option value="">No expected answer</option>
-            <option value="YES">Yes</option>
-            <option value="NO">No</option>
-          </select>
+            <SelectTrigger id="expectedAnswer">
+              <SelectValue placeholder="No expected answer" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">No expected answer</SelectItem>
+              <SelectItem value="YES">Yes</SelectItem>
+              <SelectItem value="NO">No</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       ) : null}
 
@@ -193,10 +201,10 @@ export function QuestionForm({
           <Label htmlFor="expectedAnswer">
             Expected selections (one per line)
           </Label>
-          <textarea
+          <Textarea
             id="expectedAnswer"
             name="expectedAnswer"
-            className={TEXTAREA_CLASS}
+            rows={4}
             defaultValue={
               Array.isArray(defaults?.expectedAnswer)
                 ? defaults.expectedAnswer.join("\n")
@@ -215,19 +223,21 @@ export function QuestionForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="grid gap-2">
           <Label htmlFor="conditionQuestionId">Show only if (optional)</Label>
-          <select
-            id="conditionQuestionId"
+          <Select
             name="conditionQuestionId"
-            className={CONTROL_CLASS}
             defaultValue={defaults?.conditionQuestionId ?? ""}
           >
-            <option value="">Always show</option>
-            {otherQuestions.map((question) => (
-              <option key={question.id} value={question.id}>
-                {question.text.slice(0, 60)}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger id="conditionQuestionId">
+              <SelectValue placeholder="Always show" />
+            </SelectTrigger>
+            <SelectContent>
+              {otherQuestions.map((question) => (
+                <SelectItem key={question.id} value={question.id}>
+                  {question.text.slice(0, 60)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="grid gap-2">
           <Label htmlFor="conditionEquals">…answer equals</Label>
@@ -253,7 +263,7 @@ export function QuestionForm({
 
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending}>
-          {isPending ? "Saving…" : "Save question"}
+          {isPending ? "Saving..." : "Save question"}
         </Button>
         <Button asChild variant="outline">
           <Link href={`/templates/${templateId}`}>Cancel</Link>

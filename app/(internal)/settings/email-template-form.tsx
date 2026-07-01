@@ -5,6 +5,7 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 import { type SettingsActionState, saveEmailTemplateSettings } from "./actions";
 
@@ -16,9 +17,6 @@ type EmailTemplateFormProps = {
   escalationSubject: string;
   escalationBody: string;
 };
-
-const TEXTAREA_CLASS =
-  "border-input bg-background min-h-20 w-full rounded-md border px-3 py-2 text-sm";
 
 const initialState: SettingsActionState = undefined;
 
@@ -48,10 +46,9 @@ function TemplateSection({
       </div>
       <div className="grid gap-2">
         <Label htmlFor={bodyName}>Body</Label>
-        <textarea
+        <Textarea
           id={bodyName}
           name={bodyName}
-          className={TEXTAREA_CLASS}
           defaultValue={bodyDefault}
           rows={4}
         />

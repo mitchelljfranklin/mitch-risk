@@ -6,6 +6,13 @@ import { CopyLink } from "@/components/copy-link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { prisma } from "@/lib/prisma";
 import {
   deleteAssessmentAction,
@@ -459,21 +466,20 @@ export default async function AssessmentDetailPage({
                               name="responseId"
                               value={response.id}
                             />
-                            <select
-                              name="decision"
-                              className="border-input bg-background h-8 rounded-md border px-2 text-xs"
-                              required
-                              defaultValue=""
-                            >
-                              <option value="" disabled>
-                                Review
-                              </option>
-                              <option value="APPROVED">Approve</option>
-                              <option value="REJECTED">Reject</option>
-                              <option value="CLARIFICATION_REQUESTED">
-                                Request clarification
-                              </option>
-                            </select>
+                            <Select name="decision" required>
+                              <SelectTrigger className="h-8 w-48 text-xs">
+                                <SelectValue placeholder="Review" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="APPROVED">
+                                  Approve
+                                </SelectItem>
+                                <SelectItem value="REJECTED">Reject</SelectItem>
+                                <SelectItem value="CLARIFICATION_REQUESTED">
+                                  Request clarification
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
                             <input
                               name="note"
                               placeholder="Optional note"

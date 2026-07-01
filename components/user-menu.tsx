@@ -39,14 +39,16 @@ export function UserMenu({ name, email, role }: UserMenuProps) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <form action={signOutAction}>
-          <DropdownMenuItem asChild>
-            <button type="submit" className="w-full">
-              <LogOut className="size-4" />
-              Sign out
-            </button>
-          </DropdownMenuItem>
-        </form>
+        <DropdownMenuItem asChild>
+          <Button
+            variant="ghost"
+            className="w-full justify-start"
+            formAction={signOutAction}
+          >
+            <LogOut className="size-4" />
+            Sign out
+          </Button>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

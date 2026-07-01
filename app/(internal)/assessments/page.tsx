@@ -3,6 +3,13 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { requireUser } from "@/lib/auth";
 import { listAssessments } from "@/lib/db/assessments";
 import { ASSESSMENT_STATUS_LABELS } from "@/lib/schemas/assessment";
@@ -62,19 +69,20 @@ export default async function AssessmentsPage({
           <label className="text-muted-foreground text-xs" htmlFor="status">
             Status
           </label>
-          <select
-            id="status"
-            name="status"
-            defaultValue={sp.status ?? ""}
-            className="border-input bg-background h-9 rounded-md border px-3 text-sm"
-          >
-            <option value="">All</option>
-            {Object.entries(ASSESSMENT_STATUS_LABELS).map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
+          <Select name="status" defaultValue={sp.status ?? ""}>
+            <SelectTrigger id="status" className="w-40">
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(ASSESSMENT_STATUS_LABELS).map(
+                ([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ),
+              )}
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="from">

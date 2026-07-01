@@ -7,6 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   type AssessmentFormState,
   createAssessmentAction,
 } from "@/lib/actions/assessments";
@@ -18,9 +25,6 @@ type NewAssessmentFormProps = {
   templates: Option[];
   reviewers: Option[];
 };
-
-const SELECT_CLASS =
-  "border-input bg-background h-9 rounded-md border px-3 text-sm";
 
 const initialState: AssessmentFormState = undefined;
 
@@ -48,22 +52,18 @@ export function NewAssessmentForm({
       </div>
       <div className="grid gap-2">
         <Label htmlFor="templateId">Questionnaire template</Label>
-        <select
-          id="templateId"
-          name="templateId"
-          className={SELECT_CLASS}
-          defaultValue=""
-          required
-        >
-          <option value="" disabled>
-            Select a published template
-          </option>
-          {templates.map((template) => (
-            <option key={template.id} value={template.id}>
-              {template.label}
-            </option>
-          ))}
-        </select>
+        <Select name="templateId" required>
+          <SelectTrigger id="templateId">
+            <SelectValue placeholder="Select a published template" />
+          </SelectTrigger>
+          <SelectContent>
+            {templates.map((template) => (
+              <SelectItem key={template.id} value={template.id}>
+                {template.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="grid gap-2">
@@ -72,19 +72,18 @@ export function NewAssessmentForm({
         </div>
         <div className="grid gap-2">
           <Label htmlFor="reviewerId">Reviewer</Label>
-          <select
-            id="reviewerId"
-            name="reviewerId"
-            className={SELECT_CLASS}
-            defaultValue=""
-          >
-            <option value="">Unassigned</option>
-            {reviewers.map((reviewer) => (
-              <option key={reviewer.id} value={reviewer.id}>
-                {reviewer.label}
-              </option>
-            ))}
-          </select>
+          <Select name="reviewerId" defaultValue="">
+            <SelectTrigger id="reviewerId">
+              <SelectValue placeholder="Unassigned" />
+            </SelectTrigger>
+            <SelectContent>
+              {reviewers.map((reviewer) => (
+                <SelectItem key={reviewer.id} value={reviewer.id}>
+                  {reviewer.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
       {templates.length === 0 ? (
@@ -99,7 +98,7 @@ export function NewAssessmentForm({
       ) : null}
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending || templates.length === 0}>
-          {isPending ? "Creating…" : "Create assessment"}
+          {isPending ? "Creating..." : "Create assessment"}
         </Button>
         <Button asChild variant="outline">
           <Link href={`/vendors/${vendorId}`}>Cancel</Link>

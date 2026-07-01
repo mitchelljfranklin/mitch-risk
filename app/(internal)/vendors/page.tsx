@@ -9,6 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { requireUser } from "@/lib/auth";
 import { listVendors } from "@/lib/db/vendors";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
@@ -65,19 +72,18 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
           <label className="text-muted-foreground text-xs" htmlFor="tier">
             Tier
           </label>
-          <select
-            id="tier"
-            name="tier"
-            defaultValue={sp.tier ?? ""}
-            className="border-input bg-background h-9 rounded-md border px-3 text-sm"
-          >
-            <option value="">All</option>
-            {Object.entries(VENDOR_TIER_LABELS).map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
+          <Select name="tier" defaultValue={sp.tier ?? ""}>
+            <SelectTrigger id="tier" className="w-40">
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(VENDOR_TIER_LABELS).map(([value, label]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <Button type="submit" variant="secondary" size="sm" className="mb-px">
           Filter

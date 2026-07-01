@@ -41,13 +41,6 @@ const ACTION_VARIANT: Record<
 export function AuditForm({ logs, actions, users }: AuditFormProps) {
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <p className="text-muted-foreground text-sm">
-          Track administrative and system activity across the platform. Activity
-          is retained according to the configured retention policy.
-        </p>
-      </div>
-
       <form className="flex flex-wrap items-end gap-2">
         <input type="hidden" name="tab" value="audit" />
         <div className="flex flex-col gap-1">

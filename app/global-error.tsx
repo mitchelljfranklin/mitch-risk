@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+
 export default function GlobalError({
   error,
 }: {
@@ -15,12 +17,7 @@ export default function GlobalError({
           <p className="text-muted-foreground text-sm">
             A critical error occurred. Please try again or contact support.
           </p>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 text-sm font-medium"
-          >
-            Try again
-          </button>
+          <Button onClick={() => window.location.reload()}>Try again</Button>
         </div>
       </body>
     </html>

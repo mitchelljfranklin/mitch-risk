@@ -2,8 +2,16 @@
 
 import { useMemo, useState } from "react";
 
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 type ControlOption = {
@@ -46,10 +54,10 @@ export function ControlMultiSelect({
     return [...map.entries()];
   }, [controls, frameworkFilter]);
 
-  function toggle(id: string, checked: boolean) {
+  function toggle(id: string, checked: boolean | "indeterminate") {
     setSelected((current) => {
       const next = new Set(current);
-      if (checked) {
+      if (checked === true) {
         next.add(id);
       } else {
         next.delete(id);
@@ -77,18 +85,21 @@ export function ControlMultiSelect({
         </span>
       </div>
       <div className="flex gap-2">
-        <select
-          value={frameworkFilter}
-          onChange={(e) => setFrameworkFilter(e.target.value)}
-          className="border-input bg-background h-9 rounded-md border px-3 text-xs"
+        <Select
+          value={frameworkFilter || ""}
+          onValueChange={(value) => setFrameworkFilter(value)}
         >
-          <option value="">All frameworks</option>
-          {frameworks.map((name) => (
-            <option key={name} value={name}>
-              {name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="w-48 text-xs">
+            <SelectValue placeholder="All frameworks" />
+          </SelectTrigger>
+          <SelectContent>
+            {frameworks.map((name) => (
+              <SelectItem key={name} value={name}>
+                {name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <Input
           placeholder="Filter controls…"
           value={filter}
@@ -115,15 +126,11 @@ export function ControlMultiSelect({
                     !isVisible(control) && "hidden",
                   )}
                 >
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     name="controlIds"
                     value={control.id}
                     checked={selected.has(control.id)}
-                    onChange={(event) =>
-                      toggle(control.id, event.target.checked)
-                    }
-                    className="size-4"
+                    onCheckedChange={(checked) => toggle(control.id, checked)}
                   />
                   <span className="font-mono text-xs">{control.code}</span>
                   <span className="truncate">{control.title}</span>

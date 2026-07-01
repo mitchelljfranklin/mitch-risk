@@ -82,16 +82,12 @@ export default function DocsPage() {
       <div style={{ height: "100vh" }}>
         <div id="swagger-ui" />
         {!ready && !error ? (
-          <div
-            style={{ padding: "40px", textAlign: "center", color: "#6b7280" }}
-          >
+          <div className="text-muted-foreground p-10 text-center text-sm">
             Loading API documentation...
           </div>
         ) : null}
         {error ? (
-          <div
-            style={{ padding: "40px", textAlign: "center", color: "#dc2626" }}
-          >
+          <div className="text-destructive p-10 text-center text-sm">
             {error}
           </div>
         ) : null}
