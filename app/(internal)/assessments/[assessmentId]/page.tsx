@@ -1,0 +1,576 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+
+import { CopyLink } from "@/components/copy-link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  deleteAssessmentAction,
+  extendAssessmentAction,
+  generateLinkAction,
+  regenerateAssessmentAction,
+  revokeAssessmentAction,
+  sendAssessmentAction,
+  sendToCustomEmailAction,
+} from "@/lib/actions/assessments";
+import {
+  addCommentAction,
+  reopenAction,
+  reviewAction,
+} from "@/lib/actions/collaboration";
+import { FinalizeButton } from "./finalize-button";
+import { DraftEditor } from "./draft-editor";
+import { requireUser } from "@/lib/auth";
+import { getAssessment } from "@/lib/db/assessments";
+import { env } from "@/lib/env";
+import { ASSESSMENT_STATUS_LABELS } from "@/lib/schemas/assessment";
+import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
+import { formatDate, formatPercent } from "@/lib/utils";
+
+export const dynamic = "force-dynamic";
+
+type AssessmentDetailPageProps = {
+  params: Promise<{ assessmentId: string }>;
+};
+
+function formatResponseValue(value: unknown): string {
+  if (value === null || value === undefined) {
+    return "No answer";
+  }
+  if (typeof value === "string") {
+    return value.length > 0 ? value : "No answer";
+  }
+  return String(value);
+}
+
+const REVIEW_DECISION_VARIANT: Record<
+  string,
+  "default" | "destructive" | "secondary"
+> = {
+  APPROVED: "default",
+  REJECTED: "destructive",
+  CLARIFICATION_REQUESTED: "secondary",
+};
+
+export default async function AssessmentDetailPage({
+  params,
+}: AssessmentDetailPageProps) {
+  await requireUser();
+  const { assessmentId } = await params;
+  const assessment = await getAssessment(assessmentId);
+  if (!assessment) {
+    notFound();
+  }
+
+  const isDraft = assessment.status === "DRAFT";
+  const isReviewable =
+    assessment.status === "SUBMITTED" || assessment.status === "UNDER_REVIEW";
+  const portalUrl = assessment.accessToken
+    ? `${env.APP_URL}/portal/${assessment.accessToken}`
+    : null;
+
+  const responsesByQuestion = new Map(
+    assessment.responses.map((response) => [
+      response.assessmentQuestionId,
+      response,
+    ]),
+  );
+  const evidenceByQuestion = new Map<string, typeof assessment.evidence>();
+  for (const item of assessment.evidence) {
+    if (!item.assessmentQuestionId) {
+      continue;
+    }
+    const list = evidenceByQuestion.get(item.assessmentQuestionId) ?? [];
+    list.push(item);
+    evidenceByQuestion.set(item.assessmentQuestionId, list);
+  }
+  const commentsByQuestion = new Map<string, typeof assessment.comments>();
+  const replyByParentId = new Map<string, typeof assessment.comments>();
+  for (const comment of assessment.comments) {
+    const questionId = comment.assessmentQuestionId ?? "";
+    const list = commentsByQuestion.get(questionId) ?? [];
+    list.push(comment);
+    commentsByQuestion.set(questionId, list);
+    if (comment.parentId) {
+      const replies = replyByParentId.get(comment.parentId) ?? [];
+      replies.push(comment);
+      replyByParentId.set(comment.parentId, replies);
+    }
+  }
+
+  return (
+    <div className="flex max-w-3xl flex-col gap-6">
+      <div>
+        <Link
+          href="/assessments"
+          className="text-muted-foreground text-sm hover:underline"
+        >
+          ← Assessments
+        </Link>
+        <div className="mt-2 flex flex-col gap-2">
+          <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
+            {assessment.title}
+            <Badge variant="secondary">
+              {ASSESSMENT_STATUS_LABELS[assessment.status]}
+            </Badge>
+          </h1>
+          <div className="flex flex-wrap items-center gap-2">
+            {isDraft ? (
+              <>
+                <form action={sendAssessmentAction}>
+                  <input
+                    type="hidden"
+                    name="assessmentId"
+                    value={assessment.id}
+                  />
+                  <Button type="submit" size="sm">
+                    Send to vendor
+                  </Button>
+                </form>
+                <form action={generateLinkAction}>
+                  <input
+                    type="hidden"
+                    name="assessmentId"
+                    value={assessment.id}
+                  />
+                  <Button type="submit" variant="outline" size="sm">
+                    Generate link only
+                  </Button>
+                </form>
+                <form
+                  action={sendToCustomEmailAction}
+                  className="flex items-center gap-2"
+                >
+                  <input
+                    type="hidden"
+                    name="assessmentId"
+                    value={assessment.id}
+                  />
+                  <input
+                    name="customEmail"
+                    type="text"
+                    placeholder="custom@example.com, …"
+                    className="border-input bg-background h-9 w-48 rounded-md border px-3 text-xs"
+                  />
+                  <Button type="submit" variant="outline" size="sm">
+                    Send to
+                  </Button>
+                </form>
+              </>
+            ) : null}
+            {isReviewable ? (
+              <>
+                <form action={reopenAction}>
+                  <input
+                    type="hidden"
+                    name="assessmentId"
+                    value={assessment.id}
+                  />
+                  <Button type="submit" variant="outline" size="sm">
+                    Reopen
+                  </Button>
+                </form>
+                <FinalizeButton assessmentId={assessment.id} />
+              </>
+            ) : null}
+            <Button asChild variant="outline" size="sm">
+              <a href={`/api/assessments/${assessment.id}/export`} download>
+                Export CSV
+              </a>
+            </Button>
+            {assessment.status === "SUBMITTED" ||
+            assessment.status === "UNDER_REVIEW" ||
+            assessment.status === "COMPLETED" ? (
+              <Button asChild variant="outline" size="sm">
+                <a
+                  href={`/api/assessments/${assessment.id}/pdf`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Download PDF
+                </a>
+              </Button>
+            ) : null}
+            <form action={deleteAssessmentAction}>
+              <input type="hidden" name="assessmentId" value={assessment.id} />
+              <Button type="submit" variant="outline">
+                Delete
+              </Button>
+            </form>
+          </div>
+        </div>
+        <p className="text-muted-foreground mt-1 text-sm">
+          <Link
+            href={`/vendors/${assessment.vendorId}`}
+            className="hover:underline"
+          >
+            {assessment.vendor.name}
+          </Link>
+          {assessment.template
+            ? ` · ${assessment.template.name} v${assessment.template.version}`
+            : ""}
+          {assessment.dueDate ? ` · due ${formatDate(assessment.dueDate)}` : ""}
+          {assessment.reviewer ? ` · reviewer ${assessment.reviewer.name}` : ""}
+        </p>
+      </div>
+
+      {isDraft ? (
+        <DraftEditor
+          assessmentId={assessment.id}
+          title={assessment.title}
+          dueDate={
+            assessment.dueDate
+              ? assessment.dueDate.toISOString().slice(0, 10)
+              : ""
+          }
+        />
+      ) : null}
+
+      {portalUrl ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Vendor link (no login required)</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
+            <CopyLink value={portalUrl} />
+            <p className="text-muted-foreground text-xs">
+              {assessment.tokenExpiresAt
+                ? `Expires ${formatDate(assessment.tokenExpiresAt)}`
+                : "No expiry"}
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <form action={extendAssessmentAction}>
+                <input
+                  type="hidden"
+                  name="assessmentId"
+                  value={assessment.id}
+                />
+                <Button type="submit" variant="outline" size="sm">
+                  Extend 30 days
+                </Button>
+              </form>
+              <form action={regenerateAssessmentAction}>
+                <input
+                  type="hidden"
+                  name="assessmentId"
+                  value={assessment.id}
+                />
+                <Button type="submit" variant="outline" size="sm">
+                  Regenerate link
+                </Button>
+              </form>
+              <form action={revokeAssessmentAction}>
+                <input
+                  type="hidden"
+                  name="assessmentId"
+                  value={assessment.id}
+                />
+                <Button type="submit" variant="ghost" size="sm">
+                  Revoke
+                </Button>
+              </form>
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {!isDraft && !portalUrl ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Vendor link</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
+            <p className="text-muted-foreground text-sm">
+              The link has been revoked.
+            </p>
+            <form action={regenerateAssessmentAction}>
+              <input type="hidden" name="assessmentId" value={assessment.id} />
+              <Button type="submit" variant="outline" size="sm">
+                Regenerate link
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {assessment.score !== null ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Score</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-semibold">
+              {formatPercent(assessment.score)}
+            </p>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {assessment.findings.length > 0 ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Findings ({assessment.findings.length})</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-2">
+            {assessment.findings.map((finding) => (
+              <div key={finding.id} className="rounded-md border p-3">
+                <div className="flex items-center gap-2">
+                  <Badge variant="destructive">{finding.severity}</Badge>
+                  <span className="text-sm font-medium">{finding.title}</span>
+                </div>
+                <p className="text-muted-foreground mt-1 text-sm">
+                  {finding.description}
+                </p>
+                {finding.controlCodes.length > 0 ? (
+                  <div className="mt-1 flex flex-wrap gap-1">
+                    {finding.controlCodes.map((code) => (
+                      <Badge
+                        key={code}
+                        variant="outline"
+                        className="font-mono text-xs"
+                      >
+                        {code}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      ) : assessment.score !== null ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Findings</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">
+              All answers compliant — no findings.
+            </p>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {assessment.questions.length > 0 ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Responses</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
+            {assessment.questions.map((question) => {
+              const response = responsesByQuestion.get(question.id);
+              const review = response?.review;
+              const questionComments =
+                commentsByQuestion.get(question.id) ?? [];
+              const topLevelComments = questionComments.filter(
+                (comment) => !comment.parentId,
+              );
+
+              return (
+                <div key={question.id} className="rounded-md border p-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant="outline" className="text-xs">
+                      {question.sectionTitle}
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      {QUESTION_TYPE_LABELS[question.type]}
+                    </Badge>
+                  </div>
+                  <p className="mt-1 text-sm font-medium">{question.text}</p>
+                  <p className="text-muted-foreground mt-1 text-sm">
+                    {response?.isNotApplicable
+                      ? "N/A"
+                      : formatResponseValue(response?.value)}
+                  </p>
+                  {(evidenceByQuestion.get(question.id) ?? []).map((item) => {
+                    const isImage = /^image\//.test(item.mimeType);
+                    const isPdf = item.mimeType === "application/pdf";
+                    const url = `/api/files/${item.id}?inline=true`;
+                    if (isImage) {
+                      return (
+                        <img
+                          key={item.id}
+                          src={url}
+                          alt={item.fileName}
+                          loading="lazy"
+                          className="mt-2 max-h-64 rounded-md border object-contain"
+                        />
+                      );
+                    }
+                    if (isPdf) {
+                      return (
+                        <iframe
+                          key={item.id}
+                          src={url}
+                          title={item.fileName}
+                          className="mt-2 h-64 w-full rounded-md border"
+                        />
+                      );
+                    }
+                    return (
+                      <a
+                        key={item.id}
+                        href={`/api/files/${item.id}`}
+                        className="text-primary mt-1 block text-xs hover:underline"
+                      >
+                        {item.fileName}
+                      </a>
+                    );
+                  })}
+                  {response ? (
+                    <div className="mt-2 flex items-start justify-between gap-2">
+                      {isReviewable ? (
+                        <>
+                          {review ? (
+                            <p className="text-muted-foreground text-xs">
+                              Previous:{" "}
+                              {review.decision === "CLARIFICATION_REQUESTED"
+                                ? "clarification requested"
+                                : review.decision.toLowerCase()}
+                              {review.note ? ` — ${review.note}` : ""}
+                            </p>
+                          ) : null}
+                          <form
+                            action={reviewAction}
+                            className="flex items-center gap-2"
+                          >
+                            <input
+                              type="hidden"
+                              name="assessmentId"
+                              value={assessment.id}
+                            />
+                            <input
+                              type="hidden"
+                              name="responseId"
+                              value={response.id}
+                            />
+                            <select
+                              name="decision"
+                              className="border-input bg-background h-8 rounded-md border px-2 text-xs"
+                              required
+                              defaultValue=""
+                            >
+                              <option value="" disabled>
+                                Review
+                              </option>
+                              <option value="APPROVED">Approve</option>
+                              <option value="REJECTED">Reject</option>
+                              <option value="CLARIFICATION_REQUESTED">
+                                Request clarification
+                              </option>
+                            </select>
+                            <input
+                              name="note"
+                              placeholder="Optional note"
+                              className="border-input bg-background h-8 rounded-md border px-2 text-xs"
+                            />
+                            <Button type="submit" size="sm" variant="ghost">
+                              Save
+                            </Button>
+                          </form>
+                        </>
+                      ) : review ? (
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant={
+                              REVIEW_DECISION_VARIANT[review.decision] ??
+                              "secondary"
+                            }
+                          >
+                            {review.decision === "CLARIFICATION_REQUESTED"
+                              ? "Clarification requested"
+                              : review.decision.toLowerCase()}
+                          </Badge>
+                          {review.note ? (
+                            <span className="text-muted-foreground text-xs">
+                              {review.note}
+                            </span>
+                          ) : null}
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null}
+
+                  {topLevelComments.map((comment) => (
+                    <div
+                      key={comment.id}
+                      className="border-muted mt-2 border-l-2 pl-3"
+                    >
+                      <p className="text-muted-foreground text-xs">
+                        {comment.authorName} · {formatDate(comment.createdAt)}
+                      </p>
+                      <p className="text-sm">{comment.body}</p>
+                      {(replyByParentId.get(comment.id) ?? []).map((reply) => (
+                        <div
+                          key={reply.id}
+                          className="border-muted mt-1 border-l-2 pl-3"
+                        >
+                          <p className="text-muted-foreground text-xs">
+                            {reply.authorName} · {formatDate(reply.createdAt)}
+                          </p>
+                          <p className="text-sm">{reply.body}</p>
+                        </div>
+                      ))}
+                      <form
+                        action={addCommentAction}
+                        className="mt-1 flex gap-2"
+                      >
+                        <input
+                          type="hidden"
+                          name="assessmentId"
+                          value={assessment.id}
+                        />
+                        <input
+                          type="hidden"
+                          name="assessmentQuestionId"
+                          value={question.id}
+                        />
+                        <input
+                          type="hidden"
+                          name="parentId"
+                          value={comment.id}
+                        />
+                        <input
+                          name="body"
+                          placeholder="Reply"
+                          required
+                          className="border-input bg-background h-8 flex-1 rounded-md border px-2 text-xs"
+                        />
+                        <Button type="submit" size="sm" variant="ghost">
+                          Reply
+                        </Button>
+                      </form>
+                    </div>
+                  ))}
+
+                  <form action={addCommentAction} className="mt-2 flex gap-2">
+                    <input
+                      type="hidden"
+                      name="assessmentId"
+                      value={assessment.id}
+                    />
+                    <input
+                      type="hidden"
+                      name="assessmentQuestionId"
+                      value={question.id}
+                    />
+                    <input
+                      name="body"
+                      placeholder="Add a comment"
+                      required
+                      className="border-input bg-background h-8 flex-1 rounded-md border px-2 text-xs"
+                    />
+                    <Button type="submit" size="sm" variant="ghost">
+                      Comment
+                    </Button>
+                  </form>
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
+      ) : null}
+    </div>
+  );
+}

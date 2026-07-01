@@ -1,0 +1,160 @@
+"use server";
+
+import { randomBytes } from "node:crypto";
+import { headers } from "next/headers";
+
+import {
+  createEvidence,
+  getAssessmentForToken,
+  getAssessmentQuestion,
+  isPortalEditable,
+  isTokenExpired,
+  saveResponses,
+  submitAssessment,
+} from "@/lib/db/assessments";
+import { addComment } from "@/lib/db/collaboration";
+import { saveProgressSchema } from "@/lib/schemas/portal";
+import { getFileSettings } from "@/lib/settings";
+import { storage } from "@/lib/storage";
+import { rateLimit } from "@/lib/rate-limit";
+
+async function clientIp(): Promise<string> {
+  const h = await headers();
+  return h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+}
+
+export async function saveProgressAction(
+  token: string,
+  answers: unknown,
+): Promise<{ ok: boolean }> {
+  if (!rateLimit("autosave", token, 30)) {
+    return { ok: false };
+  }
+  if (!rateLimit("autosave-ip", await clientIp(), 60)) {
+    return { ok: false };
+  }
+
+  const parsed = saveProgressSchema.safeParse({ answers });
+  if (!parsed.success) {
+    return { ok: false };
+  }
+  return saveResponses(token, parsed.data.answers);
+}
+
+export type UploadResult =
+  | {
+      ok: true;
+      evidence: { id: string; fileName: string; assessmentQuestionId: string };
+    }
+  | { ok: false; error: string };
+
+function sanitizeFileName(name: string): string {
+  return name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 120);
+}
+
+export async function uploadEvidenceAction(
+  formData: FormData,
+): Promise<UploadResult> {
+  if (!rateLimit("upload", await clientIp(), 10)) {
+    return { ok: false, error: "Too many uploads. Please wait a moment." };
+  }
+
+  const token = String(formData.get("token") ?? "");
+  const assessmentQuestionId = String(
+    formData.get("assessmentQuestionId") ?? "",
+  );
+  const file = formData.get("file");
+
+  const assessment = await getAssessmentForToken(token);
+  if (
+    !assessment ||
+    !isPortalEditable(assessment.status, assessment.tokenExpiresAt)
+  ) {
+    return { ok: false, error: "This link is no longer valid." };
+  }
+  if (!(file instanceof File) || file.size === 0) {
+    return { ok: false, error: "No file selected." };
+  }
+
+  const question = await getAssessmentQuestion(assessmentQuestionId);
+  if (!question || question.assessmentId !== assessment.id) {
+    return { ok: false, error: "Invalid question." };
+  }
+
+  const fileSettings = await getFileSettings();
+  const maxBytes = fileSettings.maxUploadMb * 1024 * 1024;
+  if (file.size > maxBytes) {
+    return {
+      ok: false,
+      error: `File exceeds the ${fileSettings.maxUploadMb} MB limit.`,
+    };
+  }
+  const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+  if (
+    fileSettings.allowedExtensions.length > 0 &&
+    !fileSettings.allowedExtensions.includes(extension)
+  ) {
+    return { ok: false, error: `Files of type .${extension} are not allowed.` };
+  }
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const storageKey = `${assessment.id}/${randomBytes(8).toString("hex")}-${sanitizeFileName(file.name)}`;
+  await storage.save(storageKey, buffer);
+
+  const evidence = await createEvidence({
+    assessmentId: assessment.id,
+    assessmentQuestionId,
+    fileName: file.name,
+    storageKey,
+    mimeType: file.type || "application/octet-stream",
+    sizeBytes: file.size,
+  });
+
+  await saveResponses(token, [
+    { assessmentQuestionId, value: file.name, isNotApplicable: false },
+  ]);
+
+  return {
+    ok: true,
+    evidence: {
+      id: evidence.id,
+      fileName: evidence.fileName,
+      assessmentQuestionId,
+    },
+  };
+}
+
+export async function submitPortalAction(
+  token: string,
+): Promise<{ ok: boolean; missing: number }> {
+  if (!rateLimit("submit", token, 5)) {
+    return { ok: false, missing: -1 };
+  }
+  return submitAssessment(token);
+}
+
+export async function vendorAddCommentAction(
+  token: string,
+  assessmentQuestionId: string,
+  body: string,
+): Promise<{ ok: boolean }> {
+  const trimmed = body.trim();
+  if (!trimmed) {
+    return { ok: false };
+  }
+
+  const assessment = await getAssessmentForToken(token);
+  if (!assessment || isTokenExpired(assessment.tokenExpiresAt)) {
+    return { ok: false };
+  }
+
+  await addComment({
+    assessmentId: assessment.id,
+    assessmentQuestionId,
+    authorType: "VENDOR",
+    authorName: "Vendor",
+    body: trimmed,
+  });
+
+  return { ok: true };
+}

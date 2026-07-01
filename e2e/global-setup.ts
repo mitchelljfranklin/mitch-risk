@@ -1,0 +1,90 @@
+import "dotenv/config";
+
+import { writeFileSync } from "node:fs";
+
+import { createAssessment, sendAssessment } from "@/lib/db/assessments";
+import {
+  addQuestion,
+  addSection,
+  createTemplate,
+  publishTemplate,
+} from "@/lib/db/templates";
+import { createVendor } from "@/lib/db/vendors";
+import { prisma } from "@/lib/prisma";
+import { type QuestionInput } from "@/lib/schemas/template";
+
+const E2E_VENDOR = "E2E Vendor";
+const E2E_TEMPLATE = "E2E Template";
+const TOKEN_FILE = "e2e/.portal-token";
+
+function buildQuestion(
+  overrides: Partial<QuestionInput> & Pick<QuestionInput, "text" | "type">,
+): QuestionInput {
+  return {
+    helpText: "",
+    riskWeight: "MEDIUM",
+    required: true,
+    options: [],
+    expectedAnswer: "",
+    conditionQuestionId: "",
+    conditionEquals: "",
+    controlIds: [],
+    ...overrides,
+  };
+}
+
+export default async function globalSetup() {
+  await prisma.vendor.deleteMany({ where: { name: E2E_VENDOR } });
+  await prisma.template.deleteMany({ where: { name: E2E_TEMPLATE } });
+
+  const template = await createTemplate({
+    name: E2E_TEMPLATE,
+    description: "",
+  });
+  const section = await addSection(template.id, "General");
+  await addQuestion(
+    section.id,
+    buildQuestion({
+      text: "Do you enforce MFA?",
+      type: "YES_NO",
+      expectedAnswer: "YES",
+    }),
+  );
+  await addQuestion(
+    section.id,
+    buildQuestion({ text: "Describe your access policy", type: "FREE_TEXT" }),
+  );
+  await addQuestion(
+    section.id,
+    buildQuestion({
+      text: "Attach your policy document",
+      type: "FILE_UPLOAD",
+      required: false,
+    }),
+  );
+  await publishTemplate(template.id);
+
+  const vendor = await createVendor({
+    name: E2E_VENDOR,
+    contactName: "",
+    contactEmail: "e2e@example.test",
+    tier: "",
+    website: "",
+    notes: "",
+  });
+  const assessment = await createAssessment(vendor.id, {
+    title: "E2E Assessment",
+    templateId: template.id,
+    dueDate: "",
+    reviewerId: "",
+  });
+  await sendAssessment(assessment.id);
+
+  const sent = await prisma.assessment.findUniqueOrThrow({
+    where: { id: assessment.id },
+    select: { accessToken: true },
+  });
+  writeFileSync(TOKEN_FILE, sent.accessToken ?? "", "utf8");
+
+  await prisma.$disconnect();
+}

@@ -1,0 +1,432 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  REVIEWER
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         UserRole @default(REVIEWER)
+  disabled     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  reviewedAssessments Assessment[] @relation("AssessmentReviewer")
+
+  reviews              AnswerReview[] @relation("UserReviews")
+
+  auditLogs            AuditLog[]
+
+  ssoIdentities        SsoIdentity[]
+
+  apiKeys              ApiKey[]
+
+  sentNotificationLogs NotificationLog[] @relation("EmailSentBy")
+
+  @@map("users")
+}
+
+model AppSetting {
+  id        String   @id @default(cuid())
+  category  String
+  key       String   @unique
+  value     Json
+  isSecret  Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@map("app_settings")
+}
+
+model Framework {
+  id          String    @id @default(cuid())
+  name        String
+  version     String
+  description String?
+  controls    Control[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([name, version])
+  @@map("frameworks")
+}
+
+model Control {
+  id          String    @id @default(cuid())
+  frameworkId String
+  framework   Framework @relation(fields: [frameworkId], references: [id], onDelete: Cascade)
+  domain      String
+  code        String
+  title       String
+  guidance    String
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  questionControls QuestionControl[]
+
+  @@unique([frameworkId, code])
+  @@index([frameworkId])
+  @@index([domain])
+  @@map("controls")
+}
+
+enum TemplateStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum QuestionType {
+  YES_NO
+  MULTIPLE_CHOICE
+  FREE_TEXT
+  FILE_UPLOAD
+  DATE
+  NUMERIC
+  COMBOBOX
+  MULTI_SELECT
+  RATING
+}
+
+enum RiskWeight {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+model Template {
+  id               String         @id @default(cuid())
+  name             String
+  description      String?
+  version          Int            @default(1)
+  status           TemplateStatus @default(DRAFT)
+  parentTemplateId String?
+  parent           Template?      @relation("TemplateVersions", fields: [parentTemplateId], references: [id])
+  versions         Template[]     @relation("TemplateVersions")
+  sections         Section[]
+  assessments      Assessment[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@index([status])
+  @@map("templates")
+}
+
+model Section {
+  id         String     @id @default(cuid())
+  templateId String
+  template   Template   @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  title      String
+  order      Int        @default(0)
+  questions  Question[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@index([templateId])
+  @@map("sections")
+}
+
+model Question {
+  id               String            @id @default(cuid())
+  sectionId        String
+  section          Section           @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  text             String
+  helpText         String?
+  type             QuestionType
+  riskWeight       RiskWeight        @default(MEDIUM)
+  required         Boolean           @default(true)
+  expectedAnswer   Json?
+  options          Json?
+  conditionalLogic Json?
+  order            Int               @default(0)
+  controls         QuestionControl[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([sectionId])
+  @@map("questions")
+}
+
+model QuestionControl {
+  questionId String
+  controlId  String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  control    Control  @relation(fields: [controlId], references: [id], onDelete: Cascade)
+
+  @@id([questionId, controlId])
+  @@index([controlId])
+  @@map("question_controls")
+}
+
+enum VendorTier {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum AssessmentStatus {
+  DRAFT
+  SENT
+  IN_PROGRESS
+  SUBMITTED
+  UNDER_REVIEW
+  COMPLETED
+  OVERDUE
+}
+
+enum Recurrence {
+  NONE
+  QUARTERLY
+  ANNUAL
+}
+
+model Vendor {
+  id             String       @id @default(cuid())
+  name           String
+  contactName    String?
+  contactEmail   String
+  tier           VendorTier?
+  website        String?
+  notes          String?
+  overallScore   Float?
+  lastAssessedAt DateTime?
+  assessments    Assessment[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("vendors")
+}
+
+model Assessment {
+  id             String               @id @default(cuid())
+  vendorId       String
+  vendor         Vendor               @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  templateId     String?
+  template       Template?            @relation(fields: [templateId], references: [id])
+  reviewerId     String?
+  reviewer       User?                @relation("AssessmentReviewer", fields: [reviewerId], references: [id])
+  title          String
+  status         AssessmentStatus     @default(DRAFT)
+  dueDate        DateTime?
+  accessToken    String?              @unique
+  tokenHash      String?              @unique
+  tokenExpiresAt DateTime?
+  sentAt         DateTime?
+  submittedAt    DateTime?
+  recurrence     Recurrence           @default(NONE)
+  nextRunAt      DateTime?
+  score          Float?
+  questions      AssessmentQuestion[]
+  responses      Response[]
+  evidence       Evidence[]
+  findings       Finding[]
+  comments       Comment[]
+  notificationLogs NotificationLog[]
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@index([vendorId])
+  @@index([vendorId, status])
+  @@index([status])
+  @@map("assessments")
+}
+
+model AssessmentQuestion {
+  id               String       @id @default(cuid())
+  assessmentId     String
+  assessment       Assessment   @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  sectionTitle     String
+  text             String
+  helpText         String?
+  type             QuestionType
+  riskWeight       RiskWeight
+  required         Boolean
+  expectedAnswer   Json?
+  options          Json?
+  conditionalLogic Json?
+  controlIds       String[]
+  order            Int
+  response         Response?
+  evidence         Evidence[]
+  comments         Comment[]
+  createdAt        DateTime     @default(now())
+
+  @@index([assessmentId])
+  @@map("assessment_questions")
+}
+
+model Response {
+  id                   String             @id @default(cuid())
+  assessmentId         String
+  assessment           Assessment         @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  assessmentQuestionId String             @unique
+  assessmentQuestion   AssessmentQuestion @relation(fields: [assessmentQuestionId], references: [id], onDelete: Cascade)
+  value                Json?
+  isNotApplicable      Boolean            @default(false)
+  isCompliant          Boolean?
+  weightedScore        Float?
+  maxScore             Float?
+  answeredAt           DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  findings             Finding[]
+
+  review               AnswerReview?
+
+  @@index([assessmentId])
+  @@index([assessmentId, isCompliant])
+  @@map("responses")
+}
+
+model Evidence {
+  id                   String              @id @default(cuid())
+  assessmentId         String
+  assessment           Assessment          @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  assessmentQuestionId String?
+  assessmentQuestion   AssessmentQuestion? @relation(fields: [assessmentQuestionId], references: [id], onDelete: SetNull)
+  fileName             String
+  storageKey           String
+  mimeType             String
+  sizeBytes            Int
+  note                 String?
+  createdAt            DateTime            @default(now())
+
+  @@index([assessmentId])
+  @@map("evidence")
+}
+
+enum FindingStatus {
+  OPEN
+  ACCEPTED
+  REMEDIATED
+  RISK_ACCEPTED
+}
+
+model Finding {
+  id           String         @id @default(cuid())
+  assessmentId String
+  assessment   Assessment     @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  responseId   String?
+  response     Response?      @relation(fields: [responseId], references: [id], onDelete: SetNull)
+  controlCodes String[]
+  severity     RiskWeight
+  status       FindingStatus  @default(OPEN)
+  title        String
+  description  String
+  createdAt    DateTime       @default(now())
+
+  @@index([assessmentId])
+  @@index([status])
+  @@map("findings")
+}
+
+model Comment {
+  id                   String               @id @default(cuid())
+  assessmentId         String
+  assessment           Assessment           @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  assessmentQuestionId String?
+  assessmentQuestion   AssessmentQuestion?  @relation(fields: [assessmentQuestionId], references: [id], onDelete: SetNull)
+  parentId             String?
+  parent               Comment?             @relation("CommentReplies", fields: [parentId], references: [id])
+  replies              Comment[]            @relation("CommentReplies")
+  authorType           String
+  authorName           String
+  body                 String
+  createdAt            DateTime             @default(now())
+
+  @@index([assessmentId])
+  @@index([assessmentId, assessmentQuestionId])
+  @@index([assessmentQuestionId])
+  @@map("comments")
+}
+
+model AnswerReview {
+  id         String         @id @default(cuid())
+  responseId String         @unique
+  response   Response       @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  reviewerId String
+  reviewer   User           @relation("UserReviews", fields: [reviewerId], references: [id])
+  decision   String
+  note       String?
+  createdAt  DateTime       @default(now())
+
+  @@map("answer_reviews")
+}
+
+model NotificationLog {
+  id           String      @id @default(cuid())
+  assessmentId String?
+  assessment   Assessment? @relation(fields: [assessmentId], references: [id], onDelete: SetNull)
+  type         String
+  sentTo       String
+  subject      String
+  status       String      @default("SENT")
+  errorMessage String?
+  sentById     String?
+  sentBy       User?       @relation("EmailSentBy", fields: [sentById], references: [id], onDelete: SetNull)
+  sentAt       DateTime    @default(now())
+
+  @@index([assessmentId, type, sentTo, status])
+  @@index([sentById])
+  @@index([sentAt])
+  @@map("notification_logs")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action     String
+  entityType String?
+  entityId   String?
+  meta       Json?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model SsoIdentity {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider   String
+  providerId String
+  createdAt  DateTime @default(now())
+
+  @@unique([provider, providerId])
+  @@index([userId])
+  @@map("sso_identities")
+}
+
+model ApiKey {
+  id             String    @id @default(cuid())
+  name           String
+  keyHash        String    @unique
+  prefix         String
+  createdBy      String
+  creator        User      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  disabled       Boolean   @default(false)
+  expiresAt      DateTime?
+  lastUsedAt     DateTime?
+  allowedIps     String    @default("")
+  rateLimitPerMin Int?
+  createdAt      DateTime  @default(now())
+
+  @@map("api_keys")
+}

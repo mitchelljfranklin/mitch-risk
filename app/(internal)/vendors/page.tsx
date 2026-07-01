@@ -1,0 +1,124 @@
+import Link from "next/link";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { requireUser } from "@/lib/auth";
+import { listVendors } from "@/lib/db/vendors";
+import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
+import { ImportVendorForm } from "./import-vendor-form";
+
+export const dynamic = "force-dynamic";
+
+export const metadata = { title: "Vendors" };
+
+type VendorsPageProps = {
+  searchParams: Promise<Record<string, string | undefined>>;
+};
+
+export default async function VendorsPage({ searchParams }: VendorsPageProps) {
+  await requireUser();
+  const sp = await searchParams;
+  const vendors = await listVendors({
+    query: sp.query,
+    tier: sp.tier || undefined,
+  });
+  const hasFilters = Boolean(sp.query) || Boolean(sp.tier);
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Vendors</h1>
+          <p className="text-muted-foreground text-sm">
+            Vendors you assess for security risk.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <ImportVendorForm />
+          <Button asChild>
+            <Link href="/vendors/new">New vendor</Link>
+          </Button>
+        </div>
+      </div>
+
+      <form className="flex flex-wrap items-end gap-2">
+        <div className="flex flex-col gap-1">
+          <label className="text-muted-foreground text-xs" htmlFor="query">
+            Search
+          </label>
+          <Input
+            id="query"
+            name="query"
+            placeholder="Name or email…"
+            defaultValue={sp.query ?? ""}
+            className="w-48"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-muted-foreground text-xs" htmlFor="tier">
+            Tier
+          </label>
+          <select
+            id="tier"
+            name="tier"
+            defaultValue={sp.tier ?? ""}
+            className="border-input bg-background h-9 rounded-md border px-3 text-sm"
+          >
+            <option value="">All</option>
+            {Object.entries(VENDOR_TIER_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <Button type="submit" variant="secondary" size="sm" className="mb-px">
+          Filter
+        </Button>
+        {hasFilters ? (
+          <Button asChild variant="ghost" size="sm" className="mb-px">
+            <Link href="/vendors">Clear</Link>
+          </Button>
+        ) : null}
+      </form>
+
+      {vendors.length === 0 ? (
+        <p className="text-muted-foreground text-sm">
+          {hasFilters
+            ? "No vendors match the selected filters."
+            : "No vendors yet."}
+        </p>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {vendors.map((vendor) => (
+            <Link key={vendor.id} href={`/vendors/${vendor.id}`}>
+              <Card className="hover:bg-accent/40 h-full transition-colors">
+                <CardHeader>
+                  <div className="flex items-center justify-between gap-2">
+                    <CardTitle>{vendor.name}</CardTitle>
+                    {vendor.tier ? (
+                      <Badge variant="outline">
+                        {VENDOR_TIER_LABELS[vendor.tier]}
+                      </Badge>
+                    ) : null}
+                  </div>
+                  <CardDescription>{vendor.contactEmail}</CardDescription>
+                  <p className="text-muted-foreground text-sm">
+                    {vendor._count.assessments} assessments
+                  </p>
+                </CardHeader>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
