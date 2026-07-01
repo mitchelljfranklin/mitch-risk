@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 
 import { type SettingsActionState, saveSsoSettings } from "./actions";
+import { useFormToast } from "@/hooks/use-form-toast";
 
 type SsoFormProps = {
   entraIdEnabled: boolean;
@@ -117,6 +118,7 @@ export function SsoForm({
     saveSsoSettings,
     initialState,
   );
+  useFormToast(state);
 
   return (
     <form action={formAction} className="grid gap-4">
@@ -226,18 +228,6 @@ export function SsoForm({
         <Button type="submit" disabled={isPending} size="sm">
           {isPending ? "Saving..." : "Save SSO"}
         </Button>
-        {state ? (
-          <span
-            className={
-              state.ok
-                ? "text-muted-foreground text-xs"
-                : "text-destructive text-xs"
-            }
-            role="status"
-          >
-            {state.message}
-          </span>
-        ) : null}
       </div>
     </form>
   );

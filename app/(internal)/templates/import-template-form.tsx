@@ -8,6 +8,7 @@ import {
   importTemplateAction,
   type TemplateImportState,
 } from "@/lib/actions/templates";
+import { useFormToast } from "@/hooks/use-form-toast";
 
 const initialState: TemplateImportState = undefined;
 
@@ -23,6 +24,7 @@ export function ImportTemplateForm() {
     },
     initialState,
   );
+  useFormToast(state);
 
   return (
     <form ref={formRef} action={formAction} className="flex items-center gap-3">

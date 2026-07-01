@@ -44,6 +44,11 @@ components/          # shadcn ui primitives + domain composites
   ui/                # badge, button, card, chart, checkbox, dropdown-menu, input,
                      #   label, radio-group, select, separator, sheet, sidebar,
                      #   skeleton, tabs, textarea, tooltip
+  toast.tsx          # toast notification system (success/error/info)
+  stat-card.tsx      # animated count-up stat cards
+  empty-state.tsx    # SVG illustration empty states
+  calendar-heatmap.tsx # GitHub-style activity grid
+  keyboard-shortcuts.tsx # ? key modal with g+letter navigation
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
   db/                # typed data-access layer (assessments, audit, collaboration,
@@ -67,6 +72,7 @@ lib/                 # cross-cutting logic
   tokens.ts          # opaque portal token generation + expiry
   utils.ts           # cn(), formatDate(), formatPercent()
   storage/           # file storage interface + local-disk implementation
+hooks/              # React hooks (use-form-toast, use-mobile)
 emails/              # React Email templates (invite, reminder, escalation, dynamic)
 prisma/              # schema.prisma, migrations, seed.ts
   seed-data/         # ISO 27001, SOC 2, NIST CSF, Essential Eight seed data + types

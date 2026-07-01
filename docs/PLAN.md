@@ -319,6 +319,17 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   and Retry button for failed sends. Sidebar notification badge includes failed emails
   (last 24h). Email log retention setting (default 14 days) with cron-based pruning.
   Cron dedup updated to check for existing SENT entries, allowing retry of FAILED ones.
+- **Phase 38 — UI/UX polish & consistency.** Custom-themed scrollbar; gradient sidebar header
+  using primary colour; animated count-up stat cards on dashboard; toast notification system
+  (slide-in success/error/info) wired to all settings forms and actions; auth page hero with
+  branded gradient background, blur orbs, and organization logo/name; 6 inline SVG empty-state
+  illustrations; keyboard shortcuts modal (`?` to toggle, `g`+letter for nav); dashboard
+  trend indicators on stat cards; GitHub-style calendar heatmap of assessment activity;
+  collapsible sidebar navigation sections (Dashboard, Risk, Frameworks, Manage); portal
+  questionnaire progress bar with answered count and expiry date; unified RAG colour system
+  with `--rag-green/amber/red/unscored` CSS variables and Appearance setting colour pickers;
+  sidebar logo enlarged; missing detail-route loading skeletons added; border-radius slider
+  and page-width selector in Appearance settings.
 
 ## 8. Out of scope (v1+)
 

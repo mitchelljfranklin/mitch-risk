@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { saveSchedulingSettings } from "./actions";
+import { useFormToast } from "@/hooks/use-form-toast";
 
 type LimitsFormProps = {
   loginRateLimitPerMin: number;
@@ -40,6 +41,7 @@ export function LimitsForm({
     saveSchedulingSettings,
     undefined,
   );
+  useFormToast(state);
 
   return (
     <form action={action} className="flex flex-col gap-6">
@@ -132,14 +134,6 @@ export function LimitsForm({
         <Button type="submit" disabled={isPending} size="sm">
           {isPending ? "Saving..." : "Save limits"}
         </Button>
-        {state?.message ? (
-          <p
-            className={`text-sm ${state.ok ? "text-green-600" : "text-destructive"}`}
-            role="alert"
-          >
-            {state.message}
-          </p>
-        ) : null}
       </div>
     </form>
   );

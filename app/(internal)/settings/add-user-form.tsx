@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { addUserAction, type UserActionState } from "@/lib/actions/users";
+import { useFormToast } from "@/hooks/use-form-toast";
 
 const initialState: UserActionState = undefined;
 
@@ -21,6 +22,7 @@ export function AddUserForm() {
     addUserAction,
     initialState,
   );
+  useFormToast(state);
 
   return (
     <form action={formAction} className="grid gap-3 rounded-md border p-3">
@@ -63,18 +65,6 @@ export function AddUserForm() {
         <Button type="submit" disabled={isPending} size="sm">
           {isPending ? "Creating..." : "Create user"}
         </Button>
-        {state ? (
-          <span
-            className={
-              state.ok
-                ? "text-muted-foreground text-xs"
-                : "text-destructive text-xs"
-            }
-            role="status"
-          >
-            {state.message}
-          </span>
-        ) : null}
       </div>
     </form>
   );

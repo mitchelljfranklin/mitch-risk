@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useFormToast } from "@/hooks/use-form-toast";
 import {
   Select,
   SelectContent,
@@ -57,6 +58,7 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
     saveApiSettingsAction,
     undefined,
   );
+  useFormToast(saveState);
 
   return (
     <div className="flex flex-col gap-6">
@@ -78,13 +80,6 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
               API documentation →
             </a>
           </Button>
-          {saveState?.message ? (
-            <p
-              className={`text-sm ${saveState.ok ? "text-green-600" : "text-destructive"}`}
-            >
-              {saveState.message}
-            </p>
-          ) : null}
         </div>
       </form>
 
@@ -191,13 +186,6 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
             <Button type="submit" size="sm" disabled={createPending}>
               {createPending ? "Creating..." : "Create key"}
             </Button>
-            {createState && !createState.key ? (
-              <p
-                className={`text-sm ${createState.ok ? "text-green-600" : "text-destructive"}`}
-              >
-                {createState.message}
-              </p>
-            ) : null}
           </div>
         </form>
 

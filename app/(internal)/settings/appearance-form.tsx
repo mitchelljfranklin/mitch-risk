@@ -5,6 +5,7 @@ import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useFormToast } from "@/hooks/use-form-toast";
 import {
   Select,
   SelectContent,
@@ -88,6 +89,8 @@ export function AppearanceForm({
     saveAppearanceSettings,
     undefined,
   );
+
+  useFormToast(state);
 
   return (
     <form action={action} className="grid gap-6">
@@ -223,14 +226,6 @@ export function AppearanceForm({
         <Button type="submit" disabled={isPending} size="sm">
           {isPending ? "Saving..." : "Save appearance"}
         </Button>
-        {state?.message ? (
-          <p
-            className={`text-sm ${state.ok ? "text-green-600" : "text-destructive"}`}
-            role="alert"
-          >
-            {state.message}
-          </p>
-        ) : null}
       </div>
     </form>
   );

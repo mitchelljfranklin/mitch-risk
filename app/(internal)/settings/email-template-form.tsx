@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 import { type SettingsActionState, saveEmailTemplateSettings } from "./actions";
+import { useFormToast } from "@/hooks/use-form-toast";
 
 type EmailTemplateFormProps = {
   inviteSubject: string;
@@ -69,6 +70,7 @@ export function EmailTemplateForm({
     saveEmailTemplateSettings,
     initialState,
   );
+  useFormToast(state);
 
   return (
     <form action={formAction} className="grid gap-4">
@@ -102,18 +104,6 @@ export function EmailTemplateForm({
         <Button type="submit" disabled={isPending} size="sm">
           {isPending ? "Saving..." : "Save templates"}
         </Button>
-        {state ? (
-          <span
-            className={
-              state.ok
-                ? "text-muted-foreground text-sm"
-                : "text-destructive text-sm"
-            }
-            role="status"
-          >
-            {state.message}
-          </span>
-        ) : null}
       </div>
     </form>
   );

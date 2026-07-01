@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { saveSchedulingSettings } from "./actions";
+import { useFormToast } from "@/hooks/use-form-toast";
 
 type SchedulingFormProps = {
   reminderOffsetDays: number[];
@@ -22,6 +23,7 @@ export function SchedulingForm({
     saveSchedulingSettings,
     undefined,
   );
+  useFormToast(state);
 
   const [reminderDays, setReminderDays] = useState<string>(
     reminderOffsetDays.join(", "),
@@ -88,14 +90,6 @@ export function SchedulingForm({
         <Button type="submit" disabled={isPending} size="sm">
           {isPending ? "Saving..." : "Save scheduling"}
         </Button>
-        {state?.message ? (
-          <p
-            className={`text-sm ${state.ok ? "text-green-600" : "text-destructive"}`}
-            role="alert"
-          >
-            {state.message}
-          </p>
-        ) : null}
       </div>
     </form>
   );

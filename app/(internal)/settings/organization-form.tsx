@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { saveOrganizationSettings, type SettingsActionState } from "./actions";
+import { useFormToast } from "@/hooks/use-form-toast";
 
 type OrganizationFormProps = {
   name: string;
@@ -23,6 +24,7 @@ export function OrganizationForm({
     saveOrganizationSettings,
     initialState,
   );
+  useFormToast(state);
 
   return (
     <form action={formAction} className="grid max-w-md gap-4">
@@ -43,18 +45,6 @@ export function OrganizationForm({
         <Button type="submit" disabled={isPending} size="sm">
           {isPending ? "Saving..." : "Save"}
         </Button>
-        {state ? (
-          <span
-            className={
-              state.ok
-                ? "text-muted-foreground text-sm"
-                : "text-destructive text-sm"
-            }
-            role="status"
-          >
-            {state.message}
-          </span>
-        ) : null}
       </div>
     </form>
   );

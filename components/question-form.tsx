@@ -23,6 +23,7 @@ import {
   RISK_WEIGHT_LABELS,
   RISK_WEIGHTS,
 } from "@/lib/schemas/template";
+import { useFormToast } from "@/hooks/use-form-toast";
 
 type QuestionType = (typeof QUESTION_TYPES)[number];
 type RiskWeight = (typeof RISK_WEIGHTS)[number];
@@ -69,6 +70,7 @@ export function QuestionForm({
     saveQuestionAction,
     initialState,
   );
+  useFormToast(state);
   const [type, setType] = useState<QuestionType>(defaults?.type ?? "YES_NO");
 
   return (

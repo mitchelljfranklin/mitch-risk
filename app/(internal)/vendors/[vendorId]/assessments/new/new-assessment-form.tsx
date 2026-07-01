@@ -17,6 +17,7 @@ import {
   type AssessmentFormState,
   createAssessmentAction,
 } from "@/lib/actions/assessments";
+import { useFormToast } from "@/hooks/use-form-toast";
 
 type Option = { id: string; label: string };
 
@@ -37,6 +38,7 @@ export function NewAssessmentForm({
     createAssessmentAction,
     initialState,
   );
+  useFormToast(state);
 
   return (
     <form action={formAction} className="grid gap-4">

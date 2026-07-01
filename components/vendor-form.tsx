@@ -16,6 +16,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { type VendorFormState } from "@/lib/actions/vendors";
 import { VENDOR_TIER_LABELS, VENDOR_TIERS } from "@/lib/schemas/vendor";
+import { useFormToast } from "@/hooks/use-form-toast";
 
 type VendorAction = (
   state: VendorFormState,
@@ -39,6 +40,7 @@ const initialState: VendorFormState = undefined;
 
 export function VendorForm({ action, vendorId, defaults }: VendorFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
+  useFormToast(state);
   const cancelHref = vendorId ? `/vendors/${vendorId}` : "/vendors";
 
   return (

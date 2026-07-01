@@ -73,6 +73,7 @@ A phase cannot be marked **Ready for review** unless all of these are true:
 | 35 | Architecture hardening | Approved |
 | 36 | Polish & cleanup | Approved |
 | 37 | Email tracking | Approved |
+| 38 | UI/UX polish & consistency | Approved |
 
 ---
 
@@ -1063,3 +1064,4 @@ for creating assessments and fetching scores.
 | 35 | Approved | User | 2026-07-01 | N+1 saveResponses fixed + React.cache() on settings + merged dashboard query + logAuditSafe wrapper; 73 tests |
 | 36 | Approved | User | 2026-07-01 | README.md + OVERDUE removed + "Finalizing…" + skip-to-content + loading=lazy + noscript + FindingStatus labels; 73 tests |
 | 37 | Approved | User | 2026-07-01 | Email tracking tab, NotificationLog SENT/FAILED, retry with token resolution + in-place update, tab persistence fix, no-auth SMTP support; 73 tests |
+| 38 | Approved | User | 2026-07-01 | RAG color system + appearance expansion, loading skeletons for 6 detail routes, border-radius/page-width controls, custom scrollbar, gradient sidebar, animated stat cards, toast system, auth hero branding, empty state SVGs, keyboard shortcuts, trend indicators, calendar heatmap, collapsible sidebar, portal progress bar; 73 tests |

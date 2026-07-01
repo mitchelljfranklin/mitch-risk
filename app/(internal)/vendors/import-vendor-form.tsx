@@ -8,6 +8,7 @@ import {
   importVendorAction,
   type VendorImportState,
 } from "@/lib/actions/vendors";
+import { useFormToast } from "@/hooks/use-form-toast";
 
 const initialState: VendorImportState = undefined;
 
@@ -23,6 +24,7 @@ export function ImportVendorForm() {
     },
     initialState,
   );
+  useFormToast(state);
 
   return (
     <form ref={formRef} action={formAction} className="flex items-center gap-3">
