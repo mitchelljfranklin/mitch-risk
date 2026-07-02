@@ -101,7 +101,7 @@ export const emailTemplateSchema = z.object({
   invitePasswordBody: z
     .string()
     .default(
-      "{{vendorName}}, you have been asked to complete the security questionnaire: {{assessmentTitle}}. Please submit by {{dueDate}}.\n\nThis questionnaire is password protected.\nYour password: {{portalPassword}}\n\nOpen: {{portalUrl}}",
+      "{{vendorName}}, you have been asked to complete the security questionnaire: {{assessmentTitle}}. Please submit by {{dueDate}}.\n\nThis questionnaire is password protected.\nYour password: {{portalPassword}}\n\nOpen: {{portalUrl}}\n\nYour answers are saved automatically. You can close this page and return using the same link at any time.",
     ),
 });
 

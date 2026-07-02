@@ -135,6 +135,15 @@ export default async function PortalPage({ params }: PortalPageProps) {
             </div>
             <ThemeToggle />
           </header>
+          <div className="rounded-md border border-[var(--rag-green)] bg-[var(--rag-green)]/10 px-4 py-3">
+            <p className="text-sm font-medium">
+              ✓ Your responses have been submitted.
+            </p>
+            <p className="text-muted-foreground mt-1 text-xs">
+              The requester will review your answers and may request
+              clarifications. You can return to this link to see any updates.
+            </p>
+          </div>
           {assessment.questions.map((question) => {
             const response = responseMap.get(question.id);
             const review = response?.review;

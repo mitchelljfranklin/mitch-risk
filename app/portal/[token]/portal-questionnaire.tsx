@@ -127,6 +127,7 @@ export function PortalQuestionnaire({
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
     "idle",
   );
+  const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -176,6 +177,12 @@ export function PortalQuestionnaire({
       );
       const result = await saveProgressAction(token, payload);
       setSaveStatus(result.ok ? "saved" : "idle");
+      if (result.ok) {
+        const now = new Date();
+        setLastSavedAt(
+          `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`,
+        );
+      }
     }, AUTOSAVE_DELAY_MS);
 
     return () => window.clearTimeout(handle);
@@ -514,12 +521,21 @@ export function PortalQuestionnaire({
             <span className="text-muted-foreground text-xs">
               {saveStatus === "saving"
                 ? "Saving…"
-                : saveStatus === "saved"
-                  ? "All changes saved"
-                  : ""}
+                : saveStatus === "saved" && lastSavedAt
+                  ? `Saved at ${lastSavedAt}`
+                  : lastSavedAt
+                    ? `Last saved at ${lastSavedAt}`
+                    : ""}
             </span>
             <ThemeToggle />
           </div>
+        </div>
+        <div className="bg-accent/30 rounded-md border px-4 py-2.5">
+          <p className="text-muted-foreground text-xs">
+            Your answers are saved automatically. You can close this page and
+            return using the same link at any time to pick up where you left
+            off.
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <div className="bg-muted h-2 flex-1 overflow-hidden rounded-full">

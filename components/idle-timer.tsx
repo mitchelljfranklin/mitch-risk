@@ -42,7 +42,7 @@ export function IdleTimer({ timeoutMinutes }: IdleTimerProps) {
     const interval = setInterval(() => {
       if (countdownRef.current > 0) return;
 
-      const idleMs = Date.now() - lastActivityRef.current;
+      const idleMs = Date.now() - (lastActivityRef.current ?? Date.now());
       const timeoutMs = timeoutMinutes * 60 * 1000;
 
       if (idleMs >= timeoutMs) {
