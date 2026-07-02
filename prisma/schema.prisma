@@ -36,6 +36,8 @@ model User {
 
   reviews              AnswerReview[] @relation("UserReviews")
 
+  resolvedFindings     Finding[]      @relation("FindingResolvedBy")
+
   auditLogs            AuditLog[]
 
   ssoIdentities        SsoIdentity[]
@@ -240,6 +242,7 @@ model Assessment {
   tokenHash      String?              @unique
   tokenExpiresAt DateTime?
   portalPasswordHash String?
+  portalRecipients String[]
   sentAt         DateTime?
   submittedAt    DateTime?
   recurrence     Recurrence           @default(NONE)
@@ -326,26 +329,30 @@ model Evidence {
 
 enum FindingStatus {
   OPEN
-  ACCEPTED
   REMEDIATED
   RISK_ACCEPTED
 }
 
 model Finding {
-  id           String         @id @default(cuid())
-  assessmentId String
-  assessment   Assessment     @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
-  responseId   String?
-  response     Response?      @relation(fields: [responseId], references: [id], onDelete: SetNull)
-  controlCodes String[]
-  severity     RiskWeight
-  status       FindingStatus  @default(OPEN)
-  title        String
-  description  String
-  createdAt    DateTime       @default(now())
+  id             String        @id @default(cuid())
+  assessmentId   String
+  assessment     Assessment    @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  responseId     String?
+  response       Response?     @relation(fields: [responseId], references: [id], onDelete: SetNull)
+  controlCodes   String[]
+  severity       RiskWeight
+  status         FindingStatus @default(OPEN)
+  title          String
+  description    String
+  resolutionNote String?
+  resolvedAt     DateTime?
+  resolvedById   String?
+  resolvedBy     User?         @relation("FindingResolvedBy", fields: [resolvedById], references: [id], onDelete: SetNull)
+  createdAt      DateTime      @default(now())
 
   @@index([assessmentId])
   @@index([status])
+  @@index([resolvedById])
   @@map("findings")
 }
 

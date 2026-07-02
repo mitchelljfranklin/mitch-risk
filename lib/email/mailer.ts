@@ -38,7 +38,12 @@ function replaceTokens(text: string, tokens: Record<string, string>): string {
 }
 
 type TemplateType =
-  "invite" | "invite-password" | "reminder" | "escalation" | "submission";
+  | "invite"
+  | "invite-password"
+  | "reminder"
+  | "escalation"
+  | "submission"
+  | "clarification";
 
 export type SendEmailResult = {
   ok: boolean;
@@ -93,27 +98,25 @@ export async function sendEmail(
     getEmailTemplateSettings(),
   ]);
 
-  const subject =
-    templateType === "invite-password"
-      ? templates.invitePasswordSubject
-      : templateType === "invite"
-        ? templates.inviteSubject
-        : templateType === "reminder"
-          ? templates.reminderSubject
-          : templateType === "escalation"
-            ? templates.escalationSubject
-            : templates.submissionSubject;
+  const subjectByType: Record<TemplateType, string> = {
+    invite: templates.inviteSubject,
+    "invite-password": templates.invitePasswordSubject,
+    reminder: templates.reminderSubject,
+    escalation: templates.escalationSubject,
+    submission: templates.submissionSubject,
+    clarification: templates.clarificationSubject,
+  };
+  const bodyByType: Record<TemplateType, string> = {
+    invite: templates.inviteBody,
+    "invite-password": templates.invitePasswordBody,
+    reminder: templates.reminderBody,
+    escalation: templates.escalationBody,
+    submission: templates.submissionBody,
+    clarification: templates.clarificationBody,
+  };
 
-  const body =
-    templateType === "invite-password"
-      ? templates.invitePasswordBody
-      : templateType === "invite"
-        ? templates.inviteBody
-        : templateType === "reminder"
-          ? templates.reminderBody
-          : templateType === "escalation"
-            ? templates.escalationBody
-            : templates.submissionBody;
+  const subject = subjectByType[templateType];
+  const body = bodyByType[templateType];
 
   const resolvedSubject = replaceTokens(subject, tokens);
   const resolvedBody = replaceTokens(body, tokens);

@@ -18,6 +18,7 @@ import {
   regenerateAssessmentToken,
   revokeAssessmentToken,
   sendAssessment,
+  setAssessmentRecipients,
   updateAssessment,
 } from "@/lib/db/assessments";
 import { assessmentSchema } from "@/lib/schemas/assessment";
@@ -75,6 +76,7 @@ export async function sendAssessmentAction(formData: FormData) {
       },
       { assessmentId, sentById: user?.id },
     );
+    await setAssessmentRecipients(assessmentId, [sent.vendorContactEmail]);
   }
 }
 
@@ -128,6 +130,9 @@ export async function sendToCustomEmailAction(formData: FormData) {
         },
         { assessmentId, sentById: user?.id },
       );
+    }
+    if (emails.length > 0) {
+      await setAssessmentRecipients(assessmentId, emails);
     }
   }
 }
@@ -277,6 +282,7 @@ export async function sendBulkAssessmentsAction(
             },
             { assessmentId: assessment.id, sentById: user?.id },
           );
+          await setAssessmentRecipients(assessment.id, [vendor.contactEmail]);
         }
       }
 

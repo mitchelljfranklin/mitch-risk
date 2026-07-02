@@ -29,24 +29,32 @@ import {
 } from "@/lib/actions/assessments";
 import {
   addCommentAction,
-  reopenAction,
+  reopenReviewAction,
   reviewAction,
 } from "@/lib/actions/collaboration";
 import { FinalizeButton } from "./finalize-button";
 import { DraftEditor } from "./draft-editor";
 import { SendForms } from "./send-forms";
+import { SendBackDialog } from "./send-back-dialog";
+import { FindingStatusForm } from "./finding-status-form";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getAssessment } from "@/lib/db/assessments";
 import { env } from "@/lib/env";
-import { ASSESSMENT_STATUS_LABELS } from "@/lib/schemas/assessment";
+import {
+  ASSESSMENT_STATUS_LABELS,
+  FINDING_STATUS_LABELS,
+  FINDING_STATUS_STYLES,
+  SEVERITY_STYLES,
+} from "@/lib/schemas/assessment";
 import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
-import { formatDate, formatPercent } from "@/lib/utils";
+import { cn, formatDate, formatPercent, ragTextClass } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
 type AssessmentDetailPageProps = {
   params: Promise<{ assessmentId: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
 };
 
 export async function generateMetadata({
@@ -82,6 +90,7 @@ const REVIEW_DECISION_VARIANT: Record<
 
 export default async function AssessmentDetailPage({
   params,
+  searchParams,
 }: AssessmentDetailPageProps) {
   const user = await requirePermission(PERMISSIONS.ASSESSMENTS_VIEW);
   const canCreate = hasPermission(
@@ -103,12 +112,59 @@ export default async function AssessmentDetailPage({
     notFound();
   }
 
+  const sp = await searchParams;
+  const reviewFilter = sp.review ?? "all";
+
   const isDraft = assessment.status === "DRAFT";
   const isReviewable =
     assessment.status === "SUBMITTED" || assessment.status === "UNDER_REVIEW";
+  const isCompleted = assessment.status === "COMPLETED";
   const portalUrl = assessment.accessToken
     ? `${env.APP_URL}/portal/${assessment.accessToken}`
     : null;
+
+  // Review progress across answerable (non-N/A) responses.
+  const answerable = assessment.responses.filter((r) => !r.isNotApplicable);
+  const reviewCounts = {
+    total: answerable.length,
+    approved: answerable.filter((r) => r.review?.decision === "APPROVED")
+      .length,
+    rejected: answerable.filter((r) => r.review?.decision === "REJECTED")
+      .length,
+    clarification: answerable.filter(
+      (r) => r.review?.decision === "CLARIFICATION_REQUESTED",
+    ).length,
+    pending: answerable.filter((r) => !r.review).length,
+  };
+
+  const openFindings = assessment.findings.filter(
+    (f) => f.status === "OPEN",
+  ).length;
+
+  type ResponseRow = (typeof assessment.responses)[number];
+  function matchesReviewFilter(response: ResponseRow | undefined): boolean {
+    if (reviewFilter === "all") return true;
+    if (!response || response.isNotApplicable) return false;
+    if (reviewFilter === "pending") return !response.review;
+    if (reviewFilter === "approved")
+      return response.review?.decision === "APPROVED";
+    if (reviewFilter === "rejected")
+      return response.review?.decision === "REJECTED";
+    if (reviewFilter === "clarification")
+      return response.review?.decision === "CLARIFICATION_REQUESTED";
+    return true;
+  }
+
+  const reviewFilters = [
+    { value: "all", label: "All" },
+    { value: "pending", label: `Pending (${reviewCounts.pending})` },
+    { value: "approved", label: `Approved (${reviewCounts.approved})` },
+    { value: "rejected", label: `Rejected (${reviewCounts.rejected})` },
+    {
+      value: "clarification",
+      label: `Clarification (${reviewCounts.clarification})`,
+    },
+  ];
 
   const responsesByQuestion = new Map(
     assessment.responses.map((response) => [
@@ -158,17 +214,23 @@ export default async function AssessmentDetailPage({
           <div className="flex flex-wrap items-center gap-2">
             {isReviewable && canReview ? (
               <>
-                <form action={reopenAction}>
+                <SendBackDialog assessmentId={assessment.id} />
+                <FinalizeButton assessmentId={assessment.id} />
+              </>
+            ) : null}
+            {isCompleted && canReview ? (
+              <>
+                <form action={reopenReviewAction}>
                   <input
                     type="hidden"
                     name="assessmentId"
                     value={assessment.id}
                   />
                   <Button type="submit" variant="outline" size="sm">
-                    Reopen
+                    Reopen review
                   </Button>
                 </form>
-                <FinalizeButton assessmentId={assessment.id} />
+                <SendBackDialog assessmentId={assessment.id} />
               </>
             ) : null}
             <Button asChild variant="outline" size="sm">
@@ -352,10 +414,37 @@ export default async function AssessmentDetailPage({
           <CardHeader>
             <CardTitle>Score</CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-semibold">
-              {formatPercent(assessment.score)}
-            </p>
+          <CardContent className="flex flex-col gap-2">
+            <div className="flex items-baseline gap-3">
+              <p
+                className={cn(
+                  "text-3xl font-semibold tabular-nums",
+                  ragTextClass(assessment.score),
+                )}
+              >
+                {formatPercent(assessment.score)}
+              </p>
+              <span className="text-muted-foreground text-sm">
+                {assessment.score >= 0.85
+                  ? "Low risk"
+                  : assessment.score >= 0.6
+                    ? "Moderate risk"
+                    : "High risk"}
+              </span>
+            </div>
+            <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
+              <div
+                className={cn(
+                  "h-full rounded-full",
+                  assessment.score >= 0.85
+                    ? "bg-[var(--rag-green)]"
+                    : assessment.score >= 0.6
+                      ? "bg-[var(--rag-amber)]"
+                      : "bg-[var(--rag-red)]",
+                )}
+                style={{ width: `${Math.round(assessment.score * 100)}%` }}
+              />
+            </div>
           </CardContent>
         </Card>
       ) : null}
@@ -363,13 +452,32 @@ export default async function AssessmentDetailPage({
       {assessment.findings.length > 0 ? (
         <Card>
           <CardHeader>
-            <CardTitle>Findings ({assessment.findings.length})</CardTitle>
+            <CardTitle>
+              Findings ({assessment.findings.length} · {openFindings} open)
+            </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
             {assessment.findings.map((finding) => (
               <div key={finding.id} className="rounded-md border p-3">
-                <div className="flex items-center gap-2">
-                  <Badge variant="destructive">{finding.severity}</Badge>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span
+                    className={cn(
+                      "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium",
+                      SEVERITY_STYLES[finding.severity] ??
+                        "bg-muted text-muted-foreground",
+                    )}
+                  >
+                    {finding.severity}
+                  </span>
+                  <span
+                    className={cn(
+                      "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium",
+                      FINDING_STATUS_STYLES[finding.status] ??
+                        "bg-muted text-muted-foreground",
+                    )}
+                  >
+                    {FINDING_STATUS_LABELS[finding.status] ?? finding.status}
+                  </span>
                   <span className="text-sm font-medium">{finding.title}</span>
                 </div>
                 <p className="text-muted-foreground mt-1 text-sm">
@@ -387,6 +495,25 @@ export default async function AssessmentDetailPage({
                       </Badge>
                     ))}
                   </div>
+                ) : null}
+                {finding.resolutionNote || finding.resolvedAt ? (
+                  <p className="text-muted-foreground mt-1 text-xs">
+                    {finding.resolutionNote
+                      ? `“${finding.resolutionNote}” · `
+                      : ""}
+                    {finding.resolvedBy?.name ?? "Deleted user"}
+                    {finding.resolvedAt
+                      ? ` · ${formatDate(finding.resolvedAt)}`
+                      : ""}
+                  </p>
+                ) : null}
+                {canReview ? (
+                  <FindingStatusForm
+                    findingId={finding.id}
+                    assessmentId={assessment.id}
+                    currentStatus={finding.status}
+                    currentNote={finding.resolutionNote ?? ""}
+                  />
                 ) : null}
               </div>
             ))}
@@ -409,10 +536,55 @@ export default async function AssessmentDetailPage({
         <Card>
           <CardHeader>
             <CardTitle>Responses</CardTitle>
+            {reviewCounts.total > 0 ? (
+              <CardDescription>
+                {reviewCounts.approved} of {reviewCounts.total} approved ·{" "}
+                {reviewCounts.pending} pending
+                {reviewCounts.rejected > 0
+                  ? ` · ${reviewCounts.rejected} rejected`
+                  : ""}
+                {reviewCounts.clarification > 0
+                  ? ` · ${reviewCounts.clarification} clarification`
+                  : ""}
+              </CardDescription>
+            ) : null}
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
+            {reviewCounts.total > 0 ? (
+              <>
+                <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
+                  <div
+                    className="bg-success h-full rounded-full"
+                    style={{
+                      width: `${Math.round((reviewCounts.approved / reviewCounts.total) * 100)}%`,
+                    }}
+                  />
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {reviewFilters.map((filter) => (
+                    <Button
+                      key={filter.value}
+                      asChild
+                      size="sm"
+                      variant={
+                        reviewFilter === filter.value ? "default" : "outline"
+                      }
+                    >
+                      <Link
+                        href={`/assessments/${assessment.id}${filter.value === "all" ? "" : `?review=${filter.value}`}`}
+                      >
+                        {filter.label}
+                      </Link>
+                    </Button>
+                  ))}
+                </div>
+              </>
+            ) : null}
             {assessment.questions.map((question) => {
               const response = responsesByQuestion.get(question.id);
+              if (!matchesReviewFilter(response)) {
+                return null;
+              }
               const review = response?.review;
               const questionComments =
                 commentsByQuestion.get(question.id) ?? [];

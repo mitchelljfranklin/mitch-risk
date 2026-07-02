@@ -56,7 +56,20 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
       data: { score: totalScore },
     });
 
-    await tx.finding.deleteMany({ where: { assessmentId } });
+    // Upsert findings keyed by responseId so reviewer-set status/notes survive
+    // a rescore. Only auto-findings (those tied to a response) are reconciled;
+    // manual findings (responseId = null) are left untouched.
+    const nonCompliantResponseIds = scored
+      .filter((result) => result.isCompliant === false)
+      .map((result) => result.id);
+
+    await tx.finding.deleteMany({
+      where: {
+        assessmentId,
+        responseId: { not: null },
+        NOT: { responseId: { in: nonCompliantResponseIds } },
+      },
+    });
 
     for (const result of scored) {
       if (result.isCompliant !== false) {
@@ -80,17 +93,31 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
         select: { code: true },
       });
 
-      await tx.finding.create({
-        data: {
-          assessmentId,
-          responseId: result.id,
-          controlCodes: controlCodes.map((control) => control.code),
-          severity: question.riskWeight,
-          title: question.text.slice(0, 100),
-          description:
-            "The vendor's answer did not meet the expected response.",
-        },
+      const existing = await tx.finding.findFirst({
+        where: { assessmentId, responseId: result.id },
+        select: { id: true },
       });
+
+      const shared = {
+        controlCodes: controlCodes.map((control) => control.code),
+        severity: question.riskWeight,
+        title: question.text.slice(0, 100),
+      };
+
+      if (existing) {
+        // Preserve reviewer-managed status/resolutionNote/resolvedBy.
+        await tx.finding.update({ where: { id: existing.id }, data: shared });
+      } else {
+        await tx.finding.create({
+          data: {
+            assessmentId,
+            responseId: result.id,
+            ...shared,
+            description:
+              "The vendor's answer did not meet the expected response.",
+          },
+        });
+      }
     }
 
     const vendorRecord = await tx.assessment.findUnique({

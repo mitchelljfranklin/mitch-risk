@@ -21,6 +21,8 @@ type EmailTemplateFormProps = {
   escalationBody: string;
   submissionSubject: string;
   submissionBody: string;
+  clarificationSubject: string;
+  clarificationBody: string;
 };
 
 const initialState: SettingsActionState = undefined;
@@ -73,6 +75,8 @@ export function EmailTemplateForm({
   escalationBody,
   submissionSubject,
   submissionBody,
+  clarificationSubject,
+  clarificationBody,
 }: EmailTemplateFormProps) {
   const [state, formAction, isPending] = useActionState(
     saveEmailTemplateSettings,
@@ -117,10 +121,17 @@ export function EmailTemplateForm({
         bodyName="submissionBody"
         bodyDefault={submissionBody}
       />
+      <TemplateSection
+        label="Sent back for clarification email"
+        subjectName="clarificationSubject"
+        subjectDefault={clarificationSubject}
+        bodyName="clarificationBody"
+        bodyDefault={clarificationBody}
+      />
       <p className="text-muted-foreground text-xs">
         Tokens: {"{{"}vendorName{"}}"}, {"{{"}assessmentTitle{"}}"}, {"{{"}
         portalUrl{"}}"}, {"{{"}dueDate{"}}"}, {"{{"}reviewerName{"}}"}, {"{{"}
-        assessmentUrl{"}}"}, {"{{"}portalPassword{"}}"}.
+        assessmentUrl{"}}"}, {"{{"}portalPassword{"}}"}, {"{{"}message{"}}"}.
       </p>
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending} size="sm">

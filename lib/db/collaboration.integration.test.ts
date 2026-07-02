@@ -9,7 +9,9 @@ import {
 } from "@/lib/db/assessments";
 import {
   finalizeAssessment,
-  reopenAssessment,
+  markUnderReview,
+  reopenReview,
+  sendBackToVendor,
   setReviewDecision,
 } from "@/lib/db/collaboration";
 import {
@@ -215,7 +217,7 @@ describe("collaboration finalize and reopen (integration)", () => {
     });
   });
 
-  it("reopen sets status back to IN_PROGRESS", async () => {
+  it("send back to vendor and reopen review transition correctly", async () => {
     const template = await createTemplate({
       name: TEMPLATE_NAME + " 3",
       description: "",
@@ -262,6 +264,13 @@ describe("collaboration finalize and reopen (integration)", () => {
     ]);
     await submitAssessment(token);
 
+    // First review decision moves SUBMITTED -> UNDER_REVIEW.
+    await markUnderReview(assessment.id);
+    const underReview = await prisma.assessment.findUniqueOrThrow({
+      where: { id: assessment.id },
+    });
+    expect(underReview.status).toBe("UNDER_REVIEW");
+
     const responses = await prisma.response.findMany({
       where: { assessmentId: assessment.id },
     });
@@ -275,11 +284,20 @@ describe("collaboration finalize and reopen (integration)", () => {
     }
     await finalizeAssessment(assessment.id);
 
-    await reopenAssessment(assessment.id);
+    // Reopen review returns COMPLETED -> UNDER_REVIEW without touching the portal.
+    await reopenReview(assessment.id);
     const reopened = await prisma.assessment.findUniqueOrThrow({
       where: { id: assessment.id },
     });
-    expect(reopened.status).toBe("IN_PROGRESS");
+    expect(reopened.status).toBe("UNDER_REVIEW");
+
+    // Send back to vendor reopens the portal (IN_PROGRESS) and extends the token.
+    await sendBackToVendor(assessment.id);
+    const sentBack = await prisma.assessment.findUniqueOrThrow({
+      where: { id: assessment.id },
+    });
+    expect(sentBack.status).toBe("IN_PROGRESS");
+    expect(sentBack.tokenExpiresAt).not.toBeNull();
 
     await prisma.vendor.deleteMany({ where: { name: VENDOR_NAME + " 3" } });
     await prisma.template.deleteMany({

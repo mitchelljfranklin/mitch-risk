@@ -168,7 +168,14 @@ export default async function SettingsPage({
   });
 
   const emailLogStatuses = ["SENT", "FAILED"];
-  const emailLogTypes = ["INVITE", "REMINDER", "ESCALATION", "TEST"];
+  const emailLogTypes = [
+    "INVITE",
+    "REMINDER",
+    "ESCALATION",
+    "SUBMISSION",
+    "CLARIFICATION",
+    "TEST",
+  ];
 
   const allowedTabs = [
     ...(canManageSettings
@@ -323,6 +330,8 @@ export default async function SettingsPage({
                 escalationBody={templates.escalationBody}
                 submissionSubject={templates.submissionSubject}
                 submissionBody={templates.submissionBody}
+                clarificationSubject={templates.clarificationSubject}
+                clarificationBody={templates.clarificationBody}
               />
             </CardContent>
           </Card>

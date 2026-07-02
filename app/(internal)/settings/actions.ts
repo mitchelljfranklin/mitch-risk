@@ -97,6 +97,8 @@ export async function saveEmailTemplateSettings(
     escalationBody: formData.get("escalationBody") ?? "",
     submissionSubject: formData.get("submissionSubject") ?? "",
     submissionBody: formData.get("submissionBody") ?? "",
+    clarificationSubject: formData.get("clarificationSubject") ?? "",
+    clarificationBody: formData.get("clarificationBody") ?? "",
   });
   if (!parsed.success) {
     return {
@@ -546,9 +548,18 @@ export async function retryEmailSendAction(
 
   const { sendEmail } = await import("@/lib/email/mailer");
 
-  const type = log.type.toLowerCase() as "invite" | "reminder" | "escalation";
+  const type = log.type.toLowerCase() as
+    | "invite"
+    | "invite-password"
+    | "reminder"
+    | "escalation"
+    | "submission"
+    | "clarification";
 
-  const tokens: Record<string, string> = {};
+  const tokens: Record<string, string> = {
+    message: "Please review and resubmit your questionnaire.",
+    portalPassword: "",
+  };
 
   if (log.assessmentId) {
     const assessment = await db.assessment.findUnique({

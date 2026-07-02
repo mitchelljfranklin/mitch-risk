@@ -408,6 +408,16 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   `AutoSubmitSelect`, `AssessmentStatusBadge`, and `ragTextClass`/`isAssessmentOverdue` helpers.
   Data-access `listVendors`/`listAssessments` now return `{ …, totalCount }` with sort/page
   params. The public `/api/v1/vendors` response shape is unchanged.
+- **Phase 53 — Review & findings workflow.** The assessment lifecycle now auto-transitions
+  `SUBMITTED → UNDER_REVIEW` on the first review decision, and the old "Reopen" is split into
+  **Send back to vendor** (`IN_PROGRESS`, re-enables the portal, extends the token, and emails
+  the original recipient(s) via a new **clarification** template with a reviewer message) and
+  **Reopen review** (`UNDER_REVIEW`). Findings are now reviewer-managed with a simplified
+  **Open / Remediated / Risk-accepted** model (retired `ACCEPTED`), each recording a resolution
+  note, resolver, and time; a rescore preserves reviewer-set finding status. The assessment
+  page adds review progress + per-decision filter, per-finding status controls, and a
+  RAG-coloured score. Assessments persist `portalRecipients` so send-back reaches whoever the
+  invite went to (vendor contact or custom email).
 
 ## 8. Out of scope (v1+)
 

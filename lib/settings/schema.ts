@@ -95,6 +95,14 @@ export const emailTemplateSchema = z.object({
     .default(
       "{{reviewerName}}, {{vendorName}} has submitted their security questionnaire: {{assessmentTitle}}.\n\nView the assessment: {{assessmentUrl}}",
     ),
+  clarificationSubject: z
+    .string()
+    .default("More information needed: {{assessmentTitle}}"),
+  clarificationBody: z
+    .string()
+    .default(
+      "{{vendorName}}, your security questionnaire {{assessmentTitle}} has been sent back for more information.\n\n{{message}}\n\nPlease review the requested items and resubmit: {{portalUrl}}\n\nYour previous answers have been saved.",
+    ),
   invitePasswordSubject: z
     .string()
     .default("Security questionnaire: {{assessmentTitle}}"),

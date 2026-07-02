@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { expiryFromNow } from "@/lib/tokens";
 
 export function listComments(
   assessmentId: string,
@@ -53,10 +54,30 @@ export function setReviewDecision(params: {
   });
 }
 
-export function reopenAssessment(assessmentId: string) {
+export function markUnderReview(assessmentId: string) {
+  return prisma.assessment.updateMany({
+    where: { id: assessmentId, status: "SUBMITTED" },
+    data: { status: "UNDER_REVIEW" },
+  });
+}
+
+export async function sendBackToVendor(
+  assessmentId: string,
+  tokenDays = 30,
+): Promise<void> {
+  await prisma.assessment.update({
+    where: { id: assessmentId },
+    data: {
+      status: "IN_PROGRESS",
+      tokenExpiresAt: expiryFromNow(tokenDays),
+    },
+  });
+}
+
+export function reopenReview(assessmentId: string) {
   return prisma.assessment.update({
     where: { id: assessmentId },
-    data: { status: "IN_PROGRESS" },
+    data: { status: "UNDER_REVIEW" },
   });
 }
 

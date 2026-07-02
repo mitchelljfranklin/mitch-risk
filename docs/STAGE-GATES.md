@@ -1233,6 +1233,46 @@ surfaces worst vendors first; assessments show coloured statuses and an "Overdue
 
 ---
 
+## Phase 53 — Review & findings workflow
+
+**Scope:** complete the reviewer workflow — an `UNDER_REVIEW` state, a proper finding
+lifecycle, a clear "send back to vendor" path with its own email, and review visibility.
+
+**Checklist:**
+
+- [x] Auto `SUBMITTED → UNDER_REVIEW` on the first review decision (`markUnderReview` in
+      `reviewAction`).
+- [x] "Reopen" split into **Send back to vendor** (`sendBackToVendor` → `IN_PROGRESS` + token
+      extended; emails `portalRecipients` via the new **clarification** template with a
+      `{{message}}` token) and **Reopen review** (`reopenReview` → `UNDER_REVIEW`).
+- [x] `Assessment.portalRecipients String[]` persisted on every send (vendor or custom email);
+      used by send-back with fallback to the vendor contact.
+- [x] New **clarification** email template wired through mailer, settings schema + form, email
+      tracking type filter, and the retry action.
+- [x] `FindingStatus` reduced to **OPEN / REMEDIATED / RISK_ACCEPTED** (migration maps existing
+      `ACCEPTED → RISK_ACCEPTED`); `Finding` gains `resolutionNote`, `resolvedAt`, `resolvedBy`
+      (SetNull). Reviewer status control on each finding; audited `UPDATE_FINDING`.
+- [x] Rescore **preserves** reviewer-set finding status (upsert by `responseId`; manual
+      findings untouched).
+- [x] Assessment page: review progress bar + per-decision filter (`?review=`), RAG-coloured
+      score with band + bar, findings "N · M open".
+- [x] Finalize unchanged (gated on all answerable responses approved).
+- [x] Tests: collaboration transitions (under-review/send-back/reopen-review), findings status +
+      rescore-preserve, resolver-cleared-on-reopen. 113 unit + 9 e2e passing.
+- [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check` clean; migration
+      applies.
+
+**Note:** the prod-`next start` first-server-action cold-start flake (seen in Phases 51–52)
+recurred for the roles-create e2e; verified green on the dev server (full suite 9/9). Not a
+code issue.
+
+**Reviewer spot-check:** submit an assessment → make one review decision → status becomes
+"Under review"; answer non-compliant → a finding appears (Open) → set it Remediated with a note
+→ note + resolver shown; "Send back to vendor" with a message → vendor gets the clarification
+email and can edit again; finalize → Completed → "Reopen review" returns to Under review.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1289,3 +1329,4 @@ surfaces worst vendors first; assessments show coloured statuses and an "Overdue
 | 50 | Ready for review | opencode | 2026-07-02 | UX fixes: readable destructive button, success toast tokens (decoupled from RAG), stat-card count-up fix, dashboard filter fix, delete user (guarded) with audit/review history preserved; 103 unit + 9 e2e |
 | 51 | Ready for review | opencode | 2026-07-02 | Correctness: CHECKBOX scoring, import all question types, full template version lineage, remove dead getDashboardMetrics, portal cookie lifetime, portal gate router.refresh; 104 unit + 9 e2e |
 | 52 | Ready for review | opencode | 2026-07-02 | List UX: vendor rows w/ RAG score+last-assessed, sort+pagination on both lists, assessment status colours + overdue badge/filter + score, vendor compare picker; reusable Pagination/AutoSubmitSelect/StatusBadge; 111 unit + 9 e2e |
+| 53 | Ready for review | opencode | 2026-07-02 | Review workflow: auto UNDER_REVIEW, send-back-to-vendor (clarification email + token extend + portalRecipients) vs reopen-review, finding lifecycle Open/Remediated/Risk-accepted w/ resolver + rescore-preserve, review progress+filter, RAG score; 113 unit + 9 e2e |

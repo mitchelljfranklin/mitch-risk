@@ -128,7 +128,10 @@ export function getAssessment(id: string) {
       questions: { orderBy: { order: "asc" } },
       responses: { include: { review: true } },
       evidence: true,
-      findings: { orderBy: { severity: "asc" } },
+      findings: {
+        orderBy: { severity: "asc" },
+        include: { resolvedBy: { select: { name: true } } },
+      },
       comments: {
         orderBy: { createdAt: "asc" },
         include: {
@@ -310,6 +313,35 @@ export function revokeAssessmentToken(id: string) {
   return prisma.assessment.update({
     where: { id },
     data: { accessToken: null, tokenHash: null },
+  });
+}
+
+export function setAssessmentRecipients(id: string, emails: string[]) {
+  const unique = [
+    ...new Set(emails.filter((email) => email.trim().length > 0)),
+  ];
+  return prisma.assessment.update({
+    where: { id },
+    data: { portalRecipients: unique },
+  });
+}
+
+export function getAssessmentRecipients(id: string): Promise<{
+  portalRecipients: string[];
+  vendor: { name: string; contactEmail: string };
+  title: string;
+  accessToken: string | null;
+  dueDate: Date | null;
+} | null> {
+  return prisma.assessment.findUnique({
+    where: { id },
+    select: {
+      portalRecipients: true,
+      title: true,
+      accessToken: true,
+      dueDate: true,
+      vendor: { select: { name: true, contactEmail: true } },
+    },
   });
 }
 

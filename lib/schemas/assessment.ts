@@ -18,11 +18,30 @@ export const ASSESSMENT_STATUS_LABELS: Record<string, string> = {
   COMPLETED: "Completed",
 };
 
+export const FINDING_STATUSES = [
+  "OPEN",
+  "REMEDIATED",
+  "RISK_ACCEPTED",
+] as const;
+
 export const FINDING_STATUS_LABELS: Record<string, string> = {
   OPEN: "Open",
-  ACCEPTED: "Accepted",
   REMEDIATED: "Remediated",
   RISK_ACCEPTED: "Risk accepted",
+};
+
+export const FINDING_STATUS_STYLES: Record<string, string> = {
+  OPEN: "bg-destructive text-white",
+  REMEDIATED: "bg-success text-success-foreground",
+  RISK_ACCEPTED: "bg-secondary text-secondary-foreground",
+};
+
+// Severity is a risk indicator, so it may use the RAG palette (per AGENTS).
+export const SEVERITY_STYLES: Record<string, string> = {
+  CRITICAL: "bg-[var(--rag-red)] text-white",
+  HIGH: "bg-[var(--rag-amber)] text-black",
+  MEDIUM: "bg-[var(--rag-amber)]/70 text-black",
+  LOW: "bg-muted text-muted-foreground",
 };
 
 // Semantic Tailwind classes per status (chrome only — never the RAG palette).
