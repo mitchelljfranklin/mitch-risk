@@ -116,8 +116,21 @@ export function getTemplateVersionChain(templateId: string): Promise<
   `;
 }
 
-export function deleteTemplate(id: string) {
-  return prisma.template.delete({ where: { id } });
+export async function deleteTemplate(id: string): Promise<void> {
+  await prisma.$transaction(async (tx) => {
+    const target = await tx.template.findUnique({
+      where: { id },
+      select: { parentTemplateId: true },
+    });
+    if (!target) {
+      return;
+    }
+    await tx.template.updateMany({
+      where: { parentTemplateId: id },
+      data: { parentTemplateId: target.parentTemplateId },
+    });
+    await tx.template.delete({ where: { id } });
+  });
 }
 
 export async function addSection(templateId: string, title: string) {

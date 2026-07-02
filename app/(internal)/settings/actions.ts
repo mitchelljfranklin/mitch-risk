@@ -6,6 +6,7 @@ import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { logAudit } from "@/lib/db/audit";
 import {
+  getAppearanceSettings,
   updateEmailSettings,
   updateEmailTemplateSettings,
   updateOrganizationSettings,
@@ -229,7 +230,8 @@ export async function saveAppearanceSettings(
     return { ok: false, message: "RAG unscored must be a valid hex color." };
   }
 
-  let logoKey = (formData.get("logoKey") as string) || "";
+  const previousLogoKey = (await getAppearanceSettings()).logoKey;
+  let logoKey = previousLogoKey;
   const logoFile = formData.get("logoFile") as File | null;
   const removeLogo = formData.get("removeLogo") === "true";
 
@@ -267,6 +269,14 @@ export async function saveAppearanceSettings(
         ? pageWidth
         : "constrained",
   });
+
+  if (previousLogoKey && previousLogoKey !== logoKey) {
+    try {
+      await storage.delete(previousLogoKey);
+    } catch {
+      // Best-effort; orphan-sweep cron cleans any leftovers.
+    }
+  }
 
   revalidatePath("/", "layout");
   const user = await getCurrentUser();

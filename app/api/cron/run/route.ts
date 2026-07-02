@@ -3,11 +3,13 @@ import { env } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
 import { createAssessment, sendAssessment } from "@/lib/db/assessments";
 import {
+  getAppearanceSettings,
   getAssessmentSettings,
   getEmailSettings,
   getAuditRetention,
   getEmailLogRetention,
 } from "@/lib/settings";
+import { storage } from "@/lib/storage";
 
 export async function GET(request: Request) {
   const secret = request.headers.get("x-cron-secret");
@@ -31,6 +33,7 @@ export async function GET(request: Request) {
     recurrences: number;
     pruned?: number;
     prunedEmails?: number;
+    prunedFiles?: number;
   } = { reminders: 0, escalations: 0, recurrences: 0 };
 
   if (smtpConfigured) {
@@ -218,6 +221,36 @@ export async function GET(request: Request) {
     if (count > 0) {
       result.prunedEmails = count;
     }
+  }
+
+  // --- orphaned file sweep ---
+  const ORPHAN_MIN_AGE_MS = 60 * 60 * 1000; // ignore recent files (in-flight uploads)
+  const [storedFiles, evidenceRows, appearance] = await Promise.all([
+    storage.list(),
+    prisma.evidence.findMany({ select: { storageKey: true } }),
+    getAppearanceSettings(),
+  ]);
+  const referencedKeys = new Set(evidenceRows.map((row) => row.storageKey));
+  if (appearance.logoKey) {
+    referencedKeys.add(appearance.logoKey);
+  }
+  let prunedFiles = 0;
+  for (const file of storedFiles) {
+    if (referencedKeys.has(file.key)) {
+      continue;
+    }
+    if (now.getTime() - file.modifiedAt.getTime() < ORPHAN_MIN_AGE_MS) {
+      continue;
+    }
+    try {
+      await storage.delete(file.key);
+      prunedFiles += 1;
+    } catch {
+      // Best-effort; will be retried on the next run.
+    }
+  }
+  if (prunedFiles > 0) {
+    result.prunedFiles = prunedFiles;
   }
 
   return Response.json(result);

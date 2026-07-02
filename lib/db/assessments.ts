@@ -6,6 +6,7 @@ import { copyJson } from "@/lib/json";
 import { findMissingRequiredQuestions, type PortalAnswers } from "@/lib/portal";
 import { scoreAssessment } from "@/lib/db/scoring";
 import { prisma } from "@/lib/prisma";
+import { storage } from "@/lib/storage";
 import { type AssessmentInput } from "@/lib/schemas/assessment";
 import { type SaveProgressInput } from "@/lib/schemas/portal";
 import { expiryFromNow, generateAccessToken, hashToken } from "@/lib/tokens";
@@ -109,8 +110,42 @@ export function updateAssessment(
   });
 }
 
-export function deleteAssessment(id: string) {
-  return prisma.assessment.delete({ where: { id } });
+async function deleteStoredFiles(storageKeys: string[]): Promise<void> {
+  for (const key of storageKeys) {
+    try {
+      await storage.delete(key);
+    } catch {
+      // Best-effort: a missing file must never block the database delete.
+      // The orphan-sweep cron is the backstop for any leftovers.
+    }
+  }
+}
+
+export async function deleteAssessment(id: string): Promise<void> {
+  const evidence = await prisma.evidence.findMany({
+    where: { assessmentId: id },
+    select: { storageKey: true },
+  });
+  await prisma.assessment.delete({ where: { id } });
+  await deleteStoredFiles(evidence.map((item) => item.storageKey));
+}
+
+export async function deleteEvidenceForQuestion(
+  assessmentId: string,
+  assessmentQuestionId: string,
+): Promise<number> {
+  const existing = await prisma.evidence.findMany({
+    where: { assessmentId, assessmentQuestionId },
+    select: { id: true, storageKey: true },
+  });
+  if (existing.length === 0) {
+    return 0;
+  }
+  await prisma.evidence.deleteMany({
+    where: { id: { in: existing.map((item) => item.id) } },
+  });
+  await deleteStoredFiles(existing.map((item) => item.storageKey));
+  return existing.length;
 }
 
 export async function sendAssessment(

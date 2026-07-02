@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 
 import {
   createEvidence,
+  deleteEvidenceForQuestion,
   getAssessmentForToken,
   getAssessmentQuestion,
   isPortalEditable,
@@ -99,6 +100,8 @@ export async function uploadEvidenceAction(
   ) {
     return { ok: false, error: `Files of type .${extension} are not allowed.` };
   }
+
+  await deleteEvidenceForQuestion(assessment.id, assessmentQuestionId);
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const storageKey = `${assessment.id}/${randomBytes(8).toString("hex")}-${sanitizeFileName(file.name)}`;

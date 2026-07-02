@@ -1078,6 +1078,35 @@ be demoted or disabled.
 
 ---
 
+## Phase 48 — Data lifecycle & storage cleanup
+
+**Scope:** eliminate stale/orphaned data left by delete flows — physical evidence files,
+replaced uploads, old logos, and broken template-version lineage — plus a cron backstop.
+
+**Checklist:**
+
+- [x] `deleteAssessment` / `deleteVendor` delete evidence rows **and** their physical files
+      (best-effort; a missing file never blocks the DB delete).
+- [x] New evidence upload replaces the previous one for that question (row + file) via
+      `deleteEvidenceForQuestion`.
+- [x] Replacing/removing the org logo deletes the previous logo file.
+- [x] Deleting a template version re-links child versions to the deleted version's parent
+      (continuous history; no silent `SetNull` orphaning).
+- [x] `FileStorage.list()` added; cron orphan-sweep removes unreferenced files older than a
+      1-hour safety window (reports `prunedFiles`), also backfilling past orphans.
+- [x] Tests: `lib/db/lifecycle.integration.test.ts` (assessment/vendor delete removes files,
+      replace-on-upload, template re-link) + `storage.list()` test. 97 unit tests + 7 e2e pass.
+- [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check` all clean. No
+      schema change (data-only), so no migration.
+
+**Reviewer spot-check:** upload evidence to an assessment, re-upload a different file to the
+same question → confirm only the new file exists on disk. Delete the assessment (and separately
+a vendor) → confirm evidence files are gone from the storage volume. Create template versions
+v1→v2→v3, delete v2 → confirm v3 still shows v1 in its version history. Run the cron endpoint →
+confirm `prunedFiles` removes a manually-orphaned file (older than 1h).
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1129,3 +1158,4 @@ be demoted or disabled.
 | 45 | Approved | User | 2026-07-02 | Page size dropdown (10/25/50/100) with auto-refresh, default 10, export dropdown for audit; 73 tests |
 | 46 | Approved | User | 2026-07-02 | Portal save/resume UX: persistent banner, timestamped save status, submission confirmation card; 73 tests |
 | 47 | Ready for review | opencode | 2026-07-02 | RBAC: DB-backed roles (Admin/Reviewer/Viewer + custom), permission catalog, per-permission guards on actions/routes/pages, Roles settings tab, last-admin protection, UI controls hidden by permission; post-review hardening (evidence-route 403, dashboard universal landing, API 403 tests); 92 unit + 7 e2e |
+| 48 | Ready for review | opencode | 2026-07-02 | Data lifecycle: evidence files deleted on assessment/vendor delete, replace-on-upload, logo cleanup, template-version re-link on delete, cron orphan-sweep + storage.list(); 97 unit + 7 e2e |

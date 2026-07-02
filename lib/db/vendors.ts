@@ -1,6 +1,7 @@
 import { type VendorTier } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
+import { storage } from "@/lib/storage";
 import { type VendorInput } from "@/lib/schemas/vendor";
 
 export function listVendors(filters?: { query?: string; tier?: string }) {
@@ -68,8 +69,19 @@ export function updateVendor(id: string, input: VendorInput) {
   });
 }
 
-export function deleteVendor(id: string) {
-  return prisma.vendor.delete({ where: { id } });
+export async function deleteVendor(id: string): Promise<void> {
+  const evidence = await prisma.evidence.findMany({
+    where: { assessment: { vendorId: id } },
+    select: { storageKey: true },
+  });
+  await prisma.vendor.delete({ where: { id } });
+  for (const item of evidence) {
+    try {
+      await storage.delete(item.storageKey);
+    } catch {
+      // Best-effort; orphan-sweep cron cleans any leftovers.
+    }
+  }
 }
 
 export function getVendorForExport(id: string) {

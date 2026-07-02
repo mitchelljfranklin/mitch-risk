@@ -373,6 +373,13 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   via `requirePermission`/`requireAnyPermission`, and the nav/UI is gated with `hasPermission`.
   New Roles tab in Settings with a permission checkbox matrix; Users and SSO auto-provision
   now reference DB roles. Design of record: `authstage.md`.
+- **Phase 48 — Data lifecycle & storage cleanup.** Physical evidence files are now deleted
+  when an assessment or vendor is deleted, and a new upload for a question replaces (deletes)
+  the previous file. Replacing/removing the org logo deletes the old file. Deleting a template
+  version re-links its child versions to the deleted version's parent so version history stays
+  continuous. A new orphan-sweep step in the cron job removes storage files no longer
+  referenced by any `Evidence` row or the current logo (older than a 1-hour safety window),
+  which also cleans up files orphaned by past deletes. Storage gained a `list()` capability.
 
 ## 8. Out of scope (v1+)
 
