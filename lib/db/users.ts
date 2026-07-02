@@ -2,8 +2,10 @@ import bcrypt from "bcryptjs";
 import { type User } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
+import { generateAccessToken, hashToken } from "@/lib/tokens";
 
 const PASSWORD_SALT_ROUNDS = 12;
+const RESET_TOKEN_HOURS = 1;
 
 export function countUsers(): Promise<number> {
   return prisma.user.count();
@@ -106,4 +108,54 @@ export async function verifyUserCredentials(
   }
 
   return user;
+}
+
+export async function createPasswordResetToken(
+  userId: string,
+): Promise<string> {
+  const rawToken = generateAccessToken();
+  const expiresAt = new Date(Date.now() + RESET_TOKEN_HOURS * 60 * 60 * 1000);
+  await prisma.passwordResetToken.create({
+    data: {
+      userId,
+      tokenHash: hashToken(rawToken),
+      expiresAt,
+    },
+  });
+  return rawToken;
+}
+
+export async function consumeResetToken(
+  rawToken: string,
+): Promise<string | null> {
+  const tokenHash = hashToken(rawToken);
+  return prisma.$transaction(async (tx) => {
+    const record = await tx.passwordResetToken.findUnique({
+      where: { tokenHash },
+    });
+    if (!record) return null;
+    if (record.used) return null;
+    if (record.expiresAt < new Date()) return null;
+
+    await tx.passwordResetToken.update({
+      where: { id: record.id },
+      data: { used: true },
+    });
+
+    return record.userId;
+  });
+}
+
+export async function findValidResetToken(
+  rawToken: string,
+): Promise<User | null> {
+  const tokenHash = hashToken(rawToken);
+  const record = await prisma.passwordResetToken.findUnique({
+    where: { tokenHash },
+    include: { user: true },
+  });
+  if (!record || record.used || record.expiresAt < new Date()) {
+    return null;
+  }
+  return record.user;
 }

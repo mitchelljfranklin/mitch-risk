@@ -33,7 +33,7 @@ export default async function InternalLayout({
   return (
     <ToastProvider>
       <IdleTimer timeoutMinutes={assessment.sessionTimeoutMinutes} />
-      <KeyboardShortcuts />
+      <KeyboardShortcuts permissions={user.permissions} />
       <SidebarProvider>
         <AppSidebar
           orgName={organization.name}

@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronsUpDown, LogOut } from "lucide-react";
+import { ChevronsUpDown, LogOut, User } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -38,6 +39,16 @@ export function UserMenu({ name, email, role }: UserMenuProps) {
             </span>
           </div>
         </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link
+            href="/profile"
+            className="flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none"
+          >
+            <User className="size-4" />
+            Profile
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <form action={signOutAction}>
           <DropdownMenuItem

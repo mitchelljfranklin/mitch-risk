@@ -99,6 +99,8 @@ export async function saveEmailTemplateSettings(
     submissionBody: formData.get("submissionBody") ?? "",
     clarificationSubject: formData.get("clarificationSubject") ?? "",
     clarificationBody: formData.get("clarificationBody") ?? "",
+    resetSubject: formData.get("resetSubject") ?? "",
+    resetBody: formData.get("resetBody") ?? "",
   });
   if (!parsed.success) {
     return {
@@ -554,7 +556,8 @@ export async function retryEmailSendAction(
     | "reminder"
     | "escalation"
     | "submission"
-    | "clarification";
+    | "clarification"
+    | "reset";
 
   const tokens: Record<string, string> = {
     message: "Please review and resubmit your questionnaire.",

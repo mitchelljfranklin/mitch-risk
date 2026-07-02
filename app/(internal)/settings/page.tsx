@@ -174,6 +174,7 @@ export default async function SettingsPage({
     "ESCALATION",
     "SUBMISSION",
     "CLARIFICATION",
+    "RESET",
     "TEST",
   ];
 
@@ -332,6 +333,8 @@ export default async function SettingsPage({
                 submissionBody={templates.submissionBody}
                 clarificationSubject={templates.clarificationSubject}
                 clarificationBody={templates.clarificationBody}
+                resetSubject={templates.resetSubject}
+                resetBody={templates.resetBody}
               />
             </CardContent>
           </Card>

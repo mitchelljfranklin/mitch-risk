@@ -23,6 +23,8 @@ type EmailTemplateFormProps = {
   submissionBody: string;
   clarificationSubject: string;
   clarificationBody: string;
+  resetSubject: string;
+  resetBody: string;
 };
 
 const initialState: SettingsActionState = undefined;
@@ -77,6 +79,8 @@ export function EmailTemplateForm({
   submissionBody,
   clarificationSubject,
   clarificationBody,
+  resetSubject,
+  resetBody,
 }: EmailTemplateFormProps) {
   const [state, formAction, isPending] = useActionState(
     saveEmailTemplateSettings,
@@ -128,10 +132,18 @@ export function EmailTemplateForm({
         bodyName="clarificationBody"
         bodyDefault={clarificationBody}
       />
+      <TemplateSection
+        label="Password reset email"
+        subjectName="resetSubject"
+        subjectDefault={resetSubject}
+        bodyName="resetBody"
+        bodyDefault={resetBody}
+      />
       <p className="text-muted-foreground text-xs">
         Tokens: {"{{"}vendorName{"}}"}, {"{{"}assessmentTitle{"}}"}, {"{{"}
         portalUrl{"}}"}, {"{{"}dueDate{"}}"}, {"{{"}reviewerName{"}}"}, {"{{"}
-        assessmentUrl{"}}"}, {"{{"}portalPassword{"}}"}, {"{{"}message{"}}"}.
+        assessmentUrl{"}}"}, {"{{"}portalPassword{"}}"}, {"{{"}message{"}}"},
+        {"{{"}appName{"}}"}, {"{{"}resetUrl{"}}"}, {"{{"}expiresIn{"}}"}.
       </p>
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending} size="sm">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -60,6 +61,12 @@ export default async function VendorDetailPage({
 
   return (
     <div className="flex max-w-3xl flex-col gap-6">
+      <Breadcrumbs
+        segments={[
+          { label: "Vendors", href: "/vendors" },
+          { label: vendor.name },
+        ]}
+      />
       <div>
         <Link
           href="/vendors"

@@ -103,6 +103,12 @@ export const emailTemplateSchema = z.object({
     .default(
       "{{vendorName}}, your security questionnaire {{assessmentTitle}} has been sent back for more information.\n\n{{message}}\n\nPlease review the requested items and resubmit: {{portalUrl}}\n\nYour previous answers have been saved.",
     ),
+  resetSubject: z.string().default("Password reset"),
+  resetBody: z
+    .string()
+    .default(
+      "A password reset was requested for your {{appName}} account.\n\nClick here to reset your password: {{resetUrl}}\n\nThis link expires in {{expiresIn}}.",
+    ),
   invitePasswordSubject: z
     .string()
     .default("Security questionnaire: {{assessmentTitle}}"),

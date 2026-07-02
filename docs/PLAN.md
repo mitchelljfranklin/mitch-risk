@@ -426,6 +426,14 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   legacy single-`equals` shape, no migration. Control detail pages now show a **reverse
   mapping** of which templates/questions cover each control. Builder question rows show a
   readable conditional summary.
+- **Phase 55 — Account & shell.** Added a **forgot-password / reset flow** (`PasswordResetToken`
+  model, `/forgot-password` and `/reset-password` pages, a new **reset** email template,
+  rate-limited reset emails, single-use tokens with 1-hour expiry). A **self-service profile**
+  page at `/profile` lets any authenticated user change their name, email, and password (with
+  current-password verification; forces re-login on email change). The `?` shortcuts modal is
+  now a full **command palette** (⌘K/⌃K too) with fuzzy search, permission-aware filtering,
+  and keyboard navigation. **Breadcrumbs** are now shown on the 5 deepest-navigation pages.
+  The audit-action list was synced with the full audit-label catalog.
 
 ## 8. Out of scope (v1+)
 

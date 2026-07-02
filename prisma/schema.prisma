@@ -44,6 +44,8 @@ model User {
 
   apiKeys              ApiKey[]
 
+  passwordResetTokens  PasswordResetToken[]
+
   sentNotificationLogs NotificationLog[] @relation("EmailSentBy")
 
   @@index([roleId])
@@ -451,4 +453,18 @@ model ApiKey {
   createdAt      DateTime  @default(now())
 
   @@map("api_keys")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("password_reset_tokens")
 }

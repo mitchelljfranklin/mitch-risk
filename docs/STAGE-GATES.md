@@ -1308,6 +1308,43 @@ to it.
 
 ---
 
+## Phase 55 — Account & shell
+
+**Scope:** forgot-password/reset-password flow, self-service profile page, command palette
+upgrade, and breadcrumbs for deep navigation.
+
+**Checklist:**
+
+- [x] `PasswordResetToken` model + migration; DB helpers (`createPasswordResetToken`,
+      `consumeResetToken`, `findValidResetToken`) with 1-hour expiry + single-use + atomic
+      consumption.
+- [x] New **reset** email template (mailer type, settings schema + form, tracking/retry). Emails
+      silently succeed for unknown addresses (no account-existence leak).
+- [x] Forgot-password page (`/forgot-password`) with rate-limited email flow; reset-password
+      page (`/reset-password?token=`) validates token server-side and sets a new password.
+      "Forgot password?" link added to the login page.
+- [x] **Self-service profile** at `/profile` (gated `requireUser()` — no permission key).
+      Change name, email, password with current-password verification; email change forces
+      sign-out + re-login. Audited `UPDATE_PROFILE`. "Profile" item in the user-menu dropdown.
+- [x] Keyboard shortcuts modal upgraded to a full **command palette** (⌘K/⌃K/`?`, fuzzy
+      search, ↑↓/Enter, permission-aware filtering). Static `g + letter` shortcuts removed.
+- [x] **Breadcrumbs** component wired into the 5 deepest-navigation pages (vendor detail,
+      assessment detail, template builder, framework detail, control detail). Existing "← Back"
+      links kept.
+- [x] Audit action list synced with the full audit-label catalog (added the ~12 missing entries
+      from Phases 47–54).
+- [x] Tests: password-reset token create/consume/expire/reject integration; portal operator
+      tests unchanged. 122 unit + 9 e2e passing.
+- [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check` clean; migration applies.
+
+**Reviewer spot-check:** log out → "Forgot password?" → enter an email → a reset email is
+sent (visible in Email Tracking). Follow the reset link → set a new password → sign in with
+it. Click Profile in the user menu → change your name → "Profile updated." Press ⌘K → type
+"vendors" → Vendors appears; "api" → Settings · API. Navigate to a vendor → breadcrumb trail
+above the page title.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1366,3 +1403,4 @@ to it.
 | 52 | Ready for review | opencode | 2026-07-02 | List UX: vendor rows w/ RAG score+last-assessed, sort+pagination on both lists, assessment status colours + overdue badge/filter + score, vendor compare picker; reusable Pagination/AutoSubmitSelect/StatusBadge; 111 unit + 9 e2e |
 | 53 | Ready for review | opencode | 2026-07-02 | Review workflow: auto UNDER_REVIEW, send-back-to-vendor (clarification email + token extend + portalRecipients) vs reopen-review, finding lifecycle Open/Remediated/Risk-accepted w/ resolver + rescore-preserve, review progress+filter, RAG score; 113 unit + 9 e2e |
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
+| 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |

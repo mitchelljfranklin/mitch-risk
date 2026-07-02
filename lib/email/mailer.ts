@@ -43,7 +43,8 @@ type TemplateType =
   | "reminder"
   | "escalation"
   | "submission"
-  | "clarification";
+  | "clarification"
+  | "reset";
 
 export type SendEmailResult = {
   ok: boolean;
@@ -105,6 +106,7 @@ export async function sendEmail(
     escalation: templates.escalationSubject,
     submission: templates.submissionSubject,
     clarification: templates.clarificationSubject,
+    reset: templates.resetSubject,
   };
   const bodyByType: Record<TemplateType, string> = {
     invite: templates.inviteBody,
@@ -113,6 +115,7 @@ export async function sendEmail(
     escalation: templates.escalationBody,
     submission: templates.submissionBody,
     clarification: templates.clarificationBody,
+    reset: templates.resetBody,
   };
 
   const subject = subjectByType[templateType];

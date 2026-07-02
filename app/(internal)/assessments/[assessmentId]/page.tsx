@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { CopyLink } from "@/components/copy-link";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -197,6 +198,16 @@ export default async function AssessmentDetailPage({
 
   return (
     <div className="flex max-w-3xl flex-col gap-6">
+      <Breadcrumbs
+        segments={[
+          { label: "Vendors", href: "/vendors" },
+          {
+            label: assessment.vendor.name,
+            href: `/vendors/${assessment.vendorId}`,
+          },
+          { label: assessment.title },
+        ]}
+      />
       <div>
         <Link
           href="/assessments"

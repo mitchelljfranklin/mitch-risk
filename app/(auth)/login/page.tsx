@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { SsoButtons } from "@/components/auth/sso-buttons";
@@ -55,6 +56,12 @@ export default async function LoginPage() {
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <LoginForm />
+        <Link
+          href="/forgot-password"
+          className="hover:text-primary text-muted-foreground -mt-2 text-center text-xs hover:underline"
+        >
+          Forgot password?
+        </Link>
         {ssoProviders.length > 0 ? (
           <SsoButtons providers={ssoProviders} />
         ) : null}

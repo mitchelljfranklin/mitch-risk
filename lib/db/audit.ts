@@ -148,6 +148,16 @@ export function listAuditActions() {
     "API_KEY_REVOKED",
     "API_KEY_ENABLED",
     "API_KEY_DELETED",
+    "CREATE_ROLE",
+    "UPDATE_ROLE",
+    "DELETE_ROLE",
+    "DUPLICATE_ROLE",
+    "DELETE_USER",
+    "SEND_BACK_TO_VENDOR",
+    "REOPEN_REVIEW",
+    "UPDATE_FINDING",
+    "DUPLICATE_TEMPLATE",
+    "UPDATE_PROFILE",
   ];
 }
 
@@ -186,6 +196,7 @@ export const AUDIT_ACTION_LABELS: Record<string, string> = {
   CHANGE_ROLE: "Changed role",
   CREATE_ROLE: "Created role",
   UPDATE_ROLE: "Updated role",
+  UPDATE_PROFILE: "Updated profile",
   DELETE_ROLE: "Deleted role",
   DUPLICATE_ROLE: "Duplicated role",
   RESET_PASSWORD: "Reset password",
