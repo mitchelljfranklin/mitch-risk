@@ -36,6 +36,7 @@ import {
 import { getSsoSecretConfigured } from "@/lib/settings";
 import {
   changeRoleAction,
+  deleteUserAction,
   resetPasswordAction,
   toggleUserAction,
 } from "@/lib/actions/users";
@@ -546,6 +547,24 @@ export default async function SettingsPage({
                           </Button>
                         </ConfirmDialog>
                       </form>
+                      {user.id !== currentUser.id ? (
+                        <form
+                          id={`delete-user-${user.id}`}
+                          action={deleteUserAction}
+                        >
+                          <input type="hidden" name="userId" value={user.id} />
+                          <ConfirmDialog
+                            title="Delete user?"
+                            description={`${user.name} will be permanently removed. Their audit history and past review decisions are kept but shown as "Deleted user". This cannot be undone.`}
+                            confirmLabel="Delete"
+                            formId={`delete-user-${user.id}`}
+                          >
+                            <Button type="button" size="sm" variant="ghost">
+                              Delete
+                            </Button>
+                          </ConfirmDialog>
+                        </form>
+                      ) : null}
                     </div>
                   </div>
                 ))}

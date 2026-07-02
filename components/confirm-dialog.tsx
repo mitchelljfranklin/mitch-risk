@@ -12,6 +12,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { buttonVariants } from "@/components/ui/button";
 
 type ConfirmDialogProps = {
   title: string;
@@ -30,8 +31,6 @@ export function ConfirmDialog({
   formId,
   children,
 }: ConfirmDialogProps) {
-  const buttonVariant = variant === "destructive" ? "destructive" : "default";
-
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -45,11 +44,9 @@ export function ConfirmDialog({
           <AlertDialogAction
             form={formId}
             type={formId ? "submit" : "button"}
-            className={
-              variant === "destructive"
-                ? "bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                : ""
-            }
+            className={buttonVariants({
+              variant: variant === "destructive" ? "destructive" : "default",
+            })}
           >
             {confirmLabel}
           </AlertDialogAction>

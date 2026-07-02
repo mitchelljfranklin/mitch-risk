@@ -1138,6 +1138,40 @@ read-only summary, no editable grid. Delete a custom role with no users assigned
 
 ---
 
+## Phase 50 — UX & user-management fixes
+
+**Scope:** fix four reported issues — unreadable destructive button, RAG colours bleeding into
+toasts, dashboard stat cards stuck at 0, and no way to delete a user.
+
+**Checklist:**
+
+- [x] `ConfirmDialog` destructive action uses `buttonVariants({ variant: "destructive" })`
+      (readable white-on-red); removed reliance on the undefined `--destructive-foreground`.
+- [x] Dedicated `--success` / `--success-foreground` tokens added; toasts use them so the
+      user-configurable RAG palette no longer recolours success toasts.
+- [x] `useCountUp` rewritten (dropped the Strict-Mode `started` ref-guard; derives value for
+      `end <= 0`) so stat cards (Vendors tracked, Open findings, Needs attention, Average
+      score) show real numbers.
+- [x] Dashboard vendor filter renders a single coherent `filteredVendors` list (removed the
+      confusing `allGood` split that produced an empty box for "Overdue").
+- [x] **Delete user**: `deleteUser` + `deleteUserAction` gated `users:manage`; guards prevent
+      deleting yourself or the last admin; audited `DELETE_USER`; control hidden on your own row.
+- [x] History preserved on delete: migration makes `AuditLog.userId` and
+      `AnswerReview.reviewerId` nullable with `ON DELETE SET NULL`; audit log shows
+      "Deleted user" for orphaned entries.
+- [x] Tests: `user-delete.integration.test.ts` (audit SetNull survives, `countAdminsExcluding`);
+      admin dashboard-stat e2e (cards not stuck at 0). 103 unit + 9 e2e passing.
+- [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check` all clean;
+      migration applies on the existing DB.
+
+**Reviewer spot-check:** open any delete confirm dialog → the Delete button is readable
+(white on red). Change the RAG green in Appearance → success toasts are unaffected. Open the
+dashboard → stat cards show real counts (matching the header). Delete a non-admin user (not
+yourself) → they're removed; the audit log still lists their past actions as "Deleted user";
+you cannot delete your own account or the last admin.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1191,3 +1225,4 @@ read-only summary, no editable grid. Delete a custom role with no users assigned
 | 47 | Ready for review | opencode | 2026-07-02 | RBAC: DB-backed roles (Admin/Reviewer/Viewer + custom), permission catalog, per-permission guards on actions/routes/pages, Roles settings tab, last-admin protection, UI controls hidden by permission; post-review hardening (evidence-route 403, dashboard universal landing, API 403 tests); 92 unit + 7 e2e |
 | 48 | Ready for review | opencode | 2026-07-02 | Data lifecycle: evidence files deleted on assessment/vendor delete, replace-on-upload, logo cleanup, template-version re-link on delete, cron orphan-sweep + storage.list(); 97 unit + 7 e2e |
 | 49 | Ready for review | opencode | 2026-07-02 | Roles UX: master–detail list + slide-over Sheet editor, permission summary chips, group/master select-all, duplicate role; 101 unit + 8 e2e |
+| 50 | Ready for review | opencode | 2026-07-02 | UX fixes: readable destructive button, success toast tokens (decoupled from RAG), stat-card count-up fix, dashboard filter fix, delete user (guarded) with audit/review history preserved; 103 unit + 9 e2e |

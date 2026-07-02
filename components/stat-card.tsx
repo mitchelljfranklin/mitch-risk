@@ -1,17 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 function useCountUp(end: number, durationMs = 800) {
   const [value, setValue] = useState(0);
-  const started = useRef(false);
 
   useEffect(() => {
-    if (started.current) return;
-    started.current = true;
-    if (end <= 0) return;
+    if (end <= 0) {
+      return;
+    }
 
     const start = performance.now();
     let frame: number;
@@ -20,7 +19,7 @@ function useCountUp(end: number, durationMs = 800) {
       const elapsed = now - start;
       const progress = Math.min(elapsed / durationMs, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(Math.round(eased * end));
+      setValue(progress < 1 ? Math.round(eased * end) : end);
       if (progress < 1) {
         frame = requestAnimationFrame(tick);
       }
@@ -30,7 +29,7 @@ function useCountUp(end: number, durationMs = 800) {
     return () => cancelAnimationFrame(frame);
   }, [end, durationMs]);
 
-  return value;
+  return end <= 0 ? end : value;
 }
 
 type StatCardProps = {

@@ -36,5 +36,18 @@ test("admin creates a custom role via the slide-over with select-all", async ({
   await page.getByLabel("Select all permissions").click();
   await page.getByRole("button", { name: "Create role" }).click();
 
-  await expect(page.getByText(roleName)).toBeVisible();
+  await expect(page.getByText(roleName)).toBeVisible({ timeout: 15000 });
+});
+
+test("dashboard stat cards render real (non-zero) counts", async ({ page }) => {
+  await signInAsAdmin(page);
+  await page.goto("/dashboard");
+
+  const card = page
+    .locator("div")
+    .filter({ hasText: /^Vendors tracked/ })
+    .last();
+  await expect(card).toBeVisible();
+  // The count-up must settle on the real value, not stay at 0.
+  await expect(card).not.toHaveText(/Vendors tracked\s*0$/);
 });

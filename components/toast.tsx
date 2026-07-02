@@ -37,9 +37,9 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   }
 
   const bgMap: Record<ToastType, string> = {
-    success: "bg-[var(--rag-green)]",
-    error: "bg-destructive",
-    info: "bg-muted-foreground",
+    success: "bg-success text-success-foreground",
+    error: "bg-destructive text-white",
+    info: "bg-muted-foreground text-primary-foreground",
   };
 
   return (
@@ -50,7 +50,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           <div
             key={t.id}
             onClick={() => remove(t.id)}
-            className={`${bgMap[t.type]} text-primary-foreground animate-in slide-in-from-right-4 pointer-events-auto cursor-pointer rounded-md px-4 py-2.5 text-sm font-medium shadow-lg transition-all`}
+            className={`${bgMap[t.type]} animate-in slide-in-from-right-4 pointer-events-auto cursor-pointer rounded-md px-4 py-2.5 text-sm font-medium shadow-lg transition-all`}
           >
             {t.message}
           </div>

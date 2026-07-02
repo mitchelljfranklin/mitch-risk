@@ -387,6 +387,13 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   **group + master "select all"** toggles. Added **duplicate role** (creates a `(copy)` with a
   unique name) and kept delete/system-role/Admin-lock protections. Admin shows a read-only
   summary instead of a disabled grid.
+- **Phase 50 — UX & user-management fixes.** Fixed the confirm-dialog delete button (was
+  red-on-black/unreadable; now uses the shared destructive button style). Decoupled toast
+  colours from the configurable RAG palette via dedicated `--success` tokens. Fixed the
+  dashboard stat cards showing `0` (a `useCountUp` Strict-Mode bug) and made the vendor filter
+  render a single coherent list. Added the ability to **delete a user** (guarded: can't delete
+  yourself or the last admin); audit logs and past review decisions are preserved as "Deleted
+  user" via nullable `SetNull` relations.
 
 ## 8. Out of scope (v1+)
 

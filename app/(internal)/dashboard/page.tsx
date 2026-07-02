@@ -74,7 +74,6 @@ export default async function DashboardPage({
   });
 
   const needingAttention = portfolio.filter((v) => v.overdueCount > 0);
-  const allGood = filteredVendors.filter((v) => v.overdueCount === 0);
 
   return (
     <div className="flex max-w-4xl flex-col gap-6">
@@ -234,7 +233,7 @@ export default async function DashboardPage({
             </p>
           ) : (
             <div className="flex flex-col divide-y rounded-lg border">
-              {allGood.map((vendor) => (
+              {filteredVendors.map((vendor) => (
                 <Link
                   key={vendor.id}
                   href={`/vendors/${vendor.id}`}

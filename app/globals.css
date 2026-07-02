@@ -40,6 +40,8 @@
   --rag-amber: #d97706;
   --rag-red: #dc2626;
   --rag-unscored: #9ca3af;
+  --success: oklch(0.6 0.15 150);
+  --success-foreground: oklch(0.985 0 0);
 }
 
 .dark {
@@ -78,6 +80,8 @@
   --rag-amber: #fbbf24;
   --rag-red: #f87171;
   --rag-unscored: #6b7280;
+  --success: oklch(0.65 0.16 150);
+  --success-foreground: oklch(0.985 0 0);
 }
 
 @theme inline {
@@ -122,6 +126,8 @@
   --rag-amber: var(--rag-amber);
   --rag-red: var(--rag-red);
   --rag-unscored: var(--rag-unscored);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
 }
 
 @layer base {

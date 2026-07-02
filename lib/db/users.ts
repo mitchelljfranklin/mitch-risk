@@ -45,6 +45,22 @@ export function changeUserRole(id: string, roleId: string) {
   return prisma.user.update({ where: { id }, data: { roleId } });
 }
 
+export function deleteUser(id: string) {
+  return prisma.user.delete({ where: { id } });
+}
+
+export function countAdminsExcluding(
+  userId: string,
+  permission: string,
+): Promise<number> {
+  return prisma.user.count({
+    where: {
+      id: { not: userId },
+      role: { permissions: { has: permission } },
+    },
+  });
+}
+
 export async function resetUserPassword(
   id: string,
   password: string,

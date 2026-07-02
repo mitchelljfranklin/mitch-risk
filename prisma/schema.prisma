@@ -373,8 +373,8 @@ model AnswerReview {
   id         String         @id @default(cuid())
   responseId String         @unique
   response   Response       @relation(fields: [responseId], references: [id], onDelete: Cascade)
-  reviewerId String
-  reviewer   User           @relation("UserReviews", fields: [reviewerId], references: [id])
+  reviewerId String?
+  reviewer   User?          @relation("UserReviews", fields: [reviewerId], references: [id], onDelete: SetNull)
   decision   String
   note       String?
   createdAt  DateTime       @default(now())
@@ -403,8 +403,8 @@ model NotificationLog {
 
 model AuditLog {
   id         String   @id @default(cuid())
-  userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   action     String
   entityType String?
   entityId   String?

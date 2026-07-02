@@ -90,7 +90,7 @@ export async function listAuditLogs(
   const page = filters?.page ?? 1;
   const pageSize = filters?.pageSize ?? DEFAULT_AUDIT_PAGE_SIZE;
 
-  const [entries, totalCount] = await Promise.all([
+  const [rows, totalCount] = await Promise.all([
     prisma.auditLog.findMany({
       where,
       take: pageSize,
@@ -100,6 +100,15 @@ export async function listAuditLogs(
     }),
     prisma.auditLog.count({ where }),
   ]);
+
+  const entries: AuditLogEntry[] = rows.map((row) => ({
+    id: row.id,
+    action: row.action,
+    entityType: row.entityType,
+    entityId: row.entityId,
+    createdAt: row.createdAt,
+    user: row.user ?? { id: "", name: "Deleted user" },
+  }));
 
   return { entries, totalCount, page, pageSize };
 }
@@ -167,6 +176,7 @@ export const AUDIT_ACTION_LABELS: Record<string, string> = {
   CREATE_TEMPLATE_VERSION: "Created template version",
   IMPORT_TEMPLATE: "Imported template",
   CREATE_USER: "Created user",
+  DELETE_USER: "Deleted user",
   DISABLE_USER: "Disabled user",
   ENABLE_USER: "Enabled user",
   CHANGE_ROLE: "Changed role",

@@ -6,8 +6,10 @@ import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import {
   changeUserRole,
+  countAdminsExcluding,
   countUsersWithPermission,
   createUser,
+  deleteUser,
   resetUserPassword,
   toggleUserDisabled,
 } from "@/lib/db/users";
@@ -117,6 +119,45 @@ export async function changeRoleAction(formData: FormData) {
     await logAudit(actor.id, "CHANGE_ROLE", "User", userId, {
       newRoleId: roleId,
       newRole: role.name,
+    });
+  }
+  revalidatePath("/settings");
+}
+
+export async function deleteUserAction(formData: FormData) {
+  await requirePermission(PERMISSIONS.USERS_MANAGE);
+  const userId = getField(formData, "userId");
+  if (!userId) {
+    return;
+  }
+
+  const actor = await getCurrentUser();
+  if (actor?.id === userId) {
+    return;
+  }
+
+  const target = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { email: true, role: { select: { permissions: true } } },
+  });
+  if (!target) {
+    return;
+  }
+
+  if (target.role.permissions.includes(PERMISSIONS.SETTINGS_MANAGE)) {
+    const otherAdmins = await countAdminsExcluding(
+      userId,
+      PERMISSIONS.SETTINGS_MANAGE,
+    );
+    if (otherAdmins === 0) {
+      return;
+    }
+  }
+
+  await deleteUser(userId);
+  if (actor) {
+    await logAudit(actor.id, "DELETE_USER", "User", userId, {
+      email: target.email,
     });
   }
   revalidatePath("/settings");

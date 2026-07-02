@@ -25,8 +25,8 @@ over sprawling configuration. Do not add features that are not in the plan witho
 - **@react-pdf/renderer** — PDF assessment reports (Phase 19)
 - **Swagger UI (CDN)** — interactive API documentation at `/docs` (Phase 29)
 - **bcryptjs** — user password hashing and API key hashing
-- **Local-disk volume** — evidence file storage behind a storage interface (S3/MinIO swappable later); files served only via an authenticated route
-- **System cron -> secured `/api/cron/run`** — reminders, escalations, recurring assessments, audit log pruning
+- **Local-disk volume** — evidence file storage behind a storage interface (save/read/delete/list; S3/MinIO swappable later); files served only via an authenticated route
+- **System cron -> secured `/api/cron/run`** — reminders, escalations, recurring assessments, audit-log & email-log pruning, orphaned-file sweep
 - **Docker Compose** (app + Postgres), reverse proxy (Caddy/nginx) for TLS — self-hosted
 
 ## Repository layout (created during Phase 0)
@@ -74,7 +74,7 @@ lib/                 # cross-cutting logic
   theme-tokens.tsx   # server-rendered CSS variable injection (brand colours)
   tokens.ts          # opaque portal token generation + expiry
   utils.ts           # cn(), formatDate(), formatPercent()
-  storage/           # file storage interface + local-disk implementation
+  storage/           # file storage interface (save/read/delete/list) + local-disk implementation
 hooks/              # React hooks (use-form-toast, use-mobile)
 emails/              # React Email templates (invite, reminder, escalation, dynamic)
 prisma/              # schema.prisma, migrations, seed.ts
@@ -145,6 +145,9 @@ Every delivered item, in every phase, must meet this bar:
 - **Styling = tokens only.** Use design-token-backed Tailwind classes; never hardcode hex
   colours, spacing, radius, or font sizes. New visual variants extend shadcn primitives via
   `cva` + `cn` — do not fork or copy a primitive.
+- **Status colours are semantic.** UI status/chrome uses semantic tokens (`--success`,
+  `--destructive`); do not reuse the user-configurable RAG palette (`--rag-*`) for UI chrome —
+  RAG tokens are for score/compliance indicators only.
 - **One home per concern.** UI primitives in `components/ui/`; reusable composites in
   `components/`; all cross-cutting logic in `lib/` (prisma, scoring, auth, email, storage,
   tokens, env, utils); shared zod schemas + inferred types in `lib/schemas/`.
@@ -254,6 +257,10 @@ from the catalog and role defaults).
   name. Review all `const` declarations before committing.
 - Never commit secrets or evidence files.
 - Never expose evidence files via public URLs — only through the authenticated route.
+- **Data lifecycle.** Deleting a record must also remove its associated storage files
+  (evidence, logos); a replaced upload deletes the old file. The cron orphaned-file sweep is
+  the backstop, not the primary cleanup. Deleting a user preserves audit and review history via
+  nullable `SetNull` relations (surfaced as "Deleted user") — never cascade-delete audit trails.
 - Prefer Server Components for reads and Server Actions for writes.
 - **Keep the OpenAPI spec current.** Whenever a new API endpoint is added, modified, or
   removed, update `lib/openapi.json` in the same phase. The spec lives at `/api/docs` and
