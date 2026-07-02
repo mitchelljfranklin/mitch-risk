@@ -1,14 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { VendorForm } from "@/components/vendor-form";
 import { createVendorAction } from "@/lib/actions/vendors";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = { title: "New vendor" };
 
 export default async function NewVendorPage() {
-  await requireUser();
+  await requirePermission(PERMISSIONS.VENDORS_CREATE);
 
   return (
     <div className="flex max-w-2xl flex-col gap-6">

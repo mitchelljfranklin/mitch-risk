@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { requireUser, getCurrentUser } from "@/lib/auth";
+import { requirePermission, getCurrentUser } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { createVendor, deleteVendor, updateVendor } from "@/lib/db/vendors";
 import { logAudit } from "@/lib/db/audit";
 import { getField } from "@/lib/actions/helpers";
@@ -19,7 +20,7 @@ export async function createVendorAction(
   previousState: VendorFormState,
   formData: FormData,
 ): Promise<VendorFormState> {
-  await requireUser();
+  await requirePermission(PERMISSIONS.VENDORS_CREATE);
   const parsed = vendorSchema.safeParse({
     name: getField(formData, "name"),
     contactName: getField(formData, "contactName"),
@@ -43,7 +44,7 @@ export async function updateVendorAction(
   previousState: VendorFormState,
   formData: FormData,
 ): Promise<VendorFormState> {
-  await requireUser();
+  await requirePermission(PERMISSIONS.VENDORS_EDIT);
   const vendorId = getField(formData, "vendorId");
   const parsed = vendorSchema.safeParse({
     name: getField(formData, "name"),
@@ -66,7 +67,7 @@ export async function updateVendorAction(
 }
 
 export async function deleteVendorAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.VENDORS_DELETE);
   const vendorId = getField(formData, "vendorId");
   await deleteVendor(vendorId);
   const user = await getCurrentUser();
@@ -105,7 +106,7 @@ export async function importVendorsAction(
   previousState: VendorsImportState,
   formData: FormData,
 ): Promise<VendorsImportState> {
-  await requireUser();
+  await requirePermission(PERMISSIONS.VENDORS_CREATE);
 
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {

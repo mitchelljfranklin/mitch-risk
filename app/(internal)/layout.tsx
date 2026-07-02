@@ -1,5 +1,3 @@
-import { UserRole } from "@prisma/client";
-
 import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Separator } from "@/components/ui/separator";
@@ -39,7 +37,7 @@ export default async function InternalLayout({
       <SidebarProvider>
         <AppSidebar
           orgName={organization.name}
-          isAdmin={user.role === UserRole.ADMIN}
+          permissions={user.permissions}
           notificationCount={notificationCounts.total}
           hasLogo={Boolean(appearance.logoKey)}
         />
@@ -52,7 +50,7 @@ export default async function InternalLayout({
             <UserMenu
               name={user.name ?? user.email ?? "Account"}
               email={user.email ?? ""}
-              role={user.role}
+              role={user.roleName}
             />
           </header>
           <main

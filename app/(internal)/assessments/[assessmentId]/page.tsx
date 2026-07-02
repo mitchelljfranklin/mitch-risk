@@ -35,7 +35,8 @@ import {
 import { FinalizeButton } from "./finalize-button";
 import { DraftEditor } from "./draft-editor";
 import { SendForms } from "./send-forms";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getAssessment } from "@/lib/db/assessments";
 import { env } from "@/lib/env";
 import { ASSESSMENT_STATUS_LABELS } from "@/lib/schemas/assessment";
@@ -82,7 +83,20 @@ const REVIEW_DECISION_VARIANT: Record<
 export default async function AssessmentDetailPage({
   params,
 }: AssessmentDetailPageProps) {
-  await requireUser();
+  const user = await requirePermission(PERMISSIONS.ASSESSMENTS_VIEW);
+  const canCreate = hasPermission(
+    user.permissions,
+    PERMISSIONS.ASSESSMENTS_CREATE,
+  );
+  const canEdit = hasPermission(user.permissions, PERMISSIONS.ASSESSMENTS_EDIT);
+  const canReview = hasPermission(
+    user.permissions,
+    PERMISSIONS.ASSESSMENTS_REVIEW,
+  );
+  const canDelete = hasPermission(
+    user.permissions,
+    PERMISSIONS.ASSESSMENTS_DELETE,
+  );
   const { assessmentId } = await params;
   const assessment = await getAssessment(assessmentId);
   if (!assessment) {
@@ -142,7 +156,7 @@ export default async function AssessmentDetailPage({
             </Badge>
           </h1>
           <div className="flex flex-wrap items-center gap-2">
-            {isReviewable ? (
+            {isReviewable && canReview ? (
               <>
                 <form action={reopenAction}>
                   <input
@@ -175,21 +189,27 @@ export default async function AssessmentDetailPage({
                 </a>
               </Button>
             ) : null}
-            <form
-              id={`delete-assessment-${assessment.id}`}
-              action={deleteAssessmentAction}
-            >
-              <input type="hidden" name="assessmentId" value={assessment.id} />
-              <ConfirmDialog
-                title="Delete assessment?"
-                description={`This will permanently delete "${assessment.title}" and all responses, findings, and evidence. This action cannot be undone.`}
-                formId={`delete-assessment-${assessment.id}`}
+            {canDelete ? (
+              <form
+                id={`delete-assessment-${assessment.id}`}
+                action={deleteAssessmentAction}
               >
-                <Button type="button" variant="outline">
-                  Delete
-                </Button>
-              </ConfirmDialog>
-            </form>
+                <input
+                  type="hidden"
+                  name="assessmentId"
+                  value={assessment.id}
+                />
+                <ConfirmDialog
+                  title="Delete assessment?"
+                  description={`This will permanently delete "${assessment.title}" and all responses, findings, and evidence. This action cannot be undone.`}
+                  formId={`delete-assessment-${assessment.id}`}
+                >
+                  <Button type="button" variant="outline">
+                    Delete
+                  </Button>
+                </ConfirmDialog>
+              </form>
+            ) : null}
           </div>
         </div>
         <p className="text-muted-foreground mt-1 text-sm">
@@ -207,7 +227,7 @@ export default async function AssessmentDetailPage({
         </p>
       </div>
 
-      {isDraft ? (
+      {isDraft && canCreate ? (
         <Card>
           <CardHeader>
             <CardTitle>Send questionnaire</CardTitle>
@@ -222,7 +242,7 @@ export default async function AssessmentDetailPage({
         </Card>
       ) : null}
 
-      {isDraft ? (
+      {isDraft && canEdit ? (
         <DraftEditor
           assessmentId={assessment.id}
           title={assessment.title}
@@ -253,49 +273,51 @@ export default async function AssessmentDetailPage({
                 </Badge>
               ) : null}
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <form action={extendAssessmentAction}>
-                <input
-                  type="hidden"
-                  name="assessmentId"
-                  value={assessment.id}
-                />
-                <Button type="submit" variant="outline" size="sm">
-                  Extend 30 days
-                </Button>
-              </form>
-              <form action={regenerateAssessmentAction}>
-                <input
-                  type="hidden"
-                  name="assessmentId"
-                  value={assessment.id}
-                />
-                <Button type="submit" variant="outline" size="sm">
-                  Regenerate link
-                </Button>
-              </form>
-              <form
-                id={`revoke-${assessment.id}`}
-                action={revokeAssessmentAction}
-              >
-                <input
-                  type="hidden"
-                  name="assessmentId"
-                  value={assessment.id}
-                />
-                <ConfirmDialog
-                  title="Revoke portal link?"
-                  description="The vendor will no longer be able to access the questionnaire. You can regenerate the link later if needed."
-                  confirmLabel="Revoke"
-                  variant="destructive"
-                  formId={`revoke-${assessment.id}`}
-                >
-                  <Button type="button" variant="ghost" size="sm">
-                    Revoke
+            {canEdit ? (
+              <div className="flex flex-wrap items-center gap-2">
+                <form action={extendAssessmentAction}>
+                  <input
+                    type="hidden"
+                    name="assessmentId"
+                    value={assessment.id}
+                  />
+                  <Button type="submit" variant="outline" size="sm">
+                    Extend 30 days
                   </Button>
-                </ConfirmDialog>
-              </form>
-            </div>
+                </form>
+                <form action={regenerateAssessmentAction}>
+                  <input
+                    type="hidden"
+                    name="assessmentId"
+                    value={assessment.id}
+                  />
+                  <Button type="submit" variant="outline" size="sm">
+                    Regenerate link
+                  </Button>
+                </form>
+                <form
+                  id={`revoke-${assessment.id}`}
+                  action={revokeAssessmentAction}
+                >
+                  <input
+                    type="hidden"
+                    name="assessmentId"
+                    value={assessment.id}
+                  />
+                  <ConfirmDialog
+                    title="Revoke portal link?"
+                    description="The vendor will no longer be able to access the questionnaire. You can regenerate the link later if needed."
+                    confirmLabel="Revoke"
+                    variant="destructive"
+                    formId={`revoke-${assessment.id}`}
+                  >
+                    <Button type="button" variant="ghost" size="sm">
+                      Revoke
+                    </Button>
+                  </ConfirmDialog>
+                </form>
+              </div>
+            ) : null}
           </CardContent>
         </Card>
       ) : null}
@@ -309,12 +331,18 @@ export default async function AssessmentDetailPage({
             <p className="text-muted-foreground text-sm">
               The link has been revoked.
             </p>
-            <form action={regenerateAssessmentAction}>
-              <input type="hidden" name="assessmentId" value={assessment.id} />
-              <Button type="submit" variant="outline" size="sm">
-                Regenerate link
-              </Button>
-            </form>
+            {canEdit ? (
+              <form action={regenerateAssessmentAction}>
+                <input
+                  type="hidden"
+                  name="assessmentId"
+                  value={assessment.id}
+                />
+                <Button type="submit" variant="outline" size="sm">
+                  Regenerate link
+                </Button>
+              </form>
+            ) : null}
           </CardContent>
         </Card>
       ) : null}
@@ -445,7 +473,7 @@ export default async function AssessmentDetailPage({
                   })}
                   {response ? (
                     <div className="mt-2 flex items-start justify-between gap-2">
-                      {isReviewable ? (
+                      {isReviewable && canReview ? (
                         <>
                           {review ? (
                             <p className="text-muted-foreground text-xs">
@@ -536,59 +564,63 @@ export default async function AssessmentDetailPage({
                           <p className="text-sm">{reply.body}</p>
                         </div>
                       ))}
-                      <form
-                        action={addCommentAction}
-                        className="mt-1 flex gap-2"
-                      >
-                        <input
-                          type="hidden"
-                          name="assessmentId"
-                          value={assessment.id}
-                        />
-                        <input
-                          type="hidden"
-                          name="assessmentQuestionId"
-                          value={question.id}
-                        />
-                        <input
-                          type="hidden"
-                          name="parentId"
-                          value={comment.id}
-                        />
-                        <input
-                          name="body"
-                          placeholder="Reply"
-                          required
-                          className="border-input bg-background h-8 flex-1 rounded-md border px-2 text-xs"
-                        />
-                        <Button type="submit" size="sm" variant="ghost">
-                          Reply
-                        </Button>
-                      </form>
+                      {canReview ? (
+                        <form
+                          action={addCommentAction}
+                          className="mt-1 flex gap-2"
+                        >
+                          <input
+                            type="hidden"
+                            name="assessmentId"
+                            value={assessment.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="assessmentQuestionId"
+                            value={question.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="parentId"
+                            value={comment.id}
+                          />
+                          <input
+                            name="body"
+                            placeholder="Reply"
+                            required
+                            className="border-input bg-background h-8 flex-1 rounded-md border px-2 text-xs"
+                          />
+                          <Button type="submit" size="sm" variant="ghost">
+                            Reply
+                          </Button>
+                        </form>
+                      ) : null}
                     </div>
                   ))}
 
-                  <form action={addCommentAction} className="mt-2 flex gap-2">
-                    <input
-                      type="hidden"
-                      name="assessmentId"
-                      value={assessment.id}
-                    />
-                    <input
-                      type="hidden"
-                      name="assessmentQuestionId"
-                      value={question.id}
-                    />
-                    <input
-                      name="body"
-                      placeholder="Add a comment"
-                      required
-                      className="border-input bg-background h-8 flex-1 rounded-md border px-2 text-xs"
-                    />
-                    <Button type="submit" size="sm" variant="ghost">
-                      Comment
-                    </Button>
-                  </form>
+                  {canReview ? (
+                    <form action={addCommentAction} className="mt-2 flex gap-2">
+                      <input
+                        type="hidden"
+                        name="assessmentId"
+                        value={assessment.id}
+                      />
+                      <input
+                        type="hidden"
+                        name="assessmentQuestionId"
+                        value={question.id}
+                      />
+                      <input
+                        name="body"
+                        placeholder="Add a comment"
+                        required
+                        className="border-input bg-background h-8 flex-1 rounded-md border px-2 text-xs"
+                      />
+                      <Button type="submit" size="sm" variant="ghost">
+                        Comment
+                      </Button>
+                    </form>
+                  ) : null}
                 </div>
               );
             })}

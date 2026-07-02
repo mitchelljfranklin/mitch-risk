@@ -19,7 +19,8 @@ import {
   updateSectionAction,
   updateTemplateAction,
 } from "@/lib/actions/templates";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import {
   getTemplateForBuilder,
   getTemplateVersionChain,
@@ -53,7 +54,15 @@ export async function generateMetadata({
 export default async function TemplateBuilderPage({
   params,
 }: BuilderPageProps) {
-  await requireUser();
+  const user = await requirePermission(PERMISSIONS.TEMPLATES_VIEW);
+  const canEditTemplate = hasPermission(
+    user.permissions,
+    PERMISSIONS.TEMPLATES_EDIT,
+  );
+  const canDeleteTemplate = hasPermission(
+    user.permissions,
+    PERMISSIONS.TEMPLATES_DELETE,
+  );
   const { templateId } = await params;
   const template = await getTemplateForBuilder(templateId);
   if (!template) {
@@ -61,6 +70,7 @@ export default async function TemplateBuilderPage({
   }
 
   const isDraft = template.status === "DRAFT";
+  const canEditDraft = isDraft && canEditTemplate;
   const versionChain = await getTemplateVersionChain(templateId);
 
   return (
@@ -81,12 +91,13 @@ export default async function TemplateBuilderPage({
             </Badge>
           </h1>
           <div className="flex items-center gap-2">
-            {isDraft ? (
+            {canEditTemplate && isDraft ? (
               <form action={publishTemplateAction}>
                 <input type="hidden" name="templateId" value={template.id} />
                 <Button type="submit">Publish</Button>
               </form>
-            ) : (
+            ) : null}
+            {canEditTemplate && !isDraft ? (
               <>
                 <form action={createNewVersionAction}>
                   <input type="hidden" name="templateId" value={template.id} />
@@ -107,22 +118,24 @@ export default async function TemplateBuilderPage({
                   </form>
                 ) : null}
               </>
-            )}
-            <form
-              id={`delete-template-${template.id}`}
-              action={deleteTemplateAction}
-            >
-              <input type="hidden" name="templateId" value={template.id} />
-              <ConfirmDialog
-                title="Delete template?"
-                description={`This will permanently delete "${template.name}" and all its sections and questions. Assessments using this template will lose the template link. This action cannot be undone.`}
-                formId={`delete-template-${template.id}`}
+            ) : null}
+            {canDeleteTemplate ? (
+              <form
+                id={`delete-template-${template.id}`}
+                action={deleteTemplateAction}
               >
-                <Button type="button" variant="outline">
-                  Delete
-                </Button>
-              </ConfirmDialog>
-            </form>
+                <input type="hidden" name="templateId" value={template.id} />
+                <ConfirmDialog
+                  title="Delete template?"
+                  description={`This will permanently delete "${template.name}" and all its sections and questions. Assessments using this template will lose the template link. This action cannot be undone.`}
+                  formId={`delete-template-${template.id}`}
+                >
+                  <Button type="button" variant="outline">
+                    Delete
+                  </Button>
+                </ConfirmDialog>
+              </form>
+            ) : null}
             <Button asChild variant="outline">
               <a href={`/api/templates/${template.id}/export`} download>
                 Export
@@ -174,7 +187,7 @@ export default async function TemplateBuilderPage({
         </Card>
       ) : null}
 
-      {isDraft ? (
+      {canEditDraft ? (
         <Card>
           <CardHeader>
             <CardTitle>Template details</CardTitle>
@@ -205,18 +218,18 @@ export default async function TemplateBuilderPage({
             </form>
           </CardContent>
         </Card>
-      ) : (
+      ) : !isDraft ? (
         <p className="text-muted-foreground text-sm">
           This version is published and read-only. Create a new version to make
           changes.
         </p>
-      )}
+      ) : null}
 
       {template.sections.map((section) => (
         <Card key={section.id}>
           <CardHeader>
             <div className="flex items-center justify-between gap-3">
-              {isDraft ? (
+              {canEditDraft ? (
                 <form
                   action={updateSectionAction}
                   className="flex flex-1 items-center gap-2"
@@ -236,7 +249,7 @@ export default async function TemplateBuilderPage({
               ) : (
                 <CardTitle>{section.title}</CardTitle>
               )}
-              {isDraft ? (
+              {canEditDraft ? (
                 <form
                   id={`delete-section-${section.id}`}
                   action={deleteSectionAction}
@@ -289,7 +302,7 @@ export default async function TemplateBuilderPage({
                       ) : null}
                     </div>
                   </div>
-                  {isDraft ? (
+                  {canEditDraft ? (
                     <div className="flex shrink-0 items-center gap-1">
                       <Button asChild variant="ghost" size="sm">
                         <Link
@@ -327,7 +340,7 @@ export default async function TemplateBuilderPage({
                 </div>
               ))
             )}
-            {isDraft ? (
+            {canEditDraft ? (
               <Button asChild variant="outline" size="sm" className="w-fit">
                 <Link
                   href={`/templates/${template.id}/sections/${section.id}/questions/new`}
@@ -340,7 +353,7 @@ export default async function TemplateBuilderPage({
         </Card>
       ))}
 
-      {isDraft ? (
+      {canEditDraft ? (
         <Card>
           <CardHeader>
             <CardTitle>Add section</CardTitle>

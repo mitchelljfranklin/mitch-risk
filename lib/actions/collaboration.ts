@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 
-import { getCurrentUser, requireUser } from "@/lib/auth";
+import { getCurrentUser, requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import {
   addComment,
   finalizeAssessment,
@@ -16,7 +17,7 @@ import { prisma } from "@/lib/prisma";
 const VALID_DECISIONS = ["APPROVED", "REJECTED", "CLARIFICATION_REQUESTED"];
 
 export async function addCommentAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_REVIEW);
   const assessmentId = getField(formData, "assessmentId");
   const assessmentQuestionId =
     getField(formData, "assessmentQuestionId") || undefined;
@@ -44,7 +45,7 @@ export async function addCommentAction(formData: FormData) {
 }
 
 export async function reviewAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_REVIEW);
   const assessmentId = getField(formData, "assessmentId");
   const responseId = getField(formData, "responseId");
   const decision = getField(formData, "decision");
@@ -95,7 +96,7 @@ export async function reviewAction(formData: FormData) {
 }
 
 export async function reopenAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_REVIEW);
   const assessmentId = getField(formData, "assessmentId");
   await reopenAssessment(assessmentId);
   const user = await getCurrentUser();
@@ -106,7 +107,7 @@ export async function reopenAction(formData: FormData) {
 }
 
 export async function finalizeAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_REVIEW);
   const assessmentId = getField(formData, "assessmentId");
   const result = await finalizeAssessment(assessmentId);
   if (!result.ok) {
@@ -125,7 +126,7 @@ export async function finalizeWithStateAction(
   previousState: FinalizeState,
   formData: FormData,
 ): Promise<FinalizeState> {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_REVIEW);
   const assessmentId = getField(formData, "assessmentId");
   const result = await finalizeAssessment(assessmentId);
   if (!result.ok) {

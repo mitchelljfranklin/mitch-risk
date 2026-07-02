@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { requireUser, getCurrentUser } from "@/lib/auth";
+import { requirePermission, getCurrentUser } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { logAudit } from "@/lib/db/audit";
 import { getField } from "@/lib/actions/helpers";
 import {
@@ -43,7 +44,7 @@ export async function createTemplateAction(
   previousState: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  await requireUser();
+  await requirePermission(PERMISSIONS.TEMPLATES_CREATE);
   const parsed = templateSchema.safeParse({
     name: getField(formData, "name"),
     description: getField(formData, "description"),
@@ -60,7 +61,7 @@ export async function createTemplateAction(
 }
 
 export async function updateTemplateAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const templateId = getField(formData, "templateId");
   await assertEditable(templateId);
   const parsed = templateSchema.safeParse({
@@ -78,7 +79,7 @@ export async function updateTemplateAction(formData: FormData) {
 }
 
 export async function deleteTemplateAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.TEMPLATES_DELETE);
   const templateId = getField(formData, "templateId");
   await deleteTemplate(templateId);
   const user = await getCurrentUser();
@@ -89,7 +90,7 @@ export async function deleteTemplateAction(formData: FormData) {
 }
 
 export async function addSectionAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const templateId = getField(formData, "templateId");
   await assertEditable(templateId);
   const parsed = sectionSchema.safeParse({
@@ -102,7 +103,7 @@ export async function addSectionAction(formData: FormData) {
 }
 
 export async function updateSectionAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const templateId = getField(formData, "templateId");
   await assertEditable(templateId);
   const parsed = sectionSchema.safeParse({
@@ -115,7 +116,7 @@ export async function updateSectionAction(formData: FormData) {
 }
 
 export async function deleteSectionAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const templateId = getField(formData, "templateId");
   await assertEditable(templateId);
   await deleteSection(getField(formData, "sectionId"));
@@ -126,7 +127,7 @@ export async function saveQuestionAction(
   previousState: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  await requireUser();
+  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const templateId = getField(formData, "templateId");
   await assertEditable(templateId);
   const sectionId = getField(formData, "sectionId");
@@ -178,7 +179,7 @@ export async function saveQuestionAction(
 }
 
 export async function deleteQuestionAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const templateId = getField(formData, "templateId");
   await assertEditable(templateId);
   await deleteQuestion(getField(formData, "questionId"));
@@ -186,7 +187,7 @@ export async function deleteQuestionAction(formData: FormData) {
 }
 
 export async function publishTemplateAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const templateId = getField(formData, "templateId");
   await publishTemplate(templateId);
   const user = await getCurrentUser();
@@ -197,7 +198,7 @@ export async function publishTemplateAction(formData: FormData) {
 }
 
 export async function unpublishTemplateAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const templateId = getField(formData, "templateId");
   await unpublishTemplate(templateId);
   const user = await getCurrentUser();
@@ -208,7 +209,7 @@ export async function unpublishTemplateAction(formData: FormData) {
 }
 
 export async function createNewVersionAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.TEMPLATES_CREATE);
   const newTemplateId = await createNewVersion(
     getField(formData, "templateId"),
   );
@@ -252,7 +253,7 @@ export async function importTemplateAction(
   previousState: TemplateImportState,
   formData: FormData,
 ): Promise<TemplateImportState> {
-  await requireUser();
+  await requirePermission(PERMISSIONS.TEMPLATES_CREATE);
 
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {

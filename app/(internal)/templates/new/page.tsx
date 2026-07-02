@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 
 import { NewTemplateForm } from "./new-template-form";
 
@@ -8,7 +9,7 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "New template" };
 
 export default async function NewTemplatePage() {
-  await requireUser();
+  await requirePermission(PERMISSIONS.TEMPLATES_CREATE);
 
   return (
     <div className="flex max-w-lg flex-col gap-6">

@@ -10,7 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { listAssessments } from "@/lib/db/assessments";
 import { ASSESSMENT_STATUS_LABELS } from "@/lib/schemas/assessment";
 import { formatDate } from "@/lib/utils";
@@ -26,7 +27,7 @@ type AssessmentsPageProps = {
 export default async function AssessmentsPage({
   searchParams,
 }: AssessmentsPageProps) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_VIEW);
   const sp = await searchParams;
 
   const filters = {

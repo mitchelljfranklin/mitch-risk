@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { listPublishedTemplates } from "@/lib/db/templates";
 import { listUsers } from "@/lib/db/users";
 import { getVendor } from "@/lib/db/vendors";
@@ -19,7 +20,7 @@ type NewAssessmentPageProps = {
 export default async function NewAssessmentPage({
   params,
 }: NewAssessmentPageProps) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
   const { vendorId } = await params;
   const vendor = await getVendor(vendorId);
   if (!vendor) {

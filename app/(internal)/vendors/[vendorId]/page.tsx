@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { deleteVendorAction } from "@/lib/actions/vendors";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getVendorProfile } from "@/lib/db/compliance";
 import { listFrameworks } from "@/lib/db/frameworks";
 import { getVendor } from "@/lib/db/vendors";
@@ -33,7 +34,19 @@ export async function generateMetadata({
 export default async function VendorDetailPage({
   params,
 }: VendorDetailPageProps) {
-  await requireUser();
+  const user = await requirePermission(PERMISSIONS.VENDORS_VIEW);
+  const canEditVendor = hasPermission(
+    user.permissions,
+    PERMISSIONS.VENDORS_EDIT,
+  );
+  const canDeleteVendor = hasPermission(
+    user.permissions,
+    PERMISSIONS.VENDORS_DELETE,
+  );
+  const canCreateAssessment = hasPermission(
+    user.permissions,
+    PERMISSIONS.ASSESSMENTS_CREATE,
+  );
   const { vendorId } = await params;
   const vendor = await getVendor(vendorId);
   if (!vendor) {
@@ -62,26 +75,33 @@ export default async function VendorDetailPage({
             ) : null}
           </h1>
           <div className="flex items-center gap-2">
-            <Button asChild variant="outline">
-              <Link href={`/vendors/${vendor.id}/edit`}>Edit</Link>
-            </Button>
+            {canEditVendor ? (
+              <Button asChild variant="outline">
+                <Link href={`/vendors/${vendor.id}/edit`}>Edit</Link>
+              </Button>
+            ) : null}
             <Button asChild variant="outline" size="sm">
               <a href={`/api/v1/vendors/${vendor.id}/export`} download>
                 Export CSV
               </a>
             </Button>
-            <form id={`delete-vendor-${vendor.id}`} action={deleteVendorAction}>
-              <input type="hidden" name="vendorId" value={vendor.id} />
-              <ConfirmDialog
-                title="Delete vendor?"
-                description={`This will permanently delete ${vendor.name} and all ${vendor.assessments.length} assessment(s). This action cannot be undone.`}
-                formId={`delete-vendor-${vendor.id}`}
+            {canDeleteVendor ? (
+              <form
+                id={`delete-vendor-${vendor.id}`}
+                action={deleteVendorAction}
               >
-                <Button type="button" variant="outline">
-                  Delete
-                </Button>
-              </ConfirmDialog>
-            </form>
+                <input type="hidden" name="vendorId" value={vendor.id} />
+                <ConfirmDialog
+                  title="Delete vendor?"
+                  description={`This will permanently delete ${vendor.name} and all ${vendor.assessments.length} assessment(s). This action cannot be undone.`}
+                  formId={`delete-vendor-${vendor.id}`}
+                >
+                  <Button type="button" variant="outline">
+                    Delete
+                  </Button>
+                </ConfirmDialog>
+              </form>
+            ) : null}
           </div>
         </div>
         <div className="mt-1 flex items-center gap-4 text-sm">
@@ -213,11 +233,13 @@ export default async function VendorDetailPage({
         <CardHeader>
           <div className="flex items-center justify-between gap-2">
             <CardTitle>Assessments</CardTitle>
-            <Button asChild size="sm">
-              <Link href={`/vendors/${vendor.id}/assessments/new`}>
-                New assessment
-              </Link>
-            </Button>
+            {canCreateAssessment ? (
+              <Button asChild size="sm">
+                <Link href={`/vendors/${vendor.id}/assessments/new`}>
+                  New assessment
+                </Link>
+              </Button>
+            ) : null}
           </div>
         </CardHeader>
         <CardContent className="flex flex-col gap-2">

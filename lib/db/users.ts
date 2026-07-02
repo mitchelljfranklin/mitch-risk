@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { type User, UserRole } from "@prisma/client";
+import { type User } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
@@ -7,6 +7,12 @@ const PASSWORD_SALT_ROUNDS = 12;
 
 export function countUsers(): Promise<number> {
   return prisma.user.count();
+}
+
+export function countUsersWithPermission(permission: string): Promise<number> {
+  return prisma.user.count({
+    where: { disabled: false, role: { permissions: { has: permission } } },
+  });
 }
 
 export function listUsers() {
@@ -23,7 +29,8 @@ export function listUsersFull() {
       id: true,
       name: true,
       email: true,
-      role: true,
+      roleId: true,
+      role: { select: { id: true, name: true } },
       disabled: true,
       createdAt: true,
     },
@@ -34,8 +41,8 @@ export function toggleUserDisabled(id: string, disabled: boolean) {
   return prisma.user.update({ where: { id }, data: { disabled } });
 }
 
-export function changeUserRole(id: string, role: UserRole) {
-  return prisma.user.update({ where: { id }, data: { role } });
+export function changeUserRole(id: string, roleId: string) {
+  return prisma.user.update({ where: { id }, data: { roleId } });
 }
 
 export async function resetUserPassword(
@@ -54,7 +61,7 @@ export async function createUser(input: {
   name: string;
   email: string;
   password: string;
-  role?: UserRole;
+  roleId: string;
 }): Promise<User> {
   const passwordHash = await bcrypt.hash(input.password, PASSWORD_SALT_ROUNDS);
 
@@ -63,7 +70,7 @@ export async function createUser(input: {
       name: input.name,
       email: input.email.toLowerCase(),
       passwordHash,
-      role: input.role ?? UserRole.REVIEWER,
+      roleId: input.roleId,
     },
   });
 }

@@ -19,7 +19,9 @@ import {
   publishTemplate,
 } from "@/lib/db/templates";
 import { createVendor } from "@/lib/db/vendors";
+import { ensureSystemRoles, getRoleByName } from "@/lib/db/roles";
 import { prisma } from "@/lib/prisma";
+import { SYSTEM_ROLE_NAMES } from "@/lib/permissions";
 import { type QuestionInput } from "@/lib/schemas/template";
 
 const VENDOR_NAME = "P18 Collab Vendor";
@@ -46,12 +48,15 @@ async function getOrCreateReviewer(): Promise<string> {
     where: { email: "p18-test-reviewer@example.test" },
   });
   if (existing) return existing.id;
+  await ensureSystemRoles();
+  const reviewerRole = await getRoleByName(SYSTEM_ROLE_NAMES.REVIEWER);
+  if (!reviewerRole) throw new Error("reviewer role not found");
   const created = await prisma.user.create({
     data: {
       email: "p18-test-reviewer@example.test",
       name: "Test Reviewer",
       passwordHash: "",
-      role: "REVIEWER",
+      roleId: reviewerRole.id,
     },
   });
   return created.id;

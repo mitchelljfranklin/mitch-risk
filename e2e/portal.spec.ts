@@ -27,7 +27,9 @@ test("a vendor completes the questionnaire via the no-login portal", async ({
   await expect(page.getByText("Uploaded: policy.pdf")).toBeVisible();
 
   await page.getByRole("button", { name: "Submit questionnaire" }).click();
-  await expect(page.getByText("Thank you")).toBeVisible();
+  await expect(
+    page.getByText("Your responses have been submitted."),
+  ).toBeVisible();
 });
 
 test("an invalid token shows a not-found message", async ({ page }) => {

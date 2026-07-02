@@ -7,7 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { listFrameworks } from "@/lib/db/frameworks";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +16,7 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Frameworks" };
 
 export default async function FrameworksPage() {
-  await requireUser();
+  await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
   const frameworks = await listFrameworks();
 
   return (

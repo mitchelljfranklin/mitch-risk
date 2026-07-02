@@ -1,4 +1,5 @@
-import { authenticateRequest } from "@/lib/api-auth";
+import { authenticateRequest, authResultHasPermission } from "@/lib/api-auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
 import { csvEscape } from "@/lib/utils";
@@ -10,6 +11,9 @@ export async function GET(
   const auth = await authenticateRequest(request);
   if (!auth) {
     return new Response("Unauthorized", { status: 401 });
+  }
+  if (!authResultHasPermission(auth, PERMISSIONS.ASSESSMENTS_VIEW)) {
+    return new Response("Forbidden", { status: 403 });
   }
 
   const { assessmentId } = await params;

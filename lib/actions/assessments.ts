@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { requireUser, getCurrentUser } from "@/lib/auth";
+import { requirePermission, getCurrentUser } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { sendEmail, sendTestEmail } from "@/lib/email/mailer";
 import { env } from "@/lib/env";
 import { logAudit } from "@/lib/db/audit";
@@ -27,7 +28,7 @@ export async function createAssessmentAction(
   previousState: AssessmentFormState,
   formData: FormData,
 ): Promise<AssessmentFormState> {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
   const vendorId = getField(formData, "vendorId");
   const parsed = assessmentSchema.safeParse({
     title: getField(formData, "title"),
@@ -47,7 +48,7 @@ export async function createAssessmentAction(
 }
 
 export async function sendAssessmentAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
   const assessmentId = getField(formData, "assessmentId");
   const portalPassword = getField(formData, "portalPassword") || undefined;
   await sendAssessment(assessmentId, portalPassword);
@@ -78,7 +79,7 @@ export async function sendAssessmentAction(formData: FormData) {
 }
 
 export async function generateLinkAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
   const assessmentId = getField(formData, "assessmentId");
   const portalPassword = getField(formData, "portalPassword") || undefined;
   await sendAssessment(assessmentId, portalPassword);
@@ -91,7 +92,7 @@ export async function generateLinkAction(formData: FormData) {
 }
 
 export async function sendToCustomEmailAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
   const assessmentId = getField(formData, "assessmentId");
   const customEmail = getField(formData, "customEmail").trim();
 
@@ -135,7 +136,7 @@ export async function sendTestEmailAction(
   previousState: { ok: boolean; message: string } | undefined,
   formData: FormData,
 ): Promise<{ ok: boolean; message: string }> {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
   const user = await getCurrentUser();
   return sendTestEmail(getField(formData, "email"), user?.id);
 }
@@ -147,7 +148,7 @@ export async function updateAssessmentAction(
   previousState: UpdateAssessmentState,
   formData: FormData,
 ): Promise<UpdateAssessmentState> {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_EDIT);
   const assessmentId = getField(formData, "assessmentId");
   const title = getField(formData, "title").trim();
   const dueDate = getField(formData, "dueDate");
@@ -161,7 +162,7 @@ export async function updateAssessmentAction(
 }
 
 export async function revokeAssessmentAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_EDIT);
   const assessmentId = getField(formData, "assessmentId");
   await revokeAssessmentToken(assessmentId);
   const user = await getCurrentUser();
@@ -172,7 +173,7 @@ export async function revokeAssessmentAction(formData: FormData) {
 }
 
 export async function extendAssessmentAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_EDIT);
   const assessmentId = getField(formData, "assessmentId");
   await extendAssessmentToken(assessmentId);
   const user = await getCurrentUser();
@@ -183,7 +184,7 @@ export async function extendAssessmentAction(formData: FormData) {
 }
 
 export async function regenerateAssessmentAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_EDIT);
   const assessmentId = getField(formData, "assessmentId");
   await regenerateAssessmentToken(assessmentId);
   const user = await getCurrentUser();
@@ -199,7 +200,7 @@ export async function regenerateAssessmentAction(formData: FormData) {
 }
 
 export async function deleteAssessmentAction(formData: FormData) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_DELETE);
   const assessmentId = getField(formData, "assessmentId");
   await deleteAssessment(assessmentId);
   const user = await getCurrentUser();
@@ -216,7 +217,7 @@ export async function sendBulkAssessmentsAction(
   previousState: BulkSendState,
   formData: FormData,
 ): Promise<BulkSendState> {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
 
   const templateId = getField(formData, "templateId");
   const dueDate = getField(formData, "dueDate");

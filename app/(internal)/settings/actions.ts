@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 
-import { requireAdmin, getCurrentUser } from "@/lib/auth";
+import { requirePermission, getCurrentUser } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { logAudit } from "@/lib/db/audit";
 import {
   updateEmailSettings,
@@ -29,7 +30,7 @@ export async function saveOrganizationSettings(
   previousState: SettingsActionState,
   formData: FormData,
 ): Promise<SettingsActionState> {
-  await requireAdmin();
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
 
   const parsed = organizationSettingsSchema.safeParse({
     name: formData.get("name"),
@@ -54,7 +55,7 @@ export async function saveEmailSettings(
   previousState: SettingsActionState,
   formData: FormData,
 ): Promise<SettingsActionState> {
-  await requireAdmin();
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
 
   const parsed = emailSettingsSchema.safeParse({
     smtpHost: formData.get("smtpHost") ?? "",
@@ -82,7 +83,7 @@ export async function saveEmailTemplateSettings(
   previousState: SettingsActionState,
   formData: FormData,
 ): Promise<SettingsActionState> {
-  await requireAdmin();
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
 
   const parsed = emailTemplateSchema.safeParse({
     inviteSubject: formData.get("inviteSubject") ?? "",
@@ -115,7 +116,7 @@ export async function saveScoringSettings(
   previousState: SettingsActionState,
   formData: FormData,
 ): Promise<SettingsActionState> {
-  await requireAdmin();
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
 
   const parsed = scoringSettingsSchema.safeParse({
     riskWeights: {
@@ -148,7 +149,7 @@ export async function saveSsoSettings(
   previousState: SettingsActionState,
   formData: FormData,
 ): Promise<SettingsActionState> {
-  await requireAdmin();
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
 
   const parsed = ssoSettingsSchema.safeParse({
     entraIdEnabled: formData.get("entraIdEnabled") === "on",
@@ -159,7 +160,7 @@ export async function saveSsoSettings(
     oidcName: formData.get("oidcName") ?? "",
     oidcIssuer: formData.get("oidcIssuer") ?? "",
     oidcClientId: formData.get("oidcClientId") ?? "",
-    autoProvisionRole: formData.get("autoProvisionRole") ?? "REVIEWER",
+    autoProvisionRoleId: formData.get("autoProvisionRoleId") ?? "",
     allowedDomain: formData.get("allowedDomain") ?? "",
   });
   if (!parsed.success) {
@@ -189,7 +190,7 @@ export async function saveAppearanceSettings(
   previousState: SettingsActionState,
   formData: FormData,
 ): Promise<SettingsActionState> {
-  await requireAdmin();
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
 
   const primaryHex = (formData.get("primaryHex") as string) || "";
   const secondaryHex = (formData.get("secondaryHex") as string) || "";
@@ -277,7 +278,7 @@ export async function createApiKeyAction(
   previousState: SettingsActionState,
   formData: FormData,
 ): Promise<{ ok: boolean; message: string; key?: string }> {
-  await requireAdmin();
+  await requirePermission(PERMISSIONS.API_MANAGE);
 
   const name = (formData.get("name") as string)?.trim();
   if (!name) return { ok: false, message: "Key name is required." };
@@ -328,7 +329,7 @@ export async function createApiKeyAction(
 }
 
 export async function toggleApiKeyAction(formData: FormData): Promise<void> {
-  await requireAdmin();
+  await requirePermission(PERMISSIONS.API_MANAGE);
   const { prisma: db } = await import("@/lib/prisma");
   const { getCurrentUser } = await import("@/lib/auth");
   const { logAudit } = await import("@/lib/db/audit");
@@ -352,7 +353,7 @@ export async function toggleApiKeyAction(formData: FormData): Promise<void> {
 }
 
 export async function deleteApiKeyAction(formData: FormData): Promise<void> {
-  await requireAdmin();
+  await requirePermission(PERMISSIONS.API_MANAGE);
   const { prisma: db } = await import("@/lib/prisma");
   const { getCurrentUser } = await import("@/lib/auth");
   const { logAudit } = await import("@/lib/db/audit");
@@ -372,7 +373,7 @@ export async function saveApiSettingsAction(
   previousState: SettingsActionState,
   formData: FormData,
 ): Promise<SettingsActionState> {
-  await requireAdmin();
+  await requirePermission(PERMISSIONS.API_MANAGE);
   const { prisma: db } = await import("@/lib/prisma");
 
   const enabled = formData.get("enabled") === "on";
@@ -391,7 +392,7 @@ export async function saveSchedulingSettings(
   previousState: SettingsActionState,
   formData: FormData,
 ): Promise<SettingsActionState> {
-  await requireAdmin();
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
 
   const auditRetention = parseInt(
     (formData.get("auditRetention") as string) || "0",
@@ -504,7 +505,7 @@ export async function retryEmailSendAction(
   previousState: SettingsActionState,
   formData: FormData,
 ): Promise<SettingsActionState> {
-  await requireAdmin();
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
 
   const logId = (formData.get("logId") as string) || "";
   if (!logId) return { ok: false, message: "Missing email log entry." };

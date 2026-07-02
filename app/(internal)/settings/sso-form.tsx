@@ -30,7 +30,8 @@ type SsoFormProps = {
   oidcIssuer: string;
   oidcClientId: string;
   oidcSecretConfigured: boolean;
-  autoProvisionRole: string;
+  autoProvisionRoleId: string;
+  roles: { id: string; name: string }[];
   allowedDomain: string;
 };
 
@@ -111,7 +112,8 @@ export function SsoForm({
   oidcIssuer,
   oidcClientId,
   oidcSecretConfigured,
-  autoProvisionRole,
+  autoProvisionRoleId,
+  roles,
   allowedDomain,
 }: SsoFormProps) {
   const [state, formAction, isPending] = useActionState(
@@ -200,16 +202,25 @@ export function SsoForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="grid gap-2">
-          <Label htmlFor="autoProvisionRole">
+          <Label htmlFor="autoProvisionRoleId">
             Default role for new SSO users
           </Label>
-          <Select name="autoProvisionRole" defaultValue={autoProvisionRole}>
-            <SelectTrigger id="autoProvisionRole">
+          <Select
+            name="autoProvisionRoleId"
+            defaultValue={
+              autoProvisionRoleId ||
+              roles.find((role) => role.name === "Reviewer")?.id
+            }
+          >
+            <SelectTrigger id="autoProvisionRoleId">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="REVIEWER">Reviewer</SelectItem>
-              <SelectItem value="ADMIN">Admin</SelectItem>
+              {roles.map((role) => (
+                <SelectItem key={role.id} value={role.id}>
+                  {role.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>

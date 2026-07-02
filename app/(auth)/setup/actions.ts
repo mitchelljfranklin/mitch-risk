@@ -1,10 +1,11 @@
 "use server";
 
-import { UserRole } from "@prisma/client";
 import { AuthError } from "next-auth";
 
 import { signIn } from "@/lib/auth";
 import { countUsers, createUser } from "@/lib/db/users";
+import { ensureSystemRoles, getRoleByName } from "@/lib/db/roles";
+import { SYSTEM_ROLE_NAMES } from "@/lib/permissions";
 import { setupAdminSchema } from "@/lib/schemas/auth";
 
 export type SetupState = { error: string } | undefined;
@@ -26,7 +27,13 @@ export async function createInitialAdmin(
     return { error: parsed.error.issues[0]?.message ?? "Invalid details." };
   }
 
-  await createUser({ ...parsed.data, role: UserRole.ADMIN });
+  await ensureSystemRoles();
+  const adminRole = await getRoleByName(SYSTEM_ROLE_NAMES.ADMIN);
+  if (!adminRole) {
+    return { error: "Could not initialize the Admin role. Please try again." };
+  }
+
+  await createUser({ ...parsed.data, roleId: adminRole.id });
 
   try {
     await signIn("credentials", {

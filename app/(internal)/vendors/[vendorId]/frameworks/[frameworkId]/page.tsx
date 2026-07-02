@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { getVendorHeatmap } from "@/lib/db/compliance";
 import { getFramework } from "@/lib/db/frameworks";
 import { getVendor } from "@/lib/db/vendors";
@@ -25,7 +26,7 @@ export async function generateMetadata({
 }
 
 export default async function VendorHeatmapPage({ params }: HeatmapPageProps) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.VENDORS_VIEW);
   const { vendorId, frameworkId } = await params;
 
   const [vendor, framework] = await Promise.all([

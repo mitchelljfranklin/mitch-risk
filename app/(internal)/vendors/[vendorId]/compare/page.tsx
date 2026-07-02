@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { getAssessment } from "@/lib/db/assessments";
 import { getVendor } from "@/lib/db/vendors";
 import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
@@ -30,7 +31,7 @@ export default async function ComparePage({
   params,
   searchParams,
 }: ComparePageProps) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.VENDORS_VIEW);
   const { vendorId } = await params;
   const { left: leftId, right: rightId } = await searchParams;
 

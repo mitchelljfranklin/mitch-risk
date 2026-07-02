@@ -1,4 +1,5 @@
-import { authenticateRequest } from "@/lib/api-auth";
+import { authenticateRequest, authResultHasPermission } from "@/lib/api-auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { getVendorForExport } from "@/lib/db/vendors";
 import { csvEscape } from "@/lib/utils";
 
@@ -9,6 +10,9 @@ export async function GET(
   const auth = await authenticateRequest(_request);
   if (!auth) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (!authResultHasPermission(auth, PERMISSIONS.VENDORS_VIEW)) {
+    return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const { vendorId } = await params;

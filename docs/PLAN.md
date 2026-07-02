@@ -365,11 +365,20 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   banner in the vendor questionnaire header. Save status now shows "Saved at 14:35" instead
   of generic "All changes saved". Invite-password email template includes resume reassurance.
   Post-submission view shows a confirmation card: "Your responses have been submitted."
+- **Phase 47 — Role management & access control (RBAC).** Replaced the fixed `UserRole` enum
+  with DB-backed roles (`Role` model). Ships three system roles — **Admin** (all permissions,
+  locked), **Reviewer** (write + review), and **Viewer** (read-only) — plus admin-created
+  **custom roles** with any subset of a `resource:action` permission catalog
+  (`lib/permissions.ts`). Permissions are enforced on every server action, API route, and page
+  via `requirePermission`/`requireAnyPermission`, and the nav/UI is gated with `hasPermission`.
+  New Roles tab in Settings with a permission checkbox matrix; Users and SSO auto-provision
+  now reference DB roles. Design of record: `authstage.md`.
 
 ## 8. Out of scope (v1+)
 
-External scanning/continuous monitoring, vendor marketplace, complex role hierarchies, and
-heavy settings screens. These may be revisited after v1.
+External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These
+may be revisited after v1. (Flat, permission-based roles landed in Phase 47; deeply nested role
+*hierarchies* remain out of scope.)
 
 ## 9. Shared foundations (build once, reuse everywhere)
 

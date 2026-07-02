@@ -54,13 +54,14 @@ components/          # shadcn ui primitives + domain composites
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
   db/                # typed data-access layer (assessments, audit, collaboration,
-                     #   compliance, frameworks, notifications, scoring, templates, users, vendors)
+                     #   compliance, frameworks, notifications, roles, scoring, templates, users, vendors)
   email/             # Nodemailer mailer + token replacer
   schemas/           # shared zod schemas + inferred types
   settings/          # DB-backed operational config (schema, accessor, read/write)
   api-keys.ts        # API key generation, bcrypt hashing, CIDR IP matching
-  api-auth.ts        # unified authenticateRequest() — session + Bearer token
-  auth.ts            # Auth.js config + role guards
+  api-auth.ts        # unified authenticateRequest() — session + Bearer token + permission check
+  auth.ts            # Auth.js config + permission guards (requirePermission/hasPermission)
+  permissions.ts     # RBAC permission catalog, default system roles, permission helpers
   crypto.ts          # AES-256-GCM encryption for secret settings
   env.ts             # zod-validated deployment env
   json.ts            # deep-clone helper for JSON-safe values
@@ -126,7 +127,15 @@ Every delivered item, in every phase, must meet this bar:
   dead or commented-out code, no "lorem ipsum" or fake screens. Intentional empty states are
   allowed but must be clearly labelled as empty states (not placeholders).
 - **Quality gates pass.** `npm run lint`, `npm run typecheck`, and `npm run build` are clean.
-- **Tested.** Core logic (especially scoring) has unit tests; relevant tests pass.
+- **Tested.** Every new function or feature ships with tests, and any change to an existing
+  function or feature updates the affected tests in the same change. Core logic (especially
+  scoring) has unit tests; relevant tests pass.
+- **Access-controlled.** Every new feature is wired into RBAC: its permission key(s) are
+  defined in `lib/permissions.ts`, mapped into the default system roles, and enforced on every
+  server action/route/page (`requirePermission`). Every control that triggers a gated action is
+  **hidden** (not greyed-out) when the user lacks the permission — a role without access gets a
+  clean read-only screen, never a button that redirects on click. No feature ships gated only
+  by "is authenticated". See "Role-based access control" below.
 - **Migrations clean.** Prisma migrations apply on a fresh database; seeds are idempotent.
 - **Verified.** The phase's manual verification steps were actually executed and the results
   recorded in the gate.
@@ -175,13 +184,66 @@ Code is read far more often than it is written. Optimise for the next human who 
 - **Automated consistency.** Prettier handles formatting and ESLint handles linting; both run
   clean before any gate sign-off (`npm run lint`, `npm run format:check`).
 
+## Role-based access control (build access-control in, every time)
+
+Authorization is permission-based, not "is authenticated". Roles are DB-backed
+(`Role` model) and carry a set of `resource:action` permission keys. Three system roles ship
+by default — **Admin** (all permissions, locked), **Reviewer** (write + review), and
+**Viewer** (read-only) — and admins can create custom roles with any subset of permissions.
+The permission catalog, default role mappings, and helpers live in `lib/permissions.ts`; the
+guards (`requirePermission`, `hasPermission`) live in `lib/auth.ts`. See `authstage.md` for
+the design of record.
+
+Every feature — new or changed — must be wired into RBAC in the same change. This is not a
+one-off; it is the normal workflow:
+
+1. **Define permissions.** Add the feature's `resource:action` key(s) to the catalog in
+   `lib/permissions.ts`. Reuse an existing key if one already fits; do not invent parallel
+   keys for the same concern.
+2. **Map to default roles.** Add the new key(s) to the appropriate `SYSTEM_ROLE_DEFAULTS`
+   (Admin always gets all; grant Reviewer/Viewer only what their intent allows — Viewer gets
+   `*:view` only). Reflect the change in the seed so fresh and existing databases converge.
+3. **Enforce on the server.** Guard every server action, route handler, and page with
+   `requirePermission("<key>")`. Reads may use the relevant `:view` permission; writes must use
+   the specific write/manage permission. Never ship a feature gated only by `requireUser()`.
+4. **Gate the UI — hide, don't dangle.** Every control that triggers a gated action (buttons,
+   links, forms, and the client widgets that render them) must be hidden when the current user
+   lacks the permission. Never render a write control that only redirects on click — that is a
+   broken UX. Rules:
+   - **Hide, not grey-out.** A role without a permission simply does not see the control; a
+     Viewer gets a clean read-only screen. (No disabled/greyed buttons unless a specific need
+     is agreed.)
+   - **Keep reads visible.** View-only affordances (Export CSV, Download PDF, read-only
+     displays of comments/reviews/version notes) stay; only the write/manage controls are
+     hidden.
+   - **Gate on the server.** Pages are Server Components: capture the user from the guard
+     (`const user = await requirePermission("<view-key>")`) and wrap each control in
+     `{hasPermission(user.permissions, PERMISSIONS.X) && ( ... )}` using the pure helper from
+     `lib/permissions.ts`. Prefer wrapping the child **client** widget at its render site in the
+     server parent so client components stay permission-agnostic.
+   - **Nav + tabs.** Hide sidebar items and settings tabs the user can't use, and sanitize any
+     `?tab=`/route param against the user's allowed set so hidden content can't be forced.
+   - **Empty containers.** When hiding a control empties a toolbar/row/card, hide the container
+     too, and adjust empty-state copy so it doesn't invite an action the user can't take.
+
+   UI hiding is cosmetic — the server guard from step 3 is the real control, so **both** are
+   always required.
+5. **Test it.** Add/adjust tests proving the permission is enforced (allowed vs. denied) and
+   that default roles include the expected keys, per the Definition of Done. Where practical,
+   add/extend a Playwright e2e asserting a lower-privilege role (e.g. Viewer) does **not** see
+   the gated controls (see `e2e/rbac-viewer.spec.ts`).
+
+When editing an existing feature, update its permission wiring in the same change (new
+sub-actions get their own key or reuse the feature's key; removed features drop unused keys
+from the catalog and role defaults).
+
 ## Conventions
 
 - TypeScript `strict`; validate all external input with **zod** (shared client/server schemas).
 - Do not add code comments unless explicitly requested.
 - **Runtime configuration**: operational/end-user settings (branding, email/SMTP, reminder
-  cadence, escalation recipients, scoring weights & thresholds, file limits, users) are managed
-  in-app via DB-backed Settings (ADMIN role) — never by editing files once the product is
+  cadence, escalation recipients, scoring weights & thresholds, file limits, users, roles) are managed
+  in-app via DB-backed Settings (requires the relevant manage permission) — never by editing files once the product is
   running. Only deployment bootstrap/infra belongs in env (`DATABASE_URL`, `AUTH_SECRET`,
   `APP_ENCRYPTION_KEY`, `CRON_SECRET`, `APP_URL`, storage path). This split is for end-user
   operation, not product build/dev config (tsconfig, ESLint, etc.).

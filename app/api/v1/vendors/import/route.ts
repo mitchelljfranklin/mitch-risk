@@ -1,4 +1,5 @@
-import { authenticateRequest } from "@/lib/api-auth";
+import { authenticateRequest, authResultHasPermission } from "@/lib/api-auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { createVendor } from "@/lib/db/vendors";
 import { vendorSchema } from "@/lib/schemas/vendor";
 
@@ -6,6 +7,9 @@ export async function POST(request: Request) {
   const auth = await authenticateRequest(request);
   if (!auth) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (!authResultHasPermission(auth, PERMISSIONS.VENDORS_CREATE)) {
+    return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 
   let data: unknown;

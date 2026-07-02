@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient, QuestionType, RiskWeight } from "@prisma/client";
 
+import { SYSTEM_ROLE_DEFINITIONS } from "../lib/permissions";
 import { iso27001 } from "./seed-data/iso27001";
 import { soc2 } from "./seed-data/soc2";
 import { nistCsf } from "./seed-data/nist-csf";
@@ -83,6 +84,26 @@ async function seedDefaultSettings() {
   }
 
   console.log(`Seeded ${defaultSettings.length} default settings.`);
+}
+
+async function seedSystemRoles() {
+  for (const definition of SYSTEM_ROLE_DEFINITIONS) {
+    await prisma.role.upsert({
+      where: { name: definition.name },
+      update: {
+        description: definition.description,
+        permissions: [...definition.permissions],
+        isSystem: true,
+      },
+      create: {
+        name: definition.name,
+        description: definition.description,
+        permissions: [...definition.permissions],
+        isSystem: true,
+      },
+    });
+  }
+  console.log(`Seeded ${SYSTEM_ROLE_DEFINITIONS.length} system roles.`);
 }
 
 async function seedFramework(framework: FrameworkSeed): Promise<number> {
@@ -694,6 +715,7 @@ async function seedStarterTemplates() {
 }
 
 async function main() {
+  await seedSystemRoles();
   await seedDefaultSettings();
   const isoControls = await seedFramework(iso27001);
   const soc2Controls = await seedFramework(soc2);

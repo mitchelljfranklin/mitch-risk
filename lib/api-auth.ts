@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { verifyApiKey, isIpAllowed } from "@/lib/api-keys";
 import { rateLimit } from "@/lib/rate-limit";
 import { auth as nextAuth } from "@/lib/auth";
+import { type Permission, hasPermission } from "@/lib/permissions";
 
 async function isApiEnabled(): Promise<boolean> {
   const row = await prisma.appSetting.findUnique({
@@ -20,9 +21,17 @@ function clientIp(request: Request): string {
 
 export type AuthResult = {
   userId: string;
-  role: string;
+  roleId: string;
+  permissions: string[];
   method: "session" | "apikey";
 };
+
+export function authResultHasPermission(
+  auth: AuthResult,
+  permission: Permission,
+): boolean {
+  return hasPermission(auth.permissions, permission);
+}
 
 export async function authenticateRequest(
   request: Request,
@@ -31,7 +40,8 @@ export async function authenticateRequest(
   if (session?.user?.id) {
     return {
       userId: session.user.id,
-      role: session.user.role,
+      roleId: session.user.roleId,
+      permissions: session.user.permissions,
       method: "session",
     };
   }
@@ -59,7 +69,16 @@ export async function authenticateRequest(
   const hash = key;
   const apiKeys = await prisma.apiKey.findMany({
     where: { disabled: false },
-    include: { creator: { select: { id: true, role: true, disabled: true } } },
+    include: {
+      creator: {
+        select: {
+          id: true,
+          disabled: true,
+          roleId: true,
+          role: { select: { permissions: true } },
+        },
+      },
+    },
   });
 
   for (const apiKey of apiKeys) {
@@ -84,7 +103,8 @@ export async function authenticateRequest(
 
     return {
       userId: apiKey.creator.id,
-      role: apiKey.creator.role,
+      roleId: apiKey.creator.roleId,
+      permissions: apiKey.creator.role.permissions,
       method: "apikey",
     };
   }

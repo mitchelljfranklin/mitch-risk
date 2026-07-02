@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { QuestionForm } from "@/components/question-form";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { listControlOptions } from "@/lib/db/frameworks";
 import { getTemplateStatus, listTemplateQuestions } from "@/lib/db/templates";
 
@@ -16,7 +17,7 @@ type NewQuestionPageProps = {
 export default async function NewQuestionPage({
   params,
 }: NewQuestionPageProps) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const { templateId, sectionId } = await params;
 
   const template = await getTemplateStatus(templateId);

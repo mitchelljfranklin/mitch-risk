@@ -1,16 +1,53 @@
-import { UserRole } from "@prisma/client";
 import NextAuth from "next-auth";
 import type { Provider } from "next-auth/providers";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import MicrosoftEntraId from "next-auth/providers/microsoft-entra-id";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 
 import { logAudit } from "@/lib/db/audit";
 import { verifyUserCredentials } from "@/lib/db/users";
 import { prisma } from "@/lib/prisma";
 import { credentialsSchema } from "@/lib/schemas/auth";
+import {
+  type Permission,
+  SYSTEM_ROLE_NAMES,
+  hasPermission as permissionInList,
+} from "@/lib/permissions";
 import { getSsoSecret, getSsoSettings } from "@/lib/settings";
+
+export const getRolePermissions = cache(
+  async (roleId: string): Promise<{ name: string; permissions: string[] }> => {
+    const role = await prisma.role.findUnique({
+      where: { id: roleId },
+      select: { name: true, permissions: true },
+    });
+    return {
+      name: role?.name ?? "",
+      permissions: role?.permissions ?? [],
+    };
+  },
+);
+
+async function resolveProvisionRoleId(): Promise<string | null> {
+  const ssoSettings = await getSsoSettings();
+  if (ssoSettings.autoProvisionRoleId) {
+    const role = await prisma.role.findUnique({
+      where: { id: ssoSettings.autoProvisionRoleId },
+      select: { id: true },
+    });
+    if (role) {
+      return role.id;
+    }
+  }
+
+  const reviewer = await prisma.role.findUnique({
+    where: { name: SYSTEM_ROLE_NAMES.REVIEWER },
+    select: { id: true },
+  });
+  return reviewer?.id ?? null;
+}
 
 async function buildSsoProviders(): Promise<Provider[]> {
   const ssoSettings = await getSsoSettings();
@@ -54,7 +91,7 @@ async function buildSsoProviders(): Promise<Provider[]> {
         name: String(profile.name ?? profile.preferred_username ?? ""),
         email: String(profile.email ?? ""),
         image: null,
-        role: UserRole.REVIEWER,
+        roleId: "",
       }),
     });
   }
@@ -93,7 +130,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth(async () => {
             id: user.id,
             email: user.email,
             name: user.name,
-            role: user.role,
+            roleId: user.roleId,
           };
         },
       }),
@@ -128,7 +165,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth(async () => {
 
           if (localUser) {
             token.id = localUser.id;
-            token.role = localUser.role;
+            token.roleId = localUser.roleId;
             await logAudit(localUser.id, "LOGIN");
           }
           return token;
@@ -136,21 +173,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth(async () => {
 
         if (user?.id) {
           token.id = user.id;
-          token.role = user.role;
+          token.roleId = user.roleId;
           await logAudit(user.id, "LOGIN");
         }
 
         return token;
       },
 
-      session: ({ session, token }) => {
+      session: async ({ session, token }) => {
         if (typeof token.id === "string") {
           session.user.id = token.id;
         }
-        const { role } = token;
-        if (role === UserRole.ADMIN || role === UserRole.REVIEWER) {
-          session.user.role = role;
+
+        if (typeof token.roleId === "string" && token.roleId.length > 0) {
+          const role = await getRolePermissions(token.roleId);
+          session.user.roleId = token.roleId;
+          session.user.roleName = role.name;
+          session.user.permissions = role.permissions;
+        } else {
+          session.user.roleId = "";
+          session.user.roleName = "";
+          session.user.permissions = [];
         }
+
         return session;
       },
     },
@@ -162,7 +207,7 @@ async function resolveSsoUser(
   providerAccountId: string,
   email: string,
   name: string,
-): Promise<{ id: string; role: UserRole } | null> {
+): Promise<{ id: string; roleId: string } | null> {
   const existing = await prisma.ssoIdentity.findUnique({
     where: { provider_providerId: { provider, providerId: providerAccountId } },
     include: { user: true },
@@ -172,21 +217,24 @@ async function resolveSsoUser(
     if (existing.user.disabled) {
       return null;
     }
-    return { id: existing.user.id, role: existing.user.role };
+    return { id: existing.user.id, roleId: existing.user.roleId };
   }
 
-  const ssoSettings = await getSsoSettings();
   let localUser = await prisma.user.findUnique({
     where: { email },
   });
 
   if (!localUser) {
+    const provisionRoleId = await resolveProvisionRoleId();
+    if (!provisionRoleId) {
+      return null;
+    }
     localUser = await prisma.user.create({
       data: {
         email,
         name,
         passwordHash: "",
-        role: ssoSettings.autoProvisionRole as UserRole,
+        roleId: provisionRoleId,
       },
     });
   }
@@ -195,7 +243,7 @@ async function resolveSsoUser(
     data: { userId: localUser.id, provider, providerId: providerAccountId },
   });
 
-  return { id: localUser.id, role: localUser.role };
+  return { id: localUser.id, roleId: localUser.roleId };
 }
 
 export async function getCurrentUser() {
@@ -211,9 +259,25 @@ export async function requireUser() {
   return user;
 }
 
-export async function requireAdmin() {
+export async function hasPermission(permission: Permission): Promise<boolean> {
+  const user = await getCurrentUser();
+  return user ? permissionInList(user.permissions, permission) : false;
+}
+
+export async function requirePermission(permission: Permission) {
   const user = await requireUser();
-  if (user.role !== UserRole.ADMIN) {
+  if (!permissionInList(user.permissions, permission)) {
+    redirect("/dashboard");
+  }
+  return user;
+}
+
+export async function requireAnyPermission(permissions: Permission[]) {
+  const user = await requireUser();
+  const allowed = permissions.some((permission) =>
+    permissionInList(user.permissions, permission),
+  );
+  if (!allowed) {
     redirect("/dashboard");
   }
   return user;

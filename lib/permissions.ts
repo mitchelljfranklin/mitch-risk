@@ -1,0 +1,180 @@
+export const PERMISSIONS = {
+  DASHBOARD_VIEW: "dashboard:view",
+  VENDORS_VIEW: "vendors:view",
+  VENDORS_CREATE: "vendors:create",
+  VENDORS_EDIT: "vendors:edit",
+  VENDORS_DELETE: "vendors:delete",
+  ASSESSMENTS_VIEW: "assessments:view",
+  ASSESSMENTS_CREATE: "assessments:create",
+  ASSESSMENTS_EDIT: "assessments:edit",
+  ASSESSMENTS_REVIEW: "assessments:review",
+  ASSESSMENTS_DELETE: "assessments:delete",
+  TEMPLATES_VIEW: "templates:view",
+  TEMPLATES_CREATE: "templates:create",
+  TEMPLATES_EDIT: "templates:edit",
+  TEMPLATES_DELETE: "templates:delete",
+  FRAMEWORKS_VIEW: "frameworks:view",
+  FRAMEWORKS_EDIT: "frameworks:edit",
+  AUDIT_VIEW: "audit:view",
+  USERS_MANAGE: "users:manage",
+  ROLES_MANAGE: "roles:manage",
+  SETTINGS_MANAGE: "settings:manage",
+  API_MANAGE: "api:manage",
+} as const;
+
+export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
+
+export const ALL_PERMISSIONS: readonly Permission[] =
+  Object.values(PERMISSIONS);
+
+type PermissionGroup = {
+  resource: string;
+  label: string;
+  permissions: { key: Permission; label: string }[];
+};
+
+export const PERMISSION_GROUPS: readonly PermissionGroup[] = [
+  {
+    resource: "dashboard",
+    label: "Dashboard",
+    permissions: [{ key: PERMISSIONS.DASHBOARD_VIEW, label: "View dashboard" }],
+  },
+  {
+    resource: "vendors",
+    label: "Vendors",
+    permissions: [
+      { key: PERMISSIONS.VENDORS_VIEW, label: "View vendors" },
+      { key: PERMISSIONS.VENDORS_CREATE, label: "Create vendors" },
+      { key: PERMISSIONS.VENDORS_EDIT, label: "Edit vendors" },
+      { key: PERMISSIONS.VENDORS_DELETE, label: "Delete vendors" },
+    ],
+  },
+  {
+    resource: "assessments",
+    label: "Assessments",
+    permissions: [
+      { key: PERMISSIONS.ASSESSMENTS_VIEW, label: "View assessments" },
+      {
+        key: PERMISSIONS.ASSESSMENTS_CREATE,
+        label: "Create & send assessments",
+      },
+      { key: PERMISSIONS.ASSESSMENTS_EDIT, label: "Edit & manage links" },
+      { key: PERMISSIONS.ASSESSMENTS_REVIEW, label: "Review & finalize" },
+      { key: PERMISSIONS.ASSESSMENTS_DELETE, label: "Delete assessments" },
+    ],
+  },
+  {
+    resource: "templates",
+    label: "Templates",
+    permissions: [
+      { key: PERMISSIONS.TEMPLATES_VIEW, label: "View templates" },
+      { key: PERMISSIONS.TEMPLATES_CREATE, label: "Create templates" },
+      { key: PERMISSIONS.TEMPLATES_EDIT, label: "Edit & publish templates" },
+      { key: PERMISSIONS.TEMPLATES_DELETE, label: "Delete templates" },
+    ],
+  },
+  {
+    resource: "frameworks",
+    label: "Frameworks",
+    permissions: [
+      { key: PERMISSIONS.FRAMEWORKS_VIEW, label: "View frameworks" },
+      { key: PERMISSIONS.FRAMEWORKS_EDIT, label: "Edit frameworks" },
+    ],
+  },
+  {
+    resource: "administration",
+    label: "Administration",
+    permissions: [
+      { key: PERMISSIONS.AUDIT_VIEW, label: "View audit & email logs" },
+      { key: PERMISSIONS.USERS_MANAGE, label: "Manage users" },
+      { key: PERMISSIONS.ROLES_MANAGE, label: "Manage roles" },
+      { key: PERMISSIONS.SETTINGS_MANAGE, label: "Manage settings" },
+      { key: PERMISSIONS.API_MANAGE, label: "Manage API access" },
+    ],
+  },
+];
+
+export const SYSTEM_ROLE_NAMES = {
+  ADMIN: "Admin",
+  REVIEWER: "Reviewer",
+  VIEWER: "Viewer",
+} as const;
+
+const REVIEWER_PERMISSIONS: readonly Permission[] = [
+  PERMISSIONS.DASHBOARD_VIEW,
+  PERMISSIONS.VENDORS_VIEW,
+  PERMISSIONS.VENDORS_CREATE,
+  PERMISSIONS.VENDORS_EDIT,
+  PERMISSIONS.VENDORS_DELETE,
+  PERMISSIONS.ASSESSMENTS_VIEW,
+  PERMISSIONS.ASSESSMENTS_CREATE,
+  PERMISSIONS.ASSESSMENTS_EDIT,
+  PERMISSIONS.ASSESSMENTS_REVIEW,
+  PERMISSIONS.ASSESSMENTS_DELETE,
+  PERMISSIONS.TEMPLATES_VIEW,
+  PERMISSIONS.TEMPLATES_CREATE,
+  PERMISSIONS.TEMPLATES_EDIT,
+  PERMISSIONS.TEMPLATES_DELETE,
+  PERMISSIONS.FRAMEWORKS_VIEW,
+];
+
+const VIEWER_PERMISSIONS: readonly Permission[] = [
+  PERMISSIONS.DASHBOARD_VIEW,
+  PERMISSIONS.VENDORS_VIEW,
+  PERMISSIONS.ASSESSMENTS_VIEW,
+  PERMISSIONS.TEMPLATES_VIEW,
+  PERMISSIONS.FRAMEWORKS_VIEW,
+];
+
+export type SystemRoleDefinition = {
+  name: string;
+  description: string;
+  permissions: readonly Permission[];
+};
+
+export const SYSTEM_ROLE_DEFINITIONS: readonly SystemRoleDefinition[] = [
+  {
+    name: SYSTEM_ROLE_NAMES.ADMIN,
+    description:
+      "Full access to every feature, including users, roles, and settings.",
+    permissions: ALL_PERMISSIONS,
+  },
+  {
+    name: SYSTEM_ROLE_NAMES.REVIEWER,
+    description:
+      "Can manage vendors, assessments, and templates and review responses. No access to users, roles, or settings.",
+    permissions: REVIEWER_PERMISSIONS,
+  },
+  {
+    name: SYSTEM_ROLE_NAMES.VIEWER,
+    description: "Read-only access across the platform.",
+    permissions: VIEWER_PERMISSIONS,
+  },
+];
+
+export function isValidPermission(value: string): value is Permission {
+  return (ALL_PERMISSIONS as readonly string[]).includes(value);
+}
+
+export function hasPermission(
+  userPermissions: readonly string[],
+  permission: Permission,
+): boolean {
+  return userPermissions.includes(permission);
+}
+
+export function hasAnyPermission(
+  userPermissions: readonly string[],
+  permissions: readonly Permission[],
+): boolean {
+  return permissions.some((permission) => userPermissions.includes(permission));
+}
+
+export function hasAllPermissions(
+  userPermissions: readonly string[],
+  permissions: readonly Permission[],
+): boolean {
+  return permissions.every((permission) =>
+    userPermissions.includes(permission),
+  );
+}

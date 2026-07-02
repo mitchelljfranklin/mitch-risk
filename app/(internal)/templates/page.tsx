@@ -8,7 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { listTemplates } from "@/lib/db/templates";
 
 import { ImportTemplateForm } from "./import-template-form";
@@ -24,7 +25,11 @@ const STATUS_VARIANT = {
 } as const;
 
 export default async function TemplatesPage() {
-  await requireUser();
+  const user = await requirePermission(PERMISSIONS.TEMPLATES_VIEW);
+  const canCreateTemplate = hasPermission(
+    user.permissions,
+    PERMISSIONS.TEMPLATES_CREATE,
+  );
   const templates = await listTemplates();
 
   return (
@@ -36,15 +41,21 @@ export default async function TemplatesPage() {
             Build and version security questionnaires.
           </p>
         </div>
-        <Button asChild>
-          <Link href="/templates/new">New template</Link>
-        </Button>
-        <ImportTemplateForm />
+        {canCreateTemplate ? (
+          <>
+            <Button asChild>
+              <Link href="/templates/new">New template</Link>
+            </Button>
+            <ImportTemplateForm />
+          </>
+        ) : null}
       </div>
 
       {templates.length === 0 ? (
         <p className="text-muted-foreground text-sm">
-          No templates yet. Create your first questionnaire.
+          {canCreateTemplate
+            ? "No templates yet. Create your first questionnaire."
+            : "No templates yet."}
         </p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">

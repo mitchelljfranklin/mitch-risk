@@ -4,7 +4,8 @@ import type { Metadata } from "next";
 
 import { SearchInput } from "@/components/search-input";
 import { Badge } from "@/components/ui/badge";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { getFramework, listControls } from "@/lib/db/frameworks";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +28,7 @@ export default async function FrameworkDetailPage({
   params,
   searchParams,
 }: FrameworkDetailPageProps) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
   const { frameworkId } = await params;
   const { q } = await searchParams;
 

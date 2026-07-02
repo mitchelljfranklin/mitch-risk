@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { listPublishedTemplates } from "@/lib/db/templates";
 import { listVendors } from "@/lib/db/vendors";
 import { listUsersFull } from "@/lib/db/users";
@@ -12,7 +13,7 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Bulk send" };
 
 export default async function BulkSendPage() {
-  await requireUser();
+  await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
 
   const [vendors, templates, users] = await Promise.all([
     listVendors(),

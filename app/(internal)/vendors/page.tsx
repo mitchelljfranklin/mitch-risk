@@ -16,7 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { listVendors } from "@/lib/db/vendors";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 import { ImportVendorsForm } from "./import-vendors-form";
@@ -30,7 +31,15 @@ type VendorsPageProps = {
 };
 
 export default async function VendorsPage({ searchParams }: VendorsPageProps) {
-  await requireUser();
+  const user = await requirePermission(PERMISSIONS.VENDORS_VIEW);
+  const canCreateVendor = hasPermission(
+    user.permissions,
+    PERMISSIONS.VENDORS_CREATE,
+  );
+  const canSendAssessment = hasPermission(
+    user.permissions,
+    PERMISSIONS.ASSESSMENTS_CREATE,
+  );
   const sp = await searchParams;
   const vendors = await listVendors({
     query: sp.query,
@@ -48,13 +57,17 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <ImportVendorsForm />
-          <Button asChild variant="outline">
-            <Link href="/vendors/bulk-send">Bulk send</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/vendors/new">New vendor</Link>
-          </Button>
+          {canCreateVendor ? <ImportVendorsForm /> : null}
+          {canSendAssessment ? (
+            <Button asChild variant="outline">
+              <Link href="/vendors/bulk-send">Bulk send</Link>
+            </Button>
+          ) : null}
+          {canCreateVendor ? (
+            <Button asChild>
+              <Link href="/vendors/new">New vendor</Link>
+            </Button>
+          ) : null}
         </div>
       </div>
 

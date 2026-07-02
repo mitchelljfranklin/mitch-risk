@@ -39,16 +39,20 @@ export function UserMenu({ name, email, role }: UserMenuProps) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Button
-            variant="ghost"
-            className="w-full justify-start"
-            formAction={signOutAction}
+        <form action={signOutAction}>
+          <DropdownMenuItem
+            asChild
+            onSelect={(event) => event.preventDefault()}
           >
-            <LogOut className="size-4" />
-            Sign out
-          </Button>
-        </DropdownMenuItem>
+            <button
+              type="submit"
+              className="hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none"
+            >
+              <LogOut className="size-4" />
+              Sign out
+            </button>
+          </DropdownMenuItem>
+        </form>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { getAssessment } from "@/lib/db/assessments";
 import { getVendor } from "@/lib/db/vendors";
 import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
@@ -20,7 +21,7 @@ type ComparePageProps = {
 export default async function CompareVendorsPage({
   searchParams,
 }: ComparePageProps) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.VENDORS_VIEW);
   const { a: vendorAId, b: vendorBId } = await searchParams;
 
   if (!vendorAId || !vendorBId) {

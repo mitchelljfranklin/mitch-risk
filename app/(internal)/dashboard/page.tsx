@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardCharts } from "@/components/dashboard-charts";
 import { StatCard, ScoreStatCard } from "@/components/stat-card";
 import { CalendarHeatmap } from "@/components/calendar-heatmap";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getDashboardData } from "@/lib/db/compliance";
 import { prisma } from "@/lib/prisma";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
@@ -40,7 +41,11 @@ type DashboardPageProps = {
 export default async function DashboardPage({
   searchParams,
 }: DashboardPageProps) {
-  await requireUser();
+  const user = await requirePermission(PERMISSIONS.DASHBOARD_VIEW);
+  const canCreateVendor = hasPermission(
+    user.permissions,
+    PERMISSIONS.VENDORS_CREATE,
+  );
   const sp = await searchParams;
   const filter = sp.filter ?? "all";
 
@@ -84,9 +89,11 @@ export default async function DashboardPage({
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button asChild variant="outline" size="sm">
-            <Link href="/vendors/new">New vendor</Link>
-          </Button>
+          {canCreateVendor ? (
+            <Button asChild variant="outline" size="sm">
+              <Link href="/vendors/new">New vendor</Link>
+            </Button>
+          ) : null}
           <Button asChild size="sm">
             <Link href="/assessments">Assessments</Link>
           </Button>
@@ -100,14 +107,18 @@ export default async function DashboardPage({
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground text-sm">
-              Add your first vendor to start tracking their risk.
+              {canCreateVendor
+                ? "Add your first vendor to start tracking their risk."
+                : "No vendors are being tracked yet."}
             </p>
-            <Link
-              href="/vendors/new"
-              className="text-primary mt-2 inline-block text-sm hover:underline"
-            >
-              Add a vendor →
-            </Link>
+            {canCreateVendor ? (
+              <Link
+                href="/vendors/new"
+                className="text-primary mt-2 inline-block text-sm hover:underline"
+              >
+                Add a vendor →
+              </Link>
+            ) : null}
           </CardContent>
         </Card>
       ) : (

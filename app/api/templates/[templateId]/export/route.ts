@@ -1,4 +1,5 @@
-import { authenticateRequest } from "@/lib/api-auth";
+import { authenticateRequest, authResultHasPermission } from "@/lib/api-auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { getTemplateForBuilder } from "@/lib/db/templates";
 
 export async function GET(
@@ -8,6 +9,9 @@ export async function GET(
   const auth = await authenticateRequest(request);
   if (!auth) {
     return new Response("Unauthorized", { status: 401 });
+  }
+  if (!authResultHasPermission(auth, PERMISSIONS.TEMPLATES_VIEW)) {
+    return new Response("Forbidden", { status: 403 });
   }
 
   const { templateId } = await params;

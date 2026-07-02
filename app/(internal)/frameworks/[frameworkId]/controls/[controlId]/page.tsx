@@ -4,7 +4,8 @@ import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { getControl } from "@/lib/db/frameworks";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +28,7 @@ export async function generateMetadata({
 export default async function ControlDetailPage({
   params,
 }: ControlDetailPageProps) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
   const { frameworkId, controlId } = await params;
 
   const control = await getControl(controlId);

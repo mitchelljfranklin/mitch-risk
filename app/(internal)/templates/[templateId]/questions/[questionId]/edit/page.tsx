@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { QuestionForm } from "@/components/question-form";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { listControlOptions } from "@/lib/db/frameworks";
 import {
   getQuestion,
@@ -36,7 +37,7 @@ function readConditionField(
 export default async function EditQuestionPage({
   params,
 }: EditQuestionPageProps) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const { templateId, questionId } = await params;
 
   const [template, question] = await Promise.all([

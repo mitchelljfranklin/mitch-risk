@@ -14,9 +14,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { requireAdmin } from "@/lib/auth";
+import { requireAnyPermission } from "@/lib/auth";
+import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { listAuditLogs, listAuditActions } from "@/lib/db/audit";
 import { listUsersFull } from "@/lib/db/users";
+import { listRoles } from "@/lib/db/roles";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { prisma } from "@/lib/prisma";
 import {
@@ -39,6 +41,7 @@ import {
 } from "@/lib/actions/users";
 
 import { AddUserForm } from "./add-user-form";
+import { RolesManager } from "./roles-manager";
 
 import { EmailForm } from "./email-form";
 import { EmailTemplateForm } from "./email-template-form";
@@ -64,7 +67,23 @@ type SettingsPageProps = {
 export default async function SettingsPage({
   searchParams,
 }: SettingsPageProps) {
-  await requireAdmin();
+  const currentUser = await requireAnyPermission([
+    PERMISSIONS.SETTINGS_MANAGE,
+    PERMISSIONS.USERS_MANAGE,
+    PERMISSIONS.ROLES_MANAGE,
+    PERMISSIONS.API_MANAGE,
+    PERMISSIONS.AUDIT_VIEW,
+  ]);
+  const permissions = currentUser.permissions;
+  const canManageSettings = hasPermission(
+    permissions,
+    PERMISSIONS.SETTINGS_MANAGE,
+  );
+  const canManageUsers = hasPermission(permissions, PERMISSIONS.USERS_MANAGE);
+  const canManageRoles = hasPermission(permissions, PERMISSIONS.ROLES_MANAGE);
+  const canManageApi = hasPermission(permissions, PERMISSIONS.API_MANAGE);
+  const canViewAudit = hasPermission(permissions, PERMISSIONS.AUDIT_VIEW);
+
   const sp = await searchParams;
   const [
     organization,
@@ -72,6 +91,7 @@ export default async function SettingsPage({
     templates,
     scoring,
     fullUsers,
+    roles,
     sso,
     ssoSecrets,
     appearance,
@@ -88,6 +108,7 @@ export default async function SettingsPage({
     getEmailTemplateSettings(),
     getScoringSettings(),
     listUsersFull(),
+    listRoles(),
     getSsoSettings(),
     getSsoSecretConfigured(),
     getAppearanceSettings(),
@@ -116,6 +137,15 @@ export default async function SettingsPage({
   ]);
 
   const users = fullUsers.map((u) => ({ id: u.id, name: u.name }));
+  const roleOptions = roles.map((role) => ({ id: role.id, name: role.name }));
+  const roleViews = roles.map((role) => ({
+    id: role.id,
+    name: role.name,
+    description: role.description,
+    permissions: role.permissions,
+    isSystem: role.isSystem,
+    userCount: role._count.users,
+  }));
 
   const auditLogs = await listAuditLogs({
     action: sp.action,
@@ -139,6 +169,27 @@ export default async function SettingsPage({
   const emailLogStatuses = ["SENT", "FAILED"];
   const emailLogTypes = ["INVITE", "REMINDER", "ESCALATION", "TEST"];
 
+  const allowedTabs = [
+    ...(canManageSettings
+      ? [
+          "general",
+          "appearance",
+          "email",
+          "email-tracking",
+          "scoring",
+          "scheduling",
+          "limits",
+          "sso",
+        ]
+      : []),
+    ...(canManageUsers ? ["users"] : []),
+    ...(canManageRoles ? ["roles"] : []),
+    ...(canManageApi ? ["api"] : []),
+    ...(canViewAudit ? ["audit"] : []),
+  ];
+  const defaultTab =
+    sp.tab && allowedTabs.includes(sp.tab) ? sp.tab : allowedTabs[0];
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -149,19 +200,28 @@ export default async function SettingsPage({
         </p>
       </div>
 
-      <Tabs defaultValue={sp.tab ?? "general"}>
+      <Tabs defaultValue={defaultTab}>
         <TabsList>
-          <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="appearance">Appearance</TabsTrigger>
-          <TabsTrigger value="email">Email</TabsTrigger>
-          <TabsTrigger value="email-tracking">Email Tracking</TabsTrigger>
-          <TabsTrigger value="scoring">Scoring</TabsTrigger>
-          <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
-          <TabsTrigger value="limits">Limits</TabsTrigger>
-          <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="sso">SSO</TabsTrigger>
-          <TabsTrigger value="api">API</TabsTrigger>
-          <TabsTrigger value="audit">Audit</TabsTrigger>
+          {canManageSettings ? (
+            <>
+              <TabsTrigger value="general">General</TabsTrigger>
+              <TabsTrigger value="appearance">Appearance</TabsTrigger>
+              <TabsTrigger value="email">Email</TabsTrigger>
+              <TabsTrigger value="email-tracking">Email Tracking</TabsTrigger>
+              <TabsTrigger value="scoring">Scoring</TabsTrigger>
+              <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
+              <TabsTrigger value="limits">Limits</TabsTrigger>
+              <TabsTrigger value="sso">SSO</TabsTrigger>
+            </>
+          ) : null}
+          {canManageUsers ? (
+            <TabsTrigger value="users">Users</TabsTrigger>
+          ) : null}
+          {canManageRoles ? (
+            <TabsTrigger value="roles">Roles</TabsTrigger>
+          ) : null}
+          {canManageApi ? <TabsTrigger value="api">API</TabsTrigger> : null}
+          {canViewAudit ? <TabsTrigger value="audit">Audit</TabsTrigger> : null}
         </TabsList>
 
         <TabsContent value="general" className="mt-4 flex flex-col gap-6">
@@ -375,15 +435,20 @@ export default async function SettingsPage({
                 oidcIssuer={sso.oidcIssuer}
                 oidcClientId={sso.oidcClientId}
                 oidcSecretConfigured={ssoSecrets.oidc}
-                autoProvisionRole={sso.autoProvisionRole}
+                autoProvisionRoleId={sso.autoProvisionRoleId}
+                roles={roleOptions}
                 allowedDomain={sso.allowedDomain}
               />
             </CardContent>
           </Card>
         </TabsContent>
 
+        <TabsContent value="roles" className="mt-4 flex flex-col gap-6">
+          <RolesManager roles={roleViews} />
+        </TabsContent>
+
         <TabsContent value="users" className="mt-4 flex flex-col gap-6">
-          <AddUserForm />
+          <AddUserForm roles={roleOptions} />
 
           <div className="flex flex-col gap-2">
             <h3 className="text-sm font-medium">Staff accounts</h3>
@@ -404,7 +469,7 @@ export default async function SettingsPage({
                         </span>
                       </span>
                       <span className="text-muted-foreground text-xs">
-                        {user.role === "ADMIN" ? "Admin" : "Reviewer"}
+                        {user.role.name}
                         {user.disabled ? " · Disabled" : ""}
                       </span>
                     </div>
@@ -414,13 +479,16 @@ export default async function SettingsPage({
                         className="flex items-center gap-1"
                       >
                         <input type="hidden" name="userId" value={user.id} />
-                        <Select name="role" defaultValue={user.role}>
+                        <Select name="roleId" defaultValue={user.roleId}>
                           <SelectTrigger className="h-8 w-28 text-xs">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="REVIEWER">Reviewer</SelectItem>
-                            <SelectItem value="ADMIN">Admin</SelectItem>
+                            {roleOptions.map((role) => (
+                              <SelectItem key={role.id} value={role.id}>
+                                {role.name}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <Button type="submit" size="sm" variant="ghost">

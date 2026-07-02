@@ -116,7 +116,7 @@ export const ssoSettingsSchema = z.object({
   oidcName: z.string().default(""),
   oidcIssuer: z.string().default(""),
   oidcClientId: z.string().default(""),
-  autoProvisionRole: z.enum(["ADMIN", "REVIEWER"]).default("REVIEWER"),
+  autoProvisionRoleId: z.string().default(""),
   allowedDomain: z.string().default(""),
 });
 

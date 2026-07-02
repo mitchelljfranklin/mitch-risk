@@ -1,10 +1,14 @@
-import { authenticateRequest } from "@/lib/api-auth";
+import { authenticateRequest, authResultHasPermission } from "@/lib/api-auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { listVendors } from "@/lib/db/vendors";
 
 export async function GET(request: Request) {
   const auth = await authenticateRequest(request);
   if (!auth) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (!authResultHasPermission(auth, PERMISSIONS.VENDORS_VIEW)) {
+    return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const { searchParams } = new URL(request.url);

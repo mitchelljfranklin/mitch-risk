@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { VendorForm } from "@/components/vendor-form";
 import { updateVendorAction } from "@/lib/actions/vendors";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { getVendor } from "@/lib/db/vendors";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +16,7 @@ type EditVendorPageProps = {
 };
 
 export default async function EditVendorPage({ params }: EditVendorPageProps) {
-  await requireUser();
+  await requirePermission(PERMISSIONS.VENDORS_EDIT);
   const { vendorId } = await params;
   const vendor = await getVendor(vendorId);
   if (!vendor) {

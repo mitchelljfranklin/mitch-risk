@@ -1,6 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { prisma } from "@/lib/prisma";
+import { ensureSystemRoles, getRoleByName } from "@/lib/db/roles";
+import { SYSTEM_ROLE_NAMES } from "@/lib/permissions";
 
 const TEST_EMAIL = "sso-test@example.test";
 const TEST_PROVIDER = "test-provider";
@@ -22,12 +24,16 @@ afterAll(async () => {
 
 describe("SSO identity model (integration)", () => {
   it("creates user and links SsoIdentity on first sign-in", async () => {
+    await ensureSystemRoles();
+    const reviewerRole = await getRoleByName(SYSTEM_ROLE_NAMES.REVIEWER);
+    if (!reviewerRole) throw new Error("reviewer role not found");
+
     const user = await prisma.user.create({
       data: {
         email: TEST_EMAIL,
         name: "SSO User",
         passwordHash: "",
-        role: "REVIEWER",
+        roleId: reviewerRole.id,
       },
     });
 
@@ -46,13 +52,13 @@ describe("SSO identity model (integration)", () => {
           providerId: TEST_PROVIDER_ID,
         },
       },
-      include: { user: true },
+      include: { user: { include: { role: true } } },
     });
 
     expect(identity).not.toBeNull();
     if (!identity) throw new Error("identity not found");
     expect(identity.user.email).toBe(TEST_EMAIL);
-    expect(identity.user.role).toBe("REVIEWER");
+    expect(identity.user.role.name).toBe(SYSTEM_ROLE_NAMES.REVIEWER);
     expect(identity.provider).toBe(TEST_PROVIDER);
   });
 

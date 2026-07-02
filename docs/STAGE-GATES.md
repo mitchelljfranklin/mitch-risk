@@ -1031,6 +1031,46 @@ for creating assessments and fetching scores.
 
 ---
 
+## Phase 47 — Role management & access control (RBAC)
+
+**Scope:** Replace the fixed `UserRole` enum with DB-backed roles. Ship Admin / Reviewer /
+Viewer system roles plus admin-created custom roles with a `resource:action` permission
+catalog, enforced across server actions, API routes, and pages.
+
+**Checklist:**
+
+- [x] `lib/permissions.ts` catalog (21 keys), grouped for UI, with `SYSTEM_ROLE_DEFINITIONS`
+      (Admin=all, Reviewer=write+review, Viewer=read-only) and helpers.
+- [x] `Role` model + `User.roleId` FK; migration `20260702120000_role_management` seeds system
+      roles, backfills existing users, drops the old enum. Applies on a fresh DB.
+- [x] Idempotent seed + `ensureSystemRoles()`; first-run setup assigns the Admin role.
+- [x] Permission-based guards (`requirePermission`, `requireAnyPermission`, `hasPermission`);
+      permissions resolved per-request (React `cache`) so edits apply without re-login.
+- [x] `lib/db/roles.ts` CRUD with guards (system roles non-deletable, Admin locked,
+      role-in-use protection) + last-admin protection in user actions.
+- [x] `lib/actions/roles.ts` (create/update/delete) gated by `roles:manage`, zod-validated,
+      audited (CREATE/UPDATE/DELETE_ROLE).
+- [x] Every existing action/route/page re-gated to specific permissions; API routes return 403
+      when the caller's role lacks permission.
+- [x] Settings: new Roles tab (permission matrix), Users + SSO reference DB roles; sidebar/nav
+      gated by permission; tabs sanitized against the caller's allowed set.
+- [x] UI controls hidden by permission (server-side): dashboard, vendors list/detail,
+      assessment detail, templates list/detail hide create/edit/delete/review/send controls a
+      role lacks — Viewers get a clean read-only view (reads like Export/PDF stay visible).
+- [x] Tests: `lib/permissions.test.ts` (9) + `lib/db/roles.integration.test.ts` (6); existing
+      user/SSO/collaboration tests updated for `roleId`. 88 unit tests passing. Playwright
+      `e2e/rbac-viewer.spec.ts` (5) asserts a Viewer sees no write controls; 7 e2e passing.
+- [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check` all clean.
+- [x] OpenAPI spec updated with a shared `Forbidden` (403) response on secured endpoints.
+
+**Reviewer spot-check (browser):** sign in as Admin → Settings → Roles → create a custom role
+with only `vendors:view` → assign it to a test user → sign in as that user → confirm only the
+Vendors nav item appears, vendor pages are read-only, and write/settings routes redirect to the
+dashboard. Confirm the Viewer system role is read-only. Confirm the last remaining admin cannot
+be demoted or disabled.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1081,3 +1121,4 @@ for creating assessments and fetching scores.
 | 44 | Approved | User | 2026-07-02 | MULTIPLE_CHOICE → 'Single choice', MULTI_SELECT → 'Multi-select' labels; 73 tests |
 | 45 | Approved | User | 2026-07-02 | Page size dropdown (10/25/50/100) with auto-refresh, default 10, export dropdown for audit; 73 tests |
 | 46 | Approved | User | 2026-07-02 | Portal save/resume UX: persistent banner, timestamped save status, submission confirmation card; 73 tests |
+| 47 | Ready for review | opencode | 2026-07-02 | RBAC: DB-backed roles (Admin/Reviewer/Viewer + custom), permission catalog, per-permission guards on actions/routes/pages, Roles settings tab, last-admin protection; 88 tests |

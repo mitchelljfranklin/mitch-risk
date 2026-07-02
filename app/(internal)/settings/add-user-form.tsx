@@ -17,12 +17,17 @@ import { useFormToast } from "@/hooks/use-form-toast";
 
 const initialState: UserActionState = undefined;
 
-export function AddUserForm() {
+type RoleOption = { id: string; name: string };
+
+export function AddUserForm({ roles }: { roles: RoleOption[] }) {
   const [state, formAction, isPending] = useActionState(
     addUserAction,
     initialState,
   );
   useFormToast(state);
+
+  const defaultRole =
+    roles.find((role) => role.name === "Reviewer") ?? roles[0];
 
   return (
     <form action={formAction} className="grid gap-3 rounded-md border p-3">
@@ -49,14 +54,17 @@ export function AddUserForm() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="role">Role</Label>
-          <Select name="role" defaultValue="REVIEWER">
-            <SelectTrigger id="role">
+          <Label htmlFor="roleId">Role</Label>
+          <Select name="roleId" defaultValue={defaultRole?.id}>
+            <SelectTrigger id="roleId">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="REVIEWER">Reviewer</SelectItem>
-              <SelectItem value="ADMIN">Admin</SelectItem>
+              {roles.map((role) => (
+                <SelectItem key={role.id} value={role.id}>
+                  {role.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
