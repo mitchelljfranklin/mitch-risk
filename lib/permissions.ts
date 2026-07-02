@@ -170,3 +170,39 @@ export function hasAllPermissions(
     userPermissions.includes(permission),
   );
 }
+
+export function countValidPermissions(
+  userPermissions: readonly string[],
+): number {
+  return userPermissions.filter(isValidPermission).length;
+}
+
+export type PermissionCoverage = "none" | "partial" | "full";
+
+export type RolePermissionGroupSummary = {
+  resource: string;
+  label: string;
+  granted: number;
+  total: number;
+  coverage: PermissionCoverage;
+};
+
+export function summarizeRolePermissions(
+  userPermissions: readonly string[],
+): RolePermissionGroupSummary[] {
+  return PERMISSION_GROUPS.map((group) => {
+    const total = group.permissions.length;
+    const granted = group.permissions.filter((permission) =>
+      userPermissions.includes(permission.key),
+    ).length;
+    const coverage: PermissionCoverage =
+      granted === 0 ? "none" : granted === total ? "full" : "partial";
+    return {
+      resource: group.resource,
+      label: group.label,
+      granted,
+      total,
+      coverage,
+    };
+  });
+}

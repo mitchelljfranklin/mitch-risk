@@ -1107,6 +1107,37 @@ confirm `prunedFiles` removes a manually-orphaned file (older than 1h).
 
 ---
 
+## Phase 49 — Roles management UX
+
+**Scope:** make the Roles settings tab manageable as custom roles grow — replace the
+stack-of-editors with a searchable list + slide-over editor, add a permission summary,
+select-all toggles, and duplicate-role.
+
+**Checklist:**
+
+- [x] `roles-manager.tsx` reworked into master–detail: searchable role list + `Sheet`
+      slide-over editor (only one permission matrix rendered at a time).
+- [x] Per-role **permission summary** (coverage chips + `granted / total` count) via
+      `summarizeRolePermissions` in `lib/permissions.ts`.
+- [x] Permission matrix has **master + per-group "select all"** (tri-state) toggles; selected
+      keys submit as hidden inputs (server action contract unchanged).
+- [x] **Duplicate role** (`duplicateRole` + `duplicateRoleAction`) creates a non-system
+      `(copy)` with a unique name; audited as `DUPLICATE_ROLE`.
+- [x] Admin renders a read-only summary (no disabled grid); system-role name lock, in-use and
+      last-admin protections unchanged; still gated by `roles:manage`.
+- [x] Tests: `summarizeRolePermissions` + `countValidPermissions` units; `duplicateRole`
+      integration (copy name suffixing, non-system, permissions copied); admin Roles e2e
+      (`e2e/rbac-admin-roles.spec.ts`). 101 unit + 8 e2e passing.
+- [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check` all clean. No
+      schema change, no migration.
+
+**Reviewer spot-check:** Settings → Roles → search filters the list; each role shows a
+permission summary. "New role" opens the slide-over; "Select all permissions" toggles the whole
+matrix; create it and confirm it appears. Duplicate a role → a `(copy)` appears. Open Admin →
+read-only summary, no editable grid. Delete a custom role with no users assigned.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1159,3 +1190,4 @@ confirm `prunedFiles` removes a manually-orphaned file (older than 1h).
 | 46 | Approved | User | 2026-07-02 | Portal save/resume UX: persistent banner, timestamped save status, submission confirmation card; 73 tests |
 | 47 | Ready for review | opencode | 2026-07-02 | RBAC: DB-backed roles (Admin/Reviewer/Viewer + custom), permission catalog, per-permission guards on actions/routes/pages, Roles settings tab, last-admin protection, UI controls hidden by permission; post-review hardening (evidence-route 403, dashboard universal landing, API 403 tests); 92 unit + 7 e2e |
 | 48 | Ready for review | opencode | 2026-07-02 | Data lifecycle: evidence files deleted on assessment/vendor delete, replace-on-upload, logo cleanup, template-version re-link on delete, cron orphan-sweep + storage.list(); 97 unit + 7 e2e |
+| 49 | Ready for review | opencode | 2026-07-02 | Roles UX: master–detail list + slide-over Sheet editor, permission summary chips, group/master select-all, duplicate role; 101 unit + 8 e2e |

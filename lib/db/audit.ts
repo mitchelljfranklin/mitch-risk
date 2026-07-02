@@ -173,6 +173,7 @@ export const AUDIT_ACTION_LABELS: Record<string, string> = {
   CREATE_ROLE: "Created role",
   UPDATE_ROLE: "Updated role",
   DELETE_ROLE: "Deleted role",
+  DUPLICATE_ROLE: "Duplicated role",
   RESET_PASSWORD: "Reset password",
   UPDATE_SETTINGS: "Updated settings",
   API_KEY_CREATED: "Created API key",

@@ -380,6 +380,13 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   continuous. A new orphan-sweep step in the cron job removes storage files no longer
   referenced by any `Evidence` row or the current logo (older than a 1-hour safety window),
   which also cleans up files orphaned by past deletes. Storage gained a `list()` capability.
+- **Phase 49 — Roles management UX.** Reworked the Settings → Roles tab from a stack of
+  always-expanded editors into a scannable **master–detail** design that scales to many custom
+  roles: a searchable role list with a per-role **permission summary** (coverage chips + count),
+  and a right-hand **slide-over (`Sheet`) editor** that renders a single permission matrix with
+  **group + master "select all"** toggles. Added **duplicate role** (creates a `(copy)` with a
+  unique name) and kept delete/system-role/Admin-lock protections. Admin shows a read-only
+  summary instead of a disabled grid.
 
 ## 8. Out of scope (v1+)
 

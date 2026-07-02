@@ -3,6 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   createRole,
   deleteRole,
+  duplicateRole,
   ensureSystemRoles,
   getRoleByName,
   updateRole,
@@ -18,7 +19,12 @@ const TEST_USER_EMAIL = "roles-test-user@example.test";
 async function cleanup() {
   await prisma.user.deleteMany({ where: { email: TEST_USER_EMAIL } });
   await prisma.role.deleteMany({
-    where: { name: { in: [CUSTOM_ROLE_NAME, ASSIGNED_ROLE_NAME] } },
+    where: {
+      OR: [
+        { name: { in: [CUSTOM_ROLE_NAME, ASSIGNED_ROLE_NAME] } },
+        { name: { startsWith: `${CUSTOM_ROLE_NAME} (copy` } },
+      ],
+    },
   });
 }
 
@@ -63,6 +69,21 @@ describe("role data access (integration)", () => {
     });
     expect(updated.permissions).toContain(PERMISSIONS.ASSESSMENTS_VIEW);
     expect(updated.description).toBe("updated");
+  });
+
+  it("duplicates a role with a unique (copy) name and no system flag", async () => {
+    const source = await getRoleByName(CUSTOM_ROLE_NAME);
+    if (!source) throw new Error("source role not found");
+
+    const first = await duplicateRole(source.id);
+    expect(first.name).toBe(`${CUSTOM_ROLE_NAME} (copy)`);
+    expect(first.isSystem).toBe(false);
+    expect([...first.permissions].sort()).toEqual(
+      [...source.permissions].sort(),
+    );
+
+    const second = await duplicateRole(source.id);
+    expect(second.name).toBe(`${CUSTOM_ROLE_NAME} (copy 2)`);
   });
 
   it("refuses to edit the Admin role permissions", async () => {

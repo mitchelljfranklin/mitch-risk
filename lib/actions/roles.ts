@@ -4,7 +4,12 @@ import { revalidatePath } from "next/cache";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
-import { createRole, deleteRole, updateRole } from "@/lib/db/roles";
+import {
+  createRole,
+  deleteRole,
+  duplicateRole,
+  updateRole,
+} from "@/lib/db/roles";
 import { logAudit } from "@/lib/db/audit";
 import { getField } from "@/lib/actions/helpers";
 import { roleSchema } from "@/lib/schemas/role";
@@ -82,6 +87,29 @@ export async function updateRoleAction(
 
   revalidatePath("/settings");
   return { ok: true, message: "Role updated." };
+}
+
+export async function duplicateRoleAction(formData: FormData): Promise<void> {
+  await requirePermission(PERMISSIONS.ROLES_MANAGE);
+
+  const roleId = getField(formData, "roleId");
+  if (!roleId) {
+    return;
+  }
+
+  try {
+    const role = await duplicateRole(roleId);
+    const actor = await getCurrentUser();
+    if (actor) {
+      await logAudit(actor.id, "DUPLICATE_ROLE", "Role", role.id, {
+        sourceRoleId: roleId,
+      });
+    }
+  } catch {
+    return;
+  }
+
+  revalidatePath("/settings");
 }
 
 export async function deleteRoleAction(formData: FormData): Promise<void> {

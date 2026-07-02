@@ -6,10 +6,12 @@ import {
   PERMISSION_GROUPS,
   SYSTEM_ROLE_DEFINITIONS,
   SYSTEM_ROLE_NAMES,
+  countValidPermissions,
   hasAllPermissions,
   hasAnyPermission,
   hasPermission,
   isValidPermission,
+  summarizeRolePermissions,
 } from "@/lib/permissions";
 
 describe("permission catalog", () => {
@@ -103,5 +105,38 @@ describe("permission helpers", () => {
         PERMISSIONS.VENDORS_DELETE,
       ]),
     ).toBe(false);
+  });
+
+  it("countValidPermissions ignores unknown keys", () => {
+    expect(
+      countValidPermissions([PERMISSIONS.VENDORS_VIEW, "vendors:teleport"]),
+    ).toBe(1);
+  });
+});
+
+describe("summarizeRolePermissions", () => {
+  it("reports none/partial/full coverage per group", () => {
+    const summary = summarizeRolePermissions([
+      PERMISSIONS.VENDORS_VIEW,
+      PERMISSIONS.VENDORS_CREATE,
+      PERMISSIONS.VENDORS_EDIT,
+      PERMISSIONS.VENDORS_DELETE,
+      PERMISSIONS.ASSESSMENTS_VIEW,
+    ]);
+    const vendors = summary.find((group) => group.resource === "vendors");
+    const assessments = summary.find(
+      (group) => group.resource === "assessments",
+    );
+    const templates = summary.find((group) => group.resource === "templates");
+
+    expect(vendors?.coverage).toBe("full");
+    expect(assessments?.coverage).toBe("partial");
+    expect(assessments?.granted).toBe(1);
+    expect(templates?.coverage).toBe("none");
+  });
+
+  it("marks every group full for the Admin permission set", () => {
+    const summary = summarizeRolePermissions([...ALL_PERMISSIONS]);
+    expect(summary.every((group) => group.coverage === "full")).toBe(true);
   });
 });

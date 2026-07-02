@@ -90,6 +90,31 @@ export async function deleteRole(id: string): Promise<void> {
   await prisma.role.delete({ where: { id } });
 }
 
+export async function duplicateRole(id: string): Promise<Role> {
+  const source = await prisma.role.findUnique({ where: { id } });
+  if (!source) {
+    throw new Error("Role not found.");
+  }
+
+  const baseName = `${source.name} (copy)`;
+  let candidate = baseName;
+  let attempt = 2;
+  // Names are unique; find the first free "(copy)", "(copy 2)", ... variant.
+  while (await prisma.role.findUnique({ where: { name: candidate } })) {
+    candidate = `${source.name} (copy ${attempt})`;
+    attempt += 1;
+  }
+
+  return prisma.role.create({
+    data: {
+      name: candidate,
+      description: source.description,
+      permissions: sanitizePermissions(source.permissions),
+      isSystem: false,
+    },
+  });
+}
+
 export async function ensureSystemRoles(): Promise<void> {
   for (const definition of SYSTEM_ROLE_DEFINITIONS) {
     await prisma.role.upsert({
