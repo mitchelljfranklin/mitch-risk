@@ -330,19 +330,41 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   with `--rag-green/amber/red/unscored` CSS variables and Appearance setting colour pickers;
   sidebar logo enlarged; missing detail-route loading skeletons added; border-radius slider
   and page-width selector in Appearance settings.
+- **Phase 39 — Bulk vendor onboarding.** CSV bulk import of multiple vendors at once with
+  preview and row-level validation; new `ImportVendorsForm` component with file upload and
+  parsed-row count display. Bulk assessment sending: select multiple vendors on a new
+  `/vendors/bulk-send` page, pick a template, set due date and reviewer, optionally set a
+  shared portal password, and send individual assessments to all selected vendors in
+  parallel. Each vendor gets their own assessment token and invite email.
 - **Phase 40 — Reviewer submission notification.** New `"submission"` email template
   type sent to the reviewer when a vendor submits their questionnaire. Template editable
   in Settings alongside invite/reminder/escalation. Email includes vendor name, assessment
-  title, and a direct link to the assessment detail. Notification is best-effort — if SMTP
-  is unavailable the submission still succeeds.
+  title, and a direct link to the assessment detail. Notification is best-effort.
+- **Phase 41 — Additional question types.** Extended the `QuestionType` enum with three new
+  answer types: URL (validated URL input, manually scored), EMAIL (validated email input,
+  manually scored), and CHECKBOX (single acknowledgment checkbox, auto-scorable). All three
+  integrate into the builder UI, portal questionnaire, autoscoring, and the review panel.
 - **Phase 42 — Auto-logout.** Configurable inactivity timeout (default 30 minutes, 0 =
   disabled, minimum 5 when enabled). An `IdleTimer` client component tracks mouse,
   keyboard, click, scroll, and touch activity. After the configured timeout, a 60-second
   countdown modal warns the user; any interaction resets the timer. On expiry, the session
-  is signed out via `signOutAction`. Set in Settings → Limits.
-  answer types: URL (validated URL input, manually scored), EMAIL (validated email input,
-  manually scored), and CHECKBOX (single acknowledgment checkbox, auto-scorable). All three
-  integrate into the builder UI, portal questionnaire, autoscoring, and the review panel.
+  is signed out. Set in Settings → Limits.
+- **Phase 43 — Confirmation dialogs.** Reusable `ConfirmDialog` component wrapping shadcn
+  `AlertDialog`. Wired into all 11 destructive actions: delete vendor, delete assessment,
+  revoke portal link, delete template/section/question, disable user, reset password,
+  revoke API key, delete API key, and remove logo. Each dialog describes the specific
+  data loss and requires explicit confirmation before the action fires.
+- **Phase 44 — Question type label clarification.** `MULTIPLE_CHOICE` relabeled to
+  "Single choice (pick one)" and `MULTI_SELECT` to "Multi‑select (pick many)" to clearly
+  distinguish single-select vs multi-select answer types.
+- **Phase 45 — Audit & email pagination + export.** Configurable page size (10/25/50/100)
+  with auto-refresh on change; default 10 rows. Export dropdown on audit tab with two options:
+  "All results" (API download with active filters) and "Current page" (client-side CSV).
+  CSV export also added to audit API.
+- **Phase 46 — Portal save/resume UX.** Persistent "Your answers are saved automatically"
+  banner in the vendor questionnaire header. Save status now shows "Saved at 14:35" instead
+  of generic "All changes saved". Invite-password email template includes resume reassurance.
+  Post-submission view shows a confirmation card: "Your responses have been submitted."
 
 ## 8. Out of scope (v1+)
 

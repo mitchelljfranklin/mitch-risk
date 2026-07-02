@@ -48,7 +48,9 @@ docker compose up -d
 - Keyboard shortcuts (`?` modal, `g`+letter navigation)
 - Toast notification system
 - Custom visual branding (logo, primary/secondary colours, RAG indicator colours, border radius, page width)
-- Audit trail for all administrative actions
+- Confirmation dialogs for all destructive actions (delete vendor, assessment, template, etc.)
+- Vendor questionnaire auto-save with progress persistence and resume capability
+- Audit trail for all administrative actions with configurable page size and CSV export
 
 ## Framework libraries
 
@@ -75,9 +77,9 @@ Full docs: **http://localhost:3000/docs** (authenticated)
 All operational settings are managed in-app via **Settings** (ADMIN role) — no file editing needed after initial setup:
 - Organization name, support email, logo, brand colours (Appearance tab)
 - SMTP server credentials (encrypted at rest)
-- Email templates with `{{tokens}}`
+- Email templates with `{{tokens}}` (invite, password-protected invite, reminder, escalation, submission)
 - Scoring weights and RAG thresholds
-- Reminder offsets, escalation timing, assessment defaults (Configuration tab)
+- Reminder offsets, escalation timing, assessment defaults, auto-logout (Configuration tab)
 - API keys with IP allowlisting and expiry
 - SSO providers (Entra ID, Google, OIDC)
 - User management with roles ADMIN/REVIEWER

@@ -43,13 +43,14 @@ app/                 # Next.js App Router
 components/          # shadcn ui primitives + domain composites
   ui/                # badge, button, card, chart, checkbox, dropdown-menu, input,
                      #   label, radio-group, select, separator, sheet, sidebar,
-                     #   skeleton, tabs, textarea, tooltip
+                     #   skeleton, tabs, textarea, tooltip, alert-dialog
   toast.tsx          # toast notification system (success/error/info)
   stat-card.tsx      # animated count-up stat cards
   empty-state.tsx    # SVG illustration empty states
   calendar-heatmap.tsx # GitHub-style activity grid
   keyboard-shortcuts.tsx # ? key modal with g+letter navigation
-  toast.tsx          # toast notification system (success/error/info)
+  confirm-dialog.tsx # reusable confirmation modal for destructive actions
+  idle-timer.tsx     # inactivity detection with countdown + auto-sign-out
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
   db/                # typed data-access layer (assessments, audit, collaboration,

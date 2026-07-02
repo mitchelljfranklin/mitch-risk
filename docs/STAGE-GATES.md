@@ -74,10 +74,14 @@ A phase cannot be marked **Ready for review** unless all of these are true:
 | 36 | Polish & cleanup | Approved |
 | 37 | Email tracking | Approved |
 | 38 | UI/UX polish & consistency | Approved |
-| 39 | Bulk vendor onboarding | Ready for review |
+| 39 | Bulk vendor onboarding | Approved |
 | 40 | Reviewer submission notification | Approved |
 | 41 | Additional question types (URL, EMAIL, CHECKBOX) | Approved |
 | 42 | Auto-logout | Approved |
+| 43 | Confirmation dialogs | Approved |
+| 44 | Question type labels | Approved |
+| 45 | Audit & email pagination + export | Approved |
+| 46 | Portal save/resume UX | Approved |
 
 ---
 
@@ -1073,3 +1077,7 @@ for creating assessments and fetching scores.
 | 40 | Approved | User | 2026-07-02 | Submission notification email to reviewer, new email template type, Settings UI; 73 tests |
 | 41 | Approved | User | 2026-07-02 | URL, EMAIL, CHECKBOX question types; auto-scoring for CHECKBOX; 73 tests |
 | 42 | Approved | User | 2026-07-02 | Configurable auto-logout with inactivity detection + countdown modal; 73 tests |
+| 43 | Approved | User | 2026-07-02 | ConfirmDialog wrapping 11 destructive actions; 73 tests |
+| 44 | Approved | User | 2026-07-02 | MULTIPLE_CHOICE → 'Single choice', MULTI_SELECT → 'Multi-select' labels; 73 tests |
+| 45 | Approved | User | 2026-07-02 | Page size dropdown (10/25/50/100) with auto-refresh, default 10, export dropdown for audit; 73 tests |
+| 46 | Approved | User | 2026-07-02 | Portal save/resume UX: persistent banner, timestamped save status, submission confirmation card; 73 tests |
