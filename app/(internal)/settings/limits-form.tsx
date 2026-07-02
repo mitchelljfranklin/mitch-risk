@@ -11,6 +11,7 @@ import { useFormToast } from "@/hooks/use-form-toast";
 
 type LimitsFormProps = {
   loginRateLimitPerMin: number;
+  sessionTimeoutMinutes: number;
   auditRetentionDays: number;
   emailLogRetentionDays: number;
   maxUploadMb: number;
@@ -32,6 +33,7 @@ const ALL_EXTENSIONS = [
 
 export function LimitsForm({
   loginRateLimitPerMin,
+  sessionTimeoutMinutes,
   auditRetentionDays,
   emailLogRetentionDays,
   maxUploadMb,
@@ -57,6 +59,22 @@ export function LimitsForm({
           type="number"
           min={1}
           defaultValue={loginRateLimitPerMin}
+          className="w-32"
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="sessionTimeoutMinutes">Auto-logout (minutes)</Label>
+        <p className="text-muted-foreground text-xs">
+          Automatically sign out after this many minutes of inactivity. Set to 0
+          to disable. Minimum 5 minutes when enabled.
+        </p>
+        <Input
+          id="sessionTimeoutMinutes"
+          name="sessionTimeoutMinutes"
+          type="number"
+          min={0}
+          defaultValue={sessionTimeoutMinutes}
           className="w-32"
         />
       </div>

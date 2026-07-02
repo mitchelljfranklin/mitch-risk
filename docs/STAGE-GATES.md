@@ -77,6 +77,7 @@ A phase cannot be marked **Ready for review** unless all of these are true:
 | 39 | Bulk vendor onboarding | Ready for review |
 | 40 | Reviewer submission notification | Approved |
 | 41 | Additional question types (URL, EMAIL, CHECKBOX) | Approved |
+| 42 | Auto-logout | Approved |
 
 ---
 
@@ -1071,3 +1072,4 @@ for creating assessments and fetching scores.
 | 39 | Approved | User | 2026-07-02 | CSV bulk vendor import, bulk assessment sending page, 4 new components; 73 tests |
 | 40 | Approved | User | 2026-07-02 | Submission notification email to reviewer, new email template type, Settings UI; 73 tests |
 | 41 | Approved | User | 2026-07-02 | URL, EMAIL, CHECKBOX question types; auto-scoring for CHECKBOX; 73 tests |
+| 42 | Approved | User | 2026-07-02 | Configurable auto-logout with inactivity detection + countdown modal; 73 tests |

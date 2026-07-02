@@ -42,6 +42,7 @@ docker compose up -d
 - Interactive Swagger UI at `/docs`
 - PDF reports and CSV exports
 - In-app settings for all operational configuration (email, scoring, branding, scheduling)
+- Configurable auto-logout after inactivity (default 30 min, adjustable or off)
 - Reviewer notified by email when a vendor submits their questionnaire
 - Email tracking with SENT/FAILED status, per-send logging, retry, and retention
 - Keyboard shortcuts (`?` modal, `g`+letter navigation)

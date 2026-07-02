@@ -57,6 +57,7 @@ export const assessmentSettingsSchema = z.object({
   escalationAfterDays: z.coerce.number().int().min(1).default(3),
   loginRateLimitPerMin: z.coerce.number().int().min(1).default(10),
   emailLogRetentionDays: z.coerce.number().int().min(0).default(14),
+  sessionTimeoutMinutes: z.coerce.number().int().min(0).default(30),
 });
 
 export type AssessmentSettings = z.infer<typeof assessmentSettingsSchema>;

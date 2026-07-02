@@ -342,6 +342,7 @@ export default async function SettingsPage({
             <CardContent>
               <LimitsForm
                 loginRateLimitPerMin={assessment.loginRateLimitPerMin}
+                sessionTimeoutMinutes={assessment.sessionTimeoutMinutes}
                 auditRetentionDays={auditRetention}
                 emailLogRetentionDays={emailLogRetention}
                 maxUploadMb={files.maxUploadMb}

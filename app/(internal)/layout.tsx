@@ -11,22 +11,30 @@ import {
 import { UserMenu } from "@/components/user-menu";
 import { ToastProvider } from "@/components/toast";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
+import { IdleTimer } from "@/components/idle-timer";
 import { requireUser } from "@/lib/auth";
 import { getNotificationCounts } from "@/lib/db/notifications";
-import { getAppearanceSettings, getOrganizationSettings } from "@/lib/settings";
+import {
+  getAppearanceSettings,
+  getAssessmentSettings,
+  getOrganizationSettings,
+} from "@/lib/settings";
 
 export default async function InternalLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const user = await requireUser();
-  const [organization, notificationCounts, appearance] = await Promise.all([
-    getOrganizationSettings(),
-    getNotificationCounts(user.id),
-    getAppearanceSettings(),
-  ]);
+  const [organization, notificationCounts, appearance, assessment] =
+    await Promise.all([
+      getOrganizationSettings(),
+      getNotificationCounts(user.id),
+      getAppearanceSettings(),
+      getAssessmentSettings(),
+    ]);
 
   return (
     <ToastProvider>
+      <IdleTimer timeoutMinutes={assessment.sessionTimeoutMinutes} />
       <KeyboardShortcuts />
       <SidebarProvider>
         <AppSidebar

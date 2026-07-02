@@ -58,6 +58,11 @@ const defaultSettings: DefaultSetting[] = [
     key: "assessments.emailLogRetentionDays",
     value: 14,
   },
+  {
+    category: "assessments",
+    key: "assessments.sessionTimeoutMinutes",
+    value: 30,
+  },
 ];
 
 async function seedDefaultSettings() {

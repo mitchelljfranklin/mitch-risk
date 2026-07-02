@@ -417,6 +417,10 @@ export async function saveSchedulingSettings(
     (formData.get("loginRateLimit") as string) || "10",
     10,
   );
+  const sessionTimeoutMinutes = parseInt(
+    (formData.get("sessionTimeoutMinutes") as string) || "30",
+    10,
+  );
   const reminderStr = (formData.get("reminderDays") as string) || "";
 
   if (isNaN(auditRetention) || auditRetention < 0) {
@@ -446,6 +450,16 @@ export async function saveSchedulingSettings(
       message: "Login rate limit must be at least 1 per minute.",
     };
   }
+  if (
+    isNaN(sessionTimeoutMinutes) ||
+    (sessionTimeoutMinutes > 0 && sessionTimeoutMinutes < 5) ||
+    sessionTimeoutMinutes < 0
+  ) {
+    return {
+      ok: false,
+      message: "Auto-logout must be 0 (disabled) or at least 5 minutes.",
+    };
+  }
 
   const reminders = reminderStr
     .split(",")
@@ -470,6 +484,7 @@ export async function saveSchedulingSettings(
       defaultDueInDays: defaultDueDays,
       loginRateLimitPerMin: loginRateLimit,
       emailLogRetentionDays: emailLogRetention,
+      sessionTimeoutMinutes,
     }),
     updateFileSettings({
       maxUploadMb,

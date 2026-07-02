@@ -335,7 +335,11 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   in Settings alongside invite/reminder/escalation. Email includes vendor name, assessment
   title, and a direct link to the assessment detail. Notification is best-effort — if SMTP
   is unavailable the submission still succeeds.
-- **Phase 41 — Additional question types.** Extended the `QuestionType` enum with three new
+- **Phase 42 — Auto-logout.** Configurable inactivity timeout (default 30 minutes, 0 =
+  disabled, minimum 5 when enabled). An `IdleTimer` client component tracks mouse,
+  keyboard, click, scroll, and touch activity. After the configured timeout, a 60-second
+  countdown modal warns the user; any interaction resets the timer. On expiry, the session
+  is signed out via `signOutAction`. Set in Settings → Limits.
   answer types: URL (validated URL input, manually scored), EMAIL (validated email input,
   manually scored), and CHECKBOX (single acknowledgment checkbox, auto-scorable). All three
   integrate into the builder UI, portal questionnaire, autoscoring, and the review panel.
