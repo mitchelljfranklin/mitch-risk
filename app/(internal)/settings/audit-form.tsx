@@ -4,6 +4,12 @@ import { useRef } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -124,11 +130,57 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
         <Button type="submit" size="sm">
           Filter
         </Button>
-        <Button asChild variant="outline" size="sm">
-          <a href="/api/v1/audit?format=csv" download>
-            Export CSV
-          </a>
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              Export
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem
+              onClick={() => {
+                const params = new URLSearchParams(window.location.search);
+                params.set("format", "csv");
+                params.delete("tab");
+                const url = `/api/v1/audit?${params.toString()}`;
+                const anchor = document.createElement("a");
+                anchor.href = url;
+                anchor.download = "audit-export.csv";
+                anchor.click();
+              }}
+            >
+              All results
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                const header = "Date,User,Action,Entity,ID\n";
+                const rows = entries
+                  .map((log) =>
+                    [
+                      new Date(log.createdAt).toISOString(),
+                      log.user.name,
+                      AUDIT_ACTION_LABELS[log.action] ?? log.action,
+                      log.entityType ?? "",
+                      log.entityId ?? "",
+                    ]
+                      .map((v) => `"${String(v).replace(/"/g, '""')}"`)
+                      .join(","),
+                  )
+                  .join("\n");
+                const blob = new Blob([header + rows], {
+                  type: "text/csv",
+                });
+                const anchor = document.createElement("a");
+                anchor.href = URL.createObjectURL(blob);
+                anchor.download = "audit-page.csv";
+                anchor.click();
+                URL.revokeObjectURL(anchor.href);
+              }}
+            >
+              Current page
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </form>
 
       {entries.length === 0 ? (
