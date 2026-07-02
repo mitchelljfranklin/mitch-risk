@@ -1,9 +1,14 @@
 # Phase 47 — Role Management & Access Control (RBAC)
 
 > **Status: implemented — Ready for review.** All work packages below are complete; quality
-> gates (lint/typecheck/build/format) and the test suite (88 unit + 7 Playwright e2e) pass.
+> gates (lint/typecheck/build/format) and the test suite (92 unit + 7 Playwright e2e) pass.
 > UI controls are hidden by permission server-side (Viewers get a clean read-only view), and
 > `e2e/rbac-viewer.spec.ts` asserts this. See the Phase 47 gate in `docs/STAGE-GATES.md`.
+>
+> **Post-review hardening:** (1) the evidence file route requires `assessments:view`; (2) the
+> dashboard is the universal landing for any authenticated user, so the redundant
+> `dashboard:view` permission was removed (migration `20260702130000_remove_dashboard_view`),
+> eliminating a redirect loop for custom roles that omit it; (3) added API 401/403 route tests.
 
 Working record for the role management feature. Review before starting; keep accurate as
 reality changes. Follows the gated-phase conventions in `docs/PLAN.md` and

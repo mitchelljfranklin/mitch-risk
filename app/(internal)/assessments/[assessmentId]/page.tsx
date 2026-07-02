@@ -439,35 +439,26 @@ export default async function AssessmentDetailPage({
                   {(evidenceByQuestion.get(question.id) ?? []).map((item) => {
                     const isImage = /^image\//.test(item.mimeType);
                     const isPdf = item.mimeType === "application/pdf";
-                    const url = `/api/files/${item.id}?inline=true`;
                     if (isImage) {
                       return (
                         <img
                           key={item.id}
-                          src={url}
+                          src={`/api/files/${item.id}?inline=true`}
                           alt={item.fileName}
                           loading="lazy"
                           className="mt-2 max-h-64 rounded-md border object-contain"
                         />
                       );
                     }
-                    if (isPdf) {
-                      return (
-                        <iframe
-                          key={item.id}
-                          src={url}
-                          title={item.fileName}
-                          className="mt-2 h-64 w-full rounded-md border"
-                        />
-                      );
-                    }
                     return (
                       <a
                         key={item.id}
-                        href={`/api/files/${item.id}`}
+                        href={`/api/files/${item.id}?inline=true`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-primary mt-1 block text-xs hover:underline"
                       >
-                        {item.fileName}
+                        {isPdf ? `View PDF: ${item.fileName} ↗` : item.fileName}
                       </a>
                     );
                   })}

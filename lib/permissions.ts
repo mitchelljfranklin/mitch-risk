@@ -1,5 +1,4 @@
 export const PERMISSIONS = {
-  DASHBOARD_VIEW: "dashboard:view",
   VENDORS_VIEW: "vendors:view",
   VENDORS_CREATE: "vendors:create",
   VENDORS_EDIT: "vendors:edit",
@@ -34,11 +33,6 @@ type PermissionGroup = {
 };
 
 export const PERMISSION_GROUPS: readonly PermissionGroup[] = [
-  {
-    resource: "dashboard",
-    label: "Dashboard",
-    permissions: [{ key: PERMISSIONS.DASHBOARD_VIEW, label: "View dashboard" }],
-  },
   {
     resource: "vendors",
     label: "Vendors",
@@ -101,7 +95,6 @@ export const SYSTEM_ROLE_NAMES = {
 } as const;
 
 const REVIEWER_PERMISSIONS: readonly Permission[] = [
-  PERMISSIONS.DASHBOARD_VIEW,
   PERMISSIONS.VENDORS_VIEW,
   PERMISSIONS.VENDORS_CREATE,
   PERMISSIONS.VENDORS_EDIT,
@@ -119,7 +112,6 @@ const REVIEWER_PERMISSIONS: readonly Permission[] = [
 ];
 
 const VIEWER_PERMISSIONS: readonly Permission[] = [
-  PERMISSIONS.DASHBOARD_VIEW,
   PERMISSIONS.VENDORS_VIEW,
   PERMISSIONS.ASSESSMENTS_VIEW,
   PERMISSIONS.TEMPLATES_VIEW,

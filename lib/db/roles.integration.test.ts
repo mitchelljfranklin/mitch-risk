@@ -72,7 +72,7 @@ describe("role data access (integration)", () => {
       updateRole(admin.id, {
         name: admin.name,
         description: admin.description ?? "",
-        permissions: [PERMISSIONS.DASHBOARD_VIEW],
+        permissions: [PERMISSIONS.VENDORS_VIEW],
       }),
     ).rejects.toThrow();
   });
@@ -86,7 +86,7 @@ describe("role data access (integration)", () => {
   it("refuses to delete a role that still has users assigned", async () => {
     const role = await createRole({
       name: ASSIGNED_ROLE_NAME,
-      permissions: [PERMISSIONS.DASHBOARD_VIEW],
+      permissions: [PERMISSIONS.VENDORS_VIEW],
     });
     await createUser({
       name: "Roles Test User",

@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardCharts } from "@/components/dashboard-charts";
 import { StatCard, ScoreStatCard } from "@/components/stat-card";
 import { CalendarHeatmap } from "@/components/calendar-heatmap";
-import { requirePermission } from "@/lib/auth";
+import { requireUser } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getDashboardData } from "@/lib/db/compliance";
 import { prisma } from "@/lib/prisma";
@@ -41,7 +41,7 @@ type DashboardPageProps = {
 export default async function DashboardPage({
   searchParams,
 }: DashboardPageProps) {
-  const user = await requirePermission(PERMISSIONS.DASHBOARD_VIEW);
+  const user = await requireUser();
   const canCreateVendor = hasPermission(
     user.permissions,
     PERMISSIONS.VENDORS_CREATE,

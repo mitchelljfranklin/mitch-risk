@@ -103,28 +103,26 @@ export function AppSidebar({
         </div>
       </SidebarHeader>
       <SidebarContent>
-        {hasPermission(permissions, PERMISSIONS.DASHBOARD_VIEW) ? (
-          <SidebarGroup>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={
-                      pathname === "/dashboard" ||
-                      pathname.startsWith("/dashboard/")
-                    }
-                  >
-                    <Link href="/dashboard">
-                      <LayoutDashboard />
-                      <span>Dashboard</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ) : null}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={
+                    pathname === "/dashboard" ||
+                    pathname.startsWith("/dashboard/")
+                  }
+                >
+                  <Link href="/dashboard">
+                    <LayoutDashboard />
+                    <span>Dashboard</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
         {riskItems.length > 0 ? (
           <SidebarGroup>

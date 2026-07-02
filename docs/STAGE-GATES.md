@@ -1039,7 +1039,7 @@ catalog, enforced across server actions, API routes, and pages.
 
 **Checklist:**
 
-- [x] `lib/permissions.ts` catalog (21 keys), grouped for UI, with `SYSTEM_ROLE_DEFINITIONS`
+- [x] `lib/permissions.ts` catalog (20 keys), grouped for UI, with `SYSTEM_ROLE_DEFINITIONS`
       (Admin=all, Reviewer=write+review, Viewer=read-only) and helpers.
 - [x] `Role` model + `User.roleId` FK; migration `20260702120000_role_management` seeds system
       roles, backfills existing users, drops the old enum. Applies on a fresh DB.
@@ -1062,6 +1062,13 @@ catalog, enforced across server actions, API routes, and pages.
       `e2e/rbac-viewer.spec.ts` (5) asserts a Viewer sees no write controls; 7 e2e passing.
 - [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check` all clean.
 - [x] OpenAPI spec updated with a shared `Forbidden` (403) response on secured endpoints.
+- [x] Hardening (post-review): evidence file route (`/api/files/[evidenceId]`) now requires
+      `assessments:view` (403 otherwise). The dashboard is the universal landing for any
+      authenticated user (`requireUser`), so the redundant `dashboard:view` key was removed
+      from the catalog/defaults (migration `20260702130000_remove_dashboard_view` strips it
+      from existing roles) — this eliminates a redirect loop for custom roles that omit it.
+      Added `lib/api-auth.test.ts` (401/403 route wiring + `authResultHasPermission`). Made the
+      notification-counts test isolation-safe. 92 unit tests + 7 Playwright e2e passing.
 
 **Reviewer spot-check (browser):** sign in as Admin → Settings → Roles → create a custom role
 with only `vendors:view` → assign it to a test user → sign in as that user → confirm only the
@@ -1121,4 +1128,4 @@ be demoted or disabled.
 | 44 | Approved | User | 2026-07-02 | MULTIPLE_CHOICE → 'Single choice', MULTI_SELECT → 'Multi-select' labels; 73 tests |
 | 45 | Approved | User | 2026-07-02 | Page size dropdown (10/25/50/100) with auto-refresh, default 10, export dropdown for audit; 73 tests |
 | 46 | Approved | User | 2026-07-02 | Portal save/resume UX: persistent banner, timestamped save status, submission confirmation card; 73 tests |
-| 47 | Ready for review | opencode | 2026-07-02 | RBAC: DB-backed roles (Admin/Reviewer/Viewer + custom), permission catalog, per-permission guards on actions/routes/pages, Roles settings tab, last-admin protection; 88 tests |
+| 47 | Ready for review | opencode | 2026-07-02 | RBAC: DB-backed roles (Admin/Reviewer/Viewer + custom), permission catalog, per-permission guards on actions/routes/pages, Roles settings tab, last-admin protection, UI controls hidden by permission; post-review hardening (evidence-route 403, dashboard universal landing, API 403 tests); 92 unit + 7 e2e |

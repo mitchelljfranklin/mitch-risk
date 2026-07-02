@@ -1,4 +1,5 @@
 import { getCurrentUser } from "@/lib/auth";
+import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getEvidence } from "@/lib/db/assessments";
 import { storage } from "@/lib/storage";
 
@@ -9,6 +10,9 @@ export async function GET(
   const user = await getCurrentUser();
   if (!user) {
     return new Response("Unauthorized", { status: 401 });
+  }
+  if (!hasPermission(user.permissions, PERMISSIONS.ASSESSMENTS_VIEW)) {
+    return new Response("Forbidden", { status: 403 });
   }
 
   const { evidenceId } = await params;
