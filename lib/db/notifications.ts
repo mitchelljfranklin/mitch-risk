@@ -96,7 +96,7 @@ export type EmailLogEntry = {
   sentBy: { name: string } | null;
 };
 
-const DEFAULT_EMAIL_LOG_PAGE_SIZE = 25;
+const DEFAULT_EMAIL_LOG_PAGE_SIZE = 10;
 
 export async function listEmailLogs(
   filters?: EmailLogFilters,

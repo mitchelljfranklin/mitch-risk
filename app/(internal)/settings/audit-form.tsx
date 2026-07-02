@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef } from "react";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,10 +44,11 @@ const ACTION_VARIANT: Record<
 export function AuditForm({ result, actions, users }: AuditFormProps) {
   const { entries, totalCount, page, pageSize } = result;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+  const formRef = useRef<HTMLFormElement>(null);
 
   return (
     <div className="flex flex-col gap-6">
-      <form className="flex flex-wrap items-end gap-2">
+      <form ref={formRef} className="flex flex-wrap items-end gap-2">
         <input type="hidden" name="tab" value="audit" />
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="action">
@@ -100,7 +103,13 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
           >
             Rows
           </label>
-          <Select name="auditPageSize" defaultValue={String(pageSize)}>
+          <Select
+            name="auditPageSize"
+            defaultValue={String(pageSize)}
+            onValueChange={() => {
+              setTimeout(() => formRef.current?.requestSubmit(), 0);
+            }}
+          >
             <SelectTrigger id="auditPageSize" className="w-24">
               <SelectValue />
             </SelectTrigger>

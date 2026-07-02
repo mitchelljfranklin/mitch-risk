@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useRef } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -40,6 +40,7 @@ export function EmailTrackingForm({
 }: EmailTrackingFormProps) {
   const { entries, totalCount, page, pageSize } = result;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+  const formRef = useRef<HTMLFormElement>(null);
 
   return (
     <div className="flex flex-col gap-6">
@@ -52,7 +53,7 @@ export function EmailTrackingForm({
         </p>
       </div>
 
-      <form className="flex flex-wrap items-end gap-2">
+      <form ref={formRef} className="flex flex-wrap items-end gap-2">
         <input type="hidden" name="tab" value="email-tracking" />
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="status">
@@ -119,7 +120,13 @@ export function EmailTrackingForm({
           >
             Rows
           </label>
-          <Select name="emailLogPageSize" defaultValue={String(pageSize)}>
+          <Select
+            name="emailLogPageSize"
+            defaultValue={String(pageSize)}
+            onValueChange={() => {
+              setTimeout(() => formRef.current?.requestSubmit(), 0);
+            }}
+          >
             <SelectTrigger id="emailLogPageSize" className="w-24">
               <SelectValue />
             </SelectTrigger>

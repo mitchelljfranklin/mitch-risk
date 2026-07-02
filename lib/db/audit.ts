@@ -55,7 +55,7 @@ export type AuditLogEntry = {
   user: { id: string; name: string };
 };
 
-const DEFAULT_AUDIT_PAGE_SIZE = 25;
+const DEFAULT_AUDIT_PAGE_SIZE = 10;
 
 export async function listAuditLogs(
   filters?: AuditLogFilters,
