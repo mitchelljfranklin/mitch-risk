@@ -14,6 +14,7 @@ export async function GET(request: Request) {
   const fromDate = searchParams.get("fromDate") ?? undefined;
   const toDate = searchParams.get("toDate") ?? undefined;
   const page = parseInt(searchParams.get("page") ?? "1", 10) || 1;
+  const pageSize = parseInt(searchParams.get("pageSize") ?? "25", 10) || 25;
   const format = searchParams.get("format") ?? "json";
 
   const result = await listAuditLogs({
@@ -22,6 +23,7 @@ export async function GET(request: Request) {
     fromDate,
     toDate,
     page,
+    pageSize,
   });
   const { entries, totalCount } = result;
 

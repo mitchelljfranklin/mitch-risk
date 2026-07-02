@@ -73,6 +73,7 @@ export type EmailLogFilters = {
   toDate?: string;
   limit?: number;
   page?: number;
+  pageSize?: number;
 };
 
 export type EmailLogResult = {
@@ -95,7 +96,7 @@ export type EmailLogEntry = {
   sentBy: { name: string } | null;
 };
 
-const EMAIL_LOG_PAGE_SIZE = 20;
+const DEFAULT_EMAIL_LOG_PAGE_SIZE = 25;
 
 export async function listEmailLogs(
   filters?: EmailLogFilters,
@@ -128,7 +129,7 @@ export async function listEmailLogs(
   }
 
   const page = filters?.page ?? 1;
-  const pageSize = EMAIL_LOG_PAGE_SIZE;
+  const pageSize = filters?.pageSize ?? DEFAULT_EMAIL_LOG_PAGE_SIZE;
 
   const [entries, totalCount] = await Promise.all([
     prisma.notificationLog

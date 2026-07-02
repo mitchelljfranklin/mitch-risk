@@ -93,6 +93,25 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
           </label>
           <Input id="toDate" name="toDate" type="date" className="w-36" />
         </div>
+        <div className="flex flex-col gap-1">
+          <label
+            className="text-muted-foreground text-xs"
+            htmlFor="auditPageSize"
+          >
+            Rows
+          </label>
+          <Select name="auditPageSize" defaultValue={String(pageSize)}>
+            <SelectTrigger id="auditPageSize" className="w-24">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="25">25</SelectItem>
+              <SelectItem value="50">50</SelectItem>
+              <SelectItem value="100">100</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <Button type="submit" size="sm">
           Filter
         </Button>
@@ -150,7 +169,7 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
             <div className="flex items-center gap-2">
               <Button asChild variant="outline" size="sm" disabled={page <= 1}>
                 <a
-                  href={`/settings?tab=audit&auditPage=${page - 1}`}
+                  href={`/settings?tab=audit&auditPage=${page - 1}&auditPageSize=${pageSize}`}
                   onClick={(e) => {
                     if (page <= 1) e.preventDefault();
                   }}
@@ -165,7 +184,7 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
                 disabled={page >= totalPages}
               >
                 <a
-                  href={`/settings?tab=audit&auditPage=${page + 1}`}
+                  href={`/settings?tab=audit&auditPage=${page + 1}&auditPageSize=${pageSize}`}
                   onClick={(e) => {
                     if (page >= totalPages) e.preventDefault();
                   }}

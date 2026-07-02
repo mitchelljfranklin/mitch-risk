@@ -112,6 +112,25 @@ export function EmailTrackingForm({
           </label>
           <Input id="toDate" name="toDate" type="date" className="w-36" />
         </div>
+        <div className="flex flex-col gap-1">
+          <label
+            className="text-muted-foreground text-xs"
+            htmlFor="emailLogPageSize"
+          >
+            Rows
+          </label>
+          <Select name="emailLogPageSize" defaultValue={String(pageSize)}>
+            <SelectTrigger id="emailLogPageSize" className="w-24">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="25">25</SelectItem>
+              <SelectItem value="50">50</SelectItem>
+              <SelectItem value="100">100</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <Button type="submit" size="sm">
           Filter
         </Button>
@@ -150,7 +169,7 @@ export function EmailTrackingForm({
             <div className="flex items-center gap-2">
               <Button asChild variant="outline" size="sm" disabled={page <= 1}>
                 <a
-                  href={`/settings?tab=email-tracking&emailLogPage=${page - 1}`}
+                  href={`/settings?tab=email-tracking&emailLogPage=${page - 1}&emailLogPageSize=${pageSize}`}
                   onClick={(e) => {
                     if (page <= 1) e.preventDefault();
                   }}
@@ -165,7 +184,7 @@ export function EmailTrackingForm({
                 disabled={page >= totalPages}
               >
                 <a
-                  href={`/settings?tab=email-tracking&emailLogPage=${page + 1}`}
+                  href={`/settings?tab=email-tracking&emailLogPage=${page + 1}&emailLogPageSize=${pageSize}`}
                   onClick={(e) => {
                     if (page >= totalPages) e.preventDefault();
                   }}

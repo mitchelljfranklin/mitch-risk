@@ -123,6 +123,7 @@ export default async function SettingsPage({
     fromDate: sp.fromDate,
     toDate: sp.toDate,
     page: sp.auditPage ? parseInt(sp.auditPage) : 1,
+    pageSize: sp.auditPageSize ? parseInt(sp.auditPageSize) : undefined,
   });
 
   const emailLogs = await listEmailLogs({
@@ -132,6 +133,7 @@ export default async function SettingsPage({
     fromDate: sp.fromDate,
     toDate: sp.toDate,
     page: sp.emailLogPage ? parseInt(sp.emailLogPage) : 1,
+    pageSize: sp.emailLogPageSize ? parseInt(sp.emailLogPageSize) : undefined,
   });
 
   const emailLogStatuses = ["SENT", "FAILED"];

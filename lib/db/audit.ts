@@ -36,6 +36,7 @@ export type AuditLogFilters = {
   toDate?: string;
   limit?: number;
   page?: number;
+  pageSize?: number;
 };
 
 export type AuditLogResult = {
@@ -54,7 +55,7 @@ export type AuditLogEntry = {
   user: { id: string; name: string };
 };
 
-const AUDIT_PAGE_SIZE = 20;
+const DEFAULT_AUDIT_PAGE_SIZE = 25;
 
 export async function listAuditLogs(
   filters?: AuditLogFilters,
@@ -87,7 +88,7 @@ export async function listAuditLogs(
   }
 
   const page = filters?.page ?? 1;
-  const pageSize = AUDIT_PAGE_SIZE;
+  const pageSize = filters?.pageSize ?? DEFAULT_AUDIT_PAGE_SIZE;
 
   const [entries, totalCount] = await Promise.all([
     prisma.auditLog.findMany({
