@@ -214,10 +214,8 @@ function EmailLogRow({ log }: { log: EmailLogEntry }) {
     <tr className="hover:bg-accent/40 border-b">
       <td className="text-muted-foreground p-3 text-xs whitespace-nowrap">
         {formatDate(log.sentAt)}{" "}
-        {log.sentAt.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        })}
+        {log.sentAt.getHours().toString().padStart(2, "0")}:
+        {log.sentAt.getMinutes().toString().padStart(2, "0")}
       </td>
       <td className="p-3 font-mono text-xs">{log.sentTo}</td>
       <td

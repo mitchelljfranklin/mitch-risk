@@ -145,11 +145,9 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
                 {entries.map((log) => (
                   <tr key={log.id} className="hover:bg-accent/40 border-b">
                     <td className="text-muted-foreground p-3 text-xs whitespace-nowrap">
-                      {formatDate(log.createdAt)}{" "}
-                      {log.createdAt.toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                    {formatDate(log.createdAt)}{" "}
+                    {log.createdAt.getHours().toString().padStart(2, "0")}:
+                    {log.createdAt.getMinutes().toString().padStart(2, "0")}
                     </td>
                     <td className="p-3 font-medium">{log.user.name}</td>
                     <td className="p-3">
