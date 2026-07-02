@@ -283,8 +283,14 @@ describe("template version chain", () => {
     const chain = await getTemplateVersionChain(template.id);
     expect(chain.length).toBeGreaterThanOrEqual(2);
 
+    // From the child version we must still see the full lineage (root + child),
+    // not just the current node and its descendants.
     const v2Chain = await getTemplateVersionChain(v2Id);
-    expect(v2Chain.length).toBeGreaterThanOrEqual(1);
+    expect(v2Chain.map((entry) => entry.id)).toEqual(
+      chain.map((entry) => entry.id),
+    );
+    expect(v2Chain.some((entry) => entry.id === template.id)).toBe(true);
+    expect(v2Chain.some((entry) => entry.id === v2Id)).toBe(true);
 
     await prisma.template.deleteMany({
       where: { name: TEST_TEMPLATE_NAME + " Chain" },

@@ -1172,6 +1172,37 @@ you cannot delete your own account or the last admin.
 
 ---
 
+## Phase 51 — Correctness fixes
+
+**Scope:** low-risk, high-confidence bug fixes surfaced by the full-app review, plus dead-code
+removal.
+
+**Checklist:**
+
+- [x] CHECKBOX auto-scoring fixed — `lib/scoring.ts` parses booleans (string `"false"` is now
+      falsey); covers expected-checked and expected-unchecked cases. Unit tests added.
+- [x] Template JSON import accepts all question types — `lib/actions/templates.ts` uses the
+      shared `QUESTION_TYPES` constant (URL/EMAIL/CHECKBOX no longer rejected).
+- [x] `getTemplateVersionChain` returns the full lineage from any version (root ancestor +
+      descendants), not just the current node's descendants. Integration test strengthened.
+- [x] Removed dead duplicate `getDashboardMetrics` from `lib/db/compliance.ts` (page uses
+      `getDashboardData`).
+- [x] Portal auth cookie `maxAge` capped to the token's remaining lifetime (can't outlive an
+      expired token).
+- [x] Portal password gate uses `router.refresh()` instead of `window.location.reload()`.
+- [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check`, unit + e2e clean.
+      No schema change/migration.
+
+**Note:** the earlier-suspected "needs attention double-count" was verified **not** a bug —
+SQL `COUNT(*)` over an `OR` counts a matching row once.
+
+**Reviewer spot-check:** create a CHECKBOX question with expected "unchecked", answer it
+unchecked → scored compliant; export a template containing URL/EMAIL/CHECKBOX questions and
+re-import it → succeeds; open an older template version → the version history shows all
+versions.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1226,3 +1257,4 @@ you cannot delete your own account or the last admin.
 | 48 | Ready for review | opencode | 2026-07-02 | Data lifecycle: evidence files deleted on assessment/vendor delete, replace-on-upload, logo cleanup, template-version re-link on delete, cron orphan-sweep + storage.list(); 97 unit + 7 e2e |
 | 49 | Ready for review | opencode | 2026-07-02 | Roles UX: master–detail list + slide-over Sheet editor, permission summary chips, group/master select-all, duplicate role; 101 unit + 8 e2e |
 | 50 | Ready for review | opencode | 2026-07-02 | UX fixes: readable destructive button, success toast tokens (decoupled from RAG), stat-card count-up fix, dashboard filter fix, delete user (guarded) with audit/review history preserved; 103 unit + 9 e2e |
+| 51 | Ready for review | opencode | 2026-07-02 | Correctness: CHECKBOX scoring, import all question types, full template version lineage, remove dead getDashboardMetrics, portal cookie lifetime, portal gate router.refresh; 104 unit + 9 e2e |

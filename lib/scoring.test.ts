@@ -215,4 +215,17 @@ describe("scoring engine", () => {
     expect(isCompliant("FREE_TEXT", "some answer", "expected")).toBeNull();
     expect(isCompliant("FILE_UPLOAD", "file.pdf", "anything")).toBeNull();
   });
+
+  it("CHECKBOX compares parsed booleans (string 'false' is falsey)", () => {
+    // expected checked
+    expect(isCompliant("CHECKBOX", true, "true")).toBe(true);
+    expect(isCompliant("CHECKBOX", "true", "true")).toBe(true);
+    expect(isCompliant("CHECKBOX", false, "true")).toBe(false);
+    // expected unchecked — the previously-broken case
+    expect(isCompliant("CHECKBOX", false, "false")).toBe(true);
+    expect(isCompliant("CHECKBOX", "false", "false")).toBe(true);
+    expect(isCompliant("CHECKBOX", true, "false")).toBe(false);
+    // null value is non-compliant
+    expect(isCompliant("CHECKBOX", null, "true")).toBe(false);
+  });
 });

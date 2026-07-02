@@ -26,6 +26,7 @@ import { Prisma } from "@prisma/client";
 import { copyJson } from "@/lib/json";
 import { prisma } from "@/lib/prisma";
 import {
+  QUESTION_TYPES,
   questionSchema,
   sectionSchema,
   templateSchema,
@@ -275,17 +276,7 @@ export async function importTemplateAction(
     return { ok: false, error: "Invalid template structure." };
   }
 
-  const validTypes: string[] = [
-    "YES_NO",
-    "MULTIPLE_CHOICE",
-    "FREE_TEXT",
-    "FILE_UPLOAD",
-    "DATE",
-    "NUMERIC",
-    "COMBOBOX",
-    "MULTI_SELECT",
-    "RATING",
-  ];
+  const validTypes: string[] = [...QUESTION_TYPES];
   const validWeights = ["CRITICAL", "HIGH", "MEDIUM", "LOW"];
 
   for (const section of data.sections) {

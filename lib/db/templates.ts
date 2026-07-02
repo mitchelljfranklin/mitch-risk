@@ -101,10 +101,22 @@ export function getTemplateVersionChain(templateId: string): Promise<
   }[]
 > {
   return prisma.$queryRaw`
-    WITH RECURSIVE chain AS (
-      SELECT id, name, "version", "status", "parentTemplateId", "updatedAt"
+    WITH RECURSIVE ancestors AS (
+      SELECT id, "parentTemplateId"
       FROM templates
       WHERE id = ${templateId}
+      UNION ALL
+      SELECT t.id, t."parentTemplateId"
+      FROM templates t
+      INNER JOIN ancestors a ON t.id = a."parentTemplateId"
+    ),
+    root AS (
+      SELECT id FROM ancestors WHERE "parentTemplateId" IS NULL LIMIT 1
+    ),
+    chain AS (
+      SELECT id, name, "version", "status", "parentTemplateId", "updatedAt"
+      FROM templates
+      WHERE id = COALESCE((SELECT id FROM root), ${templateId})
       UNION ALL
       SELECT t.id, t.name, t."version", t."status", t."parentTemplateId", t."updatedAt"
       FROM templates t

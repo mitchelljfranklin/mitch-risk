@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ type PasswordGateProps = {
 };
 
 export function PasswordGate({ token }: PasswordGateProps) {
+  const router = useRouter();
   const [state, formAction, isPending] = useActionState(
     async (
       previousState: { ok: boolean; message?: string } | undefined,
@@ -20,7 +22,7 @@ export function PasswordGate({ token }: PasswordGateProps) {
       const password = (formData.get("password") as string) || "";
       const result = await validatePortalPassword(token, password);
       if (result.ok) {
-        window.location.reload();
+        router.refresh();
       }
       return result;
     },

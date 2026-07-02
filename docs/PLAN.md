@@ -394,6 +394,12 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   render a single coherent list. Added the ability to **delete a user** (guarded: can't delete
   yourself or the last admin); audit logs and past review decisions are preserved as "Deleted
   user" via nullable `SetNull` relations.
+- **Phase 51 — Correctness fixes.** Fixed CHECKBOX auto-scoring (a stored `"false"` was
+  truthy, so "expected unchecked" mis-scored); template JSON import now accepts all question
+  types (URL/EMAIL/CHECKBOX were rejected); `getTemplateVersionChain` now shows the full
+  lineage from any version (previously only descendants of the current node); removed the dead
+  duplicate `getDashboardMetrics`; the portal auth cookie no longer outlives its token; and the
+  portal password gate uses `router.refresh()` instead of a full page reload.
 
 ## 8. Out of scope (v1+)
 

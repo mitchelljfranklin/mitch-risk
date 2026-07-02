@@ -35,6 +35,22 @@ function isAutoScorable(type: string): boolean {
   );
 }
 
+function parseBoolean(input: unknown): boolean {
+  if (typeof input === "boolean") return input;
+  if (typeof input === "number") return input === 1;
+  if (typeof input === "string") {
+    const normalized = input.trim().toLowerCase();
+    return (
+      normalized === "true" ||
+      normalized === "yes" ||
+      normalized === "on" ||
+      normalized === "1" ||
+      normalized === "checked"
+    );
+  }
+  return false;
+}
+
 export function isCompliant(
   type: string,
   value: unknown,
@@ -75,7 +91,7 @@ export function isCompliant(
   }
 
   if (type === "CHECKBOX") {
-    return Boolean(value) === Boolean(expectedAnswer);
+    return parseBoolean(value) === parseBoolean(expectedAnswer);
   }
 
   return String(value) === String(expectedAnswer);
