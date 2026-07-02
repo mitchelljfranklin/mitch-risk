@@ -2,6 +2,7 @@ import { Prisma, type QuestionType, TemplateStatus } from "@prisma/client";
 
 import { copyJson } from "@/lib/json";
 import { prisma } from "@/lib/prisma";
+import { remapConditionalLogic } from "@/lib/portal";
 import { type QuestionInput, type TemplateInput } from "@/lib/schemas/template";
 
 export function listTemplates() {
@@ -191,8 +192,8 @@ function buildQuestionScalarFields(data: QuestionInput) {
       : [];
   const expectedAnswer = computeExpectedAnswer(data.type, data.expectedAnswer);
   const conditionalLogic: Prisma.InputJsonValue | typeof Prisma.DbNull =
-    data.conditionQuestionId
-      ? { questionId: data.conditionQuestionId, equals: data.conditionEquals }
+    data.conditionalLogic.rules.length > 0
+      ? (data.conditionalLogic as unknown as Prisma.InputJsonValue)
       : Prisma.DbNull;
 
   return {
@@ -306,37 +307,208 @@ export async function createNewVersion(templateId: string): Promise<string> {
       }
     }
 
+    await remapClonedConditionalLogic(tx, source, questionIdMap);
+
+    return clone.id;
+  });
+}
+
+type TemplateTx = Prisma.TransactionClient;
+
+async function remapClonedConditionalLogic(
+  tx: TemplateTx,
+  source: TemplateForBuilder,
+  questionIdMap: Map<string, string>,
+): Promise<void> {
+  for (const section of source.sections) {
+    for (const question of section.questions) {
+      const newId = questionIdMap.get(question.id);
+      if (!newId) continue;
+      const remapped = remapConditionalLogic(
+        question.conditionalLogic,
+        questionIdMap,
+      );
+      if (remapped) {
+        await tx.question.update({
+          where: { id: newId },
+          data: {
+            conditionalLogic: remapped as unknown as Prisma.InputJsonValue,
+          },
+        });
+      }
+    }
+  }
+}
+
+async function uniqueCopyName(base: string): Promise<string> {
+  let candidate = `${base} (copy)`;
+  let attempt = 2;
+  while (await prisma.template.findFirst({ where: { name: candidate } })) {
+    candidate = `${base} (copy ${attempt})`;
+    attempt += 1;
+  }
+  return candidate;
+}
+
+export async function duplicateTemplate(templateId: string): Promise<string> {
+  const source = await getTemplateForBuilder(templateId);
+  if (!source) {
+    throw new Error("Template not found");
+  }
+  const name = await uniqueCopyName(source.name);
+
+  return prisma.$transaction(async (tx) => {
+    const clone = await tx.template.create({
+      data: {
+        name,
+        description: source.description,
+        version: 1,
+        status: TemplateStatus.DRAFT,
+      },
+    });
+
+    const questionIdMap = new Map<string, string>();
+
     for (const section of source.sections) {
+      const newSection = await tx.section.create({
+        data: {
+          templateId: clone.id,
+          title: section.title,
+          order: section.order,
+        },
+      });
+
       for (const question of section.questions) {
-        const logic = question.conditionalLogic;
-        if (
-          logic &&
-          typeof logic === "object" &&
-          !Array.isArray(logic) &&
-          "questionId" in logic
-        ) {
-          const referencedOldId = (logic as { questionId?: unknown })
-            .questionId;
-          const newId = questionIdMap.get(question.id);
-          if (
-            typeof referencedOldId === "string" &&
-            newId &&
-            questionIdMap.has(referencedOldId)
-          ) {
-            await tx.question.update({
-              where: { id: newId },
-              data: {
-                conditionalLogic: {
-                  ...(logic as Record<string, unknown>),
-                  questionId: questionIdMap.get(referencedOldId),
-                } as Prisma.InputJsonValue,
-              },
-            });
-          }
-        }
+        const newQuestion = await tx.question.create({
+          data: {
+            sectionId: newSection.id,
+            text: question.text,
+            helpText: question.helpText,
+            type: question.type,
+            riskWeight: question.riskWeight,
+            required: question.required,
+            options: copyJson(question.options),
+            expectedAnswer: copyJson(question.expectedAnswer),
+            conditionalLogic: copyJson(question.conditionalLogic),
+            order: question.order,
+            controls: {
+              create: question.controls.map((link) => ({
+                controlId: link.controlId,
+              })),
+            },
+          },
+        });
+        questionIdMap.set(question.id, newQuestion.id);
       }
     }
 
+    await remapClonedConditionalLogic(tx, source, questionIdMap);
+
     return clone.id;
+  });
+}
+
+async function swapOrder(
+  model: "section" | "question",
+  currentId: string,
+  currentOrder: number,
+  neighbor: { id: string; order: number } | null,
+): Promise<void> {
+  if (!neighbor) return;
+  if (model === "section") {
+    await prisma.$transaction([
+      prisma.section.update({
+        where: { id: currentId },
+        data: { order: neighbor.order },
+      }),
+      prisma.section.update({
+        where: { id: neighbor.id },
+        data: { order: currentOrder },
+      }),
+    ]);
+  } else {
+    await prisma.$transaction([
+      prisma.question.update({
+        where: { id: currentId },
+        data: { order: neighbor.order },
+      }),
+      prisma.question.update({
+        where: { id: neighbor.id },
+        data: { order: currentOrder },
+      }),
+    ]);
+  }
+}
+
+export async function moveSection(
+  sectionId: string,
+  direction: "up" | "down",
+): Promise<void> {
+  const section = await prisma.section.findUnique({
+    where: { id: sectionId },
+    select: { id: true, order: true, templateId: true },
+  });
+  if (!section) return;
+  const neighbor = await prisma.section.findFirst({
+    where: {
+      templateId: section.templateId,
+      order: direction === "up" ? { lt: section.order } : { gt: section.order },
+    },
+    orderBy: { order: direction === "up" ? "desc" : "asc" },
+    select: { id: true, order: true },
+  });
+  await swapOrder("section", section.id, section.order, neighbor);
+}
+
+export async function moveQuestion(
+  questionId: string,
+  direction: "up" | "down",
+): Promise<void> {
+  const question = await prisma.question.findUnique({
+    where: { id: questionId },
+    select: { id: true, order: true, sectionId: true },
+  });
+  if (!question) return;
+  const neighbor = await prisma.question.findFirst({
+    where: {
+      sectionId: question.sectionId,
+      order:
+        direction === "up" ? { lt: question.order } : { gt: question.order },
+    },
+    orderBy: { order: direction === "up" ? "desc" : "asc" },
+    select: { id: true, order: true },
+  });
+  await swapOrder("question", question.id, question.order, neighbor);
+}
+
+export function getControlWithMappings(controlId: string) {
+  return prisma.control.findUnique({
+    where: { id: controlId },
+    include: {
+      framework: true,
+      questionControls: {
+        include: {
+          question: {
+            select: {
+              id: true,
+              text: true,
+              section: {
+                select: {
+                  templateId: true,
+                  template: {
+                    select: {
+                      id: true,
+                      name: true,
+                      version: true,
+                      status: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   });
 }

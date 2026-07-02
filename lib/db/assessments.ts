@@ -5,6 +5,7 @@ import { getTemplateForBuilder } from "@/lib/db/templates";
 import { copyJson } from "@/lib/json";
 import { findMissingRequiredQuestions, type PortalAnswers } from "@/lib/portal";
 import { scoreAssessment } from "@/lib/db/scoring";
+import { remapConditionalLogic } from "@/lib/portal";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
 import { type AssessmentInput } from "@/lib/schemas/assessment";
@@ -262,31 +263,19 @@ export async function sendAssessment(
 
     for (const section of template.sections) {
       for (const question of section.questions) {
-        const logic = question.conditionalLogic;
-        if (
-          logic &&
-          typeof logic === "object" &&
-          !Array.isArray(logic) &&
-          "questionId" in logic
-        ) {
-          const referencedOldId = (logic as { questionId?: unknown })
-            .questionId;
-          const newId = questionIdMap.get(question.id);
-          if (
-            typeof referencedOldId === "string" &&
-            newId &&
-            questionIdMap.has(referencedOldId)
-          ) {
-            await tx.assessmentQuestion.update({
-              where: { id: newId },
-              data: {
-                conditionalLogic: {
-                  ...(logic as Record<string, unknown>),
-                  questionId: questionIdMap.get(referencedOldId),
-                } as Prisma.InputJsonValue,
-              },
-            });
-          }
+        const newId = questionIdMap.get(question.id);
+        if (!newId) continue;
+        const remapped = remapConditionalLogic(
+          question.conditionalLogic,
+          questionIdMap,
+        );
+        if (remapped) {
+          await tx.assessmentQuestion.update({
+            where: { id: newId },
+            data: {
+              conditionalLogic: remapped as unknown as Prisma.InputJsonValue,
+            },
+          });
         }
       }
     }

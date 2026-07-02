@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { CONDITION_OPERATORS } from "@/lib/portal";
+
 export const QUESTION_TYPES = [
   "YES_NO",
   "MULTIPLE_CHOICE",
@@ -54,6 +56,18 @@ export const sectionSchema = z.object({
 });
 export type SectionInput = z.infer<typeof sectionSchema>;
 
+export const conditionRuleSchema = z.object({
+  questionId: z.string().min(1),
+  operator: z.enum(CONDITION_OPERATORS),
+  value: z.string().optional().default(""),
+});
+
+export const conditionalLogicSchema = z.object({
+  match: z.enum(["all", "any"]).default("all"),
+  rules: z.array(conditionRuleSchema).default([]),
+});
+export type ConditionalLogicInput = z.infer<typeof conditionalLogicSchema>;
+
 export const questionSchema = z.object({
   text: z.string().min(1, "Question text is required"),
   helpText: z.string().optional().default(""),
@@ -65,8 +79,7 @@ export const questionSchema = z.object({
     .union([z.string(), z.number(), z.array(z.string())])
     .optional()
     .default(""),
-  conditionQuestionId: z.string().optional().default(""),
-  conditionEquals: z.string().optional().default(""),
+  conditionalLogic: conditionalLogicSchema.default({ match: "all", rules: [] }),
   controlIds: z.array(z.string()).default([]),
 });
 export type QuestionInput = z.infer<typeof questionSchema>;

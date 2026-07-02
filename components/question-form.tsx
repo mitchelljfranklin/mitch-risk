@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useActionState, useState } from "react";
 
+import { ConditionalRulesEditor } from "@/components/conditional-rules-editor";
 import { ControlMultiSelect } from "@/components/control-multi-select";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,10 +24,17 @@ import {
   RISK_WEIGHT_LABELS,
   RISK_WEIGHTS,
 } from "@/lib/schemas/template";
+import { type ConditionOperator } from "@/lib/portal";
 import { useFormToast } from "@/hooks/use-form-toast";
 
 type QuestionType = (typeof QUESTION_TYPES)[number];
 type RiskWeight = (typeof RISK_WEIGHTS)[number];
+
+type ConditionRule = {
+  questionId: string;
+  operator: ConditionOperator;
+  value: string;
+};
 
 type QuestionDefaults = {
   text: string;
@@ -36,8 +44,8 @@ type QuestionDefaults = {
   required: boolean;
   options: string[];
   expectedAnswer: string;
-  conditionQuestionId: string;
-  conditionEquals: string;
+  conditionMatch: "all" | "any";
+  conditionRules: ConditionRule[];
 };
 
 type QuestionFormProps = {
@@ -244,35 +252,11 @@ export function QuestionForm({
         </div>
       ) : null}
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="grid gap-2">
-          <Label htmlFor="conditionQuestionId">Show only if (optional)</Label>
-          <Select
-            name="conditionQuestionId"
-            defaultValue={defaults?.conditionQuestionId ?? ""}
-          >
-            <SelectTrigger id="conditionQuestionId">
-              <SelectValue placeholder="Always show" />
-            </SelectTrigger>
-            <SelectContent>
-              {otherQuestions.map((question) => (
-                <SelectItem key={question.id} value={question.id}>
-                  {question.text.slice(0, 60)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="conditionEquals">…answer equals</Label>
-          <Input
-            id="conditionEquals"
-            name="conditionEquals"
-            defaultValue={defaults?.conditionEquals}
-            placeholder="e.g. YES"
-          />
-        </div>
-      </div>
+      <ConditionalRulesEditor
+        questions={otherQuestions}
+        defaultMatch={defaults?.conditionMatch ?? "all"}
+        defaultRules={defaults?.conditionRules ?? []}
+      />
 
       <ControlMultiSelect
         controls={controls}

@@ -1273,6 +1273,41 @@ email and can edit again; finalize → Completed → "Reopen review" returns to 
 
 ---
 
+## Phase 54 — Template builder
+
+**Scope:** make the builder productive — reorder, preview, duplicate, richer conditional logic,
+and control→questions reverse mapping.
+
+**Checklist:**
+
+- [x] Reorder sections & questions via ↑/↓ (`moveSection`/`moveQuestion` swap `order`; gated to
+      DRAFT + `templates:edit`; ends disabled).
+- [x] Vendor's-eye **preview** at `/templates/[id]/preview` (read-only `TemplatePreview` renders
+      all 12 types disabled, with help text, required marker, and conditional notes). "Preview"
+      button in the builder header.
+- [x] **Duplicate template** → independent DRAFT (`version 1`, no parent, unique `(copy)` name),
+      clones sections/questions/mappings and remaps conditional-rule question IDs. Audited
+      `DUPLICATE_TEMPLATE`.
+- [x] **Conditional logic**: multi-rule model `{ match: all|any, rules[] }` with operators
+      equals/notEquals/contains/notContains/gt/lt/gte/lte/answered/notAnswered; backward
+      compatible with legacy `{questionId, equals}`. `ConditionalRulesEditor` client UI; shared
+      `remapConditionalLogic` used by version + duplicate + assessment snapshot. **No migration**
+      (JSON).
+- [x] Control detail shows **mapped questions grouped by template** (`getControlWithMappings`).
+- [x] Builder question rows show a readable conditional summary.
+- [x] Tests: portal operator matrix + multi-rule + legacy + remap (unit); reorder, duplicate
+      (independent + remap), control mappings (integration); updated all `buildQuestion` test
+      helpers + snapshot assertions to the new shape. 120 unit + 9 e2e passing.
+- [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check` clean.
+
+**Reviewer spot-check:** in a draft template, reorder sections/questions with ↑/↓; open Preview
+to see the vendor view; add a question with two conditional rules (e.g. "MFA = YES" AND
+"Employees ≥ 100") and confirm the summary + preview note read correctly; Duplicate → a new
+DRAFT "(copy)" opens with conditions intact; open a control → see which templates/questions map
+to it.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1330,3 +1365,4 @@ email and can edit again; finalize → Completed → "Reopen review" returns to 
 | 51 | Ready for review | opencode | 2026-07-02 | Correctness: CHECKBOX scoring, import all question types, full template version lineage, remove dead getDashboardMetrics, portal cookie lifetime, portal gate router.refresh; 104 unit + 9 e2e |
 | 52 | Ready for review | opencode | 2026-07-02 | List UX: vendor rows w/ RAG score+last-assessed, sort+pagination on both lists, assessment status colours + overdue badge/filter + score, vendor compare picker; reusable Pagination/AutoSubmitSelect/StatusBadge; 111 unit + 9 e2e |
 | 53 | Ready for review | opencode | 2026-07-02 | Review workflow: auto UNDER_REVIEW, send-back-to-vendor (clarification email + token extend + portalRecipients) vs reopen-review, finding lifecycle Open/Remediated/Risk-accepted w/ resolver + rescore-preserve, review progress+filter, RAG score; 113 unit + 9 e2e |
+| 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |

@@ -15,7 +15,10 @@ import {
   deleteQuestion,
   deleteSection,
   deleteTemplate,
+  duplicateTemplate,
   getTemplateStatus,
+  moveQuestion,
+  moveSection,
   publishTemplate,
   unpublishTemplate,
   updateQuestion,
@@ -154,6 +157,16 @@ export async function saveQuestionAction(
     expectedAnswer = Number(expectedAnswer);
   }
 
+  let conditionalLogic: unknown = { match: "all", rules: [] };
+  const conditionalRaw = getField(formData, "conditionalLogic");
+  if (conditionalRaw) {
+    try {
+      conditionalLogic = JSON.parse(conditionalRaw);
+    } catch {
+      return { error: "Invalid conditional logic." };
+    }
+  }
+
   const parsed = questionSchema.safeParse({
     text: getField(formData, "text"),
     helpText: getField(formData, "helpText"),
@@ -162,8 +175,7 @@ export async function saveQuestionAction(
     required: formData.get("required") !== null,
     options,
     expectedAnswer,
-    conditionQuestionId: getField(formData, "conditionQuestionId"),
-    conditionEquals: getField(formData, "conditionEquals"),
+    conditionalLogic,
     controlIds: formData.getAll("controlIds").map(String),
   });
   if (!parsed.success) {
@@ -185,6 +197,37 @@ export async function deleteQuestionAction(formData: FormData) {
   await assertEditable(templateId);
   await deleteQuestion(getField(formData, "questionId"));
   revalidatePath(`/templates/${templateId}`);
+}
+
+export async function moveSectionAction(formData: FormData) {
+  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
+  const templateId = getField(formData, "templateId");
+  await assertEditable(templateId);
+  const direction = getField(formData, "direction") === "up" ? "up" : "down";
+  await moveSection(getField(formData, "sectionId"), direction);
+  revalidatePath(`/templates/${templateId}`);
+}
+
+export async function moveQuestionAction(formData: FormData) {
+  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
+  const templateId = getField(formData, "templateId");
+  await assertEditable(templateId);
+  const direction = getField(formData, "direction") === "up" ? "up" : "down";
+  await moveQuestion(getField(formData, "questionId"), direction);
+  revalidatePath(`/templates/${templateId}`);
+}
+
+export async function duplicateTemplateAction(formData: FormData) {
+  await requirePermission(PERMISSIONS.TEMPLATES_CREATE);
+  const templateId = getField(formData, "templateId");
+  const newId = await duplicateTemplate(templateId);
+  const user = await getCurrentUser();
+  if (user) {
+    await logAudit(user.id, "DUPLICATE_TEMPLATE", "Template", newId, {
+      sourceTemplateId: templateId,
+    });
+  }
+  redirect(`/templates/${newId}`);
 }
 
 export async function publishTemplateAction(formData: FormData) {

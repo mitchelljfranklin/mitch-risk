@@ -33,8 +33,7 @@ function buildQuestion(
     required: true,
     options: [],
     expectedAnswer: "",
-    conditionQuestionId: "",
-    conditionEquals: "",
+    conditionalLogic: { match: "all", rules: [] },
     controlIds: [],
     ...overrides,
   };
@@ -72,8 +71,10 @@ describe("assessment lifecycle (integration)", () => {
       buildQuestion({
         text: "MFA method?",
         type: "FREE_TEXT",
-        conditionQuestionId: mfa.id,
-        conditionEquals: "YES",
+        conditionalLogic: {
+          match: "all",
+          rules: [{ questionId: mfa.id, operator: "equals", value: "YES" }],
+        },
       }),
     );
     await publishTemplate(template.id);
@@ -122,12 +123,13 @@ describe("assessment lifecycle (integration)", () => {
       throw new Error("snapshot questions missing");
     }
 
-    expect(
-      (snapshotMethod.conditionalLogic as { questionId: string }).questionId,
-    ).toBe(snapshotMfa.id);
-    expect(
-      (snapshotMethod.conditionalLogic as { questionId: string }).questionId,
-    ).not.toBe(mfa.id);
+    const snapshotRule = (
+      snapshotMethod.conditionalLogic as {
+        rules: { questionId: string }[];
+      }
+    ).rules[0];
+    expect(snapshotRule.questionId).toBe(snapshotMfa.id);
+    expect(snapshotRule.questionId).not.toBe(mfa.id);
 
     await saveResponses(token, [
       {

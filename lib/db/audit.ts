@@ -177,6 +177,7 @@ export const AUDIT_ACTION_LABELS: Record<string, string> = {
   PUBLISH_TEMPLATE: "Published template",
   UNPUBLISH_TEMPLATE: "Unpublished template",
   CREATE_TEMPLATE_VERSION: "Created template version",
+  DUPLICATE_TEMPLATE: "Duplicated template",
   IMPORT_TEMPLATE: "Imported template",
   CREATE_USER: "Created user",
   DELETE_USER: "Deleted user",

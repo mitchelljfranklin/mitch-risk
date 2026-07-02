@@ -9,6 +9,7 @@ import {
   getTemplateStatus,
   listTemplateQuestions,
 } from "@/lib/db/templates";
+import { parseConditionalLogic } from "@/lib/portal";
 
 export const dynamic = "force-dynamic";
 
@@ -17,22 +18,6 @@ export const metadata = { title: "Edit question" };
 type EditQuestionPageProps = {
   params: Promise<{ templateId: string; questionId: string }>;
 };
-
-function readConditionField(
-  logic: unknown,
-  key: "questionId" | "equals",
-): string {
-  if (
-    logic &&
-    typeof logic === "object" &&
-    !Array.isArray(logic) &&
-    key in logic
-  ) {
-    const value = (logic as Record<string, unknown>)[key];
-    return value === undefined || value === null ? "" : String(value);
-  }
-  return "";
-}
 
 export default async function EditQuestionPage({
   params,
@@ -67,6 +52,8 @@ export default async function EditQuestionPage({
       ? ""
       : String(question.expectedAnswer);
 
+  const parsedLogic = parseConditionalLogic(question.conditionalLogic);
+
   return (
     <div className="flex max-w-2xl flex-col gap-6">
       <h1 className="text-2xl font-semibold tracking-tight">Edit question</h1>
@@ -85,14 +72,8 @@ export default async function EditQuestionPage({
           required: question.required,
           options,
           expectedAnswer,
-          conditionQuestionId: readConditionField(
-            question.conditionalLogic,
-            "questionId",
-          ),
-          conditionEquals: readConditionField(
-            question.conditionalLogic,
-            "equals",
-          ),
+          conditionMatch: parsedLogic?.match ?? "all",
+          conditionRules: parsedLogic?.rules ?? [],
         }}
       />
     </div>

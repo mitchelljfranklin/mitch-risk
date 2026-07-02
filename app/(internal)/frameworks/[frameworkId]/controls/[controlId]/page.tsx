@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
-import { getControl } from "@/lib/db/frameworks";
+import { getControlWithMappings } from "@/lib/db/templates";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +18,7 @@ export async function generateMetadata({
   params,
 }: ControlDetailPageProps): Promise<Metadata> {
   const { frameworkId, controlId } = await params;
-  const control = await getControl(controlId);
+  const control = await getControlWithMappings(controlId);
   if (!control || control.frameworkId !== frameworkId) {
     return { title: "Control not found" };
   }
@@ -31,10 +31,35 @@ export default async function ControlDetailPage({
   await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
   const { frameworkId, controlId } = await params;
 
-  const control = await getControl(controlId);
+  const control = await getControlWithMappings(controlId);
   if (!control || control.frameworkId !== frameworkId) {
     notFound();
   }
+
+  // Group mapped questions by template.
+  const templateMap = new Map<
+    string,
+    {
+      id: string;
+      name: string;
+      version: number;
+      status: string;
+      questions: { id: string; text: string }[];
+    }
+  >();
+  for (const link of control.questionControls) {
+    const template = link.question.section.template;
+    const entry = templateMap.get(template.id) ?? {
+      id: template.id,
+      name: template.name,
+      version: template.version,
+      status: template.status,
+      questions: [],
+    };
+    entry.questions.push({ id: link.question.id, text: link.question.text });
+    templateMap.set(template.id, entry);
+  }
+  const mappedTemplates = [...templateMap.values()];
 
   return (
     <div className="flex max-w-2xl flex-col gap-6">
@@ -61,6 +86,43 @@ export default async function ControlDetailPage({
           <CardTitle>Guidance</CardTitle>
         </CardHeader>
         <CardContent className="text-sm">{control.guidance}</CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            Mapped questions ({control.questionControls.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          {mappedTemplates.length === 0 ? (
+            <p className="text-muted-foreground text-sm">
+              No questionnaire questions map to this control yet.
+            </p>
+          ) : (
+            mappedTemplates.map((template) => (
+              <div key={template.id} className="flex flex-col gap-1">
+                <Link
+                  href={`/templates/${template.id}`}
+                  className="flex items-center gap-2 text-sm font-medium hover:underline"
+                >
+                  {template.name}
+                  <Badge variant="outline" className="text-[10px]">
+                    v{template.version}
+                  </Badge>
+                  <Badge variant="secondary" className="text-[10px]">
+                    {template.status.toLowerCase()}
+                  </Badge>
+                </Link>
+                <ul className="text-muted-foreground ml-4 list-disc text-sm">
+                  {template.questions.map((question) => (
+                    <li key={question.id}>{question.text}</li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          )}
+        </CardContent>
       </Card>
     </div>
   );

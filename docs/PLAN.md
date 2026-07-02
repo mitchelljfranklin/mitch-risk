@@ -418,6 +418,14 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   page adds review progress + per-decision filter, per-finding status controls, and a
   RAG-coloured score. Assessments persist `portalRecipients` so send-back reaches whoever the
   invite went to (vendor contact or custom email).
+- **Phase 54 — Template builder.** Sections and questions can be **reordered** (↑/↓), a template
+  can be **previewed** as the vendor sees it (`/templates/[id]/preview`), and templates can be
+  **duplicated** into an independent DRAFT copy. **Conditional logic** now supports **multiple
+  rules** combined with **All (AND) / Any (OR)** and a full operator set (equals, not equals,
+  contains, not contains, >, <, ≥, ≤, answered, not answered) — backward compatible with the
+  legacy single-`equals` shape, no migration. Control detail pages now show a **reverse
+  mapping** of which templates/questions cover each control. Builder question rows show a
+  readable conditional summary.
 
 ## 8. Out of scope (v1+)
 

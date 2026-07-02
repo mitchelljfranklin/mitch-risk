@@ -23,8 +23,7 @@ function buildQuestion(
     required: true,
     options: [],
     expectedAnswer: "",
-    conditionQuestionId: "",
-    conditionEquals: "",
+    conditionalLogic: { match: "all", rules: [] },
     controlIds: [],
     ...overrides,
   };
@@ -77,8 +76,10 @@ describe("template builder (integration)", () => {
         options: ["TOTP", "SMS", "Hardware key"],
         expectedAnswer: "Hardware key",
         controlIds: [controlB.id],
-        conditionQuestionId: mfa.id,
-        conditionEquals: "YES",
+        conditionalLogic: {
+          match: "all",
+          rules: [{ questionId: mfa.id, operator: "equals", value: "YES" }],
+        },
       }),
     );
 
@@ -152,7 +153,8 @@ describe("template builder (integration)", () => {
     expect(savedMc.expectedAnswer).toBe("Hardware key");
     expect(savedNumeric.expectedAnswer).toBe(256);
     expect(
-      (savedMc.conditionalLogic as { questionId: string }).questionId,
+      (savedMc.conditionalLogic as { rules: { questionId: string }[] }).rules[0]
+        .questionId,
     ).toBe(savedMfa.id);
 
     const published = await publishTemplate(template.id);
@@ -183,12 +185,11 @@ describe("template builder (integration)", () => {
       throw new Error("clone questions missing");
     }
 
-    expect(
-      (cloneMc.conditionalLogic as { questionId: string }).questionId,
-    ).toBe(cloneMfa.id);
-    expect(
-      (cloneMc.conditionalLogic as { questionId: string }).questionId,
-    ).not.toBe(mfa.id);
+    const cloneRule = (
+      cloneMc.conditionalLogic as { rules: { questionId: string }[] }
+    ).rules[0];
+    expect(cloneRule.questionId).toBe(cloneMfa.id);
+    expect(cloneRule.questionId).not.toBe(mfa.id);
     expect(cloneMc.controls.map((link) => link.controlId)).toEqual([
       controlB.id,
     ]);

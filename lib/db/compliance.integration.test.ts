@@ -30,8 +30,7 @@ function buildQuestion(
     required: true,
     options: [],
     expectedAnswer: "",
-    conditionQuestionId: "",
-    conditionEquals: "",
+    conditionalLogic: { match: "all", rules: [] },
     controlIds: [],
     ...overrides,
   };
