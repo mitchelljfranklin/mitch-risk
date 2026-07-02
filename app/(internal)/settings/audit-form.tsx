@@ -124,6 +124,11 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
         <Button type="submit" size="sm">
           Filter
         </Button>
+        <Button asChild variant="outline" size="sm">
+          <a href="/api/v1/audit?format=csv" download>
+            Export CSV
+          </a>
+        </Button>
       </form>
 
       {entries.length === 0 ? (
