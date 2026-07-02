@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -10,11 +11,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AssessmentStatusBadge } from "@/components/assessment-status-badge";
+import { AutoSubmitSelect } from "@/components/auto-submit-select";
+import { EmptyState } from "@/components/empty-state";
+import { Pagination } from "@/components/pagination";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
-import { listAssessments } from "@/lib/db/assessments";
-import { ASSESSMENT_STATUS_LABELS } from "@/lib/schemas/assessment";
-import { formatDate } from "@/lib/utils";
+import {
+  listAssessments,
+  ASSESSMENT_SORTS,
+  type AssessmentSort,
+} from "@/lib/db/assessments";
+import {
+  ASSESSMENT_STATUS_LABELS,
+  isAssessmentOverdue,
+} from "@/lib/schemas/assessment";
+import { formatDate, formatPercent, ragTextClass } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -29,20 +41,26 @@ export default async function AssessmentsPage({
 }: AssessmentsPageProps) {
   await requirePermission(PERMISSIONS.ASSESSMENTS_VIEW);
   const sp = await searchParams;
+  const overdue = sp.overdue === "1" || sp.overdue === "on";
+  const sort = (sp.sort as AssessmentSort) || "created";
+  const page = sp.page ? parseInt(sp.page, 10) || 1 : 1;
 
-  const filters = {
+  const { assessments, totalCount, pageSize } = await listAssessments({
     query: sp.query,
     status: sp.status,
     fromDate: sp.from,
     toDate: sp.to,
-  };
+    overdue,
+    sort,
+    page,
+  });
 
-  const assessments = await listAssessments(filters);
   const hasFilters =
     Boolean(sp.query) ||
     Boolean(sp.status) ||
     Boolean(sp.from) ||
-    Boolean(sp.to);
+    Boolean(sp.to) ||
+    overdue;
 
   return (
     <div className="flex flex-col gap-6">
@@ -109,6 +127,26 @@ export default async function AssessmentsPage({
             className="w-36"
           />
         </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-muted-foreground text-xs" htmlFor="sort">
+            Sort
+          </label>
+          <AutoSubmitSelect
+            name="sort"
+            defaultValue={sort}
+            id="sort"
+            className="w-44"
+            ariaLabel="Sort assessments"
+            options={Object.entries(ASSESSMENT_SORTS).map(([value, label]) => ({
+              value,
+              label,
+            }))}
+          />
+        </div>
+        <label className="mb-1.5 flex items-center gap-2 text-sm">
+          <Checkbox name="overdue" value="1" defaultChecked={overdue} />
+          Overdue only
+        </label>
         <Button type="submit" variant="secondary" size="sm" className="mb-px">
           Filter
         </Button>
@@ -120,37 +158,75 @@ export default async function AssessmentsPage({
       </form>
 
       {assessments.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          {hasFilters
-            ? "No assessments match the selected filters."
-            : "No assessments yet. Create one from a vendor."}
-        </p>
+        hasFilters ? (
+          <p className="text-muted-foreground text-sm">
+            No assessments match the selected filters.
+          </p>
+        ) : (
+          <EmptyState
+            icon="assessments"
+            title="No assessments yet"
+            description="Create an assessment from a vendor to send a questionnaire."
+          />
+        )
       ) : (
-        <div className="flex flex-col gap-2">
-          {assessments.map((assessment) => (
-            <Link
-              key={assessment.id}
-              href={`/assessments/${assessment.id}`}
-              className="hover:bg-accent/40 flex items-center justify-between gap-3 rounded-md border p-3"
-            >
-              <div className="flex flex-col">
-                <span className="text-sm font-medium">{assessment.title}</span>
-                <span className="text-muted-foreground text-xs">
-                  {assessment.vendor.name}
-                  {assessment.template
-                    ? ` · ${assessment.template.name} v${assessment.template.version}`
-                    : ""}
-                  {assessment.dueDate
-                    ? ` · due ${formatDate(assessment.dueDate)}`
-                    : ""}
-                </span>
-              </div>
-              <Badge variant="secondary">
-                {ASSESSMENT_STATUS_LABELS[assessment.status]}
-              </Badge>
-            </Link>
-          ))}
-        </div>
+        <>
+          <div className="flex flex-col gap-2">
+            {assessments.map((assessment) => {
+              const isOverdue = isAssessmentOverdue(
+                assessment.dueDate,
+                assessment.status,
+              );
+              return (
+                <Link
+                  key={assessment.id}
+                  href={`/assessments/${assessment.id}`}
+                  className="hover:bg-accent/40 flex items-center justify-between gap-3 rounded-md border p-3"
+                >
+                  <div className="flex min-w-0 flex-col">
+                    <span className="truncate text-sm font-medium">
+                      {assessment.title}
+                    </span>
+                    <span className="text-muted-foreground truncate text-xs">
+                      {assessment.vendor.name}
+                      {assessment.template
+                        ? ` · ${assessment.template.name} v${assessment.template.version}`
+                        : ""}
+                      {assessment.dueDate ? (
+                        <span
+                          className={isOverdue ? "text-[var(--rag-red)]" : ""}
+                        >
+                          {` · due ${formatDate(assessment.dueDate)}`}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </span>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-3">
+                    {assessment.score !== null ? (
+                      <span
+                        className={`hidden w-12 text-right text-sm font-semibold tabular-nums sm:inline ${ragTextClass(assessment.score)}`}
+                      >
+                        {formatPercent(assessment.score)}
+                      </span>
+                    ) : null}
+                    {isOverdue ? (
+                      <Badge variant="destructive">Overdue</Badge>
+                    ) : null}
+                    <AssessmentStatusBadge status={assessment.status} />
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+          <Pagination
+            page={page}
+            pageSize={pageSize}
+            totalCount={totalCount}
+            itemLabel="assessments"
+          />
+        </>
       )}
     </div>
   );

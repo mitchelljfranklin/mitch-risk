@@ -11,14 +11,58 @@ import { type AssessmentInput } from "@/lib/schemas/assessment";
 import { type SaveProgressInput } from "@/lib/schemas/portal";
 import { expiryFromNow, generateAccessToken, hashToken } from "@/lib/tokens";
 
+export const ASSESSMENT_SORTS = {
+  created: "Newest first",
+  "created-asc": "Oldest first",
+  "due-asc": "Due date (soonest)",
+  "due-desc": "Due date (latest)",
+  "score-asc": "Score (low → high)",
+  "score-desc": "Score (high → low)",
+  vendor: "Vendor (A–Z)",
+  status: "Status",
+} as const;
+
+export type AssessmentSort = keyof typeof ASSESSMENT_SORTS;
+
+export const OVERDUE_STATUSES: AssessmentStatus[] = ["SENT", "IN_PROGRESS"];
+
+const DEFAULT_ASSESSMENT_PAGE_SIZE = 25;
+
+function assessmentOrderBy(
+  sort: AssessmentSort | undefined,
+): Prisma.AssessmentOrderByWithRelationInput {
+  switch (sort) {
+    case "created-asc":
+      return { createdAt: "asc" };
+    case "due-asc":
+      return { dueDate: { sort: "asc", nulls: "last" } };
+    case "due-desc":
+      return { dueDate: { sort: "desc", nulls: "last" } };
+    case "score-asc":
+      return { score: { sort: "asc", nulls: "last" } };
+    case "score-desc":
+      return { score: { sort: "desc", nulls: "last" } };
+    case "vendor":
+      return { vendor: { name: "asc" } };
+    case "status":
+      return { status: "asc" };
+    default:
+      return { createdAt: "desc" };
+  }
+}
+
 export type AssessmentFilters = {
   query?: string;
   status?: string;
   fromDate?: string;
   toDate?: string;
+  overdue?: boolean;
+  sort?: AssessmentSort;
+  page?: number;
+  pageSize?: number;
 };
 
-export function listAssessments(filters?: AssessmentFilters) {
+export async function listAssessments(filters?: AssessmentFilters) {
   const where: Prisma.AssessmentWhereInput = {};
 
   if (filters?.query) {
@@ -29,7 +73,10 @@ export function listAssessments(filters?: AssessmentFilters) {
     ];
   }
 
-  if (filters?.status) {
+  if (filters?.overdue) {
+    where.status = { in: OVERDUE_STATUSES };
+    where.dueDate = { lt: new Date() };
+  } else if (filters?.status) {
     where.status = filters.status as AssessmentStatus;
   }
 
@@ -50,15 +97,25 @@ export function listAssessments(filters?: AssessmentFilters) {
     }
   }
 
-  return prisma.assessment.findMany({
-    where,
-    orderBy: { createdAt: "desc" },
-    include: {
-      vendor: { select: { name: true } },
-      template: { select: { name: true, version: true } },
-      reviewer: { select: { name: true } },
-    },
-  });
+  const page = Math.max(1, filters?.page ?? 1);
+  const pageSize = filters?.pageSize ?? DEFAULT_ASSESSMENT_PAGE_SIZE;
+
+  const [assessments, totalCount] = await Promise.all([
+    prisma.assessment.findMany({
+      where,
+      orderBy: assessmentOrderBy(filters?.sort),
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+      include: {
+        vendor: { select: { name: true } },
+        template: { select: { name: true, version: true } },
+        reviewer: { select: { name: true } },
+      },
+    }),
+    prisma.assessment.count({ where }),
+  ]);
+
+  return { assessments, totalCount, page, pageSize };
 }
 
 export function getAssessment(id: string) {

@@ -1,11 +1,54 @@
-import { type VendorTier } from "@prisma/client";
+import { type Prisma, type VendorTier } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
 import { type VendorInput } from "@/lib/schemas/vendor";
 
-export function listVendors(filters?: { query?: string; tier?: string }) {
-  const where: Record<string, unknown> = {};
+export const VENDOR_SORTS = {
+  name: "Name (A–Z)",
+  "name-desc": "Name (Z–A)",
+  "score-asc": "Score (low → high)",
+  "score-desc": "Score (high → low)",
+  tier: "Tier",
+  "last-assessed": "Last assessed",
+  assessments: "Most assessments",
+} as const;
+
+export type VendorSort = keyof typeof VENDOR_SORTS;
+
+const DEFAULT_PAGE_SIZE = 25;
+
+function vendorOrderBy(
+  sort: VendorSort | undefined,
+): Prisma.VendorOrderByWithRelationInput {
+  switch (sort) {
+    case "name-desc":
+      return { name: "desc" };
+    case "score-asc":
+      return { overallScore: { sort: "asc", nulls: "last" } };
+    case "score-desc":
+      return { overallScore: { sort: "desc", nulls: "last" } };
+    case "tier":
+      return { tier: { sort: "asc", nulls: "last" } };
+    case "last-assessed":
+      return { lastAssessedAt: { sort: "desc", nulls: "last" } };
+    case "assessments":
+      return { assessments: { _count: "desc" } };
+    default:
+      return { name: "asc" };
+  }
+}
+
+export type VendorListFilters = {
+  query?: string;
+  tier?: string;
+  sort?: VendorSort;
+  page?: number;
+  pageSize?: number;
+};
+
+export async function listVendors(filters?: VendorListFilters) {
+  const where: Prisma.VendorWhereInput = {};
 
   if (filters?.query) {
     const term = filters.query;
@@ -16,13 +59,37 @@ export function listVendors(filters?: { query?: string; tier?: string }) {
   }
 
   if (filters?.tier) {
-    where.tier = filters.tier;
+    where.tier = filters.tier as VendorTier;
   }
 
+  const page = Math.max(1, filters?.page ?? 1);
+  const pageSize = filters?.pageSize ?? DEFAULT_PAGE_SIZE;
+
+  const [vendors, totalCount] = await Promise.all([
+    prisma.vendor.findMany({
+      where,
+      orderBy: vendorOrderBy(filters?.sort),
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+      include: { _count: { select: { assessments: true } } },
+    }),
+    prisma.vendor.count({ where }),
+  ]);
+
+  return { vendors, totalCount, page, pageSize };
+}
+
+export function listVendorOptions() {
   return prisma.vendor.findMany({
-    where,
     orderBy: { name: "asc" },
-    include: { _count: { select: { assessments: true } } },
+    select: { id: true, name: true },
+  });
+}
+
+export function listAllVendorsBasic() {
+  return prisma.vendor.findMany({
+    orderBy: { name: "asc" },
+    select: { id: true, name: true, contactEmail: true, tier: true },
   });
 }
 

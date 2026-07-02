@@ -12,9 +12,10 @@ export async function GET(request: Request) {
   }
 
   const { searchParams } = new URL(request.url);
-  const vendors = await listVendors({
+  const { vendors } = await listVendors({
     query: searchParams.get("query") ?? undefined,
     tier: searchParams.get("tier") ?? undefined,
+    pageSize: 1000,
   });
 
   return Response.json(

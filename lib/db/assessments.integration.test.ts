@@ -173,18 +173,18 @@ describe("assessment lifecycle (integration)", () => {
 describe("assessment search (integration)", () => {
   it("filters by status", async () => {
     const drafts = await listAssessments({ status: "DRAFT" });
-    if (drafts.length > 0) {
-      expect(drafts.every((a) => a.status === "DRAFT")).toBe(true);
+    if (drafts.assessments.length > 0) {
+      expect(drafts.assessments.every((a) => a.status === "DRAFT")).toBe(true);
     }
   });
 
   it("filters by query matching title or vendor name", async () => {
     const all = await listAssessments();
-    if (all.length > 0) {
+    if (all.assessments.length > 0) {
       const titleResults = await listAssessments({
-        query: all[0].title.slice(0, 4),
+        query: all.assessments[0].title.slice(0, 4),
       });
-      expect(titleResults.length).toBeGreaterThanOrEqual(1);
+      expect(titleResults.assessments.length).toBeGreaterThanOrEqual(1);
     }
   });
 
@@ -192,6 +192,19 @@ describe("assessment search (integration)", () => {
     const results = await listAssessments({
       query: "zzz-nonexistent-assessment-98765",
     });
-    expect(results.length).toBe(0);
+    expect(results.assessments.length).toBe(0);
+    expect(results.totalCount).toBe(0);
+  });
+
+  it("overdue filter returns only past-due SENT/IN_PROGRESS assessments", async () => {
+    const overdue = await listAssessments({ overdue: true });
+    const now = new Date();
+    for (const assessment of overdue.assessments) {
+      expect(["SENT", "IN_PROGRESS"]).toContain(assessment.status);
+      expect(assessment.dueDate).not.toBeNull();
+      if (assessment.dueDate) {
+        expect(assessment.dueDate.getTime()).toBeLessThan(now.getTime());
+      }
+    }
   });
 });

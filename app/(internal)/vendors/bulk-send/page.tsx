@@ -3,7 +3,7 @@ import Link from "next/link";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { listPublishedTemplates } from "@/lib/db/templates";
-import { listVendors } from "@/lib/db/vendors";
+import { listAllVendorsBasic } from "@/lib/db/vendors";
 import { listUsersFull } from "@/lib/db/users";
 
 import { BulkSendForm } from "./bulk-send-form";
@@ -16,7 +16,7 @@ export default async function BulkSendPage() {
   await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
 
   const [vendors, templates, users] = await Promise.all([
-    listVendors(),
+    listAllVendorsBasic(),
     listPublishedTemplates(),
     listUsersFull(),
   ]);

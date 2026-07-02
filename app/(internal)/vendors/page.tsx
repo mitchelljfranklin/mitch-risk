@@ -4,22 +4,20 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AutoSubmitSelect } from "@/components/auto-submit-select";
+import { EmptyState } from "@/components/empty-state";
+import { Pagination } from "@/components/pagination";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
-import { listVendors } from "@/lib/db/vendors";
+import { listVendors, VENDOR_SORTS, type VendorSort } from "@/lib/db/vendors";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
+import { formatDate, formatPercent, ragTextClass } from "@/lib/utils";
 import { ImportVendorsForm } from "./import-vendors-form";
 
 export const dynamic = "force-dynamic";
@@ -40,10 +38,15 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
     user.permissions,
     PERMISSIONS.ASSESSMENTS_CREATE,
   );
+
   const sp = await searchParams;
-  const vendors = await listVendors({
+  const sort = (sp.sort as VendorSort) || "name";
+  const page = sp.page ? parseInt(sp.page, 10) || 1 : 1;
+  const { vendors, totalCount, pageSize } = await listVendors({
     query: sp.query,
     tier: sp.tier || undefined,
+    sort,
+    page,
   });
   const hasFilters = Boolean(sp.query) || Boolean(sp.tier);
 
@@ -57,6 +60,9 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <Button asChild variant="outline">
+            <Link href="/vendors/compare">Compare</Link>
+          </Button>
           {canCreateVendor ? <ImportVendorsForm /> : null}
           {canSendAssessment ? (
             <Button asChild variant="outline">
@@ -101,6 +107,22 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
             </SelectContent>
           </Select>
         </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-muted-foreground text-xs" htmlFor="sort">
+            Sort
+          </label>
+          <AutoSubmitSelect
+            name="sort"
+            defaultValue={sort}
+            id="sort"
+            className="w-48"
+            ariaLabel="Sort vendors"
+            options={Object.entries(VENDOR_SORTS).map(([value, label]) => ({
+              value,
+              label,
+            }))}
+          />
+        </div>
         <Button type="submit" variant="secondary" size="sm" className="mb-px">
           Filter
         </Button>
@@ -112,34 +134,69 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
       </form>
 
       {vendors.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          {hasFilters
-            ? "No vendors match the selected filters."
-            : "No vendors yet."}
-        </p>
+        hasFilters ? (
+          <p className="text-muted-foreground text-sm">
+            No vendors match the selected filters.
+          </p>
+        ) : (
+          <EmptyState
+            icon="vendors"
+            title="No vendors yet"
+            description="Add a vendor to start tracking their security risk."
+          />
+        )
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {vendors.map((vendor) => (
-            <Link key={vendor.id} href={`/vendors/${vendor.id}`}>
-              <Card className="hover:bg-accent/40 h-full transition-colors">
-                <CardHeader>
-                  <div className="flex items-center justify-between gap-2">
-                    <CardTitle>{vendor.name}</CardTitle>
-                    {vendor.tier ? (
-                      <Badge variant="outline">
-                        {VENDOR_TIER_LABELS[vendor.tier]}
-                      </Badge>
-                    ) : null}
-                  </div>
-                  <CardDescription>{vendor.contactEmail}</CardDescription>
-                  <p className="text-muted-foreground text-sm">
-                    {vendor._count.assessments} assessments
-                  </p>
-                </CardHeader>
-              </Card>
-            </Link>
-          ))}
-        </div>
+        <>
+          <div className="flex flex-col divide-y rounded-lg border">
+            {vendors.map((vendor) => (
+              <Link
+                key={vendor.id}
+                href={`/vendors/${vendor.id}`}
+                className="hover:bg-accent/40 flex items-center justify-between gap-4 p-3 transition-colors"
+              >
+                <div className="flex min-w-0 flex-col">
+                  <span className="truncate text-sm font-medium">
+                    {vendor.name}
+                  </span>
+                  <span className="text-muted-foreground truncate text-xs">
+                    {vendor.contactEmail}
+                  </span>
+                </div>
+                <div className="flex shrink-0 items-center gap-4">
+                  {vendor.tier ? (
+                    <Badge variant="outline">
+                      {VENDOR_TIER_LABELS[vendor.tier]}
+                    </Badge>
+                  ) : null}
+                  <span className="text-muted-foreground hidden w-28 text-right text-xs sm:inline">
+                    {vendor.lastAssessedAt
+                      ? `Assessed ${formatDate(vendor.lastAssessedAt)}`
+                      : "Not assessed"}
+                  </span>
+                  <span className="text-muted-foreground hidden w-20 text-right text-xs md:inline">
+                    {vendor._count.assessments}{" "}
+                    {vendor._count.assessments === 1
+                      ? "assessment"
+                      : "assessments"}
+                  </span>
+                  <span
+                    className={`w-12 text-right text-sm font-semibold tabular-nums ${ragTextClass(vendor.overallScore)}`}
+                  >
+                    {vendor.overallScore !== null
+                      ? formatPercent(vendor.overallScore)
+                      : "—"}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <Pagination
+            page={page}
+            pageSize={pageSize}
+            totalCount={totalCount}
+            itemLabel="vendors"
+          />
+        </>
       )}
     </div>
   );

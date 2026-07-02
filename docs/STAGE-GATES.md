@@ -1203,6 +1203,36 @@ versions.
 
 ---
 
+## Phase 52 — Vendor & assessment list UX
+
+**Scope:** make the two core lists scale and be risk-legible — scores/RAG on vendors,
+pagination + sorting on both, status colours + overdue flag/filter on assessments, and a real
+vendor-compare entry point.
+
+**Checklist:**
+
+- [x] Vendors list rebuilt as a compact row view: RAG-coloured score, last-assessed date, tier,
+      assessment count; **sort** (name/score/tier/last-assessed/#assessments) + **pagination**.
+- [x] Assessments list: colour-coded `AssessmentStatusBadge`, **Overdue** badge + "Overdue only"
+      quick filter, RAG score column, **sort** (created/due/score/vendor/status) + **pagination**.
+- [x] Vendor **compare** entry: two-dropdown picker (GET form) on `/vendors/compare`; "Compare"
+      button in the vendors header.
+- [x] Reusable components: `Pagination`, `AutoSubmitSelect`, `AssessmentStatusBadge`; helpers
+      `ragTextClass` (utils) and `isAssessmentOverdue` (schemas). Pagination links preserve all
+      active filters/sort.
+- [x] `listVendors`/`listAssessments` now paginate/sort and return `{ …, totalCount }`; callers
+      (bulk-send via `listAllVendorsBasic`, `/api/v1/vendors` unwraps `.vendors`, tests) updated.
+      Public API response shape unchanged.
+- [x] Tests: vendor sort + list-shape, assessment overdue filter + list-shape, `isAssessmentOverdue`
+      unit. 111 unit + 9 e2e passing.
+- [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check` clean. No migration.
+
+**Reviewer spot-check:** vendors list shows scores and paginates; sort by "Score (low → high)"
+surfaces worst vendors first; assessments show coloured statuses and an "Overdue" badge, and the
+"Overdue only" filter narrows the list; Compare → pick two vendors → side-by-side view.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1258,3 +1288,4 @@ versions.
 | 49 | Ready for review | opencode | 2026-07-02 | Roles UX: master–detail list + slide-over Sheet editor, permission summary chips, group/master select-all, duplicate role; 101 unit + 8 e2e |
 | 50 | Ready for review | opencode | 2026-07-02 | UX fixes: readable destructive button, success toast tokens (decoupled from RAG), stat-card count-up fix, dashboard filter fix, delete user (guarded) with audit/review history preserved; 103 unit + 9 e2e |
 | 51 | Ready for review | opencode | 2026-07-02 | Correctness: CHECKBOX scoring, import all question types, full template version lineage, remove dead getDashboardMetrics, portal cookie lifetime, portal gate router.refresh; 104 unit + 9 e2e |
+| 52 | Ready for review | opencode | 2026-07-02 | List UX: vendor rows w/ RAG score+last-assessed, sort+pagination on both lists, assessment status colours + overdue badge/filter + score, vendor compare picker; reusable Pagination/AutoSubmitSelect/StatusBadge; 111 unit + 9 e2e |

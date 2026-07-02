@@ -43,31 +43,38 @@ describe("vendor search and export (integration)", () => {
     });
 
     const all = await listVendors();
-    expect(all.length).toBeGreaterThanOrEqual(2);
+    expect(all.totalCount).toBeGreaterThanOrEqual(2);
 
     const filtered = await listVendors({ query: "P27 Vendor Alpha" });
-    expect(filtered.length).toBe(1);
-    expect(filtered[0].name).toBe(VENDOR_A);
+    expect(filtered.vendors.length).toBe(1);
+    expect(filtered.vendors[0].name).toBe(VENDOR_A);
 
     const byTier = await listVendors({ tier: "HIGH" });
-    const tierMatches = byTier.filter((v) => v.name === VENDOR_B);
+    const tierMatches = byTier.vendors.filter((v) => v.name === VENDOR_B);
     expect(tierMatches.length).toBe(1);
     expect(tierMatches[0].name).toBe(VENDOR_B);
   });
 
   it("filters vendors by email query", async () => {
     const results = await listVendors({ query: "beta@example" });
-    expect(results.length).toBe(1);
-    expect(results[0].contactEmail).toContain("beta@example");
+    expect(results.vendors.length).toBe(1);
+    expect(results.vendors[0].contactEmail).toContain("beta@example");
   });
 
   it("returns empty when no vendor matches", async () => {
     const results = await listVendors({ query: "nonexistent-xyz" });
-    expect(results.length).toBe(0);
+    expect(results.vendors.length).toBe(0);
+    expect(results.totalCount).toBe(0);
+  });
+
+  it("sorts vendors by name descending", async () => {
+    const desc = await listVendors({ query: "P27 Vendor", sort: "name-desc" });
+    const names = desc.vendors.map((v) => v.name);
+    expect(names.indexOf(VENDOR_B)).toBeLessThan(names.indexOf(VENDOR_A));
   });
 
   it("getVendorForExport returns vendor with assessment summaries", async () => {
-    const vendors = await listVendors({ query: VENDOR_A });
+    const { vendors } = await listVendors({ query: VENDOR_A });
     const vendor = await getVendorForExport(vendors[0].id);
     expect(vendor).not.toBeNull();
     if (!vendor) throw new Error("vendor not found");

@@ -24,3 +24,23 @@ export const FINDING_STATUS_LABELS: Record<string, string> = {
   REMEDIATED: "Remediated",
   RISK_ACCEPTED: "Risk accepted",
 };
+
+// Semantic Tailwind classes per status (chrome only — never the RAG palette).
+export const ASSESSMENT_STATUS_STYLES: Record<string, string> = {
+  DRAFT: "bg-muted text-muted-foreground",
+  SENT: "bg-secondary text-secondary-foreground",
+  IN_PROGRESS: "bg-secondary text-secondary-foreground",
+  SUBMITTED: "bg-primary text-primary-foreground",
+  UNDER_REVIEW: "bg-primary/80 text-primary-foreground",
+  COMPLETED: "bg-success text-success-foreground",
+};
+
+export function isAssessmentOverdue(
+  dueDate: Date | string | null | undefined,
+  status: string,
+): boolean {
+  if (!dueDate) return false;
+  if (status !== "SENT" && status !== "IN_PROGRESS") return false;
+  const due = dueDate instanceof Date ? dueDate : new Date(dueDate);
+  return due.getTime() < Date.now();
+}

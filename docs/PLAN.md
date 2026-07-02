@@ -400,6 +400,14 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   lineage from any version (previously only descendants of the current node); removed the dead
   duplicate `getDashboardMetrics`; the portal auth cookie no longer outlives its token; and the
   portal password gate uses `router.refresh()` instead of a full page reload.
+- **Phase 52 — Vendor & assessment list UX.** The vendors list is now a compact, scannable row
+  view showing each vendor's RAG-coloured score, last-assessed date, tier, and assessment
+  count, with sorting and pagination. The assessments list gained colour-coded status badges,
+  an **Overdue** flag + quick filter, a RAG score column, sorting, and pagination. Added a
+  two-dropdown vendor **compare** picker (real entry point). New reusable pieces: `Pagination`,
+  `AutoSubmitSelect`, `AssessmentStatusBadge`, and `ragTextClass`/`isAssessmentOverdue` helpers.
+  Data-access `listVendors`/`listAssessments` now return `{ …, totalCount }` with sort/page
+  params. The public `/api/v1/vendors` response shape is unchanged.
 
 ## 8. Out of scope (v1+)
 

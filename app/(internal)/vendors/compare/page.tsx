@@ -3,10 +3,19 @@ import { notFound } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getAssessment } from "@/lib/db/assessments";
-import { getVendor } from "@/lib/db/vendors";
+import { getVendor, listVendorOptions } from "@/lib/db/vendors";
 import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
 import { formatPercent, formatResponseValue } from "@/lib/utils";
 
@@ -25,21 +34,66 @@ export default async function CompareVendorsPage({
   const { a: vendorAId, b: vendorBId } = await searchParams;
 
   if (!vendorAId || !vendorBId) {
+    const vendorOptions = await listVendorOptions();
     return (
       <div className="flex flex-col gap-6">
         <div>
+          <Link
+            href="/vendors"
+            className="text-muted-foreground text-sm hover:underline"
+          >
+            ← Vendors
+          </Link>
           <h1 className="text-2xl font-semibold tracking-tight">
             Compare vendors
           </h1>
           <p className="text-muted-foreground text-sm">
-            Select two vendors from the vendor list to compare their latest
-            completed assessments side‑by‑side. Use{" "}
-            <code className="text-xs">
-              ?a=&lt;vendor-id&gt;&amp;b=&lt;vendor-id&gt;
-            </code>
-            .
+            Pick two vendors to compare their latest completed assessments
+            side‑by‑side.
           </p>
         </div>
+
+        {vendorOptions.length < 2 ? (
+          <p className="text-muted-foreground text-sm">
+            You need at least two vendors to compare.
+          </p>
+        ) : (
+          <form className="flex flex-wrap items-end gap-3">
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="a">Vendor A</Label>
+              <Select name="a" defaultValue={vendorAId ?? undefined}>
+                <SelectTrigger id="a" className="w-56">
+                  <SelectValue placeholder="Select a vendor" />
+                </SelectTrigger>
+                <SelectContent>
+                  {vendorOptions.map((vendor) => (
+                    <SelectItem key={vendor.id} value={vendor.id}>
+                      {vendor.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="b">Vendor B</Label>
+              <Select name="b" defaultValue={vendorBId ?? undefined}>
+                <SelectTrigger id="b" className="w-56">
+                  <SelectValue placeholder="Select a vendor" />
+                </SelectTrigger>
+                <SelectContent>
+                  {vendorOptions.map((vendor) => (
+                    <SelectItem key={vendor.id} value={vendor.id}>
+                      {vendor.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Button type="submit" size="sm" className="mb-px">
+              Compare
+            </Button>
+          </form>
+        )}
       </div>
     );
   }

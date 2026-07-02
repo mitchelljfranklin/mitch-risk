@@ -31,3 +31,14 @@ export function formatResponseValue(value: unknown): string {
 export function csvEscape(value: unknown): string {
   return `"${String(value ?? "").replaceAll('"', '""')}"`;
 }
+
+/**
+ * Tailwind text-colour class for a 0–1 compliance score using the RAG palette.
+ * RAG tokens are reserved for score/compliance indicators (not UI chrome).
+ */
+export function ragTextClass(score: number | null | undefined): string {
+  if (score === null || score === undefined) return "text-muted-foreground";
+  if (score >= 0.85) return "text-[var(--rag-green)]";
+  if (score >= 0.6) return "text-[var(--rag-amber)]";
+  return "text-[var(--rag-red)]";
+}
