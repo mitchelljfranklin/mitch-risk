@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { verifyApiKey, isIpAllowed } from "@/lib/api-keys";
+import { getClientIp } from "@/lib/client-ip";
 import { rateLimit } from "@/lib/rate-limit";
 import { auth as nextAuth } from "@/lib/auth";
 import { type Permission, hasPermission } from "@/lib/permissions";
@@ -9,14 +10,6 @@ async function isApiEnabled(): Promise<boolean> {
     where: { key: "api.enabled" },
   });
   return row?.value === true;
-}
-
-function clientIp(request: Request): string {
-  return (
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    request.headers.get("x-real-ip") ??
-    "unknown"
-  );
 }
 
 export type AuthResult = {
@@ -88,7 +81,7 @@ export async function authenticateRequest(
 
     if (!verifyApiKey(hash, apiKey.keyHash)) continue;
 
-    const ip = clientIp(request);
+    const ip = getClientIp(request.headers);
     if (!isIpAllowed(apiKey.allowedIps, ip)) continue;
 
     if (apiKey.rateLimitPerMin) {

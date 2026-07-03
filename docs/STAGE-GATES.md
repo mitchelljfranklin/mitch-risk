@@ -1465,6 +1465,39 @@ SSO; generate a break-glass URL and confirm `/login?breakGlass=<token>` reveals 
 
 ---
 
+## Phase 59 — Reverse-proxy hardening & multi-proxy docs
+
+**Scope:** make the app safe and correct behind any TLS-terminating reverse proxy, and
+document it.
+
+**Checklist:**
+
+- [x] **Proxy-aware client IP.** New `lib/client-ip.ts` resolves the client address
+      `TRUSTED_PROXY_COUNT` hops from the right of `X-Forwarded-For` (or a dedicated
+      `CLIENT_IP_HEADER`), with IPv4/IPv6 port normalisation and an `x-real-ip` fallback.
+      Left-most (client-spoofable) parsing is gone.
+- [x] **Spoof fix wired everywhere.** `lib/api-auth.ts` (rate limit + **API-key IP allowlist**),
+      `app/(auth)/login/actions.ts` (login rate limit), `app/(auth)/login/page.tsx`
+      (break-glass rate limit), and `lib/actions/portal.ts` (autosave/upload/submit limits) all
+      use the shared `getClientIp()`.
+- [x] **Infra env vars.** `TRUSTED_PROXY_COUNT` (default 1) and optional `CLIENT_IP_HEADER`
+      added to `lib/env.ts` and documented in `.env.example`; `docker-compose.yml` notes the
+      dev-only defaults and the "don't publish port 3000" guidance.
+- [x] **Auth already proxy-ready.** `trustHost: true` derives origin + secure cookies from
+      forwarded host/proto — confirmed; documented optional `AUTH_URL` override.
+- [x] **Docs.** README "Running behind a reverse proxy (HTTPS)" section with copy-paste
+      examples for Caddy, nginx, Zoraxy, and Azure (App Gateway / Front Door).
+- [x] **Tests.** `lib/client-ip.test.ts` (12 cases: rightmost-hop, multi-hop, clamp, count=0,
+      IPv4/IPv6 port normalisation, header override + fallbacks, unknown).
+- [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check`, `vitest`,
+      `playwright` clean. No DB/migration; no OpenAPI change.
+
+**Reviewer spot-check:** with `TRUSTED_PROXY_COUNT=1`, a request carrying
+`X-Forwarded-For: 9.9.9.9, <realclient>` resolves to `<realclient>` (not the spoofed value);
+behind a proxy the app issues HTTPS cookies and vendors receive `https://` portal links.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1525,5 +1558,6 @@ SSO; generate a break-glass URL and confirm `/login?breakGlass=<token>` reveals 
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 59 | Ready for review | opencode | 2026-07-03 | Reverse-proxy hardening: proxy-aware getClientIp (trusted-hop XFF / CLIENT_IP_HEADER) across login/break-glass/portal/API + API-key IP allowlist; TRUSTED_PROXY_COUNT/CLIENT_IP_HEADER env; README proxy guide (Caddy/nginx/Zoraxy/Azure); +12 unit tests |
 | 58 | Ready for review | opencode | 2026-07-03 | Settings & auth: Test SMTP button, SSO toggle fix (React 19 form-reset + Radix; key-remount across sso/api/limits toggles), email-template master-detail Sheet + reset-to-default, removed per-answer "Reject" (+ data migration), SSO-only login + break-glass URL; 131 unit + 10 e2e |
 | 57 | Approved | user | 2026-07-03 | Mobile & a11y: 28 fixes — settings tabs scroll, dense rows wrap, responsive controls, not-found.tsx, toast/idle/command-palette ARIA, skip-link, error reset(), img CLS, Firefox scrollbar, empty-state SVG aria-hidden, semantic sidebar, pagination live region, fieldset grouping; 122 unit + 9 e2e |

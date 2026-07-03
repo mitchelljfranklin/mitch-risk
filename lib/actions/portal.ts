@@ -15,6 +15,7 @@ import {
   submitAssessment,
 } from "@/lib/db/assessments";
 import { addComment } from "@/lib/db/collaboration";
+import { getClientIp } from "@/lib/client-ip";
 import { sendEmail } from "@/lib/email/mailer";
 import { env } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
@@ -25,7 +26,7 @@ import { rateLimit } from "@/lib/rate-limit";
 
 async function clientIp(): Promise<string> {
   const h = await headers();
-  return h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  return getClientIp(h);
 }
 
 export async function saveProgressAction(

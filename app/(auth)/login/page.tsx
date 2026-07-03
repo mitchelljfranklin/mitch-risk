@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { getCurrentUser } from "@/lib/auth";
 import { shouldShowLocalAuth, verifyBreakGlassToken } from "@/lib/break-glass";
+import { getClientIp } from "@/lib/client-ip";
 import { countUsers } from "@/lib/db/users";
 import { rateLimit } from "@/lib/rate-limit";
 import {
@@ -65,8 +66,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   let breakGlassValid = false;
   if (ssoSettings.disableLocalAuth && breakGlassToken) {
     const requestHeaders = await headers();
-    const clientIp =
-      requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+    const clientIp = getClientIp(requestHeaders);
     if (rateLimit("break-glass", clientIp, 10)) {
       const hash = await getBreakGlassHash();
       breakGlassValid = hash

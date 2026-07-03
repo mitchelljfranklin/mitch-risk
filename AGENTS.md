@@ -60,6 +60,7 @@ lib/                 # cross-cutting logic
   settings/          # DB-backed operational config (schema, accessor, read/write)
   api-keys.ts        # API key generation, bcrypt hashing, CIDR IP matching
   break-glass.ts     # SSO-only login bypass: token gen/hash/verify + show-local-auth rule
+  client-ip.ts       # proxy-aware client IP (trusted-hop X-Forwarded-For / CLIENT_IP_HEADER)
   api-auth.ts        # unified authenticateRequest() — session + Bearer token + permission check
   auth.ts            # Auth.js config + permission guards (requirePermission/hasPermission)
   permissions.ts     # RBAC permission catalog, default system roles, permission helpers

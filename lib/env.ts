@@ -12,6 +12,8 @@ const environmentSchema = z.object({
   APP_URL: z.string().min(1).default("http://localhost:3000"),
   CRON_SECRET: z.string().min(1).optional(),
   EVIDENCE_STORAGE_PATH: z.string().min(1).default("./.storage/evidence"),
+  TRUSTED_PROXY_COUNT: z.coerce.number().int().min(0).default(1),
+  CLIENT_IP_HEADER: z.string().min(1).optional(),
 });
 
 export type Environment = z.infer<typeof environmentSchema>;

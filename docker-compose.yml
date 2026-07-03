@@ -26,10 +26,17 @@ services:
     environment:
       NODE_ENV: production
       DATABASE_URL: "postgresql://mitch:mitch@db:5432/mitch_risk?schema=public"
+      # Dev-only defaults — replace AUTH_SECRET, APP_ENCRYPTION_KEY and APP_URL
+      # for any real deployment (see README "Running behind a reverse proxy").
       AUTH_SECRET: "dev-only-auth-secret-change-me-0123456789abcdef"
       APP_ENCRYPTION_KEY: "dev-only-encryption-key-change-me-0123456789"
       APP_URL: "http://localhost:3000"
       EVIDENCE_STORAGE_PATH: "/app/.storage/evidence"
+      # Number of trusted reverse proxies in front of the app (default 1).
+      TRUSTED_PROXY_COUNT: "1"
+    # Behind a reverse proxy, do not publish this port publicly — expose it only
+    # to the proxy (e.g. an internal Docker network). A directly reachable app
+    # port lets clients spoof X-Forwarded-For.
     ports:
       - "3000:3000"
     volumes:

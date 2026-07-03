@@ -460,6 +460,14 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   form when at least one SSO provider is enabled, plus a **break-glass URL** (rotatable secret,
   stored as a bcrypt hash, shown once) that re-reveals local login for emergency access, with
   rate-limited verification.
+- **Phase 59 — Reverse-proxy hardening.** Client IP resolution is now proxy-aware and
+  spoof-resistant: a shared `lib/client-ip.ts` reads the client address `TRUSTED_PROXY_COUNT`
+  hops from the right of `X-Forwarded-For` (or a configured `CLIENT_IP_HEADER`), replacing the
+  spoofable left-most parsing used by the login, break-glass, portal, and API rate limiters and
+  the API-key IP allowlist. Two infra env vars (`TRUSTED_PROXY_COUNT`, `CLIENT_IP_HEADER`) and a
+  README "Running behind a reverse proxy" guide (Caddy, nginx, Zoraxy, Azure) document how to
+  self-host behind any TLS-terminating proxy; `trustHost` was already enabled so auth cookies
+  and callback URLs follow the forwarded host/proto.
 
 ## 8. Out of scope (v1+)
 

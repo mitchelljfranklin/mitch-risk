@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { AuthError } from "next-auth";
 
 import { signIn } from "@/lib/auth";
+import { getClientIp } from "@/lib/client-ip";
 import { rateLimit } from "@/lib/rate-limit";
 import { getAssessmentSettings } from "@/lib/settings";
 
@@ -14,7 +15,7 @@ export async function authenticate(
   formData: FormData,
 ): Promise<LoginState> {
   const h = await headers();
-  const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const ip = getClientIp(h);
 
   const settings = await getAssessmentSettings();
   const rateLimitPerMin = settings.loginRateLimitPerMin ?? 10;
