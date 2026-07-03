@@ -32,7 +32,7 @@ import { useFormToast } from "@/hooks/use-form-toast";
 const initialState: SettingsActionState = undefined;
 
 const TEMPLATE_TOKENS =
-  "{{vendorName}}, {{assessmentTitle}}, {{portalUrl}}, {{dueDate}}, {{reviewerName}}, {{assessmentUrl}}, {{portalPassword}}, {{message}}, {{appName}}, {{resetUrl}}, {{expiresIn}}";
+  "{{vendorName}}, {{assessmentTitle}}, {{portalUrl}}, {{dueDate}}, {{reviewerName}}, {{assessmentUrl}}, {{portalPassword}}, {{message}}, {{appName}}, {{resetUrl}}, {{expiresIn}}, {{itemName}}, {{expiresDate}}, {{vendorUrl}}";
 
 function TemplateEditorSheet({
   definition,

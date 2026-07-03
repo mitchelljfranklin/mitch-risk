@@ -7,8 +7,8 @@ import {
 } from "@/lib/settings/email-templates";
 
 describe("email template definitions", () => {
-  it("covers all seven template types with unique keys", () => {
-    expect(EMAIL_TEMPLATE_DEFINITIONS).toHaveLength(7);
+  it("covers all template types with unique keys", () => {
+    expect(EMAIL_TEMPLATE_DEFINITIONS).toHaveLength(8);
     const types = EMAIL_TEMPLATE_DEFINITIONS.map(
       (definition) => definition.type,
     );

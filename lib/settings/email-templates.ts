@@ -7,7 +7,8 @@ export type EmailTemplateType =
   | "escalation"
   | "submission"
   | "clarification"
-  | "reset";
+  | "reset"
+  | "expiry";
 
 export type EmailTemplateDefinition = {
   type: EmailTemplateType;
@@ -67,6 +68,14 @@ export const EMAIL_TEMPLATE_DEFINITIONS: readonly EmailTemplateDefinition[] = [
     description: "Sent to internal staff who request a password reset.",
     subjectField: "resetSubject",
     bodyField: "resetBody",
+  },
+  {
+    type: "expiry",
+    label: "Expiry reminder email",
+    description:
+      "Sent to a vendor's risk owner when a certification or contract is nearing expiry.",
+    subjectField: "expirySubject",
+    bodyField: "expiryBody",
   },
 ] as const;
 

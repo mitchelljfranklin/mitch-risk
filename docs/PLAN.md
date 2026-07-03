@@ -530,6 +530,21 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   detail Overview card, zod schema, and the REST vendor import/response schemas. Migration adds
   the columns/enum/FK.
 
+- **Phase 68 — Certifications & key-date tracking + reminders.** A new `VendorCertification`
+  model lets you record a vendor's attestations (SOC 2, ISO 27001, …) with issuer, issued date,
+  **expiry date**, and notes. The vendor detail page has a **Certifications** card (slide-over
+  add/edit, delete — `VENDORS_EDIT`) with a computed status badge (Valid / Expiring soon /
+  Expired). The **cron** now sends **expiry reminders** to each vendor's **risk owner** at 30 and
+  7 days before a certification expiry *or* a contract renewal date (Phase 67), deduped via the
+  notification log (new `EXPIRY` type + editable `expiry` email template). This is the lightweight,
+  self-hosted substitute for continuous monitoring — no external scanning.
+
+- **Phase 69 — Vendor edit UX fix.** Saving a vendor edit now shows a **"Vendor updated." success
+  toast** (the update action returns a success state instead of `undefined`), and creating a
+  vendor shows a **"Vendor created."** toast on the destination page (via `?created=1` + a
+  reusable `FlashToast`). The **new** and **edit** vendor pages gained **breadcrumbs**
+  (Vendors → … → New/Edit) for back-navigation, matching the detail page.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

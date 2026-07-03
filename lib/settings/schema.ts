@@ -109,6 +109,14 @@ export const emailTemplateSchema = z.object({
     .default(
       "A password reset was requested for your {{appName}} account.\n\nClick here to reset your password: {{resetUrl}}\n\nThis link expires in {{expiresIn}}.",
     ),
+  expirySubject: z
+    .string()
+    .default("Expiring soon: {{itemName}} for {{vendorName}}"),
+  expiryBody: z
+    .string()
+    .default(
+      "{{itemName}} for {{vendorName}} expires on {{expiresDate}}.\n\nReview the vendor and arrange a re-assessment or renewal: {{vendorUrl}}",
+    ),
   invitePasswordSubject: z
     .string()
     .default("Security questionnaire: {{assessmentTitle}}"),

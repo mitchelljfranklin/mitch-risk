@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { VendorForm } from "@/components/vendor-form";
 import { updateVendorAction } from "@/lib/actions/vendors";
@@ -29,6 +30,13 @@ export default async function EditVendorPage({ params }: EditVendorPageProps) {
 
   return (
     <div className="flex max-w-2xl flex-col gap-6">
+      <Breadcrumbs
+        segments={[
+          { label: "Vendors", href: "/vendors" },
+          { label: vendor.name, href: `/vendors/${vendor.id}` },
+          { label: "Edit" },
+        ]}
+      />
       <h1 className="text-2xl font-semibold tracking-tight">Edit vendor</h1>
       <Card>
         <CardHeader>

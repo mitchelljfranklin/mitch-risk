@@ -14,7 +14,8 @@ import {
   type VendorInput,
 } from "@/lib/schemas/vendor";
 
-export type VendorFormState = { error: string } | undefined;
+export type VendorFormState =
+  { error: string } | { ok: true; message: string } | undefined;
 
 export async function createVendorAction(
   previousState: VendorFormState,
@@ -41,7 +42,7 @@ export async function createVendorAction(
   if (user) {
     await logAudit(user.id, "CREATE_VENDOR", "Vendor", vendor.id);
   }
-  redirect(`/vendors/${vendor.id}`);
+  redirect(`/vendors/${vendor.id}?created=1`);
 }
 
 export async function updateVendorAction(
@@ -71,7 +72,7 @@ export async function updateVendorAction(
     await logAudit(user.id, "UPDATE_VENDOR", "Vendor", vendorId);
   }
   revalidatePath(`/vendors/${vendorId}`);
-  return undefined;
+  return { ok: true, message: "Vendor updated." };
 }
 
 export async function deleteVendorAction(formData: FormData) {

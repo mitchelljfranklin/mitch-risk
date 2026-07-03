@@ -1724,6 +1724,55 @@ detail Overview shows them; delete the owning user and the vendor remains with o
 
 ---
 
+## Phase 68 — Certifications & key-date tracking + reminders
+
+**Scope:** track vendor attestations with expiry, and remind the risk owner before certs /
+contracts lapse — the light substitute for continuous monitoring.
+
+**Checklist:**
+
+- [x] **Model + migration** (`20260703050000_vendor_certifications`): `VendorCertification`
+      (name, issuer?, issuedDate?, expiresDate, notes; cascade on vendor). Applied to dev + test.
+- [x] **Schema/DB/actions**: `certificationSchema` + `certificationStatus` (valid/expiring/expired,
+      30-day threshold); `lib/db/certifications.ts` (CRUD + `listCertificationsExpiringOn`);
+      `lib/actions/certifications.ts` (save/delete, `VENDORS_EDIT`, audited; new audit labels).
+- [x] **UI**: `CertificationsManager` (list + slide-over add/edit + delete, status badges);
+      vendor-detail "Certifications & attestations" card (read-only for viewers).
+- [x] **Reminders**: cron step emails the vendor **owner** 30 & 7 days before a certification
+      expiry or contract renewal date, deduped per item+window via `NotificationLog` (`EXPIRY`).
+      New editable `expiry` email template (subject/body + `itemName`/`expiresDate`/`vendorUrl`
+      tokens); `EMAIL_TYPE_LABELS` updated.
+- [x] **Tests**: `certifications.integration.test.ts` (CRUD, status, expiring-window + owner).
+      Gates: `lint`, `typecheck`, `build`, `format:check`, `vitest` (test DB), Playwright clean.
+
+**Reviewer spot-check:** add a cert with an expiry ~20 days out → "Expiring soon" badge; assign a
+vendor owner; a cron run within a 30/7-day window emails the owner once per window (visible in
+Email Tracking as an `Expiry`).
+
+---
+
+## Phase 69 — Vendor edit UX fix (toast + breadcrumbs)
+
+**Scope:** saving a vendor edit gave no confirmation and the edit/new pages had no breadcrumb.
+
+**Checklist:**
+
+- [x] **Success toast on save.** `VendorFormState` gains a `{ ok: true; message }` variant;
+      `updateVendorAction` returns `{ ok: true, message: "Vendor updated." }` (was `undefined`),
+      so `useFormToast` shows a success toast. `VendorForm` guards the inline error with
+      `"error" in state` (union-safe).
+- [x] **Create toast.** `createVendorAction` redirects to `?created=1`; a reusable `FlashToast`
+      client component fires a "Vendor created." toast on the detail page.
+- [x] **Breadcrumbs** added to the new (`Vendors → New`) and edit (`Vendors → {name} → Edit`)
+      pages, matching the detail page.
+- [x] Gates: `lint`, `typecheck`, `build`, `format:check`, `vitest` (test DB), Playwright clean.
+      No schema/migration, RBAC, or OpenAPI change.
+
+**Reviewer spot-check:** edit a vendor → Save → "Vendor updated." toast, breadcrumb back to the
+vendor; create a vendor → lands on the detail page with a "Vendor created." toast.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1784,6 +1833,8 @@ detail Overview shows them; delete the owning user and the vendor remains with o
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 69 | Approved | user | 2026-07-03 | Vendor edit UX fix: success toast on update (+ create toast via FlashToast/?created=1), breadcrumbs on new/edit vendor pages |
+| 68 | Ready for review | opencode | 2026-07-03 | Certifications & key-date tracking: VendorCertification model + vendor-detail manager (status badges), cron expiry reminders (certs + contract renewals) to the risk owner at 30/7 days via new EXPIRY email template; +3 integration tests |
 | 67 | Approved | user | 2026-07-03 | Vendor profile enrichment: risk owner (SetNull), data sensitivity (Public/Internal/Confidential/Restricted), service description, contract renewal date; form + detail Overview + OpenAPI + migration; +3 integration tests |
 | 66 | Approved | user | 2026-07-03 | Cross-vendor risk register: /risk-register page (filters, summary stats, inline status for reviewers, pagination) + vendor-detail Findings card; listFindings/getFindingSummary/listVendorFindings reuse Finding model; +4 integration tests |
 | 65 | Approved | user | 2026-07-03 | Vendors list Rows/Cards view toggle: cookie-backed (vendors_view, default rows), server-rendered card grid with score/tier/last-assessed; generic ViewToggle component; +1 unit test |

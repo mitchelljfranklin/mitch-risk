@@ -237,11 +237,29 @@ model Vendor {
   overallScore        Float?
   lastAssessedAt      DateTime?
   assessments         Assessment[]
+  certifications      VendorCertification[]
   createdAt           DateTime         @default(now())
   updatedAt           DateTime         @updatedAt
 
   @@index([ownerId])
   @@map("vendors")
+}
+
+model VendorCertification {
+  id          String    @id @default(cuid())
+  vendorId    String
+  vendor      Vendor    @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  name        String
+  issuer      String?
+  issuedDate  DateTime?
+  expiresDate DateTime
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([vendorId])
+  @@index([expiresDate])
+  @@map("vendor_certifications")
 }
 
 model Assessment {

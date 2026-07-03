@@ -170,7 +170,7 @@ export function VendorForm({
           rows={4}
         />
       </div>
-      {state?.error ? (
+      {state && "error" in state ? (
         <p className="text-destructive text-sm" role="alert">
           {state.error}
         </p>

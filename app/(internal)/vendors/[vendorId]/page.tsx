@@ -6,10 +6,13 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CertificationsManager } from "@/components/certifications-manager";
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { FlashToast } from "@/components/flash-toast";
 import { deleteVendorAction } from "@/lib/actions/vendors";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
+import { listVendorCertifications } from "@/lib/db/certifications";
 import { getVendorProfile } from "@/lib/db/compliance";
 import { listVendorFindings } from "@/lib/db/findings";
 import { listFrameworks } from "@/lib/db/frameworks";
@@ -30,6 +33,7 @@ export const dynamic = "force-dynamic";
 
 type VendorDetailPageProps = {
   params: Promise<{ vendorId: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
 };
 
 export async function generateMetadata({
@@ -43,7 +47,9 @@ export async function generateMetadata({
 
 export default async function VendorDetailPage({
   params,
+  searchParams,
 }: VendorDetailPageProps) {
+  const sp = await searchParams;
   const user = await requirePermission(PERMISSIONS.VENDORS_VIEW);
   const canEditVendor = hasPermission(
     user.permissions,
@@ -67,15 +73,27 @@ export default async function VendorDetailPage({
     notFound();
   }
 
-  const [profile, frameworks, findings] = await Promise.all([
+  const [profile, frameworks, findings, certifications] = await Promise.all([
     getVendorProfile(vendorId),
     listFrameworks(),
     canViewFindings ? listVendorFindings(vendorId) : Promise.resolve([]),
+    listVendorCertifications(vendorId),
   ]);
   const openFindings = findings.filter((finding) => finding.status === "OPEN");
+  const certificationViews = certifications.map((cert) => ({
+    id: cert.id,
+    name: cert.name,
+    issuer: cert.issuer ?? "",
+    issuedDate: cert.issuedDate
+      ? cert.issuedDate.toISOString().slice(0, 10)
+      : "",
+    expiresDate: cert.expiresDate.toISOString().slice(0, 10),
+    notes: cert.notes ?? "",
+  }));
 
   return (
     <div className="flex max-w-3xl flex-col gap-6">
+      {sp.created ? <FlashToast message="Vendor created." /> : null}
       <Breadcrumbs
         segments={[
           { label: "Vendors", href: "/vendors" },
@@ -206,6 +224,19 @@ export default async function VendorDetailPage({
           </CardContent>
         </Card>
       ) : null}
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Certifications &amp; attestations</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CertificationsManager
+            vendorId={vendor.id}
+            certifications={certificationViews}
+            canEdit={canEditVendor}
+          />
+        </CardContent>
+      </Card>
 
       {profile ? (
         <Card>

@@ -158,6 +158,9 @@ export function listAuditActions() {
     "UPDATE_FINDING",
     "DUPLICATE_TEMPLATE",
     "UPDATE_PROFILE",
+    "CREATE_CERTIFICATION",
+    "UPDATE_CERTIFICATION",
+    "DELETE_CERTIFICATION",
   ];
 }
 
@@ -205,4 +208,7 @@ export const AUDIT_ACTION_LABELS: Record<string, string> = {
   API_KEY_REVOKED: "Revoked API key",
   API_KEY_ENABLED: "Enabled API key",
   API_KEY_DELETED: "Deleted API key",
+  CREATE_CERTIFICATION: "Added certification",
+  UPDATE_CERTIFICATION: "Updated certification",
+  DELETE_CERTIFICATION: "Deleted certification",
 };

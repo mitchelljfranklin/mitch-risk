@@ -2,6 +2,7 @@ import { sendEmail } from "@/lib/email/mailer";
 import { env } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
 import { createAssessment, sendAssessment } from "@/lib/db/assessments";
+import { listCertificationsExpiringOn } from "@/lib/db/certifications";
 import {
   getAppearanceSettings,
   getAssessmentSettings,
@@ -31,10 +32,14 @@ export async function GET(request: Request) {
     reminders: number;
     escalations: number;
     recurrences: number;
+    expiryNotices: number;
     pruned?: number;
     prunedEmails?: number;
     prunedFiles?: number;
-  } = { reminders: 0, escalations: 0, recurrences: 0 };
+  } = { reminders: 0, escalations: 0, recurrences: 0, expiryNotices: 0 };
+
+  // Windows (days before expiry) for certification & contract renewal notices.
+  const EXPIRY_OFFSET_DAYS = [30, 7];
 
   if (smtpConfigured) {
     // --- reminders ---
@@ -134,6 +139,92 @@ export async function GET(request: Request) {
         { assessmentId: a.id },
       );
       result.escalations++;
+    }
+
+    // --- certification & contract expiry notices (to the vendor's risk owner) ---
+    for (const offsetDays of EXPIRY_OFFSET_DAYS) {
+      const target = new Date(today);
+      target.setDate(target.getDate() + offsetDays);
+      const dayStart = new Date(
+        target.getFullYear(),
+        target.getMonth(),
+        target.getDate(),
+      );
+      const dayEnd = new Date(
+        target.getFullYear(),
+        target.getMonth(),
+        target.getDate(),
+        23,
+        59,
+        59,
+      );
+
+      const expiringCerts = await listCertificationsExpiringOn(
+        dayStart,
+        dayEnd,
+      );
+      for (const cert of expiringCerts) {
+        if (!cert.ownerEmail) continue;
+        const logKey = `cert:${cert.id}:${cert.expiresDate
+          .toISOString()
+          .slice(0, 10)}:${offsetDays}d`;
+        const alreadySent = await prisma.notificationLog.findFirst({
+          where: { type: "EXPIRY", sentTo: cert.ownerEmail, subject: logKey },
+        });
+        if (alreadySent) continue;
+        const sent = await sendEmail(cert.ownerEmail, "expiry", {
+          vendorName: cert.vendorName,
+          itemName: cert.name,
+          expiresDate: cert.expiresDate.toISOString().slice(0, 10),
+          vendorUrl: `${appUrl}/vendors/${cert.vendorId}`,
+        });
+        if (sent.ok) {
+          // Tag the log so we don't re-notify for this cert on this run window.
+          await prisma.notificationLog
+            .update({
+              where: { id: sent.notificationLogId },
+              data: { subject: logKey },
+            })
+            .catch(() => undefined);
+          result.expiryNotices++;
+        }
+      }
+
+      const expiringContracts = await prisma.vendor.findMany({
+        where: { contractRenewalDate: { gte: dayStart, lte: dayEnd } },
+        select: {
+          id: true,
+          name: true,
+          contractRenewalDate: true,
+          owner: { select: { email: true } },
+        },
+      });
+      for (const vendor of expiringContracts) {
+        const ownerEmail = vendor.owner?.email;
+        if (!ownerEmail || !vendor.contractRenewalDate) continue;
+        const logKey = `contract:${vendor.id}:${vendor.contractRenewalDate
+          .toISOString()
+          .slice(0, 10)}:${offsetDays}d`;
+        const alreadySent = await prisma.notificationLog.findFirst({
+          where: { type: "EXPIRY", sentTo: ownerEmail, subject: logKey },
+        });
+        if (alreadySent) continue;
+        const sent = await sendEmail(ownerEmail, "expiry", {
+          vendorName: vendor.name,
+          itemName: "Contract renewal",
+          expiresDate: vendor.contractRenewalDate.toISOString().slice(0, 10),
+          vendorUrl: `${appUrl}/vendors/${vendor.id}`,
+        });
+        if (sent.ok) {
+          await prisma.notificationLog
+            .update({
+              where: { id: sent.notificationLogId },
+              data: { subject: logKey },
+            })
+            .catch(() => undefined);
+          result.expiryNotices++;
+        }
+      }
     }
   }
 
