@@ -491,6 +491,14 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   and Roles tabs are now wrapped in `Card`s so they share the same dark-mode "grey card" shading
   as every other settings tab. A `listStaffAccounts()` data-access view derives SSO/local status
   server-side without exposing password hashes.
+- **Phase 63 — Map a whole framework to a question.** The control picker
+  (`ControlMultiSelect`) gained a **per-framework "select all" tri-state** (with an "n / total"
+  count) so a single question can be mapped to every control in a framework in one click —
+  ideal for "are you ISO 27001 / NIST certified?" questions where a compliant answer (plus the
+  uploaded certificate) should satisfy the entire framework. Selection covers the whole
+  framework regardless of the text filter. No scoring/schema change — the existing per-control
+  compliance engine already handles many-controls-per-question; selection logic is extracted to
+  `lib/control-selection.ts` with unit tests.
 
 ## 8. Out of scope (v1+)
 

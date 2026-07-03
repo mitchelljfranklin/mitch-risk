@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { applyGroupToggle, groupSelectionState } from "@/lib/control-selection";
 import { cn } from "@/lib/utils";
 
 type ControlOption = {
@@ -41,6 +42,16 @@ export function ControlMultiSelect({
     [controls],
   );
 
+  const frameworkControlIds = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const control of controls) {
+      const list = map.get(control.frameworkName) ?? [];
+      list.push(control.id);
+      map.set(control.frameworkName, list);
+    }
+    return map;
+  }, [controls]);
+
   const grouped = useMemo(() => {
     const map = new Map<string, ControlOption[]>();
     for (const control of controls) {
@@ -66,6 +77,11 @@ export function ControlMultiSelect({
     });
   }
 
+  function toggleFramework(frameworkName: string, select: boolean) {
+    const groupIds = frameworkControlIds.get(frameworkName) ?? [];
+    setSelected((current) => applyGroupToggle(current, groupIds, select));
+  }
+
   function isVisible(control: ControlOption) {
     if (!normalizedFilter) {
       return true;
@@ -84,6 +100,11 @@ export function ControlMultiSelect({
           {selected.size} selected
         </span>
       </div>
+      <p className="text-muted-foreground text-xs">
+        Tick a framework heading to map every one of its controls — useful for
+        &ldquo;are you certified?&rdquo; questions where a compliant answer
+        should satisfy the whole framework.
+      </p>
       <div className="flex flex-col gap-2 sm:flex-row">
         <Select
           value={frameworkFilter || ""}
@@ -113,31 +134,53 @@ export function ControlMultiSelect({
             No controls match the current filter.
           </p>
         ) : (
-          grouped.map(([frameworkName, frameworkControls]) => (
-            <div key={frameworkName} className="mb-2">
-              <p className="text-muted-foreground px-1 py-1 text-xs font-medium">
-                {frameworkName}
-              </p>
-              {frameworkControls.map((control) => (
-                <label
-                  key={control.id}
-                  className={cn(
-                    "hover:bg-accent/40 flex items-center gap-2 rounded px-1 py-1 text-sm",
-                    !isVisible(control) && "hidden",
-                  )}
-                >
+          grouped.map(([frameworkName, frameworkControls]) => {
+            const groupIds = frameworkControlIds.get(frameworkName) ?? [];
+            const state = groupSelectionState(selected, groupIds);
+            const selectedInGroup = groupIds.filter((id) =>
+              selected.has(id),
+            ).length;
+            return (
+              <div key={frameworkName} className="mb-2">
+                <label className="flex items-center gap-2 px-1 py-1 text-xs font-medium">
                   <Checkbox
-                    name="controlIds"
-                    value={control.id}
-                    checked={selected.has(control.id)}
-                    onCheckedChange={(checked) => toggle(control.id, checked)}
+                    checked={
+                      state === "all"
+                        ? true
+                        : state === "some"
+                          ? "indeterminate"
+                          : false
+                    }
+                    onCheckedChange={(checked) =>
+                      toggleFramework(frameworkName, checked === true)
+                    }
                   />
-                  <span className="font-mono text-xs">{control.code}</span>
-                  <span className="truncate">{control.title}</span>
+                  <span>{frameworkName}</span>
+                  <span className="text-muted-foreground font-normal">
+                    {selectedInGroup} / {groupIds.length}
+                  </span>
                 </label>
-              ))}
-            </div>
-          ))
+                {frameworkControls.map((control) => (
+                  <label
+                    key={control.id}
+                    className={cn(
+                      "hover:bg-accent/40 flex items-center gap-2 rounded px-1 py-1 text-sm",
+                      !isVisible(control) && "hidden",
+                    )}
+                  >
+                    <Checkbox
+                      name="controlIds"
+                      value={control.id}
+                      checked={selected.has(control.id)}
+                      onCheckedChange={(checked) => toggle(control.id, checked)}
+                    />
+                    <span className="font-mono text-xs">{control.code}</span>
+                    <span className="truncate">{control.title}</span>
+                  </label>
+                ))}
+              </div>
+            );
+          })
         )}
       </div>
     </div>
