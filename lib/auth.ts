@@ -6,6 +6,7 @@ import MicrosoftEntraId from "next-auth/providers/microsoft-entra-id";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 
+import "@/lib/env";
 import { logAudit } from "@/lib/db/audit";
 import { verifyUserCredentials } from "@/lib/db/users";
 import { prisma } from "@/lib/prisma";

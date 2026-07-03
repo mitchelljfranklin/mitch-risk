@@ -18,6 +18,14 @@ const environmentSchema = z.object({
 
 export type Environment = z.infer<typeof environmentSchema>;
 
+export function deriveAuthUrl(
+  existingAuthUrl: string | undefined,
+  appUrl: string,
+): string {
+  const trimmed = existingAuthUrl?.trim();
+  return trimmed && trimmed.length > 0 ? trimmed : appUrl;
+}
+
 function loadEnvironment(): Environment {
   const parsed = environmentSchema.safeParse(process.env);
 
@@ -29,6 +37,14 @@ function loadEnvironment(): Environment {
       .join("\n");
     throw new Error(`Invalid environment variables:\n${issues}`);
   }
+
+  // Auth.js (NextAuth) builds OAuth callback URLs from AUTH_URL, not APP_URL.
+  // Default it to APP_URL so a single public-URL setting drives both app links
+  // and SSO redirect URIs; an explicit AUTH_URL still takes precedence.
+  process.env.AUTH_URL = deriveAuthUrl(
+    process.env.AUTH_URL,
+    parsed.data.APP_URL,
+  );
 
   return parsed.data;
 }

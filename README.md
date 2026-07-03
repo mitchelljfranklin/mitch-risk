@@ -100,7 +100,9 @@ derives its public origin and secure-cookie behaviour from the proxy's forwarded
 **Required configuration:**
 
 - Set `APP_URL` to your public HTTPS URL (e.g. `https://risk.example.com`). It is used to
-  build vendor portal links, email links, and the break-glass URL.
+  build vendor portal links, email links, the break-glass URL, **and** (by default) the
+  Auth.js OAuth/OIDC callback URLs — `AUTH_URL` falls back to `APP_URL` unless set explicitly.
+  If SSO callbacks come back pointing at `localhost`, this is the value to fix.
 - Set `TRUSTED_PROXY_COUNT` to the number of trusted proxies in front of the app. The client
   IP is read that many hops from the **right** of `X-Forwarded-For`, so a client cannot spoof
   it by sending their own header. One proxy = `1`; a CDN in front of a proxy = `2`.
@@ -109,8 +111,8 @@ derives its public origin and secure-cookie behaviour from the proxy's forwarded
 - If your proxy/CDN sets a dedicated single client-IP header, set `CLIENT_IP_HEADER`
   (e.g. `cf-connecting-ip`, `x-azure-clientip`) and it will be used instead of
   `X-Forwarded-For`.
-- Optionally set `AUTH_URL=https://your-host` for proxies that do **not** forward
-  `X-Forwarded-Proto` reliably.
+- `AUTH_URL` defaults to `APP_URL`; set it explicitly only if auth must use a different
+  origin (or as a hard override for proxies that mangle the host/proto headers).
 
 ### Proxy examples
 

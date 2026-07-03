@@ -214,6 +214,7 @@ Once at least one provider works:
 | Symptom | Likely cause / fix |
 |---|---|
 | **redirect_uri mismatch / invalid redirect** | The URI at the IdP must exactly equal `https://YOUR_DOMAIN/api/auth/callback/<provider>` — check scheme (`https`), host, and no trailing slash. Confirm `APP_URL` matches your public host. |
+| **`invalid_redirect_uri` and the redirect shows `localhost:3000`** | Auth.js is deriving the wrong host. Set `APP_URL` to your public HTTPS origin (it feeds `AUTH_URL` by default), and restart. Also configure your reverse proxy to preserve the original `Host` (or send `X-Forwarded-Host`). If auth must use a different origin than `APP_URL`, set `AUTH_URL` explicitly. |
 | **Button doesn't appear on login page** | Provider not *Enabled*, or a required field is blank (Custom OIDC needs **both** Issuer URL and Client ID). Re-save. |
 | **"Configuration" / discovery error (OIDC)** | Issuer URL wrong. Open `<ISSUER>/.well-known/openid-configuration` in a browser; use the exact `issuer` value it returns. |
 | **Login succeeds at IdP but bounces back / access denied** | *Restrict to domain* is set and the account's email domain doesn't match; or the IdP didn't return an `email` claim (add the `email` scope/claim mapping). |
