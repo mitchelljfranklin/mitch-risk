@@ -81,7 +81,7 @@ All operational settings are managed in-app via **Settings** (ADMIN role) — no
 - Scoring weights and RAG thresholds
 - Reminder offsets, escalation timing, assessment defaults, auto-logout (Configuration tab)
 - API keys with IP allowlisting and expiry
-- SSO providers (Entra ID, Google, OIDC)
+- SSO providers (Entra ID, Google, OIDC) — see [ssoConfig.md](./ssoConfig.md) for per-provider setup
 - User management with roles ADMIN/REVIEWER
 
 ## Running behind a reverse proxy (HTTPS)
