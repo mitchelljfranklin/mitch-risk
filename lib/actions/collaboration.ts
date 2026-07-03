@@ -158,20 +158,6 @@ export async function reopenReviewAction(formData: FormData) {
   revalidatePath(`/assessments/${assessmentId}`);
 }
 
-export async function finalizeAction(formData: FormData) {
-  await requirePermission(PERMISSIONS.ASSESSMENTS_REVIEW);
-  const assessmentId = getField(formData, "assessmentId");
-  const result = await finalizeAssessment(assessmentId);
-  if (!result.ok) {
-    throw new Error(`${result.missing} response(s) still need to be reviewed.`);
-  }
-  const user = await getCurrentUser();
-  if (user) {
-    await logAudit(user.id, "FINALIZE_ASSESSMENT", "Assessment", assessmentId);
-  }
-  revalidatePath(`/assessments/${assessmentId}`);
-}
-
 export type FinalizeState = { ok: boolean; message: string } | undefined;
 
 export async function finalizeWithStateAction(

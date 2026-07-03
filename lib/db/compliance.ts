@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getScoringSettings } from "@/lib/settings";
-import { computeRiskByTier } from "@/lib/dashboard-insights";
+import { computeRiskByTier, ragBand } from "@/lib/dashboard-insights";
 
 type DomainScore = {
   domain: string;
@@ -300,43 +300,47 @@ export async function getDashboardData() {
     assessmentStatusCounts[group.status] = group._count._all;
   }
 
+  const { green: greenThreshold, amber: amberThreshold } = (
+    await getScoringSettings()
+  ).ragThresholds;
+  const ragThresholds = { green: greenThreshold, amber: amberThreshold };
+
   const riskByTier = computeRiskByTier(
     allVendors.map((vendor) => ({
       tier: vendor.tier,
       overallScore: vendor.overallScore,
     })),
+    ragThresholds,
   );
 
   const distribution = { green: 0, amber: 0, red: 0, unscored: 0 };
   let totalScore = 0;
   let scoredCount = 0;
 
-  for (const v of allVendors) {
-    if (v.overallScore === null) {
+  for (const vendor of allVendors) {
+    if (vendor.overallScore === null) {
       distribution.unscored++;
     } else {
-      totalScore += v.overallScore;
+      totalScore += vendor.overallScore;
       scoredCount++;
-      if (v.overallScore >= 0.85) distribution.green++;
-      else if (v.overallScore >= 0.6) distribution.amber++;
-      else distribution.red++;
+      distribution[ragBand(vendor.overallScore, ragThresholds)]++;
     }
   }
 
-  const portfolio = allVendors.map((v) => ({
-    id: v.id,
-    name: v.name,
-    tier: v.tier,
-    overallScore: v.overallScore,
-    overdueCount: v._count.assessments,
-    latestAssessmentTitle: v.assessments[0]?.title ?? null,
-    latestAssessmentDate: v.assessments[0]?.createdAt ?? null,
+  const portfolio = allVendors.map((vendor) => ({
+    id: vendor.id,
+    name: vendor.name,
+    tier: vendor.tier,
+    overallScore: vendor.overallScore,
+    overdueCount: vendor._count.assessments,
+    latestAssessmentTitle: vendor.assessments[0]?.title ?? null,
+    latestAssessmentDate: vendor.assessments[0]?.createdAt ?? null,
   }));
 
   const latestPerVendor = new Map<string, string>();
-  for (const v of allVendors) {
-    const latest = v.assessments[0];
-    if (latest) latestPerVendor.set(v.id, latest.id);
+  for (const vendor of allVendors) {
+    const latest = vendor.assessments[0];
+    if (latest) latestPerVendor.set(vendor.id, latest.id);
   }
 
   const latestIds = [...latestPerVendor.values()];
@@ -352,11 +356,11 @@ export async function getDashboardData() {
       : [];
 
   const controlVendorMap = new Map<string, Set<string>>();
-  for (const r of deficientResponses) {
-    for (const cid of r.assessmentQuestion.controlIds) {
-      const set = controlVendorMap.get(cid) ?? new Set();
-      set.add(r.assessment.vendorId);
-      controlVendorMap.set(cid, set);
+  for (const response of deficientResponses) {
+    for (const controlId of response.assessmentQuestion.controlIds) {
+      const vendorSet = controlVendorMap.get(controlId) ?? new Set();
+      vendorSet.add(response.assessment.vendorId);
+      controlVendorMap.set(controlId, vendorSet);
     }
   }
 
@@ -364,11 +368,11 @@ export async function getDashboardData() {
     .sort((a, b) => b[1].size - a[1].size)
     .slice(0, 10);
 
-  const topCids = topEntries.map(([id]) => id);
+  const topControlIds = topEntries.map(([id]) => id);
   const topControls =
-    topCids.length > 0
+    topControlIds.length > 0
       ? await prisma.control.findMany({
-          where: { id: { in: topCids } },
+          where: { id: { in: topControlIds } },
           select: { id: true, code: true, title: true },
         })
       : [];

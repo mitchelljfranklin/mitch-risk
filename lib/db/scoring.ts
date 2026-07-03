@@ -39,6 +39,22 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
   );
   const totalScore = computeTotalScore(scored);
 
+  // Resolve every referenced control code in one query up front, rather than
+  // one query per non-compliant response inside the transaction (N+1).
+  const referencedControlIds = [
+    ...new Set(assessment.questions.flatMap((question) => question.controlIds)),
+  ];
+  const controls =
+    referencedControlIds.length > 0
+      ? await prisma.control.findMany({
+          where: { id: { in: referencedControlIds } },
+          select: { id: true, code: true },
+        })
+      : [];
+  const controlCodeById = new Map(
+    controls.map((control) => [control.id, control.code]),
+  );
+
   await prisma.$transaction(async (tx) => {
     for (const result of scored) {
       await tx.response.update({
@@ -88,10 +104,9 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
         continue;
       }
 
-      const controlCodes = await tx.control.findMany({
-        where: { id: { in: question.controlIds } },
-        select: { code: true },
-      });
+      const controlCodes = question.controlIds
+        .map((controlId) => controlCodeById.get(controlId))
+        .filter((code): code is string => Boolean(code));
 
       const existing = await tx.finding.findFirst({
         where: { assessmentId, responseId: result.id },
@@ -99,7 +114,7 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
       });
 
       const shared = {
-        controlCodes: controlCodes.map((control) => control.code),
+        controlCodes,
         severity: question.riskWeight,
         title: question.text.slice(0, 100),
       };

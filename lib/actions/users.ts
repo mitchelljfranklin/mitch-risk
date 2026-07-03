@@ -17,6 +17,14 @@ import { getRole } from "@/lib/db/roles";
 import { logAudit } from "@/lib/db/audit";
 import { getField } from "@/lib/actions/helpers";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
+
+function isUniqueConstraintError(error: unknown): boolean {
+  return (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    error.code === "P2002"
+  );
+}
 
 export type UserActionState = { ok: boolean; message: string } | undefined;
 
@@ -45,8 +53,15 @@ export async function addUserAction(
 
   try {
     await createUser({ name, email, password, roleId });
-  } catch {
-    return { ok: false, message: "A user with this email already exists." };
+  } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      return { ok: false, message: "A user with this email already exists." };
+    }
+    console.error(`[users] failed to create user ${email}:`, error);
+    return {
+      ok: false,
+      message: "Could not create the user. Please try again.",
+    };
   }
 
   const actor = await getCurrentUser();

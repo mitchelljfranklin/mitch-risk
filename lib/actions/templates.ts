@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
-import { logAudit } from "@/lib/db/audit";
+import { logAudit, logAuditSafe } from "@/lib/db/audit";
 import { getField } from "@/lib/actions/helpers";
 import {
   addQuestion,
@@ -25,7 +25,7 @@ import {
   updateSection,
   updateTemplate,
 } from "@/lib/db/templates";
-import { Prisma } from "@prisma/client";
+import { Prisma, type QuestionType, type RiskWeight } from "@prisma/client";
 import { copyJson } from "@/lib/json";
 import { prisma } from "@/lib/prisma";
 import {
@@ -94,36 +94,52 @@ export async function deleteTemplateAction(formData: FormData) {
 }
 
 export async function addSectionAction(formData: FormData) {
-  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
+  const user = await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const templateId = getField(formData, "templateId");
   await assertEditable(templateId);
   const parsed = sectionSchema.safeParse({
     title: getField(formData, "title"),
   });
   if (parsed.success) {
-    await addSection(templateId, parsed.data.title);
+    const section = await addSection(templateId, parsed.data.title);
+    logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
+      change: "add_section",
+      sectionId: section.id,
+      title: parsed.data.title,
+    });
   }
   revalidatePath(`/templates/${templateId}`);
 }
 
 export async function updateSectionAction(formData: FormData) {
-  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
+  const user = await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const templateId = getField(formData, "templateId");
   await assertEditable(templateId);
+  const sectionId = getField(formData, "sectionId");
   const parsed = sectionSchema.safeParse({
     title: getField(formData, "title"),
   });
   if (parsed.success) {
-    await updateSection(getField(formData, "sectionId"), parsed.data.title);
+    await updateSection(sectionId, parsed.data.title);
+    logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
+      change: "rename_section",
+      sectionId,
+      title: parsed.data.title,
+    });
   }
   revalidatePath(`/templates/${templateId}`);
 }
 
 export async function deleteSectionAction(formData: FormData) {
-  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
+  const user = await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const templateId = getField(formData, "templateId");
   await assertEditable(templateId);
-  await deleteSection(getField(formData, "sectionId"));
+  const sectionId = getField(formData, "sectionId");
+  await deleteSection(sectionId);
+  logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
+    change: "delete_section",
+    sectionId,
+  });
   revalidatePath(`/templates/${templateId}`);
 }
 
@@ -131,7 +147,7 @@ export async function saveQuestionAction(
   previousState: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
+  const user = await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const templateId = getField(formData, "templateId");
   await assertEditable(templateId);
   const sectionId = getField(formData, "sectionId");
@@ -184,36 +200,62 @@ export async function saveQuestionAction(
 
   if (questionId) {
     await updateQuestion(questionId, parsed.data);
+    logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
+      change: "update_question",
+      questionId,
+    });
   } else {
-    await addQuestion(sectionId, parsed.data);
+    const question = await addQuestion(sectionId, parsed.data);
+    logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
+      change: "add_question",
+      sectionId,
+      questionId: question.id,
+    });
   }
   revalidatePath(`/templates/${templateId}`);
   redirect(`/templates/${templateId}`);
 }
 
 export async function deleteQuestionAction(formData: FormData) {
-  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
+  const user = await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const templateId = getField(formData, "templateId");
   await assertEditable(templateId);
-  await deleteQuestion(getField(formData, "questionId"));
+  const questionId = getField(formData, "questionId");
+  await deleteQuestion(questionId);
+  logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
+    change: "delete_question",
+    questionId,
+  });
   revalidatePath(`/templates/${templateId}`);
 }
 
 export async function moveSectionAction(formData: FormData) {
-  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
+  const user = await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const templateId = getField(formData, "templateId");
   await assertEditable(templateId);
+  const sectionId = getField(formData, "sectionId");
   const direction = getField(formData, "direction") === "up" ? "up" : "down";
-  await moveSection(getField(formData, "sectionId"), direction);
+  await moveSection(sectionId, direction);
+  logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
+    change: "move_section",
+    sectionId,
+    direction,
+  });
   revalidatePath(`/templates/${templateId}`);
 }
 
 export async function moveQuestionAction(formData: FormData) {
-  await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
+  const user = await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
   const templateId = getField(formData, "templateId");
   await assertEditable(templateId);
+  const questionId = getField(formData, "questionId");
   const direction = getField(formData, "direction") === "up" ? "up" : "down";
-  await moveQuestion(getField(formData, "questionId"), direction);
+  await moveQuestion(questionId, direction);
+  logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
+    change: "move_question",
+    questionId,
+    direction,
+  });
   revalidatePath(`/templates/${templateId}`);
 }
 
@@ -369,27 +411,28 @@ export async function importTemplateAction(
         data: { templateId: template.id, title: section.title },
       });
 
-      for (const q of section.questions) {
-        const controlIds = (q.controlCodes ?? [])
+      for (const question of section.questions) {
+        const controlIds = (question.controlCodes ?? [])
           .map((code) => controlByCode.get(code))
           .filter((id): id is string => !!id);
 
         await tx.question.create({
           data: {
             sectionId: created.id,
-            text: q.text,
-            helpText: q.helpText ?? null,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            type: q.type as any,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            riskWeight: q.riskWeight as any,
-            required: q.required,
+            text: question.text,
+            helpText: question.helpText ?? null,
+            // Validated against QUESTION_TYPES / risk weights above.
+            type: question.type as QuestionType,
+            riskWeight: question.riskWeight as RiskWeight,
+            required: question.required,
             expectedAnswer: copyJson(
-              q.expectedAnswer ?? null,
+              question.expectedAnswer ?? null,
             ) as Prisma.InputJsonValue,
-            options: copyJson(q.options ?? null) as Prisma.InputJsonValue,
+            options: copyJson(
+              question.options ?? null,
+            ) as Prisma.InputJsonValue,
             conditionalLogic: copyJson(
-              q.conditionalLogic ?? null,
+              question.conditionalLogic ?? null,
             ) as Prisma.InputJsonValue,
             controls: {
               create: controlIds.map((controlId) => ({ controlId })),

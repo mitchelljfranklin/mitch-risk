@@ -207,16 +207,25 @@ export async function regenerateAssessmentAction(formData: FormData) {
 export async function deleteAssessmentAction(formData: FormData) {
   await requirePermission(PERMISSIONS.ASSESSMENTS_DELETE);
   const assessmentId = getField(formData, "assessmentId");
-  await deleteAssessment(assessmentId);
+  // Record the audit entry before the delete so a crash mid-operation can't
+  // erase the assessment without leaving a trace of who removed it.
   const user = await getCurrentUser();
   if (user) {
     await logAudit(user.id, "DELETE_ASSESSMENT", "Assessment", assessmentId);
   }
+  await deleteAssessment(assessmentId);
   redirect("/assessments");
 }
 
 export type BulkSendState =
-  { ok: boolean; message: string; sent?: number; skipped?: number } | undefined;
+  | {
+      ok: boolean;
+      message: string;
+      sent?: number;
+      skipped?: number;
+      emailFailed?: number;
+    }
+  | undefined;
 
 export async function sendBulkAssessmentsAction(
   previousState: BulkSendState,
@@ -240,6 +249,7 @@ export async function sendBulkAssessmentsAction(
   const user = await getCurrentUser();
   let sentCount = 0;
   let skippedCount = 0;
+  let emailFailedCount = 0;
 
   for (const vendorId of vendorIds) {
     try {
@@ -249,6 +259,7 @@ export async function sendBulkAssessmentsAction(
       });
       if (!vendor) {
         skippedCount++;
+        console.error(`[bulk-send] vendor not found: ${vendorId}`);
         continue;
       }
 
@@ -266,39 +277,64 @@ export async function sendBulkAssessmentsAction(
         await logAudit(user.id, "SEND_ASSESSMENT", "Assessment", assessment.id);
       }
 
+      // The assessment is created and sent at this point. Email delivery is
+      // best-effort: a failure here must not mark the whole vendor as skipped.
       if (vendor.contactEmail) {
-        const sent = await getAssessmentForEmail(assessment.id);
-        if (sent?.accessToken) {
-          const portalUrl = `${env.APP_URL}/portal/${sent.accessToken}`;
-          await sendEmail(
-            vendor.contactEmail,
-            portalPassword ? "invite-password" : "invite",
-            {
-              vendorName: vendor.name,
-              assessmentTitle: sent.title,
-              portalUrl,
-              dueDate: dueDate,
-              portalPassword: portalPassword ?? "",
-            },
-            { assessmentId: assessment.id, sentById: user?.id },
+        try {
+          const sent = await getAssessmentForEmail(assessment.id);
+          if (sent?.accessToken) {
+            const portalUrl = `${env.APP_URL}/portal/${sent.accessToken}`;
+            await sendEmail(
+              vendor.contactEmail,
+              portalPassword ? "invite-password" : "invite",
+              {
+                vendorName: vendor.name,
+                assessmentTitle: sent.title,
+                portalUrl,
+                dueDate: dueDate,
+                portalPassword: portalPassword ?? "",
+              },
+              { assessmentId: assessment.id, sentById: user?.id },
+            );
+            await setAssessmentRecipients(assessment.id, [vendor.contactEmail]);
+          }
+        } catch (emailError) {
+          emailFailedCount++;
+          console.error(
+            `[bulk-send] email failed for vendor ${vendorId} (assessment ${assessment.id}):`,
+            emailError,
           );
-          await setAssessmentRecipients(assessment.id, [vendor.contactEmail]);
         }
       }
 
       sentCount++;
-    } catch {
+    } catch (error) {
       skippedCount++;
+      console.error(
+        `[bulk-send] failed to send for vendor ${vendorId}:`,
+        error,
+      );
     }
   }
 
   revalidatePath("/assessments");
   revalidatePath("/vendors");
 
+  const parts = [`Sent ${sentCount} assessment${sentCount !== 1 ? "s" : ""}`];
+  if (skippedCount > 0) {
+    parts.push(`${skippedCount} could not be sent`);
+  }
+  if (emailFailedCount > 0) {
+    parts.push(
+      `${emailFailedCount} email${emailFailedCount !== 1 ? "s" : ""} failed to deliver`,
+    );
+  }
+
   return {
     ok: true,
-    message: `Sent ${sentCount} assessment${sentCount !== 1 ? "s" : ""}${skippedCount > 0 ? `. ${skippedCount} skipped.` : ""}`,
+    message: `${parts.join(". ")}.`,
     sent: sentCount,
     skipped: skippedCount,
+    emailFailed: emailFailedCount,
   };
 }

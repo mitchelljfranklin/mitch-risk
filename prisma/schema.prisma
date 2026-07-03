@@ -295,6 +295,8 @@ model Assessment {
   @@index([vendorId])
   @@index([vendorId, status])
   @@index([status])
+  @@index([dueDate])
+  @@index([status, dueDate])
   @@map("assessments")
 }
 

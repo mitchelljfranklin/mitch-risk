@@ -1,5 +1,12 @@
 export type RagBand = "green" | "amber" | "red" | "unscored";
 
+export type RagThresholds = { green: number; amber: number };
+
+export const DEFAULT_RAG_THRESHOLDS: RagThresholds = {
+  green: 0.85,
+  amber: 0.6,
+};
+
 export const RISK_TIER_ORDER = [
   "CRITICAL",
   "HIGH",
@@ -10,10 +17,13 @@ export const RISK_TIER_ORDER = [
 
 export type RiskTierLabel = (typeof RISK_TIER_ORDER)[number];
 
-export function ragBand(score: number | null): RagBand {
+export function ragBand(
+  score: number | null,
+  thresholds: RagThresholds = DEFAULT_RAG_THRESHOLDS,
+): RagBand {
   if (score === null) return "unscored";
-  if (score >= 0.85) return "green";
-  if (score >= 0.6) return "amber";
+  if (score >= thresholds.green) return "green";
+  if (score >= thresholds.amber) return "amber";
   return "red";
 }
 
@@ -31,7 +41,10 @@ export type RiskByTierRow = {
   total: number;
 };
 
-export function computeRiskByTier(vendors: TierScoreInput[]): RiskByTierRow[] {
+export function computeRiskByTier(
+  vendors: TierScoreInput[],
+  thresholds: RagThresholds = DEFAULT_RAG_THRESHOLDS,
+): RiskByTierRow[] {
   const rows = new Map<RiskTierLabel, RiskByTierRow>();
   for (const tier of RISK_TIER_ORDER) {
     rows.set(tier, {
@@ -51,7 +64,7 @@ export function computeRiskByTier(vendors: TierScoreInput[]): RiskByTierRow[] {
       ? (vendor.tier as RiskTierLabel)
       : "Unspecified";
     const row = rows.get(tier)!;
-    row[ragBand(vendor.overallScore)] += 1;
+    row[ragBand(vendor.overallScore, thresholds)] += 1;
     row.total += 1;
   }
 

@@ -1936,6 +1936,45 @@ race-free. Tracked for the Correctness phase (Batch C).
 
 ---
 
+## Phase 75 — Correctness (Batch C) + AGENTS.md
+
+**Scope:** correctness/perf fixes from the code review, plus the AGENTS.md learnings.
+
+**Checklist:**
+
+- [x] **RAG thresholds honoured** — `ragBand`/`computeRiskByTier` take a `thresholds` arg;
+      `getDashboardData` passes the admin-configured `ragThresholds`, so dashboard bands/distribution
+      match the heatmap. Unit tests cover custom thresholds.
+- [x] **Bulk-send error handling** — email failures (best-effort, post-send) no longer mark a vendor
+      as skipped; real send failures and email failures are counted and `console.error`-logged per
+      vendor; message reports both.
+- [x] **Template builder audit** — `add/update/delete Section`, `save/delete Question`,
+      `move Section/Question` write an `UPDATE_TEMPLATE` audit entry (via `logAuditSafe`) with a
+      `change` meta.
+- [x] **Error handling** — removed dead throwing `finalizeAction`; role duplicate/delete catches
+      log; user-create distinguishes `P2002` unique-email from other failures; delete-assessment
+      audit written before the delete.
+- [x] **Performance** — `Assessment.dueDate` + `[status,dueDate]` indexes (migration
+      `20260704010000`); `listFindings` uses DB-level `take/skip` + `count` with enum-order
+      `orderBy` (was fetch-all + JS sort + in-memory slice); scoring resolves control codes in one
+      query up front (was N+1 inside the transaction). New pagination integration test.
+- [x] **Cleanup** — single-letter vars renamed (`v`/`r`/`cid`/`q`), `MILLISECONDS_PER_DAY`
+      constant, removed `any` casts in template import (proper Prisma enum types).
+- [x] **AGENTS.md** — verification/e2e conventions, "Security & deployment invariants", and
+      "Windows / PowerShell tooling notes".
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 202 passed (test DB), Playwright
+10/10 on a fresh production server. Migration applied to dev + test DBs.
+
+**Deferred follow-up:** the remaining state-returning **settings forms** (organization, email,
+scoring, SSO, scheduling, limits, appearance) still self-`revalidatePath` and can drop their success
+toast in production under the Phase 74 race. The resilient toast store mitigates this; a full
+migration to `useActionFeedback` (drop self-revalidate + client refresh) is tracked as a dedicated
+follow-up so each form can be verified. Create/import forms redirect + use `FlashToast` and are
+unaffected.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1996,6 +2035,7 @@ race-free. Tracked for the Correctness phase (Batch C).
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 75 | Ready for review | opencode | 2026-07-04 | Correctness (Batch C): configurable RAG thresholds on dashboard; bulk-send email/send failure separation + logging; template builder audit logging; removed dead finalizeAction; role/user error handling; delete-audit ordering; perf (dueDate index, findings DB pagination, scoring N+1 batch); naming cleanup; AGENTS.md invariants. 202 unit, 10/10 e2e prod |
 | 74 | Ready for review | opencode | 2026-07-04 | Prod Server-Action feedback fix: root-caused revalidatePath(current route)+useActionState dropping state in prod builds; resilient module-level toast store + useActionFeedback (guarded router.refresh) + actions stop self-revalidating (API/roles); middleware nonce-CSP now GET-only; e2e now targets prod build (CRON_SECRET wired); fixed a TZ-flaky cert test. 199 unit, 10/10 e2e on fresh prod |
 | 73 | Ready for review | opencode | 2026-07-03 | Security hardening (Batch B): rate-limiter eviction/bounding, portal-page + credentials-authorize IP limits, upload MIME allowlist, shared API error wrapper (generic 500), nonce-based strict CSP + security headers via middleware; +3 test files, 199 unit passing, 10/10 e2e (dev) |
 | 72 | Ready for review | opencode | 2026-07-03 | Security hardening (Batch A): API-key prefix lookup (+migration invalidating legacy keys), TRUSTED_PROXY_COUNT default 0, constant-time CRON_SECRET (+required in prod), evidence nosniff + inline MIME allowlist, portal edits locked after submit; +3 test files, 191 unit passing |

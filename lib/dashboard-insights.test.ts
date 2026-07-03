@@ -3,13 +3,20 @@ import { describe, expect, it } from "vitest";
 import { computeRiskByTier, ragBand } from "@/lib/dashboard-insights";
 
 describe("ragBand", () => {
-  it("bands scores into RAG buckets", () => {
+  it("bands scores into RAG buckets with default thresholds", () => {
     expect(ragBand(null)).toBe("unscored");
     expect(ragBand(0.9)).toBe("green");
     expect(ragBand(0.85)).toBe("green");
     expect(ragBand(0.7)).toBe("amber");
     expect(ragBand(0.6)).toBe("amber");
     expect(ragBand(0.5)).toBe("red");
+  });
+
+  it("honours configured thresholds", () => {
+    const thresholds = { green: 0.9, amber: 0.75 };
+    expect(ragBand(0.85, thresholds)).toBe("amber");
+    expect(ragBand(0.9, thresholds)).toBe("green");
+    expect(ragBand(0.74, thresholds)).toBe("red");
   });
 });
 
@@ -41,5 +48,19 @@ describe("computeRiskByTier", () => {
 
   it("returns an empty array when there are no vendors", () => {
     expect(computeRiskByTier([])).toEqual([]);
+  });
+
+  it("applies configured thresholds when banding tiers", () => {
+    const rows = computeRiskByTier(
+      [
+        { tier: "HIGH", overallScore: 0.88 },
+        { tier: "HIGH", overallScore: 0.78 },
+      ],
+      { green: 0.9, amber: 0.8 },
+    );
+    const high = rows.find((row) => row.tier === "HIGH")!;
+    expect(high.amber).toBe(1);
+    expect(high.red).toBe(1);
+    expect(high.green).toBe(0);
   });
 });

@@ -107,6 +107,24 @@ ones before declaring any phase complete.
 > If a command above does not yet exist for the phase you are in, create it as part of
 > that phase rather than skipping verification.
 
+### Verification gotchas (learned the hard way)
+
+- **e2e runs against the _production_ build.** Playwright's `webServer` is `npm run start`, so
+  the suite exercises `next build` output (dev and prod behave differently — e.g. Server-Action
+  result delivery). `npm run start` runs in production mode and **requires `CRON_SECRET`**; the
+  Playwright config injects one via `webServer.env`. Locally, `reuseExistingServer` reuses a server
+  you already have up; in CI it starts a fresh production server. Do not assume a green `dev` run
+  means prod is green — verify with a production build.
+- **Apply new Prisma migrations to _both_ the dev DB and the test DB** (`prisma migrate deploy`
+  against each; the test DB is `TEST_DATABASE_URL`) before running `npm run test`, or integration
+  tests fail on missing columns.
+- **Server Actions that feed `useActionState`.** An action that returns a value for
+  `useActionState` must **not** call `revalidatePath` for its own current route — in production
+  that re-render drops the returned state (no success toast, modal won't auto-close). Return the
+  state and let the client refresh: use the `useActionFeedback` hook (toast + guarded
+  `router.refresh()`). Toasts render via a module-level store (`components/toast.tsx`) so they
+  survive a route refresh.
+
 ## Working agreement — stage gates
 
 This project is delivered in **gated phases**. The authoritative plan is
@@ -271,3 +289,33 @@ from the catalog and role defaults).
   powers the Swagger UI at `/docs`. Every endpoint must have a summary, description, full
   parameter schemas, response schemas, and error codes. This ensures citizen developers and
   SIEM integrations always have accurate API documentation.
+
+## Security & deployment invariants
+
+- **CSP lives in `proxy.ts`** (the Next 16 replacement for `middleware.ts`): a nonce-based,
+  `strict-dynamic` policy applied **only to document GET requests** — never rewrite request
+  headers on Server-Action POST/RSC requests (it drops the action result). Never add an inline
+  `<script>` without threading the request nonce; new external origins (e.g. a CDN) must be added
+  to the relevant CSP directive; styles rely on `'unsafe-inline'`. **Do not add
+  `upgrade-insecure-requests`** — it breaks HTTP-accessed self-hosted deployments and same-origin
+  Server Actions.
+- **REST v1 handlers** go through `runApiHandler` + `apiError` (`lib/api-response.ts`): unexpected
+  errors return a generic `500` (no internals), logged server-side.
+- **Compare secrets in constant time** via `lib/timing-safe.ts` (e.g. `CRON_SECRET`). API keys are
+  `mrk_<prefix>.<secret>` with an indexed `keyPrefix` lookup + a single bcrypt compare.
+- **Rate limiter** (`lib/rate-limit.ts`) is in-memory/per-process — correct for the single-container
+  Compose deployment; a shared store (Redis) is required only if scaled horizontally.
+- **Deployment env musts:** `CRON_SECRET` is **required in production** (the app refuses to boot
+  without it, except during `next build`); `TRUSTED_PROXY_COUNT` must match the real proxy hop
+  count (default `0` = X-Forwarded-For ignored) or client-IP rate-limiting and API-key IP
+  allowlists degrade.
+
+## Windows / PowerShell tooling notes
+
+- **Quote bracketed dynamic-route paths** for Prettier/Node (e.g. `"app/portal/[token]/page.tsx"`);
+  unquoted globs silently skip them.
+- If `tsc` reports parse errors inside `.next/dev/types/routes.d.ts`, delete `.next` and rebuild —
+  a killed dev server can leave the generated route types corrupted.
+- `npm install` rewrites `package.json`; if that leaves it flagged by `format:check`, it's a
+  working-copy line-ending artifact — `git checkout`/`prettier --write` it (the committed content
+  is unchanged).

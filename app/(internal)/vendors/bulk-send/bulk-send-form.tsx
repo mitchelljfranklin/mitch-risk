@@ -32,7 +32,14 @@ type BulkSendFormProps = {
 };
 
 type BulkSendState =
-  { ok: boolean; message: string; sent?: number; skipped?: number } | undefined;
+  | {
+      ok: boolean;
+      message: string;
+      sent?: number;
+      skipped?: number;
+      emailFailed?: number;
+    }
+  | undefined;
 
 export function BulkSendForm({
   vendors,

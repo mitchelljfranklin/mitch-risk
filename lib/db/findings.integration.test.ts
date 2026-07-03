@@ -32,6 +32,8 @@ const TEMPLATE = "P53 Findings Template";
 const REVIEWER_EMAIL = "p53-findings-reviewer@example.test";
 const REGISTER_VENDOR = "P66 Register Vendor";
 const REGISTER_TEMPLATE = "P66 Register Template";
+const PAGING_VENDOR = "P75 Paging Vendor";
+const PAGING_TEMPLATE = "P75 Paging Template";
 
 function buildQuestion(
   overrides: Partial<QuestionInput> & Pick<QuestionInput, "text" | "type">,
@@ -50,10 +52,10 @@ function buildQuestion(
 
 async function cleanup() {
   await prisma.vendor.deleteMany({
-    where: { name: { in: [VENDOR, REGISTER_VENDOR] } },
+    where: { name: { in: [VENDOR, REGISTER_VENDOR, PAGING_VENDOR] } },
   });
   await prisma.template.deleteMany({
-    where: { name: { in: [TEMPLATE, REGISTER_TEMPLATE] } },
+    where: { name: { in: [TEMPLATE, REGISTER_TEMPLATE, PAGING_TEMPLATE] } },
   });
   await prisma.user.deleteMany({ where: { email: REVIEWER_EMAIL } });
 }
@@ -258,5 +260,63 @@ describe("risk register queries (integration)", () => {
     expect(vendorFindings).toHaveLength(3);
     expect(vendorFindings[0].status).toBe("OPEN");
     expect(vendorFindings[0].severity).toBe("CRITICAL");
+  });
+});
+
+describe("findings pagination (integration)", () => {
+  const TOTAL_FINDINGS = 25;
+  let pagingVendorId = "";
+
+  beforeAll(async () => {
+    const template = await createTemplate({
+      name: PAGING_TEMPLATE,
+      description: "",
+    });
+    const vendor = await createVendor({
+      name: PAGING_VENDOR,
+      contactName: "",
+      contactEmail: "p75@example.test",
+      tier: "",
+      website: "",
+      notes: "",
+    });
+    pagingVendorId = vendor.id;
+    const assessment = await createAssessment(vendor.id, {
+      title: "P75 assessment",
+      templateId: template.id,
+      dueDate: "",
+      reviewerId: "",
+    });
+    await prisma.finding.createMany({
+      data: Array.from({ length: TOTAL_FINDINGS }, (_, index) => ({
+        assessmentId: assessment.id,
+        severity: "HIGH" as const,
+        status: "OPEN" as const,
+        title: `Paged finding ${index}`,
+        description: "d",
+        controlCodes: [],
+      })),
+    });
+  });
+
+  it("paginates at the database level with an accurate total count", async () => {
+    const firstPage = await listFindings({ vendorId: pagingVendorId, page: 1 });
+    expect(firstPage.totalCount).toBe(TOTAL_FINDINGS);
+    expect(firstPage.findings).toHaveLength(firstPage.pageSize);
+
+    const secondPage = await listFindings({
+      vendorId: pagingVendorId,
+      page: 2,
+    });
+    expect(secondPage.totalCount).toBe(TOTAL_FINDINGS);
+    expect(secondPage.findings).toHaveLength(
+      TOTAL_FINDINGS - firstPage.pageSize,
+    );
+
+    const firstIds = new Set(firstPage.findings.map((finding) => finding.id));
+    const overlap = secondPage.findings.filter((finding) =>
+      firstIds.has(finding.id),
+    );
+    expect(overlap).toHaveLength(0);
   });
 });

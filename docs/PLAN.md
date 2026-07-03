@@ -602,6 +602,21 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   (`npm run start` with `CRON_SECRET` wired in; fresh server in CI) so prod-only regressions are
   caught. Remaining state-returning forms are migrated to `useActionFeedback` incrementally.
 
+- **Phase 75 — Correctness (Batch C) + AGENTS.md.** Correctness fixes from the code review:
+  the dashboard now honours the admin-configured RAG thresholds (`ragBand`/`computeRiskByTier`
+  take thresholds; `getDashboardData` passes `getScoringSettings().ragThresholds`); bulk-send
+  separates real send failures from best-effort email failures and logs each per vendor; the six
+  template section/question builder actions now write an `UPDATE_TEMPLATE` audit entry with a
+  `change` meta; the dead throwing `finalizeAction` was removed; role duplicate/delete catches log
+  instead of swallowing; user creation distinguishes the unique-email case (Prisma `P2002`) from
+  other errors; the delete-assessment audit is written before the delete. Performance: an
+  `Assessment.dueDate` index (migration `20260704010000`) for overdue/reminder queries,
+  DB-level pagination for `listFindings` (was fetch-all + in-memory slice), and a single batched
+  control-code lookup in the scoring transaction (was N+1). Naming/magic-number cleanups in the
+  touched files. AGENTS.md gained verification/e2e conventions, security & deployment invariants,
+  and Windows tooling notes. Follow-up (tracked): migrate the remaining state-returning settings
+  forms to `useActionFeedback`.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

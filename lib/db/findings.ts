@@ -18,18 +18,21 @@ export const FINDING_SORTS = {
 
 export type FindingSort = keyof typeof FINDING_SORTS;
 
-const SEVERITY_RANK: Record<RiskWeight, number> = {
-  CRITICAL: 0,
-  HIGH: 1,
-  MEDIUM: 2,
-  LOW: 3,
-};
-
-const STATUS_RANK: Record<FindingStatus, number> = {
-  OPEN: 0,
-  REMEDIATED: 1,
-  RISK_ACCEPTED: 2,
-};
+// RiskWeight (CRITICAL→LOW) and FindingStatus (OPEN→RISK_ACCEPTED) are declared
+// in priority order, and Postgres sorts enums by declaration order, so these
+// sorts map directly onto Prisma `orderBy` for DB-level pagination.
+function buildFindingOrderBy(
+  sort: FindingSort,
+): Prisma.FindingOrderByWithRelationInput[] {
+  if (sort === "newest") {
+    return [{ createdAt: "desc" }];
+  }
+  if (sort === "severity") {
+    return [{ severity: "asc" }, { createdAt: "desc" }];
+  }
+  // priority: open first, then severity, then newest.
+  return [{ status: "asc" }, { severity: "asc" }, { createdAt: "desc" }];
+}
 
 export type RegisterFinding = {
   id: string;
@@ -73,27 +76,34 @@ export async function listFindings(filters: FindingFilters = {}): Promise<{
     where.assessment = { vendorId: filters.vendorId };
   }
 
-  const rows = await prisma.finding.findMany({
-    where,
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      severity: true,
-      status: true,
-      controlCodes: true,
-      resolutionNote: true,
-      createdAt: true,
-      assessmentId: true,
-      assessment: {
-        select: {
-          title: true,
-          vendorId: true,
-          vendor: { select: { name: true } },
+  const page = Math.max(1, filters.page ?? 1);
+  const [rows, totalCount] = await Promise.all([
+    prisma.finding.findMany({
+      where,
+      orderBy: buildFindingOrderBy(filters.sort ?? "priority"),
+      take: FINDINGS_PAGE_SIZE,
+      skip: (page - 1) * FINDINGS_PAGE_SIZE,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        severity: true,
+        status: true,
+        controlCodes: true,
+        resolutionNote: true,
+        createdAt: true,
+        assessmentId: true,
+        assessment: {
+          select: {
+            title: true,
+            vendorId: true,
+            vendor: { select: { name: true } },
+          },
         },
       },
-    },
-  });
+    }),
+    prisma.finding.count({ where }),
+  ]);
 
   const findings: RegisterFinding[] = rows.map((row) => ({
     id: row.id,
@@ -110,36 +120,12 @@ export async function listFindings(filters: FindingFilters = {}): Promise<{
     vendorName: row.assessment.vendor.name,
   }));
 
-  sortFindings(findings, filters.sort ?? "priority");
-
-  const page = Math.max(1, filters.page ?? 1);
-  const start = (page - 1) * FINDINGS_PAGE_SIZE;
   return {
-    findings: findings.slice(start, start + FINDINGS_PAGE_SIZE),
-    totalCount: findings.length,
+    findings,
+    totalCount,
     page,
     pageSize: FINDINGS_PAGE_SIZE,
   };
-}
-
-function sortFindings(findings: RegisterFinding[], sort: FindingSort): void {
-  findings.sort((a, b) => {
-    if (sort === "newest") {
-      return b.createdAt.getTime() - a.createdAt.getTime();
-    }
-    if (sort === "severity") {
-      return (
-        SEVERITY_RANK[a.severity] - SEVERITY_RANK[b.severity] ||
-        b.createdAt.getTime() - a.createdAt.getTime()
-      );
-    }
-    // priority: open first, then severity, then newest.
-    return (
-      STATUS_RANK[a.status] - STATUS_RANK[b.status] ||
-      SEVERITY_RANK[a.severity] - SEVERITY_RANK[b.severity] ||
-      b.createdAt.getTime() - a.createdAt.getTime()
-    );
-  });
 }
 
 export type FindingSummary = {
@@ -195,6 +181,7 @@ export async function listVendorFindings(
 ): Promise<VendorFinding[]> {
   const rows = await prisma.finding.findMany({
     where: { assessment: { vendorId } },
+    orderBy: buildFindingOrderBy("priority"),
     select: {
       id: true,
       title: true,
@@ -206,22 +193,15 @@ export async function listVendorFindings(
     },
   });
 
-  return rows
-    .map((row) => ({
-      id: row.id,
-      title: row.title,
-      severity: row.severity,
-      status: row.status,
-      assessmentId: row.assessmentId,
-      assessmentTitle: row.assessment.title,
-      createdAt: row.createdAt,
-    }))
-    .sort(
-      (a, b) =>
-        STATUS_RANK[a.status] - STATUS_RANK[b.status] ||
-        SEVERITY_RANK[a.severity] - SEVERITY_RANK[b.severity] ||
-        b.createdAt.getTime() - a.createdAt.getTime(),
-    );
+  return rows.map((row) => ({
+    id: row.id,
+    title: row.title,
+    severity: row.severity,
+    status: row.status,
+    assessmentId: row.assessmentId,
+    assessmentTitle: row.assessment.title,
+    createdAt: row.createdAt,
+  }));
 }
 
 export function updateFindingStatus(params: {

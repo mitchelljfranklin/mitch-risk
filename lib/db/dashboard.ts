@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+
 export type UpcomingKeyDateType = "Certification" | "Contract" | "Reassessment";
 
 export type UpcomingKeyDate = {
@@ -48,7 +50,7 @@ export async function listUpcomingKeyDates(
   ]);
 
   const daysUntil = (date: Date) =>
-    Math.ceil((date.getTime() - now.getTime()) / 86400000);
+    Math.ceil((date.getTime() - now.getTime()) / MILLISECONDS_PER_DAY);
 
   const items: UpcomingKeyDate[] = [
     ...certifications.map((cert) => ({
