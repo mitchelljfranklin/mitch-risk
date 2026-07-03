@@ -34,6 +34,9 @@ export async function POST(request: Request) {
     tier: record.tier ?? "",
     website: record.website ?? "",
     notes: record.notes ?? "",
+    serviceDescription: record.serviceDescription ?? "",
+    dataSensitivity: record.dataSensitivity ?? "",
+    contractRenewalDate: record.contractRenewalDate ?? "",
   });
 
   if (!parsed.success) {

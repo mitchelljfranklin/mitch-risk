@@ -545,6 +545,14 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   reusable `FlashToast`). The **new** and **edit** vendor pages gained **breadcrumbs**
   (Vendors → … → New/Edit) for back-navigation, matching the detail page.
 
+- **Phase 70 — Vendor import/export parity.** The Phase 67 vendor fields now flow through
+  import and export. The **CSV export** summary includes service, data sensitivity, contract
+  renewal, and owner, plus a **Certifications** section (name/issuer/issued/expires/status). The
+  **REST import** (`/api/v1/vendors/import`) accepts `serviceDescription`, `dataSensitivity`, and
+  `contractRenewalDate` (matching the OpenAPI spec, which dropped the unsupported `ownerId`), and
+  the **CSV import** recognises the same three optional columns (data sensitivity validated,
+  renewal date validated). Owner is intentionally set in-app only.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

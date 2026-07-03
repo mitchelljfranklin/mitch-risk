@@ -161,6 +161,16 @@ export function getVendorForExport(id: string) {
   return prisma.vendor.findUnique({
     where: { id },
     include: {
+      owner: { select: { name: true } },
+      certifications: {
+        orderBy: { expiresDate: "asc" },
+        select: {
+          name: true,
+          issuer: true,
+          issuedDate: true,
+          expiresDate: true,
+        },
+      },
       assessments: {
         orderBy: { createdAt: "desc" },
         select: {

@@ -1,6 +1,11 @@
 import { authenticateRequest, authResultHasPermission } from "@/lib/api-auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getVendorForExport } from "@/lib/db/vendors";
+import {
+  CERTIFICATION_STATUS_LABELS,
+  certificationStatus,
+} from "@/lib/schemas/certification";
+import { DATA_SENSITIVITY_LABELS } from "@/lib/schemas/vendor";
 import { csvEscape } from "@/lib/utils";
 
 export async function GET(
@@ -47,11 +52,49 @@ export async function GET(
     `Vendor:,${csvEscape(vendor.name)}`,
     `Contact:,${csvEscape(vendor.contactEmail ?? "")}`,
     `Tier:,${csvEscape(vendor.tier ?? "")}`,
+    `Owner:,${csvEscape(vendor.owner?.name ?? "")}`,
+    `Service provided:,${csvEscape(vendor.serviceDescription ?? "")}`,
+    `Data sensitivity:,${csvEscape(
+      vendor.dataSensitivity
+        ? DATA_SENSITIVITY_LABELS[vendor.dataSensitivity]
+        : "",
+    )}`,
+    `Contract renewal:,${csvEscape(
+      vendor.contractRenewalDate?.toISOString().slice(0, 10) ?? "",
+    )}`,
     `Overall Score:,${vendor.overallScore !== null ? Math.round(vendor.overallScore * 100) + "%" : ""}`,
     "",
   ].join("\n");
 
-  const csv = [summary, header, ...rows].join("\n");
+  const certHeader = [
+    csvEscape("Certification"),
+    csvEscape("Issuer"),
+    csvEscape("Issued"),
+    csvEscape("Expires"),
+    csvEscape("Status"),
+  ].join(",");
+  const certRows = vendor.certifications.map((cert) =>
+    [
+      csvEscape(cert.name),
+      csvEscape(cert.issuer ?? ""),
+      csvEscape(cert.issuedDate?.toISOString().slice(0, 10) ?? ""),
+      csvEscape(cert.expiresDate.toISOString().slice(0, 10)),
+      csvEscape(
+        CERTIFICATION_STATUS_LABELS[certificationStatus(cert.expiresDate)],
+      ),
+    ].join(","),
+  );
+
+  const csv = [
+    summary,
+    "Assessments",
+    header,
+    ...rows,
+    "",
+    "Certifications",
+    certHeader,
+    ...certRows,
+  ].join("\n");
 
   return new Response(csv, {
     headers: {

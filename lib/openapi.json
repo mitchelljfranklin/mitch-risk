@@ -774,10 +774,6 @@
             "type": "string",
             "format": "date",
             "description": "Contract renewal / review date (YYYY-MM-DD)"
-          },
-          "ownerId": {
-            "type": "string",
-            "description": "ID of the internal user who owns this vendor's risk"
           }
         }
       },

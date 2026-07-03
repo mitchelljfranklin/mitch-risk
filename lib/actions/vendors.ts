@@ -143,6 +143,11 @@ export async function importVendorsAction(
       tier: raw.tier ?? "",
       website: raw.website ?? "",
       notes: raw.notes ?? "",
+      serviceDescription:
+        raw.servicedescription ?? raw.serviceDescription ?? "",
+      dataSensitivity: raw.datasensitivity ?? raw.dataSensitivity ?? "",
+      contractRenewalDate:
+        raw.contractrenewaldate ?? raw.contractRenewalDate ?? "",
     });
 
     if (parsed.success) {
@@ -153,9 +158,10 @@ export async function importVendorsAction(
         tier: parsed.data.tier as VendorInput["tier"],
         website: parsed.data.website,
         notes: parsed.data.notes,
-        serviceDescription: "",
-        dataSensitivity: "",
-        contractRenewalDate: "",
+        serviceDescription: parsed.data.serviceDescription,
+        dataSensitivity: parsed.data
+          .dataSensitivity as VendorInput["dataSensitivity"],
+        contractRenewalDate: parsed.data.contractRenewalDate,
         ownerId: "",
       };
       vendors.push(vendorInput);

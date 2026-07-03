@@ -7,6 +7,7 @@ import {
   listVendors,
   updateVendor,
 } from "@/lib/db/vendors";
+import { createCertification } from "@/lib/db/certifications";
 import { ensureSystemRoles, getRoleByName } from "@/lib/db/roles";
 import { createUser } from "@/lib/db/users";
 import { SYSTEM_ROLE_NAMES } from "@/lib/permissions";
@@ -15,13 +16,17 @@ import { prisma } from "@/lib/prisma";
 const VENDOR_A = "P27 Vendor Alpha";
 const VENDOR_B = "P27 Vendor Beta";
 const VENDOR_C = "P67 Vendor Gamma";
+const VENDOR_D = "P70 Export Vendor";
 const OWNER_EMAIL = "p67-owner@example.test";
+const EXPORT_OWNER_EMAIL = "p70-owner@example.test";
 
 async function cleanup() {
   await prisma.vendor.deleteMany({
-    where: { name: { in: [VENDOR_A, VENDOR_B, VENDOR_C] } },
+    where: { name: { in: [VENDOR_A, VENDOR_B, VENDOR_C, VENDOR_D] } },
   });
-  await prisma.user.deleteMany({ where: { email: OWNER_EMAIL } });
+  await prisma.user.deleteMany({
+    where: { email: { in: [OWNER_EMAIL, EXPORT_OWNER_EMAIL] } },
+  });
 }
 
 beforeAll(cleanup);
@@ -169,5 +174,44 @@ describe("vendor profile enrichment (integration)", () => {
     const vendor = await getVendor(vendors[0].id);
     expect(vendor).not.toBeNull();
     expect(vendor?.ownerId).toBeNull();
+  });
+});
+
+describe("vendor export data (integration)", () => {
+  it("includes owner name and certifications", async () => {
+    await ensureSystemRoles();
+    const reviewerRole = await getRoleByName(SYSTEM_ROLE_NAMES.REVIEWER);
+    if (!reviewerRole) throw new Error("reviewer role missing");
+    const owner = await createUser({
+      name: "P70 Owner",
+      email: EXPORT_OWNER_EMAIL,
+      password: "correct-horse-battery-staple",
+      roleId: reviewerRole.id,
+    });
+
+    const vendor = await createVendor({
+      name: VENDOR_D,
+      contactName: "",
+      contactEmail: "export@example.test",
+      tier: "HIGH",
+      website: "",
+      notes: "",
+      serviceDescription: "Cloud hosting",
+      dataSensitivity: "CONFIDENTIAL",
+      contractRenewalDate: "2027-03-01",
+      ownerId: owner.id,
+    });
+    await createCertification(vendor.id, {
+      name: "SOC 2 Type II",
+      expiresDate: "2027-06-30",
+    });
+
+    const exported = await getVendorForExport(vendor.id);
+    if (!exported) throw new Error("vendor not found");
+    expect(exported.owner?.name).toBe("P70 Owner");
+    expect(exported.serviceDescription).toBe("Cloud hosting");
+    expect(exported.dataSensitivity).toBe("CONFIDENTIAL");
+    expect(exported.certifications).toHaveLength(1);
+    expect(exported.certifications[0].name).toBe("SOC 2 Type II");
   });
 });

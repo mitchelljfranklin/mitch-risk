@@ -62,6 +62,23 @@ export const vendorCsvRowSchema = z.object({
     ),
   website: z.string().optional().default(""),
   notes: z.string().optional().default(""),
+  serviceDescription: z.string().optional().default(""),
+  dataSensitivity: z
+    .string()
+    .optional()
+    .default("")
+    .transform((v) =>
+      DATA_SENSITIVITIES.includes(
+        v.toUpperCase() as (typeof DATA_SENSITIVITIES)[number],
+      )
+        ? v.toUpperCase()
+        : "",
+    ),
+  contractRenewalDate: z
+    .string()
+    .optional()
+    .default("")
+    .transform((v) => (v && !Number.isNaN(Date.parse(v)) ? v : "")),
 });
 
 export type VendorCsvRow = z.infer<typeof vendorCsvRowSchema>;

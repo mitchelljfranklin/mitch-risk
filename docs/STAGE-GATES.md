@@ -1773,6 +1773,33 @@ vendor; create a vendor → lands on the detail page with a "Vendor created." to
 
 ---
 
+## Phase 70 — Vendor import/export parity
+
+**Scope:** make the Phase 67 vendor fields (and certifications) flow through CSV export and
+CSV/REST import; fix the OpenAPI/route mismatch.
+
+**Checklist:**
+
+- [x] **Export**: `getVendorForExport` includes owner name + certifications; the CSV summary adds
+      Owner / Service provided / Data sensitivity / Contract renewal, and a new **Certifications**
+      section (name, issuer, issued, expires, status).
+- [x] **REST import**: `/api/v1/vendors/import` reads `serviceDescription`, `dataSensitivity`,
+      `contractRenewalDate` into `vendorSchema`. OpenAPI `VendorImport` dropped the unsupported
+      `ownerId` so the spec matches the route.
+- [x] **CSV import**: `vendorCsvRowSchema` gains the three optional columns (data sensitivity
+      upper-cased + validated like tier; renewal date validated as a parseable date);
+      `importVendorsAction` maps the lowercased headers instead of hardcoding blanks. Owner
+      remains in-app only.
+- [x] **Tests**: `lib/schemas/vendor.test.ts` (CSV column normalisation) + `vendors.integration`
+      export shape (owner + certifications). Gates: `lint`, `typecheck`, `build`, `format:check`,
+      `vitest` (test DB), Playwright clean. No migration.
+
+**Reviewer spot-check:** export a vendor with an owner + certs → CSV shows the profile fields and
+a Certifications section; POST a vendor to `/api/v1/vendors/import` with `dataSensitivity` +
+`contractRenewalDate` → they persist; import a CSV with those columns → populated.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1833,6 +1860,7 @@ vendor; create a vendor → lands on the detail page with a "Vendor created." to
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 70 | Ready for review | opencode | 2026-07-03 | Vendor import/export parity: CSV export adds service/sensitivity/renewal/owner + certifications section; REST + CSV import accept the 3 new scalar fields; OpenAPI VendorImport aligned (dropped ownerId); +5 tests |
 | 69 | Approved | user | 2026-07-03 | Vendor edit UX fix: success toast on update (+ create toast via FlashToast/?created=1), breadcrumbs on new/edit vendor pages |
 | 68 | Ready for review | opencode | 2026-07-03 | Certifications & key-date tracking: VendorCertification model + vendor-detail manager (status badges), cron expiry reminders (certs + contract renewals) to the risk owner at 30/7 days via new EXPIRY email template; +3 integration tests |
 | 67 | Approved | user | 2026-07-03 | Vendor profile enrichment: risk owner (SetNull), data sensitivity (Public/Internal/Confidential/Restricted), service description, contract renewal date; form + detail Overview + OpenAPI + migration; +3 integration tests |
