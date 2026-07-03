@@ -48,7 +48,6 @@ export default async function RootLayout({
         >
           Skip to content
         </a>
-        <style>{`#main-content:target { scroll-margin-top: 1rem; }`}</style>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

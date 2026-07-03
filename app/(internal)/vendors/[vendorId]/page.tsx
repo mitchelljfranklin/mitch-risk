@@ -81,7 +81,7 @@ export default async function VendorDetailPage({
               <Badge variant="outline">{VENDOR_TIER_LABELS[vendor.tier]}</Badge>
             ) : null}
           </h1>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {canEditVendor ? (
               <Button asChild variant="outline">
                 <Link href={`/vendors/${vendor.id}/edit`}>Edit</Link>

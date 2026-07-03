@@ -115,6 +115,8 @@ export function AppearanceForm({
             <img
               src="/api/brand/logo"
               alt="Current logo"
+              width={48}
+              height={48}
               className="h-12 w-auto rounded-md border object-contain"
             />
             <ConfirmDialog

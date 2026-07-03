@@ -1377,6 +1377,43 @@ Open a sent-back assessment → reopened banner. Dark-mode → submit button is 
 
 ---
 
+## Phase 57 — Mobile & accessibility (final phase)
+
+**Scope:** polish the app for mobile usability and WCAG compliance — the last milestone before
+deployment-ready.
+
+**Checklist:**
+
+- [x] **Mobile:** settings tabs scroll horizontally; users tab, template header, question
+      actions, vendor actions, dashboard rows all wrap; conditional-rules editor +
+      control-multi-select controls resize to full-width on narrow screens; breadcrumbs
+      truncate.
+- [x] **Branded `not-found.tsx`** with a link back to Dashboard.
+- [x] **Toasts:** `aria-live="polite"` container + `role="alert"` per toast.
+- [x] **Idle timer:** `role="alertdialog"`, `aria-modal="true"`, `aria-label`, countdown
+      `aria-live="assertive"`.
+- [x] **Command palette:** `role="dialog"`/`"combobox"`/`"listbox"`/`"option"`,
+      `aria-activedescendant`, `aria-selected`, Tab focus trap.
+- [x] **Auth layout:** `id="main-content"` target for the root skip-link.
+- [x] **Error page:** uses Next.js `reset()` instead of `window.location.reload()`.
+- [x] **Inline `<style>`** moved from `app/layout.tsx` to `app/globals.css`.
+- [x] **All 5 `<img>` tags** have `width`/`height` for CLS prevention.
+- [x] **Empty-state SVGs** marked `aria-hidden="true"` (decorative).
+- [x] **Firefox scrollbar** styled (`scrollbar-width: thin`).
+- [x] **Sidebar:** notification badge wrapped in `<section aria-label>`, org name has `title`
+      for truncated text.
+- [x] **Pagination** page indicator has `aria-live="polite"`.
+- [x] **Question form** conditional rules + control multi-select wrapped in `<fieldset>` with
+      `<legend>`.
+- [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check`, 122 unit + 9 e2e
+      clean. No migration.
+
+**Reviewer spot-check:** resize the browser to a phone width — vendors list wraps, settings
+tabs scroll, user rows don't overflow. Run Lighthouse or axe DevTools — no critical issues.
+Visit a non-existent URL → branded 404 page with a dashboard link.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1437,3 +1474,4 @@ Open a sent-back assessment → reopened banner. Dark-mode → submit button is 
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 57 | Ready for review | opencode | 2026-07-03 | Mobile & a11y: 28 fixes — settings tabs scroll, dense rows wrap, responsive controls, not-found.tsx, toast/idle/command-palette ARIA, skip-link, error reset(), img CLS, Firefox scrollbar, empty-state SVG aria-hidden, semantic sidebar, pagination live region, fieldset grouping; 122 unit + 9 e2e |

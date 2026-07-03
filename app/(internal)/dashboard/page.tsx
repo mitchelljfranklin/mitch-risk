@@ -176,7 +176,7 @@ export default async function DashboardPage({
                     <Link
                       key={vendor.id}
                       href={`/vendors/${vendor.id}`}
-                      className="hover:bg-accent/40 flex items-center justify-between gap-4 p-3 transition-colors"
+                      className="hover:bg-accent/40 flex flex-wrap items-center justify-between gap-4 p-3 transition-colors"
                     >
                       <div className="flex flex-col">
                         <span className="text-sm font-medium">

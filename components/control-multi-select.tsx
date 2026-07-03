@@ -84,12 +84,12 @@ export function ControlMultiSelect({
           {selected.size} selected
         </span>
       </div>
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row">
         <Select
           value={frameworkFilter || ""}
           onValueChange={(value) => setFrameworkFilter(value)}
         >
-          <SelectTrigger className="w-48 text-xs">
+          <SelectTrigger className="w-full text-xs sm:w-48">
             <SelectValue placeholder="All frameworks" />
           </SelectTrigger>
           <SelectContent>

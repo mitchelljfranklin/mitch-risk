@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 
 export default function ErrorPage({
   error,
+  reset,
 }: {
   error: Error & { digest?: string };
+  reset: () => void;
 }) {
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 p-6">
@@ -15,7 +17,7 @@ export default function ErrorPage({
       <p className="text-muted-foreground text-sm">
         An unexpected error occurred. Please try again or contact support.
       </p>
-      <Button onClick={() => window.location.reload()}>Try again</Button>
+      <Button onClick={() => reset()}>Try again</Button>
     </div>
   );
 }

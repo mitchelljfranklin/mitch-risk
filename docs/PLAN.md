@@ -442,6 +442,14 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   banner explains when an assessment has been **reopened for more info**, file-type/size
   **upload hints** are shown, and conditional questions have **smooth CSS transitions** on
   show/hide. The portal submit button now uses `variant="secondary"` for dark-mode visibility.
+- **Phase 57 — Mobile & accessibility.** Settings tabs scroll horizontally; dense UI rows wrap
+  on narrow screens; controls with fixed widths go full-width on mobile; breadcrumbs truncate.
+  Branded `not-found.tsx`; toasts gain `aria-live` + `role="alert"`; idle-timer gets
+  `role="alertdialog"`; command palette has full ARIA + focus trap; auth layout skip-link;
+  error page uses Next.js `reset()`; inline `<style>` moved to `globals.css`; all `<img>` have
+  `width`/`height` for CLS prevention; empty-state SVGs are decorative; Firefox scrollbar
+  styling; notification badge + org name are screen-reader friendly; `aria-live` on pagination;
+  `<fieldset>` grouping in question form. The final milestone — the app is deployment-clean.
 
 ## 8. Out of scope (v1+)
 

@@ -189,6 +189,20 @@ export function KeyboardShortcuts({ permissions }: CommandPaletteProps) {
         }
         return;
       }
+
+      // Trap Tab inside the dialog.
+      if (event.key === "Tab") {
+        event.preventDefault();
+        if (event.shiftKey) {
+          inputRef.current?.focus();
+        } else if (filteredItems.length > 0) {
+          const el = document.getElementById(
+            `command-item-${safeIndex}`,
+          ) as HTMLElement | null;
+          el?.focus();
+        }
+        return;
+      }
     }
 
     window.addEventListener("keydown", onKeyDown);
@@ -199,6 +213,9 @@ export function KeyboardShortcuts({ permissions }: CommandPaletteProps) {
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Command palette"
       className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 pt-[15vh]"
       onClick={close}
     >
@@ -214,9 +231,20 @@ export function KeyboardShortcuts({ permissions }: CommandPaletteProps) {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             className="border-none shadow-none focus-visible:ring-0"
+            role="combobox"
+            aria-expanded="true"
+            aria-controls="command-palette-list"
+            aria-activedescendant={
+              filteredItems[safeIndex] ? `command-item-${safeIndex}` : undefined
+            }
+            aria-autocomplete="list"
           />
         </div>
-        <div className="max-h-64 overflow-y-auto p-1">
+        <div
+          id="command-palette-list"
+          role="listbox"
+          className="max-h-64 overflow-y-auto p-1"
+        >
           {filteredItems.length === 0 ? (
             <p className="text-muted-foreground px-3 py-6 text-center text-sm">
               No results.
@@ -225,7 +253,10 @@ export function KeyboardShortcuts({ permissions }: CommandPaletteProps) {
             filteredItems.map((item, index) => (
               <button
                 key={item.href}
+                id={`command-item-${index}`}
                 type="button"
+                role="option"
+                aria-selected={index === safeIndex}
                 onClick={() => navigate(item.href)}
                 className={`flex w-full items-center justify-between rounded-sm px-3 py-2 text-left text-sm ${index === safeIndex ? "bg-accent text-accent-foreground" : ""}`}
               >

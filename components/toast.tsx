@@ -45,10 +45,14 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext value={{ toast: showToast }}>
       {children}
-      <div className="pointer-events-none fixed top-4 right-4 z-50 flex flex-col gap-2">
+      <div
+        className="pointer-events-none fixed top-4 right-4 z-50 flex flex-col gap-2"
+        aria-live="polite"
+      >
         {toasts.map((t) => (
           <div
             key={t.id}
+            role="alert"
             onClick={() => remove(t.id)}
             className={`${bgMap[t.type]} animate-in slide-in-from-right-4 pointer-events-auto cursor-pointer rounded-md px-4 py-2.5 text-sm font-medium shadow-lg transition-all`}
           >

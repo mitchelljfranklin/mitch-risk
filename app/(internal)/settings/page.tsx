@@ -210,28 +210,32 @@ export default async function SettingsPage({
       </div>
 
       <Tabs defaultValue={defaultTab}>
-        <TabsList>
-          {canManageSettings ? (
-            <>
-              <TabsTrigger value="general">General</TabsTrigger>
-              <TabsTrigger value="appearance">Appearance</TabsTrigger>
-              <TabsTrigger value="email">Email</TabsTrigger>
-              <TabsTrigger value="email-tracking">Email Tracking</TabsTrigger>
-              <TabsTrigger value="scoring">Scoring</TabsTrigger>
-              <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
-              <TabsTrigger value="limits">Limits</TabsTrigger>
-              <TabsTrigger value="sso">SSO</TabsTrigger>
-            </>
-          ) : null}
-          {canManageUsers ? (
-            <TabsTrigger value="users">Users</TabsTrigger>
-          ) : null}
-          {canManageRoles ? (
-            <TabsTrigger value="roles">Roles</TabsTrigger>
-          ) : null}
-          {canManageApi ? <TabsTrigger value="api">API</TabsTrigger> : null}
-          {canViewAudit ? <TabsTrigger value="audit">Audit</TabsTrigger> : null}
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList>
+            {canManageSettings ? (
+              <>
+                <TabsTrigger value="general">General</TabsTrigger>
+                <TabsTrigger value="appearance">Appearance</TabsTrigger>
+                <TabsTrigger value="email">Email</TabsTrigger>
+                <TabsTrigger value="email-tracking">Email Tracking</TabsTrigger>
+                <TabsTrigger value="scoring">Scoring</TabsTrigger>
+                <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
+                <TabsTrigger value="limits">Limits</TabsTrigger>
+                <TabsTrigger value="sso">SSO</TabsTrigger>
+              </>
+            ) : null}
+            {canManageUsers ? (
+              <TabsTrigger value="users">Users</TabsTrigger>
+            ) : null}
+            {canManageRoles ? (
+              <TabsTrigger value="roles">Roles</TabsTrigger>
+            ) : null}
+            {canManageApi ? <TabsTrigger value="api">API</TabsTrigger> : null}
+            {canViewAudit ? (
+              <TabsTrigger value="audit">Audit</TabsTrigger>
+            ) : null}
+          </TabsList>
+        </div>
 
         <TabsContent value="general" className="mt-4 flex flex-col gap-6">
           <Card>
@@ -486,7 +490,7 @@ export default async function SettingsPage({
                         {user.disabled ? " · Disabled" : ""}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <form
                         action={changeRoleAction}
                         className="flex items-center gap-1"

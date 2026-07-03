@@ -7,7 +7,7 @@ type EmptyStateProps = {
 
 const ICONS: Record<EmptyStateProps["icon"], React.ReactNode> = {
   vendors: (
-    <svg viewBox="0 0 64 64" fill="none" className="size-16">
+    <svg viewBox="0 0 64 64" fill="none" className="size-16" aria-hidden="true">
       <rect
         x="8"
         y="20"
@@ -37,7 +37,7 @@ const ICONS: Record<EmptyStateProps["icon"], React.ReactNode> = {
     </svg>
   ),
   assessments: (
-    <svg viewBox="0 0 64 64" fill="none" className="size-16">
+    <svg viewBox="0 0 64 64" fill="none" className="size-16" aria-hidden="true">
       <path
         d="M12 16h40M12 24h40M12 32h30M12 40h25"
         stroke="currentColor"
@@ -55,7 +55,7 @@ const ICONS: Record<EmptyStateProps["icon"], React.ReactNode> = {
     </svg>
   ),
   templates: (
-    <svg viewBox="0 0 64 64" fill="none" className="size-16">
+    <svg viewBox="0 0 64 64" fill="none" className="size-16" aria-hidden="true">
       <rect
         x="10"
         y="8"
@@ -76,7 +76,7 @@ const ICONS: Record<EmptyStateProps["icon"], React.ReactNode> = {
     </svg>
   ),
   findings: (
-    <svg viewBox="0 0 64 64" fill="none" className="size-16">
+    <svg viewBox="0 0 64 64" fill="none" className="size-16" aria-hidden="true">
       <path
         d="M32 12v28M32 48v3"
         stroke="currentColor"
@@ -95,7 +95,7 @@ const ICONS: Record<EmptyStateProps["icon"], React.ReactNode> = {
     </svg>
   ),
   audit: (
-    <svg viewBox="0 0 64 64" fill="none" className="size-16">
+    <svg viewBox="0 0 64 64" fill="none" className="size-16" aria-hidden="true">
       <circle cx="32" cy="32" r="22" stroke="currentColor" strokeWidth="1.5" />
       <path
         d="M32 18v14l10 6"
@@ -107,7 +107,7 @@ const ICONS: Record<EmptyStateProps["icon"], React.ReactNode> = {
     </svg>
   ),
   email: (
-    <svg viewBox="0 0 64 64" fill="none" className="size-16">
+    <svg viewBox="0 0 64 64" fill="none" className="size-16" aria-hidden="true">
       <rect
         x="8"
         y="16"

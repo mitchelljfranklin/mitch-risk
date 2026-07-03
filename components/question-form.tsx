@@ -252,16 +252,22 @@ export function QuestionForm({
         </div>
       ) : null}
 
-      <ConditionalRulesEditor
-        questions={otherQuestions}
-        defaultMatch={defaults?.conditionMatch ?? "all"}
-        defaultRules={defaults?.conditionRules ?? []}
-      />
+      <fieldset>
+        <legend className="sr-only">Conditional visibility rules</legend>
+        <ConditionalRulesEditor
+          questions={otherQuestions}
+          defaultMatch={defaults?.conditionMatch ?? "all"}
+          defaultRules={defaults?.conditionRules ?? []}
+        />
+      </fieldset>
 
-      <ControlMultiSelect
-        controls={controls}
-        selectedIds={selectedControlIds}
-      />
+      <fieldset>
+        <legend className="sr-only">Mapped compliance controls</legend>
+        <ControlMultiSelect
+          controls={controls}
+          selectedIds={selectedControlIds}
+        />
+      </fieldset>
 
       {state?.error ? (
         <p className="text-destructive text-sm" role="alert">

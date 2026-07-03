@@ -53,6 +53,8 @@ function PortalShell({
           <img
             src={logoUrl}
             alt="Logo"
+            width={80}
+            height={40}
             className="h-10 w-auto object-contain"
           />
         </div>

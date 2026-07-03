@@ -104,7 +104,7 @@ export default async function TemplateBuilderPage({
         >
           ← Templates
         </Link>
-        <div className="mt-2 flex items-center justify-between gap-4">
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
           <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
             {template.name}
             <Badge variant="outline">v{template.version}</Badge>
@@ -385,7 +385,7 @@ export default async function TemplateBuilderPage({
                       ) : null}
                     </div>
                     {canEditDraft ? (
-                      <div className="flex shrink-0 items-center gap-1">
+                      <div className="flex shrink-0 flex-wrap items-center gap-1">
                         <form action={moveQuestionAction}>
                           <input
                             type="hidden"

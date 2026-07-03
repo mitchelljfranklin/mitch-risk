@@ -34,7 +34,7 @@ export function Pagination({
 
   return (
     <div className="flex items-center justify-between gap-3">
-      <p className="text-muted-foreground text-xs">
+      <p className="text-muted-foreground text-xs" aria-live="polite">
         Page {page} of {totalPages} · {totalCount} {itemLabel}
       </p>
       <div className="flex items-center gap-2">

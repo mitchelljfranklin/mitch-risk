@@ -102,7 +102,7 @@ export function ConditionalRulesEditor({
                     updateRule(index, { questionId: value })
                   }
                 >
-                  <SelectTrigger className="h-8 w-56 text-xs">
+                  <SelectTrigger className="h-8 w-full text-xs sm:w-56">
                     <SelectValue placeholder="Select a question" />
                   </SelectTrigger>
                   <SelectContent>
@@ -119,7 +119,7 @@ export function ConditionalRulesEditor({
                     updateRule(index, { operator: value as ConditionOperator })
                   }
                 >
-                  <SelectTrigger className="h-8 w-44 text-xs">
+                  <SelectTrigger className="h-8 w-full text-xs sm:w-44">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -137,7 +137,7 @@ export function ConditionalRulesEditor({
                       updateRule(index, { value: event.target.value })
                     }
                     placeholder="Value"
-                    className="h-8 w-32 text-xs"
+                    className="h-8 w-full text-xs sm:w-32"
                   />
                 ) : null}
                 <Button

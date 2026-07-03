@@ -629,6 +629,8 @@ export default async function AssessmentDetailPage({
                           src={`/api/files/${item.id}?inline=true`}
                           alt={item.fileName}
                           loading="lazy"
+                          width={400}
+                          height={256}
                           className="mt-2 max-h-64 rounded-md border object-contain"
                         />
                       );

@@ -85,10 +85,15 @@ export function IdleTimer({ timeoutMinutes }: IdleTimerProps) {
   if (timeoutMinutes <= 0 || countdown <= 0) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div
+      role="alertdialog"
+      aria-modal="true"
+      aria-label="Session expiring"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+    >
       <div className="bg-background w-full max-w-sm rounded-lg border p-6 text-center shadow-xl">
         <p className="text-lg font-semibold">Session expiring</p>
-        <p className="text-muted-foreground mt-2 text-sm">
+        <p className="text-muted-foreground mt-2 text-sm" aria-live="assertive">
           You will be signed out in {countdown} second
           {countdown !== 1 ? "s" : ""} due to inactivity. Move your mouse or
           press any key to stay signed in.

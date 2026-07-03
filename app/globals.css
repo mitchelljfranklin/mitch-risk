@@ -138,6 +138,15 @@
     @apply bg-background text-foreground;
   }
 
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  #main-content:target {
+    scroll-margin-top: 1rem;
+  }
+
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;

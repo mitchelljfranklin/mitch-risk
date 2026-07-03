@@ -94,12 +94,16 @@ export function AppSidebar({
             <img
               src="/api/brand/logo"
               alt={orgName}
+              width={120}
+              height={32}
               className="h-8 w-auto max-w-[120px] rounded object-contain"
             />
           ) : (
             <ShieldCheck className="size-5" />
           )}
-          <span className="truncate font-semibold">{orgName}</span>
+          <span className="truncate font-semibold" title={orgName}>
+            {orgName}
+          </span>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -200,7 +204,10 @@ export function AppSidebar({
       </SidebarContent>
       {notificationCount > 0 ? (
         <SidebarFooter>
-          <div className="flex items-center gap-2 px-4 py-3">
+          <section
+            aria-label={`${notificationCount} ${notificationCount === 1 ? "item" : "items"} need attention`}
+            className="flex items-center gap-2 px-4 py-3"
+          >
             <div className="bg-primary text-primary-foreground flex h-6 min-w-6 items-center justify-center rounded-full px-1.5 text-xs font-semibold">
               {notificationCount}
             </div>
@@ -209,7 +216,7 @@ export function AppSidebar({
                 ? "item needs attention"
                 : "items need attention"}
             </span>
-          </div>
+          </section>
         </SidebarFooter>
       ) : null}
     </Sidebar>
