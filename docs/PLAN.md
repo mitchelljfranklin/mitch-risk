@@ -450,6 +450,16 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   `width`/`height` for CLS prevention; empty-state SVGs are decorative; Firefox scrollbar
   styling; notification badge + org name are screen-reader friendly; `aria-live` on pagination;
   `<fieldset>` grouping in question form. The final milestone — the app is deployment-clean.
+- **Phase 58 — Settings & auth enhancements.** A **Test SMTP** button sends a test email using
+  the saved SMTP settings. Fixed the **SSO "Enabled" toggle** resetting after save (the Radix
+  checkboxes are now controlled). **Email templates** moved from one long form to a **master–detail
+  list + slide-over `Sheet` editor** (edit one template at a time, with **reset-to-default**),
+  matching the Roles UX. The per-answer **"Reject" review decision was removed** — review is now
+  **Approve** or **Request clarification** (a data migration normalises historical `REJECTED`
+  rows). Added an **SSO-only login** option (`disableLocalAuth`) that hides the email/password
+  form when at least one SSO provider is enabled, plus a **break-glass URL** (rotatable secret,
+  stored as a bcrypt hash, shown once) that re-reveals local login for emergency access, with
+  rate-limited verification.
 
 ## 8. Out of scope (v1+)
 

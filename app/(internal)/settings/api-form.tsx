@@ -65,7 +65,12 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
     <div className="flex flex-col gap-6">
       <form action={saveAction} className="grid gap-4">
         <div className="flex items-center gap-3">
-          <Checkbox id="apiEnabled" name="enabled" defaultChecked={enabled} />
+          <Checkbox
+            key={String(enabled)}
+            id="apiEnabled"
+            name="enabled"
+            defaultChecked={enabled}
+          />
           <Label htmlFor="apiEnabled">Enable API key authentication</Label>
         </div>
         <p className="text-muted-foreground text-xs">

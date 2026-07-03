@@ -49,12 +49,12 @@ describe.sequential("notification counts (integration)", () => {
     const counts = await getNotificationCounts("any-user-id");
     expect(counts.unreviewedSubmissions).toBeGreaterThanOrEqual(0);
     expect(counts.overdueAssessments).toBeGreaterThanOrEqual(0);
-    expect(counts.rejectedAwaitingVendor).toBeGreaterThanOrEqual(0);
+    expect(counts.clarificationsAwaitingVendor).toBeGreaterThanOrEqual(0);
     expect(counts.failedEmails).toBeGreaterThanOrEqual(0);
     expect(counts.total).toBe(
       counts.unreviewedSubmissions +
         counts.overdueAssessments +
-        counts.rejectedAwaitingVendor +
+        counts.clarificationsAwaitingVendor +
         counts.failedEmails,
     );
   });

@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 export type NotificationCounts = {
   unreviewedSubmissions: number;
   overdueAssessments: number;
-  rejectedAwaitingVendor: number;
+  clarificationsAwaitingVendor: number;
   failedEmails: number;
   total: number;
 };
@@ -18,7 +18,7 @@ export const getNotificationCounts = cache(
     const [
       unreviewedSubmissions,
       overdueAssessments,
-      rejectedAwaitingVendor,
+      clarificationsAwaitingVendor,
       failedEmails,
     ] = await Promise.all([
       prisma.assessment.count({
@@ -54,12 +54,12 @@ export const getNotificationCounts = cache(
     return {
       unreviewedSubmissions,
       overdueAssessments,
-      rejectedAwaitingVendor,
+      clarificationsAwaitingVendor,
       failedEmails,
       total:
         unreviewedSubmissions +
         overdueAssessments +
-        rejectedAwaitingVendor +
+        clarificationsAwaitingVendor +
         failedEmails,
     };
   },

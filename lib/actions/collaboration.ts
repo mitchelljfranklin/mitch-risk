@@ -19,7 +19,7 @@ import { env } from "@/lib/env";
 import { getField } from "@/lib/actions/helpers";
 import { prisma } from "@/lib/prisma";
 
-const VALID_DECISIONS = ["APPROVED", "REJECTED", "CLARIFICATION_REQUESTED"];
+const VALID_DECISIONS = ["APPROVED", "CLARIFICATION_REQUESTED"];
 
 export async function addCommentAction(formData: FormData) {
   await requirePermission(PERMISSIONS.ASSESSMENTS_REVIEW);

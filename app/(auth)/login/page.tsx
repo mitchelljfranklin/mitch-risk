@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { SsoButtons } from "@/components/auth/sso-buttons";
@@ -10,8 +11,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getCurrentUser } from "@/lib/auth";
+import { shouldShowLocalAuth, verifyBreakGlassToken } from "@/lib/break-glass";
 import { countUsers } from "@/lib/db/users";
-import { getOrganizationSettings, getSsoSettings } from "@/lib/settings";
+import { rateLimit } from "@/lib/rate-limit";
+import {
+  getBreakGlassHash,
+  getOrganizationSettings,
+  getSsoSettings,
+} from "@/lib/settings";
 
 import { LoginForm } from "./login-form";
 
@@ -19,7 +26,11 @@ export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Sign in" };
 
-export default async function LoginPage() {
+type LoginPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
   if ((await countUsers()) === 0) {
     redirect("/setup");
   }
@@ -48,6 +59,28 @@ export default async function LoginPage() {
     });
   }
 
+  const params = await searchParams;
+  const breakGlassToken =
+    typeof params.breakGlass === "string" ? params.breakGlass : "";
+  let breakGlassValid = false;
+  if (ssoSettings.disableLocalAuth && breakGlassToken) {
+    const requestHeaders = await headers();
+    const clientIp =
+      requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+    if (rateLimit("break-glass", clientIp, 10)) {
+      const hash = await getBreakGlassHash();
+      breakGlassValid = hash
+        ? verifyBreakGlassToken(breakGlassToken, hash)
+        : false;
+    }
+  }
+
+  const showLocalAuth = shouldShowLocalAuth({
+    disableLocalAuth: ssoSettings.disableLocalAuth,
+    ssoProviderCount: ssoProviders.length,
+    breakGlassValid,
+  });
+
   return (
     <Card>
       <CardHeader>
@@ -55,13 +88,17 @@ export default async function LoginPage() {
         <CardDescription>Sign in to your account.</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <LoginForm />
-        <Link
-          href="/forgot-password"
-          className="hover:text-primary text-muted-foreground -mt-2 text-center text-xs hover:underline"
-        >
-          Forgot password?
-        </Link>
+        {showLocalAuth ? (
+          <>
+            <LoginForm />
+            <Link
+              href="/forgot-password"
+              className="hover:text-primary text-muted-foreground -mt-2 text-center text-xs hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </>
+        ) : null}
         {ssoProviders.length > 0 ? (
           <SsoButtons providers={ssoProviders} />
         ) : null}

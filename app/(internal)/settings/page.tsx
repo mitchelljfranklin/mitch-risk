@@ -33,7 +33,7 @@ import {
   getAuditRetention,
   getEmailLogRetention,
 } from "@/lib/settings";
-import { getSsoSecretConfigured } from "@/lib/settings";
+import { getBreakGlassHash, getSsoSecretConfigured } from "@/lib/settings";
 import {
   changeRoleAction,
   deleteUserAction,
@@ -44,8 +44,8 @@ import {
 import { AddUserForm } from "./add-user-form";
 import { RolesManager } from "./roles-manager";
 
-import { EmailForm } from "./email-form";
-import { EmailTemplateForm } from "./email-template-form";
+import { EmailForm, SmtpTestForm } from "./email-form";
+import { TemplatesManager } from "./templates-manager";
 import { OrganizationForm } from "./organization-form";
 import { ScoringForm } from "./scoring-form";
 import { SsoForm } from "./sso-form";
@@ -136,6 +136,8 @@ export default async function SettingsPage({
     getAuditRetention(),
     getEmailLogRetention(),
   ]);
+
+  const breakGlassConfigured = (await getBreakGlassHash()) !== null;
 
   const users = fullUsers.map((u) => ({ id: u.id, name: u.name }));
   const roleOptions = roles.map((role) => ({ id: role.id, name: role.name }));
@@ -312,6 +314,9 @@ export default async function SettingsPage({
                 fromName={email.fromName}
                 smtpPasswordConfigured={email.smtpPasswordConfigured}
               />
+              <div className="mt-6 border-t pt-6">
+                <SmtpTestForm currentUserEmail={currentUser.email ?? ""} />
+              </div>
             </CardContent>
           </Card>
 
@@ -319,27 +324,12 @@ export default async function SettingsPage({
             <CardHeader>
               <CardTitle>Email templates</CardTitle>
               <CardDescription>
-                Subject and body for invite, reminder, and escalation emails.
-                Use {"{{"}tokens{"}}"} for dynamic values.
+                Select a template to edit its subject and body. Use {"{{"}tokens
+                {"}}"} for dynamic values.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <EmailTemplateForm
-                inviteSubject={templates.inviteSubject}
-                inviteBody={templates.inviteBody}
-                invitePasswordSubject={templates.invitePasswordSubject}
-                invitePasswordBody={templates.invitePasswordBody}
-                reminderSubject={templates.reminderSubject}
-                reminderBody={templates.reminderBody}
-                escalationSubject={templates.escalationSubject}
-                escalationBody={templates.escalationBody}
-                submissionSubject={templates.submissionSubject}
-                submissionBody={templates.submissionBody}
-                clarificationSubject={templates.clarificationSubject}
-                clarificationBody={templates.clarificationBody}
-                resetSubject={templates.resetSubject}
-                resetBody={templates.resetBody}
-              />
+              <TemplatesManager templates={templates} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -455,6 +445,8 @@ export default async function SettingsPage({
                 autoProvisionRoleId={sso.autoProvisionRoleId}
                 roles={roleOptions}
                 allowedDomain={sso.allowedDomain}
+                disableLocalAuth={sso.disableLocalAuth}
+                breakGlassConfigured={breakGlassConfigured}
               />
             </CardContent>
           </Card>

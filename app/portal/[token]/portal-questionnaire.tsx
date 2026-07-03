@@ -668,18 +668,13 @@ export function PortalQuestionnaire({
                     if (!review) {
                       return null;
                     }
-                    if (
-                      review.decision !== "CLARIFICATION_REQUESTED" &&
-                      review.decision !== "REJECTED"
-                    ) {
+                    if (review.decision !== "CLARIFICATION_REQUESTED") {
                       return null;
                     }
                     return (
                       <div className="bg-muted/50 rounded-md border-l-2 border-amber-500 p-2 text-sm">
                         <p className="text-xs font-medium">
-                          {review.decision === "CLARIFICATION_REQUESTED"
-                            ? "The reviewer requested clarification on this answer."
-                            : "The reviewer rejected this answer."}
+                          The reviewer requested clarification on this answer.
                         </p>
                         {review.note ? (
                           <p className="text-muted-foreground mt-1 text-xs">

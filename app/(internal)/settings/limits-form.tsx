@@ -137,6 +137,7 @@ export function LimitsForm({
             return (
               <label key={ext} className="flex items-center gap-2 text-sm">
                 <Checkbox
+                  key={`${ext}-${checked}`}
                   name="allowedExtensions"
                   value={ext}
                   defaultChecked={checked}

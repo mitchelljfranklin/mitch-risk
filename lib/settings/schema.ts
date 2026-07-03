@@ -132,6 +132,7 @@ export const ssoSettingsSchema = z.object({
   oidcClientId: z.string().default(""),
   autoProvisionRoleId: z.string().default(""),
   allowedDomain: z.string().default(""),
+  disableLocalAuth: z.boolean().default(false),
 });
 
 export type SsoSettings = z.infer<typeof ssoSettingsSchema>;

@@ -8,7 +8,7 @@ import { logAudit } from "@/lib/db/audit";
 import {
   getAppearanceSettings,
   updateEmailSettings,
-  updateEmailTemplateSettings,
+  updateEmailTemplateFields,
   updateOrganizationSettings,
   updateScoringSettings,
   updateSsoSettings,
@@ -16,16 +16,22 @@ import {
 } from "@/lib/settings";
 import { persistSsoSecrets } from "@/lib/settings";
 import {
+  getEmailTemplateDefaults,
+  getEmailTemplateDefinition,
+} from "@/lib/settings/email-templates";
+import {
   emailSettingsSchema,
-  emailTemplateSchema,
   organizationSettingsSchema,
   scoringSettingsSchema,
   ssoSettingsSchema,
 } from "@/lib/settings/schema";
 import { randomBytes } from "node:crypto";
+import { z } from "zod";
 import { storage } from "@/lib/storage";
 
 export type SettingsActionState = { ok: boolean; message: string } | undefined;
+
+const testRecipientSchema = z.email("Enter a valid recipient email address.");
 
 export async function saveOrganizationSettings(
   previousState: SettingsActionState,
@@ -80,27 +86,65 @@ export async function saveEmailSettings(
   return { ok: true, message: "Email settings saved." };
 }
 
-export async function saveEmailTemplateSettings(
+export async function sendSmtpTestAction(
   previousState: SettingsActionState,
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
 
-  const parsed = emailTemplateSchema.safeParse({
-    inviteSubject: formData.get("inviteSubject") ?? "",
-    inviteBody: formData.get("inviteBody") ?? "",
-    invitePasswordSubject: formData.get("invitePasswordSubject") ?? "",
-    invitePasswordBody: formData.get("invitePasswordBody") ?? "",
-    reminderSubject: formData.get("reminderSubject") ?? "",
-    reminderBody: formData.get("reminderBody") ?? "",
-    escalationSubject: formData.get("escalationSubject") ?? "",
-    escalationBody: formData.get("escalationBody") ?? "",
-    submissionSubject: formData.get("submissionSubject") ?? "",
-    submissionBody: formData.get("submissionBody") ?? "",
-    clarificationSubject: formData.get("clarificationSubject") ?? "",
-    clarificationBody: formData.get("clarificationBody") ?? "",
-    resetSubject: formData.get("resetSubject") ?? "",
-    resetBody: formData.get("resetBody") ?? "",
+  const parsed = testRecipientSchema.safeParse(
+    (formData.get("recipient") as string)?.trim() ?? "",
+  );
+  if (!parsed.success) {
+    return {
+      ok: false,
+      message: parsed.error.issues[0]?.message ?? "Invalid recipient.",
+    };
+  }
+
+  const { getEmailSettings } = await import("@/lib/settings");
+  const { smtpHost } = await getEmailSettings();
+  if (!smtpHost) {
+    return {
+      ok: false,
+      message: "Save your SMTP settings before sending a test email.",
+    };
+  }
+
+  const { sendTestEmail } = await import("@/lib/email/mailer");
+  const user = await getCurrentUser();
+  const result = await sendTestEmail(parsed.data, user?.id);
+
+  if (result.ok) {
+    if (user)
+      await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "email.test");
+    revalidatePath("/settings");
+    return { ok: true, message: `Test email sent to ${parsed.data}.` };
+  }
+
+  return { ok: false, message: result.message };
+}
+
+const emailTemplateFieldSchema = z.object({
+  subject: z.string().trim().min(1, "Subject is required."),
+  body: z.string().trim().min(1, "Body is required."),
+});
+
+export async function saveEmailTemplateAction(
+  previousState: SettingsActionState,
+  formData: FormData,
+): Promise<SettingsActionState> {
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+
+  const type = (formData.get("type") as string) ?? "";
+  const definition = getEmailTemplateDefinition(type);
+  if (!definition) {
+    return { ok: false, message: "Unknown email template." };
+  }
+
+  const parsed = emailTemplateFieldSchema.safeParse({
+    subject: formData.get("subject") ?? "",
+    body: formData.get("body") ?? "",
   });
   if (!parsed.success) {
     return {
@@ -109,12 +153,49 @@ export async function saveEmailTemplateSettings(
     };
   }
 
-  await updateEmailTemplateSettings(parsed.data);
+  await updateEmailTemplateFields({
+    [definition.subjectField]: parsed.data.subject,
+    [definition.bodyField]: parsed.data.body,
+  });
   const user = await getCurrentUser();
   if (user)
-    await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "email.template");
+    await logAudit(
+      user.id,
+      "UPDATE_SETTINGS",
+      "Setting",
+      `email.template.${type}`,
+    );
   revalidatePath("/settings");
-  return { ok: true, message: "Email templates saved." };
+  return { ok: true, message: `${definition.label} saved.` };
+}
+
+export async function resetEmailTemplateAction(
+  previousState: SettingsActionState,
+  formData: FormData,
+): Promise<SettingsActionState> {
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+
+  const type = (formData.get("type") as string) ?? "";
+  const definition = getEmailTemplateDefinition(type);
+  if (!definition) {
+    return { ok: false, message: "Unknown email template." };
+  }
+
+  const defaults = getEmailTemplateDefaults();
+  await updateEmailTemplateFields({
+    [definition.subjectField]: defaults[definition.subjectField],
+    [definition.bodyField]: defaults[definition.bodyField],
+  });
+  const user = await getCurrentUser();
+  if (user)
+    await logAudit(
+      user.id,
+      "UPDATE_SETTINGS",
+      "Setting",
+      `email.template.${type}`,
+    );
+  revalidatePath("/settings");
+  return { ok: true, message: `${definition.label} reset to default.` };
 }
 
 export async function saveScoringSettings(
@@ -167,6 +248,7 @@ export async function saveSsoSettings(
     oidcClientId: formData.get("oidcClientId") ?? "",
     autoProvisionRoleId: formData.get("autoProvisionRoleId") ?? "",
     allowedDomain: formData.get("allowedDomain") ?? "",
+    disableLocalAuth: formData.get("disableLocalAuth") === "on",
   });
   if (!parsed.success) {
     return {
@@ -189,6 +271,34 @@ export async function saveSsoSettings(
   const user = await getCurrentUser();
   if (user) await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "sso");
   return { ok: true, message: "SSO settings saved." };
+}
+
+export async function generateBreakGlassUrlAction(
+  previousState: { ok: boolean; message: string; url?: string } | undefined,
+  formData: FormData,
+): Promise<{ ok: boolean; message: string; url?: string }> {
+  void formData;
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+
+  const { generateBreakGlassToken, hashBreakGlassToken } =
+    await import("@/lib/break-glass");
+  const { setBreakGlassHash } = await import("@/lib/settings");
+  const { env } = await import("@/lib/env");
+
+  const token = generateBreakGlassToken();
+  await setBreakGlassHash(hashBreakGlassToken(token));
+
+  const user = await getCurrentUser();
+  if (user)
+    await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "sso.breakGlass");
+  revalidatePath("/settings");
+
+  return {
+    ok: true,
+    message:
+      "Break-glass URL generated. Copy it now — it won't be shown again.",
+    url: `${env.APP_URL}/login?breakGlass=${token}`,
+  };
 }
 
 export async function saveAppearanceSettings(

@@ -1414,6 +1414,57 @@ Visit a non-existent URL → branded 404 page with a dashboard link.
 
 ---
 
+## Phase 58 — Settings & auth enhancements
+
+**Scope:** five improvements — Test SMTP, SSO toggle fix, email-template master-detail,
+remove "Reject", and SSO-only login + break-glass.
+
+**Checklist:**
+
+- [x] **Test SMTP.** `sendSmtpTestAction` (guarded by `SETTINGS_MANAGE`) validates a recipient,
+      requires a configured host, and calls the existing `sendTestEmail`. UI: recipient input +
+      "Send test" button (`SmtpTestForm`) with its own toast, prefilled with the current user's
+      email. Tests SAVED settings (help text says "Save changes first").
+- [x] **SSO toggle fix.** Root cause: React 19 auto-resets the `<form>` after a Server Action
+      (`requestFormReset`), and Radix `Checkbox` reverts to its **mount-time** value on that
+      native `reset` event (`@radix-ui/react-checkbox` reset listener) — so a toggle snapped back
+      until a hard refresh. Fix: uncontrolled `defaultChecked` + `key={String(savedValue)}` on
+      each checkbox, so `revalidatePath` remounts it with the persisted value (superseding the
+      reset). Applied to all four SSO checkboxes and to the same latent bug in the **API-enabled**
+      toggle (`api-form.tsx`) and the **allowed-extension** checkboxes (`limits-form.tsx`).
+      Verified by a Playwright e2e (`settings-toggle-persist.spec.ts`) asserting the API toggle
+      keeps its new state after save without reload.
+- [x] **Email templates master-detail.** `TemplatesManager` (list + slide-over `Sheet` editor)
+      replaces the long `email-template-form.tsx`. Per-template `saveEmailTemplateAction` +
+      `resetEmailTemplateAction` persist a single template's subject/body to `AppSetting` (no new
+      model, no schema change). Shared metadata in `lib/settings/email-templates.ts`.
+- [x] **Remove "Reject".** `VALID_DECISIONS` is now `["APPROVED", "CLARIFICATION_REQUESTED"]`;
+      the review dropdown, review counts/filter/progress, and portal banners drop `REJECTED`.
+      Notification metric renamed `rejectedAwaitingVendor` → `clarificationsAwaitingVendor`.
+      Data-only migration `20260703020000_normalize_review_decisions` converts historical
+      `REJECTED` rows to `CLARIFICATION_REQUESTED`.
+- [x] **SSO-only + break-glass.** `disableLocalAuth` added to `ssoSettingsSchema`. Login page
+      hides the local form (and forgot-password) when `disableLocalAuth` is on **and** ≥1 SSO
+      provider is enabled (safety: never locks out when no SSO is configured; `/setup` unaffected).
+      `generateBreakGlassUrlAction` rotates a secret token, stores a bcrypt hash, and returns the
+      one-time `/login?breakGlass=<token>` URL; the login page verifies it (rate-limited) via
+      `lib/break-glass.ts`.
+- [x] **RBAC:** all settings work reuses `SETTINGS_MANAGE`; Reject removal reuses
+      `ASSESSMENTS_REVIEW`. No new permission keys.
+- [x] **Tests:** +9 unit tests (`email-templates.test.ts` ×3, `break-glass.test.ts` ×6),
+      notifications integration test updated, +1 e2e (`settings-toggle-persist.spec.ts`).
+      131 unit tests + 10 e2e pass.
+- [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check` clean. No OpenAPI
+      change (no REST endpoints touched).
+
+**Reviewer spot-check:** Save SMTP settings, click "Send test", confirm the email arrives and a
+`TEST` log appears. Toggle an SSO provider on + Save → it stays on without refresh. Edit an email
+template in the slide-over and reset it to default. Confirm "Reject" is gone from the review
+dropdown and portal. Enable an SSO provider + "Disable local auth" + Save → `/login` shows only
+SSO; generate a break-glass URL and confirm `/login?breakGlass=<token>` reveals the local form.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1474,4 +1525,5 @@ Visit a non-existent URL → branded 404 page with a dashboard link.
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 58 | Ready for review | opencode | 2026-07-03 | Settings & auth: Test SMTP button, SSO toggle fix (React 19 form-reset + Radix; key-remount across sso/api/limits toggles), email-template master-detail Sheet + reset-to-default, removed per-answer "Reject" (+ data migration), SSO-only login + break-glass URL; 131 unit + 10 e2e |
 | 57 | Approved | user | 2026-07-03 | Mobile & a11y: 28 fixes — settings tabs scroll, dense rows wrap, responsive controls, not-found.tsx, toast/idle/command-palette ARIA, skip-link, error reset(), img CLS, Firefox scrollbar, empty-state SVG aria-hidden, semantic sidebar, pagination live region, fieldset grouping; 122 unit + 9 e2e |

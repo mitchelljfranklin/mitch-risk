@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { saveEmailSettings, type SettingsActionState } from "./actions";
+import {
+  saveEmailSettings,
+  sendSmtpTestAction,
+  type SettingsActionState,
+} from "./actions";
 import { useFormToast } from "@/hooks/use-form-toast";
 
 type EmailFormProps = {
@@ -90,6 +94,44 @@ export function EmailForm({
           {isPending ? "Saving..." : "Save"}
         </Button>
       </div>
+    </form>
+  );
+}
+
+export function SmtpTestForm({
+  currentUserEmail,
+}: {
+  currentUserEmail: string;
+}) {
+  const [testState, testAction, isTesting] = useActionState(
+    sendSmtpTestAction,
+    initialState,
+  );
+  useFormToast(testState);
+
+  return (
+    <form action={testAction} className="grid max-w-md gap-2">
+      <Label htmlFor="test-recipient">Send test email to</Label>
+      <div className="flex items-center gap-3">
+        <Input
+          id="test-recipient"
+          name="recipient"
+          type="email"
+          defaultValue={currentUserEmail}
+          placeholder="you@company.com"
+        />
+        <Button
+          type="submit"
+          variant="secondary"
+          size="sm"
+          disabled={isTesting}
+        >
+          {isTesting ? "Sending..." : "Send test"}
+        </Button>
+      </div>
+      <p className="text-muted-foreground text-xs">
+        Sends using your saved SMTP settings. Save any changes first.
+      </p>
     </form>
   );
 }

@@ -211,14 +211,33 @@ export async function getEmailTemplateSettings(): Promise<EmailTemplateSettings>
   return emailTemplateSchema.parse(record);
 }
 
-export async function updateEmailTemplateSettings(
-  input: EmailTemplateSettings,
+export async function updateEmailTemplateFields(
+  fields: Partial<Record<keyof EmailTemplateSettings, string>>,
 ): Promise<void> {
   await persistCategory(
     EMAIL_TEMPLATE_CATEGORY,
-    input as unknown as Record<string, unknown>,
+    fields as Record<string, unknown>,
     new Set(),
   );
+}
+
+const BREAK_GLASS_KEY = "sso.breakGlassHash";
+
+export async function setBreakGlassHash(hash: string): Promise<void> {
+  await prisma.appSetting.upsert({
+    where: { key: BREAK_GLASS_KEY },
+    update: { value: hash, category: "sso" },
+    create: { key: BREAK_GLASS_KEY, category: "sso", value: hash },
+  });
+}
+
+export async function getBreakGlassHash(): Promise<string | null> {
+  const row = await prisma.appSetting.findUnique({
+    where: { key: BREAK_GLASS_KEY },
+  });
+  return row && typeof row.value === "string" && row.value.length > 0
+    ? row.value
+    : null;
 }
 
 export async function getSsoSettings(): Promise<SsoSettings> {

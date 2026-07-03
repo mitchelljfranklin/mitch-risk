@@ -59,6 +59,7 @@ lib/                 # cross-cutting logic
   schemas/           # shared zod schemas + inferred types
   settings/          # DB-backed operational config (schema, accessor, read/write)
   api-keys.ts        # API key generation, bcrypt hashing, CIDR IP matching
+  break-glass.ts     # SSO-only login bypass: token gen/hash/verify + show-local-auth rule
   api-auth.ts        # unified authenticateRequest() — session + Bearer token + permission check
   auth.ts            # Auth.js config + permission guards (requirePermission/hasPermission)
   permissions.ts     # RBAC permission catalog, default system roles, permission helpers

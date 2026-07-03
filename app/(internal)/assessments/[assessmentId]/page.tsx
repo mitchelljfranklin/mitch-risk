@@ -85,7 +85,6 @@ const REVIEW_DECISION_VARIANT: Record<
   "default" | "destructive" | "secondary"
 > = {
   APPROVED: "default",
-  REJECTED: "destructive",
   CLARIFICATION_REQUESTED: "secondary",
 };
 
@@ -130,8 +129,6 @@ export default async function AssessmentDetailPage({
     total: answerable.length,
     approved: answerable.filter((r) => r.review?.decision === "APPROVED")
       .length,
-    rejected: answerable.filter((r) => r.review?.decision === "REJECTED")
-      .length,
     clarification: answerable.filter(
       (r) => r.review?.decision === "CLARIFICATION_REQUESTED",
     ).length,
@@ -149,8 +146,6 @@ export default async function AssessmentDetailPage({
     if (reviewFilter === "pending") return !response.review;
     if (reviewFilter === "approved")
       return response.review?.decision === "APPROVED";
-    if (reviewFilter === "rejected")
-      return response.review?.decision === "REJECTED";
     if (reviewFilter === "clarification")
       return response.review?.decision === "CLARIFICATION_REQUESTED";
     return true;
@@ -160,7 +155,6 @@ export default async function AssessmentDetailPage({
     { value: "all", label: "All" },
     { value: "pending", label: `Pending (${reviewCounts.pending})` },
     { value: "approved", label: `Approved (${reviewCounts.approved})` },
-    { value: "rejected", label: `Rejected (${reviewCounts.rejected})` },
     {
       value: "clarification",
       label: `Clarification (${reviewCounts.clarification})`,
@@ -551,9 +545,6 @@ export default async function AssessmentDetailPage({
               <CardDescription>
                 {reviewCounts.approved} of {reviewCounts.total} approved ·{" "}
                 {reviewCounts.pending} pending
-                {reviewCounts.rejected > 0
-                  ? ` · ${reviewCounts.rejected} rejected`
-                  : ""}
                 {reviewCounts.clarification > 0
                   ? ` · ${reviewCounts.clarification} clarification`
                   : ""}
@@ -682,7 +673,6 @@ export default async function AssessmentDetailPage({
                                 <SelectItem value="APPROVED">
                                   Approve
                                 </SelectItem>
-                                <SelectItem value="REJECTED">Reject</SelectItem>
                                 <SelectItem value="CLARIFICATION_REQUESTED">
                                   Request clarification
                                 </SelectItem>

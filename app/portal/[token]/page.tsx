@@ -166,9 +166,7 @@ export default async function PortalPage({ params }: PortalPageProps) {
                       className={
                         review.decision === "APPROVED"
                           ? "text-[var(--rag-green)]"
-                          : review.decision === "REJECTED"
-                            ? "text-destructive"
-                            : "text-muted-foreground"
+                          : "text-muted-foreground"
                       }
                     >
                       {review.decision === "CLARIFICATION_REQUESTED"
