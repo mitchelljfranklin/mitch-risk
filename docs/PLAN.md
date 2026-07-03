@@ -506,6 +506,12 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   `onDelete: SetNull`). Minting keys is still gated by `API_MANAGE` (Admin-only by default),
   which is the sole trust boundary for issuing keys. IP allowlisting, expiry, per-key rate
   limits, enable/disable, and one-time display are unchanged.
+- **Phase 65 — Vendors list view toggle.** The vendors list now has a **Rows / Cards** display
+  toggle so each user can choose how they browse. The choice persists per browser via a
+  `vendors_view` cookie (read server-side, default **rows**), so the page stays a Server
+  Component. The card view shows the same data as the rows (name, tier, email, RAG score,
+  last-assessed date, assessment count) in a responsive grid. The toggle component
+  (`components/view-toggle.tsx`) is generic and can be reused on other lists later.
 
 ## 8. Out of scope (v1+)
 

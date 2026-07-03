@@ -1642,6 +1642,29 @@ with it — both succeed; disable/delete the creating user and the key still aut
 
 ---
 
+## Phase 65 — Vendors list view toggle (rows/cards)
+
+**Scope:** let users switch the vendors list between the row view and a card grid, with the
+choice remembered.
+
+**Checklist:**
+
+- [x] **Preference helper.** `lib/view-preference.ts` — `VENDOR_VIEW_COOKIE`, `parseListView`
+      (default `rows`), cookie max-age constant; unit-tested.
+- [x] **Toggle.** `components/view-toggle.tsx` — generic client segmented control (List /
+      LayoutGrid icons, `aria-pressed`) that writes the cookie and `router.refresh()`es.
+- [x] **Vendors page.** Reads the cookie via `cookies()` (default rows, so no behaviour change
+      for existing users); renders the existing row list or a `sm:grid-cols-2 lg:grid-cols-3`
+      card grid with the same data (name, tier, email, RAG score, last-assessed, count). Filters,
+      sort, pagination, and empty states shared/unchanged. Stays a Server Component.
+- [x] Quality gates: `lint`, `typecheck`, `build`, `format:check`, `vitest` (test DB), Playwright
+      clean. No DB/migration, RBAC, or OpenAPI change.
+
+**Reviewer spot-check:** on /vendors, click the card icon → layout switches to cards and stays
+that way after reload/navigation; click rows → reverts; score/tier/last-assessed show in both.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1702,6 +1725,7 @@ with it — both succeed; disable/delete the creating user and the key still aut
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 65 | Approved | user | 2026-07-03 | Vendors list Rows/Cards view toggle: cookie-backed (vendors_view, default rows), server-rendered card grid with score/tier/last-assessed; generic ViewToggle component; +1 unit test |
 | 64 | Approved | user | 2026-07-03 | Full-access API keys: keys grant ALL_PERMISSIONS regardless of creator role and survive creator disable/delete (createdBy nullable + SetNull migration); gated by API_MANAGE; docs/OpenAPI updated; +1 integration test |
 | 63 | Ready for review | opencode | 2026-07-03 | Map-whole-framework: per-framework tri-state "select all" in the control picker (n/total count, filter-independent) so a certification question can map every control in a framework; pure lib/control-selection.ts + unit tests; no back-end change |
 | 62 | Ready for review | opencode | 2026-07-03 | Users tab rework: Roles-style master–detail Sheet (search, role/SSO/status badges, added date), SSO-aware password reset hidden, listStaffAccounts view; Users + Roles tabs wrapped in Cards for dark-mode shading parity |

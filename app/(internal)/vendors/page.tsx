@@ -1,7 +1,15 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -13,11 +21,13 @@ import {
 import { AutoSubmitSelect } from "@/components/auto-submit-select";
 import { EmptyState } from "@/components/empty-state";
 import { Pagination } from "@/components/pagination";
+import { ViewToggle } from "@/components/view-toggle";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { listVendors, VENDOR_SORTS, type VendorSort } from "@/lib/db/vendors";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 import { formatDate, formatPercent, ragTextClass } from "@/lib/utils";
+import { parseListView, VENDOR_VIEW_COOKIE } from "@/lib/view-preference";
 import { ImportVendorsForm } from "./import-vendors-form";
 
 export const dynamic = "force-dynamic";
@@ -50,6 +60,9 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
   });
   const hasFilters = Boolean(sp.query) || Boolean(sp.tier);
 
+  const cookieStore = await cookies();
+  const view = parseListView(cookieStore.get(VENDOR_VIEW_COOKIE)?.value);
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
@@ -77,61 +90,68 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
         </div>
       </div>
 
-      <form className="flex flex-wrap items-end gap-2">
-        <div className="flex flex-col gap-1">
-          <label className="text-muted-foreground text-xs" htmlFor="query">
-            Search
-          </label>
-          <Input
-            id="query"
-            name="query"
-            placeholder="Name or email…"
-            defaultValue={sp.query ?? ""}
-            className="w-48"
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-muted-foreground text-xs" htmlFor="tier">
-            Tier
-          </label>
-          <Select name="tier" defaultValue={sp.tier ?? ""}>
-            <SelectTrigger id="tier" className="w-40">
-              <SelectValue placeholder="All" />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(VENDOR_TIER_LABELS).map(([value, label]) => (
-                <SelectItem key={value} value={value}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-muted-foreground text-xs" htmlFor="sort">
-            Sort
-          </label>
-          <AutoSubmitSelect
-            name="sort"
-            defaultValue={sort}
-            id="sort"
-            className="w-48"
-            ariaLabel="Sort vendors"
-            options={Object.entries(VENDOR_SORTS).map(([value, label]) => ({
-              value,
-              label,
-            }))}
-          />
-        </div>
-        <Button type="submit" variant="secondary" size="sm" className="mb-px">
-          Filter
-        </Button>
-        {hasFilters ? (
-          <Button asChild variant="ghost" size="sm" className="mb-px">
-            <Link href="/vendors">Clear</Link>
+      <div className="flex flex-wrap items-end justify-between gap-2">
+        <form className="flex flex-wrap items-end gap-2">
+          <div className="flex flex-col gap-1">
+            <label className="text-muted-foreground text-xs" htmlFor="query">
+              Search
+            </label>
+            <Input
+              id="query"
+              name="query"
+              placeholder="Name or email…"
+              defaultValue={sp.query ?? ""}
+              className="w-48"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-muted-foreground text-xs" htmlFor="tier">
+              Tier
+            </label>
+            <Select name="tier" defaultValue={sp.tier ?? ""}>
+              <SelectTrigger id="tier" className="w-40">
+                <SelectValue placeholder="All" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(VENDOR_TIER_LABELS).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-muted-foreground text-xs" htmlFor="sort">
+              Sort
+            </label>
+            <AutoSubmitSelect
+              name="sort"
+              defaultValue={sort}
+              id="sort"
+              className="w-48"
+              ariaLabel="Sort vendors"
+              options={Object.entries(VENDOR_SORTS).map(([value, label]) => ({
+                value,
+                label,
+              }))}
+            />
+          </div>
+          <Button type="submit" variant="secondary" size="sm" className="mb-px">
+            Filter
           </Button>
-        ) : null}
-      </form>
+          {hasFilters ? (
+            <Button asChild variant="ghost" size="sm" className="mb-px">
+              <Link href="/vendors">Clear</Link>
+            </Button>
+          ) : null}
+        </form>
+        <ViewToggle
+          value={view}
+          cookieName={VENDOR_VIEW_COOKIE}
+          ariaLabel="Vendor list view"
+        />
+      </div>
 
       {vendors.length === 0 ? (
         hasFilters ? (
@@ -147,49 +167,97 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
         )
       ) : (
         <>
-          <div className="flex flex-col divide-y rounded-lg border">
-            {vendors.map((vendor) => (
-              <Link
-                key={vendor.id}
-                href={`/vendors/${vendor.id}`}
-                className="hover:bg-accent/40 flex items-center justify-between gap-4 p-3 transition-colors"
-              >
-                <div className="flex min-w-0 flex-col">
-                  <span className="truncate text-sm font-medium">
-                    {vendor.name}
-                  </span>
-                  <span className="text-muted-foreground truncate text-xs">
-                    {vendor.contactEmail}
-                  </span>
-                </div>
-                <div className="flex shrink-0 items-center gap-4">
-                  {vendor.tier ? (
-                    <Badge variant="outline">
-                      {VENDOR_TIER_LABELS[vendor.tier]}
-                    </Badge>
-                  ) : null}
-                  <span className="text-muted-foreground hidden w-28 text-right text-xs sm:inline">
-                    {vendor.lastAssessedAt
-                      ? `Assessed ${formatDate(vendor.lastAssessedAt)}`
-                      : "Not assessed"}
-                  </span>
-                  <span className="text-muted-foreground hidden w-20 text-right text-xs md:inline">
-                    {vendor._count.assessments}{" "}
-                    {vendor._count.assessments === 1
-                      ? "assessment"
-                      : "assessments"}
-                  </span>
-                  <span
-                    className={`w-12 text-right text-sm font-semibold tabular-nums ${ragTextClass(vendor.overallScore)}`}
-                  >
-                    {vendor.overallScore !== null
-                      ? formatPercent(vendor.overallScore)
-                      : "—"}
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
+          {view === "cards" ? (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {vendors.map((vendor) => (
+                <Link key={vendor.id} href={`/vendors/${vendor.id}`}>
+                  <Card className="hover:bg-accent/40 h-full transition-colors">
+                    <CardHeader>
+                      <div className="flex items-start justify-between gap-2">
+                        <CardTitle className="truncate">
+                          {vendor.name}
+                        </CardTitle>
+                        {vendor.tier ? (
+                          <Badge variant="outline" className="shrink-0">
+                            {VENDOR_TIER_LABELS[vendor.tier]}
+                          </Badge>
+                        ) : null}
+                      </div>
+                      <CardDescription className="truncate">
+                        {vendor.contactEmail}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex items-end justify-between gap-2">
+                      <div className="text-muted-foreground flex flex-col gap-0.5 text-xs">
+                        <span>
+                          {vendor.lastAssessedAt
+                            ? `Assessed ${formatDate(vendor.lastAssessedAt)}`
+                            : "Not assessed"}
+                        </span>
+                        <span>
+                          {vendor._count.assessments}{" "}
+                          {vendor._count.assessments === 1
+                            ? "assessment"
+                            : "assessments"}
+                        </span>
+                      </div>
+                      <span
+                        className={`text-2xl font-semibold tabular-nums ${ragTextClass(vendor.overallScore)}`}
+                      >
+                        {vendor.overallScore !== null
+                          ? formatPercent(vendor.overallScore)
+                          : "—"}
+                      </span>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col divide-y rounded-lg border">
+              {vendors.map((vendor) => (
+                <Link
+                  key={vendor.id}
+                  href={`/vendors/${vendor.id}`}
+                  className="hover:bg-accent/40 flex items-center justify-between gap-4 p-3 transition-colors"
+                >
+                  <div className="flex min-w-0 flex-col">
+                    <span className="truncate text-sm font-medium">
+                      {vendor.name}
+                    </span>
+                    <span className="text-muted-foreground truncate text-xs">
+                      {vendor.contactEmail}
+                    </span>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-4">
+                    {vendor.tier ? (
+                      <Badge variant="outline">
+                        {VENDOR_TIER_LABELS[vendor.tier]}
+                      </Badge>
+                    ) : null}
+                    <span className="text-muted-foreground hidden w-28 text-right text-xs sm:inline">
+                      {vendor.lastAssessedAt
+                        ? `Assessed ${formatDate(vendor.lastAssessedAt)}`
+                        : "Not assessed"}
+                    </span>
+                    <span className="text-muted-foreground hidden w-20 text-right text-xs md:inline">
+                      {vendor._count.assessments}{" "}
+                      {vendor._count.assessments === 1
+                        ? "assessment"
+                        : "assessments"}
+                    </span>
+                    <span
+                      className={`w-12 text-right text-sm font-semibold tabular-nums ${ragTextClass(vendor.overallScore)}`}
+                    >
+                      {vendor.overallScore !== null
+                        ? formatPercent(vendor.overallScore)
+                        : "—"}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
           <Pagination
             page={page}
             pageSize={pageSize}
