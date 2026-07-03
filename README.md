@@ -149,7 +149,26 @@ and `X-Forwarded-Proto`. Front Door also sets `X-Azure-ClientIP`. For a single A
 `TRUSTED_PROXY_COUNT=1`; to use the dedicated header set `CLIENT_IP_HEADER=x-azure-clientip`.
 If Azure sits in front of another proxy, increase `TRUSTED_PROXY_COUNT` accordingly.
 
+## Data & storage
+
+The app keeps state in **two** places, and both must be backed up together:
+
+- **PostgreSQL (`db` container / `db_data` volume)** — all relational data *and settings*:
+  vendors, assessments, users, roles, audit logs, and every operational setting (organisation
+  name, brand colours, SMTP, scoring, the logo *reference*, etc. — stored in the `AppSetting`
+  table).
+- **App container disk (`evidence_data` volume, mounted at `/app/.storage`)** — the actual
+  uploaded **file bytes**: vendor evidence files and the org logo image. Configured via
+  `EVIDENCE_STORAGE_PATH`. Files are served only through an authenticated route, never a public
+  URL. (The storage sits behind a swappable interface, so it can move to S3/MinIO later.)
+
+> The database stores *metadata and references* (e.g. `logoKey`, evidence filename → assessment
+> link); the volume stores the *files themselves*. A database-only backup will leave uploaded
+> files orphaned, and a files-only backup will lose the links — always capture both.
+
 ## Backup
+
+Back up the **database**:
 
 ```bash
 # Bash
@@ -158,6 +177,16 @@ If Azure sits in front of another proxy, increase `TRUSTED_PROXY_COUNT` accordin
 # PowerShell
 .\scripts\backup.ps1
 ```
+
+Also back up the **evidence/logo files** on the app volume, e.g.:
+
+```bash
+docker run --rm -v mitch-risk_evidence_data:/data -v "$PWD":/backup alpine \
+  tar czf /backup/evidence-$(date +%F).tar.gz -C /data .
+```
+
+> **Do not** run `docker compose down -v` unless you intend to wipe data — the `-v` flag
+> deletes both the Postgres (`db_data`) and evidence (`evidence_data`) volumes.
 
 ## Cron
 
