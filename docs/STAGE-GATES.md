@@ -1526,6 +1526,36 @@ message.
 
 ---
 
+## Phase 61 — Test database isolation
+
+**Scope:** stop the integration test suite from mutating/wiping a real database.
+
+**Root cause:** `vitest.setup.ts` loaded `.env`, so integration tests ran against the dev
+`DATABASE_URL`. `settings.integration.test.ts` reset organization to `mitch-risk` + deleted all
+`email` settings; the appearance test left appearance blank; `notifications.integration.test.ts`
+called an unfiltered `notificationLog.deleteMany()`. Net effect: General/Email/Appearance
+settings and the whole email-tracking history were destroyed on every `npm run test`.
+
+**Checklist:**
+
+- [x] **Test DB override + guard.** `vitest.setup.ts` loads `.env` then `.env.test`, prefers
+      `TEST_DATABASE_URL`, and **throws before any test runs** unless the DB name contains
+      `test` or `ALLOW_TESTS_ON_THIS_DB=1` is set (password redacted in the message).
+- [x] **Hardened destructive tests.** `settings.integration.test.ts` snapshots the
+      organization/email/appearance settings and restores them in `afterAll`;
+      `notifications.integration.test.ts` no longer wipes unrelated notification logs (only its
+      own fixtures).
+- [x] **Config + docs.** `TEST_DATABASE_URL` documented in `.env.example`; README → Testing
+      section (create/migrate a `mitch_risk_test` DB, run tests); AGENTS commands note updated.
+- [x] Quality gates: `lint`, `typecheck`, `build`, `format:check` clean; `vitest` runs green
+      against the isolated `mitch_risk_test` DB; Playwright green. No schema change/migration.
+
+**Reviewer spot-check:** running `npm run test` with `DATABASE_URL` pointing at a non-test DB and
+no `TEST_DATABASE_URL` aborts with a clear error; with `TEST_DATABASE_URL` set, the suite passes
+and dev settings are untouched afterward.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1586,6 +1616,7 @@ message.
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 61 | Ready for review | opencode | 2026-07-03 | Test DB isolation: vitest.setup prefers TEST_DATABASE_URL + refuses non-test DBs; settings test snapshots/restores; notifications test no longer wipes logs. Fixes integration tests destroying real org/email/appearance settings + notification history |
 | 60 | Ready for review | opencode | 2026-07-03 | Profile UX & SSO-aware credentials: card-based profile layout (wider, un-cramped), SSO-only users get read-only email + hidden password card + name-only update, forgot-password skips SSO-only accounts; +2 unit tests |
 | 59 | Ready for review | opencode | 2026-07-03 | Reverse-proxy hardening: proxy-aware getClientIp (trusted-hop XFF / CLIENT_IP_HEADER) across login/break-glass/portal/API + API-key IP allowlist; TRUSTED_PROXY_COUNT/CLIENT_IP_HEADER env; README proxy guide (Caddy/nginx/Zoraxy/Azure); +12 unit tests |
 | 58 | Ready for review | opencode | 2026-07-03 | Settings & auth: Test SMTP button, SSO toggle fix (React 19 form-reset + Radix; key-remount across sso/api/limits toggles), email-template master-detail Sheet + reset-to-default, removed per-answer "Reject" (+ data migration), SSO-only login + break-glass URL; 131 unit + 10 e2e |

@@ -96,7 +96,9 @@ ones before declaring any phase complete.
 - `npm run lint` — ESLint (must be clean before any gate sign-off)
 - `npm run typecheck` — `tsc --noEmit` (must be clean before any gate sign-off)
 - `npm run format:check` — Prettier check (clean before any gate sign-off); `npm run format` to fix
-- `npm run test` — unit tests (Vitest)
+- `npm run test` — unit + integration tests (Vitest). **Integration tests delete/reset DB data
+  and refuse to run unless pointed at a test database.** Set `TEST_DATABASE_URL` to a dedicated
+  DB (name must contain `test`) — never run against dev/prod. See README → Testing.
 - `npm run test:e2e` — end-to-end tests (Playwright)
 - `npm run db:migrate` — apply Prisma migrations
 - `npm run db:seed` — run seed script

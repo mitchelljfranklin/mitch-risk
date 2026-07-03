@@ -1,4 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { type Prisma } from "@prisma/client";
 
 import { decryptSecret } from "@/lib/crypto";
 import { prisma } from "@/lib/prisma";
@@ -11,15 +12,52 @@ import {
   updateOrganizationSettings,
 } from "@/lib/settings";
 
-async function resetState() {
-  await prisma.appSetting.deleteMany({ where: { category: "email" } });
-  await updateOrganizationSettings({ name: "mitch-risk", supportEmail: "" });
+// Categories this suite mutates. We snapshot them before and restore them
+// after so the tests are non-destructive even if pointed at a populated
+// database (the primary protection is a dedicated test DB — see vitest.setup).
+const MUTATED_CATEGORIES = ["organization", "email", "appearance"];
+
+let settingsSnapshot: {
+  key: string;
+  category: string;
+  value: Prisma.JsonValue;
+  isSecret: boolean;
+}[] = [];
+
+async function snapshotSettings() {
+  settingsSnapshot = await prisma.appSetting.findMany({
+    where: { category: { in: MUTATED_CATEGORIES } },
+    select: { key: true, category: true, value: true, isSecret: true },
+  });
 }
 
-beforeAll(resetState);
+async function restoreSettings() {
+  await prisma.appSetting.deleteMany({
+    where: { category: { in: MUTATED_CATEGORIES } },
+  });
+  if (settingsSnapshot.length > 0) {
+    await prisma.appSetting.createMany({
+      data: settingsSnapshot.map((row) => ({
+        key: row.key,
+        category: row.category,
+        value: row.value as Prisma.InputJsonValue,
+        isSecret: row.isSecret,
+      })),
+    });
+  }
+}
+
+beforeAll(async () => {
+  await snapshotSettings();
+  // Deterministic baseline for the assertions below.
+  await prisma.appSetting.deleteMany({
+    where: { category: { in: MUTATED_CATEGORIES } },
+  });
+  await updateOrganizationSettings({ name: "mitch-risk", supportEmail: "" });
+});
 
 afterAll(async () => {
-  await resetState();
+  await restoreSettings();
   await prisma.$disconnect();
 });
 

@@ -475,6 +475,14 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   the identity provider), and only the display name is editable — and the "Forgot password?"
   flow silently issues no reset link for them (still generic to avoid account enumeration).
   Local and SSO-linked accounts with a real password keep full password management.
+- **Phase 61 — Test database isolation.** Integration tests were running against whatever
+  `DATABASE_URL` pointed at (typically the dev database) and **destructively reset real data** —
+  the settings test wiped email/organization/appearance settings and the notifications test
+  deleted the entire notification-log history. `vitest.setup.ts` now prefers `TEST_DATABASE_URL`
+  and **refuses to run unless the target database looks like a test DB** (or `ALLOW_TESTS_ON_THIS_DB=1`).
+  The destructive tests were hardened too: the settings test snapshots and restores the settings
+  it touches, and the notifications test no longer wipes unrelated logs. Documented in README →
+  Testing.
 
 ## 8. Out of scope (v1+)
 

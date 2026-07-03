@@ -32,7 +32,9 @@ function buildQuestion(
 }
 
 async function cleanup() {
-  await prisma.notificationLog.deleteMany();
+  // Only remove this test's own fixtures. The assertions check invariants
+  // (non-negative counts, total = sum of parts, and >= 1 after submitting),
+  // so there is no need to wipe unrelated notification logs.
   await prisma.vendor.deleteMany({ where: { name: VENDOR_NAME } });
   await prisma.template.deleteMany({ where: { name: TEMPLATE_NAME } });
 }

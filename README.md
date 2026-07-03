@@ -188,6 +188,39 @@ docker run --rm -v mitch-risk_evidence_data:/data -v "$PWD":/backup alpine \
 > **Do not** run `docker compose down -v` unless you intend to wipe data — the `-v` flag
 > deletes both the Postgres (`db_data`) and evidence (`evidence_data`) volumes.
 
+## Testing
+
+Unit tests run anywhere. **Integration tests hit a real PostgreSQL database and delete/reset
+data** (settings, notification logs, fixtures), so they must run against a **dedicated test
+database**, never your dev/prod one.
+
+1. Create a test database (same server is fine), e.g. `mitch_risk_test`:
+   ```bash
+   # using the compose Postgres container
+   docker compose exec db createdb -U mitch mitch_risk_test
+   ```
+2. Point the suite at it via `TEST_DATABASE_URL` (in `.env` or `.env.test`):
+   ```
+   TEST_DATABASE_URL="postgresql://mitch:mitch@localhost:5432/mitch_risk_test?schema=public"
+   ```
+3. Apply migrations to the test database once (and after new migrations):
+   ```bash
+   # bash
+   DATABASE_URL="$TEST_DATABASE_URL" npx prisma migrate deploy
+   ```
+   ```powershell
+   # PowerShell
+   $env:DATABASE_URL=$env:TEST_DATABASE_URL; npx prisma migrate deploy
+   ```
+4. Run the tests:
+   ```bash
+   npm run test        # unit + integration (Vitest)
+   npm run test:e2e    # Playwright
+   ```
+
+The runner **refuses to start** unless the target database name contains `test` (or you set
+`ALLOW_TESTS_ON_THIS_DB=1` to intentionally run against it — which *will* mutate that database).
+
 ## Cron
 
 Schedule a system cron to hit the secured endpoint:
