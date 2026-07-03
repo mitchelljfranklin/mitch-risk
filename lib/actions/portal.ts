@@ -22,6 +22,7 @@ import { saveProgressSchema } from "@/lib/schemas/portal";
 import { getFileSettings } from "@/lib/settings";
 import { storage } from "@/lib/storage";
 import { rateLimit } from "@/lib/rate-limit";
+import { isDangerousUploadMime } from "@/lib/upload-validation";
 
 async function clientIp(): Promise<string> {
   const h = await headers();
@@ -100,6 +101,9 @@ export async function uploadEvidenceAction(
     !fileSettings.allowedExtensions.includes(extension)
   ) {
     return { ok: false, error: `Files of type .${extension} are not allowed.` };
+  }
+  if (isDangerousUploadMime(file.type)) {
+    return { ok: false, error: "This file type is not allowed." };
   }
 
   await deleteEvidenceForQuestion(assessment.id, assessmentQuestionId);

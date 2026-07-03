@@ -7,9 +7,11 @@ import { redirect } from "next/navigation";
 import { cache } from "react";
 
 import "@/lib/env";
+import { getClientIp } from "@/lib/client-ip";
 import { logAudit } from "@/lib/db/audit";
 import { verifyUserCredentials } from "@/lib/db/users";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 import { credentialsSchema } from "@/lib/schemas/auth";
 import {
   type Permission,
@@ -17,6 +19,8 @@ import {
   hasPermission as permissionInList,
 } from "@/lib/permissions";
 import { getSsoSecret, getSsoSettings } from "@/lib/settings";
+
+const CREDENTIALS_AUTH_ATTEMPTS_PER_MINUTE = 10;
 
 export const getRolePermissions = cache(
   async (roleId: string): Promise<{ name: string; permissions: string[] }> => {
@@ -113,7 +117,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth(async () => {
           email: { label: "Email", type: "email" },
           password: { label: "Password", type: "password" },
         },
-        authorize: async (rawCredentials) => {
+        authorize: async (rawCredentials, request) => {
+          const clientIp = request?.headers
+            ? getClientIp(request.headers)
+            : "unknown";
+          if (
+            !rateLimit(
+              "credentials-callback",
+              clientIp,
+              CREDENTIALS_AUTH_ATTEMPTS_PER_MINUTE,
+            )
+          ) {
+            return null;
+          }
+
           const parsed = credentialsSchema.safeParse(rawCredentials);
           if (!parsed.success) {
             return null;

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeTokens } from "@/lib/theme-tokens";
@@ -31,6 +32,7 @@ export default async function RootLayout({
 }>) {
   const appearance = await getAppearanceSettings();
   const faviconUrl = appearance.logoKey ? "/api/brand/logo" : "/favicon.ico";
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
     <html
@@ -53,6 +55,7 @@ export default async function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
+          nonce={nonce}
         >
           <ThemeTokens />
           {children}

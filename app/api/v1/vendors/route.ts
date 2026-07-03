@@ -1,34 +1,37 @@
 import { authenticateRequest, authResultHasPermission } from "@/lib/api-auth";
+import { apiError, runApiHandler } from "@/lib/api-response";
 import { PERMISSIONS } from "@/lib/permissions";
 import { listVendors } from "@/lib/db/vendors";
 
 export async function GET(request: Request) {
-  const auth = await authenticateRequest(request);
-  if (!auth) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  if (!authResultHasPermission(auth, PERMISSIONS.VENDORS_VIEW)) {
-    return Response.json({ error: "Forbidden" }, { status: 403 });
-  }
+  return runApiHandler(async () => {
+    const auth = await authenticateRequest(request);
+    if (!auth) {
+      return apiError("Unauthorized", 401);
+    }
+    if (!authResultHasPermission(auth, PERMISSIONS.VENDORS_VIEW)) {
+      return apiError("Forbidden", 403);
+    }
 
-  const { searchParams } = new URL(request.url);
-  const { vendors } = await listVendors({
-    query: searchParams.get("query") ?? undefined,
-    tier: searchParams.get("tier") ?? undefined,
-    pageSize: 1000,
+    const { searchParams } = new URL(request.url);
+    const { vendors } = await listVendors({
+      query: searchParams.get("query") ?? undefined,
+      tier: searchParams.get("tier") ?? undefined,
+      pageSize: 1000,
+    });
+
+    return Response.json(
+      vendors.map((vendor) => ({
+        id: vendor.id,
+        name: vendor.name,
+        contactName: vendor.contactName,
+        contactEmail: vendor.contactEmail,
+        tier: vendor.tier,
+        website: vendor.website,
+        overallScore: vendor.overallScore,
+        lastAssessedAt: vendor.lastAssessedAt,
+        assessmentCount: vendor._count.assessments,
+      })),
+    );
   });
-
-  return Response.json(
-    vendors.map((v) => ({
-      id: v.id,
-      name: v.name,
-      contactName: v.contactName,
-      contactEmail: v.contactEmail,
-      tier: v.tier,
-      website: v.website,
-      overallScore: v.overallScore,
-      lastAssessedAt: v.lastAssessedAt,
-      assessmentCount: v._count.assessments,
-    })),
-  );
 }

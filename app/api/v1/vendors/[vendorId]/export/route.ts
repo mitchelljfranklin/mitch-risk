@@ -1,4 +1,5 @@
 import { authenticateRequest, authResultHasPermission } from "@/lib/api-auth";
+import { apiError, runApiHandler } from "@/lib/api-response";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getVendorForExport } from "@/lib/db/vendors";
 import {
@@ -9,23 +10,31 @@ import { DATA_SENSITIVITY_LABELS } from "@/lib/schemas/vendor";
 import { csvEscape } from "@/lib/utils";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ vendorId: string }> },
 ) {
-  const auth = await authenticateRequest(_request);
-  if (!auth) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  if (!authResultHasPermission(auth, PERMISSIONS.VENDORS_VIEW)) {
-    return Response.json({ error: "Forbidden" }, { status: 403 });
-  }
+  return runApiHandler(async () => {
+    const auth = await authenticateRequest(request);
+    if (!auth) {
+      return apiError("Unauthorized", 401);
+    }
+    if (!authResultHasPermission(auth, PERMISSIONS.VENDORS_VIEW)) {
+      return apiError("Forbidden", 403);
+    }
 
-  const { vendorId } = await params;
-  const vendor = await getVendorForExport(vendorId);
-  if (!vendor) {
-    return Response.json({ error: "Not found" }, { status: 404 });
-  }
+    const { vendorId } = await params;
+    const vendor = await getVendorForExport(vendorId);
+    if (!vendor) {
+      return apiError("Not found", 404);
+    }
 
+    return buildVendorCsvResponse(vendor);
+  });
+}
+
+function buildVendorCsvResponse(
+  vendor: NonNullable<Awaited<ReturnType<typeof getVendorForExport>>>,
+): Response {
   const header = [
     csvEscape("Assessment Title"),
     csvEscape("Status"),

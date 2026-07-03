@@ -1854,6 +1854,49 @@ than renders; a vendor cannot delete evidence on a submitted assessment.
 
 ---
 
+## Phase 73 — Security hardening (Batch B)
+
+**Scope:** defense-in-depth follow-up to Phase 72 (rate-limiter robustness, portal/login abuse
+limits, upload MIME allowlist, API error hygiene, CSP + security headers).
+
+**Checklist:**
+
+- [x] **Rate limiter** (`lib/rate-limit.ts`) — lazy sweep of expired windows + bounded
+      `MAX_TRACKED_KEYS` eviction; `getRateLimitStoreSize` exposed for tests. Single-instance
+      assumption documented; shared store only needed if scaled out.
+- [x] **Portal enumeration** — `GET /portal/[token]` IP rate-limited; over-limit returns the same
+      generic "link not found" shell (no content/timing signal).
+- [x] **Login bypass** — IP rate limit inside the NextAuth credentials `authorize` callback
+      (`lib/auth.ts`), independent of the login server action's existing limiter.
+- [x] **Upload MIME** — `lib/upload-validation.ts` rejects script-renderable types
+      (text/html, image/svg+xml, JS, …) in the portal upload, on top of the extension check +
+      Phase 72 `nosniff`.
+- [x] **API error hygiene** — `lib/api-response.ts` (`apiError` + `runApiHandler`) wraps all six
+      REST v1 handlers; unexpected errors return `{ error: "Internal error" }` 500, logged
+      server-side; documented field-validation messages retained.
+- [x] **CSP + headers** — `middleware.ts` emits a nonce-based strict CSP
+      (`script-src 'self' 'nonce-…' 'strict-dynamic'`, `'unsafe-eval'` only in dev; `object-src
+      'none'`, `frame-ancestors 'none'`, `base-uri`/`form-action 'self'`; jsdelivr allowed for the
+      Swagger UI CDN) plus `X-Frame-Options`, `Referrer-Policy`, `X-Content-Type-Options`,
+      `Permissions-Policy`. Nonce threaded into the root layout + next-themes; verified all script
+      tags are nonced and no CSP console violations. `upgrade-insecure-requests` intentionally
+      omitted so HTTP-accessed self-hosted deployments and same-origin server actions keep working.
+- [x] **Tests** — rate-limit eviction/window unit; upload-validation unit; api-response unit.
+      Gates: lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 199 passed (test DB),
+      Playwright 10/10 (dev server, per project convention). No migration/OpenAPI/RBAC changes.
+
+**Known pre-existing issue (not introduced here):** two write+toast e2e specs
+(`settings-toggle-persist`, `rbac-admin-roles` create) fail under `npm run start` (prod) but pass
+under `npm run dev`; verified they fail identically on the pre-Phase-73 baseline in prod. All prior
+phases validated e2e against the dev server (Playwright `reuseExistingServer`). Flagged for a
+separate follow-up.
+
+**Reviewer spot-check:** response headers include the CSP + security headers; the API docs at
+`/docs` still load (jsdelivr allowed); portal link loads normally but a burst of loads shows the
+generic message; an uploaded `.html` (text/html) evidence file is rejected.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1914,6 +1957,7 @@ than renders; a vendor cannot delete evidence on a submitted assessment.
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 73 | Ready for review | opencode | 2026-07-03 | Security hardening (Batch B): rate-limiter eviction/bounding, portal-page + credentials-authorize IP limits, upload MIME allowlist, shared API error wrapper (generic 500), nonce-based strict CSP + security headers via middleware; +3 test files, 199 unit passing, 10/10 e2e (dev) |
 | 72 | Ready for review | opencode | 2026-07-03 | Security hardening (Batch A): API-key prefix lookup (+migration invalidating legacy keys), TRUSTED_PROXY_COUNT default 0, constant-time CRON_SECRET (+required in prod), evidence nosniff + inline MIME allowlist, portal edits locked after submit; +3 test files, 191 unit passing |
 | 71 | Approved | user | 2026-07-03 | Dashboard graph pack: findings-by-severity + risk-by-tier (stacked) + assessment-status charts, and an Upcoming key dates (60d) list (certs/contracts/reassessments); computeRiskByTier + listUpcomingKeyDates; +2 test files |
 | 70 | Approved | user | 2026-07-03 | Vendor import/export parity: CSV export adds service/sensitivity/renewal/owner + certifications section; REST + CSV import accept the 3 new scalar fields; OpenAPI VendorImport aligned (dropped ownerId); +5 tests |

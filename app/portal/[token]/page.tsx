@@ -1,7 +1,11 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { getAssessmentByToken, isTokenExpired } from "@/lib/db/assessments";
+import { getClientIp } from "@/lib/client-ip";
+import { rateLimit } from "@/lib/rate-limit";
 import { getAppearanceSettings, getFileSettings } from "@/lib/settings";
 import { ThemeToggle } from "@/components/theme-toggle";
+
+const PORTAL_PAGE_LOADS_PER_MINUTE = 30;
 
 import { PortalQuestionnaire } from "./portal-questionnaire";
 import { PasswordGate } from "./password-gate";
@@ -85,12 +89,32 @@ function PortalMessage({
 
 export default async function PortalPage({ params }: PortalPageProps) {
   const { token } = await params;
-  const [assessment, appearance, fileSettings] = await Promise.all([
+
+  const requestHeaders = await headers();
+  const clientIp = getClientIp(requestHeaders);
+  const withinRateLimit = rateLimit(
+    "portal-page",
+    clientIp,
+    PORTAL_PAGE_LOADS_PER_MINUTE,
+  );
+
+  const appearance = await getAppearanceSettings();
+  const logoUrl = appearance.logoKey ? "/api/brand/logo" : null;
+
+  if (!withinRateLimit) {
+    return (
+      <PortalMessage
+        title="Link not found"
+        body="This questionnaire link is invalid."
+        logoUrl={logoUrl}
+      />
+    );
+  }
+
+  const [assessment, fileSettings] = await Promise.all([
     getAssessmentByToken(token),
-    getAppearanceSettings(),
     getFileSettings(),
   ]);
-  const logoUrl = appearance.logoKey ? "/api/brand/logo" : null;
 
   if (!assessment) {
     return (

@@ -573,6 +573,20 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   Portal vendors can no longer delete evidence or add comments after submission (`isPortalEditable`
   now gates both). No new endpoints.
 
+- **Phase 73 — Security hardening (Batch B).** Defense-in-depth follow-up to Phase 72. The
+  in-memory rate limiter now lazily evicts expired windows and caps its tracked-key count
+  (`lib/rate-limit.ts`) — safe for the single-instance Docker deployment; a shared store is only
+  needed if horizontally scaled. The public portal page load is now IP rate-limited and returns
+  the same generic "link not found" shell when exceeded (anti-enumeration). The NextAuth
+  credentials `authorize` callback is IP rate-limited, closing the direct-callback bypass of the
+  login form's existing limiter. Portal evidence uploads reject dangerous MIME types
+  (`lib/upload-validation.ts`) on top of the extension check and Phase 72 `nosniff`. All REST v1
+  handlers run through a shared wrapper (`lib/api-response.ts`) that returns a generic 500 (no
+  internals) on unexpected errors. A new `middleware.ts` sets a nonce-based strict
+  Content-Security-Policy (per-request nonce threaded into the root layout + next-themes) plus
+  baseline security headers (`X-Frame-Options: DENY`, `Referrer-Policy`, `X-Content-Type-Options`,
+  `Permissions-Policy`). No schema/migration.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These
