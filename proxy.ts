@@ -51,7 +51,7 @@ function isDocumentRequest(request: NextRequest): boolean {
   return request.headers.get("accept")?.includes("text/html") ?? false;
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Only full HTML document loads get the nonce-based CSP: the nonce is injected
   // into the server-rendered scripts, so it only applies to a fresh document.
   // Server Actions / RSC / data requests get the baseline headers only, leaving
