@@ -11,9 +11,15 @@ import { deleteVendorAction } from "@/lib/actions/vendors";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getVendorProfile } from "@/lib/db/compliance";
+import { listVendorFindings } from "@/lib/db/findings";
 import { listFrameworks } from "@/lib/db/frameworks";
 import { getVendor } from "@/lib/db/vendors";
-import { ASSESSMENT_STATUS_LABELS } from "@/lib/schemas/assessment";
+import {
+  ASSESSMENT_STATUS_LABELS,
+  FINDING_STATUS_LABELS,
+  FINDING_STATUS_STYLES,
+  SEVERITY_STYLES,
+} from "@/lib/schemas/assessment";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 import { formatDate, formatPercent } from "@/lib/utils";
 
@@ -48,16 +54,22 @@ export default async function VendorDetailPage({
     user.permissions,
     PERMISSIONS.ASSESSMENTS_CREATE,
   );
+  const canViewFindings = hasPermission(
+    user.permissions,
+    PERMISSIONS.ASSESSMENTS_VIEW,
+  );
   const { vendorId } = await params;
   const vendor = await getVendor(vendorId);
   if (!vendor) {
     notFound();
   }
 
-  const [profile, frameworks] = await Promise.all([
+  const [profile, frameworks, findings] = await Promise.all([
     getVendorProfile(vendorId),
     listFrameworks(),
+    canViewFindings ? listVendorFindings(vendorId) : Promise.resolve([]),
   ]);
+  const openFindings = findings.filter((finding) => finding.status === "OPEN");
 
   return (
     <div className="flex max-w-3xl flex-col gap-6">
@@ -230,6 +242,50 @@ export default async function VendorDetailPage({
               >
                 {framework.name}{" "}
                 {framework.version === "2022" ? "(ISO 27001)" : ""}
+              </Link>
+            ))}
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {canViewFindings && findings.length > 0 ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              Findings
+              {openFindings.length > 0 ? (
+                <span className="text-muted-foreground ml-2 text-sm font-normal">
+                  {openFindings.length} open
+                </span>
+              ) : null}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-2">
+            {findings.map((finding) => (
+              <Link
+                key={finding.id}
+                href={`/assessments/${finding.assessmentId}`}
+                className="hover:bg-accent/40 flex items-center justify-between gap-3 rounded-md border p-3"
+              >
+                <div className="flex min-w-0 flex-col">
+                  <span className="truncate text-sm font-medium">
+                    {finding.title}
+                  </span>
+                  <span className="text-muted-foreground truncate text-xs">
+                    {finding.assessmentTitle}
+                  </span>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <Badge className={SEVERITY_STYLES[finding.severity] ?? ""}>
+                    {finding.severity.charAt(0) +
+                      finding.severity.slice(1).toLowerCase()}
+                  </Badge>
+                  <Badge
+                    className={FINDING_STATUS_STYLES[finding.status] ?? ""}
+                  >
+                    {FINDING_STATUS_LABELS[finding.status] ?? finding.status}
+                  </Badge>
+                </div>
               </Link>
             ))}
           </CardContent>

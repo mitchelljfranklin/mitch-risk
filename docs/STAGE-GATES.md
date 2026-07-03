@@ -1665,6 +1665,37 @@ that way after reload/navigation; click rows → reverts; score/tier/last-assess
 
 ---
 
+## Phase 66 — Cross-vendor risk register
+
+**Scope:** one place to see and manage every finding across all vendors (first of the TPRM
+feature-parity series).
+
+**Checklist:**
+
+- [x] **Data layer.** `lib/db/findings.ts` adds `listFindings` (status/severity/vendor filters,
+      priority/newest/severity sort, pagination), `getFindingSummary` (open + open-by-severity +
+      remediated + risk-accepted), and `listVendorFindings`. Reuses the `Finding` model — no
+      migration.
+- [x] **Risk register page** (`/risk-register`): summary stat cards, filter bar (status,
+      severity, vendor, sort), finding cards (severity + status badges, vendor/assessment links,
+      control codes, note), and pagination. Reviewers get the inline status form; viewers read-only.
+- [x] **Vendor detail** gained a Findings card (`listVendorFindings`), shown only with
+      `ASSESSMENTS_VIEW`.
+- [x] **Wiring.** `updateFindingStatusAction` also revalidates `/risk-register`;
+      `FindingStatusForm` status `Select` got `key={currentStatus}` (Phase 58 Radix reset fix).
+      Sidebar "Risk register" item added to the Risk group (`ASSESSMENTS_VIEW`).
+- [x] **RBAC.** Reads gated by `ASSESSMENTS_VIEW`, inline writes by `ASSESSMENTS_REVIEW`
+      (existing). No new permission keys.
+- [x] **Tests.** `findings.integration.test.ts` extended (filters, priority sort, summary,
+      per-vendor). Gates: `lint`, `typecheck`, `build`, `format:check`, `vitest` (test DB),
+      Playwright clean. No OpenAPI change.
+
+**Reviewer spot-check:** open `/risk-register`, filter by severity/vendor, resolve a finding
+inline as a Reviewer (updates and stays), confirm a Viewer sees it read-only; a vendor's Findings
+card lists its findings and links to the assessment.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1725,6 +1756,7 @@ that way after reload/navigation; click rows → reverts; score/tier/last-assess
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 66 | Approved | user | 2026-07-03 | Cross-vendor risk register: /risk-register page (filters, summary stats, inline status for reviewers, pagination) + vendor-detail Findings card; listFindings/getFindingSummary/listVendorFindings reuse Finding model; +4 integration tests |
 | 65 | Approved | user | 2026-07-03 | Vendors list Rows/Cards view toggle: cookie-backed (vendors_view, default rows), server-rendered card grid with score/tier/last-assessed; generic ViewToggle component; +1 unit test |
 | 64 | Approved | user | 2026-07-03 | Full-access API keys: keys grant ALL_PERMISSIONS regardless of creator role and survive creator disable/delete (createdBy nullable + SetNull migration); gated by API_MANAGE; docs/OpenAPI updated; +1 integration test |
 | 63 | Ready for review | opencode | 2026-07-03 | Map-whole-framework: per-framework tri-state "select all" in the control picker (n/total count, filter-independent) so a certification question can map every control in a framework; pure lib/control-selection.ts + unit tests; no back-end change |

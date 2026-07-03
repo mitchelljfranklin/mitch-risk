@@ -35,7 +35,7 @@ export function FindingStatusForm({
     >
       <input type="hidden" name="findingId" value={findingId} />
       <input type="hidden" name="assessmentId" value={assessmentId} />
-      <Select name="status" defaultValue={currentStatus}>
+      <Select key={currentStatus} name="status" defaultValue={currentStatus}>
         <SelectTrigger className="h-8 w-40 text-xs">
           <SelectValue />
         </SelectTrigger>

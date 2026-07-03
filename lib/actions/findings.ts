@@ -34,4 +34,5 @@ export async function updateFindingStatusAction(formData: FormData) {
   if (assessmentId) {
     revalidatePath(`/assessments/${assessmentId}`);
   }
+  revalidatePath("/risk-register");
 }

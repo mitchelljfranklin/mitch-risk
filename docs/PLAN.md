@@ -513,6 +513,15 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   last-assessed date, assessment count) in a responsive grid. The toggle component
   (`components/view-toggle.tsx`) is generic and can be reused on other lists later.
 
+- **Phase 66 — Cross-vendor risk register.** A new **Risk register** page (sidebar, Risk group)
+  lists every finding across all vendors with status/severity/vendor filters, priority sorting,
+  summary stat cards (open, critical open, remediated, risk-accepted), and pagination. Reviewers
+  can update a finding's status inline (reusing the existing status form + `ASSESSMENTS_REVIEW`
+  guard); viewers get a read-only view (`ASSESSMENTS_VIEW`). The vendor detail page gained a
+  **Findings** card surfacing that vendor's findings. New data-access helpers (`listFindings`,
+  `getFindingSummary`, `listVendorFindings`) reuse the existing `Finding` model — no schema
+  change. First of the "TPRM feature parity" series informed by a review of UpGuard-style tools.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

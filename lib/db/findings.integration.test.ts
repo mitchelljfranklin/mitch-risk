@@ -16,7 +16,12 @@ import {
 import { createVendor } from "@/lib/db/vendors";
 import { ensureSystemRoles, getRoleByName } from "@/lib/db/roles";
 import { createUser } from "@/lib/db/users";
-import { updateFindingStatus } from "@/lib/db/findings";
+import {
+  getFindingSummary,
+  listFindings,
+  listVendorFindings,
+  updateFindingStatus,
+} from "@/lib/db/findings";
 import { scoreAssessment } from "@/lib/db/scoring";
 import { SYSTEM_ROLE_NAMES } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
@@ -25,6 +30,8 @@ import { type QuestionInput } from "@/lib/schemas/template";
 const VENDOR = "P53 Findings Vendor";
 const TEMPLATE = "P53 Findings Template";
 const REVIEWER_EMAIL = "p53-findings-reviewer@example.test";
+const REGISTER_VENDOR = "P66 Register Vendor";
+const REGISTER_TEMPLATE = "P66 Register Template";
 
 function buildQuestion(
   overrides: Partial<QuestionInput> & Pick<QuestionInput, "text" | "type">,
@@ -42,8 +49,12 @@ function buildQuestion(
 }
 
 async function cleanup() {
-  await prisma.vendor.deleteMany({ where: { name: VENDOR } });
-  await prisma.template.deleteMany({ where: { name: TEMPLATE } });
+  await prisma.vendor.deleteMany({
+    where: { name: { in: [VENDOR, REGISTER_VENDOR] } },
+  });
+  await prisma.template.deleteMany({
+    where: { name: { in: [TEMPLATE, REGISTER_TEMPLATE] } },
+  });
   await prisma.user.deleteMany({ where: { email: REVIEWER_EMAIL } });
 }
 
@@ -152,5 +163,100 @@ describe("finding status workflow (integration)", () => {
     expect(reopened.status).toBe("OPEN");
     expect(reopened.resolvedAt).toBeNull();
     expect(reopened.resolvedById).toBeNull();
+  });
+});
+
+describe("risk register queries (integration)", () => {
+  let vendorId = "";
+
+  beforeAll(async () => {
+    const template = await createTemplate({
+      name: REGISTER_TEMPLATE,
+      description: "",
+    });
+    const section = await addSection(template.id, "Section");
+    await addQuestion(
+      section.id,
+      buildQuestion({ text: "Q?", type: "YES_NO", expectedAnswer: "YES" }),
+    );
+    await publishTemplate(template.id);
+
+    const vendor = await createVendor({
+      name: REGISTER_VENDOR,
+      contactName: "",
+      contactEmail: "p66@example.test",
+      tier: "",
+      website: "",
+      notes: "",
+    });
+    vendorId = vendor.id;
+    const assessment = await createAssessment(vendor.id, {
+      title: "P66 assessment",
+      templateId: template.id,
+      dueDate: "",
+      reviewerId: "",
+    });
+
+    await prisma.finding.createMany({
+      data: [
+        {
+          assessmentId: assessment.id,
+          severity: "CRITICAL",
+          status: "OPEN",
+          title: "Critical open",
+          description: "d",
+          controlCodes: ["A.5.1"],
+        },
+        {
+          assessmentId: assessment.id,
+          severity: "HIGH",
+          status: "OPEN",
+          title: "High open",
+          description: "d",
+          controlCodes: [],
+        },
+        {
+          assessmentId: assessment.id,
+          severity: "MEDIUM",
+          status: "REMEDIATED",
+          title: "Medium remediated",
+          description: "d",
+          controlCodes: [],
+        },
+      ],
+    });
+  });
+
+  it("lists a vendor's findings priority-sorted with vendor/assessment names", async () => {
+    const { findings, totalCount } = await listFindings({ vendorId });
+    expect(totalCount).toBe(3);
+    expect(findings[0].title).toBe("Critical open");
+    expect(findings[0].vendorName).toBe(REGISTER_VENDOR);
+    expect(findings[0].assessmentTitle).toBe("P66 assessment");
+    // Remediated sorts after the open ones.
+    expect(findings[findings.length - 1].title).toBe("Medium remediated");
+  });
+
+  it("filters by status and severity", async () => {
+    const openOnly = await listFindings({ vendorId, status: "OPEN" });
+    expect(openOnly.totalCount).toBe(2);
+
+    const criticalOnly = await listFindings({ vendorId, severity: "CRITICAL" });
+    expect(criticalOnly.totalCount).toBe(1);
+    expect(criticalOnly.findings[0].title).toBe("Critical open");
+  });
+
+  it("summarises open findings by severity", async () => {
+    const summary = await getFindingSummary();
+    expect(summary.open).toBeGreaterThanOrEqual(2);
+    expect(summary.openBySeverity.CRITICAL).toBeGreaterThanOrEqual(1);
+    expect(summary.remediated).toBeGreaterThanOrEqual(1);
+  });
+
+  it("lists per-vendor findings open-first", async () => {
+    const vendorFindings = await listVendorFindings(vendorId);
+    expect(vendorFindings).toHaveLength(3);
+    expect(vendorFindings[0].status).toBe("OPEN");
+    expect(vendorFindings[0].severity).toBe("CRITICAL");
   });
 });

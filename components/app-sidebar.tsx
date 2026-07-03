@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Library,
   Settings,
+  ShieldAlert,
   ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
@@ -65,6 +66,12 @@ export function AppSidebar({
       title: "Assessments",
       href: "/assessments",
       icon: ClipboardCheck,
+      permission: PERMISSIONS.ASSESSMENTS_VIEW,
+    },
+    {
+      title: "Risk register",
+      href: "/risk-register",
+      icon: ShieldAlert,
       permission: PERMISSIONS.ASSESSMENTS_VIEW,
     },
   ].filter((item) => hasPermission(permissions, item.permission));
