@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useFormToast } from "@/hooks/use-form-toast";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 import {
   Select,
   SelectContent,
@@ -59,7 +59,7 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
     saveApiSettingsAction,
     undefined,
   );
-  useFormToast(saveState);
+  useActionFeedback(saveState);
 
   return (
     <div className="flex flex-col gap-6">

@@ -96,26 +96,23 @@ describe("vendor certifications (integration)", () => {
       data: { ownerId: owner.id },
     });
 
+    // A date-only expiresDate is stored at UTC midnight, so build the query
+    // window in UTC too — otherwise the assertion is timezone/time-of-day flaky.
     const target = new Date();
-    target.setDate(target.getDate() + 30);
+    target.setUTCDate(target.getUTCDate() + 30);
+    const year = target.getUTCFullYear();
+    const month = target.getUTCMonth();
+    const day = target.getUTCDate();
+    const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(
+      day,
+    ).padStart(2, "0")}`;
     await createCertification(vendor.id, {
       name: "Expiring cert",
-      expiresDate: target.toISOString().slice(0, 10),
+      expiresDate: dateString,
     });
 
-    const start = new Date(
-      target.getFullYear(),
-      target.getMonth(),
-      target.getDate(),
-    );
-    const end = new Date(
-      target.getFullYear(),
-      target.getMonth(),
-      target.getDate(),
-      23,
-      59,
-      59,
-    );
+    const start = new Date(Date.UTC(year, month, day, 0, 0, 0));
+    const end = new Date(Date.UTC(year, month, day, 23, 59, 59));
     const expiring = await listCertificationsExpiringOn(start, end);
     const match = expiring.find((cert) => cert.vendorId === vendor.id);
     expect(match).toBeDefined();

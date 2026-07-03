@@ -587,6 +587,21 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   baseline security headers (`X-Frame-Options: DENY`, `Referrer-Policy`, `X-Content-Type-Options`,
   `Permissions-Policy`). No schema/migration.
 
+- **Phase 74 — Production Server-Action feedback fix + prod e2e.** Root-caused a production-only
+  bug (worked in `next dev`, failed in `next start`): when a Server Action calls `revalidatePath`
+  for its own current route and returns a value consumed by `useActionState`, the returned state
+  is dropped on the client in production builds — so success toasts never showed and modal
+  dialogs (e.g. the role editor) didn't auto-close. Data always persisted correctly; only the
+  ephemeral feedback was lost. Fix (approach B): (1) a **resilient module-level toast store**
+  (`components/toast.tsx`) so queued toasts survive the layout re-render a refresh triggers; (2) a
+  reusable `useActionFeedback` hook that shows the toast and does a guarded `router.refresh()` on
+  success; (3) affected actions (`saveApiSettingsAction`, `createRoleAction`, `updateRoleAction`)
+  no longer self-`revalidatePath` — the client refreshes after the result is applied. Also fixed
+  the Phase 73 middleware to apply the nonce-CSP only to document GETs (it must not rewrite
+  request headers on Server-Action POSTs). Playwright now targets the **production** build
+  (`npm run start` with `CRON_SECRET` wired in; fresh server in CI) so prod-only regressions are
+  caught. Remaining state-returning forms are migrated to `useActionFeedback` incrementally.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

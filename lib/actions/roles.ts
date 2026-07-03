@@ -48,7 +48,9 @@ export async function createRoleAction(
     return { ok: false, message: "A role with this name already exists." };
   }
 
-  revalidatePath("/settings");
+  // No revalidatePath here: this result is consumed by useActionState in a modal.
+  // Revalidating the current route re-renders the modal and drops the returned
+  // state in production builds. The client refreshes after closing instead.
   return { ok: true, message: "Role created." };
 }
 
@@ -85,7 +87,7 @@ export async function updateRoleAction(
     };
   }
 
-  revalidatePath("/settings");
+  // See createRoleAction: the client refreshes after closing the modal.
   return { ok: true, message: "Role updated." };
 }
 

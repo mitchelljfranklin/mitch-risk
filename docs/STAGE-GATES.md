@@ -1897,6 +1897,45 @@ generic message; an uploaded `.html` (text/html) evidence file is rejected.
 
 ---
 
+## Phase 74 — Production Server-Action feedback fix + prod e2e
+
+**Scope:** investigate & fix the prod-only write/toast failure surfaced in Phase 73; make e2e run
+against the production build.
+
+**Root cause (minimal repro):** In a `next start` build, a Server Action that calls
+`revalidatePath(currentRoute)` and returns a value for `useActionState` has its returned state
+dropped on the client — the concurrent route re-render clobbers it. `next dev` masks this. Effect:
+success toasts don't render and `state.ok` effects (modal auto-close) don't run. Verified via DB
+that the action always executes, persists, and the displayed data refreshes — **no data loss**,
+feedback-only. Also: the Phase 73 middleware mutated request headers on Server-Action POSTs,
+independently breaking action results — fixed by applying the nonce-CSP only to document GETs.
+
+**Fix (approach B — decouple refresh from feedback):**
+
+- [x] **Resilient toast store** — `components/toast.tsx` rewritten to a module-level store consumed
+      via `useSyncExternalStore`, so queued toasts survive the layout re-render a refresh causes.
+- [x] **`useActionFeedback` hook** (`hooks/use-action-feedback.ts`) — shows the toast and does a
+      guarded `router.refresh()` on `state.ok`.
+- [x] **Actions stop self-revalidating the current route** where the result feeds `useActionState`:
+      `saveApiSettingsAction`, `createRoleAction`, `updateRoleAction`. Void form actions
+      (duplicate/delete role) keep `revalidatePath` (they don't return state).
+- [x] **Middleware** — nonce-CSP applied only to document GETs; POST/RSC get baseline headers
+      with request headers untouched.
+- [x] **e2e targets prod** — `playwright.config.ts`: `webServer` wires `CRON_SECRET` and uses
+      `reuseExistingServer: !CI` so CI starts a fresh production server.
+- [x] **Fixed a timezone-flaky cert test** (`certifications.integration.test.ts`) — UTC-consistent
+      window (unrelated pre-existing flake that surfaced at early-morning local time).
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 199 passed (test DB), Playwright
+10/10 against a **fresh production server** (CI mode, 4 workers). No schema/migration.
+
+**Known follow-up:** other state-returning forms (org/email/scoring/SSO settings, vendor edit,
+etc.) still self-`revalidatePath` and should be migrated to `useActionFeedback` for reliable
+prod toasts. The resilient toast store already improves them; the decouple makes them
+race-free. Tracked for the Correctness phase (Batch C).
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1957,6 +1996,7 @@ generic message; an uploaded `.html` (text/html) evidence file is rejected.
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 74 | Ready for review | opencode | 2026-07-04 | Prod Server-Action feedback fix: root-caused revalidatePath(current route)+useActionState dropping state in prod builds; resilient module-level toast store + useActionFeedback (guarded router.refresh) + actions stop self-revalidating (API/roles); middleware nonce-CSP now GET-only; e2e now targets prod build (CRON_SECRET wired); fixed a TZ-flaky cert test. 199 unit, 10/10 e2e on fresh prod |
 | 73 | Ready for review | opencode | 2026-07-03 | Security hardening (Batch B): rate-limiter eviction/bounding, portal-page + credentials-authorize IP limits, upload MIME allowlist, shared API error wrapper (generic 500), nonce-based strict CSP + security headers via middleware; +3 test files, 199 unit passing, 10/10 e2e (dev) |
 | 72 | Ready for review | opencode | 2026-07-03 | Security hardening (Batch A): API-key prefix lookup (+migration invalidating legacy keys), TRUSTED_PROXY_COUNT default 0, constant-time CRON_SECRET (+required in prod), evidence nosniff + inline MIME allowlist, portal edits locked after submit; +3 test files, 191 unit passing |
 | 71 | Approved | user | 2026-07-03 | Dashboard graph pack: findings-by-severity + risk-by-tier (stacked) + assessment-status charts, and an Upcoming key dates (60d) list (certs/contracts/reassessments); computeRiskByTier + listUpcomingKeyDates; +2 test files |

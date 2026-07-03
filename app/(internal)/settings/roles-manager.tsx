@@ -30,7 +30,7 @@ import {
   duplicateRoleAction,
   updateRoleAction,
 } from "@/lib/actions/roles";
-import { useFormToast } from "@/hooks/use-form-toast";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 
 export type RoleView = {
   id: string;
@@ -159,7 +159,7 @@ function RoleEditorSheet({
 
   const action = isNew ? createRoleAction : updateRoleAction;
   const [state, formAction, isPending] = useActionState(action, initialState);
-  useFormToast(state);
+  useActionFeedback(state);
 
   const [selected, setSelected] = useState<Set<string>>(
     () => new Set(role?.permissions ?? []),

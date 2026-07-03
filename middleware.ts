@@ -32,7 +32,36 @@ function buildContentSecurityPolicy(
   return directives.join("; ");
 }
 
+function applySecurityHeaders(headers: Headers): void {
+  headers.set("x-frame-options", "DENY");
+  headers.set("referrer-policy", "strict-origin-when-cross-origin");
+  headers.set("x-content-type-options", "nosniff");
+  headers.set(
+    "permissions-policy",
+    "camera=(), microphone=(), geolocation=(), browsing-topics=()",
+  );
+}
+
+function isDocumentRequest(request: NextRequest): boolean {
+  if (request.method !== "GET") return false;
+  // Server Actions and RSC navigations reuse the loaded document's scripts and
+  // must not have their request headers rewritten (it drops the action result).
+  if (request.headers.has("next-action")) return false;
+  if (request.headers.get("rsc") === "1") return false;
+  return request.headers.get("accept")?.includes("text/html") ?? false;
+}
+
 export function middleware(request: NextRequest) {
+  // Only full HTML document loads get the nonce-based CSP: the nonce is injected
+  // into the server-rendered scripts, so it only applies to a fresh document.
+  // Server Actions / RSC / data requests get the baseline headers only, leaving
+  // their request headers untouched so action results are delivered intact.
+  if (!isDocumentRequest(request)) {
+    const passthrough = NextResponse.next();
+    applySecurityHeaders(passthrough.headers);
+    return passthrough;
+  }
+
   const nonce = btoa(crypto.randomUUID());
   const isDevelopment = process.env.NODE_ENV !== "production";
   const contentSecurityPolicy = buildContentSecurityPolicy(
@@ -49,13 +78,7 @@ export function middleware(request: NextRequest) {
   });
 
   response.headers.set("content-security-policy", contentSecurityPolicy);
-  response.headers.set("x-frame-options", "DENY");
-  response.headers.set("referrer-policy", "strict-origin-when-cross-origin");
-  response.headers.set("x-content-type-options", "nosniff");
-  response.headers.set(
-    "permissions-policy",
-    "camera=(), microphone=(), geolocation=(), browsing-topics=()",
-  );
+  applySecurityHeaders(response.headers);
 
   return response;
 }

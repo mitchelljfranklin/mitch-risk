@@ -509,7 +509,9 @@ export async function saveApiSettingsAction(
     create: { key: "api.enabled", category: "api", value: enabled },
   });
 
-  revalidatePath("/settings");
+  // No revalidatePath: this result is consumed by useActionState. Revalidating
+  // the current route races with the returned state in production builds and can
+  // drop the success toast. The client refreshes after handling the result.
   return { ok: true, message: "API settings saved." };
 }
 

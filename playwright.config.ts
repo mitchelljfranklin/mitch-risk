@@ -13,7 +13,13 @@ export default defineConfig({
   webServer: {
     command: "npm run start",
     url: "http://localhost:3000",
-    reuseExistingServer: true,
+    // Reuse a locally-running server for fast iteration, but always start a fresh
+    // production server in CI so e2e truly exercises the prod build.
+    reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+    // `next start` runs in production mode, where CRON_SECRET is required.
+    env: {
+      CRON_SECRET: process.env.CRON_SECRET ?? "e2e-cron-secret",
+    },
   },
 });
