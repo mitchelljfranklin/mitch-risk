@@ -1556,6 +1556,38 @@ and dev settings are untouched afterward.
 
 ---
 
+## Phase 62 — Users tab rework & dark-mode card consistency
+
+**Scope:** replace the cramped inline Users list with a Roles-style master–detail UI, add
+SSO awareness, and fix the dark-mode shading mismatch on the Users/Roles tabs.
+
+**Checklist:**
+
+- [x] **Data view.** `listStaffAccounts()` (`lib/db/users.ts`) returns a client-safe view with
+      `isSsoUser` (`_count.ssoIdentities`) and `hasLocalPassword` (Phase 60 helper) derived
+      server-side; `passwordHash` never leaves the server.
+- [x] **UsersManager** (`app/(internal)/settings/users-manager.tsx`): searchable list with role,
+      SSO/Local, and Disabled badges + "Added" date; slide-over `Sheet` with **New user** and an
+      edit view consolidating role change, enable/disable, password reset, and delete. Role
+      `Select` uses `key={roleId}` (Phase 58 Radix reset fix). Editor derives the live user from
+      props (so it reflects updates and closes if the user is deleted).
+- [x] **SSO-aware.** Password reset is hidden for SSO accounts with a "managed by the identity
+      provider" note; delete stays hidden for the current user.
+- [x] **Dark-mode consistency.** Users and Roles tab content is wrapped in titled `Card`s
+      ("Staff accounts", "Roles"), so both pick up `bg-card` like every other tab. Old
+      `add-user-form.tsx` and the inline forms/imports removed.
+- [x] **RBAC unchanged.** `USERS_MANAGE`/`ROLES_MANAGE` gate the tabs and all actions; last-admin
+      and self-delete guards preserved. No new permission keys.
+- [x] **Tests.** `listStaffAccounts` integration test (SSO vs local flags) on the isolated test
+      DB. Quality gates: `lint`, `typecheck`, `build`, `format:check`, `vitest`, Playwright clean.
+      No migration; no OpenAPI change.
+
+**Reviewer spot-check:** in dark mode the Users/Roles tabs now show the same grey card as other
+tabs; open a staff member → role/enable/reset/delete all in one Sheet; an SSO user shows no
+password field; search filters the list; "New user" creates via the Sheet.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1616,6 +1648,7 @@ and dev settings are untouched afterward.
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 62 | Ready for review | opencode | 2026-07-03 | Users tab rework: Roles-style master–detail Sheet (search, role/SSO/status badges, added date), SSO-aware password reset hidden, listStaffAccounts view; Users + Roles tabs wrapped in Cards for dark-mode shading parity |
 | 61 | Ready for review | opencode | 2026-07-03 | Test DB isolation: vitest.setup prefers TEST_DATABASE_URL + refuses non-test DBs; settings test snapshots/restores; notifications test no longer wipes logs. Fixes integration tests destroying real org/email/appearance settings + notification history |
 | 60 | Ready for review | opencode | 2026-07-03 | Profile UX & SSO-aware credentials: card-based profile layout (wider, un-cramped), SSO-only users get read-only email + hidden password card + name-only update, forgot-password skips SSO-only accounts; +2 unit tests |
 | 59 | Ready for review | opencode | 2026-07-03 | Reverse-proxy hardening: proxy-aware getClientIp (trusted-hop XFF / CLIENT_IP_HEADER) across login/break-glass/portal/API + API-key IP allowlist; TRUSTED_PROXY_COUNT/CLIENT_IP_HEADER env; README proxy guide (Caddy/nginx/Zoraxy/Azure); +12 unit tests |

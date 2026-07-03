@@ -483,6 +483,14 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   The destructive tests were hardened too: the settings test snapshots and restores the settings
   it touches, and the notifications test no longer wipes unrelated logs. Documented in README →
   Testing.
+- **Phase 62 — Users tab rework.** The **Users** settings tab was rebuilt to match the Roles
+  master–detail pattern: a searchable staff list with role/status/**SSO-or-Local** badges and an
+  "Added" date, and a slide-over `Sheet` editor that consolidates role change, enable/disable,
+  password reset, and delete (with the existing last-admin/self-delete guards). **Password reset
+  is hidden for SSO-provisioned accounts** (IdP owns credentials, per Phase 60). Both the Users
+  and Roles tabs are now wrapped in `Card`s so they share the same dark-mode "grey card" shading
+  as every other settings tab. A `listStaffAccounts()` data-access view derives SSO/local status
+  server-side without exposing password hashes.
 
 ## 8. Out of scope (v1+)
 

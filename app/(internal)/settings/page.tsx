@@ -6,20 +6,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { requireAnyPermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { listAuditLogs, listAuditActions } from "@/lib/db/audit";
-import { listUsersFull } from "@/lib/db/users";
+import { listStaffAccounts } from "@/lib/db/users";
 import { listRoles } from "@/lib/db/roles";
-import { ConfirmDialog } from "@/components/confirm-dialog";
 import { prisma } from "@/lib/prisma";
 import {
   getEmailSettings,
@@ -34,14 +25,7 @@ import {
   getEmailLogRetention,
 } from "@/lib/settings";
 import { getBreakGlassHash, getSsoSecretConfigured } from "@/lib/settings";
-import {
-  changeRoleAction,
-  deleteUserAction,
-  resetPasswordAction,
-  toggleUserAction,
-} from "@/lib/actions/users";
-
-import { AddUserForm } from "./add-user-form";
+import { UsersManager } from "./users-manager";
 import { RolesManager } from "./roles-manager";
 
 import { EmailForm, SmtpTestForm } from "./email-form";
@@ -91,7 +75,7 @@ export default async function SettingsPage({
     email,
     templates,
     scoring,
-    fullUsers,
+    staffAccounts,
     roles,
     sso,
     ssoSecrets,
@@ -108,7 +92,7 @@ export default async function SettingsPage({
     getEmailSettings(),
     getEmailTemplateSettings(),
     getScoringSettings(),
-    listUsersFull(),
+    listStaffAccounts(),
     listRoles(),
     getSsoSettings(),
     getSsoSecretConfigured(),
@@ -139,7 +123,10 @@ export default async function SettingsPage({
 
   const breakGlassConfigured = (await getBreakGlassHash()) !== null;
 
-  const users = fullUsers.map((u) => ({ id: u.id, name: u.name }));
+  const users = staffAccounts.map((account) => ({
+    id: account.id,
+    name: account.name,
+  }));
   const roleOptions = roles.map((role) => ({ id: role.id, name: role.name }));
   const roleViews = roles.map((role) => ({
     id: role.id,
@@ -453,132 +440,36 @@ export default async function SettingsPage({
         </TabsContent>
 
         <TabsContent value="roles" className="mt-4 flex flex-col gap-6">
-          <RolesManager roles={roleViews} />
+          <Card>
+            <CardHeader>
+              <CardTitle>Roles</CardTitle>
+              <CardDescription>
+                Define permission sets and assign them to staff accounts.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <RolesManager roles={roleViews} />
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="users" className="mt-4 flex flex-col gap-6">
-          <AddUserForm roles={roleOptions} />
-
-          <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium">Staff accounts</h3>
-            {fullUsers.length === 0 ? (
-              <p className="text-muted-foreground text-sm">No users yet.</p>
-            ) : (
-              <div className="flex flex-col divide-y rounded-lg border">
-                {fullUsers.map((user) => (
-                  <div
-                    key={user.id}
-                    className="flex items-center justify-between gap-3 p-3"
-                  >
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium">
-                        {user.name}{" "}
-                        <span className="text-muted-foreground text-xs">
-                          {user.email}
-                        </span>
-                      </span>
-                      <span className="text-muted-foreground text-xs">
-                        {user.role.name}
-                        {user.disabled ? " · Disabled" : ""}
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <form
-                        action={changeRoleAction}
-                        className="flex items-center gap-1"
-                      >
-                        <input type="hidden" name="userId" value={user.id} />
-                        <Select name="roleId" defaultValue={user.roleId}>
-                          <SelectTrigger className="h-8 w-28 text-xs">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {roleOptions.map((role) => (
-                              <SelectItem key={role.id} value={role.id}>
-                                {role.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <Button type="submit" size="sm" variant="ghost">
-                          Change role
-                        </Button>
-                      </form>
-                      <form
-                        id={`toggle-user-${user.id}`}
-                        action={toggleUserAction}
-                      >
-                        <input type="hidden" name="userId" value={user.id} />
-                        <input
-                          type="hidden"
-                          name="disabled"
-                          value={user.disabled ? "false" : "true"}
-                        />
-                        {user.disabled ? (
-                          <Button type="submit" size="sm" variant="ghost">
-                            Enable
-                          </Button>
-                        ) : (
-                          <ConfirmDialog
-                            title="Disable user?"
-                            description={`${user.name} will no longer be able to sign in. Their data will be preserved.`}
-                            confirmLabel="Disable"
-                            formId={`toggle-user-${user.id}`}
-                          >
-                            <Button type="button" size="sm" variant="ghost">
-                              Disable
-                            </Button>
-                          </ConfirmDialog>
-                        )}
-                      </form>
-                      <form
-                        id={`reset-password-${user.id}`}
-                        action={resetPasswordAction}
-                        className="flex items-center gap-1"
-                      >
-                        <input type="hidden" name="userId" value={user.id} />
-                        <input
-                          name="password"
-                          type="password"
-                          placeholder="New password"
-                          minLength={12}
-                          className="border-input bg-background h-8 rounded-md border px-2 text-xs"
-                        />
-                        <ConfirmDialog
-                          title="Reset password?"
-                          description={`This will overwrite ${user.name}'s current password. They will need to use the new password to sign in.`}
-                          confirmLabel="Reset"
-                          formId={`reset-password-${user.id}`}
-                        >
-                          <Button type="button" size="sm" variant="ghost">
-                            Reset
-                          </Button>
-                        </ConfirmDialog>
-                      </form>
-                      {user.id !== currentUser.id ? (
-                        <form
-                          id={`delete-user-${user.id}`}
-                          action={deleteUserAction}
-                        >
-                          <input type="hidden" name="userId" value={user.id} />
-                          <ConfirmDialog
-                            title="Delete user?"
-                            description={`${user.name} will be permanently removed. Their audit history and past review decisions are kept but shown as "Deleted user". This cannot be undone.`}
-                            confirmLabel="Delete"
-                            formId={`delete-user-${user.id}`}
-                          >
-                            <Button type="button" size="sm" variant="ghost">
-                              Delete
-                            </Button>
-                          </ConfirmDialog>
-                        </form>
-                      ) : null}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Staff accounts</CardTitle>
+              <CardDescription>
+                Create staff accounts and manage their role, access, and
+                password.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <UsersManager
+                users={staffAccounts}
+                roles={roleOptions}
+                currentUserId={currentUser.id}
+              />
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="audit" className="mt-4 flex flex-col gap-6">

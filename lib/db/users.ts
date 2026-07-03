@@ -39,6 +39,47 @@ export function listUsersFull() {
   });
 }
 
+export type StaffAccount = {
+  id: string;
+  name: string;
+  email: string;
+  roleId: string;
+  roleName: string;
+  disabled: boolean;
+  createdAt: Date;
+  isSsoUser: boolean;
+  hasLocalPassword: boolean;
+};
+
+export async function listStaffAccounts(): Promise<StaffAccount[]> {
+  const users = await prisma.user.findMany({
+    orderBy: { name: "asc" },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      roleId: true,
+      role: { select: { name: true } },
+      disabled: true,
+      createdAt: true,
+      passwordHash: true,
+      _count: { select: { ssoIdentities: true } },
+    },
+  });
+
+  return users.map((user) => ({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    roleId: user.roleId,
+    roleName: user.role.name,
+    disabled: user.disabled,
+    createdAt: user.createdAt,
+    isSsoUser: user._count.ssoIdentities > 0,
+    hasLocalPassword: hasLocalPassword(user.passwordHash),
+  }));
+}
+
 export function toggleUserDisabled(id: string, disabled: boolean) {
   return prisma.user.update({ where: { id }, data: { disabled } });
 }
