@@ -1825,6 +1825,35 @@ and Upcoming lists certs/contracts/reassessments due in 60 days with correct day
 
 ---
 
+## Phase 72 — Security hardening (critical / Batch A)
+
+**Scope:** remediate the Critical/High security findings from the full code+security review.
+
+**Checklist:**
+
+- [x] **API-key lookup** — indexed `keyPrefix` column (migration `20260703060000`, invalidates
+      legacy keys); keys minted as `mrk_<prefix>.<secret>`; `lib/api-auth.ts` fetches the single
+      prefix-matched candidate and runs one bcrypt compare; pre-auth rate-limit keyed on the
+      unguessable prefix, per-key limit on the resolved id. `lib/api-keys.ts` gains
+      `extractKeyPrefix`. API settings copy + OpenAPI updated.
+- [x] **Proxy/IP spoof** — `TRUSTED_PROXY_COUNT` defaults to `0` (`lib/env.ts`); `.env.example`
+      documents the topology requirement.
+- [x] **Cron secret** — constant-time compare via `lib/timing-safe.ts`; `CRON_SECRET` required in
+      production (build phase exempted so `next build` needs no runtime secrets).
+- [x] **Evidence serving** — `X-Content-Type-Options: nosniff`; inline restricted to a
+      PDF/image MIME allowlist, all else forced to `application/octet-stream` download.
+- [x] **Portal immutability** — `removePortalEvidenceAction` + `vendorAddCommentAction` gate on
+      `isPortalEditable` (no mutations after `SUBMITTED`).
+- [x] **Tests** — api-keys prefix/extract unit; client-ip spoof-at-0; timing-safe unit; portal
+      lock-after-submit integration; api-auth integration updated for the new key shape. Gates:
+      lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 191 passed (test DB), Playwright 10 ✓.
+
+**Reviewer spot-check:** old API keys stop working after migrate and must be regenerated; a
+`Bearer mrk_…` key still authenticates; an inline evidence view of an HTML file downloads rather
+than renders; a vendor cannot delete evidence on a submitted assessment.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1885,6 +1914,7 @@ and Upcoming lists certs/contracts/reassessments due in 60 days with correct day
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 72 | Ready for review | opencode | 2026-07-03 | Security hardening (Batch A): API-key prefix lookup (+migration invalidating legacy keys), TRUSTED_PROXY_COUNT default 0, constant-time CRON_SECRET (+required in prod), evidence nosniff + inline MIME allowlist, portal edits locked after submit; +3 test files, 191 unit passing |
 | 71 | Approved | user | 2026-07-03 | Dashboard graph pack: findings-by-severity + risk-by-tier (stacked) + assessment-status charts, and an Upcoming key dates (60d) list (certs/contracts/reassessments); computeRiskByTier + listUpcomingKeyDates; +2 test files |
 | 70 | Approved | user | 2026-07-03 | Vendor import/export parity: CSV export adds service/sensitivity/renewal/owner + certifications section; REST + CSV import accept the 3 new scalar fields; OpenAPI VendorImport aligned (dropped ownerId); +5 tests |
 | 69 | Approved | user | 2026-07-03 | Vendor edit UX fix: success toast on update (+ create toast via FlashToast/?created=1), breadcrumbs on new/edit vendor pages |

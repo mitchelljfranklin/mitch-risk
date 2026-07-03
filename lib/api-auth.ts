@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { verifyApiKey, isIpAllowed } from "@/lib/api-keys";
+import { verifyApiKey, isIpAllowed, extractKeyPrefix } from "@/lib/api-keys";
 import { getClientIp } from "@/lib/client-ip";
 import { rateLimit } from "@/lib/rate-limit";
 import { auth as nextAuth } from "@/lib/auth";
@@ -50,7 +50,8 @@ export async function authenticateRequest(
   if (!header?.startsWith("Bearer ")) return null;
 
   const key = header.slice(7).trim();
-  if (!key.startsWith("mrk_") || key.length < 20) return null;
+  const keyPrefix = extractKeyPrefix(key);
+  if (!keyPrefix || key.length < 20) return null;
 
   const defaultRateRow = await prisma.appSetting.findUnique({
     where: { key: "api.defaultRateLimitPerMin" },
@@ -61,17 +62,16 @@ export async function authenticateRequest(
       : 30
   ) as number;
 
-  if (!rateLimit("apikey", key.slice(0, 12), defaultRate)) return null;
+  if (!rateLimit("apikey", keyPrefix, defaultRate)) return null;
 
-  const hash = key;
-  const apiKeys = await prisma.apiKey.findMany({
-    where: { disabled: false },
+  const candidates = await prisma.apiKey.findMany({
+    where: { keyPrefix, disabled: false },
   });
 
-  for (const apiKey of apiKeys) {
+  for (const apiKey of candidates) {
     if (apiKey.expiresAt && apiKey.expiresAt < new Date()) continue;
 
-    if (!verifyApiKey(hash, apiKey.keyHash)) continue;
+    if (!verifyApiKey(key, apiKey.keyHash)) continue;
 
     const ip = getClientIp(request.headers);
     if (!isIpAllowed(apiKey.allowedIps, ip)) continue;

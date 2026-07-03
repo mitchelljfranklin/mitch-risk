@@ -44,7 +44,8 @@ beforeAll(async () => {
     data: {
       name: KEY_NAME,
       keyHash: hashApiKey(fullKey),
-      prefix: generated.prefix,
+      keyPrefix: generated.keyPrefix,
+      prefix: generated.displayPrefix,
       createdBy: viewer.id,
     },
   });

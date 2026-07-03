@@ -1,20 +1,35 @@
 import { z } from "zod";
 
-const environmentSchema = z.object({
-  NODE_ENV: z
-    .enum(["development", "test", "production"])
-    .default("development"),
-  DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
-  AUTH_SECRET: z.string().min(1, "AUTH_SECRET is required"),
-  APP_ENCRYPTION_KEY: z
-    .string()
-    .min(32, "APP_ENCRYPTION_KEY must be at least 32 characters"),
-  APP_URL: z.string().min(1).default("http://localhost:3000"),
-  CRON_SECRET: z.string().min(1).optional(),
-  EVIDENCE_STORAGE_PATH: z.string().min(1).default("./.storage/evidence"),
-  TRUSTED_PROXY_COUNT: z.coerce.number().int().min(0).default(1),
-  CLIENT_IP_HEADER: z.string().min(1).optional(),
-});
+const environmentSchema = z
+  .object({
+    NODE_ENV: z
+      .enum(["development", "test", "production"])
+      .default("development"),
+    DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
+    AUTH_SECRET: z.string().min(1, "AUTH_SECRET is required"),
+    APP_ENCRYPTION_KEY: z
+      .string()
+      .min(32, "APP_ENCRYPTION_KEY must be at least 32 characters"),
+    APP_URL: z.string().min(1).default("http://localhost:3000"),
+    CRON_SECRET: z.string().min(1).optional(),
+    EVIDENCE_STORAGE_PATH: z.string().min(1).default("./.storage/evidence"),
+    TRUSTED_PROXY_COUNT: z.coerce.number().int().min(0).default(0),
+    CLIENT_IP_HEADER: z.string().min(1).optional(),
+  })
+  .superRefine((values, context) => {
+    const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
+    if (
+      values.NODE_ENV === "production" &&
+      !isBuildPhase &&
+      !values.CRON_SECRET
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["CRON_SECRET"],
+        message: "CRON_SECRET is required in production",
+      });
+    }
+  });
 
 export type Environment = z.infer<typeof environmentSchema>;
 

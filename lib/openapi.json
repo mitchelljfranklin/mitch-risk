@@ -446,7 +446,7 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "description": "API key authentication. Generate keys in Settings → API. Use in the `Authorization` header as `Bearer mrk_xxxx`. Keys grant full access to every endpoint and remain valid independently of the account that created them. Keys can be IP-restricted and have configurable expiry. API key auth must be enabled by an admin first."
+        "description": "API key authentication. Generate keys in Settings → API. Keys have the form `mrk_<prefix>.<secret>`; use the full value in the `Authorization` header as `Bearer mrk_<prefix>.<secret>`. Keys grant full access to every endpoint and remain valid independently of the account that created them. Keys can be IP-restricted and have configurable expiry. API key auth must be enabled by an admin first."
       }
     },
     "responses": {

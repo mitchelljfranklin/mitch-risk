@@ -3,6 +3,20 @@ import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getEvidence } from "@/lib/db/assessments";
 import { storage } from "@/lib/storage";
 
+const INLINE_SAFE_MIME_TYPES = new Set([
+  "application/pdf",
+  "image/png",
+  "image/jpeg",
+  "image/gif",
+  "image/webp",
+]);
+
+function inlineSafeContentType(mimeType: string): string {
+  return INLINE_SAFE_MIME_TYPES.has(mimeType)
+    ? mimeType
+    : "application/octet-stream";
+}
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ evidenceId: string }> },
@@ -29,15 +43,19 @@ export async function GET(
   }
 
   const isInline = new URL(request.url).searchParams.get("inline") === "true";
+  const contentType = isInline
+    ? inlineSafeContentType(evidence.mimeType)
+    : "application/octet-stream";
 
   return new Response(new Uint8Array(data), {
     status: 200,
     headers: {
-      "Content-Type": evidence.mimeType,
+      "Content-Type": contentType,
       "Content-Disposition": isInline
         ? `inline; filename="${encodeURIComponent(evidence.fileName)}"`
         : `attachment; filename="${encodeURIComponent(evidence.fileName)}"`,
       "Content-Length": String(evidence.sizeBytes),
+      "X-Content-Type-Options": "nosniff",
     },
   });
 }

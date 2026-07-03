@@ -1,18 +1,35 @@
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
 
-const KEY_PREFIX = "mrk_";
-const KEY_LENGTH = 40;
+const KEY_NAMESPACE = "mrk_";
+const LOOKUP_BYTES = 4;
+const SECRET_BYTES = 24;
+const BCRYPT_ROUNDS = 12;
 
-export function generateApiKey(): { fullKey: string; prefix: string } {
-  const random = randomBytes(KEY_LENGTH / 2).toString("hex");
-  const fullKey = `${KEY_PREFIX}${random}`;
-  const prefix = fullKey.slice(0, 12) + "...";
-  return { fullKey, prefix };
+export type GeneratedApiKey = {
+  fullKey: string;
+  keyPrefix: string;
+  displayPrefix: string;
+};
+
+export function generateApiKey(): GeneratedApiKey {
+  const lookup = randomBytes(LOOKUP_BYTES).toString("hex");
+  const secret = randomBytes(SECRET_BYTES).toString("hex");
+  const keyPrefix = `${KEY_NAMESPACE}${lookup}`;
+  const fullKey = `${keyPrefix}.${secret}`;
+  const displayPrefix = `${keyPrefix}…`;
+  return { fullKey, keyPrefix, displayPrefix };
+}
+
+export function extractKeyPrefix(key: string): string | null {
+  if (!key.startsWith(KEY_NAMESPACE)) return null;
+  const separatorIndex = key.indexOf(".");
+  if (separatorIndex <= KEY_NAMESPACE.length) return null;
+  return key.slice(0, separatorIndex);
 }
 
 export function hashApiKey(key: string): string {
-  return bcrypt.hashSync(key, 12);
+  return bcrypt.hashSync(key, BCRYPT_ROUNDS);
 }
 
 export function verifyApiKey(key: string, hash: string): boolean {

@@ -5,10 +5,13 @@ import {
   extendAssessmentToken,
   getAssessmentByToken,
   getAssessmentForToken,
+  isPortalEditable,
   isTokenExpired,
   regenerateAssessmentToken,
   revokeAssessmentToken,
+  saveResponses,
   sendAssessment,
+  submitAssessment,
 } from "@/lib/db/assessments";
 import {
   addQuestion,
@@ -152,5 +155,35 @@ describe("portal token lifecycle (integration)", () => {
       await getAssessmentByToken("completely-fake-token-xyz-123"),
     ).toBeNull();
     expect(await getAssessmentForToken("another-fake-token")).toBeNull();
+  });
+
+  it("locks portal edits once submitted, even while the token is still valid", async () => {
+    const assessment = await createTokenizedAssessment();
+    const sent = await prisma.assessment.findUniqueOrThrow({
+      where: { id: assessment.id },
+      select: { accessToken: true },
+    });
+    const token = sent.accessToken;
+    if (!token) throw new Error("no token");
+
+    const question = await prisma.assessmentQuestion.findFirstOrThrow({
+      where: { assessmentId: assessment.id },
+      select: { id: true },
+    });
+    await saveResponses(token, [
+      {
+        assessmentQuestionId: question.id,
+        value: "YES",
+        isNotApplicable: false,
+      },
+    ]);
+    await submitAssessment(token);
+
+    const submitted = await getAssessmentForToken(token);
+    expect(submitted).not.toBeNull();
+    expect(submitted?.status).toBe("SUBMITTED");
+    expect(isPortalEditable(submitted!.status, submitted!.tokenExpiresAt)).toBe(
+      false,
+    );
   });
 });

@@ -561,6 +561,18 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   pure `computeRiskByTier` helper, `assessmentStatusCounts` in `getDashboardData`, the existing
   `getFindingSummary`, and a new `listUpcomingKeyDates`. No schema/migration.
 
+- **Phase 72 — Security hardening (critical).** Batch A of the security/UX review remediation.
+  API-key authentication now resolves a single candidate by an indexed `keyPrefix` and runs one
+  bcrypt compare (was O(n) bcrypt over every key — a DoS-amplification + timing oracle); keys are
+  minted as `mrk_<prefix>.<secret>` and pre-existing keys are invalidated by migration (must be
+  regenerated). `TRUSTED_PROXY_COUNT` now defaults to `0` (X-Forwarded-For ignored unless a proxy
+  count is set, closing an IP-allowlist spoof). `CRON_SECRET` is compared with a constant-time
+  helper (`lib/timing-safe.ts`) and is required in production (except during `next build`).
+  Evidence file serving sends `X-Content-Type-Options: nosniff` and only renders an allowlist of
+  MIME types inline (everything else downloads) — closing a stored-XSS vector against reviewers.
+  Portal vendors can no longer delete evidence or add comments after submission (`isPortalEditable`
+  now gates both). No new endpoints.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

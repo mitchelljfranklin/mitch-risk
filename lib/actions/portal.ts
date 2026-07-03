@@ -10,7 +10,6 @@ import {
   getAssessmentQuestion,
   getEvidence,
   isPortalEditable,
-  isTokenExpired,
   saveResponses,
   submitAssessment,
 } from "@/lib/db/assessments";
@@ -186,7 +185,10 @@ export async function vendorAddCommentAction(
   }
 
   const assessment = await getAssessmentForToken(token);
-  if (!assessment || isTokenExpired(assessment.tokenExpiresAt)) {
+  if (
+    !assessment ||
+    !isPortalEditable(assessment.status, assessment.tokenExpiresAt)
+  ) {
     return { ok: false };
   }
 
@@ -206,7 +208,11 @@ export async function removePortalEvidenceAction(
   token: string,
 ): Promise<void> {
   const assessment = await getAssessmentForToken(token);
-  if (!assessment || isTokenExpired(assessment.tokenExpiresAt)) return;
+  if (
+    !assessment ||
+    !isPortalEditable(assessment.status, assessment.tokenExpiresAt)
+  )
+    return;
 
   const evidence = await getEvidence(evidenceId);
   if (!evidence || evidence.assessmentId !== assessment.id) return;

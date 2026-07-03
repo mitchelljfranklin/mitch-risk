@@ -1,5 +1,6 @@
 import { sendEmail } from "@/lib/email/mailer";
 import { env } from "@/lib/env";
+import { timingSafeEqualString } from "@/lib/timing-safe";
 import { prisma } from "@/lib/prisma";
 import { createAssessment, sendAssessment } from "@/lib/db/assessments";
 import { listCertificationsExpiringOn } from "@/lib/db/certifications";
@@ -13,8 +14,8 @@ import {
 import { storage } from "@/lib/storage";
 
 export async function GET(request: Request) {
-  const secret = request.headers.get("x-cron-secret");
-  if (!secret || !env.CRON_SECRET || secret !== env.CRON_SECRET) {
+  const providedSecret = request.headers.get("x-cron-secret");
+  if (!timingSafeEqualString(providedSecret, env.CRON_SECRET)) {
     return new Response("Unauthorized", { status: 401 });
   }
 

@@ -417,7 +417,7 @@ export async function createApiKeyAction(
   const { logAudit } = await import("@/lib/db/audit");
 
   const user = await getCurrentUser();
-  const { fullKey, prefix } = generateApiKey();
+  const { fullKey, keyPrefix, displayPrefix } = generateApiKey();
 
   let expiresAt: Date | null = null;
   if (expiresIn && expiresIn !== "permanent") {
@@ -432,7 +432,8 @@ export async function createApiKeyAction(
     data: {
       name,
       keyHash: hashApiKey(fullKey),
-      prefix,
+      keyPrefix,
+      prefix: displayPrefix,
       createdBy: user!.id,
       expiresAt,
       allowedIps,
@@ -447,7 +448,7 @@ export async function createApiKeyAction(
   revalidatePath("/settings");
   return {
     ok: true,
-    message: `Key created: ${prefix}. Copy the key below — it won't be shown again.`,
+    message: `Key created: ${displayPrefix}. Copy the key below — it won't be shown again.`,
     key: fullKey,
   };
 }

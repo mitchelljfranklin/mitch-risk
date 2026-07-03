@@ -36,6 +36,13 @@ describe("resolveClientIp", () => {
     expect(resolveClientIp(headers, { trustedProxyCount: 0 })).toBe("unknown");
   });
 
+  it("does not trust a spoofed allowlisted IP when no proxy is trusted", () => {
+    const headers = headersFrom({
+      "x-forwarded-for": "10.0.0.5, 203.0.113.9",
+    });
+    expect(resolveClientIp(headers, { trustedProxyCount: 0 })).toBe("unknown");
+  });
+
   it("strips an IPv4 port suffix", () => {
     const headers = headersFrom({ "x-forwarded-for": "203.0.113.5:41234" });
     expect(resolveClientIp(headers, { trustedProxyCount: 1 })).toBe(
