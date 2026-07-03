@@ -75,7 +75,9 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
         </div>
         <p className="text-muted-foreground text-xs">
           API keys allow external tools to call the REST API without a browser
-          login. Keys are shown only once and cannot be retrieved later.
+          login. Keys have full access to every endpoint and remain valid
+          independently of the account that created them. Keys are shown only
+          once and cannot be retrieved later.
         </p>
         <div className="flex items-center gap-3">
           <Button type="submit" disabled={savePending} size="sm">

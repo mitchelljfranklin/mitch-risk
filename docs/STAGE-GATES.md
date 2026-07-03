@@ -1614,6 +1614,34 @@ list doesn't drop the selection; save persists all mapped controls.
 
 ---
 
+## Phase 64 — Full-access, creator-independent API keys
+
+**Scope:** API keys should grant access to all endpoints, not just what the creator's role
+allows, and not break if that account is later disabled/deleted.
+
+**Checklist:**
+
+- [x] **Full access.** `authenticateRequest` (`lib/api-auth.ts`) returns `ALL_PERMISSIONS` for the
+      API-key branch instead of the creator's role permissions; the `creator.role` include is
+      dropped. `AuthResult.userId`/`roleId` widened to `string | null`.
+- [x] **Independent of creator.** Removed the `creator.disabled` skip; `ApiKey.createdBy` is now
+      nullable with `onDelete: SetNull` (migration `20260703030000_api_key_independent_creator`),
+      so deleting the creating user leaves the key working (`createdBy` → null) rather than
+      cascade-deleting it. Applied to dev + `mitch_risk_test`.
+- [x] **Trust boundary unchanged.** Minting keys still requires `API_MANAGE` (Admin-only by
+      default), the appropriate control now that keys are unconditionally full-access.
+- [x] **Docs/UI.** `api-form.tsx` copy and `lib/openapi.json` (info + `bearerAuth` description)
+      state that keys are full-access and creator-independent.
+- [x] **Tests.** New `lib/api-auth.integration.test.ts`: a Viewer-created key reaches admin-only
+      permissions, keeps working after the creator is disabled, and survives creator deletion
+      (`createdBy` null). Existing api-auth/api tests still pass. Gates: `lint`, `typecheck`,
+      `build`, `format:check`, `vitest` (test DB), Playwright clean.
+
+**Reviewer spot-check:** create a key as any role, call `/api/v1/audit` and `/api/v1/vendors/import`
+with it — both succeed; disable/delete the creating user and the key still authenticates.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1674,6 +1702,7 @@ list doesn't drop the selection; save persists all mapped controls.
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 64 | Ready for review | opencode | 2026-07-03 | Full-access API keys: keys grant ALL_PERMISSIONS regardless of creator role and survive creator disable/delete (createdBy nullable + SetNull migration); gated by API_MANAGE; docs/OpenAPI updated; +1 integration test |
 | 63 | Ready for review | opencode | 2026-07-03 | Map-whole-framework: per-framework tri-state "select all" in the control picker (n/total count, filter-independent) so a certification question can map every control in a framework; pure lib/control-selection.ts + unit tests; no back-end change |
 | 62 | Ready for review | opencode | 2026-07-03 | Users tab rework: Roles-style master–detail Sheet (search, role/SSO/status badges, added date), SSO-aware password reset hidden, listStaffAccounts view; Users + Roles tabs wrapped in Cards for dark-mode shading parity |
 | 61 | Ready for review | opencode | 2026-07-03 | Test DB isolation: vitest.setup prefers TEST_DATABASE_URL + refuses non-test DBs; settings test snapshots/restores; notifications test no longer wipes logs. Fixes integration tests destroying real org/email/appearance settings + notification history |

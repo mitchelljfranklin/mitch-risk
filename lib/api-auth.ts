@@ -3,7 +3,11 @@ import { verifyApiKey, isIpAllowed } from "@/lib/api-keys";
 import { getClientIp } from "@/lib/client-ip";
 import { rateLimit } from "@/lib/rate-limit";
 import { auth as nextAuth } from "@/lib/auth";
-import { type Permission, hasPermission } from "@/lib/permissions";
+import {
+  ALL_PERMISSIONS,
+  type Permission,
+  hasPermission,
+} from "@/lib/permissions";
 
 async function isApiEnabled(): Promise<boolean> {
   const row = await prisma.appSetting.findUnique({
@@ -13,8 +17,8 @@ async function isApiEnabled(): Promise<boolean> {
 }
 
 export type AuthResult = {
-  userId: string;
-  roleId: string;
+  userId: string | null;
+  roleId: string | null;
   permissions: string[];
   method: "session" | "apikey";
 };
@@ -62,21 +66,9 @@ export async function authenticateRequest(
   const hash = key;
   const apiKeys = await prisma.apiKey.findMany({
     where: { disabled: false },
-    include: {
-      creator: {
-        select: {
-          id: true,
-          disabled: true,
-          roleId: true,
-          role: { select: { permissions: true } },
-        },
-      },
-    },
   });
 
   for (const apiKey of apiKeys) {
-    if (apiKey.creator.disabled) continue;
-
     if (apiKey.expiresAt && apiKey.expiresAt < new Date()) continue;
 
     if (!verifyApiKey(hash, apiKey.keyHash)) continue;
@@ -94,10 +86,13 @@ export async function authenticateRequest(
       data: { lastUsedAt: new Date() },
     });
 
+    // API keys are full-access and independent of the creating account: they
+    // grant every permission and keep working even if the creator is disabled
+    // or deleted. Minting keys is gated by API_MANAGE (Admin-only by default).
     return {
-      userId: apiKey.creator.id,
-      roleId: apiKey.creator.roleId,
-      permissions: apiKey.creator.role.permissions,
+      userId: apiKey.createdBy,
+      roleId: null,
+      permissions: [...ALL_PERMISSIONS],
       method: "apikey",
     };
   }

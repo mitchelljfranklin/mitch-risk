@@ -499,6 +499,13 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   framework regardless of the text filter. No scoring/schema change — the existing per-control
   compliance engine already handles many-controls-per-question; selection logic is extracted to
   `lib/control-selection.ts` with unit tests.
+- **Phase 64 — Full-access API keys.** API keys previously inherited the permissions of the
+  role of the user who created them. They now grant **full access to every endpoint**
+  (`ALL_PERMISSIONS`) and are **independent of the creating account** — a key keeps working even
+  if that user is later disabled or deleted (`ApiKey.createdBy` is now nullable with
+  `onDelete: SetNull`). Minting keys is still gated by `API_MANAGE` (Admin-only by default),
+  which is the sole trust boundary for issuing keys. IP allowlisting, expiry, per-key rate
+  limits, enable/disable, and one-time display are unchanged.
 
 ## 8. Out of scope (v1+)
 

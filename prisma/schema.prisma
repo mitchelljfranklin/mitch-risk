@@ -443,8 +443,8 @@ model ApiKey {
   name           String
   keyHash        String    @unique
   prefix         String
-  createdBy      String
-  creator        User      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  createdBy      String?
+  creator        User?     @relation(fields: [createdBy], references: [id], onDelete: SetNull)
   disabled       Boolean   @default(false)
   expiresAt      DateTime?
   lastUsedAt     DateTime?
