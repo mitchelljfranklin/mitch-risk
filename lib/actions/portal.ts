@@ -8,6 +8,7 @@ import {
   deleteEvidenceForQuestion,
   getAssessmentForToken,
   getAssessmentQuestion,
+  getEvidence,
   isPortalEditable,
   isTokenExpired,
   saveResponses,
@@ -197,4 +198,22 @@ export async function vendorAddCommentAction(
   });
 
   return { ok: true };
+}
+
+export async function removePortalEvidenceAction(
+  evidenceId: string,
+  token: string,
+): Promise<void> {
+  const assessment = await getAssessmentForToken(token);
+  if (!assessment || isTokenExpired(assessment.tokenExpiresAt)) return;
+
+  const evidence = await getEvidence(evidenceId);
+  if (!evidence || evidence.assessmentId !== assessment.id) return;
+
+  await prisma.evidence.delete({ where: { id: evidenceId } });
+  try {
+    await storage.delete(evidence.storageKey);
+  } catch {
+    // Best-effort; orphan-sweep cron cleans any leftovers.
+  }
 }

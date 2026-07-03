@@ -3,6 +3,17 @@
 import { useRouter } from "next/navigation";
 import { type ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -18,6 +29,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { ThemeToggle } from "@/components/theme-toggle";
 import {
+  removePortalEvidenceAction,
   saveProgressAction,
   submitPortalAction,
   uploadEvidenceAction,
@@ -76,6 +88,8 @@ type PortalQuestionnaireProps = {
   initialEvidence: PortalEvidence[];
   reviewByQuestionId?: Record<string, PortalReview>;
   initialComments?: PortalComment[];
+  maxUploadMb?: number;
+  allowedExtensions?: string[];
 };
 
 type EvidenceMap = Record<string, { id: string; fileName: string }[]>;
@@ -116,6 +130,8 @@ export function PortalQuestionnaire({
   initialEvidence,
   reviewByQuestionId = {},
   initialComments = [],
+  maxUploadMb = 20,
+  allowedExtensions = ["pdf", "docx", "xlsx"],
 }: PortalQuestionnaireProps) {
   const router = useRouter();
   const [answers, setAnswers] = useState<PortalAnswers>(() =>
@@ -131,11 +147,13 @@ export function PortalQuestionnaire({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const isFirstRender = useRef(true);
 
   const [comments, setComments] = useState<PortalComment[]>(initialComments);
   const [commentText, setCommentText] = useState<Record<string, string>>({});
   const [sendingComment, setSendingComment] = useState(false);
+  const [expiryLabel, setExpiryLabel] = useState<string | null>(null);
 
   async function handleVendorComment(questionId: string) {
     const body = commentText[questionId]?.trim();
@@ -159,6 +177,16 @@ export function PortalQuestionnaire({
       setCommentText((previous) => ({ ...previous, [questionId]: "" }));
     }
     setSendingComment(false);
+  }
+
+  async function handleRemoveEvidence(evidenceId: string, questionId: string) {
+    setEvidence((current) => ({
+      ...current,
+      [questionId]: (current[questionId] ?? []).filter(
+        (f) => f.id !== evidenceId,
+      ),
+    }));
+    await removePortalEvidenceAction(evidenceId, token);
   }
 
   useEffect(() => {
@@ -187,6 +215,36 @@ export function PortalQuestionnaire({
 
     return () => window.clearTimeout(handle);
   }, [answers, token]);
+
+  // Token expiry countdown — updates every minute.
+  useEffect(() => {
+    if (!tokenExpiresAt) return;
+    function update() {
+      const remaining = new Date(tokenExpiresAt!).getTime() - Date.now();
+      if (remaining <= 0) {
+        setExpiryLabel("This link has expired.");
+        return;
+      }
+      const hours = Math.floor(remaining / (1000 * 60 * 60));
+      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      if (hours > 24) {
+        setExpiryLabel(null);
+        return;
+      }
+      if (hours > 0) {
+        setExpiryLabel(
+          `This link expires in ${hours} hour${hours > 1 ? "s" : ""}.`,
+        );
+      } else {
+        setExpiryLabel(
+          `This link expires in ${minutes} minute${minutes > 1 ? "s" : ""}.`,
+        );
+      }
+    }
+    update();
+    const interval = setInterval(update, 60_000);
+    return () => clearInterval(interval);
+  }, [tokenExpiresAt]);
 
   const sections = useMemo(() => {
     const map = new Map<string, PortalQuestion[]>();
@@ -360,9 +418,22 @@ export function PortalQuestionnaire({
             disabled={disabled}
             onChange={(event) => handleFileUpload(question.id, event)}
           />
+          <p className="text-muted-foreground text-xs">
+            Max {maxUploadMb} MB. Allowed: {allowedExtensions.join(", ")}.
+          </p>
           {(evidence[question.id] ?? []).map((file) => (
-            <span key={file.id} className="text-muted-foreground text-xs">
+            <span
+              key={file.id}
+              className="text-muted-foreground flex items-center gap-2 text-xs"
+            >
               Uploaded: {file.fileName}
+              <button
+                type="button"
+                className="text-destructive hover:underline"
+                onClick={() => handleRemoveEvidence(file.id, question.id)}
+              >
+                Remove
+              </button>
             </span>
           ))}
         </div>
@@ -555,6 +626,13 @@ export function PortalQuestionnaire({
             </span>
           ) : null}
         </div>
+        {expiryLabel ? (
+          <div className="rounded-md border border-[var(--rag-amber)] bg-[var(--rag-amber)]/10 px-4 py-2">
+            <p className="text-muted-foreground text-xs font-medium">
+              {expiryLabel}
+            </p>
+          </div>
+        ) : null}
       </header>
 
       {sections.map(([sectionTitle, sectionQuestions]) => {
@@ -572,7 +650,7 @@ export function PortalQuestionnaire({
               return (
                 <div
                   key={question.id}
-                  className="flex flex-col gap-2 rounded-md border p-4"
+                  className="flex flex-col gap-2 rounded-md border p-4 transition-all duration-300 ease-in-out"
                 >
                   <div className="text-sm font-medium">
                     {question.text}
@@ -697,9 +775,36 @@ export function PortalQuestionnaire({
       ) : null}
 
       <div className="flex items-center gap-3">
-        <Button type="button" onClick={handleSubmit} disabled={isSubmitting}>
-          {isSubmitting ? "Submitting…" : "Submit questionnaire"}
-        </Button>
+        <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+          <AlertDialogTrigger asChild>
+            <Button
+              type="button"
+              variant="secondary"
+              size="lg"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting…" : "Submit questionnaire"}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Submit questionnaire?</AlertDialogTitle>
+              <AlertDialogDescription>
+                You will not be able to edit your answers after submission. Are
+                you sure you are ready to submit?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => handleSubmit()}
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                Submit
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

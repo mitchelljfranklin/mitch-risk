@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { getAssessmentByToken, isTokenExpired } from "@/lib/db/assessments";
-import { getAppearanceSettings } from "@/lib/settings";
+import { getAppearanceSettings, getFileSettings } from "@/lib/settings";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 import { PortalQuestionnaire } from "./portal-questionnaire";
@@ -83,9 +83,10 @@ function PortalMessage({
 
 export default async function PortalPage({ params }: PortalPageProps) {
   const { token } = await params;
-  const [assessment, appearance] = await Promise.all([
+  const [assessment, appearance, fileSettings] = await Promise.all([
     getAssessmentByToken(token),
     getAppearanceSettings(),
+    getFileSettings(),
   ]);
   const logoUrl = appearance.logoKey ? "/api/brand/logo" : null;
 
@@ -178,21 +179,18 @@ export default async function PortalPage({ params }: PortalPageProps) {
               </div>
             );
           })}
-          {assessment.comments.filter((c) => c.authorType === "VENDOR").length >
-          0 ? (
+          {assessment.comments.length > 0 ? (
             <div className="flex flex-col gap-2">
               <h2 className="text-sm font-medium">Comments</h2>
-              {assessment.comments
-                .filter((c) => c.authorType === "VENDOR")
-                .map((comment) => (
-                  <div key={comment.id} className="rounded-md border p-3">
-                    <p className="text-muted-foreground text-xs">
-                      {comment.authorName} ·{" "}
-                      {new Date(comment.createdAt).toLocaleDateString()}
-                    </p>
-                    <p className="text-sm">{comment.body}</p>
-                  </div>
-                ))}
+              {assessment.comments.map((comment) => (
+                <div key={comment.id} className="rounded-md border p-3">
+                  <p className="text-muted-foreground text-xs">
+                    {comment.authorName} ·{" "}
+                    {new Date(comment.createdAt).toLocaleDateString()}
+                  </p>
+                  <p className="text-sm">{comment.body}</p>
+                </div>
+              ))}
             </div>
           ) : null}
         </div>
@@ -256,6 +254,16 @@ export default async function PortalPage({ params }: PortalPageProps) {
 
   return (
     <PortalShell logoUrl={logoUrl}>
+      {assessment.status === "IN_PROGRESS" ? (
+        <div className="rounded-md border border-[var(--rag-amber)] bg-[var(--rag-amber)]/10 px-4 py-3">
+          <p className="text-sm font-medium">
+            Additional information has been requested.
+          </p>
+          <p className="text-muted-foreground mt-1 text-xs">
+            Please review the flagged questions and resubmit when ready.
+          </p>
+        </div>
+      ) : null}
       <PortalQuestionnaire
         token={token}
         title={assessment.title}
@@ -266,8 +274,10 @@ export default async function PortalPage({ params }: PortalPageProps) {
         initialEvidence={assessment.evidence}
         reviewByQuestionId={reviewByQuestionId}
         initialComments={assessment.comments.filter(
-          (c) => c.authorType === "VENDOR",
+          (c) => c.authorType === "VENDOR" || c.authorType === "INTERNAL",
         )}
+        maxUploadMb={fileSettings.maxUploadMb}
+        allowedExtensions={fileSettings.allowedExtensions}
       />
     </PortalShell>
   );

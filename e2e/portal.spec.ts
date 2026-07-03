@@ -27,6 +27,7 @@ test("a vendor completes the questionnaire via the no-login portal", async ({
   await expect(page.getByText("Uploaded: policy.pdf")).toBeVisible();
 
   await page.getByRole("button", { name: "Submit questionnaire" }).click();
+  await page.getByRole("button", { name: "Submit" }).click();
   await expect(
     page.getByText("Your responses have been submitted."),
   ).toBeVisible();

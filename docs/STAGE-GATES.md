@@ -1345,6 +1345,38 @@ above the page title.
 
 ---
 
+## Phase 56 — Portal polish
+
+**Scope:** improve the vendor questionnaire UX — confirm submit, delete evidence, expiry
+warning, reviewer-comment visibility, transitions, and dark-mode submit button.
+
+**Checklist:**
+
+- [x] **Confirm before submit**: AlertDialog on "Submit questionnaire" ("You won't be able to
+      edit after submission"). E2e updated.
+- [x] **Evidence deletion**: "Remove" button per uploaded file in the portal; new
+      `removePortalEvidenceAction` validates token + deletes the row + storage file (best-effort).
+      File-type/size upload hints shown from `getFileSettings`.
+- [x] **Token expiry countdown**: warns when < 24 hours remaining ("expires in X hours" /
+      "X minutes"), updates every 60s. Uses existing `tokenExpiresAt` prop.
+- [x] **Reviewer comments visible**: submitted/read-only view shows all comments (vendor +
+      internal), not just vendor-only. Editable portal shows internal comments alongside vendor
+      on clarification-requested questions.
+- [x] **Reopened banner**: when `IN_PROGRESS` (reviewer sent back), a brief info banner
+      explains "Additional information has been requested…​"
+- [x] **Conditional CSS transitions**: `transition-all duration-300` on question divs for
+      smooth show/hide.
+- [x] **Dark-mode submit button**: `variant="secondary"` (dark gray bg + white text, visible
+      on near-black portal background).
+- [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check`, 122 unit + 9 e2e.
+      No migration.
+
+**Reviewer spot-check:** open a vendor questionnaire, upload a file → "Max X MB" hint shown,
+file listed with "Remove". Remove it → gone. Fill in answers, click Submit → confirm dialog.
+Open a sent-back assessment → reopened banner. Dark-mode → submit button is visibly a button.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1404,3 +1436,4 @@ above the page title.
 | 53 | Ready for review | opencode | 2026-07-02 | Review workflow: auto UNDER_REVIEW, send-back-to-vendor (clarification email + token extend + portalRecipients) vs reopen-review, finding lifecycle Open/Remediated/Risk-accepted w/ resolver + rescore-preserve, review progress+filter, RAG score; 113 unit + 9 e2e |
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
+| 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |

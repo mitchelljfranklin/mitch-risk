@@ -434,6 +434,14 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   now a full **command palette** (⌘K/⌃K too) with fuzzy search, permission-aware filtering,
   and keyboard navigation. **Breadcrumbs** are now shown on the 5 deepest-navigation pages.
   The audit-action list was synced with the full audit-label catalog.
+- **Phase 56 — Portal polish.** The vendor questionnaire now asks to **confirm before
+  submitting**, vendors can **delete uploaded evidence** (with best-effort file removal; a
+  server action validates token access), a **token-expiry countdown** warns when the link
+  expires within 24 hours, **reviewer internal comments** are now visible to the vendor (both
+  in the editable view on clarification-requested questions and on the submitted summary), a
+  banner explains when an assessment has been **reopened for more info**, file-type/size
+  **upload hints** are shown, and conditional questions have **smooth CSS transitions** on
+  show/hide. The portal submit button now uses `variant="secondary"` for dark-mode visibility.
 
 ## 8. Out of scope (v1+)
 
