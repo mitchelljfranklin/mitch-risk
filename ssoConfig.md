@@ -29,6 +29,12 @@ All three can be enabled at once; each appears as its own button on the login sc
   provision/link the account and to enforce the optional domain restriction.
 - **Domain restriction (optional).** *Restrict to domain* rejects any SSO login whose email
   domain doesn't match (e.g. `example.com`).
+- **Credentials stay with the IdP.** SSO-provisioned users have no local password. Their
+  **Profile** page hides the password section and shows their email as read-only (they can
+  still edit their display name), and the "Forgot password?" flow never issues a reset link for
+  them — password and email are managed entirely by the identity provider. Users who also have
+  a local password (e.g. an existing local account later linked to SSO) keep normal password
+  management.
 - **Secrets are encrypted at rest.** Client secrets are stored encrypted (AES-256-GCM via
   `APP_ENCRYPTION_KEY`) and never shown again after saving.
 - **SSO-only mode + break-glass.** You can *Disable email/password sign-in* so only SSO

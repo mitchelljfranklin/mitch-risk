@@ -75,6 +75,29 @@ export function findUserByEmail(email: string): Promise<User | null> {
   return prisma.user.findUnique({ where: { email: email.toLowerCase() } });
 }
 
+export function hasLocalPassword(passwordHash: string): boolean {
+  return passwordHash.trim().length > 0;
+}
+
+export async function getUserAuthInfo(
+  userId: string,
+): Promise<{ hasLocalPassword: boolean; isSsoUser: boolean } | null> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      passwordHash: true,
+      _count: { select: { ssoIdentities: true } },
+    },
+  });
+  if (!user) {
+    return null;
+  }
+  return {
+    hasLocalPassword: hasLocalPassword(user.passwordHash),
+    isSsoUser: user._count.ssoIdentities > 0,
+  };
+}
+
 export async function createUser(input: {
   name: string;
   email: string;

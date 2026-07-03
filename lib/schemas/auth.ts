@@ -48,6 +48,10 @@ export const profileUpdateSchema = z
     },
   );
 
+export const profileNameSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+});
+
 export const setupAdminSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.email("Enter a valid email address"),

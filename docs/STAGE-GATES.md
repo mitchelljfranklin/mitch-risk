@@ -1498,6 +1498,34 @@ behind a proxy the app issues HTTPS cookies and vendors receive `https://` porta
 
 ---
 
+## Phase 60 — Profile UX & SSO-aware credentials
+
+**Scope:** fix the cramped Profile page and stop SSO-provisioned users from managing a local
+password (that is the IdP's role).
+
+**Checklist:**
+
+- [x] **Profile layout.** `app/(internal)/profile/page.tsx` widened (`max-w-lg` → `max-w-2xl`);
+      `profile-form.tsx` rebuilt with "Account details" and "Password" `Card`s and stacked
+      password fields (no more `grid-cols-3` crush).
+- [x] **SSO-aware profile.** New `getUserAuthInfo()` / `hasLocalPassword()` in `lib/db/users.ts`.
+      SSO-only users (empty `passwordHash`): password card hidden, email read-only, name still
+      editable, with an "signed in via SSO" note. `updateProfileAction` branches — SSO-only path
+      updates the name only (no current-password gate, no password/email change) via a new
+      `profileNameSchema`; local/hybrid path unchanged.
+- [x] **No reset for SSO-only.** `sendResetEmailAction` skips issuing a reset link when the
+      account has no local password, returning the same generic response (no enumeration).
+- [x] **Tests.** `lib/db/users.test.ts` covers `hasLocalPassword` (real hash vs empty/whitespace).
+- [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check`, `vitest` clean.
+      No migration; no OpenAPI change; no new RBAC keys (Profile is self-service).
+
+**Reviewer spot-check:** a local user sees both cards and must enter the current password to
+save; an SSO user sees only "Account details" with a read-only email + editable name and no
+password fields; "Forgot password?" for an SSO-only email sends nothing but shows the generic
+message.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1558,6 +1586,7 @@ behind a proxy the app issues HTTPS cookies and vendors receive `https://` porta
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 60 | Ready for review | opencode | 2026-07-03 | Profile UX & SSO-aware credentials: card-based profile layout (wider, un-cramped), SSO-only users get read-only email + hidden password card + name-only update, forgot-password skips SSO-only accounts; +2 unit tests |
 | 59 | Ready for review | opencode | 2026-07-03 | Reverse-proxy hardening: proxy-aware getClientIp (trusted-hop XFF / CLIENT_IP_HEADER) across login/break-glass/portal/API + API-key IP allowlist; TRUSTED_PROXY_COUNT/CLIENT_IP_HEADER env; README proxy guide (Caddy/nginx/Zoraxy/Azure); +12 unit tests |
 | 58 | Ready for review | opencode | 2026-07-03 | Settings & auth: Test SMTP button, SSO toggle fix (React 19 form-reset + Radix; key-remount across sso/api/limits toggles), email-template master-detail Sheet + reset-to-default, removed per-answer "Reject" (+ data migration), SSO-only login + break-glass URL; 131 unit + 10 e2e |
 | 57 | Approved | user | 2026-07-03 | Mobile & a11y: 28 fixes — settings tabs scroll, dense rows wrap, responsive controls, not-found.tsx, toast/idle/command-palette ARIA, skip-link, error reset(), img CLS, Firefox scrollbar, empty-state SVG aria-hidden, semantic sidebar, pagination live region, fieldset grouping; 122 unit + 9 e2e |

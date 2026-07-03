@@ -5,6 +5,7 @@ import {
   createPasswordResetToken,
   consumeResetToken,
   findUserByEmail,
+  hasLocalPassword,
   resetUserPassword,
 } from "@/lib/db/users";
 import { sendEmail } from "@/lib/email/mailer";
@@ -47,8 +48,9 @@ export async function sendResetEmailAction(
   }
 
   const user = await findUserByEmail(email);
-  if (!user) {
-    // Silent — don't leak account existence.
+  if (!user || !hasLocalPassword(user.passwordHash)) {
+    // Silent — don't leak account existence or whether it is SSO-managed.
+    // SSO-only accounts have no local password to reset; that is the IdP's role.
     return {
       ok: true,
       message:

@@ -468,6 +468,13 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   README "Running behind a reverse proxy" guide (Caddy, nginx, Zoraxy, Azure) document how to
   self-host behind any TLS-terminating proxy; `trustHost` was already enabled so auth cookies
   and callback URLs follow the forwarded host/proto.
+- **Phase 60 — Profile UX & SSO-aware credentials.** The self-service **Profile** page was
+  rebuilt with card sections ("Account details", "Password") and a wider layout so the fields
+  are no longer cramped. Accounts provisioned via SSO (no local password) now get an
+  SSO-appropriate profile: the password section is hidden, the email is read-only (managed by
+  the identity provider), and only the display name is editable — and the "Forgot password?"
+  flow silently issues no reset link for them (still generic to avoid account enumeration).
+  Local and SSO-linked accounts with a real password keep full password management.
 
 ## 8. Out of scope (v1+)
 

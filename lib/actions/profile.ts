@@ -4,10 +4,14 @@ import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 
 import { getCurrentUser, signOut } from "@/lib/auth";
-import { findUserByEmail, resetUserPassword } from "@/lib/db/users";
+import {
+  findUserByEmail,
+  hasLocalPassword,
+  resetUserPassword,
+} from "@/lib/db/users";
 import { logAudit } from "@/lib/db/audit";
 import { prisma } from "@/lib/prisma";
-import { profileUpdateSchema } from "@/lib/schemas/auth";
+import { profileNameSchema, profileUpdateSchema } from "@/lib/schemas/auth";
 
 export type ProfileState = { ok: boolean; message: string } | undefined;
 
@@ -18,6 +22,39 @@ export async function updateProfileAction(
   const user = await getCurrentUser();
   if (!user) {
     return { ok: false, message: "Not authenticated." };
+  }
+
+  const existing = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { passwordHash: true },
+  });
+  if (!existing) {
+    return { ok: false, message: "Account not found." };
+  }
+
+  // SSO-only accounts have no local password; their credentials (and email) are
+  // managed by the identity provider. Allow updating the display name only.
+  if (!hasLocalPassword(existing.passwordHash)) {
+    const parsedName = profileNameSchema.safeParse({
+      name: formData.get("name"),
+    });
+    if (!parsedName.success) {
+      return {
+        ok: false,
+        message: parsedName.error.issues[0]?.message ?? "Invalid input.",
+      };
+    }
+
+    if (parsedName.data.name !== user.name) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { name: parsedName.data.name },
+      });
+      await logAudit(user.id, "UPDATE_PROFILE");
+    }
+
+    revalidatePath("/profile");
+    return { ok: true, message: "Profile updated." };
   }
 
   const parsed = profileUpdateSchema.safeParse({
@@ -37,14 +74,7 @@ export async function updateProfileAction(
   const { name, email, currentPassword, newPassword } = parsed.data;
 
   // Verify current password.
-  const existing = await prisma.user.findUnique({
-    where: { id: user.id },
-    select: { passwordHash: true },
-  });
-  if (
-    !existing ||
-    !(await bcrypt.compare(currentPassword, existing.passwordHash))
-  ) {
+  if (!(await bcrypt.compare(currentPassword, existing.passwordHash))) {
     return { ok: false, message: "Current password is incorrect." };
   }
 
