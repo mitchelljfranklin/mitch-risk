@@ -15,7 +15,12 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { type VendorFormState } from "@/lib/actions/vendors";
-import { VENDOR_TIER_LABELS, VENDOR_TIERS } from "@/lib/schemas/vendor";
+import {
+  DATA_SENSITIVITIES,
+  DATA_SENSITIVITY_LABELS,
+  VENDOR_TIER_LABELS,
+  VENDOR_TIERS,
+} from "@/lib/schemas/vendor";
 import { useFormToast } from "@/hooks/use-form-toast";
 
 type VendorAction = (
@@ -26,6 +31,7 @@ type VendorAction = (
 type VendorFormProps = {
   action: VendorAction;
   vendorId?: string;
+  owners: { id: string; name: string }[];
   defaults?: {
     name: string;
     contactName: string;
@@ -33,12 +39,21 @@ type VendorFormProps = {
     tier: string;
     website: string;
     notes: string;
+    serviceDescription: string;
+    dataSensitivity: string;
+    contractRenewalDate: string;
+    ownerId: string;
   };
 };
 
 const initialState: VendorFormState = undefined;
 
-export function VendorForm({ action, vendorId, defaults }: VendorFormProps) {
+export function VendorForm({
+  action,
+  vendorId,
+  owners,
+  defaults,
+}: VendorFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
   useFormToast(state);
   const cancelHref = vendorId ? `/vendors/${vendorId}` : "/vendors";
@@ -92,6 +107,59 @@ export function VendorForm({ action, vendorId, defaults }: VendorFormProps) {
           <Label htmlFor="website">Website</Label>
           <Input id="website" name="website" defaultValue={defaults?.website} />
         </div>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-2">
+          <Label htmlFor="ownerId">Risk owner</Label>
+          <Select name="ownerId" defaultValue={defaults?.ownerId ?? ""}>
+            <SelectTrigger id="ownerId">
+              <SelectValue placeholder="Unassigned" />
+            </SelectTrigger>
+            <SelectContent>
+              {owners.map((owner) => (
+                <SelectItem key={owner.id} value={owner.id}>
+                  {owner.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="dataSensitivity">Data sensitivity</Label>
+          <Select
+            name="dataSensitivity"
+            defaultValue={defaults?.dataSensitivity ?? ""}
+          >
+            <SelectTrigger id="dataSensitivity">
+              <SelectValue placeholder="Unspecified" />
+            </SelectTrigger>
+            <SelectContent>
+              {DATA_SENSITIVITIES.map((level) => (
+                <SelectItem key={level} value={level}>
+                  {DATA_SENSITIVITY_LABELS[level]}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="serviceDescription">Service provided</Label>
+        <Input
+          id="serviceDescription"
+          name="serviceDescription"
+          placeholder="e.g. Cloud email hosting"
+          defaultValue={defaults?.serviceDescription}
+        />
+      </div>
+      <div className="grid gap-2 sm:max-w-xs">
+        <Label htmlFor="contractRenewalDate">Contract renewal date</Label>
+        <Input
+          id="contractRenewalDate"
+          name="contractRenewalDate"
+          type="date"
+          defaultValue={defaults?.contractRenewalDate}
+        />
       </div>
       <div className="grid gap-2">
         <Label htmlFor="notes">Notes</Label>

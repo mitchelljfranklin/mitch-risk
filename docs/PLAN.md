@@ -522,6 +522,14 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   `getFindingSummary`, `listVendorFindings`) reuse the existing `Finding` model — no schema
   change. First of the "TPRM feature parity" series informed by a review of UpGuard-style tools.
 
+- **Phase 67 — Vendor profile enrichment.** Vendors gained four structured fields: a **risk
+  owner** (an internal user; `onDelete: SetNull` so the vendor survives owner deletion), a
+  **data sensitivity** classification (Public/Internal/Confidential/Restricted), a **service
+  provided** description, and a **contract renewal date** (surfaced on the vendor detail with an
+  "overdue" flag; feeds the later dashboard "upcoming renewals"). Added to the vendor form,
+  detail Overview card, zod schema, and the REST vendor import/response schemas. Migration adds
+  the columns/enum/FK.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

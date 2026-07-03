@@ -760,6 +760,24 @@
           "notes": {
             "type": "string",
             "description": "Free-text notes about the vendor"
+          },
+          "serviceDescription": {
+            "type": "string",
+            "description": "What the vendor provides (e.g. cloud email hosting)"
+          },
+          "dataSensitivity": {
+            "type": "string",
+            "enum": ["PUBLIC", "INTERNAL", "CONFIDENTIAL", "RESTRICTED"],
+            "description": "Classification of the data the vendor handles"
+          },
+          "contractRenewalDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Contract renewal / review date (YYYY-MM-DD)"
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "ID of the internal user who owns this vendor's risk"
           }
         }
       },
@@ -774,6 +792,18 @@
           "tier": { "type": "string", "nullable": true },
           "website": { "type": "string", "nullable": true },
           "notes": { "type": "string", "nullable": true },
+          "serviceDescription": { "type": "string", "nullable": true },
+          "dataSensitivity": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["PUBLIC", "INTERNAL", "CONFIDENTIAL", "RESTRICTED"]
+          },
+          "contractRenewalDate": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "ownerId": { "type": "string", "nullable": true },
           "overallScore": { "type": "number", "nullable": true },
           "lastAssessedAt": {
             "type": "string",

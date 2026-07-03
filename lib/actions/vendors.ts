@@ -28,6 +28,10 @@ export async function createVendorAction(
     tier: getField(formData, "tier"),
     website: getField(formData, "website"),
     notes: getField(formData, "notes"),
+    serviceDescription: getField(formData, "serviceDescription"),
+    dataSensitivity: getField(formData, "dataSensitivity"),
+    contractRenewalDate: getField(formData, "contractRenewalDate"),
+    ownerId: getField(formData, "ownerId"),
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
@@ -53,6 +57,10 @@ export async function updateVendorAction(
     tier: getField(formData, "tier"),
     website: getField(formData, "website"),
     notes: getField(formData, "notes"),
+    serviceDescription: getField(formData, "serviceDescription"),
+    dataSensitivity: getField(formData, "dataSensitivity"),
+    contractRenewalDate: getField(formData, "contractRenewalDate"),
+    ownerId: getField(formData, "ownerId"),
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
@@ -144,6 +152,10 @@ export async function importVendorsAction(
         tier: parsed.data.tier as VendorInput["tier"],
         website: parsed.data.website,
         notes: parsed.data.notes,
+        serviceDescription: "",
+        dataSensitivity: "",
+        contractRenewalDate: "",
+        ownerId: "",
       };
       vendors.push(vendorInput);
     } else {

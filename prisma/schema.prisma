@@ -34,6 +34,8 @@ model User {
 
   reviewedAssessments Assessment[] @relation("AssessmentReviewer")
 
+  ownedVendors        Vendor[]     @relation("VendorOwner")
+
   reviews              AnswerReview[] @relation("UserReviews")
 
   resolvedFindings     Finding[]      @relation("FindingResolvedBy")
@@ -196,6 +198,13 @@ enum VendorTier {
   CRITICAL
 }
 
+enum DataSensitivity {
+  PUBLIC
+  INTERNAL
+  CONFIDENTIAL
+  RESTRICTED
+}
+
 enum AssessmentStatus {
   DRAFT
   SENT
@@ -213,19 +222,25 @@ enum Recurrence {
 }
 
 model Vendor {
-  id             String       @id @default(cuid())
-  name           String
-  contactName    String?
-  contactEmail   String
-  tier           VendorTier?
-  website        String?
-  notes          String?
-  overallScore   Float?
-  lastAssessedAt DateTime?
-  assessments    Assessment[]
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  id                  String           @id @default(cuid())
+  name                String
+  contactName         String?
+  contactEmail        String
+  tier                VendorTier?
+  website             String?
+  notes               String?
+  serviceDescription  String?
+  dataSensitivity     DataSensitivity?
+  contractRenewalDate DateTime?
+  ownerId             String?
+  owner               User?            @relation("VendorOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  overallScore        Float?
+  lastAssessedAt      DateTime?
+  assessments         Assessment[]
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
 
+  @@index([ownerId])
   @@map("vendors")
 }
 

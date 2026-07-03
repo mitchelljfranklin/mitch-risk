@@ -1,4 +1,8 @@
-import { type Prisma, type VendorTier } from "@prisma/client";
+import {
+  type DataSensitivity,
+  type Prisma,
+  type VendorTier,
+} from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
@@ -97,6 +101,7 @@ export function getVendor(id: string) {
   return prisma.vendor.findUnique({
     where: { id },
     include: {
+      owner: { select: { id: true, name: true } },
       assessments: {
         orderBy: { createdAt: "desc" },
         include: { template: { select: { name: true, version: true } } },
@@ -109,31 +114,32 @@ function toTier(value: VendorInput["tier"]): VendorTier | null {
   return value === "" ? null : value;
 }
 
+function toVendorData(input: VendorInput): Prisma.VendorUncheckedCreateInput {
+  return {
+    name: input.name,
+    contactName: input.contactName || null,
+    contactEmail: input.contactEmail,
+    tier: toTier(input.tier),
+    website: input.website || null,
+    notes: input.notes || null,
+    serviceDescription: input.serviceDescription || null,
+    dataSensitivity:
+      input.dataSensitivity === "" || !input.dataSensitivity
+        ? null
+        : (input.dataSensitivity as DataSensitivity),
+    contractRenewalDate: input.contractRenewalDate
+      ? new Date(input.contractRenewalDate)
+      : null,
+    ownerId: input.ownerId || null,
+  };
+}
+
 export function createVendor(input: VendorInput) {
-  return prisma.vendor.create({
-    data: {
-      name: input.name,
-      contactName: input.contactName || null,
-      contactEmail: input.contactEmail,
-      tier: toTier(input.tier),
-      website: input.website || null,
-      notes: input.notes || null,
-    },
-  });
+  return prisma.vendor.create({ data: toVendorData(input) });
 }
 
 export function updateVendor(id: string, input: VendorInput) {
-  return prisma.vendor.update({
-    where: { id },
-    data: {
-      name: input.name,
-      contactName: input.contactName || null,
-      contactEmail: input.contactEmail,
-      tier: toTier(input.tier),
-      website: input.website || null,
-      notes: input.notes || null,
-    },
-  });
+  return prisma.vendor.update({ where: { id }, data: toVendorData(input) });
 }
 
 export async function deleteVendor(id: string): Promise<void> {

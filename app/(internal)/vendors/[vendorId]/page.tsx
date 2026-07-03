@@ -20,7 +20,10 @@ import {
   FINDING_STATUS_STYLES,
   SEVERITY_STYLES,
 } from "@/lib/schemas/assessment";
-import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
+import {
+  DATA_SENSITIVITY_LABELS,
+  VENDOR_TIER_LABELS,
+} from "@/lib/schemas/vendor";
 import { formatDate, formatPercent } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -135,6 +138,74 @@ export default async function VendorDetailPage({
           ) : null}
         </div>
       </div>
+
+      {vendor.serviceDescription ||
+      vendor.owner ||
+      vendor.dataSensitivity ||
+      vendor.contractRenewalDate ||
+      vendor.website ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Overview</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-4 sm:grid-cols-2">
+            {vendor.serviceDescription ? (
+              <div className="flex flex-col gap-0.5 sm:col-span-2">
+                <span className="text-muted-foreground text-xs">
+                  Service provided
+                </span>
+                <span className="text-sm">{vendor.serviceDescription}</span>
+              </div>
+            ) : null}
+            <div className="flex flex-col gap-0.5">
+              <span className="text-muted-foreground text-xs">Risk owner</span>
+              <span className="text-sm">
+                {vendor.owner?.name ?? "Unassigned"}
+              </span>
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <span className="text-muted-foreground text-xs">
+                Data sensitivity
+              </span>
+              <span className="text-sm">
+                {vendor.dataSensitivity
+                  ? DATA_SENSITIVITY_LABELS[vendor.dataSensitivity]
+                  : "Unspecified"}
+              </span>
+            </div>
+            {vendor.website ? (
+              <div className="flex flex-col gap-0.5">
+                <span className="text-muted-foreground text-xs">Website</span>
+                <a
+                  href={vendor.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary truncate text-sm hover:underline"
+                >
+                  {vendor.website}
+                </a>
+              </div>
+            ) : null}
+            {vendor.contractRenewalDate ? (
+              <div className="flex flex-col gap-0.5">
+                <span className="text-muted-foreground text-xs">
+                  Contract renewal
+                </span>
+                <span
+                  className={`text-sm ${
+                    vendor.contractRenewalDate < new Date()
+                      ? "text-destructive font-medium"
+                      : ""
+                  }`}
+                >
+                  {formatDate(vendor.contractRenewalDate)}
+                  {vendor.contractRenewalDate < new Date() ? " · overdue" : ""}
+                </span>
+              </div>
+            ) : null}
+          </CardContent>
+        </Card>
+      ) : null}
 
       {profile ? (
         <Card>

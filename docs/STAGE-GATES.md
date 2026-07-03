@@ -1696,6 +1696,34 @@ card lists its findings and links to the assessment.
 
 ---
 
+## Phase 67 — Vendor profile enrichment
+
+**Scope:** capture the structured vendor context TPRM programs rely on (owner, data sensitivity,
+service, renewal date). Foundational for the dashboard/cert phases.
+
+**Checklist:**
+
+- [x] **Schema + migration** (`20260703040000_vendor_profile_enrichment`): `Vendor.ownerId`
+      (User, `onDelete: SetNull`), `dataSensitivity` (new `DataSensitivity` enum), 
+      `serviceDescription`, `contractRenewalDate`. Applied to dev + `mitch_risk_test`.
+- [x] **Schema/zod** (`lib/schemas/vendor.ts`): new fields optional; `DATA_SENSITIVITIES` +
+      labels. DB `createVendor`/`updateVendor` map them (empty → null; date parsed); `getVendor`
+      includes the owner name.
+- [x] **Form + pages**: `vendor-form.tsx` gains Owner select (from `listUsers`), Data-sensitivity
+      select, Service field, and Contract-renewal date; new/edit pages fetch users and pass
+      current values.
+- [x] **Vendor detail**: an Overview card shows service, owner, sensitivity, website, and the
+      renewal date (flagged overdue).
+- [x] **OpenAPI**: `VendorImport` + `VendorCreated` schemas include the new fields.
+- [x] **Tests**: `vendors.integration.test.ts` — round-trip of the new fields, clearing to null,
+      and owner `SetNull` on user delete. Gates: `lint`, `typecheck`, `build`, `format:check`,
+      `vitest` (test DB), Playwright clean.
+
+**Reviewer spot-check:** create/edit a vendor with an owner + sensitivity + renewal date; the
+detail Overview shows them; delete the owning user and the vendor remains with owner cleared.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -1756,6 +1784,7 @@ card lists its findings and links to the assessment.
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 67 | Approved | user | 2026-07-03 | Vendor profile enrichment: risk owner (SetNull), data sensitivity (Public/Internal/Confidential/Restricted), service description, contract renewal date; form + detail Overview + OpenAPI + migration; +3 integration tests |
 | 66 | Approved | user | 2026-07-03 | Cross-vendor risk register: /risk-register page (filters, summary stats, inline status for reviewers, pagination) + vendor-detail Findings card; listFindings/getFindingSummary/listVendorFindings reuse Finding model; +4 integration tests |
 | 65 | Approved | user | 2026-07-03 | Vendors list Rows/Cards view toggle: cookie-backed (vendors_view, default rows), server-rendered card grid with score/tier/last-assessed; generic ViewToggle component; +1 unit test |
 | 64 | Approved | user | 2026-07-03 | Full-access API keys: keys grant ALL_PERMISSIONS regardless of creator role and survive creator disable/delete (createdBy nullable + SetNull migration); gated by API_MANAGE; docs/OpenAPI updated; +1 integration test |

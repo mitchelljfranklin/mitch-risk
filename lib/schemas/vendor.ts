@@ -10,6 +10,23 @@ export const VENDOR_TIER_LABELS: Record<(typeof VENDOR_TIERS)[number], string> =
     CRITICAL: "Critical",
   };
 
+export const DATA_SENSITIVITIES = [
+  "PUBLIC",
+  "INTERNAL",
+  "CONFIDENTIAL",
+  "RESTRICTED",
+] as const;
+
+export const DATA_SENSITIVITY_LABELS: Record<
+  (typeof DATA_SENSITIVITIES)[number],
+  string
+> = {
+  PUBLIC: "Public",
+  INTERNAL: "Internal",
+  CONFIDENTIAL: "Confidential",
+  RESTRICTED: "Restricted",
+};
+
 export const vendorSchema = z.object({
   name: z.string().min(1, "Vendor name is required"),
   contactName: z.string().optional().default(""),
@@ -20,6 +37,12 @@ export const vendorSchema = z.object({
     .default(""),
   website: z.string().optional().default(""),
   notes: z.string().optional().default(""),
+  serviceDescription: z.string().optional(),
+  dataSensitivity: z
+    .union([z.literal(""), z.enum(DATA_SENSITIVITIES)])
+    .optional(),
+  contractRenewalDate: z.string().optional(),
+  ownerId: z.string().optional(),
 });
 
 export type VendorInput = z.infer<typeof vendorSchema>;
