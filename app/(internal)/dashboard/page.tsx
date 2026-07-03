@@ -9,6 +9,8 @@ import { CalendarHeatmap } from "@/components/calendar-heatmap";
 import { requireUser } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getDashboardData } from "@/lib/db/compliance";
+import { getFindingSummary } from "@/lib/db/findings";
+import { listUpcomingKeyDates } from "@/lib/db/dashboard";
 import { prisma } from "@/lib/prisma";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 import { formatDate, formatPercent } from "@/lib/utils";
@@ -49,7 +51,11 @@ export default async function DashboardPage({
   const sp = await searchParams;
   const filter = sp.filter ?? "all";
 
-  const data = await getDashboardData();
+  const [data, findingSummary, upcoming] = await Promise.all([
+    getDashboardData(),
+    getFindingSummary(),
+    listUpcomingKeyDates(60),
+  ]);
 
   const oneYearAgo = new Date();
   oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
@@ -131,7 +137,60 @@ export default async function DashboardPage({
           </div>
 
           {/* Charts */}
-          <DashboardCharts scoreDistribution={scoreDistribution} />
+          <DashboardCharts
+            scoreDistribution={scoreDistribution}
+            findingsBySeverity={findingSummary.openBySeverity}
+            riskByTier={data.riskByTier}
+            assessmentStatusCounts={data.assessmentStatusCounts}
+          />
+
+          {upcoming.length > 0 ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Upcoming key dates (next 60 days)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col divide-y rounded-lg border">
+                  {upcoming.map((item, i) => {
+                    const days = item.daysUntil;
+                    const overdue = days < 0;
+                    return (
+                      <Link
+                        key={i}
+                        href={`/vendors/${item.vendorId}`}
+                        className="hover:bg-accent/40 flex flex-wrap items-center justify-between gap-3 p-3 transition-colors"
+                      >
+                        <div className="flex min-w-0 flex-col">
+                          <span className="text-sm font-medium">
+                            {item.vendorName}
+                            <span className="text-muted-foreground text-xs font-normal">
+                              {" "}
+                              · {item.label}
+                            </span>
+                          </span>
+                          <span className="text-muted-foreground text-xs">
+                            {formatDate(item.date)}
+                          </span>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-2">
+                          <Badge variant="outline" className="text-[10px]">
+                            {item.type}
+                          </Badge>
+                          <span
+                            className={`text-xs ${overdue ? "text-destructive font-medium" : "text-muted-foreground"}`}
+                          >
+                            {overdue
+                              ? `${Math.abs(days)}d overdue`
+                              : `in ${days}d`}
+                          </span>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          ) : null}
 
           <CalendarHeatmap days={contributionDays} />
 

@@ -24,6 +24,34 @@ const GREEN_FILL = "var(--rag-green, #16a34a)";
 const AMBER_FILL = "var(--rag-amber, #d97706)";
 const RED_FILL = "var(--rag-red, #dc2626)";
 const UNSCORED_FILL = "var(--rag-unscored, #9ca3af)";
+const PRIMARY_FILL = "var(--primary, #3b82f6)";
+
+const SEVERITY_CONFIG = {
+  value: { label: "Open findings", color: RED_FILL },
+};
+const SEVERITY_FILLS: Record<string, string> = {
+  Critical: RED_FILL,
+  High: AMBER_FILL,
+  Medium: "color-mix(in oklab, var(--rag-amber) 65%, transparent)",
+  Low: UNSCORED_FILL,
+};
+const STATUS_CONFIG = {
+  value: { label: "Assessments", color: PRIMARY_FILL },
+};
+const TIER_CONFIG = {
+  green: { label: "Green", color: GREEN_FILL },
+  amber: { label: "Amber", color: AMBER_FILL },
+  red: { label: "Red", color: RED_FILL },
+  unscored: { label: "Unscored", color: UNSCORED_FILL },
+};
+
+type RiskByTierRow = {
+  tier: string;
+  green: number;
+  amber: number;
+  red: number;
+  unscored: number;
+};
 
 type ChartsProps = {
   scoreDistribution: {
@@ -32,9 +60,40 @@ type ChartsProps = {
     red: number;
     unscored: number;
   };
+  findingsBySeverity: {
+    CRITICAL: number;
+    HIGH: number;
+    MEDIUM: number;
+    LOW: number;
+  };
+  riskByTier: RiskByTierRow[];
+  assessmentStatusCounts: Record<string, number>;
 };
 
-export function DashboardCharts({ scoreDistribution }: ChartsProps) {
+const TIER_LABELS: Record<string, string> = {
+  CRITICAL: "Critical",
+  HIGH: "High",
+  MEDIUM: "Medium",
+  LOW: "Low",
+  Unspecified: "Unspecified",
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  DRAFT: "Draft",
+  SENT: "Sent",
+  IN_PROGRESS: "In progress",
+  SUBMITTED: "Submitted",
+  UNDER_REVIEW: "Under review",
+  COMPLETED: "Completed",
+  OVERDUE: "Overdue",
+};
+
+export function DashboardCharts({
+  scoreDistribution,
+  findingsBySeverity,
+  riskByTier,
+  assessmentStatusCounts,
+}: ChartsProps) {
   const donutData = [
     { name: "green", value: scoreDistribution.green, fill: GREEN_FILL },
     { name: "amber", value: scoreDistribution.amber, fill: AMBER_FILL },
@@ -60,78 +119,228 @@ export function DashboardCharts({ scoreDistribution }: ChartsProps) {
   const hasDonut = donutData.length >= 2;
   const hasBar = barData.some((d) => d.value > 0);
 
-  if (!hasDonut && !hasBar) return null;
+  const severityData = [
+    { name: "Critical", value: findingsBySeverity.CRITICAL },
+    { name: "High", value: findingsBySeverity.HIGH },
+    { name: "Medium", value: findingsBySeverity.MEDIUM },
+    { name: "Low", value: findingsBySeverity.LOW },
+  ];
+  const hasSeverity = severityData.some((d) => d.value > 0);
+
+  const statusData = Object.keys(STATUS_LABELS)
+    .map((key) => ({
+      name: STATUS_LABELS[key],
+      value: assessmentStatusCounts[key] ?? 0,
+    }))
+    .filter((d) => d.value > 0);
+  const hasStatus = statusData.length > 0;
+
+  const tierData = riskByTier.map((row) => ({
+    tier: TIER_LABELS[row.tier] ?? row.tier,
+    green: row.green,
+    amber: row.amber,
+    red: row.red,
+    unscored: row.unscored,
+  }));
+  const hasTier = tierData.length > 0;
+
+  if (!hasDonut && !hasBar && !hasSeverity && !hasStatus && !hasTier) {
+    return null;
+  }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
-      {hasDonut ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Portfolio health</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={DONUT_CONFIG}>
-              <PieChart>
-                <Pie
-                  data={donutData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={80}
-                  paddingAngle={2}
+    <div className="flex flex-col gap-4">
+      <div className="grid gap-4 md:grid-cols-2">
+        {hasDonut ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Portfolio health</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={DONUT_CONFIG}>
+                <PieChart>
+                  <Pie
+                    data={donutData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={80}
+                    paddingAngle={2}
+                  >
+                    {donutData.map((entry) => (
+                      <Cell key={entry.name} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                </PieChart>
+              </ChartContainer>
+              <div className="mt-3 flex flex-wrap justify-center gap-4 text-xs">
+                {donutData.map((d) => (
+                  <span key={d.name} className="flex items-center gap-1">
+                    <span
+                      className="size-2.5 rounded-full"
+                      style={{ backgroundColor: d.fill }}
+                    />
+                    {DONUT_CONFIG[d.name as keyof typeof DONUT_CONFIG]?.label}:{" "}
+                    {d.value}
+                  </span>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ) : null}
+        {hasBar ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Score distribution</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={BAR_CONFIG}>
+                <BarChart
+                  data={barData}
+                  layout="vertical"
+                  margin={{ left: 0, right: 20 }}
                 >
-                  {donutData.map((entry) => (
-                    <Cell key={entry.name} fill={entry.fill} />
-                  ))}
-                </Pie>
-                <ChartTooltip content={<ChartTooltipContent />} />
-              </PieChart>
-            </ChartContainer>
-            <div className="mt-3 flex flex-wrap justify-center gap-4 text-xs">
-              {donutData.map((d) => (
-                <span key={d.name} className="flex items-center gap-1">
-                  <span
-                    className="size-2.5 rounded-full"
-                    style={{ backgroundColor: d.fill }}
+                  <XAxis type="number" hide />
+                  <YAxis
+                    type="category"
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12 }}
+                    width={65}
                   />
-                  {DONUT_CONFIG[d.name as keyof typeof DONUT_CONFIG]?.label}:{" "}
-                  {d.value}
-                </span>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                  <Bar dataKey="value" radius={4} barSize={20}>
+                    {barData.map((entry) => (
+                      <Cell key={entry.name} fill={entry.fill} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+        ) : null}
+      </div>
+
+      {hasSeverity || hasStatus ? (
+        <div className="grid gap-4 md:grid-cols-2">
+          {hasSeverity ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Open findings by severity</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={SEVERITY_CONFIG}>
+                  <BarChart
+                    data={severityData}
+                    layout="vertical"
+                    margin={{ left: 0, right: 20 }}
+                  >
+                    <XAxis type="number" hide allowDecimals={false} />
+                    <YAxis
+                      type="category"
+                      dataKey="name"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12 }}
+                      width={65}
+                    />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Bar dataKey="value" radius={4} barSize={20}>
+                      {severityData.map((entry) => (
+                        <Cell
+                          key={entry.name}
+                          fill={SEVERITY_FILLS[entry.name] ?? RED_FILL}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          ) : null}
+          {hasStatus ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Assessment status</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={STATUS_CONFIG}>
+                  <BarChart
+                    data={statusData}
+                    layout="vertical"
+                    margin={{ left: 0, right: 20 }}
+                  >
+                    <XAxis type="number" hide allowDecimals={false} />
+                    <YAxis
+                      type="category"
+                      dataKey="name"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12 }}
+                      width={80}
+                    />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Bar
+                      dataKey="value"
+                      radius={4}
+                      barSize={18}
+                      fill={PRIMARY_FILL}
+                    />
+                  </BarChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          ) : null}
+        </div>
       ) : null}
-      {hasBar ? (
+
+      {hasTier ? (
         <Card>
           <CardHeader>
-            <CardTitle>Score distribution</CardTitle>
+            <CardTitle>Risk by tier</CardTitle>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={BAR_CONFIG}>
+            <ChartContainer config={TIER_CONFIG}>
               <BarChart
-                data={barData}
+                data={tierData}
                 layout="vertical"
                 margin={{ left: 0, right: 20 }}
               >
-                <XAxis type="number" hide />
+                <XAxis type="number" hide allowDecimals={false} />
                 <YAxis
                   type="category"
-                  dataKey="name"
+                  dataKey="tier"
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12 }}
-                  width={65}
+                  width={80}
                 />
-                <Bar dataKey="value" radius={4} barSize={20}>
-                  {barData.map((entry) => (
-                    <Cell key={entry.name} fill={entry.fill} />
-                  ))}
-                </Bar>
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="green" stackId="t" fill={GREEN_FILL} />
+                <Bar dataKey="amber" stackId="t" fill={AMBER_FILL} />
+                <Bar dataKey="red" stackId="t" fill={RED_FILL} />
+                <Bar
+                  dataKey="unscored"
+                  stackId="t"
+                  fill={UNSCORED_FILL}
+                  radius={[0, 4, 4, 0]}
+                />
               </BarChart>
             </ChartContainer>
+            <div className="mt-3 flex flex-wrap justify-center gap-4 text-xs">
+              {(["green", "amber", "red", "unscored"] as const).map((key) => (
+                <span key={key} className="flex items-center gap-1">
+                  <span
+                    className="size-2.5 rounded-full"
+                    style={{ backgroundColor: TIER_CONFIG[key].color }}
+                  />
+                  {TIER_CONFIG[key].label}
+                </span>
+              ))}
+            </div>
           </CardContent>
         </Card>
       ) : null}

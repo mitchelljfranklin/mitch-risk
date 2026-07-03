@@ -553,6 +553,14 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   the **CSV import** recognises the same three optional columns (data sensitivity validated,
   renewal date validated). Owner is intentionally set in-app only.
 
+- **Phase 71 — Dashboard graph pack.** The dashboard gained four program-oversight views:
+  **Open findings by severity** (bar), **Risk by tier** (stacked green/amber/red/unscored per
+  Critical→Low), **Assessment status** (bar incl. computed overdue), and an **Upcoming key dates**
+  list (next 60 days: certification expiries, contract renewals, and recurring-assessment
+  next-runs, each linking to the vendor with an "in N days / overdue" indicator). Backed by a
+  pure `computeRiskByTier` helper, `assessmentStatusCounts` in `getDashboardData`, the existing
+  `getFindingSummary`, and a new `listUpcomingKeyDates`. No schema/migration.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

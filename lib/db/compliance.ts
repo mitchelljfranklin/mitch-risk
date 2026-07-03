@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getScoringSettings } from "@/lib/settings";
+import { computeRiskByTier } from "@/lib/dashboard-insights";
 
 type DomainScore = {
   domain: string;
@@ -263,20 +264,48 @@ export async function getDashboardData() {
     },
   });
 
-  const [openFindings, needsAttention] = await Promise.all([
-    prisma.finding.count({ where: { status: "OPEN" } }),
-    prisma.assessment.count({
-      where: {
-        OR: [
-          { status: "SUBMITTED" },
-          {
-            status: { in: ["SENT", "IN_PROGRESS", "SUBMITTED"] },
-            dueDate: { lt: now },
-          },
-        ],
-      },
-    }),
-  ]);
+  const [openFindings, needsAttention, statusGroups, overdueCount] =
+    await Promise.all([
+      prisma.finding.count({ where: { status: "OPEN" } }),
+      prisma.assessment.count({
+        where: {
+          OR: [
+            { status: "SUBMITTED" },
+            {
+              status: { in: ["SENT", "IN_PROGRESS", "SUBMITTED"] },
+              dueDate: { lt: now },
+            },
+          ],
+        },
+      }),
+      prisma.assessment.groupBy({ by: ["status"], _count: { _all: true } }),
+      prisma.assessment.count({
+        where: {
+          status: { in: ["SENT", "IN_PROGRESS"] },
+          dueDate: { lt: now },
+        },
+      }),
+    ]);
+
+  const assessmentStatusCounts: Record<string, number> = {
+    DRAFT: 0,
+    SENT: 0,
+    IN_PROGRESS: 0,
+    SUBMITTED: 0,
+    UNDER_REVIEW: 0,
+    COMPLETED: 0,
+    OVERDUE: overdueCount,
+  };
+  for (const group of statusGroups) {
+    assessmentStatusCounts[group.status] = group._count._all;
+  }
+
+  const riskByTier = computeRiskByTier(
+    allVendors.map((vendor) => ({
+      tier: vendor.tier,
+      overallScore: vendor.overallScore,
+    })),
+  );
 
   const distribution = { green: 0, amber: 0, red: 0, unscored: 0 };
   let totalScore = 0;
@@ -361,5 +390,7 @@ export async function getDashboardData() {
     needsAttention,
     scoreDistribution: distribution,
     topDeficientControls: topDeficient,
+    riskByTier,
+    assessmentStatusCounts,
   };
 }
