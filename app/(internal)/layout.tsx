@@ -7,6 +7,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { UserMenu } from "@/components/user-menu";
+import { PageMain } from "@/components/page-main";
 import { ToastProvider } from "@/components/toast";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 import { IdleTimer } from "@/components/idle-timer";
@@ -53,12 +54,7 @@ export default async function InternalLayout({
               role={user.roleName}
             />
           </header>
-          <main
-            id="main-content"
-            className={`flex-1 p-6 ${appearance.pageWidth === "constrained" ? "mx-auto w-full max-w-6xl" : ""}`}
-          >
-            {children}
-          </main>
+          <PageMain pageWidth={appearance.pageWidth}>{children}</PageMain>
         </SidebarInset>
       </SidebarProvider>
     </ToastProvider>

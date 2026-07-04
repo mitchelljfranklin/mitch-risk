@@ -677,6 +677,16 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   Portal autosave (a high-frequency background cadence) stays fixed to avoid a settings read on the
   hot path and misconfiguration. No migration (zod-defaulted `appSetting` rows).
 
+- **Phase 84 — Dashboard layout rework.** The dashboard had grown into one long narrow column
+  (`max-w-4xl`) of ~9 stacked full-width blocks, forcing heavy scrolling. Reworked it: the dashboard
+  now renders **full content width** (a small `PageMain` client wrapper exempts the `/dashboard`
+  route from the layout's `max-w-6xl` "constrained" cap, reactive to client navigation); charts,
+  the actionable lists (**Needs attention**, **Upcoming key dates**, **Top deficient controls**),
+  and the vendor snapshot lay out in **responsive multi-column grids** instead of stacking; the two
+  redundant score charts collapse to one (**donut**); and the full vendor list + filter is replaced
+  by a compact **Highest-risk vendors** top-6 card with **"View all → /vendors"**. The activity
+  heatmap stays, compact, at the bottom. Result: ~9 stacked bands → ~3 on desktop.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

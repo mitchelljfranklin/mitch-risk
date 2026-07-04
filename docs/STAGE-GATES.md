@@ -2170,6 +2170,28 @@ fresh production server. RBAC unchanged (Limits tab is `SETTINGS_MANAGE`).
 
 ---
 
+## Phase 84 — Dashboard layout rework
+
+**Scope:** cut the dashboard's excessive vertical scrolling (one narrow stacked column).
+
+- [x] **Full width** — new `components/page-main.tsx` client wrapper reads `usePathname()` and drops
+      the layout's `max-w-6xl` constrained cap for `/dashboard` (other pages unchanged; reactive to
+      soft navigation). Verified: `/dashboard` main = `flex-1 p-6` (full), `/vendors` keeps
+      `max-w-6xl`.
+- [x] **Responsive grids** — charts 2-up; **Needs attention / Upcoming key dates / Top deficient
+      controls** in a `lg:grid-cols-2 xl:grid-cols-3` rail (side-by-side, each capped ~5 with a
+      "more/View" link); replaces the stacked full-width blocks.
+- [x] **Deduped charts** — removed the score-distribution bar (kept the Portfolio-health donut);
+      dropped the now-unused `BAR_CONFIG`.
+- [x] **Slim vendors** — full list + filter buttons replaced by a compact **Highest-risk vendors**
+      top-6 (lowest score first) + "View all → /vendors".
+- [x] Heatmap retained, compact, as the last full-width element.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, Playwright 14/14 on a fresh production
+server (the "dashboard stat cards" test still matches). No schema/RBAC/OpenAPI changes.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -2230,6 +2252,7 @@ fresh production server. RBAC unchanged (Limits tab is `SETTINGS_MANAGE`).
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 84 | Ready for review | opencode | 2026-07-04 | Dashboard layout rework: full-width for /dashboard (PageMain), responsive insight-rail grid, deduped score charts (donut), slim top-6 highest-risk vendors + View all, compact heatmap. 14/14 e2e prod |
 | 83 | Ready for review | opencode | 2026-07-04 | Configurable rate limits: portal page-loads/uploads/submits/password + password-reset + break-glass exposed in the Limits tab (were hardcoded); read via getAssessmentSettings. 206 unit, 14/14 e2e prod |
 | 82 | Ready for review | opencode | 2026-07-04 | Dark-mode primary buttons fix: custom brand primary/secondary scoped to :root:not(.dark) so dark mode keeps shadcn's visible palette (was invisible black-on-black). 14/14 e2e prod |
 | 81 | Ready for review | opencode | 2026-07-04 | Sheet-footer secondary buttons ghost->outline (users/roles/emails/certifications) so they read as buttons with a visible hover in dark mode. 14/14 e2e prod |

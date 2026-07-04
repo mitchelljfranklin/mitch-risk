@@ -36,20 +36,12 @@ function generateContributionDays(dates: Date[]) {
   return result;
 }
 
-type DashboardPageProps = {
-  searchParams: Promise<Record<string, string | undefined>>;
-};
-
-export default async function DashboardPage({
-  searchParams,
-}: DashboardPageProps) {
+export default async function DashboardPage() {
   const user = await requireUser();
   const canCreateVendor = hasPermission(
     user.permissions,
     PERMISSIONS.VENDORS_CREATE,
   );
-  const sp = await searchParams;
-  const filter = sp.filter ?? "all";
 
   const [data, findingSummary, upcoming] = await Promise.all([
     getDashboardData(),
@@ -70,19 +62,18 @@ export default async function DashboardPage({
 
   const { scoreDistribution, topDeficientControls, vendors: portfolio } = data;
 
-  const filteredVendors = portfolio.filter((v) => {
-    if (filter === "overdue") return v.overdueCount > 0;
-    if (filter === "critical") return v.tier === "CRITICAL";
-    if (filter === "high") return v.tier === "HIGH";
-    if (filter === "unassessed")
-      return v.overallScore === null && v.overdueCount === 0;
-    return true;
-  });
-
   const needingAttention = portfolio.filter((v) => v.overdueCount > 0);
 
+  const RAIL_LIST_LIMIT = 5;
+  const VENDOR_LIST_LIMIT = 6;
+
+  // Highest-risk snapshot: lowest scores first, unassessed vendors last.
+  const topRiskVendors = [...portfolio]
+    .sort((a, b) => (a.overallScore ?? Infinity) - (b.overallScore ?? Infinity))
+    .slice(0, VENDOR_LIST_LIMIT);
+
   return (
-    <div className="flex max-w-4xl flex-col gap-6">
+    <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
@@ -144,199 +135,197 @@ export default async function DashboardPage({
             assessmentStatusCounts={data.assessmentStatusCounts}
           />
 
-          {upcoming.length > 0 ? (
-            <Card>
-              <CardHeader>
-                <CardTitle>Upcoming key dates (next 60 days)</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col divide-y rounded-lg border">
-                  {upcoming.map((item, i) => {
-                    const days = item.daysUntil;
-                    const overdue = days < 0;
-                    return (
-                      <Link
-                        key={i}
-                        href={`/vendors/${item.vendorId}`}
-                        className="hover:bg-accent/40 flex flex-wrap items-center justify-between gap-3 p-3 transition-colors"
-                      >
-                        <div className="flex min-w-0 flex-col">
-                          <span className="text-sm font-medium">
-                            {item.vendorName}
-                            <span className="text-muted-foreground text-xs font-normal">
-                              {" "}
-                              · {item.label}
-                            </span>
+          {/* Insight rail: actionable lists side-by-side */}
+          <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+            {needingAttention.length > 0 ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>
+                    Needs attention ({needingAttention.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col divide-y rounded-lg border">
+                    {needingAttention
+                      .slice(0, RAIL_LIST_LIMIT)
+                      .map((vendor) => (
+                        <Link
+                          key={vendor.id}
+                          href={`/vendors/${vendor.id}`}
+                          className="hover:bg-accent/40 flex items-center justify-between gap-3 p-3 transition-colors"
+                        >
+                          <span className="min-w-0 truncate text-sm font-medium">
+                            {vendor.name}
                           </span>
-                          <span className="text-muted-foreground text-xs">
-                            {formatDate(item.date)}
-                          </span>
-                        </div>
-                        <div className="flex shrink-0 items-center gap-2">
-                          <Badge variant="outline" className="text-[10px]">
-                            {item.type}
+                          <Badge variant="destructive" className="shrink-0">
+                            {vendor.overdueCount} overdue
                           </Badge>
+                        </Link>
+                      ))}
+                  </div>
+                  {needingAttention.length > RAIL_LIST_LIMIT ? (
+                    <Link
+                      href="/assessments"
+                      className="text-muted-foreground hover:text-primary mt-2 inline-block text-xs"
+                    >
+                      +{needingAttention.length - RAIL_LIST_LIMIT} more →
+                    </Link>
+                  ) : null}
+                </CardContent>
+              </Card>
+            ) : null}
+
+            {upcoming.length > 0 ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Upcoming key dates (60 days)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col divide-y rounded-lg border">
+                    {upcoming.slice(0, RAIL_LIST_LIMIT).map((item, i) => {
+                      const days = item.daysUntil;
+                      const overdue = days < 0;
+                      return (
+                        <Link
+                          key={i}
+                          href={`/vendors/${item.vendorId}`}
+                          className="hover:bg-accent/40 flex items-center justify-between gap-3 p-3 transition-colors"
+                        >
+                          <div className="flex min-w-0 flex-col">
+                            <span className="truncate text-sm font-medium">
+                              {item.vendorName}
+                            </span>
+                            <span className="text-muted-foreground truncate text-xs">
+                              {item.label} · {formatDate(item.date)}
+                            </span>
+                          </div>
                           <span
-                            className={`text-xs ${overdue ? "text-destructive font-medium" : "text-muted-foreground"}`}
+                            className={`shrink-0 text-xs ${overdue ? "text-destructive font-medium" : "text-muted-foreground"}`}
                           >
                             {overdue
                               ? `${Math.abs(days)}d overdue`
                               : `in ${days}d`}
                           </span>
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          ) : null}
-
-          <CalendarHeatmap days={contributionDays} />
-
-          {/* Top deficient controls */}
-          {topDeficientControls.length > 0 ? (
-            <Card>
-              <CardHeader>
-                <CardTitle>Top deficient controls</CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-2">
-                {topDeficientControls.map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-3 rounded-md border p-3"
-                  >
-                    <Badge variant="outline" className="shrink-0 font-mono">
-                      {item.code}
-                    </Badge>
-                    <span className="min-w-0 flex-1 truncate text-sm">
-                      {item.title}
-                    </span>
-                    <span className="text-muted-foreground shrink-0 text-xs">
-                      {item.vendorCount} of {portfolio.length} vendors deficient
-                    </span>
+                        </Link>
+                      );
+                    })}
                   </div>
-                ))}
-              </CardContent>
-            </Card>
-          ) : null}
+                  {upcoming.length > RAIL_LIST_LIMIT ? (
+                    <span className="text-muted-foreground mt-2 inline-block text-xs">
+                      +{upcoming.length - RAIL_LIST_LIMIT} more in the next 60
+                      days
+                    </span>
+                  ) : null}
+                </CardContent>
+              </Card>
+            ) : null}
 
-          {/* Vendors needing attention */}
-          {needingAttention.length > 0 ? (
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  Needs attention ({needingAttention.length})
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col divide-y rounded-lg border">
-                  {needingAttention.map((vendor) => (
-                    <Link
-                      key={vendor.id}
-                      href={`/vendors/${vendor.id}`}
-                      className="hover:bg-accent/40 flex flex-wrap items-center justify-between gap-4 p-3 transition-colors"
-                    >
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium">
-                          {vendor.name}
+            {topDeficientControls.length > 0 ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Top deficient controls</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-2">
+                  {topDeficientControls
+                    .slice(0, RAIL_LIST_LIMIT)
+                    .map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-2 rounded-md border p-2"
+                      >
+                        <Badge
+                          variant="outline"
+                          className="shrink-0 font-mono text-[10px]"
+                        >
+                          {item.code}
+                        </Badge>
+                        <span className="min-w-0 flex-1 truncate text-xs">
+                          {item.title}
                         </span>
-                        <span className="text-muted-foreground text-xs">
-                          {vendor.latestAssessmentTitle ?? "No assessments"}
+                        <span className="text-muted-foreground shrink-0 text-xs tabular-nums">
+                          {item.vendorCount}/{portfolio.length}
                         </span>
                       </div>
-                      <div className="flex items-center gap-3">
-                        {vendor.overdueCount > 0 ? (
-                          <Badge variant="destructive">
-                            {vendor.overdueCount} overdue
-                          </Badge>
-                        ) : null}
-                        <span className="text-muted-foreground text-sm font-semibold tabular-nums">
-                          {vendor.overallScore !== null
-                            ? formatPercent(vendor.overallScore)
-                            : "—"}
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ) : null}
-
-          {/* Vendor list filter */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-muted-foreground text-xs">Filter:</span>
-            {[
-              { key: "all", label: "All" },
-              { key: "overdue", label: "Overdue" },
-              { key: "critical", label: "Critical" },
-              { key: "high", label: "High" },
-              { key: "unassessed", label: "Unassessed" },
-            ].map(({ key, label }) => (
-              <Button
-                key={key}
-                asChild
-                variant={filter === key ? "default" : "outline"}
-                size="sm"
-              >
-                <Link href={`/dashboard?filter=${key}`}>{label}</Link>
-              </Button>
-            ))}
+                    ))}
+                  <Link
+                    href="/risk-register"
+                    className="text-muted-foreground hover:text-primary mt-1 inline-block text-xs"
+                  >
+                    View risk register →
+                  </Link>
+                </CardContent>
+              </Card>
+            ) : null}
           </div>
 
-          {/* All vendors */}
-          {filteredVendors.length === 0 ? (
-            <p className="text-muted-foreground text-sm">
-              No vendors match this filter.
-            </p>
-          ) : (
-            <div className="flex flex-col divide-y rounded-lg border">
-              {filteredVendors.map((vendor) => (
-                <Link
-                  key={vendor.id}
-                  href={`/vendors/${vendor.id}`}
-                  className="hover:bg-accent/40 flex items-center justify-between gap-4 p-3 transition-colors"
-                >
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium">{vendor.name}</span>
-                    <span className="text-muted-foreground text-xs">
-                      {vendor.latestAssessmentTitle ?? "No assessments"}
-                      {vendor.latestAssessmentDate
-                        ? ` · ${formatDate(vendor.latestAssessmentDate)}`
-                        : ""}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {vendor.tier ? (
-                      <Badge variant="outline">
-                        {
-                          VENDOR_TIER_LABELS[
-                            vendor.tier as keyof typeof VENDOR_TIER_LABELS
-                          ]
-                        }
-                      </Badge>
-                    ) : null}
-                    <span
-                      className={`text-sm font-semibold tabular-nums ${
-                        vendor.overallScore !== null
-                          ? vendor.overallScore >= 0.85
-                            ? "text-[var(--rag-green)]"
-                            : vendor.overallScore >= 0.6
-                              ? "text-[var(--rag-amber)]"
-                              : "text-[var(--rag-red)]"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {vendor.overallScore !== null
-                        ? formatPercent(vendor.overallScore)
-                        : "—"}
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
+          {/* Highest-risk vendors (compact) */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between gap-2">
+              <CardTitle>Highest-risk vendors</CardTitle>
+              <Link
+                href="/vendors"
+                className="text-muted-foreground hover:text-primary text-xs font-normal"
+              >
+                View all vendors →
+              </Link>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col divide-y rounded-lg border">
+                {topRiskVendors.map((vendor) => (
+                  <Link
+                    key={vendor.id}
+                    href={`/vendors/${vendor.id}`}
+                    className="hover:bg-accent/40 flex items-center justify-between gap-4 p-3 transition-colors"
+                  >
+                    <div className="flex min-w-0 flex-col">
+                      <span className="truncate text-sm font-medium">
+                        {vendor.name}
+                      </span>
+                      <span className="text-muted-foreground truncate text-xs">
+                        {vendor.latestAssessmentTitle ?? "No assessments"}
+                        {vendor.latestAssessmentDate
+                          ? ` · ${formatDate(vendor.latestAssessmentDate)}`
+                          : ""}
+                      </span>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-3">
+                      {vendor.overdueCount > 0 ? (
+                        <Badge variant="destructive">
+                          {vendor.overdueCount} overdue
+                        </Badge>
+                      ) : vendor.tier ? (
+                        <Badge variant="outline">
+                          {
+                            VENDOR_TIER_LABELS[
+                              vendor.tier as keyof typeof VENDOR_TIER_LABELS
+                            ]
+                          }
+                        </Badge>
+                      ) : null}
+                      <span
+                        className={`text-sm font-semibold tabular-nums ${
+                          vendor.overallScore !== null
+                            ? vendor.overallScore >= 0.85
+                              ? "text-[var(--rag-green)]"
+                              : vendor.overallScore >= 0.6
+                                ? "text-[var(--rag-amber)]"
+                                : "text-[var(--rag-red)]"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        {vendor.overallScore !== null
+                          ? formatPercent(vendor.overallScore)
+                          : "—"}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Assessment activity */}
+          <CalendarHeatmap days={contributionDays} />
         </>
       )}
     </div>
