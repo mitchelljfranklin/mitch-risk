@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { UserMenu } from "@/components/user-menu";
 import { PageMain } from "@/components/page-main";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import { ToastProvider } from "@/components/toast";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 import { IdleTimer } from "@/components/idle-timer";
@@ -43,7 +44,7 @@ export default async function InternalLayout({
           hasLogo={Boolean(appearance.logoKey)}
         />
         <SidebarInset>
-          <header className="flex h-14 items-center gap-2 border-b px-4">
+          <header className="bg-background sticky top-0 z-10 flex h-14 items-center gap-2 border-b px-4">
             <SidebarTrigger />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <div className="flex-1" />
@@ -55,6 +56,7 @@ export default async function InternalLayout({
             />
           </header>
           <PageMain pageWidth={appearance.pageWidth}>{children}</PageMain>
+          <ScrollToTop />
         </SidebarInset>
       </SidebarProvider>
     </ToastProvider>
