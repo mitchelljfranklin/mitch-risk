@@ -1,6 +1,17 @@
 "use client";
 
-import { Cell, Pie, PieChart, Bar, BarChart, XAxis, YAxis } from "recharts";
+import {
+  Cell,
+  Pie,
+  PieChart,
+  Bar,
+  BarChart,
+  RadialBar,
+  RadialBarChart,
+  LabelList,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import {
   ChartContainer,
@@ -51,15 +62,6 @@ const STATUS_CONFIG = {
   overdue: { label: "Overdue", color: "var(--rag-red, #dc2626)" },
 };
 
-const STATUS_KEY_TO_CONFIG: Record<string, string> = {
-  DRAFT: "draft",
-  SENT: "sent",
-  IN_PROGRESS: "inProgress",
-  SUBMITTED: "submitted",
-  UNDER_REVIEW: "underReview",
-  COMPLETED: "completed",
-  OVERDUE: "overdue",
-};
 const TIER_CONFIG = {
   green: { label: "Green", color: GREEN_FILL },
   amber: { label: "Amber", color: AMBER_FILL },
@@ -139,11 +141,27 @@ export function DashboardCharts({
   ];
   const hasSeverity = severityData.some((d) => d.value > 0);
 
+  const radialChartConfig = {
+    value: { label: "Assessments" },
+    ...Object.fromEntries(
+      Object.entries(STATUS_CONFIG).map(([key, entry]) => [
+        key,
+        { label: entry.label, color: entry.color },
+      ]),
+    ),
+  };
+
   const statusDonutData = Object.keys(STATUS_LABELS)
     .map((key) => {
-      const configKey = STATUS_KEY_TO_CONFIG[key];
+      const configKey = key.toLowerCase().replace(/_/g, "");
+      const camelKey =
+        configKey === "inprogress"
+          ? "inProgress"
+          : configKey === "underreview"
+            ? "underReview"
+            : configKey;
       const statusConfig =
-        STATUS_CONFIG[configKey as keyof typeof STATUS_CONFIG];
+        STATUS_CONFIG[camelKey as keyof typeof STATUS_CONFIG];
       return {
         name: STATUS_LABELS[key],
         value: assessmentStatusCounts[key] ?? 0,
@@ -276,60 +294,26 @@ export function DashboardCharts({
           </CardHeader>
           <CardContent>
             <div className="aspect-[7/4]">
-              <ChartContainer config={STATUS_CONFIG}>
-                <PieChart>
-                  <Pie
-                    data={statusDonutData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={40}
-                    outerRadius={70}
-                    paddingAngle={1}
-                    label={({
-                      cx,
-                      cy,
-                      midAngle,
-                      innerRadius: labelInner,
-                      outerRadius: labelOuter,
-                      value,
-                    }: {
-                      cx: number;
-                      cy: number;
-                      midAngle?: number;
-                      innerRadius: number;
-                      outerRadius: number;
-                      value: number;
-                      name?: string;
-                    }) => {
-                      if (midAngle == null) return null;
-                      const RADIAN = Math.PI / 180;
-                      const radius: number =
-                        labelInner + (labelOuter - labelInner) * 0.5;
-                      const x: number =
-                        cx + radius * Math.cos(-midAngle * RADIAN);
-                      const y: number =
-                        cy + radius * Math.sin(-midAngle * RADIAN);
-                      return (
-                        <text
-                          x={x}
-                          y={y}
-                          textAnchor="middle"
-                          dominantBaseline="central"
-                          className="fill-background text-[10px] font-medium"
-                        >
-                          {value}
-                        </text>
-                      );
-                    }}
-                  >
-                    {statusDonutData.map((entry) => (
-                      <Cell key={entry.name} fill={entry.fill} />
-                    ))}
-                  </Pie>
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                </PieChart>
+              <ChartContainer config={radialChartConfig}>
+                <RadialBarChart
+                  data={statusDonutData}
+                  startAngle={-90}
+                  endAngle={380}
+                  innerRadius={30}
+                  outerRadius={110}
+                >
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel />}
+                  />
+                  <RadialBar dataKey="value" background>
+                    <LabelList
+                      position="insideStart"
+                      dataKey="name"
+                      className="fill-background text-[10px]"
+                    />
+                  </RadialBar>
+                </RadialBarChart>
               </ChartContainer>
             </div>
             <div className="mt-3 flex flex-wrap justify-center gap-3 text-xs">
