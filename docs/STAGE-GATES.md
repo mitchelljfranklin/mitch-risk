@@ -2003,6 +2003,34 @@ standardise the `text-[10px]` tier onto `text-xs`, and add `type="button"` to no
 
 ---
 
+## Phase 77 — Settings-tab forms migration (Phase-74 follow-up, part 1)
+
+**Scope:** migrate the in-place settings save forms to `useActionFeedback` so success toasts are
+reliable in production (part 1 of the deferred rollout).
+
+**Checklist:**
+
+- [x] **Actions** — removed `revalidatePath` from the ten state+toast settings actions
+      (`saveOrganizationSettings`, `saveEmailSettings`, `sendSmtpTestAction`,
+      `saveEmailTemplateAction`, `resetEmailTemplateAction`, `saveScoringSettings`,
+      `saveSsoSettings`, `generateBreakGlassUrlAction`, `saveAppearanceSettings`,
+      `saveSchedulingSettings`). Void/redirect actions and `retryEmailSendAction` (no
+      `useActionState` toast) keep their revalidation.
+- [x] **Forms** — organization, scoring, scheduling, limits, appearance, email (save + SMTP test),
+      SSO (save + break-glass), email templates (`templates-manager`) now use `useActionFeedback`
+      (toast + guarded `router.refresh()`).
+- [x] **e2e** — new test saves the Scoring tab and asserts the success toast against the production
+      build (11/11 on a fresh prod server).
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 202 passed, Playwright 11/11 on a
+fresh production server. No schema/migration/RBAC/OpenAPI changes.
+
+**Remaining follow-up:** Phase 78 (modal/master-detail: users-manager, certifications-manager) and
+Phase 79 (vendor edit, profile). api-form's create-key banner (promise-pattern, not `useFormToast`)
+also still self-revalidates — folded into Phase 78.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -2063,6 +2091,7 @@ standardise the `text-[10px]` tier onto `text-xs`, and add `type="button"` to no
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 77 | Ready for review | opencode | 2026-07-04 | Settings-tab forms migration to useActionFeedback (10 actions drop self-revalidate; 8 forms); new settings-save prod e2e. 202 unit, 11/11 e2e prod |
 | 76 | Ready for review | opencode | 2026-07-04 | UX/a11y (Batch D): input labels/aria, compare-table scope + semantic changed-row token, CalendarHeatmap off RAG palette, portal dates via formatDate, 6 loading skeletons, modal overlays aligned. 202 unit, 10/10 e2e prod |
 | 75 | Ready for review | opencode | 2026-07-04 | Correctness (Batch C): configurable RAG thresholds on dashboard; bulk-send email/send failure separation + logging; template builder audit logging; removed dead finalizeAction; role/user error handling; delete-audit ordering; perf (dueDate index, findings DB pagination, scoring N+1 batch); naming cleanup; AGENTS.md invariants. 202 unit, 10/10 e2e prod |
 | 74 | Ready for review | opencode | 2026-07-04 | Prod Server-Action feedback fix: root-caused revalidatePath(current route)+useActionState dropping state in prod builds; resilient module-level toast store + useActionFeedback (guarded router.refresh) + actions stop self-revalidating (API/roles); middleware nonce-CSP now GET-only; e2e now targets prod build (CRON_SECRET wired); fixed a TZ-flaky cert test. 199 unit, 10/10 e2e on fresh prod |

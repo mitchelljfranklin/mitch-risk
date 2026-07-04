@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { type SettingsActionState, saveScoringSettings } from "./actions";
-import { useFormToast } from "@/hooks/use-form-toast";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 
 type ScoringFormProps = {
   riskWeightCritical: number;
@@ -32,7 +32,7 @@ export function ScoringForm({
     saveScoringSettings,
     initialState,
   );
-  useFormToast(state);
+  useActionFeedback(state);
 
   return (
     <form action={formAction} className="grid gap-4">

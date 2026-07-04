@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { saveSchedulingSettings } from "./actions";
-import { useFormToast } from "@/hooks/use-form-toast";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 
 type SchedulingFormProps = {
   reminderOffsetDays: number[];
@@ -23,7 +23,7 @@ export function SchedulingForm({
     saveSchedulingSettings,
     undefined,
   );
-  useFormToast(state);
+  useActionFeedback(state);
 
   const [reminderDays, setReminderDays] = useState<string>(
     reminderOffsetDays.join(", "),

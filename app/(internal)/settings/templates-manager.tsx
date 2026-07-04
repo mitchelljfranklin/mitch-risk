@@ -27,7 +27,7 @@ import {
   resetEmailTemplateAction,
   saveEmailTemplateAction,
 } from "./actions";
-import { useFormToast } from "@/hooks/use-form-toast";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 
 const initialState: SettingsActionState = undefined;
 
@@ -53,8 +53,8 @@ function TemplateEditorSheet({
     resetEmailTemplateAction,
     initialState,
   );
-  useFormToast(saveState);
-  useFormToast(resetState);
+  useActionFeedback(saveState);
+  useActionFeedback(resetState);
 
   useEffect(() => {
     if (saveState?.ok || resetState?.ok) {

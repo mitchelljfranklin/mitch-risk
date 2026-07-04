@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { saveSchedulingSettings } from "./actions";
-import { useFormToast } from "@/hooks/use-form-toast";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 
 type LimitsFormProps = {
   loginRateLimitPerMin: number;
@@ -43,7 +43,7 @@ export function LimitsForm({
     saveSchedulingSettings,
     undefined,
   );
-  useFormToast(state);
+  useActionFeedback(state);
 
   return (
     <form action={action} className="flex flex-col gap-6">

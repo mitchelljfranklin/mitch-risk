@@ -11,7 +11,7 @@ import {
   sendSmtpTestAction,
   type SettingsActionState,
 } from "./actions";
-import { useFormToast } from "@/hooks/use-form-toast";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 
 type EmailFormProps = {
   smtpHost: string;
@@ -36,7 +36,7 @@ export function EmailForm({
     saveEmailSettings,
     initialState,
   );
-  useFormToast(state);
+  useActionFeedback(state);
 
   return (
     <form action={formAction} className="grid max-w-md gap-4">
@@ -107,7 +107,7 @@ export function SmtpTestForm({
     sendSmtpTestAction,
     initialState,
   );
-  useFormToast(testState);
+  useActionFeedback(testState);
 
   return (
     <form action={testAction} className="grid max-w-md gap-2">

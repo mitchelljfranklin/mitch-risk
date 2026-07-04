@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { saveOrganizationSettings, type SettingsActionState } from "./actions";
-import { useFormToast } from "@/hooks/use-form-toast";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 
 type OrganizationFormProps = {
   name: string;
@@ -24,7 +24,7 @@ export function OrganizationForm({
     saveOrganizationSettings,
     initialState,
   );
-  useFormToast(state);
+  useActionFeedback(state);
 
   return (
     <form action={formAction} className="grid max-w-md gap-4">

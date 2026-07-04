@@ -46,3 +46,17 @@ test("a settings toggle keeps its new state after saving (no reload)", async ({
     timeout: 15000,
   });
 });
+
+test("a settings-tab save shows its success toast in production", async ({
+  page,
+}) => {
+  await signInAsAdmin(page);
+  await page.goto("/settings?tab=scoring");
+
+  // Scoring is a plain save form migrated to useActionFeedback: saving must show
+  // the toast even though the action no longer revalidates the current route.
+  await page.getByRole("button", { name: "Save" }).first().click();
+  await expect(page.getByText("Scoring settings saved.")).toBeVisible({
+    timeout: 15000,
+  });
+});

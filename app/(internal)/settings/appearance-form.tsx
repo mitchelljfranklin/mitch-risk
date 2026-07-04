@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useFormToast } from "@/hooks/use-form-toast";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 import {
   Select,
   SelectContent,
@@ -91,7 +91,7 @@ export function AppearanceForm({
     undefined,
   );
 
-  useFormToast(state);
+  useActionFeedback(state);
 
   return (
     <form id="appearance-form" action={action} className="grid gap-6">

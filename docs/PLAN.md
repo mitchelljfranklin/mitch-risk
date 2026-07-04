@@ -629,6 +629,15 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   ProgressBar extraction, `text-[10px]` tier, `type="button"` on non-form buttons) is noted as
   optional follow-up.
 
+- **Phase 77 — Settings-tab forms migration (deferred Phase-74 follow-up, part 1).** Migrated the
+  in-place settings save forms (organization, email + SMTP test, email templates, scoring, SSO +
+  break-glass URL, scheduling, limits, appearance) to the `useActionFeedback` pattern: their
+  actions no longer `revalidatePath` the current route (which drops the returned state in
+  production), and the client shows the toast + guarded `router.refresh()`. Void/redirect actions
+  (`toggle/deleteApiKey`, `retryEmailSend` — no `useActionState` toast) keep their revalidation.
+  A new e2e asserts a settings save toast against the production build. Remaining: Phase 78
+  (modal/master-detail managers: users, certifications) and Phase 79 (vendor edit, profile).
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

@@ -54,7 +54,6 @@ export async function saveOrganizationSettings(
   const user = await getCurrentUser();
   if (user)
     await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "organization");
-  revalidatePath("/settings", "layout");
   return { ok: true, message: "Organization settings saved." };
 }
 
@@ -82,7 +81,6 @@ export async function saveEmailSettings(
   await updateEmailSettings(parsed.data);
   const user = await getCurrentUser();
   if (user) await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "email");
-  revalidatePath("/settings");
   return { ok: true, message: "Email settings saved." };
 }
 
@@ -118,7 +116,6 @@ export async function sendSmtpTestAction(
   if (result.ok) {
     if (user)
       await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "email.test");
-    revalidatePath("/settings");
     return { ok: true, message: `Test email sent to ${parsed.data}.` };
   }
 
@@ -165,7 +162,6 @@ export async function saveEmailTemplateAction(
       "Setting",
       `email.template.${type}`,
     );
-  revalidatePath("/settings");
   return { ok: true, message: `${definition.label} saved.` };
 }
 
@@ -194,7 +190,6 @@ export async function resetEmailTemplateAction(
       "Setting",
       `email.template.${type}`,
     );
-  revalidatePath("/settings");
   return { ok: true, message: `${definition.label} reset to default.` };
 }
 
@@ -227,7 +222,6 @@ export async function saveScoringSettings(
   await updateScoringSettings(parsed.data);
   const user = await getCurrentUser();
   if (user) await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "scoring");
-  revalidatePath("/settings");
   return { ok: true, message: "Scoring settings saved." };
 }
 
@@ -267,7 +261,6 @@ export async function saveSsoSettings(
     oidcClientSecret: (formData.get("oidcClientSecret") as string) || undefined,
   });
 
-  revalidatePath("/settings");
   const user = await getCurrentUser();
   if (user) await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "sso");
   return { ok: true, message: "SSO settings saved." };
@@ -291,8 +284,6 @@ export async function generateBreakGlassUrlAction(
   const user = await getCurrentUser();
   if (user)
     await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "sso.breakGlass");
-  revalidatePath("/settings");
-
   return {
     ok: true,
     message:
@@ -392,7 +383,6 @@ export async function saveAppearanceSettings(
     }
   }
 
-  revalidatePath("/", "layout");
   const user = await getCurrentUser();
   if (user) await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "appearance");
   return { ok: true, message: "Appearance settings saved." };
@@ -624,7 +614,6 @@ export async function saveSchedulingSettings(
   const user = await getCurrentUser();
   if (user) await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "scheduling");
 
-  revalidatePath("/settings");
   return { ok: true, message: "Configuration saved." };
 }
 

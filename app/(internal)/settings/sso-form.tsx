@@ -21,7 +21,7 @@ import {
   generateBreakGlassUrlAction,
   saveSsoSettings,
 } from "./actions";
-import { useFormToast } from "@/hooks/use-form-toast";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 
 type SsoFormProps = {
   entraIdEnabled: boolean;
@@ -56,7 +56,7 @@ function BreakGlassSection({
     generateBreakGlassUrlAction,
     breakGlassInitialState,
   );
-  useFormToast(state);
+  useActionFeedback(state);
 
   return (
     <div className="grid gap-3 rounded-md border p-3">
@@ -172,7 +172,7 @@ export function SsoForm({
     saveSsoSettings,
     initialState,
   );
-  useFormToast(state);
+  useActionFeedback(state);
 
   return (
     <div className="grid gap-6">
