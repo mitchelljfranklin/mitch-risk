@@ -278,6 +278,7 @@ export function UsersManager({
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <Input
+          aria-label="Search staff"
           placeholder="Search staff…"
           value={query}
           onChange={(event) => setQuery(event.target.value)}

@@ -37,6 +37,7 @@ export function SearchInput({
   return (
     <Input
       type="search"
+      aria-label={placeholder}
       placeholder={placeholder}
       value={value}
       onChange={(event) => setValue(event.target.value)}

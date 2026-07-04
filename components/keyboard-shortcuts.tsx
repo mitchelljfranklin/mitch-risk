@@ -216,7 +216,7 @@ export function KeyboardShortcuts({ permissions }: CommandPaletteProps) {
       role="dialog"
       aria-modal="true"
       aria-label="Command palette"
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 pt-[15vh]"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 pt-[15vh]"
       onClick={close}
     >
       <div

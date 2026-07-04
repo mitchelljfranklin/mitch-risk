@@ -213,9 +213,15 @@ export default async function CompareVendorsPage({
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-muted/50 border-b">
-              <th className="p-3 text-left font-medium">Question</th>
-              <th className="p-3 text-left font-medium">{vendorA.name}</th>
-              <th className="p-3 text-left font-medium">{vendorB.name}</th>
+              <th scope="col" className="p-3 text-left font-medium">
+                Question
+              </th>
+              <th scope="col" className="p-3 text-left font-medium">
+                {vendorA.name}
+              </th>
+              <th scope="col" className="p-3 text-left font-medium">
+                {vendorB.name}
+              </th>
             </tr>
           </thead>
           <tbody>

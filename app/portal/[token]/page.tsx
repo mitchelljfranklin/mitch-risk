@@ -2,6 +2,7 @@ import { cookies, headers } from "next/headers";
 import { getAssessmentByToken, isTokenExpired } from "@/lib/db/assessments";
 import { getClientIp } from "@/lib/client-ip";
 import { rateLimit } from "@/lib/rate-limit";
+import { formatDate } from "@/lib/utils";
 import { getAppearanceSettings, getFileSettings } from "@/lib/settings";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -209,8 +210,7 @@ export default async function PortalPage({ params }: PortalPageProps) {
               {assessment.comments.map((comment) => (
                 <div key={comment.id} className="rounded-md border p-3">
                   <p className="text-muted-foreground text-xs">
-                    {comment.authorName} ·{" "}
-                    {new Date(comment.createdAt).toLocaleDateString()}
+                    {comment.authorName} · {formatDate(comment.createdAt)}
                   </p>
                   <p className="text-sm">{comment.body}</p>
                 </div>

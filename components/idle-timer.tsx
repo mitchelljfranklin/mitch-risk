@@ -89,7 +89,7 @@ export function IdleTimer({ timeoutMinutes }: IdleTimerProps) {
       role="alertdialog"
       aria-modal="true"
       aria-label="Session expiring"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
     >
       <div className="bg-background w-full max-w-sm rounded-lg border p-6 text-center shadow-xl">
         <p className="text-lg font-semibold">Session expiring</p>

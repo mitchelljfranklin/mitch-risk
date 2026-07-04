@@ -35,6 +35,7 @@ import {
   uploadEvidenceAction,
   vendorAddCommentAction,
 } from "@/lib/actions/portal";
+import { formatDate } from "@/lib/utils";
 import {
   isQuestionVisible,
   type PortalAnswers,
@@ -577,7 +578,7 @@ export function PortalQuestionnaire({
   }).length;
 
   const expiresLabel = tokenExpiresAt
-    ? `Expires ${new Date(tokenExpiresAt).toISOString().slice(0, 10)}`
+    ? `Expires ${formatDate(tokenExpiresAt)}`
     : null;
 
   return (

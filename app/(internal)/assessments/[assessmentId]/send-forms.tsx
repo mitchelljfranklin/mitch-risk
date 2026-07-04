@@ -60,7 +60,8 @@ export function SendForms({ assessmentId }: SendFormsProps) {
           <input type="hidden" name="portalPassword" value={password} />
           <input
             name="customEmail"
-            type="text"
+            type="email"
+            aria-label="Send to a custom email address"
             placeholder="custom@example.com"
             className="border-input bg-background h-9 w-48 rounded-md border px-3 text-xs"
           />

@@ -617,6 +617,18 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   and Windows tooling notes. Follow-up (tracked): migrate the remaining state-returning settings
   forms to `useActionFeedback`.
 
+- **Phase 76 — UX/accessibility (Batch D).** Accessibility and design-token polish from the
+  review: added accessible labels to the previously-unlabeled inputs (portal/assessment custom-email
+  send field, the debounced `SearchInput`, the staff search); added `scope="col"` to the two
+  vendor comparison tables and replaced the raw `amber-50` "changed row" highlight with a semantic
+  `bg-accent` token; switched the activity `CalendarHeatmap` off the RAG palette onto the neutral
+  `--primary` scale (RAG tokens are reserved for compliance signals); routed portal comment/expiry
+  dates through `formatDate`; and added `loading.tsx` skeletons for risk-register, profile,
+  vendors/new, vendors/compare, bulk-send, and templates/new. Custom modal overlays (idle-timer,
+  keyboard-shortcuts) aligned to the shadcn `bg-black/50` scrim. Lower-value polish (shared
+  ProgressBar extraction, `text-[10px]` tier, `type="button"` on non-form buttons) is noted as
+  optional follow-up.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

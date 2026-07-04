@@ -1975,6 +1975,34 @@ unaffected.
 
 ---
 
+## Phase 76 — UX / accessibility (Batch D)
+
+**Scope:** accessibility + design-token polish from the code review.
+
+**Checklist:**
+
+- [x] **Labels/aria** — custom-email send field (`send-forms.tsx`, now `type="email"` +
+      `aria-label`), `SearchInput` (`aria-label`), staff search (`users-manager.tsx` `aria-label`).
+- [x] **Comparison tables** — `scope="col"` on both compare tables; the `amber-50` "changed row"
+      highlight replaced with the semantic `bg-accent` token (the `<tr>`-in-`<Link>` claim from the
+      review was inaccurate — no such markup existed).
+- [x] **RAG-token discipline** — `CalendarHeatmap` activity scale moved from `--rag-green` to the
+      neutral `--primary` scale (RAG tokens are for compliance signals only).
+- [x] **Date formatting** — portal comment date and token-expiry label now use `formatDate`
+      (were `toLocaleDateString()` / `toISOString().slice()`).
+- [x] **Loading states** — `loading.tsx` skeletons added for risk-register, profile, vendors/new,
+      vendors/compare, bulk-send, templates/new.
+- [x] **Dark-mode overlays** — idle-timer + keyboard-shortcuts modals aligned to the shadcn
+      `bg-black/50` scrim.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 202 passed (test DB), Playwright
+10/10 on a fresh production server. No schema/migration/OpenAPI/RBAC changes.
+
+**Optional follow-up (low value):** extract a shared `ProgressBar` (repeated in ~4 files),
+standardise the `text-[10px]` tier onto `text-xs`, and add `type="button"` to non-form icon buttons.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -2035,6 +2063,7 @@ unaffected.
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 76 | Ready for review | opencode | 2026-07-04 | UX/a11y (Batch D): input labels/aria, compare-table scope + semantic changed-row token, CalendarHeatmap off RAG palette, portal dates via formatDate, 6 loading skeletons, modal overlays aligned. 202 unit, 10/10 e2e prod |
 | 75 | Ready for review | opencode | 2026-07-04 | Correctness (Batch C): configurable RAG thresholds on dashboard; bulk-send email/send failure separation + logging; template builder audit logging; removed dead finalizeAction; role/user error handling; delete-audit ordering; perf (dueDate index, findings DB pagination, scoring N+1 batch); naming cleanup; AGENTS.md invariants. 202 unit, 10/10 e2e prod |
 | 74 | Ready for review | opencode | 2026-07-04 | Prod Server-Action feedback fix: root-caused revalidatePath(current route)+useActionState dropping state in prod builds; resilient module-level toast store + useActionFeedback (guarded router.refresh) + actions stop self-revalidating (API/roles); middleware nonce-CSP now GET-only; e2e now targets prod build (CRON_SECRET wired); fixed a TZ-flaky cert test. 199 unit, 10/10 e2e on fresh prod |
 | 73 | Ready for review | opencode | 2026-07-03 | Security hardening (Batch B): rate-limiter eviction/bounding, portal-page + credentials-authorize IP limits, upload MIME allowlist, shared API error wrapper (generic 500), nonce-based strict CSP + security headers via middleware; +3 test files, 199 unit passing, 10/10 e2e (dev) |

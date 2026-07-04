@@ -11,13 +11,15 @@ function getMaxCount(days: ContributionDay[]): number {
   return Math.max(1, ...days.map((d) => d.count));
 }
 
+// Activity intensity is UI chrome, not a compliance signal, so it uses the
+// neutral primary scale rather than the RAG palette (reserved for score/RAG).
 function colorFor(count: number, max: number): string {
   if (count === 0) return "bg-muted";
   const ratio = count / max;
-  if (ratio <= 0.25) return "bg-[var(--rag-green)]/20";
-  if (ratio <= 0.5) return "bg-[var(--rag-green)]/40";
-  if (ratio <= 0.75) return "bg-[var(--rag-green)]/60";
-  return "bg-[var(--rag-green)]/80";
+  if (ratio <= 0.25) return "bg-primary/20";
+  if (ratio <= 0.5) return "bg-primary/40";
+  if (ratio <= 0.75) return "bg-primary/60";
+  return "bg-primary/80";
 }
 
 type CalendarHeatmapProps = {

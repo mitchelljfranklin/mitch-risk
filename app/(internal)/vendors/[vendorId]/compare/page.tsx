@@ -104,9 +104,15 @@ export default async function ComparePage({
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-muted/50 border-b">
-              <th className="p-3 text-left font-medium">Question</th>
-              <th className="p-3 text-left font-medium">{left.title}</th>
-              <th className="p-3 text-left font-medium">{right.title}</th>
+              <th scope="col" className="p-3 text-left font-medium">
+                Question
+              </th>
+              <th scope="col" className="p-3 text-left font-medium">
+                {left.title}
+              </th>
+              <th scope="col" className="p-3 text-left font-medium">
+                {right.title}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -123,7 +129,7 @@ export default async function ComparePage({
               return (
                 <tr
                   key={qId}
-                  className={`border-b ${changed ? "bg-amber-50 dark:bg-amber-950/20" : ""}`}
+                  className={`border-b ${changed ? "bg-accent/60" : ""}`}
                 >
                   <td className="p-3">
                     <span className="text-muted-foreground text-xs">
