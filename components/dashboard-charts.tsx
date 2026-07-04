@@ -36,7 +36,29 @@ const SEVERITY_FILLS: Record<string, string> = {
   Low: UNSCORED_FILL,
 };
 const STATUS_CONFIG = {
-  value: { label: "Assessments", color: PRIMARY_FILL },
+  draft: { label: "Draft", color: "var(--muted-foreground, #9ca3af)" },
+  sent: { label: "Sent", color: "var(--primary, #3b82f6)" },
+  inProgress: {
+    label: "In progress",
+    color: "color-mix(in oklab, var(--primary), #60a5fa 40%)",
+  },
+  submitted: { label: "Submitted", color: "var(--rag-amber, #d97706)" },
+  underReview: {
+    label: "Under review",
+    color: "color-mix(in oklab, var(--rag-amber) 60%, var(--rag-red) 40%)",
+  },
+  completed: { label: "Completed", color: "var(--rag-green, #16a34a)" },
+  overdue: { label: "Overdue", color: "var(--rag-red, #dc2626)" },
+};
+
+const STATUS_KEY_TO_CONFIG: Record<string, string> = {
+  DRAFT: "draft",
+  SENT: "sent",
+  IN_PROGRESS: "inProgress",
+  SUBMITTED: "submitted",
+  UNDER_REVIEW: "underReview",
+  COMPLETED: "completed",
+  OVERDUE: "overdue",
 };
 const TIER_CONFIG = {
   green: { label: "Green", color: GREEN_FILL },
@@ -117,13 +139,19 @@ export function DashboardCharts({
   ];
   const hasSeverity = severityData.some((d) => d.value > 0);
 
-  const statusData = Object.keys(STATUS_LABELS)
-    .map((key) => ({
-      name: STATUS_LABELS[key],
-      value: assessmentStatusCounts[key] ?? 0,
-    }))
+  const statusDonutData = Object.keys(STATUS_LABELS)
+    .map((key) => {
+      const configKey = STATUS_KEY_TO_CONFIG[key];
+      const statusConfig =
+        STATUS_CONFIG[configKey as keyof typeof STATUS_CONFIG];
+      return {
+        name: STATUS_LABELS[key],
+        value: assessmentStatusCounts[key] ?? 0,
+        fill: statusConfig?.color ?? PRIMARY_FILL,
+      };
+    })
     .filter((d) => d.value > 0);
-  const hasStatus = statusData.length > 0;
+  const hasStatus = statusDonutData.length > 0;
 
   const tierData = riskByTier.map((row) => ({
     tier: TIER_LABELS[row.tier] ?? row.tier,
@@ -249,29 +277,71 @@ export function DashboardCharts({
           <CardContent>
             <div className="aspect-[7/4]">
               <ChartContainer config={STATUS_CONFIG}>
-                <BarChart
-                  data={statusData}
-                  layout="vertical"
-                  margin={{ left: 0, right: 20 }}
-                >
-                  <XAxis type="number" hide allowDecimals={false} />
-                  <YAxis
-                    type="category"
-                    dataKey="name"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12 }}
-                    width={80}
-                  />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar
+                <PieChart>
+                  <Pie
+                    data={statusDonutData}
                     dataKey="value"
-                    radius={4}
-                    barSize={18}
-                    fill={PRIMARY_FILL}
-                  />
-                </BarChart>
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={40}
+                    outerRadius={70}
+                    paddingAngle={1}
+                    label={({
+                      cx,
+                      cy,
+                      midAngle,
+                      innerRadius: labelInner,
+                      outerRadius: labelOuter,
+                      value,
+                    }: {
+                      cx: number;
+                      cy: number;
+                      midAngle?: number;
+                      innerRadius: number;
+                      outerRadius: number;
+                      value: number;
+                      name?: string;
+                    }) => {
+                      if (midAngle == null) return null;
+                      const RADIAN = Math.PI / 180;
+                      const radius: number =
+                        labelInner + (labelOuter - labelInner) * 0.5;
+                      const x: number =
+                        cx + radius * Math.cos(-midAngle * RADIAN);
+                      const y: number =
+                        cy + radius * Math.sin(-midAngle * RADIAN);
+                      return (
+                        <text
+                          x={x}
+                          y={y}
+                          textAnchor="middle"
+                          dominantBaseline="central"
+                          className="fill-background text-[10px] font-medium"
+                        >
+                          {value}
+                        </text>
+                      );
+                    }}
+                  >
+                    {statusDonutData.map((entry) => (
+                      <Cell key={entry.name} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                </PieChart>
               </ChartContainer>
+            </div>
+            <div className="mt-3 flex flex-wrap justify-center gap-3 text-xs">
+              {statusDonutData.map((d) => (
+                <span key={d.name} className="flex items-center gap-1">
+                  <span
+                    className="size-2.5 rounded-full"
+                    style={{ backgroundColor: d.fill }}
+                  />
+                  {d.name}: {d.value}
+                </span>
+              ))}
             </div>
           </CardContent>
         </Card>
