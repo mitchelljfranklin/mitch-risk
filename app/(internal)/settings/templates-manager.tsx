@@ -107,11 +107,11 @@ function TemplateEditorSheet({
             variant="default"
             formId={resetFormId}
           >
-            <Button type="button" variant="ghost" disabled={isResetting}>
+            <Button type="button" variant="outline" disabled={isResetting}>
               {isResetting ? "Resetting..." : "Reset to default"}
             </Button>
           </ConfirmDialog>
-          <Button type="button" variant="ghost" onClick={onClose}>
+          <Button type="button" variant="outline" onClick={onClose}>
             Cancel
           </Button>
         </SheetFooter>

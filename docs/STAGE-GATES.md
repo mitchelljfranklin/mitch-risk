@@ -2110,6 +2110,22 @@ still: restore the old `APP_ENCRYPTION_KEY`, or re-save the SMTP/SSO secrets und
 
 ---
 
+## Phase 81 — Sheet-footer secondary button styling
+
+**Scope:** the create/edit side panels' secondary actions looked like plain text with no visible
+hover in dark mode.
+
+- [x] Changed the sheet-footer secondary buttons from `variant="ghost"` (transparent text; near-
+      invisible `dark:hover:bg-accent/50`) to `variant="outline"` (bordered, clear `hover:bg-accent`)
+      in `users-manager` (Cancel), `roles-manager` (Cancel), `templates-manager` (Reset to default +
+      Cancel), and `certifications-manager` (Cancel). Matches the existing outline-Cancel pattern
+      (vendor-form). Primary submit buttons unchanged (already correctly themed via `theme-tokens`).
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, Playwright 14/14 on a fresh production
+server. No token/primitive changes (leaves legitimate ghost icon/list buttons untouched).
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -2170,6 +2186,7 @@ still: restore the old `APP_ENCRYPTION_KEY`, or re-save the SMTP/SSO secrets und
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 81 | Ready for review | opencode | 2026-07-04 | Sheet-footer secondary buttons ghost->outline (users/roles/emails/certifications) so they read as buttons with a visible hover in dark mode. 14/14 e2e prod |
 | 80 | Ready for review | opencode | 2026-07-04 | Graceful secret-decrypt degradation: getSsoSecret/getEmailSecret return null (log) instead of throwing on decrypt failure (changed APP_ENCRYPTION_KEY no longer 500s every page); +2 tests; pinned e2e webServer APP_URL/AUTH_URL to localhost. 204 unit |
 | 79 | Ready for review | opencode | 2026-07-04 | Profile/vendor forms migration to useActionFeedback (final); unified credentials-callback limiter under loginRateLimitPerMin; new profile+vendor-edit prod e2e; global-setup raises login throttle. 202 unit, 14/14 e2e prod |
 | 78 | Ready for review | opencode | 2026-07-04 | Modal/master-detail migration to useActionFeedback (users NewUserForm, certifications editor, api-form create-key); actions drop self-revalidate; new user-create prod e2e. 202 unit, 12/12 e2e prod |

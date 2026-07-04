@@ -251,7 +251,7 @@ function RoleEditorSheet({
             <Button type="submit" disabled={isPending}>
               {isPending ? "Saving..." : isNew ? "Create role" : "Save changes"}
             </Button>
-            <Button type="button" variant="ghost" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
           </SheetFooter>
