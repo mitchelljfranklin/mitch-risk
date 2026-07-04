@@ -386,6 +386,19 @@ export async function getDashboardData() {
     vendorCount: vendorSet.size,
   }));
 
+  const vendorsByTier: Record<string, number> = {
+    CRITICAL: 0,
+    HIGH: 0,
+    MEDIUM: 0,
+    LOW: 0,
+    Unspecified: 0,
+  };
+  for (const vendor of allVendors) {
+    const tier =
+      vendor.tier && vendor.tier in vendorsByTier ? vendor.tier : "Unspecified";
+    vendorsByTier[tier] += 1;
+  }
+
   return {
     vendors: portfolio,
     vendorCount: allVendors.length,
@@ -396,5 +409,6 @@ export async function getDashboardData() {
     topDeficientControls: topDeficient,
     riskByTier,
     assessmentStatusCounts,
+    vendorsByTier,
   };
 }

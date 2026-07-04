@@ -60,7 +60,12 @@ export default async function DashboardPage() {
     recentAssessments.map((a) => a.createdAt),
   );
 
-  const { scoreDistribution, topDeficientControls, vendors: portfolio } = data;
+  const {
+    scoreDistribution,
+    topDeficientControls,
+    vendors: portfolio,
+    vendorsByTier,
+  } = data;
 
   const needingAttention = portfolio.filter((v) => v.overdueCount > 0);
 
@@ -133,6 +138,7 @@ export default async function DashboardPage() {
             findingsBySeverity={findingSummary.openBySeverity}
             riskByTier={data.riskByTier}
             assessmentStatusCounts={data.assessmentStatusCounts}
+            vendorsByTier={vendorsByTier}
           />
 
           {/* Insight rail: actionable lists side-by-side */}

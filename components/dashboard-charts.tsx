@@ -16,6 +16,10 @@ const DONUT_CONFIG = {
   unscored: { label: "Unscored", color: "var(--rag-unscored, #9ca3af)" },
 };
 
+const BAR_CONFIG = {
+  vendors: { label: "Vendors", color: "var(--primary, #3b82f6)" },
+};
+
 const GREEN_FILL = "var(--rag-green, #16a34a)";
 const AMBER_FILL = "var(--rag-amber, #d97706)";
 const RED_FILL = "var(--rag-red, #dc2626)";
@@ -64,6 +68,7 @@ type ChartsProps = {
   };
   riskByTier: RiskByTierRow[];
   assessmentStatusCounts: Record<string, number>;
+  vendorsByTier?: Record<string, number>;
 };
 
 const TIER_LABELS: Record<string, string> = {
@@ -89,6 +94,7 @@ export function DashboardCharts({
   findingsBySeverity,
   riskByTier,
   assessmentStatusCounts,
+  vendorsByTier,
 }: ChartsProps) {
   const donutData = [
     { name: "green", value: scoreDistribution.green, fill: GREEN_FILL },
@@ -128,7 +134,27 @@ export function DashboardCharts({
   }));
   const hasTier = tierData.length > 0;
 
-  if (!hasDonut && !hasSeverity && !hasStatus && !hasTier) {
+  const VENDOR_TIER_ORDER = [
+    "CRITICAL",
+    "HIGH",
+    "MEDIUM",
+    "LOW",
+    "Unspecified",
+  ] as const;
+
+  const vendorTierData = VENDOR_TIER_ORDER.map((tier) => ({
+    name: TIER_LABELS[tier] ?? tier,
+    value: vendorsByTier?.[tier] ?? 0,
+  })).filter((d) => d.value > 0);
+  const hasVendorsByTier = vendorTierData.length > 0;
+
+  if (
+    !hasDonut &&
+    !hasSeverity &&
+    !hasStatus &&
+    !hasTier &&
+    !hasVendorsByTier
+  ) {
     return null;
   }
 
@@ -296,6 +322,42 @@ export function DashboardCharts({
                   {TIER_CONFIG[key].label}
                 </span>
               ))}
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {hasVendorsByTier ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Vendors by tier</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="aspect-[7/4]">
+              <ChartContainer config={BAR_CONFIG}>
+                <BarChart
+                  data={vendorTierData}
+                  layout="vertical"
+                  margin={{ left: 0, right: 20 }}
+                >
+                  <XAxis type="number" hide allowDecimals={false} />
+                  <YAxis
+                    type="category"
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12 }}
+                    width={80}
+                  />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar
+                    dataKey="value"
+                    radius={4}
+                    barSize={18}
+                    fill={PRIMARY_FILL}
+                  />
+                </BarChart>
+              </ChartContainer>
             </div>
           </CardContent>
         </Card>
