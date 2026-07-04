@@ -233,7 +233,7 @@ export default async function RiskRegisterPage({
                         <Badge
                           key={code}
                           variant="outline"
-                          className="font-mono text-[10px]"
+                          className="font-mono text-xs"
                         >
                           {code}
                         </Badge>

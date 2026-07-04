@@ -170,7 +170,7 @@ export function BulkSendForm({
                   </span>
                 </div>
                 {vendor.tier ? (
-                  <Badge variant="outline" className="text-[10px]">
+                  <Badge variant="outline" className="text-xs">
                     {VENDOR_TIER_LABELS[
                       vendor.tier as keyof typeof VENDOR_TIER_LABELS
                     ] ?? vendor.tier}

@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ProgressBar } from "@/components/progress-bar";
 import {
   Select,
   SelectContent,
@@ -335,7 +336,7 @@ export default async function AssessmentDetailPage({
                   : "No expiry"}
               </p>
               {assessment.portalPasswordHash ? (
-                <Badge variant="secondary" className="text-[10px]">
+                <Badge variant="secondary" className="text-xs">
                   Password protected
                 </Badge>
               ) : null}
@@ -437,17 +438,16 @@ export default async function AssessmentDetailPage({
                     : "High risk"}
               </span>
             </div>
-            <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
-              <div
+            <div>
+              <ProgressBar
+                value={Math.round(assessment.score * 100)}
                 className={cn(
-                  "h-full rounded-full",
                   assessment.score >= 0.85
                     ? "bg-[var(--rag-green)]"
                     : assessment.score >= 0.6
                       ? "bg-[var(--rag-amber)]"
                       : "bg-[var(--rag-red)]",
                 )}
-                style={{ width: `${Math.round(assessment.score * 100)}%` }}
               />
             </div>
           </CardContent>
@@ -554,14 +554,12 @@ export default async function AssessmentDetailPage({
           <CardContent className="flex flex-col gap-3">
             {reviewCounts.total > 0 ? (
               <>
-                <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
-                  <div
-                    className="bg-success h-full rounded-full"
-                    style={{
-                      width: `${Math.round((reviewCounts.approved / reviewCounts.total) * 100)}%`,
-                    }}
-                  />
-                </div>
+                <ProgressBar
+                  value={Math.round(
+                    (reviewCounts.approved / reviewCounts.total) * 100,
+                  )}
+                  className="bg-success"
+                />
                 <div className="flex flex-wrap gap-1.5">
                   {reviewFilters.map((filter) => (
                     <Button

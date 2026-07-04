@@ -241,7 +241,7 @@ export default async function DashboardPage() {
                       >
                         <Badge
                           variant="outline"
-                          className="shrink-0 font-mono text-[10px]"
+                          className="shrink-0 font-mono text-xs"
                         >
                           {item.code}
                         </Badge>

@@ -205,11 +205,11 @@ export default async function TemplateBuilderPage({
                             ? "default"
                             : "outline"
                       }
-                      className="text-[10px]"
+                      className="text-xs"
                     >
                       {v.status.toLowerCase()}
                     </Badge>
-                    <span className="text-muted-foreground text-[10px]">
+                    <span className="text-muted-foreground text-xs">
                       {formatDate(v.updatedAt)}
                     </span>
                   </Link>

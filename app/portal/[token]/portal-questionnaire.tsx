@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { ProgressBar } from "@/components/progress-bar";
 import {
   removePortalEvidenceAction,
   saveProgressAction,
@@ -610,14 +611,12 @@ export function PortalQuestionnaire({
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="bg-muted h-2 flex-1 overflow-hidden rounded-full">
-            <div
-              className="bg-primary h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0}%`,
-              }}
-            />
-          </div>
+          <ProgressBar
+            className="bg-primary"
+            value={
+              totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0
+            }
+          />
           <span className="text-muted-foreground shrink-0 text-xs tabular-nums">
             {answeredCount}/{totalQuestions}
           </span>

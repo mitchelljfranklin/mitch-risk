@@ -64,7 +64,7 @@ function PermissionSummary({ permissions }: { permissions: string[] }) {
         <Badge
           key={group.resource}
           variant={COVERAGE_VARIANT[group.coverage as "full" | "partial"]}
-          className="text-[10px]"
+          className="text-xs"
         >
           {group.label}
           {group.coverage === "partial"
@@ -304,7 +304,7 @@ export function RolesManager({ roles }: { roles: RoleView[] }) {
                 <span className="flex items-center gap-2 text-sm font-medium">
                   {role.name}
                   {role.isSystem ? (
-                    <Badge variant="outline" className="text-[10px]">
+                    <Badge variant="outline" className="text-xs">
                       System
                     </Badge>
                   ) : null}

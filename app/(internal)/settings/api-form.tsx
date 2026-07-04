@@ -222,11 +222,11 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
                     <code className="font-mono text-xs">{key.prefix}</code>
                     <span className="text-sm font-medium">{key.name}</span>
                     {key.disabled ? (
-                      <Badge variant="destructive" className="text-[10px]">
+                      <Badge variant="destructive" className="text-xs">
                         Revoked
                       </Badge>
                     ) : key.expiresAt && key.expiresAt < new Date() ? (
-                      <Badge variant="destructive" className="text-[10px]">
+                      <Badge variant="destructive" className="text-xs">
                         Expired
                       </Badge>
                     ) : null}

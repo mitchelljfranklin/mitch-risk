@@ -310,7 +310,7 @@ export function DashboardCharts({
                     <LabelList
                       position="insideStart"
                       dataKey="name"
-                      className="fill-background text-[10px]"
+                      className="fill-background text-xs"
                     />
                   </RadialBar>
                 </RadialBarChart>

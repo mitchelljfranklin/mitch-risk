@@ -314,14 +314,14 @@ export function UsersManager({
                 </span>
               </div>
               <div className="flex flex-wrap items-center gap-1.5">
-                <Badge variant="secondary" className="text-[10px]">
+                <Badge variant="secondary" className="text-xs">
                   {user.roleName}
                 </Badge>
-                <Badge variant="outline" className="text-[10px]">
+                <Badge variant="outline" className="text-xs">
                   {user.isSsoUser ? "SSO" : "Local"}
                 </Badge>
                 {user.disabled ? (
-                  <Badge variant="destructive" className="text-[10px]">
+                  <Badge variant="destructive" className="text-xs">
                     Disabled
                   </Badge>
                 ) : null}

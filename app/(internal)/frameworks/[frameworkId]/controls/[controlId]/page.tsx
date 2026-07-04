@@ -107,10 +107,10 @@ export default async function ControlDetailPage({
                   className="flex items-center gap-2 text-sm font-medium hover:underline"
                 >
                   {template.name}
-                  <Badge variant="outline" className="text-[10px]">
+                  <Badge variant="outline" className="text-xs">
                     v{template.version}
                   </Badge>
-                  <Badge variant="secondary" className="text-[10px]">
+                  <Badge variant="secondary" className="text-xs">
                     {template.status.toLowerCase()}
                   </Badge>
                 </Link>
