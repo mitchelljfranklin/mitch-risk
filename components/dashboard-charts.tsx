@@ -175,8 +175,8 @@ export function DashboardCharts({
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    innerRadius={30}
-                    outerRadius={50}
+                    innerRadius={55}
+                    outerRadius={85}
                     paddingAngle={2}
                   >
                     {donutData.map((entry) => (
