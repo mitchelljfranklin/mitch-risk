@@ -262,73 +262,73 @@ export default async function DashboardPage() {
                 </CardContent>
               </Card>
             ) : null}
-          </div>
 
-          {/* Highest-risk vendors (compact) */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between gap-2">
-              <CardTitle>Highest-risk vendors</CardTitle>
-              <Link
-                href="/vendors"
-                className="text-muted-foreground hover:text-primary text-xs font-normal"
-              >
-                View all vendors →
-              </Link>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col divide-y rounded-lg border">
-                {topRiskVendors.map((vendor) => (
-                  <Link
-                    key={vendor.id}
-                    href={`/vendors/${vendor.id}`}
-                    className="hover:bg-accent/40 flex items-center justify-between gap-4 p-3 transition-colors"
-                  >
-                    <div className="flex min-w-0 flex-col">
-                      <span className="truncate text-sm font-medium">
-                        {vendor.name}
-                      </span>
-                      <span className="text-muted-foreground truncate text-xs">
-                        {vendor.latestAssessmentTitle ?? "No assessments"}
-                        {vendor.latestAssessmentDate
-                          ? ` · ${formatDate(vendor.latestAssessmentDate)}`
-                          : ""}
-                      </span>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-3">
-                      {vendor.overdueCount > 0 ? (
-                        <Badge variant="destructive">
-                          {vendor.overdueCount} overdue
-                        </Badge>
-                      ) : vendor.tier ? (
-                        <Badge variant="outline">
-                          {
-                            VENDOR_TIER_LABELS[
-                              vendor.tier as keyof typeof VENDOR_TIER_LABELS
-                            ]
-                          }
-                        </Badge>
-                      ) : null}
-                      <span
-                        className={`text-sm font-semibold tabular-nums ${
-                          vendor.overallScore !== null
-                            ? vendor.overallScore >= 0.85
-                              ? "text-[var(--rag-green)]"
-                              : vendor.overallScore >= 0.6
-                                ? "text-[var(--rag-amber)]"
-                                : "text-[var(--rag-red)]"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        {vendor.overallScore !== null
-                          ? formatPercent(vendor.overallScore)
-                          : "—"}
-                      </span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+            {/* Highest-risk vendors (compact) */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between gap-2">
+                <CardTitle>Highest-risk vendors</CardTitle>
+                <Link
+                  href="/vendors"
+                  className="text-muted-foreground hover:text-primary text-xs font-normal"
+                >
+                  View all vendors →
+                </Link>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col divide-y rounded-lg border">
+                  {topRiskVendors.map((vendor) => (
+                    <Link
+                      key={vendor.id}
+                      href={`/vendors/${vendor.id}`}
+                      className="hover:bg-accent/40 flex items-center justify-between gap-4 p-3 transition-colors"
+                    >
+                      <div className="flex min-w-0 flex-col">
+                        <span className="truncate text-sm font-medium">
+                          {vendor.name}
+                        </span>
+                        <span className="text-muted-foreground truncate text-xs">
+                          {vendor.latestAssessmentTitle ?? "No assessments"}
+                          {vendor.latestAssessmentDate
+                            ? ` · ${formatDate(vendor.latestAssessmentDate)}`
+                            : ""}
+                        </span>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-3">
+                        {vendor.overdueCount > 0 ? (
+                          <Badge variant="destructive">
+                            {vendor.overdueCount} overdue
+                          </Badge>
+                        ) : vendor.tier ? (
+                          <Badge variant="outline">
+                            {
+                              VENDOR_TIER_LABELS[
+                                vendor.tier as keyof typeof VENDOR_TIER_LABELS
+                              ]
+                            }
+                          </Badge>
+                        ) : null}
+                        <span
+                          className={`text-sm font-semibold tabular-nums ${
+                            vendor.overallScore !== null
+                              ? vendor.overallScore >= 0.85
+                                ? "text-[var(--rag-green)]"
+                                : vendor.overallScore >= 0.6
+                                  ? "text-[var(--rag-amber)]"
+                                  : "text-[var(--rag-red)]"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {vendor.overallScore !== null
+                            ? formatPercent(vendor.overallScore)
+                            : "—"}
+                        </span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Assessment activity */}
           <CalendarHeatmap days={contributionDays} />
