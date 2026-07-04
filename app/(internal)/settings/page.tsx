@@ -401,6 +401,14 @@ export default async function SettingsPage({
                 emailLogRetentionDays={emailLogRetention}
                 maxUploadMb={files.maxUploadMb}
                 allowedExtensions={files.allowedExtensions}
+                portalPageLoadsPerMin={assessment.portalPageLoadsPerMin}
+                portalUploadsPerMin={assessment.portalUploadsPerMin}
+                portalSubmitPerMin={assessment.portalSubmitPerMin}
+                portalPasswordAttemptsPerMin={
+                  assessment.portalPasswordAttemptsPerMin
+                }
+                passwordResetPerMin={assessment.passwordResetPerMin}
+                breakGlassPerMin={assessment.breakGlassPerMin}
               />
             </CardContent>
           </Card>

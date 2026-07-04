@@ -12,7 +12,7 @@ import { sendEmail } from "@/lib/email/mailer";
 import { env } from "@/lib/env";
 import { rateLimit } from "@/lib/rate-limit";
 import { forgotPasswordSchema, resetPasswordSchema } from "@/lib/schemas/auth";
-import { getOrganizationSettings } from "@/lib/settings";
+import { getAssessmentSettings, getOrganizationSettings } from "@/lib/settings";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -38,8 +38,8 @@ export async function sendResetEmailAction(
 
   const { email } = parsed.data;
 
-  // Rate-limit to 1 attempt per 5 minutes per email.
-  if (!rateLimit("resetPassword", email.toLowerCase(), 1)) {
+  const { passwordResetPerMin } = await getAssessmentSettings();
+  if (!rateLimit("resetPassword", email.toLowerCase(), passwordResetPerMin)) {
     return {
       ok: true,
       message:

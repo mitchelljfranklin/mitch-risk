@@ -5,11 +5,13 @@ import { decryptSecret, encryptSecret } from "@/lib/crypto";
 import { prisma } from "@/lib/prisma";
 import {
   getAppearanceSettings,
+  getAssessmentSettings,
   getEmailSecret,
   getEmailSettings,
   getOrganizationSettings,
   getSsoSecret,
   updateAppearanceSettings,
+  updateAssessmentSettings,
   updateEmailSettings,
   updateOrganizationSettings,
 } from "@/lib/settings";
@@ -17,7 +19,13 @@ import {
 // Categories this suite mutates. We snapshot them before and restore them
 // after so the tests are non-destructive even if pointed at a populated
 // database (the primary protection is a dedicated test DB — see vitest.setup).
-const MUTATED_CATEGORIES = ["organization", "email", "appearance", "sso"];
+const MUTATED_CATEGORIES = [
+  "organization",
+  "email",
+  "appearance",
+  "sso",
+  "assessments",
+];
 
 let settingsSnapshot: {
   key: string;
@@ -157,6 +165,39 @@ describe("secret decryption failure degrades gracefully (integration)", () => {
     });
 
     await expect(getSsoSecret("entraId")).resolves.toBeNull();
+  });
+});
+
+describe("configurable rate limits (integration)", () => {
+  it("persists and reads back the portal/recovery rate limits", async () => {
+    const current = await getAssessmentSettings();
+    await updateAssessmentSettings({
+      ...current,
+      portalPageLoadsPerMin: 42,
+      portalUploadsPerMin: 7,
+      portalSubmitPerMin: 9,
+      portalPasswordAttemptsPerMin: 3,
+      passwordResetPerMin: 2,
+      breakGlassPerMin: 20,
+    });
+
+    const saved = await getAssessmentSettings();
+    expect(saved.portalPageLoadsPerMin).toBe(42);
+    expect(saved.portalUploadsPerMin).toBe(7);
+    expect(saved.portalSubmitPerMin).toBe(9);
+    expect(saved.portalPasswordAttemptsPerMin).toBe(3);
+    expect(saved.passwordResetPerMin).toBe(2);
+    expect(saved.breakGlassPerMin).toBe(20);
+  });
+
+  it("falls back to defaults when the rate limits are unset", async () => {
+    await prisma.appSetting.deleteMany({
+      where: { key: { startsWith: "assessments." } },
+    });
+    const defaults = await getAssessmentSettings();
+    expect(defaults.portalPageLoadsPerMin).toBe(30);
+    expect(defaults.passwordResetPerMin).toBe(1);
+    expect(defaults.breakGlassPerMin).toBe(10);
   });
 });
 

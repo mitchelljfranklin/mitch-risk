@@ -16,7 +16,46 @@ type LimitsFormProps = {
   emailLogRetentionDays: number;
   maxUploadMb: number;
   allowedExtensions: string[];
+  portalPageLoadsPerMin: number;
+  portalUploadsPerMin: number;
+  portalSubmitPerMin: number;
+  portalPasswordAttemptsPerMin: number;
+  passwordResetPerMin: number;
+  breakGlassPerMin: number;
 };
+
+const RATE_LIMIT_FIELDS = [
+  {
+    name: "portalPageLoadsPerMin",
+    label: "Portal page loads / min (per visitor)",
+    help: "How often a vendor's browser can load the questionnaire link. Guards against link-enumeration.",
+  },
+  {
+    name: "portalUploadsPerMin",
+    label: "Portal evidence uploads / min (per visitor)",
+    help: "Maximum evidence file uploads a vendor can make per minute.",
+  },
+  {
+    name: "portalSubmitPerMin",
+    label: "Portal submissions / min (per link)",
+    help: "Maximum submit attempts for a single questionnaire link.",
+  },
+  {
+    name: "portalPasswordAttemptsPerMin",
+    label: "Portal password attempts / min (per link)",
+    help: "Guards a password-protected questionnaire against brute-force.",
+  },
+  {
+    name: "passwordResetPerMin",
+    label: "Password reset requests / min (per email)",
+    help: "Limits staff password-reset emails for a given address.",
+  },
+  {
+    name: "breakGlassPerMin",
+    label: "Break-glass attempts / min (per IP)",
+    help: "Limits validation of the SSO break-glass recovery link.",
+  },
+] as const;
 
 const ALL_EXTENSIONS = [
   "pdf",
@@ -38,12 +77,27 @@ export function LimitsForm({
   emailLogRetentionDays,
   maxUploadMb,
   allowedExtensions,
+  portalPageLoadsPerMin,
+  portalUploadsPerMin,
+  portalSubmitPerMin,
+  portalPasswordAttemptsPerMin,
+  passwordResetPerMin,
+  breakGlassPerMin,
 }: LimitsFormProps) {
   const [state, action, isPending] = useActionState(
     saveSchedulingSettings,
     undefined,
   );
   useActionFeedback(state);
+
+  const rateLimitValues: Record<string, number> = {
+    portalPageLoadsPerMin,
+    portalUploadsPerMin,
+    portalSubmitPerMin,
+    portalPasswordAttemptsPerMin,
+    passwordResetPerMin,
+    breakGlassPerMin,
+  };
 
   return (
     <form action={action} className="flex flex-col gap-6">
@@ -146,6 +200,33 @@ export function LimitsForm({
               </label>
             );
           })}
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-4 border-t pt-4">
+        <div>
+          <h3 className="text-sm font-medium">Rate limits (per minute)</h3>
+          <p className="text-muted-foreground text-xs">
+            Abuse protection for the public vendor portal and account recovery.
+            Raise these for busy vendors or shared-office IPs; the defaults suit
+            most deployments.
+          </p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {RATE_LIMIT_FIELDS.map((field) => (
+            <div key={field.name} className="flex flex-col gap-2">
+              <Label htmlFor={field.name}>{field.label}</Label>
+              <p className="text-muted-foreground text-xs">{field.help}</p>
+              <Input
+                id={field.name}
+                name={field.name}
+                type="number"
+                min={1}
+                defaultValue={rateLimitValues[field.name]}
+                className="w-32"
+              />
+            </div>
+          ))}
         </div>
       </div>
 

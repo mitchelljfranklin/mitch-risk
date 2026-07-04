@@ -58,6 +58,14 @@ export const assessmentSettingsSchema = z.object({
   loginRateLimitPerMin: z.coerce.number().int().min(1).default(10),
   emailLogRetentionDays: z.coerce.number().int().min(0).default(14),
   sessionTimeoutMinutes: z.coerce.number().int().min(0).default(30),
+  // Per-minute rate limits (see lib/rate-limit.ts). Configurable so admins can
+  // loosen/tighten abuse protection without a redeploy.
+  portalPageLoadsPerMin: z.coerce.number().int().min(1).default(30),
+  portalUploadsPerMin: z.coerce.number().int().min(1).default(10),
+  portalSubmitPerMin: z.coerce.number().int().min(1).default(5),
+  portalPasswordAttemptsPerMin: z.coerce.number().int().min(1).default(5),
+  passwordResetPerMin: z.coerce.number().int().min(1).default(1),
+  breakGlassPerMin: z.coerce.number().int().min(1).default(10),
 });
 
 export type AssessmentSettings = z.infer<typeof assessmentSettingsSchema>;

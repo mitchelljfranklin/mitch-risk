@@ -2149,6 +2149,27 @@ server. No new tokens/primitives.
 
 ---
 
+## Phase 83 — Configurable rate limits
+
+**Scope:** make the hardcoded abuse-protection limits admin-configurable (Limits tab), matching the
+DB-backed-settings standard.
+
+- [x] `assessmentSettingsSchema` gains `portalPageLoadsPerMin` (30), `portalUploadsPerMin` (10),
+      `portalSubmitPerMin` (5), `portalPasswordAttemptsPerMin` (5), `passwordResetPerMin` (1),
+      `breakGlassPerMin` (10) — all `.default()`ed (no migration).
+- [x] `saveSchedulingSettings` parses + validates (≥1) + persists the six fields; `LimitsForm` shows
+      a "Rate limits (per minute)" section; `settings/page.tsx` wires the values.
+- [x] Call sites read the configured value via `getAssessmentSettings()`: portal page load, portal
+      upload, portal submit, portal password gate, password reset, break-glass. Portal autosave
+      stays fixed (background hot path).
+- [x] Tests: round-trip persistence + default fallback for the new limits
+      (`settings.integration.test.ts`).
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 206 passed, Playwright 14/14 on a
+fresh production server. RBAC unchanged (Limits tab is `SETTINGS_MANAGE`).
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -2209,6 +2230,7 @@ server. No new tokens/primitives.
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 83 | Ready for review | opencode | 2026-07-04 | Configurable rate limits: portal page-loads/uploads/submits/password + password-reset + break-glass exposed in the Limits tab (were hardcoded); read via getAssessmentSettings. 206 unit, 14/14 e2e prod |
 | 82 | Ready for review | opencode | 2026-07-04 | Dark-mode primary buttons fix: custom brand primary/secondary scoped to :root:not(.dark) so dark mode keeps shadcn's visible palette (was invisible black-on-black). 14/14 e2e prod |
 | 81 | Ready for review | opencode | 2026-07-04 | Sheet-footer secondary buttons ghost->outline (users/roles/emails/certifications) so they read as buttons with a visible hover in dark mode. 14/14 e2e prod |
 | 80 | Ready for review | opencode | 2026-07-04 | Graceful secret-decrypt degradation: getSsoSecret/getEmailSecret return null (log) instead of throwing on decrypt failure (changed APP_ENCRYPTION_KEY no longer 500s every page); +2 tests; pinned e2e webServer APP_URL/AUTH_URL to localhost. 204 unit |

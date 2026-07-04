@@ -5,14 +5,18 @@ import { cookies } from "next/headers";
 
 import { getAssessmentByToken } from "@/lib/db/assessments";
 import { rateLimit } from "@/lib/rate-limit";
-
-const MAX_ATTEMPTS_PER_TOKEN = 5;
+import { getAssessmentSettings } from "@/lib/settings";
 
 export async function validatePortalPassword(
   token: string,
   password: string,
 ): Promise<{ ok: boolean; message?: string }> {
-  const allowed = rateLimit("portal-password", token, MAX_ATTEMPTS_PER_TOKEN);
+  const { portalPasswordAttemptsPerMin } = await getAssessmentSettings();
+  const allowed = rateLimit(
+    "portal-password",
+    token,
+    portalPasswordAttemptsPerMin,
+  );
   if (!allowed) {
     return { ok: false, message: "Too many attempts. Please wait a minute." };
   }

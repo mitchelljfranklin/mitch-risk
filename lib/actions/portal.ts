@@ -19,7 +19,7 @@ import { sendEmail } from "@/lib/email/mailer";
 import { env } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
 import { saveProgressSchema } from "@/lib/schemas/portal";
-import { getFileSettings } from "@/lib/settings";
+import { getAssessmentSettings, getFileSettings } from "@/lib/settings";
 import { storage } from "@/lib/storage";
 import { rateLimit } from "@/lib/rate-limit";
 import { isDangerousUploadMime } from "@/lib/upload-validation";
@@ -61,7 +61,8 @@ function sanitizeFileName(name: string): string {
 export async function uploadEvidenceAction(
   formData: FormData,
 ): Promise<UploadResult> {
-  if (!rateLimit("upload", await clientIp(), 10)) {
+  const { portalUploadsPerMin } = await getAssessmentSettings();
+  if (!rateLimit("upload", await clientIp(), portalUploadsPerMin)) {
     return { ok: false, error: "Too many uploads. Please wait a moment." };
   }
 
@@ -138,7 +139,8 @@ export async function uploadEvidenceAction(
 export async function submitPortalAction(
   token: string,
 ): Promise<{ ok: boolean; missing: number }> {
-  if (!rateLimit("submit", token, 5)) {
+  const { portalSubmitPerMin } = await getAssessmentSettings();
+  if (!rateLimit("submit", token, portalSubmitPerMin)) {
     return { ok: false, missing: -1 };
   }
 

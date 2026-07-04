@@ -543,6 +543,32 @@ export async function saveSchedulingSettings(
   );
   const reminderStr = (formData.get("reminderDays") as string) || "";
 
+  const rateLimitFields = {
+    portalPageLoadsPerMin: { label: "Portal page loads", default: 30 },
+    portalUploadsPerMin: { label: "Portal uploads", default: 10 },
+    portalSubmitPerMin: { label: "Portal submissions", default: 5 },
+    portalPasswordAttemptsPerMin: {
+      label: "Portal password attempts",
+      default: 5,
+    },
+    passwordResetPerMin: { label: "Password reset requests", default: 1 },
+    breakGlassPerMin: { label: "Break-glass attempts", default: 10 },
+  } as const;
+
+  const rateLimits: Record<string, number> = {};
+  for (const [field, { label, default: fallback }] of Object.entries(
+    rateLimitFields,
+  )) {
+    const value = parseInt(
+      (formData.get(field) as string) || String(fallback),
+      10,
+    );
+    if (isNaN(value) || value < 1) {
+      return { ok: false, message: `${label} must be at least 1 per minute.` };
+    }
+    rateLimits[field] = value;
+  }
+
   if (isNaN(auditRetention) || auditRetention < 0) {
     return {
       ok: false,
@@ -605,6 +631,12 @@ export async function saveSchedulingSettings(
       loginRateLimitPerMin: loginRateLimit,
       emailLogRetentionDays: emailLogRetention,
       sessionTimeoutMinutes,
+      portalPageLoadsPerMin: rateLimits.portalPageLoadsPerMin,
+      portalUploadsPerMin: rateLimits.portalUploadsPerMin,
+      portalSubmitPerMin: rateLimits.portalSubmitPerMin,
+      portalPasswordAttemptsPerMin: rateLimits.portalPasswordAttemptsPerMin,
+      passwordResetPerMin: rateLimits.passwordResetPerMin,
+      breakGlassPerMin: rateLimits.breakGlassPerMin,
     }),
     updateFileSettings({
       maxUploadMb,

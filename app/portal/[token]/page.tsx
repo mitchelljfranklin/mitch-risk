@@ -3,10 +3,12 @@ import { getAssessmentByToken, isTokenExpired } from "@/lib/db/assessments";
 import { getClientIp } from "@/lib/client-ip";
 import { rateLimit } from "@/lib/rate-limit";
 import { formatDate } from "@/lib/utils";
-import { getAppearanceSettings, getFileSettings } from "@/lib/settings";
+import {
+  getAppearanceSettings,
+  getAssessmentSettings,
+  getFileSettings,
+} from "@/lib/settings";
 import { ThemeToggle } from "@/components/theme-toggle";
-
-const PORTAL_PAGE_LOADS_PER_MINUTE = 30;
 
 import { PortalQuestionnaire } from "./portal-questionnaire";
 import { PasswordGate } from "./password-gate";
@@ -93,13 +95,16 @@ export default async function PortalPage({ params }: PortalPageProps) {
 
   const requestHeaders = await headers();
   const clientIp = getClientIp(requestHeaders);
+  const [appearance, assessmentSettings] = await Promise.all([
+    getAppearanceSettings(),
+    getAssessmentSettings(),
+  ]);
   const withinRateLimit = rateLimit(
     "portal-page",
     clientIp,
-    PORTAL_PAGE_LOADS_PER_MINUTE,
+    assessmentSettings.portalPageLoadsPerMin,
   );
 
-  const appearance = await getAppearanceSettings();
   const logoUrl = appearance.logoKey ? "/api/brand/logo" : null;
 
   if (!withinRateLimit) {

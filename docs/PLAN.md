@@ -668,6 +668,15 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   Playwright `webServer` to `APP_URL`/`AUTH_URL=http://localhost:3000` so the suite doesn't depend
   on the developer's deployment `.env`.
 
+- **Phase 83 — Configurable rate limits.** Brought the previously-hardcoded abuse-protection limits
+  in line with the "operational settings live in DB-backed Settings" standard. Added a **Rate limits
+  (per minute)** section to the Limits tab exposing: portal page-loads (per visitor), portal uploads
+  (per visitor), portal submissions (per link), portal password attempts (per link), password-reset
+  requests (per email), and break-glass attempts (per IP). Each is an `assessmentSettings` field with
+  a sensible default (30/10/5/5/1/10) and is read at its call site via `getAssessmentSettings()`.
+  Portal autosave (a high-frequency background cadence) stays fixed to avoid a settings read on the
+  hot path and misconfiguration. No migration (zod-defaulted `appSetting` rows).
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These
