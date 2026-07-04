@@ -287,6 +287,7 @@ export function DashboardCharts({
                   data={tierData}
                   layout="vertical"
                   margin={{ left: 0, right: 20 }}
+                  barCategoryGap="30%"
                 >
                   <XAxis type="number" hide allowDecimals={false} />
                   <YAxis
