@@ -2126,6 +2126,29 @@ server. No token/primitive changes (leaves legitimate ghost icon/list buttons un
 
 ---
 
+## Phase 82 — Dark-mode primary buttons (appearance token scoping)
+
+**Scope:** primary buttons (Create user/role, Save changes, etc.) rendered as plain text in dark
+mode when a brand colour was configured.
+
+**Root cause:** `theme-tokens.tsx` injected the custom `--primary`/`--secondary` (and their
+ring/sidebar tokens) into `:root`, applying them to **both** themes. shadcn inverts these neutral
+tokens per theme (light primary is dark, dark primary is light), so a light-mode brand primary
+(the default `#0a0a0a`) became a near-black button on the near-black dark background — invisible,
+looking like text with no hover.
+
+- [x] Scoped the neutral brand tokens (`--primary`, `--primary-foreground`, `--ring`,
+      `--sidebar-primary(-foreground)`, `--secondary`, `--secondary-foreground`) to
+      `:root:not(.dark)` so they apply in light mode only; dark mode keeps shadcn's tuned dark
+      palette (visible near-white primary). RAG colours + `--radius` stay on `:root` (both themes).
+- [x] Verified via computed styles: light `Create user` button = `#0a0a0a` (brand); dark = shadcn
+      near-white (`lab(90.9%)`) with dark text — a solid, visible button in both modes.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, Playwright 14/14 on a fresh production
+server. No new tokens/primitives.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -2186,6 +2209,7 @@ server. No token/primitive changes (leaves legitimate ghost icon/list buttons un
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 82 | Ready for review | opencode | 2026-07-04 | Dark-mode primary buttons fix: custom brand primary/secondary scoped to :root:not(.dark) so dark mode keeps shadcn's visible palette (was invisible black-on-black). 14/14 e2e prod |
 | 81 | Ready for review | opencode | 2026-07-04 | Sheet-footer secondary buttons ghost->outline (users/roles/emails/certifications) so they read as buttons with a visible hover in dark mode. 14/14 e2e prod |
 | 80 | Ready for review | opencode | 2026-07-04 | Graceful secret-decrypt degradation: getSsoSecret/getEmailSecret return null (log) instead of throwing on decrypt failure (changed APP_ENCRYPTION_KEY no longer 500s every page); +2 tests; pinned e2e webServer APP_URL/AUTH_URL to localhost. 204 unit |
 | 79 | Ready for review | opencode | 2026-07-04 | Profile/vendor forms migration to useActionFeedback (final); unified credentials-callback limiter under loginRateLimitPerMin; new profile+vendor-edit prod e2e; global-setup raises login throttle. 202 unit, 14/14 e2e prod |

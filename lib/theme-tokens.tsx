@@ -36,35 +36,53 @@ export async function ThemeTokens() {
     borderRadius,
   } = appearance;
 
-  const tokens: string[] = [];
+  // Primary/secondary (and their ring/sidebar tokens) are neutral tokens that
+  // shadcn inverts between themes — light uses a dark primary, dark uses a light
+  // one. Applying a single custom value to both themes makes e.g. a dark brand
+  // primary invisible on the dark background (a button that looks like plain
+  // text). So the brand neutrals are scoped to light mode (`:root:not(.dark)`),
+  // leaving dark mode on shadcn's tuned dark palette. RAG colours and radius are
+  // theme-agnostic, so they apply to both.
+  const lightOnlyTokens: string[] = [];
+  const universalTokens: string[] = [];
 
   if (primaryHex) {
-    tokens.push(`--primary: ${primaryHex};`);
-    tokens.push(`--primary-foreground: ${foregroundFor(primaryHex)};`);
-    tokens.push(`--ring: ${primaryHex};`);
-    tokens.push(`--sidebar-primary: ${primaryHex};`);
-    tokens.push(`--sidebar-primary-foreground: ${foregroundFor(primaryHex)};`);
+    lightOnlyTokens.push(`--primary: ${primaryHex};`);
+    lightOnlyTokens.push(`--primary-foreground: ${foregroundFor(primaryHex)};`);
+    lightOnlyTokens.push(`--ring: ${primaryHex};`);
+    lightOnlyTokens.push(`--sidebar-primary: ${primaryHex};`);
+    lightOnlyTokens.push(
+      `--sidebar-primary-foreground: ${foregroundFor(primaryHex)};`,
+    );
   }
 
   if (secondaryHex) {
-    tokens.push(`--secondary: ${secondaryHex};`);
-    tokens.push(`--secondary-foreground: ${foregroundFor(secondaryHex)};`);
+    lightOnlyTokens.push(`--secondary: ${secondaryHex};`);
+    lightOnlyTokens.push(
+      `--secondary-foreground: ${foregroundFor(secondaryHex)};`,
+    );
   }
 
-  if (ragGreenHex) tokens.push(`--rag-green: ${ragGreenHex};`);
-  if (ragAmberHex) tokens.push(`--rag-amber: ${ragAmberHex};`);
-  if (ragRedHex) tokens.push(`--rag-red: ${ragRedHex};`);
-  if (ragUnscoredHex) tokens.push(`--rag-unscored: ${ragUnscoredHex};`);
+  if (ragGreenHex) universalTokens.push(`--rag-green: ${ragGreenHex};`);
+  if (ragAmberHex) universalTokens.push(`--rag-amber: ${ragAmberHex};`);
+  if (ragRedHex) universalTokens.push(`--rag-red: ${ragRedHex};`);
+  if (ragUnscoredHex)
+    universalTokens.push(`--rag-unscored: ${ragUnscoredHex};`);
 
-  tokens.push(`--radius: ${borderRadius / 16}rem;`);
+  universalTokens.push(`--radius: ${borderRadius / 16}rem;`);
 
-  if (tokens.length === 0) return null;
+  if (lightOnlyTokens.length === 0 && universalTokens.length === 0) {
+    return null;
+  }
 
-  return (
-    <style
-      dangerouslySetInnerHTML={{
-        __html: `:root { ${tokens.join(" ")} }`,
-      }}
-    />
-  );
+  const css = [
+    lightOnlyTokens.length > 0
+      ? `:root:not(.dark) { ${lightOnlyTokens.join(" ")} }`
+      : "",
+    universalTokens.length > 0 ? `:root { ${universalTokens.join(" ")} }` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return <style dangerouslySetInnerHTML={{ __html: css }} />;
 }
