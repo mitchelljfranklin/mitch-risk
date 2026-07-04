@@ -1,17 +1,6 @@
 "use client";
 
-import {
-  Cell,
-  Pie,
-  PieChart,
-  Bar,
-  BarChart,
-  RadialBar,
-  RadialBarChart,
-  LabelList,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Cell, Pie, PieChart, Bar, BarChart, XAxis, YAxis } from "recharts";
 
 import {
   ChartContainer,
@@ -25,10 +14,6 @@ const DONUT_CONFIG = {
   amber: { label: "Amber (60–84%)", color: "var(--rag-amber, #d97706)" },
   red: { label: "Red (<60%)", color: "var(--rag-red, #dc2626)" },
   unscored: { label: "Unscored", color: "var(--rag-unscored, #9ca3af)" },
-};
-
-const BAR_CONFIG = {
-  vendors: { label: "Vendors", color: "var(--primary, #3b82f6)" },
 };
 
 const GREEN_FILL = "var(--rag-green, #16a34a)";
@@ -92,7 +77,6 @@ type ChartsProps = {
   };
   riskByTier: RiskByTierRow[];
   assessmentStatusCounts: Record<string, number>;
-  vendorsByTier?: Record<string, number>;
 };
 
 const TIER_LABELS: Record<string, string> = {
@@ -118,7 +102,6 @@ export function DashboardCharts({
   findingsBySeverity,
   riskByTier,
   assessmentStatusCounts,
-  vendorsByTier,
 }: ChartsProps) {
   const donutData = [
     { name: "green", value: scoreDistribution.green, fill: GREEN_FILL },
@@ -140,16 +123,6 @@ export function DashboardCharts({
     { name: "Low", value: findingsBySeverity.LOW },
   ];
   const hasSeverity = severityData.some((d) => d.value > 0);
-
-  const radialChartConfig = {
-    value: { label: "Assessments" },
-    ...Object.fromEntries(
-      Object.entries(STATUS_CONFIG).map(([key, entry]) => [
-        key,
-        { label: entry.label, color: entry.color },
-      ]),
-    ),
-  };
 
   const statusDonutData = Object.keys(STATUS_LABELS)
     .map((key) => {
@@ -180,27 +153,7 @@ export function DashboardCharts({
   }));
   const hasTier = tierData.length > 0;
 
-  const VENDOR_TIER_ORDER = [
-    "CRITICAL",
-    "HIGH",
-    "MEDIUM",
-    "LOW",
-    "Unspecified",
-  ] as const;
-
-  const vendorTierData = VENDOR_TIER_ORDER.map((tier) => ({
-    name: TIER_LABELS[tier] ?? tier,
-    value: vendorsByTier?.[tier] ?? 0,
-  })).filter((d) => d.value > 0);
-  const hasVendorsByTier = vendorTierData.length > 0;
-
-  if (
-    !hasDonut &&
-    !hasSeverity &&
-    !hasStatus &&
-    !hasTier &&
-    !hasVendorsByTier
-  ) {
+  if (!hasDonut && !hasSeverity && !hasStatus && !hasTier) {
     return null;
   }
 
@@ -294,38 +247,29 @@ export function DashboardCharts({
           </CardHeader>
           <CardContent>
             <div className="aspect-[7/4]">
-              <ChartContainer config={radialChartConfig}>
-                <RadialBarChart
+              <ChartContainer config={{ value: { label: "Assessments" } }}>
+                <BarChart
                   data={statusDonutData}
-                  startAngle={-90}
-                  endAngle={380}
-                  innerRadius={30}
-                  outerRadius={110}
+                  layout="vertical"
+                  margin={{ left: 0, right: 20 }}
                 >
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent hideLabel />}
+                  <XAxis type="number" hide allowDecimals={false} />
+                  <YAxis
+                    type="category"
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12 }}
+                    width={80}
                   />
-                  <RadialBar dataKey="value" background>
-                    <LabelList
-                      position="insideStart"
-                      dataKey="name"
-                      className="fill-background text-xs"
-                    />
-                  </RadialBar>
-                </RadialBarChart>
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="value" radius={4} barSize={20}>
+                    {statusDonutData.map((entry) => (
+                      <Cell key={entry.name} fill={entry.fill} />
+                    ))}
+                  </Bar>
+                </BarChart>
               </ChartContainer>
-            </div>
-            <div className="mt-3 flex flex-wrap justify-center gap-3 text-xs">
-              {statusDonutData.map((d) => (
-                <span key={d.name} className="flex items-center gap-1">
-                  <span
-                    className="size-2.5 rounded-full"
-                    style={{ backgroundColor: d.fill }}
-                  />
-                  {d.name}: {d.value}
-                </span>
-              ))}
             </div>
           </CardContent>
         </Card>
@@ -376,42 +320,6 @@ export function DashboardCharts({
                   {TIER_CONFIG[key].label}
                 </span>
               ))}
-            </div>
-          </CardContent>
-        </Card>
-      ) : null}
-
-      {hasVendorsByTier ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Vendors by tier</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="aspect-[7/4]">
-              <ChartContainer config={BAR_CONFIG}>
-                <BarChart
-                  data={vendorTierData}
-                  layout="vertical"
-                  margin={{ left: 0, right: 20 }}
-                >
-                  <XAxis type="number" hide allowDecimals={false} />
-                  <YAxis
-                    type="category"
-                    dataKey="name"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12 }}
-                    width={80}
-                  />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar
-                    dataKey="value"
-                    radius={4}
-                    barSize={18}
-                    fill={PRIMARY_FILL}
-                  />
-                </BarChart>
-              </ChartContainer>
             </div>
           </CardContent>
         </Card>
