@@ -69,7 +69,8 @@ export async function addUserAction(
     await logAudit(actor.id, "CREATE_USER", "User", email);
   }
 
-  revalidatePath("/settings");
+  // Result is consumed by useActionState in a modal; the client refreshes after
+  // closing (see useActionFeedback) rather than revalidating the current route.
   return { ok: true, message: "User created." };
 }
 

@@ -27,7 +27,7 @@ import {
   CERTIFICATION_STATUS_STYLES,
   certificationStatus,
 } from "@/lib/schemas/certification";
-import { useFormToast } from "@/hooks/use-form-toast";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 import { formatDate } from "@/lib/utils";
 
 export type CertificationView = {
@@ -58,7 +58,7 @@ function CertificationEditor({
     saveCertificationAction,
     initialState,
   );
-  useFormToast(state);
+  useActionFeedback(state);
 
   useEffect(() => {
     if (state?.ok) {

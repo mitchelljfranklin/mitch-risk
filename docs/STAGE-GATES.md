@@ -2031,6 +2031,32 @@ also still self-revalidates — folded into Phase 78.
 
 ---
 
+## Phase 78 — Modal/master-detail forms migration (Phase-74 follow-up, part 2)
+
+**Scope:** migrate the Sheet-based create/edit flows so success toasts + modal auto-close are
+reliable in production.
+
+**Checklist:**
+
+- [x] **users-manager** — `addUserAction` drops `revalidatePath`; `NewUserForm` uses
+      `useActionFeedback` (toast + refresh); the `state.ok` effect still closes the sheet. Edit
+      sub-actions (role change / disable / reset / delete) are void form actions — keep revalidate.
+- [x] **certifications-manager** — `saveCertificationAction` drops `revalidatePath`; the editor uses
+      `useActionFeedback`. `deleteCertificationAction` (void) keeps revalidate.
+- [x] **api-form create-key** — `createApiKeyAction` drops `revalidatePath`; the reducer reads the
+      one-time key from the resolved promise and calls `router.refresh()` (avoids `setState`-in-effect
+      while refreshing the list). `toggle`/`deleteApiKey` (void) keep revalidate.
+- [x] **e2e** — new `settings-user-create` spec: admin creates a user, the modal auto-closes and the
+      row appears, verified against the production build.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 202 passed, Playwright 12/12 on a
+fresh production server. No schema/migration/RBAC/OpenAPI changes.
+
+**Remaining follow-up:** Phase 79 — vendor **edit** + profile forms (audit each action's revalidate
+target first; create/redirect forms are unaffected).
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -2091,6 +2117,7 @@ also still self-revalidates — folded into Phase 78.
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 78 | Ready for review | opencode | 2026-07-04 | Modal/master-detail migration to useActionFeedback (users NewUserForm, certifications editor, api-form create-key); actions drop self-revalidate; new user-create prod e2e. 202 unit, 12/12 e2e prod |
 | 77 | Ready for review | opencode | 2026-07-04 | Settings-tab forms migration to useActionFeedback (10 actions drop self-revalidate; 8 forms); new settings-save prod e2e. 202 unit, 11/11 e2e prod |
 | 76 | Ready for review | opencode | 2026-07-04 | UX/a11y (Batch D): input labels/aria, compare-table scope + semantic changed-row token, CalendarHeatmap off RAG palette, portal dates via formatDate, 6 loading skeletons, modal overlays aligned. 202 unit, 10/10 e2e prod |
 | 75 | Ready for review | opencode | 2026-07-04 | Correctness (Batch C): configurable RAG thresholds on dashboard; bulk-send email/send failure separation + logging; template builder audit logging; removed dead finalizeAction; role/user error handling; delete-audit ordering; perf (dueDate index, findings DB pagination, scoring N+1 batch); naming cleanup; AGENTS.md invariants. 202 unit, 10/10 e2e prod |

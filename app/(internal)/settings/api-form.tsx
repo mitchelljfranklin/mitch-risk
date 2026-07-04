@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -41,15 +42,22 @@ type ApiFormProps = {
 };
 
 export function ApiForm({ enabled, keys }: ApiFormProps) {
+  const router = useRouter();
   const [showNewKey, setShowNewKey] = useState<string | null>(null);
-  const [createState, createAction, createPending] = useActionState(
+  const [, createAction, createPending] = useActionState(
     (
       prev: { ok: boolean; message: string; key?: string } | undefined,
       data: FormData,
     ) => {
       const result = createApiKeyAction(prev, data);
-      void result.then((r) => {
-        if (r?.key) setShowNewKey(r.key);
+      // Read the one-time key and refresh the list from the resolved action
+      // promise (not a revalidatePath in the action, which would drop the
+      // returned key in production). This runs after the result is applied.
+      void result.then((resolved) => {
+        if (resolved?.ok) {
+          if (resolved.key) setShowNewKey(resolved.key);
+          router.refresh();
+        }
       });
       return result;
     },

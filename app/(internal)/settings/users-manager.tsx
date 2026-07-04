@@ -31,7 +31,7 @@ import {
   toggleUserAction,
   type UserActionState,
 } from "@/lib/actions/users";
-import { useFormToast } from "@/hooks/use-form-toast";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 import { formatDate } from "@/lib/utils";
 
 export type UserView = {
@@ -63,7 +63,7 @@ function NewUserForm({
     addUserAction,
     initialState,
   );
-  useFormToast(state);
+  useActionFeedback(state);
 
   useEffect(() => {
     if (state?.ok) {

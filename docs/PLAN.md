@@ -638,6 +638,15 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   A new e2e asserts a settings save toast against the production build. Remaining: Phase 78
   (modal/master-detail managers: users, certifications) and Phase 79 (vendor edit, profile).
 
+- **Phase 78 — Modal/master-detail forms migration (Phase-74 follow-up, part 2).** Migrated the
+  Sheet-based create/edit flows: `NewUserForm` (`addUserAction`), the certifications editor
+  (`saveCertificationAction`), and the API key creation banner (`createApiKeyAction`). Those actions
+  no longer `revalidatePath` their own route; the client shows the toast + guarded `router.refresh()`
+  (`useActionFeedback`), and the create-key banner reads the one-time key from the resolved action
+  promise then refreshes the list. Void edit sub-actions (role change, disable, reset, delete, cert
+  delete) keep their revalidation. A new e2e creates a user and asserts the modal auto-closes and
+  the row appears against the production build. Remaining: Phase 79 (vendor edit, profile).
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

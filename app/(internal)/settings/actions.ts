@@ -435,7 +435,9 @@ export async function createApiKeyAction(
     await logAudit(user.id, "API_KEY_CREATED", "ApiKey", created.id);
   }
 
-  revalidatePath("/settings");
+  // Result (incl. the one-time key) is consumed by useActionState; the client
+  // refreshes the list after (see useActionFeedback) instead of revalidating
+  // the current route, which would drop the returned state in production.
   return {
     ok: true,
     message: `Key created: ${displayPrefix}. Copy the key below — it won't be shown again.`,

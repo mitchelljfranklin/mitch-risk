@@ -67,7 +67,8 @@ export async function saveCertificationAction(
     }
   }
 
-  revalidatePath(`/vendors/${vendorId}`);
+  // Result is consumed by useActionState in a modal; the client refreshes after
+  // closing (see useActionFeedback) rather than revalidating the current route.
   return { ok: true, message: "Certification saved." };
 }
 
