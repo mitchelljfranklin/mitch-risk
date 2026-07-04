@@ -82,6 +82,53 @@ A phase cannot be marked **Ready for review** unless all of these are true:
 | 44 | Question type labels | Approved |
 | 45 | Audit & email pagination + export | Approved |
 | 46 | Portal save/resume UX | Approved |
+| 47 | Role management & access control (RBAC) | Approved |
+| 48 | Data lifecycle & storage cleanup | Approved |
+| 49 | Roles management UX | Approved |
+| 50 | UX & user-management fixes | Approved |
+| 51 | Correctness fixes | Approved |
+| 52 | Vendor & assessment list UX | Approved |
+| 53 | Review & findings workflow | Approved |
+| 54 | Template builder | Approved |
+| 55 | Account & shell | Approved |
+| 56 | Portal polish | Approved |
+| 57 | Mobile & accessibility | Approved |
+| 58 | Settings & auth enhancements | Approved |
+| 59 | Reverse-proxy hardening & multi-proxy docs | Approved |
+| 60 | Profile UX & SSO-aware credentials | Approved |
+| 61 | Test database isolation | Approved |
+| 62 | Users tab rework & dark-mode card consistency | Approved |
+| 63 | Map a whole framework to a question | Approved |
+| 64 | Full-access, creator-independent API keys | Approved |
+| 65 | Vendors list view toggle (rows/cards) | Approved |
+| 66 | Cross-vendor risk register | Approved |
+| 67 | Vendor profile enrichment | Approved |
+| 68 | Certifications & key-date tracking + reminders | Approved |
+| 69 | Vendor edit UX fix (toast + breadcrumbs) | Approved |
+| 70 | Vendor import/export parity | Approved |
+| 71 | Dashboard graph pack | Approved |
+| 72 | Security hardening (Critical / Batch A) | Approved |
+| 73 | Security hardening (Batch B) | Approved |
+| 74 | Production Server-Action feedback fix + prod e2e | Approved |
+| 75 | Correctness (Batch C) + AGENTS.md | Approved |
+| 76 | UX / accessibility (Batch D) | Approved |
+| 77 | Settings-tab forms migration (Phase-74 follow-up, pt 1) | Approved |
+| 78 | Modal/master-detail forms migration (Phase-74 follow-up, pt 2) | Approved |
+| 79 | Profile/vendor forms migration (Phase-74 follow-up, pt 3) | Approved |
+| 80 | Graceful secret-decrypt degradation | Approved |
+| 81 | Sheet-footer secondary button styling | Approved |
+| 82 | Dark-mode primary buttons (appearance token scoping) | Approved |
+| 83 | Configurable rate limits | Approved |
+| 84 | Dashboard layout rework | Approved |
+| 85 | Compact dashboard chart cards | Approved |
+| 86 | Vendors by tier chart | Approved |
+| 87 | Donut radii adjustments | Approved |
+| 88 | Assessment status RadialBar chart | Approved |
+| 89 | Demo-data seed script | Approved |
+| 90 | Deferred UX polish | Approved |
+| 91 | Assessment activity timeline | Approved |
+| 92 | Assessment status bar + chart removal + bar unification | Approved |
+| 93 | Sticky header + scroll-to-top | Approved |
 
 ---
 
@@ -2192,6 +2239,111 @@ server (the "dashboard stat cards" test still matches). No schema/RBAC/OpenAPI c
 
 ---
 
+## Phase 85 — Compact dashboard chart cards
+
+**Scope:** shrink chart cards for denser information display on the dashboard.
+
+- [x] Chart grid changed to `md:grid-cols-3 xl:grid-cols-4` (was 2-up).
+- [x] `ChartContainer`s wrapped in `aspect-[7/4]` divs (was `aspect-video`).
+- [x] Donut radii tuned through multiple iterations: 65/95 (outer/inner).
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, Playwright 14/14. No schema/migration.
+
+---
+
+## Phase 86 — Vendors by tier chart
+
+**Scope:** add a horizontal bar chart showing vendor counts per tier to the dashboard grid.
+
+- [x] Computed from `allVendors` tier counts (zero new queries).
+- [x] Added to the 4-chart grid; later removed in Phase 92 (redundant with Risk-by-tier + stat cards).
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓. No schema/migration.
+
+---
+
+## Phase 87 — Donut radii adjustments
+
+**Scope:** iterate donut chart radii for visual balance.
+
+- [x] Multiple tuning passes: 30/50 → 45/70 → 55/85 → 65/95.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓. No schema/migration.
+
+---
+
+## Phase 88 — Assessment status RadialBar chart
+
+**Scope:** replace the donut for assessment status breakdown with a RadialBarChart.
+
+- [x] Replaced donut with `RadialBarChart` + `LabelList` (concentric arcs with status name inside).
+- [x] Later replaced by a horizontal bar chart in Phase 92 (consistent visual language, better cross-status comparison).
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓. No schema/migration.
+
+---
+
+## Phase 89 — Demo-data seed script
+
+**Scope:** generate realistic synthetic data for demos, screenshots, and testing — 50 vendors, ~65 assessments, 4 compliance profiles, 11 certifications across a 6-month date spread.
+
+- [x] `prisma/seed-demo.ts` — creates vendors with varied tiers, contacts, enriched fields; launches assessments via random starter templates; scores them; adds findings; creates certifications with expiry; generates audit log entries.
+- [x] Idempotent (checks for demo vendor count first); `--reset` flag to regenerate.
+- [x] Prerequisites: `npm run db:seed` first (starter templates + system roles must exist).
+- [x] Run: `npx tsx prisma/seed-demo.ts [--reset]`.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 206 passed, Playwright 14/14. No schema/migration.
+
+---
+
+## Phase 90 — Deferred UX polish
+
+**Scope:** clean up the small items flagged in Phase 76's optional follow-up.
+
+- [x] Extracted `ProgressBar` component (`components/progress-bar.tsx`) — 5 call sites (portal, dashboard, vendor detail, findings panel, assessment detail).
+- [x] Standardised `text-[10px]` → `text-xs` across 12 occurrences in 9 files.
+- [x] Added `type="button"` to the `ThemeToggle` (prevents accidental form submission).
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 206 passed, Playwright 14/14. No schema/migration.
+
+---
+
+## Phase 91 — Assessment activity timeline
+
+**Scope:** replace the static `CalendarHeatmap` with an interactive area chart showing assessment activity over time.
+
+- [x] New `components/assessment-timeline.tsx` — `AreaChart` with gradient fill, time-range selector (7d / 30d / 90d), tooltip, date-axis labels.
+- [x] Dashboard page renders `AssessmentTimeline` instead of `CalendarHeatmap`.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 206 passed, Playwright 14/14. No schema/migration.
+
+---
+
+## Phase 92 — Assessment status bar + chart removal + bar unification
+
+**Scope:** replace the assessment-status RadialBar with a consistent horizontal bar chart, remove the redundant Vendors-by-tier chart, and unify all bar sizes across the dashboard.
+
+- [x] Assessment status chart: replaced `RadialBarChart` with horizontal `BarChart` (matching findings-by-severity). `STATUS_CONFIG` retained for per-segment `Cell` fill colours.
+- [x] Removed Vendors-by-tier chart (redundant with Risk-by-tier stacked bar and tier stat cards).
+- [x] Unified bar sizes: `barSize={20}` for non-stacked (findings-by-severity + assessment-status), `barCategoryGap="30%"` for stacked (risk-by-tier, where `barSize` is ineffective).
+- [x] Dashboard chart grid returned to `md:grid-cols-3 xl:grid-cols-4`.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 206 passed, Playwright 14/14. No schema/migration.
+
+---
+
+## Phase 93 — Sticky header + scroll-to-top
+
+**Scope:** keep the top bar pinned on scroll and add a floating scroll-to-top button for long-page navigation.
+
+- [x] Sticky header: `<header>` in `(internal)/layout.tsx` gained `sticky top-0 z-10 bg-background` — stays pinned on all internal pages.
+- [x] `components/scroll-to-top.tsx` — floating `ChevronUp` button (`fixed bottom-6 right-6 z-50`), appears at ≥300px scroll, smooth-scrolls to top.
+- [x] Placed inside `<SidebarInset>` in the `(internal)` layout.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓. No schema/migration.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -2242,29 +2394,38 @@ server (the "dashboard stat cards" test still matches). No schema/RBAC/OpenAPI c
 | 44 | Approved | User | 2026-07-02 | MULTIPLE_CHOICE → 'Single choice', MULTI_SELECT → 'Multi-select' labels; 73 tests |
 | 45 | Approved | User | 2026-07-02 | Page size dropdown (10/25/50/100) with auto-refresh, default 10, export dropdown for audit; 73 tests |
 | 46 | Approved | User | 2026-07-02 | Portal save/resume UX: persistent banner, timestamped save status, submission confirmation card; 73 tests |
-| 47 | Ready for review | opencode | 2026-07-02 | RBAC: DB-backed roles (Admin/Reviewer/Viewer + custom), permission catalog, per-permission guards on actions/routes/pages, Roles settings tab, last-admin protection, UI controls hidden by permission; post-review hardening (evidence-route 403, dashboard universal landing, API 403 tests); 92 unit + 7 e2e |
-| 48 | Ready for review | opencode | 2026-07-02 | Data lifecycle: evidence files deleted on assessment/vendor delete, replace-on-upload, logo cleanup, template-version re-link on delete, cron orphan-sweep + storage.list(); 97 unit + 7 e2e |
-| 49 | Ready for review | opencode | 2026-07-02 | Roles UX: master–detail list + slide-over Sheet editor, permission summary chips, group/master select-all, duplicate role; 101 unit + 8 e2e |
-| 50 | Ready for review | opencode | 2026-07-02 | UX fixes: readable destructive button, success toast tokens (decoupled from RAG), stat-card count-up fix, dashboard filter fix, delete user (guarded) with audit/review history preserved; 103 unit + 9 e2e |
-| 51 | Ready for review | opencode | 2026-07-02 | Correctness: CHECKBOX scoring, import all question types, full template version lineage, remove dead getDashboardMetrics, portal cookie lifetime, portal gate router.refresh; 104 unit + 9 e2e |
-| 52 | Ready for review | opencode | 2026-07-02 | List UX: vendor rows w/ RAG score+last-assessed, sort+pagination on both lists, assessment status colours + overdue badge/filter + score, vendor compare picker; reusable Pagination/AutoSubmitSelect/StatusBadge; 111 unit + 9 e2e |
-| 53 | Ready for review | opencode | 2026-07-02 | Review workflow: auto UNDER_REVIEW, send-back-to-vendor (clarification email + token extend + portalRecipients) vs reopen-review, finding lifecycle Open/Remediated/Risk-accepted w/ resolver + rescore-preserve, review progress+filter, RAG score; 113 unit + 9 e2e |
-| 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
-| 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
-| 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
-| 84 | Ready for review | opencode | 2026-07-04 | Dashboard layout rework: full-width for /dashboard (PageMain), responsive insight-rail grid, deduped score charts (donut), slim top-6 highest-risk vendors + View all, compact heatmap. 14/14 e2e prod |
-| 83 | Ready for review | opencode | 2026-07-04 | Configurable rate limits: portal page-loads/uploads/submits/password + password-reset + break-glass exposed in the Limits tab (were hardcoded); read via getAssessmentSettings. 206 unit, 14/14 e2e prod |
-| 82 | Ready for review | opencode | 2026-07-04 | Dark-mode primary buttons fix: custom brand primary/secondary scoped to :root:not(.dark) so dark mode keeps shadcn's visible palette (was invisible black-on-black). 14/14 e2e prod |
-| 81 | Ready for review | opencode | 2026-07-04 | Sheet-footer secondary buttons ghost->outline (users/roles/emails/certifications) so they read as buttons with a visible hover in dark mode. 14/14 e2e prod |
-| 80 | Ready for review | opencode | 2026-07-04 | Graceful secret-decrypt degradation: getSsoSecret/getEmailSecret return null (log) instead of throwing on decrypt failure (changed APP_ENCRYPTION_KEY no longer 500s every page); +2 tests; pinned e2e webServer APP_URL/AUTH_URL to localhost. 204 unit |
-| 79 | Ready for review | opencode | 2026-07-04 | Profile/vendor forms migration to useActionFeedback (final); unified credentials-callback limiter under loginRateLimitPerMin; new profile+vendor-edit prod e2e; global-setup raises login throttle. 202 unit, 14/14 e2e prod |
-| 78 | Ready for review | opencode | 2026-07-04 | Modal/master-detail migration to useActionFeedback (users NewUserForm, certifications editor, api-form create-key); actions drop self-revalidate; new user-create prod e2e. 202 unit, 12/12 e2e prod |
-| 77 | Ready for review | opencode | 2026-07-04 | Settings-tab forms migration to useActionFeedback (10 actions drop self-revalidate; 8 forms); new settings-save prod e2e. 202 unit, 11/11 e2e prod |
-| 76 | Ready for review | opencode | 2026-07-04 | UX/a11y (Batch D): input labels/aria, compare-table scope + semantic changed-row token, CalendarHeatmap off RAG palette, portal dates via formatDate, 6 loading skeletons, modal overlays aligned. 202 unit, 10/10 e2e prod |
-| 75 | Ready for review | opencode | 2026-07-04 | Correctness (Batch C): configurable RAG thresholds on dashboard; bulk-send email/send failure separation + logging; template builder audit logging; removed dead finalizeAction; role/user error handling; delete-audit ordering; perf (dueDate index, findings DB pagination, scoring N+1 batch); naming cleanup; AGENTS.md invariants. 202 unit, 10/10 e2e prod |
-| 74 | Ready for review | opencode | 2026-07-04 | Prod Server-Action feedback fix: root-caused revalidatePath(current route)+useActionState dropping state in prod builds; resilient module-level toast store + useActionFeedback (guarded router.refresh) + actions stop self-revalidating (API/roles); middleware nonce-CSP now GET-only; e2e now targets prod build (CRON_SECRET wired); fixed a TZ-flaky cert test. 199 unit, 10/10 e2e on fresh prod |
-| 73 | Ready for review | opencode | 2026-07-03 | Security hardening (Batch B): rate-limiter eviction/bounding, portal-page + credentials-authorize IP limits, upload MIME allowlist, shared API error wrapper (generic 500), nonce-based strict CSP + security headers via middleware; +3 test files, 199 unit passing, 10/10 e2e (dev) |
-| 72 | Ready for review | opencode | 2026-07-03 | Security hardening (Batch A): API-key prefix lookup (+migration invalidating legacy keys), TRUSTED_PROXY_COUNT default 0, constant-time CRON_SECRET (+required in prod), evidence nosniff + inline MIME allowlist, portal edits locked after submit; +3 test files, 191 unit passing |
+| 47 | Approved | User | 2026-07-02 | RBAC: DB-backed roles (Admin/Reviewer/Viewer + custom), permission catalog, per-permission guards on actions/routes/pages, Roles settings tab, last-admin protection, UI controls hidden by permission; post-review hardening (evidence-route 403, dashboard universal landing, API 403 tests); 92 unit + 7 e2e |
+| 48 | Approved | User | 2026-07-02 | Data lifecycle: evidence files deleted on assessment/vendor delete, replace-on-upload, logo cleanup, template-version re-link on delete, cron orphan-sweep + storage.list(); 97 unit + 7 e2e |
+| 49 | Approved | User | 2026-07-02 | Roles UX: master–detail list + slide-over Sheet editor, permission summary chips, group/master select-all, duplicate role; 101 unit + 8 e2e |
+| 50 | Approved | User | 2026-07-02 | UX fixes: readable destructive button, success toast tokens (decoupled from RAG), stat-card count-up fix, dashboard filter fix, delete user (guarded) with audit/review history preserved; 103 unit + 9 e2e |
+| 51 | Approved | User | 2026-07-02 | Correctness: CHECKBOX scoring, import all question types, full template version lineage, remove dead getDashboardMetrics, portal cookie lifetime, portal gate router.refresh; 104 unit + 9 e2e |
+| 52 | Approved | User | 2026-07-02 | List UX: vendor rows w/ RAG score+last-assessed, sort+pagination on both lists, assessment status colours + overdue badge/filter + score, vendor compare picker; reusable Pagination/AutoSubmitSelect/StatusBadge; 111 unit + 9 e2e |
+| 53 | Approved | User | 2026-07-02 | Review workflow: auto UNDER_REVIEW, send-back-to-vendor (clarification email + token extend + portalRecipients) vs reopen-review, finding lifecycle Open/Remediated/Risk-accepted w/ resolver + rescore-preserve, review progress+filter, RAG score; 113 unit + 9 e2e |
+| 54 | Approved | User | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
+| 55 | Approved | User | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
+| 56 | Approved | User | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 93 | Approved | User | 2026-07-04 | Sticky header + scroll-to-top: top bar pinned (sticky top-0 z-10 bg-background), floating ChevronUp button at >=300px scroll with smooth-scroll. No migration |
+| 92 | Approved | User | 2026-07-04 | Assessment status bar (horizontal, matching findings chart), removed Vendors-by-tier chart (redundant), unified bar sizes (barSize=20 / barCategoryGap=30%). 206 unit, 14/14 e2e prod |
+| 91 | Approved | User | 2026-07-04 | Assessment activity timeline: interactive AreaChart (7d/30d/90d selector + gradient fill + tooltip) replacing CalendarHeatmap. 206 unit, 14/14 e2e prod |
+| 90 | Approved | User | 2026-07-04 | Deferred UX polish: extracted ProgressBar component (5 sites), text-[10px]->text-xs (12 occurrences), type=button on ThemeToggle. 206 unit, 14/14 e2e prod |
+| 89 | Approved | User | 2026-07-04 | Demo-data seed script (prisma/seed-demo.ts): 50 vendors, ~65 assessments, 4 compliance profiles, 11 certs, idempotent with --reset. 206 unit, 14/14 e2e prod |
+| 88 | Approved | User | 2026-07-04 | Assessment status RadialBarChart (concentric arcs + LabelList). Later replaced by horizontal bar in P92. 14/14 e2e prod |
+| 87 | Approved | User | 2026-07-04 | Donut radii iteration: 30/50 → 45/70 → 55/85 → 65/95. No migration |
+| 86 | Approved | User | 2026-07-04 | Vendors by tier horizontal bar chart in dashboard grid. Later removed in P92. No migration |
+| 85 | Approved | User | 2026-07-04 | Compact dashboard chart cards: md:grid-cols-3 xl:grid-cols-4, aspect-[7/4] wrappers, tuned donut radii. 14/14 e2e prod |
+| 84 | Approved | User | 2026-07-04 | Dashboard layout rework: full-width for /dashboard (PageMain), responsive insight-rail grid, deduped score charts (donut), slim top-6 highest-risk vendors + View all, compact heatmap. 14/14 e2e prod |
+| 83 | Approved | User | 2026-07-04 | Configurable rate limits: portal page-loads/uploads/submits/password + password-reset + break-glass exposed in the Limits tab (were hardcoded); read via getAssessmentSettings. 206 unit, 14/14 e2e prod |
+| 82 | Approved | User | 2026-07-04 | Dark-mode primary buttons fix: custom brand primary/secondary scoped to :root:not(.dark) so dark mode keeps shadcn's visible palette (was invisible black-on-black). 14/14 e2e prod |
+| 81 | Approved | User | 2026-07-04 | Sheet-footer secondary buttons ghost->outline (users/roles/emails/certifications) so they read as buttons with a visible hover in dark mode. 14/14 e2e prod |
+| 80 | Approved | User | 2026-07-04 | Graceful secret-decrypt degradation: getSsoSecret/getEmailSecret return null (log) instead of throwing on decrypt failure (changed APP_ENCRYPTION_KEY no longer 500s every page); +2 tests; pinned e2e webServer APP_URL/AUTH_URL to localhost. 204 unit |
+| 79 | Approved | User | 2026-07-04 | Profile/vendor forms migration to useActionFeedback (final); unified credentials-callback limiter under loginRateLimitPerMin; new profile+vendor-edit prod e2e; global-setup raises login throttle. 202 unit, 14/14 e2e prod |
+| 78 | Approved | User | 2026-07-04 | Modal/master-detail migration to useActionFeedback (users NewUserForm, certifications editor, api-form create-key); actions drop self-revalidate; new user-create prod e2e. 202 unit, 12/12 e2e prod |
+| 77 | Approved | User | 2026-07-04 | Settings-tab forms migration to useActionFeedback (10 actions drop self-revalidate; 8 forms); new settings-save prod e2e. 202 unit, 11/11 e2e prod |
+| 76 | Approved | User | 2026-07-04 | UX/a11y (Batch D): input labels/aria, compare-table scope + semantic changed-row token, CalendarHeatmap off RAG palette, portal dates via formatDate, 6 loading skeletons, modal overlays aligned. 202 unit, 10/10 e2e prod |
+| 75 | Approved | User | 2026-07-04 | Correctness (Batch C): configurable RAG thresholds on dashboard; bulk-send email/send failure separation + logging; template builder audit logging; removed dead finalizeAction; role/user error handling; delete-audit ordering; perf (dueDate index, findings DB pagination, scoring N+1 batch); naming cleanup; AGENTS.md invariants. 202 unit, 10/10 e2e prod |
+| 74 | Approved | User | 2026-07-04 | Prod Server-Action feedback fix: root-caused revalidatePath(current route)+useActionState dropping state in prod builds; resilient module-level toast store + useActionFeedback (guarded router.refresh) + actions stop self-revalidating (API/roles); middleware nonce-CSP now GET-only; e2e now targets prod build (CRON_SECRET wired); fixed a TZ-flaky cert test. 199 unit, 10/10 e2e on fresh prod |
+| 73 | Approved | User | 2026-07-03 | Security hardening (Batch B): rate-limiter eviction/bounding, portal-page + credentials-authorize IP limits, upload MIME allowlist, shared API error wrapper (generic 500), nonce-based strict CSP + security headers via middleware; +3 test files, 199 unit passing, 10/10 e2e (dev) |
+| 72 | Approved | User | 2026-07-03 | Security hardening (Batch A): API-key prefix lookup (+migration invalidating legacy keys), TRUSTED_PROXY_COUNT default 0, constant-time CRON_SECRET (+required in prod), evidence nosniff + inline MIME allowlist, portal edits locked after submit; +3 test files, 191 unit passing |
 | 71 | Approved | user | 2026-07-03 | Dashboard graph pack: findings-by-severity + risk-by-tier (stacked) + assessment-status charts, and an Upcoming key dates (60d) list (certs/contracts/reassessments); computeRiskByTier + listUpcomingKeyDates; +2 test files |
 | 70 | Approved | user | 2026-07-03 | Vendor import/export parity: CSV export adds service/sensitivity/renewal/owner + certifications section; REST + CSV import accept the 3 new scalar fields; OpenAPI VendorImport aligned (dropped ownerId); +5 tests |
 | 69 | Approved | user | 2026-07-03 | Vendor edit UX fix: success toast on update (+ create toast via FlashToast/?created=1), breadcrumbs on new/edit vendor pages |
@@ -2273,10 +2434,10 @@ server (the "dashboard stat cards" test still matches). No schema/RBAC/OpenAPI c
 | 66 | Approved | user | 2026-07-03 | Cross-vendor risk register: /risk-register page (filters, summary stats, inline status for reviewers, pagination) + vendor-detail Findings card; listFindings/getFindingSummary/listVendorFindings reuse Finding model; +4 integration tests |
 | 65 | Approved | user | 2026-07-03 | Vendors list Rows/Cards view toggle: cookie-backed (vendors_view, default rows), server-rendered card grid with score/tier/last-assessed; generic ViewToggle component; +1 unit test |
 | 64 | Approved | user | 2026-07-03 | Full-access API keys: keys grant ALL_PERMISSIONS regardless of creator role and survive creator disable/delete (createdBy nullable + SetNull migration); gated by API_MANAGE; docs/OpenAPI updated; +1 integration test |
-| 63 | Ready for review | opencode | 2026-07-03 | Map-whole-framework: per-framework tri-state "select all" in the control picker (n/total count, filter-independent) so a certification question can map every control in a framework; pure lib/control-selection.ts + unit tests; no back-end change |
-| 62 | Ready for review | opencode | 2026-07-03 | Users tab rework: Roles-style master–detail Sheet (search, role/SSO/status badges, added date), SSO-aware password reset hidden, listStaffAccounts view; Users + Roles tabs wrapped in Cards for dark-mode shading parity |
-| 61 | Ready for review | opencode | 2026-07-03 | Test DB isolation: vitest.setup prefers TEST_DATABASE_URL + refuses non-test DBs; settings test snapshots/restores; notifications test no longer wipes logs. Fixes integration tests destroying real org/email/appearance settings + notification history |
-| 60 | Ready for review | opencode | 2026-07-03 | Profile UX & SSO-aware credentials: card-based profile layout (wider, un-cramped), SSO-only users get read-only email + hidden password card + name-only update, forgot-password skips SSO-only accounts; +2 unit tests |
-| 59 | Ready for review | opencode | 2026-07-03 | Reverse-proxy hardening: proxy-aware getClientIp (trusted-hop XFF / CLIENT_IP_HEADER) across login/break-glass/portal/API + API-key IP allowlist; TRUSTED_PROXY_COUNT/CLIENT_IP_HEADER env; README proxy guide (Caddy/nginx/Zoraxy/Azure); +12 unit tests |
-| 58 | Ready for review | opencode | 2026-07-03 | Settings & auth: Test SMTP button, SSO toggle fix (React 19 form-reset + Radix; key-remount across sso/api/limits toggles), email-template master-detail Sheet + reset-to-default, removed per-answer "Reject" (+ data migration), SSO-only login + break-glass URL; 131 unit + 10 e2e |
+| 63 | Approved | User | 2026-07-03 | Map-whole-framework: per-framework tri-state "select all" in the control picker (n/total count, filter-independent) so a certification question can map every control in a framework; pure lib/control-selection.ts + unit tests; no back-end change |
+| 62 | Approved | User | 2026-07-03 | Users tab rework: Roles-style master–detail Sheet (search, role/SSO/status badges, added date), SSO-aware password reset hidden, listStaffAccounts view; Users + Roles tabs wrapped in Cards for dark-mode shading parity |
+| 61 | Approved | User | 2026-07-03 | Test DB isolation: vitest.setup prefers TEST_DATABASE_URL + refuses non-test DBs; settings test snapshots/restores; notifications test no longer wipes logs. Fixes integration tests destroying real org/email/appearance settings + notification history |
+| 60 | Approved | User | 2026-07-03 | Profile UX & SSO-aware credentials: card-based profile layout (wider, un-cramped), SSO-only users get read-only email + hidden password card + name-only update, forgot-password skips SSO-only accounts; +2 unit tests |
+| 59 | Approved | User | 2026-07-03 | Reverse-proxy hardening: proxy-aware getClientIp (trusted-hop XFF / CLIENT_IP_HEADER) across login/break-glass/portal/API + API-key IP allowlist; TRUSTED_PROXY_COUNT/CLIENT_IP_HEADER env; README proxy guide (Caddy/nginx/Zoraxy/Azure); +12 unit tests |
+| 58 | Approved | User | 2026-07-03 | Settings & auth: Test SMTP button, SSO toggle fix (React 19 form-reset + Radix; key-remount across sso/api/limits toggles), email-template master-detail Sheet + reset-to-default, removed per-answer "Reject" (+ data migration), SSO-only login + break-glass URL; 131 unit + 10 e2e |
 | 57 | Approved | user | 2026-07-03 | Mobile & a11y: 28 fixes — settings tabs scroll, dense rows wrap, responsive controls, not-found.tsx, toast/idle/command-palette ARIA, skip-link, error reset(), img CLS, Firefox scrollbar, empty-state SVG aria-hidden, semantic sidebar, pagination live region, fieldset grouping; 122 unit + 9 e2e |
