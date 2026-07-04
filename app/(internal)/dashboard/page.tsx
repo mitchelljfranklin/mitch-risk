@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardCharts } from "@/components/dashboard-charts";
 import { StatCard, ScoreStatCard } from "@/components/stat-card";
-import { CalendarHeatmap } from "@/components/calendar-heatmap";
+import { AssessmentTimeline } from "@/components/assessment-timeline";
 import { requireUser } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getDashboardData } from "@/lib/db/compliance";
@@ -331,7 +331,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Assessment activity */}
-          <CalendarHeatmap days={contributionDays} />
+          <AssessmentTimeline days={contributionDays} />
         </>
       )}
     </div>
