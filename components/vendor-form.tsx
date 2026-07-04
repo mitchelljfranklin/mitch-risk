@@ -21,7 +21,7 @@ import {
   VENDOR_TIER_LABELS,
   VENDOR_TIERS,
 } from "@/lib/schemas/vendor";
-import { useFormToast } from "@/hooks/use-form-toast";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 
 type VendorAction = (
   state: VendorFormState,
@@ -55,7 +55,7 @@ export function VendorForm({
   defaults,
 }: VendorFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  useFormToast(state);
+  useActionFeedback(state);
   const cancelHref = vendorId ? `/vendors/${vendorId}` : "/vendors";
 
   return (

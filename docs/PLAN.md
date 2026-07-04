@@ -647,6 +647,17 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   delete) keep their revalidation. A new e2e creates a user and asserts the modal auto-closes and
   the row appears against the production build. Remaining: Phase 79 (vendor edit, profile).
 
+- **Phase 79 — Profile/vendor forms migration (Phase-74 follow-up, part 3, final).** Migrated the
+  profile form (`updateProfileAction` no longer revalidates its own `/profile` route) and the shared
+  vendor form to `useActionFeedback`; the vendor edit action already revalidated the *detail* route
+  (not the edit route) so it was unaffected, but the shared form is now consistent. Also unified the
+  Phase-73 credentials-callback login limiter under the configurable `loginRateLimitPerMin` (instead
+  of a separate hardcoded 10) so both the login form and the direct-callback path honour the same
+  admin-set throttle. New e2e assert profile-save and vendor-edit toasts against the production
+  build; e2e `global-setup` raises `loginRateLimitPerMin` so the growing suite's many same-IP logins
+  don't trip the limiter. This completes the deferred `useActionFeedback` rollout — every
+  state-returning in-place form now shows its toast reliably in production.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

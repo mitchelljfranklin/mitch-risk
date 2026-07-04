@@ -1,7 +1,6 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import { revalidatePath } from "next/cache";
 
 import { getCurrentUser, signOut } from "@/lib/auth";
 import {
@@ -53,7 +52,8 @@ export async function updateProfileAction(
       await logAudit(user.id, "UPDATE_PROFILE");
     }
 
-    revalidatePath("/profile");
+    // Result feeds useActionState; the client refreshes (useActionFeedback)
+    // rather than revalidating the current route, which drops the toast in prod.
     return { ok: true, message: "Profile updated." };
   }
 
@@ -108,6 +108,6 @@ export async function updateProfileAction(
     await signOut({ redirectTo: "/login?updated=1" });
   }
 
-  revalidatePath("/profile");
+  // See above: the client refreshes rather than revalidating the current route.
   return { ok: true, message: "Profile updated." };
 }

@@ -18,9 +18,11 @@ import {
   SYSTEM_ROLE_NAMES,
   hasPermission as permissionInList,
 } from "@/lib/permissions";
-import { getSsoSecret, getSsoSettings } from "@/lib/settings";
-
-const CREDENTIALS_AUTH_ATTEMPTS_PER_MINUTE = 10;
+import {
+  getAssessmentSettings,
+  getSsoSecret,
+  getSsoSettings,
+} from "@/lib/settings";
 
 export const getRolePermissions = cache(
   async (roleId: string): Promise<{ name: string; permissions: string[] }> => {
@@ -121,12 +123,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth(async () => {
           const clientIp = request?.headers
             ? getClientIp(request.headers)
             : "unknown";
+          // Honour the same admin-configured login throttle as the login form,
+          // so the direct-callback path can't be used to bypass it.
+          const { loginRateLimitPerMin } = await getAssessmentSettings();
           if (
-            !rateLimit(
-              "credentials-callback",
-              clientIp,
-              CREDENTIALS_AUTH_ATTEMPTS_PER_MINUTE,
-            )
+            !rateLimit("credentials-callback", clientIp, loginRateLimitPerMin)
           ) {
             return null;
           }

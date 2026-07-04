@@ -15,6 +15,10 @@ import { createVendor } from "@/lib/db/vendors";
 import { SYSTEM_ROLE_NAMES } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { type QuestionInput } from "@/lib/schemas/template";
+import {
+  getAssessmentSettings,
+  updateAssessmentSettings,
+} from "@/lib/settings";
 
 const E2E_VENDOR = "E2E Vendor";
 const E2E_TEMPLATE = "E2E Template";
@@ -41,6 +45,14 @@ function buildQuestion(
 }
 
 export default async function globalSetup() {
+  // The suite signs in many times from one IP; raise the login throttle so the
+  // per-IP rate limiter doesn't fail otherwise-unrelated tests.
+  const assessmentSettings = await getAssessmentSettings();
+  await updateAssessmentSettings({
+    ...assessmentSettings,
+    loginRateLimitPerMin: 1000,
+  });
+
   await prisma.vendor.deleteMany({ where: { name: E2E_VENDOR } });
   await prisma.template.deleteMany({ where: { name: E2E_TEMPLATE } });
 

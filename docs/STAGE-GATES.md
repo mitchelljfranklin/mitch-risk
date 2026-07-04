@@ -2057,6 +2057,33 @@ target first; create/redirect forms are unaffected).
 
 ---
 
+## Phase 79 — Profile/vendor forms migration (Phase-74 follow-up, part 3, final)
+
+**Scope:** finish the deferred `useActionFeedback` rollout (profile + vendor edit) and stabilise the
+growing e2e suite's login throttling.
+
+**Checklist:**
+
+- [x] **profile** — `updateProfileAction` drops `revalidatePath("/profile")` (self-route); the
+      email-change path still redirects via `signOut`. `profile-form` uses `useActionFeedback`.
+- [x] **vendor-form (shared)** — now uses `useActionFeedback`. `updateVendorAction` revalidates the
+      *detail* route (`/vendors/[id]`), not the edit route, so it was already unaffected; the create
+      path redirects (`?created=1` + `FlashToast`) and is unaffected — both remain correct.
+- [x] **login throttle unified** — the Phase-73 credentials-callback limiter now reads the
+      configurable `loginRateLimitPerMin` (was a separate hardcoded 10), so the login form and the
+      direct-callback path share one admin-set limit. e2e `global-setup` raises it so the suite's
+      many same-IP logins don't fail unrelated tests.
+- [x] **e2e** — new `profile-vendor-edit` spec asserts the profile-save and vendor-edit success
+      toasts against the production build.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 202 passed, Playwright 14/14 on a
+fresh production server. No schema/migration/RBAC/OpenAPI changes.
+
+**Deferred `useActionFeedback` rollout: complete.** Every state-returning in-place form (settings,
+roles, users, certifications, api-key, profile, vendor) now shows its toast reliably in production.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -2117,6 +2144,7 @@ target first; create/redirect forms are unaffected).
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 79 | Ready for review | opencode | 2026-07-04 | Profile/vendor forms migration to useActionFeedback (final); unified credentials-callback limiter under loginRateLimitPerMin; new profile+vendor-edit prod e2e; global-setup raises login throttle. 202 unit, 14/14 e2e prod |
 | 78 | Ready for review | opencode | 2026-07-04 | Modal/master-detail migration to useActionFeedback (users NewUserForm, certifications editor, api-form create-key); actions drop self-revalidate; new user-create prod e2e. 202 unit, 12/12 e2e prod |
 | 77 | Ready for review | opencode | 2026-07-04 | Settings-tab forms migration to useActionFeedback (10 actions drop self-revalidate; 8 forms); new settings-save prod e2e. 202 unit, 11/11 e2e prod |
 | 76 | Ready for review | opencode | 2026-07-04 | UX/a11y (Batch D): input labels/aria, compare-table scope + semantic changed-row token, CalendarHeatmap off RAG palette, portal dates via formatDate, 6 loading skeletons, modal overlays aligned. 202 unit, 10/10 e2e prod |

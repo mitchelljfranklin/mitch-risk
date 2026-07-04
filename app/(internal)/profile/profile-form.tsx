@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { type ProfileState, updateProfileAction } from "@/lib/actions/profile";
-import { useFormToast } from "@/hooks/use-form-toast";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 
 const initialState: ProfileState = undefined;
 
@@ -34,7 +34,7 @@ export function ProfileForm({
     updateProfileAction,
     initialState,
   );
-  useFormToast(state);
+  useActionFeedback(state);
 
   return (
     <form action={formAction} className="flex flex-col gap-6">
