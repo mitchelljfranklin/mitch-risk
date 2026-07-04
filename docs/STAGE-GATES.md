@@ -2084,6 +2084,32 @@ roles, users, certifications, api-key, profile, vendor) now shows its toast reli
 
 ---
 
+## Phase 80 — Graceful secret-decrypt degradation
+
+**Scope:** stop a changed `APP_ENCRYPTION_KEY` (undecryptable stored secrets) from 500-ing every
+page; make the e2e suite independent of the developer's deployment `.env`.
+
+**Checklist:**
+
+- [x] `lib/settings/index.ts` — `getSsoSecret`/`getEmailSecret` route decryption through
+      `safeDecryptSecret`: on failure they `console.error` (naming the key + APP_ENCRYPTION_KEY hint)
+      and return `null`. Callers already treat `null` safely (SSO uses `secret ?? ""`, mailer uses
+      `pass || undefined`), so the app degrades instead of crashing. `decryptSecret` unchanged (strict).
+- [x] Tests: tampered ciphertext for `email.smtpPassword` + an `sso.*ClientSecret` → the getters
+      resolve `null` and don't throw (`settings.integration.test.ts`).
+- [x] `playwright.config.ts` — `webServer.env` pins `APP_URL`/`AUTH_URL=http://localhost:3000` so a
+      deployment-pointed `.env` (e.g. a real SSO domain) doesn't redirect sign-in off localhost and
+      break the suite.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 204 passed (test DB). e2e not run
+here (local `.env` is configured for live SSO testing on a real domain); server verified healthy
+manually. No migration/RBAC/OpenAPI.
+
+**Note:** this is error-handling only — it does not recover data. Recovery after a key change is
+still: restore the old `APP_ENCRYPTION_KEY`, or re-save the SMTP/SSO secrets under the new key.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -2144,6 +2170,7 @@ roles, users, certifications, api-key, profile, vendor) now shows its toast reli
 | 54 | Ready for review | opencode | 2026-07-02 | Template builder: reorder sections/questions, vendor-eye preview, duplicate template, multi-rule conditional logic (all/any + comparison operators, legacy-compatible), control→questions reverse mapping; 120 unit + 9 e2e |
 | 55 | Ready for review | opencode | 2026-07-03 | Account & shell: forgot-password/reset flow, self-service profile, command palette (⌘K/fuzzy/permission-aware), breadcrumbs on 5 deep pages, audit-action list synced; 122 unit + 9 e2e |
 | 56 | Ready for review | opencode | 2026-07-03 | Portal polish: confirm-before-submit, evidence delete + upload hints, expiry countdown, reviewer comments visible, reopened banner, conditional CSS transitions, dark-mode submit button; 122 unit + 9 e2e |
+| 80 | Ready for review | opencode | 2026-07-04 | Graceful secret-decrypt degradation: getSsoSecret/getEmailSecret return null (log) instead of throwing on decrypt failure (changed APP_ENCRYPTION_KEY no longer 500s every page); +2 tests; pinned e2e webServer APP_URL/AUTH_URL to localhost. 204 unit |
 | 79 | Ready for review | opencode | 2026-07-04 | Profile/vendor forms migration to useActionFeedback (final); unified credentials-callback limiter under loginRateLimitPerMin; new profile+vendor-edit prod e2e; global-setup raises login throttle. 202 unit, 14/14 e2e prod |
 | 78 | Ready for review | opencode | 2026-07-04 | Modal/master-detail migration to useActionFeedback (users NewUserForm, certifications editor, api-form create-key); actions drop self-revalidate; new user-create prod e2e. 202 unit, 12/12 e2e prod |
 | 77 | Ready for review | opencode | 2026-07-04 | Settings-tab forms migration to useActionFeedback (10 actions drop self-revalidate; 8 forms); new settings-save prod e2e. 202 unit, 11/11 e2e prod |

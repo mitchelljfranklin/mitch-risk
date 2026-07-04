@@ -119,14 +119,28 @@ export async function getFileSettings(): Promise<FileSettings> {
   return fileSettingsSchema.parse(record);
 }
 
+// A stored secret that can't be decrypted (almost always because
+// APP_ENCRYPTION_KEY changed) must degrade gracefully — SSO/email stop working
+// and it's logged — rather than throw and 500 every page that reads a secret.
+function safeDecryptSecret(value: string, settingKey: string): string | null {
+  try {
+    return decryptSecret(value);
+  } catch (error) {
+    console.error(
+      `[settings] failed to decrypt "${settingKey}" — has APP_ENCRYPTION_KEY changed? Re-save this secret to fix.`,
+      error instanceof Error ? error.message : error,
+    );
+    return null;
+  }
+}
+
 export async function getEmailSecret(): Promise<string | null> {
-  const row = await prisma.appSetting.findUnique({
-    where: { key: "email.smtpPassword" },
-  });
+  const key = "email.smtpPassword";
+  const row = await prisma.appSetting.findUnique({ where: { key } });
   if (!row || typeof row.value !== "string" || row.value.length === 0) {
     return null;
   }
-  return decryptSecret(row.value);
+  return safeDecryptSecret(row.value, key);
 }
 
 export async function getSsoSecret(provider: string): Promise<string | null> {
@@ -135,7 +149,7 @@ export async function getSsoSecret(provider: string): Promise<string | null> {
   if (!row || typeof row.value !== "string" || row.value.length === 0) {
     return null;
   }
-  return decryptSecret(row.value);
+  return safeDecryptSecret(row.value, key);
 }
 
 const SSO_SECRET_FIELDS: ReadonlySet<string> = new Set([

@@ -18,8 +18,13 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
     // `next start` runs in production mode, where CRON_SECRET is required.
+    // Pin the app/auth URL to localhost so the suite works regardless of the
+    // developer's .env (which may point APP_URL at a real deployment — that
+    // would make NextAuth redirect sign-in off localhost and break every test).
     env: {
       CRON_SECRET: process.env.CRON_SECRET ?? "e2e-cron-secret",
+      APP_URL: "http://localhost:3000",
+      AUTH_URL: "http://localhost:3000",
     },
   },
 });

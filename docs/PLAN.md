@@ -658,6 +658,16 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   don't trip the limiter. This completes the deferred `useActionFeedback` rollout — every
   state-returning in-place form now shows its toast reliably in production.
 
+- **Phase 80 — Graceful secret-decrypt degradation.** A changed/rotated `APP_ENCRYPTION_KEY` left
+  existing encrypted secrets (SMTP password, SSO client secrets) undecryptable, and `decryptSecret`
+  threw `Unsupported state or unable to authenticate data`, 500-ing every page that read a secret
+  (e.g. `auth()` → `buildSsoProviders()` → `getSsoSecret()`). `getSsoSecret`/`getEmailSecret` now
+  wrap decryption in a guard (`safeDecryptSecret`): on failure they log a clear warning (naming the
+  setting key + hinting at a key change) and return `null`, so the affected feature (SSO/email) just
+  stops working instead of taking down the app. `decryptSecret` stays strict. Also pinned the
+  Playwright `webServer` to `APP_URL`/`AUTH_URL=http://localhost:3000` so the suite doesn't depend
+  on the developer's deployment `.env`.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

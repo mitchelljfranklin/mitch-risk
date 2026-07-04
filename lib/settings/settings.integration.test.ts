@@ -1,12 +1,14 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { type Prisma } from "@prisma/client";
 
-import { decryptSecret } from "@/lib/crypto";
+import { decryptSecret, encryptSecret } from "@/lib/crypto";
 import { prisma } from "@/lib/prisma";
 import {
   getAppearanceSettings,
+  getEmailSecret,
   getEmailSettings,
   getOrganizationSettings,
+  getSsoSecret,
   updateAppearanceSettings,
   updateEmailSettings,
   updateOrganizationSettings,
@@ -15,7 +17,7 @@ import {
 // Categories this suite mutates. We snapshot them before and restore them
 // after so the tests are non-destructive even if pointed at a populated
 // database (the primary protection is a dedicated test DB — see vitest.setup).
-const MUTATED_CATEGORIES = ["organization", "email", "appearance"];
+const MUTATED_CATEGORIES = ["organization", "email", "appearance", "sso"];
 
 let settingsSnapshot: {
   key: string;
@@ -115,6 +117,46 @@ describe("settings persistence (integration)", () => {
     const email = await getEmailSettings();
     expect(email.smtpHost).toBe("smtp.changed.test");
     expect(email.smtpPasswordConfigured).toBe(true);
+  });
+});
+
+describe("secret decryption failure degrades gracefully (integration)", () => {
+  // Tamper a real payload's ciphertext so decryption fails its GCM auth check —
+  // the same failure mode as a changed APP_ENCRYPTION_KEY.
+  function tamperedPayload(): string {
+    const parts = encryptSecret("original-secret").split(":");
+    parts[2] = Buffer.from("a-different-plaintext-entirely").toString("base64");
+    return parts.join(":");
+  }
+
+  it("returns null (not throw) when the SMTP secret can't be decrypted", async () => {
+    await prisma.appSetting.upsert({
+      where: { key: "email.smtpPassword" },
+      update: { value: tamperedPayload() },
+      create: {
+        key: "email.smtpPassword",
+        category: "email",
+        value: tamperedPayload(),
+        isSecret: true,
+      },
+    });
+
+    await expect(getEmailSecret()).resolves.toBeNull();
+  });
+
+  it("returns null (not throw) when an SSO secret can't be decrypted", async () => {
+    await prisma.appSetting.upsert({
+      where: { key: "sso.entraIdClientSecret" },
+      update: { value: tamperedPayload() },
+      create: {
+        key: "sso.entraIdClientSecret",
+        category: "sso",
+        value: tamperedPayload(),
+        isSecret: true,
+      },
+    });
+
+    await expect(getSsoSecret("entraId")).resolves.toBeNull();
   });
 });
 
