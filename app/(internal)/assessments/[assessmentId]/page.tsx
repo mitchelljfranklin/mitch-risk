@@ -15,14 +15,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ProgressBar } from "@/components/progress-bar";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { prisma } from "@/lib/prisma";
 import {
   deleteAssessmentAction,
@@ -30,16 +22,13 @@ import {
   regenerateAssessmentAction,
   revokeAssessmentAction,
 } from "@/lib/actions/assessments";
-import {
-  addCommentAction,
-  reopenReviewAction,
-  reviewAction,
-} from "@/lib/actions/collaboration";
+import { reopenReviewAction } from "@/lib/actions/collaboration";
 import { FinalizeButton } from "./finalize-button";
 import { DraftEditor } from "./draft-editor";
 import { SendForms } from "./send-forms";
 import { SendBackDialog } from "./send-back-dialog";
 import { FindingStatusForm } from "./finding-status-form";
+import { ReviewPanel } from "@/components/review-panel";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getAssessment } from "@/lib/db/assessments";
@@ -81,14 +70,6 @@ function formatResponseValue(value: unknown): string {
   }
   return String(value);
 }
-
-const REVIEW_DECISION_VARIANT: Record<
-  string,
-  "default" | "destructive" | "secondary"
-> = {
-  APPROVED: "default",
-  CLARIFICATION_REQUESTED: "secondary",
-};
 
 export default async function AssessmentDetailPage({
   params,
@@ -190,6 +171,26 @@ export default async function AssessmentDetailPage({
       replies.push(comment);
       replyByParentId.set(comment.parentId, replies);
     }
+  }
+
+  const repliesRecord: Record<
+    string,
+    Array<{
+      id: string;
+      authorName: string;
+      body: string;
+      visibility: string;
+      createdAt: string;
+    }>
+  > = {};
+  for (const [parentId, replies] of replyByParentId) {
+    repliesRecord[parentId] = replies.map((r) => ({
+      id: r.id,
+      authorName: r.authorName,
+      body: r.body,
+      visibility: r.visibility,
+      createdAt: r.createdAt.toISOString(),
+    }));
   }
 
   return (
@@ -637,196 +638,26 @@ export default async function AssessmentDetailPage({
                       </a>
                     );
                   })}
-                  {response ? (
-                    <div className="mt-2 flex items-start justify-between gap-2">
-                      {isReviewable && canReview ? (
-                        <>
-                          {review ? (
-                            <p className="text-muted-foreground text-xs">
-                              Previous:{" "}
-                              {review.decision === "CLARIFICATION_REQUESTED"
-                                ? "clarification requested"
-                                : review.decision.toLowerCase()}
-                              {review.note ? ` — ${review.note}` : ""}
-                            </p>
-                          ) : null}
-                          <form
-                            action={reviewAction}
-                            className="flex items-end gap-2"
-                          >
-                            <input
-                              type="hidden"
-                              name="assessmentId"
-                              value={assessment.id}
-                            />
-                            <input
-                              type="hidden"
-                              name="responseId"
-                              value={response.id}
-                            />
-                            <Select name="decision" required>
-                              <SelectTrigger className="h-8 w-48 text-xs">
-                                <SelectValue placeholder="Review" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="APPROVED">
-                                  Approve
-                                </SelectItem>
-                                <SelectItem value="CLARIFICATION_REQUESTED">
-                                  Request clarification
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <Textarea
-                              name="note"
-                              placeholder="Optional note (visible to vendor if clarification requested)"
-                              className="h-16 min-h-16 text-xs"
-                              rows={3}
-                            />
-                            <Button type="submit" size="sm">
-                              Save
-                            </Button>
-                          </form>
-                        </>
-                      ) : review ? (
-                        <div className="flex items-center gap-2">
-                          <Badge
-                            variant={
-                              REVIEW_DECISION_VARIANT[review.decision] ??
-                              "secondary"
-                            }
-                          >
-                            {review.decision === "CLARIFICATION_REQUESTED"
-                              ? "Clarification requested"
-                              : review.decision.toLowerCase()}
-                          </Badge>
-                          {review.note ? (
-                            <span className="text-muted-foreground text-xs">
-                              {review.note}
-                            </span>
-                          ) : null}
-                        </div>
-                      ) : null}
-                    </div>
-                  ) : null}
-
-                  {topLevelComments.map((comment) => (
-                    <div
-                      key={comment.id}
-                      className="border-muted mt-2 border-l-2 pl-3"
-                    >
-                      <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
-                        {comment.authorName} · {formatDate(comment.createdAt)}
-                        {comment.visibility === "VENDOR" ? (
-                          <span className="rounded border border-[var(--rag-green)]/30 px-1 text-[10px] text-[var(--rag-green)]">
-                            vendor
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground/50 rounded border px-1 text-[10px]">
-                            internal
-                          </span>
-                        )}
-                      </p>
-                      <p className="text-sm">{comment.body}</p>
-                      {(replyByParentId.get(comment.id) ?? []).map((reply) => (
-                        <div
-                          key={reply.id}
-                          className="border-muted mt-1 border-l-2 pl-3"
-                        >
-                          <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
-                            {reply.authorName} · {formatDate(reply.createdAt)}
-                            {reply.visibility === "VENDOR" ? (
-                              <span className="rounded border border-[var(--rag-green)]/30 px-1 text-[10px] text-[var(--rag-green)]">
-                                vendor
-                              </span>
-                            ) : (
-                              <span className="text-muted-foreground/50 rounded border px-1 text-[10px]">
-                                internal
-                              </span>
-                            )}
-                          </p>
-                          <p className="text-sm">{reply.body}</p>
-                        </div>
-                      ))}
-                      {canReview ? (
-                        <form
-                          action={addCommentAction}
-                          className="mt-1 flex gap-2"
-                        >
-                          <input
-                            type="hidden"
-                            name="assessmentId"
-                            value={assessment.id}
-                          />
-                          <input
-                            type="hidden"
-                            name="assessmentQuestionId"
-                            value={question.id}
-                          />
-                          <input
-                            type="hidden"
-                            name="parentId"
-                            value={comment.id}
-                          />
-                          <input
-                            name="body"
-                            placeholder="Reply"
-                            required
-                            className="border-input bg-background h-8 flex-1 rounded-md border px-2 text-xs"
-                          />
-                          <Select name="visibility" defaultValue="INTERNAL">
-                            <SelectTrigger className="h-8 w-24 text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="INTERNAL">Internal</SelectItem>
-                              <SelectItem value="VENDOR">
-                                Visible to vendor
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <Button type="submit" size="sm" variant="ghost">
-                            Reply
-                          </Button>
-                        </form>
-                      ) : null}
-                    </div>
-                  ))}
-
-                  {canReview ? (
-                    <form action={addCommentAction} className="mt-2 flex gap-2">
-                      <input
-                        type="hidden"
-                        name="assessmentId"
-                        value={assessment.id}
-                      />
-                      <input
-                        type="hidden"
-                        name="assessmentQuestionId"
-                        value={question.id}
-                      />
-                      <input
-                        name="body"
-                        placeholder="Add a comment"
-                        required
-                        className="border-input bg-background h-8 flex-1 rounded-md border px-2 text-xs"
-                      />
-                      <Select name="visibility" defaultValue="INTERNAL">
-                        <SelectTrigger className="h-8 w-24 text-xs">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="INTERNAL">Internal</SelectItem>
-                          <SelectItem value="VENDOR">
-                            Visible to vendor
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Button type="submit" size="sm" variant="ghost">
-                        Comment
-                      </Button>
-                    </form>
-                  ) : null}
+                  <ReviewPanel
+                    assessmentId={assessment.id}
+                    questionId={question.id}
+                    responseId={response?.id ?? null}
+                    review={
+                      review
+                        ? { decision: review.decision, note: review.note }
+                        : null
+                    }
+                    topLevelComments={topLevelComments.map((c) => ({
+                      id: c.id,
+                      authorName: c.authorName,
+                      body: c.body,
+                      visibility: c.visibility,
+                      createdAt: c.createdAt.toISOString(),
+                    }))}
+                    replies={repliesRecord}
+                    canReview={canReview}
+                    isReviewable={isReviewable}
+                  />
                 </div>
               );
             })}
