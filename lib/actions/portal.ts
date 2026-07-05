@@ -204,6 +204,7 @@ export async function vendorAddCommentAction(
     authorType: "VENDOR",
     authorName: "Vendor",
     body: trimmed,
+    visibility: "VENDOR",
   });
 
   return { ok: true };

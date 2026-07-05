@@ -1,0 +1,1 @@
+ALTER TABLE "comments" ADD COLUMN "visibility" TEXT NOT NULL DEFAULT 'INTERNAL';

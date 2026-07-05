@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { prisma } from "@/lib/prisma";
 import {
   deleteAssessmentAction,
@@ -651,7 +652,7 @@ export default async function AssessmentDetailPage({
                           ) : null}
                           <form
                             action={reviewAction}
-                            className="flex items-center gap-2"
+                            className="flex items-end gap-2"
                           >
                             <input
                               type="hidden"
@@ -676,12 +677,13 @@ export default async function AssessmentDetailPage({
                                 </SelectItem>
                               </SelectContent>
                             </Select>
-                            <input
+                            <Textarea
                               name="note"
-                              placeholder="Optional note"
-                              className="border-input bg-background h-8 rounded-md border px-2 text-xs"
+                              placeholder="Optional note (visible to vendor if clarification requested)"
+                              className="h-16 min-h-16 text-xs"
+                              rows={3}
                             />
-                            <Button type="submit" size="sm" variant="ghost">
+                            <Button type="submit" size="sm">
                               Save
                             </Button>
                           </form>
@@ -713,8 +715,17 @@ export default async function AssessmentDetailPage({
                       key={comment.id}
                       className="border-muted mt-2 border-l-2 pl-3"
                     >
-                      <p className="text-muted-foreground text-xs">
+                      <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
                         {comment.authorName} · {formatDate(comment.createdAt)}
+                        {comment.visibility === "VENDOR" ? (
+                          <span className="rounded border border-[var(--rag-green)]/30 px-1 text-[10px] text-[var(--rag-green)]">
+                            vendor
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground/50 rounded border px-1 text-[10px]">
+                            internal
+                          </span>
+                        )}
                       </p>
                       <p className="text-sm">{comment.body}</p>
                       {(replyByParentId.get(comment.id) ?? []).map((reply) => (
@@ -722,8 +733,17 @@ export default async function AssessmentDetailPage({
                           key={reply.id}
                           className="border-muted mt-1 border-l-2 pl-3"
                         >
-                          <p className="text-muted-foreground text-xs">
+                          <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
                             {reply.authorName} · {formatDate(reply.createdAt)}
+                            {reply.visibility === "VENDOR" ? (
+                              <span className="rounded border border-[var(--rag-green)]/30 px-1 text-[10px] text-[var(--rag-green)]">
+                                vendor
+                              </span>
+                            ) : (
+                              <span className="text-muted-foreground/50 rounded border px-1 text-[10px]">
+                                internal
+                              </span>
+                            )}
                           </p>
                           <p className="text-sm">{reply.body}</p>
                         </div>
@@ -754,6 +774,17 @@ export default async function AssessmentDetailPage({
                             required
                             className="border-input bg-background h-8 flex-1 rounded-md border px-2 text-xs"
                           />
+                          <Select name="visibility" defaultValue="INTERNAL">
+                            <SelectTrigger className="h-8 w-24 text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="INTERNAL">Internal</SelectItem>
+                              <SelectItem value="VENDOR">
+                                Visible to vendor
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
                           <Button type="submit" size="sm" variant="ghost">
                             Reply
                           </Button>
@@ -780,6 +811,17 @@ export default async function AssessmentDetailPage({
                         required
                         className="border-input bg-background h-8 flex-1 rounded-md border px-2 text-xs"
                       />
+                      <Select name="visibility" defaultValue="INTERNAL">
+                        <SelectTrigger className="h-8 w-24 text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="INTERNAL">Internal</SelectItem>
+                          <SelectItem value="VENDOR">
+                            Visible to vendor
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
                       <Button type="submit" size="sm" variant="ghost">
                         Comment
                       </Button>

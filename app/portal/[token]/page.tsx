@@ -180,6 +180,11 @@ export default async function PortalPage({ params }: PortalPageProps) {
           {assessment.questions.map((question) => {
             const response = responseMap.get(question.id);
             const review = response?.review;
+            const questionComments = assessment.comments.filter(
+              (c) =>
+                c.assessmentQuestionId === question.id &&
+                (c.visibility === "VENDOR" || c.authorType === "VENDOR"),
+            );
             return (
               <div key={question.id} className="rounded-md border p-4">
                 <p className="text-sm font-medium">{question.text}</p>
@@ -206,22 +211,25 @@ export default async function PortalPage({ params }: PortalPageProps) {
                     {review.note ? ` — ${review.note}` : ""}
                   </p>
                 ) : null}
+                {questionComments.length > 0 ? (
+                  <div className="mt-3 flex flex-col gap-1.5 border-t pt-3">
+                    {questionComments.map((comment) => (
+                      <div
+                        key={comment.id}
+                        className="text-muted-foreground text-xs"
+                      >
+                        <span className="font-medium">
+                          {comment.authorName}
+                        </span>{" "}
+                        · {formatDate(comment.createdAt)}
+                        <p className="mt-0.5 text-sm">{comment.body}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
               </div>
             );
           })}
-          {assessment.comments.length > 0 ? (
-            <div className="flex flex-col gap-2">
-              <h2 className="text-sm font-medium">Comments</h2>
-              {assessment.comments.map((comment) => (
-                <div key={comment.id} className="rounded-md border p-3">
-                  <p className="text-muted-foreground text-xs">
-                    {comment.authorName} · {formatDate(comment.createdAt)}
-                  </p>
-                  <p className="text-sm">{comment.body}</p>
-                </div>
-              ))}
-            </div>
-          ) : null}
         </div>
       </PortalShell>
     );
@@ -303,7 +311,7 @@ export default async function PortalPage({ params }: PortalPageProps) {
         initialEvidence={assessment.evidence}
         reviewByQuestionId={reviewByQuestionId}
         initialComments={assessment.comments.filter(
-          (c) => c.authorType === "VENDOR" || c.authorType === "INTERNAL",
+          (c) => c.visibility === "VENDOR" || c.authorType === "VENDOR",
         )}
         maxUploadMb={fileSettings.maxUploadMb}
         allowedExtensions={fileSettings.allowedExtensions}

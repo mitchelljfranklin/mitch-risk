@@ -702,15 +702,20 @@ export function PortalQuestionnaire({
                       Not applicable
                     </Label>
                   </div>
-                  {reviewByQuestionId[question.id]?.decision ===
-                  "CLARIFICATION_REQUESTED"
-                    ? (() => {
-                        const questionComments = comments.filter(
-                          (c) => c.assessmentQuestionId === question.id,
-                        );
-                        return (
-                          <div className="flex flex-col gap-2">
-                            {questionComments.map((c) => (
+                  {(() => {
+                    const questionComments = comments.filter(
+                      (c) => c.assessmentQuestionId === question.id,
+                    );
+                    const isClarifying =
+                      reviewByQuestionId[question.id]?.decision ===
+                      "CLARIFICATION_REQUESTED";
+                    if (questionComments.length === 0 && !isClarifying) {
+                      return null;
+                    }
+                    return (
+                      <div className="flex flex-col gap-2">
+                        {questionComments.length > 0
+                          ? questionComments.map((c) => (
                               <div
                                 key={c.id}
                                 className="text-muted-foreground text-xs"
@@ -720,37 +725,39 @@ export function PortalQuestionnaire({
                                 </span>{" "}
                                 · {c.body}
                               </div>
-                            ))}
-                            <div className="flex items-start gap-2">
-                              <Textarea
-                                className="min-h-16 text-xs"
-                                placeholder="Add a comment…"
-                                value={commentText[question.id] ?? ""}
-                                onChange={(event) =>
-                                  setCommentText((previous) => ({
-                                    ...previous,
-                                    [question.id]: event.target.value,
-                                  }))
-                                }
-                                rows={2}
-                              />
-                              <Button
-                                type="button"
-                                size="sm"
-                                variant="outline"
-                                disabled={
-                                  sendingComment ||
-                                  !commentText[question.id]?.trim()
-                                }
-                                onClick={() => handleVendorComment(question.id)}
-                              >
-                                Send
-                              </Button>
-                            </div>
+                            ))
+                          : null}
+                        {isClarifying ? (
+                          <div className="flex items-start gap-2">
+                            <Textarea
+                              className="min-h-16 text-xs"
+                              placeholder="Add a comment…"
+                              value={commentText[question.id] ?? ""}
+                              onChange={(event) =>
+                                setCommentText((previous) => ({
+                                  ...previous,
+                                  [question.id]: event.target.value,
+                                }))
+                              }
+                              rows={2}
+                            />
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              disabled={
+                                sendingComment ||
+                                !commentText[question.id]?.trim()
+                              }
+                              onClick={() => handleVendorComment(question.id)}
+                            >
+                              Send
+                            </Button>
                           </div>
-                        );
-                      })()
-                    : null}
+                        ) : null}
+                      </div>
+                    );
+                  })()}
                 </div>
               );
             })}

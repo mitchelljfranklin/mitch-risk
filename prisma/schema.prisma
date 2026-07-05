@@ -405,6 +405,7 @@ model Comment {
   authorType           String
   authorName           String
   body                 String
+  visibility           String               @default("INTERNAL")
   createdAt            DateTime             @default(now())
 
   @@index([assessmentId])

@@ -28,6 +28,7 @@ export async function addCommentAction(formData: FormData) {
     getField(formData, "assessmentQuestionId") || undefined;
   const parentId = getField(formData, "parentId") || undefined;
   const body = getField(formData, "body").trim();
+  const visibility = getField(formData, "visibility") || "INTERNAL";
   if (!body) {
     return;
   }
@@ -44,6 +45,7 @@ export async function addCommentAction(formData: FormData) {
     authorType: "INTERNAL",
     authorName: user.name ?? user.email ?? "Reviewer",
     body,
+    visibility,
   });
   await logAudit(user.id, "ADD_COMMENT", "Assessment", assessmentId);
   revalidatePath(`/assessments/${assessmentId}`);
@@ -82,6 +84,7 @@ export async function reviewAction(formData: FormData) {
       authorType: "INTERNAL",
       authorName: user.name ?? user.email ?? "Reviewer",
       body: `Previous review (${existing.decision === "CLARIFICATION_REQUESTED" ? "clarification requested" : existing.decision.toLowerCase()}): ${existing.note}`,
+      visibility: "VENDOR",
     });
   }
 

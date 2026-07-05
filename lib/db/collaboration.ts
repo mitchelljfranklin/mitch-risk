@@ -21,8 +21,11 @@ export function addComment(input: {
   authorType: string;
   authorName: string;
   body: string;
+  visibility?: string;
 }) {
-  return prisma.comment.create({ data: input });
+  return prisma.comment.create({
+    data: { ...input, visibility: input.visibility ?? "INTERNAL" },
+  });
 }
 
 export function getReviewsByAssessment(assessmentId: string) {
