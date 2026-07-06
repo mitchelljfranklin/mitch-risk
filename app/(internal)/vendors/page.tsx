@@ -29,7 +29,6 @@ import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 import { ScoreBadge } from "@/components/score-badge";
 import { formatDate } from "@/lib/utils";
 import { parseListView, VENDOR_VIEW_COOKIE } from "@/lib/view-preference";
-import { ImportVendorsForm } from "./import-vendors-form";
 
 export const dynamic = "force-dynamic";
 
@@ -77,7 +76,11 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
           <Button asChild variant="outline">
             <Link href="/vendors/compare">Compare</Link>
           </Button>
-          {canCreateVendor ? <ImportVendorsForm /> : null}
+          {canCreateVendor ? (
+            <Button asChild variant="outline">
+              <Link href="/vendors/import">Import</Link>
+            </Button>
+          ) : null}
           {canSendAssessment ? (
             <Button asChild variant="outline">
               <Link href="/vendors/bulk-send">Bulk send</Link>

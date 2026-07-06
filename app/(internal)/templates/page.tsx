@@ -13,8 +13,6 @@ import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { listTemplates } from "@/lib/db/templates";
 
-import { ImportTemplateForm } from "./import-template-form";
-
 export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Templates" };
@@ -47,7 +45,9 @@ export default async function TemplatesPage() {
             <Button asChild>
               <Link href="/templates/new">New template</Link>
             </Button>
-            <ImportTemplateForm />
+            <Button asChild variant="outline">
+              <Link href="/templates/import">Import</Link>
+            </Button>
           </>
         ) : null}
       </div>

@@ -92,23 +92,64 @@ export type VendorsImportState =
   | undefined;
 
 function parseCsv(text: string): Record<string, string>[] {
-  const lines = text.trim().split(/\r?\n/);
-  if (lines.length < 2) return [];
+  const rows: string[][] = [];
+  let current = "";
+  let inQuotes = false;
+  let row: string[] = [];
 
-  const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
-  const rows: Record<string, string>[] = [];
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    if (inQuotes) {
+      if (char === '"') {
+        if (i + 1 < text.length && text[i + 1] === '"') {
+          current += '"';
+          i++;
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        current += char;
+      }
+    } else if (char === '"') {
+      inQuotes = true;
+    } else if (char === ",") {
+      row.push(current);
+      current = "";
+    } else if (char === "\n") {
+      row.push(current);
+      current = "";
+      if (row.length > 0) {
+        rows.push(row);
+        row = [];
+      }
+    } else if (char === "\r") {
+      // skip
+    } else {
+      current += char;
+    }
+  }
 
-  for (let i = 1; i < lines.length; i++) {
-    const values = lines[i].split(",").map((v) => v.trim());
-    if (values.length === 0 || values.every((v) => v === "")) continue;
-    const row: Record<string, string> = {};
-    headers.forEach((h, j) => {
-      row[h] = values[j] ?? "";
-    });
+  row.push(current);
+  if (row.length > 0 && row.some((cell) => cell !== "")) {
     rows.push(row);
   }
 
-  return rows;
+  if (rows.length < 2) return [];
+
+  const headers = rows[0].map((h) => h.trim().toLowerCase());
+  const result: Record<string, string>[] = [];
+
+  for (let i = 1; i < rows.length; i++) {
+    const values = rows[i];
+    if (values.length === 0 || values.every((v) => v.trim() === "")) continue;
+    const entry: Record<string, string> = {};
+    headers.forEach((h, j) => {
+      entry[h] = (values[j] ?? "").trim();
+    });
+    result.push(entry);
+  }
+
+  return result;
 }
 
 export async function importVendorsAction(
