@@ -20,6 +20,7 @@ type AppearanceFormProps = {
   primaryHex: string;
   secondaryHex: string;
   hasLogo: boolean;
+  logoKey: string;
   ragGreenHex: string;
   ragAmberHex: string;
   ragRedHex: string;
@@ -79,6 +80,7 @@ export function AppearanceForm({
   primaryHex,
   secondaryHex,
   hasLogo,
+  logoKey,
   ragGreenHex,
   ragAmberHex,
   ragRedHex,
@@ -113,7 +115,7 @@ export function AppearanceForm({
         {hasLogo ? (
           <div className="flex flex-col gap-2">
             <img
-              src="/api/brand/logo"
+              src={`/api/brand/logo?v=${logoKey}`}
               alt="Current logo"
               width={48}
               height={48}

@@ -37,6 +37,7 @@ type AppSidebarProps = {
   permissions: string[];
   notificationCount: number;
   hasLogo: boolean;
+  logoKey: string;
 };
 
 const MANAGE_PERMISSIONS: Permission[] = [
@@ -52,6 +53,7 @@ export function AppSidebar({
   permissions,
   notificationCount,
   hasLogo,
+  logoKey,
 }: AppSidebarProps) {
   const pathname = usePathname();
 
@@ -99,7 +101,7 @@ export function AppSidebar({
         <div className="flex items-center gap-2 px-2 py-1.5">
           {hasLogo ? (
             <img
-              src="/api/brand/logo"
+              src={`/api/brand/logo?v=${logoKey}`}
               alt={orgName}
               width={120}
               height={32}

@@ -19,7 +19,7 @@ export default async function AuthLayout({
         {appearance.logoKey ? (
           <div className="mb-8 flex flex-col items-center gap-3">
             <img
-              src="/api/brand/logo"
+              src={`/api/brand/logo?v=${appearance.logoKey}`}
               alt={organization.name}
               width={96}
               height={56}

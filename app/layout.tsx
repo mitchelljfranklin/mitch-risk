@@ -31,7 +31,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const appearance = await getAppearanceSettings();
-  const faviconUrl = appearance.logoKey ? "/api/brand/logo" : "/favicon.ico";
+  const faviconUrl = appearance.logoKey
+    ? `/api/brand/logo?v=${appearance.logoKey}`
+    : "/favicon.ico";
   const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (

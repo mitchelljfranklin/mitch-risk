@@ -106,7 +106,9 @@ export default async function PortalPage({ params }: PortalPageProps) {
     assessmentSettings.portalPageLoadsPerMin,
   );
 
-  const logoUrl = appearance.logoKey ? "/api/brand/logo" : null;
+  const logoUrl = appearance.logoKey
+    ? `/api/brand/logo?v=${appearance.logoKey}`
+    : null;
 
   if (!withinRateLimit) {
     return (

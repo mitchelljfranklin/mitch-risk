@@ -42,6 +42,7 @@ export default async function InternalLayout({
           permissions={user.permissions}
           notificationCount={notificationCounts.total}
           hasLogo={Boolean(appearance.logoKey)}
+          logoKey={appearance.logoKey ?? ""}
         />
         <SidebarInset>
           <header className="bg-background sticky top-0 z-10 flex h-14 items-center gap-2 border-b px-4">
