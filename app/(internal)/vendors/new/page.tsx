@@ -21,7 +21,7 @@ export default async function NewVendorPage() {
   const owners = await listUsers();
 
   return (
-    <div className="flex max-w-2xl flex-col gap-6">
+    <div className="flex max-w-3xl flex-col gap-6">
       <Breadcrumbs
         segments={[{ label: "Vendors", href: "/vendors" }, { label: "New" }]}
       />

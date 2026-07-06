@@ -13,7 +13,7 @@ export default async function NewTemplatePage() {
   await requirePermission(PERMISSIONS.TEMPLATES_CREATE);
 
   return (
-    <div className="flex max-w-lg flex-col gap-6">
+    <div className="flex max-w-xl flex-col gap-6">
       <Breadcrumbs
         segments={[
           { label: "Templates", href: "/templates" },
