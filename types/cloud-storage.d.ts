@@ -25,6 +25,7 @@ declare module "@aws-sdk/client-s3" {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare module "@azure/storage-blob" {
   export class BlobServiceClient {
+    constructor(url: string);
     static fromConnectionString(connectionString: string): BlobServiceClient;
     getContainerClient(containerName: string): ContainerClient;
   }

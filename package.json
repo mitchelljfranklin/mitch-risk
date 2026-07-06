@@ -22,6 +22,7 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@azure/storage-blob": "^12.33.0",
     "@prisma/client": "^6.19.3",
     "@radix-ui/react-alert-dialog": "^1.1.18",
     "@react-email/components": "^1.0.12",

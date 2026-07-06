@@ -9,8 +9,6 @@ import {
 import { dirname, relative, resolve, sep } from "node:path";
 
 import { env } from "@/lib/env";
-import { createS3Storage } from "./s3";
-import { createAzureBlobStorage } from "./azure";
 
 export type StoredFile = { key: string; modifiedAt: Date };
 
@@ -84,24 +82,32 @@ async function resolveStorage(): Promise<FileStorage> {
   const settings = await getStorageSettings();
 
   if (settings.provider === "s3") {
-    const s3 = await createS3Storage({
-      bucket: settings.s3Bucket,
-      region: settings.s3Region,
-      accessKeyId: settings.s3AccessKeyId,
-      secretAccessKey: settings.s3SecretAccessKey,
-    });
-    if (s3) return s3;
+    try {
+      const { createS3Storage } = await import("./s3");
+      return await createS3Storage({
+        bucket: settings.s3Bucket,
+        region: settings.s3Region,
+        accessKeyId: settings.s3AccessKeyId,
+        secretAccessKey: settings.s3SecretAccessKey,
+      });
+    } catch (error) {
+      console.error("Failed to initialise S3 storage client:", error);
+    }
     console.warn(
       "S3 storage configured but failed to initialise — falling back to local storage.",
     );
   }
 
   if (settings.provider === "azure") {
-    const azure = await createAzureBlobStorage({
-      connectionString: settings.azureConnectionString,
-      containerName: settings.azureContainerName,
-    });
-    if (azure) return azure;
+    try {
+      const { createAzureBlobStorage } = await import("./azure");
+      return await createAzureBlobStorage({
+        connectionString: settings.azureConnectionString,
+        containerName: settings.azureContainerName,
+      });
+    } catch (error) {
+      console.error("Failed to initialise Azure Blob storage client:", error);
+    }
     console.warn(
       "Azure Blob storage configured but failed to initialise — falling back to local storage.",
     );
