@@ -293,7 +293,21 @@ const STORAGE_SECRET_FIELDS: ReadonlySet<string> = new Set([
 
 export const getStorageSettings = cache(async (): Promise<StorageSettings> => {
   const record = await readCategoryRecord("storage");
-  return storageSettingsSchema.parse(record);
+  const parsed = storageSettingsSchema.parse(record);
+
+  if (parsed.s3SecretAccessKey) {
+    parsed.s3SecretAccessKey =
+      safeDecryptSecret(parsed.s3SecretAccessKey, "s3SecretAccessKey") ?? "";
+  }
+  if (parsed.azureConnectionString) {
+    parsed.azureConnectionString =
+      safeDecryptSecret(
+        parsed.azureConnectionString,
+        "azureConnectionString",
+      ) ?? "";
+  }
+
+  return parsed;
 });
 
 export async function updateStorageSettings(
