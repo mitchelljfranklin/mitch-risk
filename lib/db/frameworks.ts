@@ -1,4 +1,4 @@
-import { type Control, type Framework } from "@prisma/client";
+import { type Control, type Framework, type Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
@@ -15,6 +15,18 @@ export function listFrameworks(): Promise<FrameworkWithCount[]> {
 
 export function getFramework(frameworkId: string): Promise<Framework | null> {
   return prisma.framework.findUnique({ where: { id: frameworkId } });
+}
+
+export function createFramework(
+  input: Pick<Framework, "name" | "version" | "description">,
+): Promise<Framework> {
+  return prisma.framework.create({ data: input });
+}
+
+export function createControls(
+  controls: Omit<Control, "id" | "createdAt" | "updatedAt">[],
+): Promise<Prisma.BatchPayload> {
+  return prisma.control.createMany({ data: controls });
 }
 
 export function listControls(

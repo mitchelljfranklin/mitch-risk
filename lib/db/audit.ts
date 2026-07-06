@@ -161,6 +161,7 @@ export function listAuditActions() {
     "CREATE_CERTIFICATION",
     "UPDATE_CERTIFICATION",
     "DELETE_CERTIFICATION",
+    "CREATE_FRAMEWORK",
   ];
 }
 
@@ -211,4 +212,5 @@ export const AUDIT_ACTION_LABELS: Record<string, string> = {
   CREATE_CERTIFICATION: "Added certification",
   UPDATE_CERTIFICATION: "Updated certification",
   DELETE_CERTIFICATION: "Deleted certification",
+  CREATE_FRAMEWORK: "Imported framework",
 };

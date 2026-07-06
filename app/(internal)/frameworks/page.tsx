@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
@@ -9,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
 import { requirePermission } from "@/lib/auth";
-import { PERMISSIONS } from "@/lib/permissions";
+import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { listFrameworks } from "@/lib/db/frameworks";
 
 export const dynamic = "force-dynamic";
@@ -17,16 +18,24 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Frameworks" };
 
 export default async function FrameworksPage() {
-  await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
-  const frameworks = await listFrameworks();
+  const user = await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
+  const [frameworks] = await Promise.all([listFrameworks()]);
+  const canEdit = hasPermission(user.permissions, PERMISSIONS.FRAMEWORKS_EDIT);
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Frameworks</h1>
-        <p className="text-muted-foreground text-sm">
-          Control libraries used to map questionnaire answers to requirements.
-        </p>
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Frameworks</h1>
+          <p className="text-muted-foreground text-sm">
+            Control libraries used to map questionnaire answers to requirements.
+          </p>
+        </div>
+        {canEdit ? (
+          <Button asChild variant="outline" size="sm">
+            <Link href="/frameworks/import">Import framework</Link>
+          </Button>
+        ) : null}
       </div>
 
       {frameworks.length === 0 ? (
