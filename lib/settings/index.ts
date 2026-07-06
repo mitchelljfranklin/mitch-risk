@@ -13,6 +13,7 @@ import {
   type ScoringSettings,
   type SsoSettings,
   type AppearanceSettings,
+  type StorageSettings,
   assessmentSettingsSchema,
   emailSettingsSchema,
   emailTemplateSchema,
@@ -21,6 +22,7 @@ import {
   scoringSettingsSchema,
   ssoSettingsSchema,
   appearanceSettingsSchema,
+  storageSettingsSchema,
 } from "./schema";
 
 function makeKey(category: string, field: string): string {
@@ -281,6 +283,26 @@ export async function updateAppearanceSettings(
     "appearance",
     input as unknown as Record<string, unknown>,
     new Set(),
+  );
+}
+
+const STORAGE_SECRET_FIELDS: ReadonlySet<string> = new Set([
+  "s3SecretAccessKey",
+  "azureConnectionString",
+]);
+
+export const getStorageSettings = cache(async (): Promise<StorageSettings> => {
+  const record = await readCategoryRecord("storage");
+  return storageSettingsSchema.parse(record);
+});
+
+export async function updateStorageSettings(
+  input: StorageSettings,
+): Promise<void> {
+  await persistCategory(
+    "storage",
+    input as unknown as Record<string, unknown>,
+    STORAGE_SECRET_FIELDS,
   );
 }
 

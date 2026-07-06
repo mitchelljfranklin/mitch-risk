@@ -166,3 +166,15 @@ export const appearanceSettingsSchema = z.object({
 });
 
 export type AppearanceSettings = z.infer<typeof appearanceSettingsSchema>;
+
+export const storageSettingsSchema = z.object({
+  provider: z.enum(["local", "s3", "azure"]).default("local"),
+  s3Bucket: z.string().default(""),
+  s3Region: z.string().default(""),
+  s3AccessKeyId: z.string().default(""),
+  s3SecretAccessKey: z.string().default(""),
+  azureConnectionString: z.string().default(""),
+  azureContainerName: z.string().default(""),
+});
+
+export type StorageSettings = z.infer<typeof storageSettingsSchema>;

@@ -9,6 +9,8 @@ import {
 import { dirname, relative, resolve, sep } from "node:path";
 
 import { env } from "@/lib/env";
+import { createS3Storage } from "./s3";
+import { createAzureBlobStorage } from "./azure";
 
 export type StoredFile = { key: string; modifiedAt: Date };
 
@@ -18,6 +20,8 @@ export interface FileStorage {
   delete(key: string): Promise<void>;
   list(): Promise<StoredFile[]>;
 }
+
+// --------------- local-disk implementation ---------------
 
 const storageRoot = resolve(env.EVIDENCE_STORAGE_PATH);
 
@@ -73,4 +77,68 @@ const localDiskStorage: FileStorage = {
   },
 };
 
-export const storage: FileStorage = localDiskStorage;
+// --------------- factory ---------------
+
+async function resolveStorage(): Promise<FileStorage> {
+  const { getStorageSettings } = await import("@/lib/settings/index");
+  const settings = await getStorageSettings();
+
+  if (settings.provider === "s3") {
+    const s3 = await createS3Storage({
+      bucket: settings.s3Bucket,
+      region: settings.s3Region,
+      accessKeyId: settings.s3AccessKeyId,
+      secretAccessKey: settings.s3SecretAccessKey,
+    });
+    if (s3) return s3;
+    console.warn(
+      "S3 storage configured but failed to initialise — falling back to local storage.",
+    );
+  }
+
+  if (settings.provider === "azure") {
+    const azure = await createAzureBlobStorage({
+      connectionString: settings.azureConnectionString,
+      containerName: settings.azureContainerName,
+    });
+    if (azure) return azure;
+    console.warn(
+      "Azure Blob storage configured but failed to initialise — falling back to local storage.",
+    );
+  }
+
+  return localDiskStorage;
+}
+
+let _storage: FileStorage | null = null;
+let _initPromise: Promise<FileStorage> | null = null;
+
+export async function getStorage(): Promise<FileStorage> {
+  if (_storage) return _storage;
+  if (!_initPromise) {
+    _initPromise = resolveStorage().then((s) => {
+      _storage = s;
+      return s;
+    });
+  }
+  return _initPromise;
+}
+
+export const storage: FileStorage = {
+  async save(key, data) {
+    const s = await getStorage();
+    return s.save(key, data);
+  },
+  async read(key) {
+    const s = await getStorage();
+    return s.read(key);
+  },
+  async delete(key) {
+    const s = await getStorage();
+    return s.delete(key);
+  },
+  async list() {
+    const s = await getStorage();
+    return s.list();
+  },
+};

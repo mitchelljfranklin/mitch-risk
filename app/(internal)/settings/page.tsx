@@ -23,6 +23,7 @@ import {
   getFileSettings,
   getAuditRetention,
   getEmailLogRetention,
+  getStorageSettings,
 } from "@/lib/settings";
 import { getBreakGlassHash, getSsoSecretConfigured } from "@/lib/settings";
 import { UsersManager } from "./users-manager";
@@ -38,6 +39,7 @@ import { ApiForm } from "./api-form";
 import { AuditForm } from "./audit-form";
 import { SchedulingForm } from "./scheduling-form";
 import { LimitsForm } from "./limits-form";
+import { StorageForm } from "./storage-form";
 import { EmailTrackingForm } from "./email-tracking";
 import { listEmailLogs } from "@/lib/db/notifications";
 
@@ -87,6 +89,7 @@ export default async function SettingsPage({
     files,
     auditRetention,
     emailLogRetention,
+    storageSettings,
   ] = await Promise.all([
     getOrganizationSettings(),
     getEmailSettings(),
@@ -119,6 +122,7 @@ export default async function SettingsPage({
     getFileSettings(),
     getAuditRetention(),
     getEmailLogRetention(),
+    getStorageSettings(),
   ]);
 
   const breakGlassConfigured = (await getBreakGlassHash()) !== null;
@@ -210,6 +214,7 @@ export default async function SettingsPage({
                 <TabsTrigger value="scoring">Scoring</TabsTrigger>
                 <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
                 <TabsTrigger value="limits">Limits</TabsTrigger>
+                <TabsTrigger value="storage">Storage</TabsTrigger>
                 <TabsTrigger value="sso">SSO</TabsTrigger>
               </>
             ) : null}
@@ -411,6 +416,21 @@ export default async function SettingsPage({
                 passwordResetPerMin={assessment.passwordResetPerMin}
                 breakGlassPerMin={assessment.breakGlassPerMin}
               />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="storage" className="mt-4 flex flex-col gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>File storage</CardTitle>
+              <CardDescription>
+                Configure where evidence files and attachments are stored.
+                Changing providers does not migrate existing files.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <StorageForm defaults={storageSettings} />
             </CardContent>
           </Card>
         </TabsContent>

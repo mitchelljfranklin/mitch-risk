@@ -13,6 +13,7 @@ import {
   updateScoringSettings,
   updateSsoSettings,
   updateAppearanceSettings,
+  updateStorageSettings,
 } from "@/lib/settings";
 import { persistSsoSecrets } from "@/lib/settings";
 import {
@@ -24,6 +25,7 @@ import {
   organizationSettingsSchema,
   scoringSettingsSchema,
   ssoSettingsSchema,
+  storageSettingsSchema,
 } from "@/lib/settings/schema";
 import { randomBytes } from "node:crypto";
 import { z } from "zod";
@@ -744,4 +746,49 @@ export async function retryEmailSendAction(
     ok: false,
     message: "Failed to resend email. Check the tracking tab for details.",
   };
+}
+
+export async function saveStorageSettings(
+  _previousState: { ok: boolean; message: string } | undefined,
+  formData: FormData,
+): Promise<{ ok: boolean; message: string }> {
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+
+  const existing = await getAppearanceSettings();
+  const raw: Record<string, string> = {
+    provider: String(formData.get("provider") ?? "local"),
+    s3Bucket: String(formData.get("s3Bucket") ?? ""),
+    s3Region: String(formData.get("s3Region") ?? ""),
+    s3AccessKeyId: String(formData.get("s3AccessKeyId") ?? ""),
+    s3SecretAccessKey: String(formData.get("s3SecretAccessKey") ?? ""),
+    azureConnectionString: String(formData.get("azureConnectionString") ?? ""),
+    azureContainerName: String(formData.get("azureContainerName") ?? ""),
+  };
+
+  if (raw.s3SecretAccessKey === "" && existing) {
+    raw.s3SecretAccessKey =
+      (existing as unknown as Record<string, string>).s3SecretAccessKey ?? "";
+  }
+  if (raw.azureConnectionString === "" && existing) {
+    raw.azureConnectionString =
+      (existing as unknown as Record<string, string>).azureConnectionString ??
+      "";
+  }
+
+  const parsed = storageSettingsSchema.safeParse(raw);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      message: parsed.error.issues[0]?.message ?? "Invalid input.",
+    };
+  }
+
+  await updateStorageSettings(parsed.data);
+
+  const user = await getCurrentUser();
+  if (user) {
+    await logAudit(user.id, "UPDATE_SETTINGS", "Settings", "storage");
+  }
+
+  return { ok: true, message: "Storage settings saved." };
 }
