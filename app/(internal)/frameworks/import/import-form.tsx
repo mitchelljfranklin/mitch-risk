@@ -8,10 +8,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Download } from "lucide-react";
 import {
   importFrameworkAction,
   type FrameworkImportState,
 } from "@/lib/actions/frameworks";
+
+const CSV_TEMPLATE = [
+  "domain,code,title,guidance",
+  '"Access Control","AC-01","Access Control Policy","Develop and maintain a formal access control policy that addresses purpose, scope, roles, responsibilities, and compliance."',
+  '"Access Control","AC-02","Account Management","Account creation, modification, disabling, and removal must follow a documented process with management approval."',
+  '"Awareness & Training","AT-01","Security Awareness Training","All personnel receive security awareness training within 30 days of hire and annually thereafter."',
+  '"Risk Management","RM-01","Risk Assessment","Conduct a formal risk assessment annually to identify threats, vulnerabilities, and impacts to organisational assets."',
+].join("\n");
 
 const initialState: FrameworkImportState = { ok: false, message: "" };
 
@@ -60,7 +69,29 @@ export function FrameworkImportForm() {
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="csvFile">CSV file</Label>
+            <div className="flex items-center justify-between gap-2">
+              <Label htmlFor="csvFile">CSV file</Label>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-6 px-1.5 text-xs"
+                onClick={() => {
+                  const blob = new Blob([CSV_TEMPLATE], {
+                    type: "text/csv;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const link = document.createElement("a");
+                  link.href = url;
+                  link.download = "framework-template.csv";
+                  link.click();
+                  URL.revokeObjectURL(url);
+                }}
+              >
+                <Download className="size-3" />
+                Template
+              </Button>
+            </div>
             <Input
               id="csvFile"
               name="csvFile"
