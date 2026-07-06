@@ -133,39 +133,6 @@ function CertificationEditor({
           />
         </div>
         <div className="grid gap-2">
-          {attachments && attachments.length > 0 ? (
-            <div className="flex flex-col gap-1.5">
-              <span className="text-xs font-medium">Attachments</span>
-              {attachments.map((a) => (
-                <div
-                  key={a.id}
-                  className="flex items-center justify-between gap-2 rounded-md border p-2"
-                >
-                  <a
-                    href={`/api/attachments/${a.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary truncate text-xs hover:underline"
-                  >
-                    {a.fileName} ↗
-                  </a>
-                  <form action={removeAttachmentAction}>
-                    <input type="hidden" name="attachmentId" value={a.id} />
-                    <Button
-                      type="submit"
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 w-6 p-0"
-                    >
-                      <Trash2 className="size-3.5" />
-                    </Button>
-                  </form>
-                </div>
-              ))}
-            </div>
-          ) : null}
-        </div>
-        <div className="grid gap-2">
           <Label htmlFor="cert-file">Attachment (optional)</Label>
           <Input
             id="cert-file"
@@ -186,6 +153,39 @@ function CertificationEditor({
           </Button>
         </SheetFooter>
       </form>
+      {attachments && attachments.length > 0 ? (
+        <div className="border-t pt-4">
+          <span className="text-xs font-medium">Attachments</span>
+          <div className="mt-2 flex flex-col gap-1.5">
+            {attachments.map((a) => (
+              <div
+                key={a.id}
+                className="flex items-center justify-between gap-2 rounded-md border p-2"
+              >
+                <a
+                  href={`/api/attachments/${a.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary truncate text-xs hover:underline"
+                >
+                  {a.fileName} ↗
+                </a>
+                <form action={removeAttachmentAction}>
+                  <input type="hidden" name="attachmentId" value={a.id} />
+                  <Button
+                    type="submit"
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0"
+                  >
+                    <Trash2 className="size-3.5" />
+                  </Button>
+                </form>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </SheetContent>
   );
 }
