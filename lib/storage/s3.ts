@@ -14,7 +14,8 @@ export async function createS3Storage(config: S3Config): Promise<FileStorage> {
     GetObjectCommand,
     DeleteObjectCommand,
     ListObjectsV2Command,
-  } = await import("@aws-sdk/client-s3");
+    // @ts-ignore
+  } = await import(/* webpackIgnore: true */ "@aws-sdk/client-s3");
 
   const client = new S3Client({
     region: config.region,

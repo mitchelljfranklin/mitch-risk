@@ -19,7 +19,8 @@ function parseConnectionString(cs: string): Record<string, string> {
 export async function createAzureBlobStorage(
   config: AzureConfig,
 ): Promise<FileStorage> {
-  const { BlobServiceClient } = await import("@azure/storage-blob");
+  // @ts-ignore
+  const { BlobServiceClient } = await import(/* webpackIgnore: true */ "@azure/storage-blob");
 
   const parts = parseConnectionString(config.connectionString);
 
