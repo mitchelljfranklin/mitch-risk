@@ -77,10 +77,11 @@ const localDiskStorage: FileStorage = {
 
 // --------------- factory ---------------
 
-async function resolveStorage(): Promise<FileStorage> {
-  const { getStorageSettings } = await import("@/lib/settings/index");
-  const settings = await getStorageSettings();
+type StorageSettings = Awaited<
+  ReturnType<typeof import("@/lib/settings/index").getStorageSettings>
+>;
 
+async function resolveStorage(settings: StorageSettings): Promise<FileStorage> {
   if (settings.provider === "s3") {
     try {
       const { createS3Storage } = await import("./s3");
@@ -116,17 +117,30 @@ async function resolveStorage(): Promise<FileStorage> {
   return localDiskStorage;
 }
 
+function settingsFingerprint(settings: StorageSettings): string {
+  return `${settings.provider}|${settings.s3Bucket}|${settings.s3Region}|${settings.azureContainerName}|${settings.azureConnectionString.slice(-8)}`;
+}
+
 let _storage: FileStorage | null = null;
+let _fingerprint: string | null = null;
 let _initPromise: Promise<FileStorage> | null = null;
 
 export async function getStorage(): Promise<FileStorage> {
-  if (_storage) return _storage;
+  const { getStorageSettings } = await import("@/lib/settings/index");
+  const settings = await getStorageSettings();
+  const fp = settingsFingerprint(settings);
+
+  if (_storage && _fingerprint === fp) return _storage;
+
   if (!_initPromise) {
-    _initPromise = resolveStorage().then((s) => {
+    _initPromise = resolveStorage(settings).then((s) => {
       _storage = s;
+      _fingerprint = fp;
+      _initPromise = null;
       return s;
     });
   }
+
   return _initPromise;
 }
 

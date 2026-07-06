@@ -38,14 +38,16 @@ export async function createAzureBlobStorage(
     return buildStorage(containerClient as any);
   }
 
-  // SAS-token format — construct the URL manually from BlobEndpoint + container + SAS.
+  // SAS-token format — construct a service-level URL, then get container from it.
   if (parts.BlobEndpoint && parts.SharedAccessSignature) {
-    const { ContainerClient } = await import("@azure/storage-blob");
     const baseUrl = parts.BlobEndpoint.endsWith("/")
       ? parts.BlobEndpoint.slice(0, -1)
       : parts.BlobEndpoint;
-    const sasUrl = `${baseUrl}/${config.containerName}?${parts.SharedAccessSignature}`;
-    const containerClient = new ContainerClient(sasUrl);
+    const sasUrl = `${baseUrl}?${parts.SharedAccessSignature}`;
+    const serviceClient = new BlobServiceClient(sasUrl);
+    const containerClient = serviceClient.getContainerClient(
+      config.containerName,
+    );
     await containerClient.createIfNotExists();
     return buildStorage(containerClient as any);
   }
