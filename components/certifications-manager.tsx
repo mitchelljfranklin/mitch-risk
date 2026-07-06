@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   type CertificationActionState,
   deleteCertificationAction,
+  removeAttachmentAction,
   saveCertificationAction,
 } from "@/lib/actions/certifications";
 import {
@@ -29,6 +30,7 @@ import {
 } from "@/lib/schemas/certification";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
 import { formatDate } from "@/lib/utils";
+import { Trash2 } from "lucide-react";
 
 export type CertificationView = {
   id: string;
@@ -46,10 +48,12 @@ const initialState: CertificationActionState = undefined;
 function CertificationEditor({
   vendorId,
   target,
+  attachments,
   onClose,
 }: {
   vendorId: string;
   target: EditorTarget;
+  attachments?: { id: string; fileName: string }[];
   onClose: () => void;
 }) {
   const isNew = target === "new";
@@ -127,6 +131,39 @@ function CertificationEditor({
             defaultValue={cert?.notes ?? ""}
             rows={3}
           />
+        </div>
+        <div className="grid gap-2">
+          {attachments && attachments.length > 0 ? (
+            <div className="flex flex-col gap-1.5">
+              <span className="text-xs font-medium">Attachments</span>
+              {attachments.map((a) => (
+                <div
+                  key={a.id}
+                  className="flex items-center justify-between gap-2 rounded-md border p-2"
+                >
+                  <a
+                    href={`/api/attachments/${a.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary truncate text-xs hover:underline"
+                  >
+                    {a.fileName} ↗
+                  </a>
+                  <form action={removeAttachmentAction}>
+                    <input type="hidden" name="attachmentId" value={a.id} />
+                    <Button
+                      type="submit"
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 w-6 p-0"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </Button>
+                  </form>
+                </div>
+              ))}
+            </div>
+          ) : null}
         </div>
         <div className="grid gap-2">
           <Label htmlFor="cert-file">Attachment (optional)</Label>
@@ -276,6 +313,13 @@ export function CertificationsManager({
             vendorId={vendorId}
             target={
               editing === "new" ? "new" : (editingCert as CertificationView)
+            }
+            attachments={
+              editing === "new"
+                ? undefined
+                : editingCert
+                  ? (attachments.get(editingCert.id) ?? [])
+                  : []
             }
             onClose={() => setEditing(null)}
           />
