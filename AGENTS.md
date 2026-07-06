@@ -104,14 +104,13 @@ lib/                 # cross-cutting logic
   storage/           # file storage interface (save/read/delete/list)
                      #   local-disk, s3.ts (AWS S3), azure.ts (Azure Blob)
 hooks/              # React hooks (use-form-toast, use-mobile)
-types/               # shared TypeScript type declarations
-  cloud-storage.d.ts #   optional cloud SDK type shim
+  types/               # shared TypeScript type declarations
 emails/              # React Email templates (invite, reminder, escalation, dynamic)
 prisma/              # schema.prisma, migrations, seed.ts
   seed-data/         # ISO 27001, SOC 2, NIST CSF, Essential Eight seed data + types
 scripts/             # backup.sh, backup.ps1
 e2e/                 # Playwright end-to-end tests
-docs/                # PLAN.md, STAGE-GATES.md
+docs/                # PLAN.md, STAGE-GATES.md, STORAGE.md
 proxy.ts             # Next.js 16 proxy (CSP nonce + security headers)
 APPSECURITY.md       # application security hardening documentation
 ```

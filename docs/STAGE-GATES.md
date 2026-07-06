@@ -136,6 +136,10 @@ A phase cannot be marked **Ready for review** unless all of these are true:
 | 102 | CSV framework import | Approved |
 | 103 | Generic Attachment model for file uploads | Approved |
 | 104 | External cloud storage (AWS S3 + Azure Blob) | Approved |
+| 105 | Cloud storage fixes & SDKs as regular dependencies | Approved |
+| 106 | Certification edit sheet: attachment display + remove | Approved |
+| 107 | Audit log: entity names + meta instead of truncated CUIDs | Approved |
+| 108 | STORAGE.md documentation | Approved |
 
 ---
 
@@ -2444,6 +2448,53 @@ server (the "dashboard stat cards" test still matches). No schema/RBAC/OpenAPI c
 
 ---
 
+## Phase 105 — Cloud storage fixes & SDKs as regular dependencies
+
+**Scope:** fix storage cache staleness, Azure SAS URL, and move cloud SDKs from optional peer deps to regular dependencies.
+
+- [x] Storage cache now invalidates when provider changes (fingerprint comparison). Switching Azure→local no longer uses the old cached client.
+- [x] Azure SAS URL fixed: uses `BlobServiceClient` at service level (not `ContainerClient`) so SAS propagates correctly to blob operations.
+- [x] `@aws-sdk/client-s3` installed as regular dependency (was optional peer dep with manual install). Both cloud SDKs now install with `npm install` automatically.
+- [x] Removed `webpackIgnore` comments and `cloud-storage.d.ts` type shim — real SDK types now resolve.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓.
+
+---
+
+## Phase 106 — Certification edit sheet: attachment display + remove buttons
+
+**Scope:** show existing attachments with download links and remove buttons in the certification editor sheet.
+
+- [x] `CertificationEditor` now shows existing attachments with download links and `Trash2` remove buttons when editing a certification.
+- [x] Fixed nested `<form>` hydration error by moving attachment list outside the save certification form.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓.
+
+---
+
+## Phase 107 — Audit log: entity names + meta instead of truncated CUIDs
+
+**Scope:** replace truncated CUID entityId column with clickable entity names and surface the meta JSON field.
+
+- [x] Replaced the useless 8-character truncated `entityId` column with the actual entity name (clickable link to the entity's page).
+- [x] `listAuditLogs()` batch-fetches entity names across 9 entity types (Vendor, Assessment, Template, etc.).
+- [x] The `meta` JSON field (review decisions, role changes, notes) is now selected from the DB and displayed as a subtle sub-line.
+- [x] API and CSV export now include `entityName` and `meta` fields.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓.
+
+---
+
+## Phase 108 — STORAGE.md documentation
+
+**Scope:** comprehensive cloud storage setup guide.
+
+- [x] Comprehensive guide covering S3 and Azure Blob setup, IAM policies, SAS token generation, migration between providers, and troubleshooting table.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓ (docs-only, no code changes).
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -2557,3 +2608,7 @@ server (the "dashboard stat cards" test still matches). No schema/RBAC/OpenAPI c
 | 102 | Approved | User | 2026-07-06 | CSV framework import: dedicated /frameworks/import page with downloadable CSV template, robust CSV parser with row-level validation, imports as new framework with controls in a single transaction |
 | 103 | Approved | User | 2026-07-06 | Generic Attachment model: polymorphic (entityType+entityId), certifications file upload, vendor multi-attachments with upload/remove, authenticated /api/attachments/[attachmentId] serving route |
 | 104 | Approved | User | 2026-07-06 | External cloud storage: S3 + Azure Blob implementations behind FileStorage interface, Storage settings tab, lazy factory init, encrypted credentials, dynamic SDK imports, optional peer dependencies |
+| 105 | Approved | User | 2026-07-06 | Cloud storage fixes: storage cache invalidation on provider change (fingerprint), Azure SAS service-level URL fix, cloud SDKs installed as regular dependencies, webpackIgnore removed |
+| 106 | Approved | User | 2026-07-06 | Certification edit sheet: shows existing attachments with download links and remove buttons, fixed nested form hydration error |
+| 107 | Approved | User | 2026-07-06 | Audit log: entity names replace truncated CUIDs as clickable links; meta field (review decisions, notes) displayed as contextual sub-line. API/CSV export includes entityName + meta |
+| 108 | Approved | User | 2026-07-06 | STORAGE.md: comprehensive cloud storage setup guide covering AWS S3 and Azure Blob |

@@ -764,6 +764,24 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   `APP_ENCRYPTION_KEY`. Cloud SDKs are dynamically imported (optional peer dependencies) and
   initialised lazily so the app boots without them unless configured.
 
+- **Phase 105 — Cloud storage fixes & SDK integration.** Storage cache fingerprint
+  invalidation so provider changes take effect immediately; Azure SAS URL rewired to
+  `BlobServiceClient` for correct blob operation scoping; both cloud SDKs moved from
+  optional peer deps to regular dependencies so Docker builds include them automatically.
+
+- **Phase 106 — Certification edit sheet enhancement.** Existing attachments are now
+  displayed in the edit sheet with download links and remove buttons (previously only
+  visible in the read-only list); nested form fix for React hydration compliance.
+
+- **Phase 107 — Audit log enrichment.** Entity names replace truncated CUIDs in the audit
+  table as clickable links to the respective pages; the `meta` JSON field (review decisions,
+  role changes, notes) is surfaced as a contextual sub-line; API and CSV export include
+  `entityName` and `meta`.
+
+- **Phase 108 — Cloud storage documentation.** `STORAGE.md` covers architecture overview,
+  local disk config, S3 IAM setup, Azure SAS token generation with troubleshooting,
+  migration guidance between providers, and a full error reference table.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

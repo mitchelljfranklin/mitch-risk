@@ -41,7 +41,7 @@ docker compose up -d
 - Vendor profile enrichment (risk owner, data sensitivity, service description, contract renewal)
 - Certification tracking with expiry reminders (30/7-day windows)
 - Multiple file attachments per vendor and certification
-- Configurable external cloud storage (AWS S3, Azure Blob)
+- Configurable external cloud storage (AWS S3, Azure Blob) with setup guide (`docs/STORAGE.md`)
 - CSV framework import with downloadable template
 - Demo data seed script for realistic testing
 - Assessment activity timeline with time-range selector
@@ -60,7 +60,7 @@ docker compose up -d
 - Custom visual branding (logo, primary/secondary colours, RAG indicator colours, border radius, page width)
 - Confirmation dialogs for all destructive actions (delete vendor, assessment, template, etc.)
 - Vendor questionnaire auto-save with progress persistence and resume capability
-- Audit trail for all administrative actions with configurable page size and CSV export
+- Audit trail for all administrative actions with entity names, meta context, configurable page size, and CSV export
 
 ## Framework libraries
 
@@ -180,9 +180,11 @@ Files are managed through a generic **Attachment** model (`entityType` + `entity
 evidence, but also certification files and general vendor attachments. All storage sits behind a
 swappable `FileStorage` interface. The default implementation is **local disk**, but **AWS S3**
 and **Azure Blob** backends are available as opt-in alternatives configurable in Settings →
-Storage. Cloud SDKs (`@aws-sdk/client-s3`, `@azure/storage-blob`) are optional peer dependencies
-— the app boots without them and only loads the configured provider's SDK at runtime when a cloud
-backend is selected. Credentials are encrypted at rest with `APP_ENCRYPTION_KEY`.
+Storage. Cloud SDKs (`@aws-sdk/client-s3`, `@azure/storage-blob`) are regular dependencies
+installed automatically. Credentials are encrypted at rest with `APP_ENCRYPTION_KEY`.
+
+For detailed cloud setup instructions (IAM policies, SAS tokens, migration), see
+[`docs/STORAGE.md`](docs/STORAGE.md).
 
 > The database stores *metadata and references* (e.g. `logoKey`, evidence filename → assessment
 > link); the volume (or cloud bucket) stores the *files themselves*. A database-only backup will
