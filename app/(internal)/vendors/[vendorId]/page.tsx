@@ -97,7 +97,7 @@ export default async function VendorDetailPage({
   // Fetch attachments for all certifications on this vendor.
   const certAttachmentMap = new Map<
     string,
-    { id: string; fileName: string }[]
+    { id: string; fileName: string; displayName: string | null }[]
   >();
   const certAttachments =
     certifications.length > 0
@@ -111,7 +111,7 @@ export default async function VendorDetailPage({
       : [];
   for (const a of certAttachments) {
     const list = certAttachmentMap.get(a.entityId) ?? [];
-    list.push({ id: a.id, fileName: a.fileName });
+    list.push({ id: a.id, fileName: a.fileName, displayName: a.displayName });
     certAttachmentMap.set(a.entityId, list);
   }
 
@@ -263,7 +263,7 @@ export default async function VendorDetailPage({
                       rel="noopener noreferrer"
                       className="text-primary text-sm hover:underline"
                     >
-                      {a.fileName} ↗
+                      {a.displayName ?? a.fileName} ↗
                     </a>
                   ))}
                 </div>

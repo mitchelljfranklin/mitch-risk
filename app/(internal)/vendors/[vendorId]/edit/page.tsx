@@ -42,6 +42,7 @@ export default async function EditVendorPage({ params }: EditVendorPageProps) {
   const attachments = attachmentRows.map((a) => ({
     id: a.id,
     fileName: a.fileName,
+    displayName: a.displayName,
     sizeBytes: a.sizeBytes,
     createdAt: a.createdAt.toISOString(),
   }));

@@ -53,7 +53,7 @@ function CertificationEditor({
 }: {
   vendorId: string;
   target: EditorTarget;
-  attachments?: { id: string; fileName: string }[];
+  attachments?: { id: string; fileName: string; displayName: string | null }[];
   onClose: () => void;
 }) {
   const isNew = target === "new";
@@ -168,7 +168,7 @@ function CertificationEditor({
                   rel="noopener noreferrer"
                   className="text-primary truncate text-xs hover:underline"
                 >
-                  {a.fileName} ↗
+                  {a.displayName ?? a.fileName} ↗
                 </a>
                 <form action={removeAttachmentAction}>
                   <input type="hidden" name="attachmentId" value={a.id} />
@@ -198,7 +198,7 @@ export function CertificationsManager({
 }: {
   vendorId: string;
   certifications: CertificationView[];
-  attachments: Map<string, { id: string; fileName: string }[]>;
+  attachments: Map<string, { id: string; fileName: string; displayName: string | null }[]>;
   canEdit: boolean;
 }) {
   const [editing, setEditing] = useState<EditorTarget | null>(null);

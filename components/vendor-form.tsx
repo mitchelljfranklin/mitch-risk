@@ -38,6 +38,7 @@ type VendorFormProps = {
   attachments?: {
     id: string;
     fileName: string;
+    displayName: string | null;
     sizeBytes: number;
     createdAt: string;
   }[];

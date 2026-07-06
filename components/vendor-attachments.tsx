@@ -14,6 +14,7 @@ import { Trash2 } from "lucide-react";
 type AttachmentData = {
   id: string;
   fileName: string;
+  displayName: string | null;
   sizeBytes: number;
   createdAt: string;
 };
@@ -52,7 +53,7 @@ export function VendorAttachments({
                   rel="noopener noreferrer"
                   className="text-primary truncate text-sm hover:underline"
                 >
-                  {a.fileName} ↗
+                  {a.displayName ?? a.fileName} ↗
                 </a>
                 <span className="text-muted-foreground text-xs">
                   {formatFileSize(a.sizeBytes)} · {formatDate(a.createdAt)}
