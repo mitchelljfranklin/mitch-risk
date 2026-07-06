@@ -20,7 +20,9 @@ export async function createAzureBlobStorage(
   config: AzureConfig,
 ): Promise<FileStorage> {
   // @ts-ignore
-  const { BlobServiceClient } = await import(/* webpackIgnore: true */ "@azure/storage-blob");
+  const { BlobServiceClient } = await import(
+    /* webpackIgnore: true */ "@azure/storage-blob"
+  );
 
   const parts = parseConnectionString(config.connectionString);
 
@@ -38,14 +40,12 @@ export async function createAzureBlobStorage(
 
   // SAS-token format — construct the URL manually from BlobEndpoint + container + SAS.
   if (parts.BlobEndpoint && parts.SharedAccessSignature) {
+    const { ContainerClient } = await import("@azure/storage-blob");
     const baseUrl = parts.BlobEndpoint.endsWith("/")
       ? parts.BlobEndpoint.slice(0, -1)
       : parts.BlobEndpoint;
     const sasUrl = `${baseUrl}/${config.containerName}?${parts.SharedAccessSignature}`;
-    const serviceClient = new BlobServiceClient(sasUrl);
-    const containerClient = serviceClient.getContainerClient(
-      config.containerName,
-    );
+    const containerClient = new ContainerClient(sasUrl);
     await containerClient.createIfNotExists();
     return buildStorage(containerClient as any);
   }

@@ -30,6 +30,7 @@ declare module "@azure/storage-blob" {
     getContainerClient(containerName: string): ContainerClient;
   }
   export class ContainerClient {
+    constructor(url: string);
     createIfNotExists(): Promise<void>;
     getBlockBlobClient(blobName: string): BlockBlobClient;
     listBlobsFlat(): AsyncIterableIterator<any>;
