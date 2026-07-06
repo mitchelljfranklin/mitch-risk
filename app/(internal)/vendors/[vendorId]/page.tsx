@@ -15,6 +15,7 @@ import { deleteVendorAction } from "@/lib/actions/vendors";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { listVendorCertifications } from "@/lib/db/certifications";
+import { prisma } from "@/lib/prisma";
 import { getVendorProfile } from "@/lib/db/compliance";
 import { listVendorFindings } from "@/lib/db/findings";
 import { listFrameworks } from "@/lib/db/frameworks";
@@ -92,6 +93,27 @@ export default async function VendorDetailPage({
     expiresDate: cert.expiresDate.toISOString().slice(0, 10),
     notes: cert.notes ?? "",
   }));
+
+  // Fetch attachments for all certifications on this vendor.
+  const certAttachmentMap = new Map<
+    string,
+    { id: string; fileName: string }[]
+  >();
+  const certAttachments =
+    certifications.length > 0
+      ? await prisma.attachment.findMany({
+          where: {
+            entityType: "VendorCertification",
+            entityId: { in: certifications.map((c) => c.id) },
+          },
+          orderBy: { createdAt: "asc" },
+        })
+      : [];
+  for (const a of certAttachments) {
+    const list = certAttachmentMap.get(a.entityId) ?? [];
+    list.push({ id: a.id, fileName: a.fileName });
+    certAttachmentMap.set(a.entityId, list);
+  }
 
   return (
     <div className="flex max-w-5xl flex-col gap-6">
@@ -233,6 +255,7 @@ export default async function VendorDetailPage({
           <CertificationsManager
             vendorId={vendor.id}
             certifications={certificationViews}
+            attachments={certAttachmentMap}
             canEdit={canEditVendor}
           />
         </CardContent>

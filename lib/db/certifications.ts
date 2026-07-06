@@ -1,3 +1,4 @@
+import { type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { type CertificationInput } from "@/lib/schemas/certification";
 
@@ -40,6 +41,26 @@ export function updateCertification(id: string, input: CertificationInput) {
 
 export function deleteCertification(id: string) {
   return prisma.vendorCertification.delete({ where: { id } });
+}
+
+export function listAttachments(entityType: string, entityId: string) {
+  return prisma.attachment.findMany({
+    where: { entityType, entityId },
+    orderBy: { createdAt: "asc" },
+  });
+}
+
+export function createAttachment(input: Prisma.AttachmentCreateInput) {
+  return prisma.attachment.create({ data: input });
+}
+
+export function deleteAttachmentsForEntity(
+  entityType: string,
+  entityId: string,
+) {
+  return prisma.attachment.deleteMany({
+    where: { entityType, entityId },
+  });
 }
 
 export type ExpiringCertification = {

@@ -128,6 +128,18 @@ function CertificationEditor({
             rows={3}
           />
         </div>
+        <div className="grid gap-2">
+          <Label htmlFor="cert-file">Attachment (optional)</Label>
+          <Input
+            id="cert-file"
+            name="attachmentFile"
+            type="file"
+            accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx"
+          />
+          <p className="text-muted-foreground text-xs">
+            Upload a certificate, report, or contract. Max 20 MB.
+          </p>
+        </div>
         <SheetFooter className="px-0">
           <Button type="submit" disabled={isPending}>
             {isPending ? "Saving..." : "Save certification"}
@@ -144,10 +156,12 @@ function CertificationEditor({
 export function CertificationsManager({
   vendorId,
   certifications,
+  attachments,
   canEdit,
 }: {
   vendorId: string;
   certifications: CertificationView[];
+  attachments: Map<string, { id: string; fileName: string }[]>;
   canEdit: boolean;
 }) {
   const [editing, setEditing] = useState<EditorTarget | null>(null);
@@ -168,6 +182,7 @@ export function CertificationsManager({
         <div className="flex flex-col divide-y rounded-lg border">
           {certifications.map((cert) => {
             const status = certificationStatus(cert.expiresDate);
+            const certAttachments = attachments.get(cert.id) ?? [];
             return (
               <div
                 key={cert.id}
@@ -186,6 +201,17 @@ export function CertificationsManager({
                   <span className="text-muted-foreground text-xs">
                     Expires {formatDate(cert.expiresDate)}
                   </span>
+                  {certAttachments.map((a) => (
+                    <a
+                      key={a.id}
+                      href={`/api/attachments/${a.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary mt-0.5 text-xs hover:underline"
+                    >
+                      {a.fileName} ↗
+                    </a>
+                  ))}
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
                   <Badge className={CERTIFICATION_STATUS_STYLES[status]}>
