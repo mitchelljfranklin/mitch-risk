@@ -29,6 +29,7 @@ import { SendForms } from "./send-forms";
 import { SendBackDialog } from "./send-back-dialog";
 import { FindingStatusForm } from "./finding-status-form";
 import { ReviewPanel } from "@/components/review-panel";
+import { AttachEvidenceButton } from "@/components/attach-evidence-button";
 import { ScoreBadge } from "@/components/score-badge";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
@@ -89,6 +90,10 @@ export default async function AssessmentDetailPage({
   const canDelete = hasPermission(
     user.permissions,
     PERMISSIONS.ASSESSMENTS_DELETE,
+  );
+  const canEditVendor = hasPermission(
+    user.permissions,
+    PERMISSIONS.VENDORS_EDIT,
   );
   const { assessmentId } = await params;
   const assessment = await getAssessment(assessmentId);
@@ -643,6 +648,24 @@ export default async function AssessmentDetailPage({
                       </a>
                     );
                   })}
+                  {canEditVendor &&
+                  (evidenceByQuestion.get(question.id) ?? []).length > 0 ? (
+                    <div className="flex flex-col gap-1.5">
+                      <span className="text-muted-foreground text-xs">
+                        Attach to vendor
+                      </span>
+                      {(evidenceByQuestion.get(question.id) ?? []).map(
+                        (item) => (
+                          <AttachEvidenceButton
+                            key={item.id}
+                            evidenceId={item.id}
+                            assessmentId={assessment.id}
+                            fileName={item.fileName}
+                          />
+                        ),
+                      )}
+                    </div>
+                  ) : null}
                   <ReviewPanel
                     assessmentId={assessment.id}
                     questionId={question.id}

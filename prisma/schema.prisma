@@ -508,14 +508,16 @@ model PasswordResetToken {
 }
 
 model Attachment {
-  id         String   @id @default(cuid())
-  entityType String
-  entityId   String
-  fileName   String
-  storageKey String
-  mimeType   String
-  sizeBytes  Int
-  createdAt  DateTime @default(now())
+  id          String   @id @default(cuid())
+  entityType  String
+  entityId    String
+  fileName    String
+  storageKey  String
+  mimeType    String
+  sizeBytes   Int
+  displayName String?
+  notes       String?
+  createdAt   DateTime @default(now())
 
   @@index([entityType, entityId])
   @@map("attachments")

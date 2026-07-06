@@ -318,3 +318,51 @@ export async function removeVendorAttachmentAction(formData: FormData) {
   await prisma.attachment.delete({ where: { id: attachmentId } });
   revalidatePath(`/vendors/${vendorId}`);
 }
+
+export async function attachEvidenceToVendorAction(formData: FormData) {
+  const user = await requirePermission(PERMISSIONS.VENDORS_EDIT);
+
+  const evidenceId = getField(formData, "evidenceId");
+  const displayName = (formData.get("displayName") as string)?.trim();
+  const notes = (formData.get("notes") as string)?.trim() || undefined;
+
+  if (!evidenceId) return;
+
+  const evidence = await prisma.evidence.findUnique({
+    where: { id: evidenceId },
+    include: { assessment: { select: { vendorId: true } } },
+  });
+  if (!evidence) return;
+
+  const vendorId = evidence.assessment.vendorId;
+
+  const file = await storage.read(evidence.storageKey);
+
+  const ext = evidence.fileName.split(".").pop() ?? "dat";
+  const newKey = `attachment-${randomBytes(12).toString("hex")}.${ext}`;
+
+  await storage.save(newKey, file);
+
+  await prisma.attachment.create({
+    data: {
+      entityType: "Vendor",
+      entityId: vendorId,
+      fileName: evidence.fileName,
+      storageKey: newKey,
+      mimeType: evidence.mimeType,
+      sizeBytes: evidence.sizeBytes,
+      displayName: displayName || evidence.fileName,
+      notes,
+    },
+  });
+
+  if (user) {
+    await logAudit(user.id, "UPDATE_VENDOR", "Vendor", vendorId, {
+      note: "Attached evidence to vendor",
+      evidenceId,
+    });
+  }
+
+  revalidatePath(`/assessments/${evidence.assessmentId}`);
+  revalidatePath(`/vendors/${vendorId}`);
+}
