@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FileStorage, StoredFile } from "./index";
 
 type AzureConfig = {
@@ -19,10 +18,7 @@ function parseConnectionString(cs: string): Record<string, string> {
 export async function createAzureBlobStorage(
   config: AzureConfig,
 ): Promise<FileStorage> {
-  // @ts-ignore
-  const { BlobServiceClient } = await import(
-    /* webpackIgnore: true */ "@azure/storage-blob"
-  );
+  const { BlobServiceClient } = await import("@azure/storage-blob");
 
   const parts = parseConnectionString(config.connectionString);
 
@@ -35,6 +31,7 @@ export async function createAzureBlobStorage(
       config.containerName,
     );
     await containerClient.createIfNotExists();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return buildStorage(containerClient as any);
   }
 
@@ -49,6 +46,7 @@ export async function createAzureBlobStorage(
       config.containerName,
     );
     await containerClient.createIfNotExists();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return buildStorage(containerClient as any);
   }
 
@@ -57,6 +55,7 @@ export async function createAzureBlobStorage(
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function buildStorage(containerClient: any): FileStorage {
   return {
     async save(key, data) {

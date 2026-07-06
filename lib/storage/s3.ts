@@ -14,8 +14,7 @@ export async function createS3Storage(config: S3Config): Promise<FileStorage> {
     GetObjectCommand,
     DeleteObjectCommand,
     ListObjectsV2Command,
-    // @ts-ignore
-  } = await import(/* webpackIgnore: true */ "@aws-sdk/client-s3");
+  } = await import("@aws-sdk/client-s3");
 
   const client = new S3Client({
     region: config.region,
@@ -37,15 +36,13 @@ export async function createS3Storage(config: S3Config): Promise<FileStorage> {
     },
 
     async read(key) {
-      const result: Record<string, unknown> = await client.send(
+      const result = await client.send(
         new GetObjectCommand({
           Bucket: config.bucket,
           Key: key,
         }),
       );
-      const body = await (
-        result.Body as { transformToByteArray?: () => Promise<Uint8Array> }
-      )?.transformToByteArray?.();
+      const body = await result.Body?.transformToByteArray();
       if (!body) {
         throw new Error(`S3 object ${key} returned empty body`);
       }
@@ -66,31 +63,23 @@ export async function createS3Storage(config: S3Config): Promise<FileStorage> {
       let continuationToken: string | undefined;
 
       do {
-        const result: Record<string, unknown> = await client.send(
+        const result = await client.send(
           new ListObjectsV2Command({
             Bucket: config.bucket,
             ContinuationToken: continuationToken,
           }),
         );
 
-        const contents =
-          (result.Contents as Array<Record<string, unknown>>) ?? [];
-        for (const object of contents) {
-          if (typeof object.Key === "string") {
+        for (const object of result.Contents ?? []) {
+          if (object.Key) {
             files.push({
               key: object.Key,
-              modifiedAt:
-                object.LastModified instanceof Date
-                  ? object.LastModified
-                  : new Date(0),
+              modifiedAt: object.LastModified ?? new Date(0),
             });
           }
         }
 
-        continuationToken =
-          typeof result.NextContinuationToken === "string"
-            ? result.NextContinuationToken
-            : undefined;
+        continuationToken = result.NextContinuationToken;
       } while (continuationToken);
 
       return files;
