@@ -668,6 +668,14 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   Playwright `webServer` to `APP_URL`/`AUTH_URL=http://localhost:3000` so the suite doesn't depend
   on the developer's deployment `.env`.
 
+- **Phase 81 — Sheet-footer secondary button styling.** Changed all ghost-variant secondary
+  buttons in Sheet footers (users, roles, emails, certifications) to `outline` variant so they
+  read as clickable buttons with visible hover states, especially in dark mode.
+
+- **Phase 82 — Dark-mode primary buttons fix.** Custom brand primary/secondary colours were
+  applied globally (both light and dark themes). Scoped them to `:root:not(.dark)` so dark
+  mode retains shadcn's visible palette (was rendering black-on-black for primary buttons).
+
 - **Phase 83 — Configurable rate limits.** Brought the previously-hardcoded abuse-protection limits
   in line with the "operational settings live in DB-backed Settings" standard. Added a **Rate limits
   (per minute)** section to the Limits tab exposing: portal page-loads (per visitor), portal uploads
@@ -782,6 +790,15 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   local disk config, S3 IAM setup, Azure SAS token generation with troubleshooting,
   migration guidance between providers, and a full error reference table.
 
+- **Phase 109 — Attach evidence dual-path + displayName.** AttachEvidenceButton on
+  assessment detail offers a dropdown choice: "Certification" creates a VendorCertification
+  record and attaches the file to it, or "General" attaches the file directly to the vendor.
+  File content is copied via `storage.read` → new key → `storage.save`. The `displayName`
+  and `notes` columns were added to the Attachment model (migration
+  `20260706020000_attachment_meta`), providing user-friendly labels in place of raw
+  filenames. All attachment display locations (VendorAttachments, CertificationsManager,
+  vendor detail, vendor edit) now render `displayName ?? fileName`.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These
@@ -798,7 +815,7 @@ Done in `STAGE-GATES.md`.
 |-------|----------|---------|
 | Design tokens (CSS vars + Tailwind theme) | `app/globals.css` | Single source of truth for colour/spacing/radius/typography; no hardcoded values |
 | UI primitives (shadcn) | `components/ui/` | Buttons, inputs, dialog, table, etc.; extended via `cva` + `cn`, never duplicated |
-| Domain components | `components/` | Reusable composites: `PageHeader`, `DataTable`, `EmptyState`, `StatusBadge`, `RiskScoreBadge`, form-field wrappers |
+| Domain components | `components/` | Reusable composites: `ScoreBadge`, `ReviewPanel`, `CertificationsManager`, `VendorAttachments`, `AttachEvidenceButton`, `AssessmentTimeline`, `ProgressBar`, `ConfirmDialog`, `Pagination`, `Breadcrumbs`, `SearchInput`, `StatCard`, `EmptyState`, `ControlCodePills`, `IdleTimer`, `KeyboardShortcuts`, `DuplicateTemplateMenuItem`, `ScrollToTop`, form-field wrappers |
 | App shell | `app/(internal)/layout.tsx` + `components/` | One sidebar/topbar layout reused by every internal page |
 | Utilities | `lib/utils.ts` | `cn()` class merge; date / number / percentage formatters |
 | Prisma client | `lib/prisma.ts` | Single shared client instance |
@@ -807,7 +824,7 @@ Done in `STAGE-GATES.md`.
 | Scoring | `lib/scoring.ts` | One scoring engine used by assessments, profile, and heatmap |
 | Auth / RBAC | `lib/auth.ts` | Session + role guards reused across server actions / routes |
 | Email | `lib/email/` | `mailer` + React Email templates; one send path |
-| Storage | `lib/storage/` | Storage interface + local-disk implementation behind one API |
+| Storage | `lib/storage/` | Storage interface with local-disk, AWS S3, and Azure Blob implementations behind one API |
 | Portal tokens | `lib/tokens.ts` | Generate / validate / expire / revoke vendor links |
 | Env | `lib/env.ts` | zod-validated deployment env (bootstrap/secrets only), imported everywhere |
 | Settings | `lib/settings/` | Typed, zod-validated, DB-backed operational config accessor (one read/write path) for the in-app Settings area |

@@ -63,6 +63,14 @@ components/          # shadcn ui primitives + domain composites
   duplicate-template-menu-item.tsx # client wrapper for template duplication
   control-code-pills.tsx # collapsible control code pills
   progress-bar.tsx   # shared progress bar
+  certifications-manager.tsx # certification CRUD with attachment display
+  attach-evidence-button.tsx # dual-path evidence attachment (certification/general)
+  breadcrumbs.tsx    # dynamic breadcrumb navigation
+  search-input.tsx   # debounced search input
+  pagination.tsx     # reusable pagination controls
+  view-toggle.tsx    # cookie-backed rows/cards view switcher
+  vendor-form.tsx    # vendor create/edit form
+  auto-submit-select.tsx # select that auto-submits form on change
   page-main.tsx      # client wrapper for full-width dashboard
   assessment-timeline.tsx # interactive activity area chart
 lib/                 # cross-cutting logic
@@ -110,9 +118,8 @@ prisma/              # schema.prisma, migrations, seed.ts
   seed-data/         # ISO 27001, SOC 2, NIST CSF, Essential Eight seed data + types
 scripts/             # backup.sh, backup.ps1
 e2e/                 # Playwright end-to-end tests
-docs/                # PLAN.md, STAGE-GATES.md, STORAGE.md
+docs/                # PLAN.md, STAGE-GATES.md, STORAGE.md, APPSECURITY.md, ARCHITECTURE.md, ssoConfig.md
 proxy.ts             # Next.js 16 proxy (CSP nonce + security headers)
-APPSECURITY.md       # application security hardening documentation
 ```
 
 ## Commands

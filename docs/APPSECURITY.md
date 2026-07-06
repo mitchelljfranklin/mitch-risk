@@ -15,8 +15,8 @@ mitch-risk is a lightweight vendor risk management platform built on Next.js 16 
 | Runtime | Next.js 16 (App Router) | Full-stack framework — Server Components for reads, Server Actions for writes, React Server Components |
 | Database | PostgreSQL 17 via Prisma ORM v6 | Relational data with typed queries, migrations, and idempotent seeding |
 | Auth | Auth.js (NextAuth v5 beta) | JWT-based stateless sessions with credentials, SSO (Entra ID, Google, generic OIDC), and first-run admin setup |
-| File storage | Local disk (interface-abstracted) | Evidence file storage behind `FileStorage` interface (save/read/delete/list); swappable to S3/MinIO |
-| Email | Nodemailer v7 over SMTP | Provider-agnostic email via React Email templates; supports any SMTP relay (SendGrid, Mailgun, etc.) |
+| File storage | Local disk (interface-abstracted) | Evidence file storage behind `FileStorage` interface (save/read/delete/list); swappable to AWS S3, Azure Blob |
+| Email | Nodemailer v9 over SMTP | Provider-agnostic email via React Email templates; supports any SMTP relay (SendGrid, Mailgun, etc.) |
 | Encryption | AES-256-GCM (Node `crypto`) | Encrypts SMTP password, SSO client secrets at rest in DB; key derived from `APP_ENCRYPTION_KEY` env var |
 
 ---
@@ -86,25 +86,22 @@ Authorization is **permission-based**, not role-based. Three system roles are se
 
 | Role | Description | Permissions |
 |------|-------------|-------------|
-| **Admin** | Full access (locked, cannot be deleted or edited) | All 17 permissions |
-| **Reviewer** | Write + review access | `*:view`, `*:edit`, `*:manage`, `assessments:review`, `findings:update`, `templates:create`, `templates:import`, `roles:view` |
-| **Viewer** | Read-only | `*:view` only |
+| **Admin** | Full access (locked, cannot be deleted or edited) | All 21 permissions |
+| **Reviewer** | Write + review access | All vendor, assessment, and template CRUD, plus frameworks view/edit. Cannot manage users, roles, settings, API, or view audit |
+| **Viewer** | Read-only | `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view` |
 
-Admins can create custom roles with any subset of the 17 fine-grained `resource:action` permissions.
+Admins can create custom roles with any subset of the 21 fine-grained `resource:action` permissions.
 
 ### 3.2 Permission Catalog
 
-| Resource | Actions |
-|----------|---------|
-| `vendors` | `view`, `edit`, `manage`, `import`, `export` |
-| `assessments` | `view`, `edit`, `review`, `send` |
-| `templates` | `view`, `edit`, `manage`, `create`, `import` |
-| `findings` | `view`, `update` |
-| `roles` | `view`, `manage` |
-| `users` | `view`, `manage` |
+| Resource | Permissions |
+|----------|-------------|
+| `vendors` | `view`, `create`, `edit`, `delete` |
+| `assessments` | `view`, `create`, `edit`, `review`, `delete` |
+| `templates` | `view`, `create`, `edit`, `delete` |
+| `frameworks` | `view`, `edit` |
 | `audit` | `view` |
-| `settings` | `view`, `manage`, `api:manage` |
-| `compliance` | `view` |
+| `administration` | `users:manage`, `roles:manage`, `settings:manage`, `api:manage` |
 
 Permission definitions, default role mappings, and helpers live in `lib/permissions.ts`. Guards (`requirePermission`, `hasPermission`) live in `lib/auth.ts`.
 
@@ -448,7 +445,7 @@ This is a cross-platform guard (works on both forward-slash and backslash filesy
 
 ### 9.3 File Serving
 
-Evidence files are served **only** through an authenticated route (`GET /api/files/[evidenceId]`):
+Evidence and attachment files are served **only** through an authenticated route (`GET /api/attachments/[attachmentId]`):
 - Requires valid Auth.js session
 - Requires `ASSESSMENTS_VIEW` permission
 - Looks up evidence record by ID (not user-supplied path)
@@ -502,7 +499,7 @@ External cloud storage is supported through the same `FileStorage` interface. A 
 
 **Considerations:**
 - No automatic file migration between providers. Switching storage backends requires manual migration of existing files
-- Cloud SDKs are optional peer dependencies — must be installed manually (`npm install @aws-sdk/client-s3` or `npm install @azure/storage-blob`)
+- Cloud SDKs are regular dependencies (`@aws-sdk/client-s3`, `@azure/storage-blob`) in `package.json` — installed automatically with `npm install`
 - S3 `ListObjectsV2` API calls incur cost during the cron orphan sweep (acceptable for the data volumes of a small-business TPRM tool)
 - Cloud credentials stored in the database — a DB compromise could expose them if `APP_ENCRYPTION_KEY` is also compromised
 

@@ -140,6 +140,7 @@ A phase cannot be marked **Ready for review** unless all of these are true:
 | 106 | Certification edit sheet: attachment display + remove | Approved |
 | 107 | Audit log: entity names + meta instead of truncated CUIDs | Approved |
 | 108 | STORAGE.md documentation | Approved |
+| 109 | Attach evidence dual-path + displayName in Attachment UI | Approved |
 
 ---
 
@@ -2592,23 +2593,15 @@ server (the "dashboard stat cards" test still matches). No schema/RBAC/OpenAPI c
 | 59 | Approved | User | 2026-07-03 | Reverse-proxy hardening: proxy-aware getClientIp (trusted-hop XFF / CLIENT_IP_HEADER) across login/break-glass/portal/API + API-key IP allowlist; TRUSTED_PROXY_COUNT/CLIENT_IP_HEADER env; README proxy guide (Caddy/nginx/Zoraxy/Azure); +12 unit tests |
 | 58 | Approved | User | 2026-07-03 | Settings & auth: Test SMTP button, SSO toggle fix (React 19 form-reset + Radix; key-remount across sso/api/limits toggles), email-template master-detail Sheet + reset-to-default, removed per-answer "Reject" (+ data migration), SSO-only login + break-glass URL; 131 unit + 10 e2e |
 | 57 | Approved | user | 2026-07-03 | Mobile & a11y: 28 fixes — settings tabs scroll, dense rows wrap, responsive controls, not-found.tsx, toast/idle/command-palette ARIA, skip-link, error reset(), img CLS, Firefox scrollbar, empty-state SVG aria-hidden, semantic sidebar, pagination live region, fieldset grouping; 122 unit + 9 e2e |
-| 85 | Approved | User | 2026-07-04 | Compact dashboard chart cards: md:grid-cols-3 xl:grid-cols-4, aspect-[7/4] wrappers, tuned donut radii. 14/14 e2e prod |
-| 86 | Approved | User | 2026-07-04 | Vendors by tier horizontal bar chart in dashboard grid. Later removed in P92. No migration |
-| 87 | Approved | User | 2026-07-04 | Donut radii iteration: 30/50 → 45/70 → 55/85 → 65/95. No migration |
-| 88 | Approved | User | 2026-07-04 | Assessment status RadialBarChart (concentric arcs + LabelList). Later replaced by horizontal bar in P92. 14/14 e2e prod |
-| 89 | Approved | User | 2026-07-04 | Demo-data seed script (prisma/seed-demo.ts): 50 vendors, ~65 assessments, 4 compliance profiles, 11 certs, idempotent with --reset. 206 unit, 14/14 e2e prod |
-| 90 | Approved | User | 2026-07-04 | Deferred UX polish: extracted ProgressBar component (5 sites), text-[10px]->text-xs (12 occurrences), type=button on ThemeToggle. 206 unit, 14/14 e2e prod |
-| 91 | Approved | User | 2026-07-04 | Assessment activity timeline: interactive AreaChart (7d/30d/90d selector + gradient fill + tooltip) replacing CalendarHeatmap. 206 unit, 14/14 e2e prod |
-| 92 | Approved | User | 2026-07-04 | Assessment status bar (horizontal, matching findings chart), removed Vendors-by-tier chart (redundant), unified bar sizes (barSize=20 / barCategoryGap=30%). 206 unit, 14/14 e2e prod |
-| 93 | Approved | User | 2026-07-04 | Sticky header + scroll-to-top: top bar pinned (sticky top-0 z-10 bg-background), floating ChevronUp button at >=300px scroll with smooth-scroll. No migration |
 | 94 | Approved | User | 2026-07-06 | Comment visibility (internal vs vendor) + review UX: visibility field on Comment model, vendor-visible badge, per-question portal comments show internal reviewer comments on clarification-requested questions |
 | 95 | Approved | User | 2026-07-06 | Collapsible review panel: ReviewPanel client component with expand/collapse toggles on assessment detail, summary count when collapsed, review progress bar in header |
 | 96 | Approved | User | 2026-07-06 | Widen detail pages: max-w-3xl → max-w-5xl on assessment and vendor detail, plus 9 more pages in follow-up (template builder, framework, control, risk register, bulk-send, compare, profile, vendor edit, vendor new) |
 | 97-101 | Approved | User | 2026-07-06 | UI/UX polish: ScoreBadge component, left-accent borders for status/severity, empty state standardisation, auth page polish, table column headers, framework sticky search, template builder DropdownMenu, vendor form grouping, risk register compact + collapsible, vendor compare sticky thead + diff highlighting. 206 unit, 14/14 e2e prod |
 | 102 | Approved | User | 2026-07-06 | CSV framework import: dedicated /frameworks/import page with downloadable CSV template, robust CSV parser with row-level validation, imports as new framework with controls in a single transaction |
 | 103 | Approved | User | 2026-07-06 | Generic Attachment model: polymorphic (entityType+entityId), certifications file upload, vendor multi-attachments with upload/remove, authenticated /api/attachments/[attachmentId] serving route |
-| 104 | Approved | User | 2026-07-06 | External cloud storage: S3 + Azure Blob implementations behind FileStorage interface, Storage settings tab, lazy factory init, encrypted credentials, dynamic SDK imports, optional peer dependencies |
+| 104 | Approved | User | 2026-07-06 | External cloud storage: S3 + Azure Blob implementations behind FileStorage interface, Storage settings tab, lazy factory init, encrypted credentials |
 | 105 | Approved | User | 2026-07-06 | Cloud storage fixes: storage cache invalidation on provider change (fingerprint), Azure SAS service-level URL fix, cloud SDKs installed as regular dependencies, webpackIgnore removed |
 | 106 | Approved | User | 2026-07-06 | Certification edit sheet: shows existing attachments with download links and remove buttons, fixed nested form hydration error |
 | 107 | Approved | User | 2026-07-06 | Audit log: entity names replace truncated CUIDs as clickable links; meta field (review decisions, notes) displayed as contextual sub-line. API/CSV export includes entityName + meta |
 | 108 | Approved | User | 2026-07-06 | STORAGE.md: comprehensive cloud storage setup guide covering AWS S3 and Azure Blob |
+| 109 | Approved | User | 2026-07-06 | Attach evidence dual-path: dropdown choice ("Certification" creates VendorCertification + attaches file, "General" attaches to vendor); file copy via storage read/new-key/save; displayName and notes fields on Attachment model; displayName surfaced across all UI locations

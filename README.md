@@ -96,7 +96,7 @@ All operational settings are managed in-app via **Settings** (ADMIN role) — no
 - Storage backend selection (Local disk, AWS S3, Azure Blob) with encrypted credentials
 - API keys with IP allowlisting and expiry
 - SSO providers (Entra ID, Google, OIDC) — see [ssoConfig.md](./ssoConfig.md) for per-provider setup
-- User management with roles ADMIN/REVIEWER
+- Role-based access control with three system roles (Admin, Reviewer, Viewer) plus custom roles with granular permissions
 
 ## Running behind a reverse proxy (HTTPS)
 
@@ -253,4 +253,11 @@ Schedule a system cron to hit the secured endpoint:
 curl -H "x-cron-secret: $CRON_SECRET" http://localhost:3000/api/cron/run
 ```
 
-This triggers: vendor reminders, overdue escalations, recurring assessment creation, and audit log pruning.
+This triggers: vendor reminders, overdue escalations, recurring assessment creation, certification/contract expiry notices, audit log pruning, email log pruning, and orphaned file sweep.
+
+## Documentation
+
+- [Architecture Solution Design](docs/ARCHITECTURE.md) — full platform architecture with diagrams
+- [Security Overview](docs/APPSECURITY.md) — security architecture and hardening
+- [Cloud Storage Setup](docs/STORAGE.md) — AWS S3 and Azure Blob configuration
+- [SSO Configuration](docs/ssoConfig.md) — Entra ID, Google, and generic OIDC setup

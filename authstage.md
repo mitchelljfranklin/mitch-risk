@@ -27,7 +27,7 @@ pages, server actions, and API auth.
 
 ## Design decisions (confirmed)
 
-- **Granularity:** `resource:action` permission catalog (code-defined constant, ~24 keys).
+- **Granularity:** `resource:action` permission catalog (code-defined constant, 21 keys).
 - **Defaults:** Admin = all; Reviewer = write + review (no users/roles/settings);
   Viewer = read-only.
 - **System roles:** non-deletable; Admin's permission set locked to "all". Reviewer/Viewer
@@ -44,7 +44,6 @@ Single source of truth. `as const` catalog + types + default role definitions.
 Permissions (`resource:action`):
 
 ```
-dashboard:view
 vendors:view | vendors:create | vendors:edit | vendors:delete
 assessments:view | assessments:create | assessments:edit | assessments:review | assessments:delete
 templates:view | templates:create | templates:edit | templates:delete
@@ -60,9 +59,9 @@ api:manage
   checkbox matrix.
 - Export `SYSTEM_ROLE_DEFAULTS`:
   - **Admin** → all permissions (locked).
-  - **Reviewer** → `dashboard:view`, all `vendors:*`, `assessments:view/create/edit/review`,
-    all `templates:*`, `frameworks:view`.
-  - **Viewer** → all `*:view` keys only.
+  - **Reviewer** → all `vendors:*`, all `assessments:*` (including review and delete),
+    all `templates:*`, `frameworks:view`, `frameworks:edit`.
+  - **Viewer** → `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view`.
 - Helpers: `hasPermission(userPermissions, key)`, `hasAllPermissions`, `isValidPermission`.
 - Constants for the three system role names (`SYSTEM_ROLE_NAMES`).
 
@@ -109,8 +108,7 @@ Admin's permission set to the full catalog on every seed.
 - New guards (keep `requireUser`):
   - `hasPermission(key)` — boolean, no redirect.
   - `requirePermission(key)` — redirect to `/dashboard` if lacking.
-  - Reimplement `requireAdmin()` as `requirePermission("settings:manage")` for back-compat,
-    then migrate call sites to specific permissions.
+  - All call sites directly use `requirePermission()` with the specific permission key; `requireAdmin()` was removed during migration.
 
 ## 4. Data-access layer — `lib/db/roles.ts` (new) + `lib/db/users.ts`
 
