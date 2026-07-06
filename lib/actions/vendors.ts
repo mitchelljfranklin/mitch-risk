@@ -318,7 +318,6 @@ export async function removeVendorAttachmentAction(formData: FormData) {
   await prisma.attachment.delete({ where: { id: attachmentId } });
   revalidatePath(`/vendors/${vendorId}`);
 }
-
 export async function attachEvidenceToCertificationAction(
   _previousState: { ok: boolean; message: string } | undefined,
   formData: FormData,
@@ -326,15 +325,9 @@ export async function attachEvidenceToCertificationAction(
   const user = await requirePermission(PERMISSIONS.VENDORS_EDIT);
 
   const evidenceId = getField(formData, "evidenceId");
-  const name = getField(formData, "name").trim();
-  const issuer = getField(formData, "issuer").trim() || undefined;
-  const expiresDate = getField(formData, "expiresDate");
-  const notes = getField(formData, "notes").trim() || undefined;
-  const displayName = getField(formData, "displayName").trim();
+  const attachType = getField(formData, "attachType"); // "certification" | "general"
 
   if (!evidenceId) return { ok: false, message: "Missing evidence." };
-  if (!name) return { ok: false, message: "Certification name is required." };
-  if (!expiresDate) return { ok: false, message: "Expiry date is required." };
 
   const evidence = await prisma.evidence.findUnique({
     where: { id: evidenceId },
@@ -344,20 +337,53 @@ export async function attachEvidenceToCertificationAction(
 
   const vendorId = evidence.assessment.vendorId;
   const file = await storage.read(evidence.storageKey);
-
   const ext = evidence.fileName.split(".").pop() ?? "dat";
   const newKey = `attachment-${randomBytes(12).toString("hex")}.${ext}`;
 
   await storage.save(newKey, file);
 
+  if (attachType === "general") {
+    const displayName = getField(formData, "displayName").trim();
+    const notes = getField(formData, "notes").trim() || undefined;
+
+    await prisma.attachment.create({
+      data: {
+        entityType: "Vendor",
+        entityId: vendorId,
+        fileName: evidence.fileName,
+        storageKey: newKey,
+        mimeType: evidence.mimeType,
+        sizeBytes: evidence.sizeBytes,
+        displayName: displayName || evidence.fileName,
+        notes,
+      },
+    });
+
+    if (user) {
+      await logAudit(user.id, "UPDATE_VENDOR", "Vendor", vendorId, {
+        note: "Attached evidence to vendor",
+        evidenceId,
+      });
+    }
+
+    revalidatePath(`/assessments/${evidence.assessmentId}`);
+    revalidatePath(`/vendors/${vendorId}`);
+
+    return { ok: true, message: "File attached to vendor." };
+  }
+
+  // certification path
+  const name = getField(formData, "name").trim();
+  const issuer = getField(formData, "issuer").trim() || undefined;
+  const expiresDate = getField(formData, "expiresDate");
+  const notes = getField(formData, "notes").trim() || undefined;
+  const displayName = getField(formData, "displayName").trim();
+
+  if (!name) return { ok: false, message: "Certification name is required." };
+  if (!expiresDate) return { ok: false, message: "Expiry date is required." };
+
   const certification = await prisma.vendorCertification.create({
-    data: {
-      vendorId,
-      name,
-      issuer,
-      expiresDate: new Date(expiresDate),
-      notes,
-    },
+    data: { vendorId, name, issuer, expiresDate: new Date(expiresDate), notes },
   });
 
   await prisma.attachment.create({
