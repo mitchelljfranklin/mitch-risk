@@ -1,5 +1,11 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { VendorForm } from "@/components/vendor-form";
 import { createVendorAction } from "@/lib/actions/vendors";
 import { requirePermission } from "@/lib/auth";
@@ -23,6 +29,7 @@ export default async function NewVendorPage() {
       <Card>
         <CardHeader>
           <CardTitle>Vendor details</CardTitle>
+          <CardDescription>Add a new vendor to track.</CardDescription>
         </CardHeader>
         <CardContent>
           <VendorForm action={createVendorAction} owners={owners} />

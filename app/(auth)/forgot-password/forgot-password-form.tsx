@@ -22,7 +22,7 @@ export function ForgotPasswordForm() {
   return (
     <form action={formAction} className="grid gap-4">
       {state?.ok ? (
-        <p className="text-sm text-[var(--rag-green)]">{state.message}</p>
+        <p className="text-sm text-[var(--success)]">{state.message}</p>
       ) : (
         <>
           <div className="grid gap-2">

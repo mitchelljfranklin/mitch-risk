@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { ScoreBadge } from "@/components/score-badge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -151,9 +152,7 @@ export default async function VendorDetailPage({
             {vendor.contactEmail}
           </span>
           {vendor.overallScore !== null ? (
-            <span className="font-semibold">
-              Score {formatPercent(vendor.overallScore)}
-            </span>
+            <ScoreBadge score={vendor.overallScore} />
           ) : null}
         </div>
       </div>
@@ -246,9 +245,10 @@ export default async function VendorDetailPage({
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
             {profile.overallScore !== null ? (
-              <p className="text-2xl font-semibold">
-                {formatPercent(profile.overallScore)} overall
-              </p>
+              <div>
+                <ScoreBadge score={profile.overallScore} size="lg" />{" "}
+                <span className="text-muted-foreground text-xs">overall</span>
+              </div>
             ) : (
               <p className="text-muted-foreground text-sm">
                 No score yet — submit an assessment.

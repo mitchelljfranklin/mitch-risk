@@ -26,7 +26,8 @@ import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { listVendors, VENDOR_SORTS, type VendorSort } from "@/lib/db/vendors";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
-import { formatDate, formatPercent, ragTextClass } from "@/lib/utils";
+import { ScoreBadge } from "@/components/score-badge";
+import { formatDate } from "@/lib/utils";
 import { parseListView, VENDOR_VIEW_COOKIE } from "@/lib/view-preference";
 import { ImportVendorsForm } from "./import-vendors-form";
 
@@ -201,62 +202,58 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
                             : "assessments"}
                         </span>
                       </div>
-                      <span
-                        className={`text-2xl font-semibold tabular-nums ${ragTextClass(vendor.overallScore)}`}
-                      >
-                        {vendor.overallScore !== null
-                          ? formatPercent(vendor.overallScore)
-                          : "—"}
-                      </span>
+                      <ScoreBadge score={vendor.overallScore} size="lg" />
                     </CardContent>
                   </Card>
                 </Link>
               ))}
             </div>
           ) : (
-            <div className="flex flex-col divide-y rounded-lg border">
-              {vendors.map((vendor) => (
-                <Link
-                  key={vendor.id}
-                  href={`/vendors/${vendor.id}`}
-                  className="hover:bg-accent/40 flex items-center justify-between gap-4 p-3 transition-colors"
-                >
-                  <div className="flex min-w-0 flex-col">
-                    <span className="truncate text-sm font-medium">
-                      {vendor.name}
-                    </span>
-                    <span className="text-muted-foreground truncate text-xs">
-                      {vendor.contactEmail}
-                    </span>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-4">
-                    {vendor.tier ? (
-                      <Badge variant="outline">
-                        {VENDOR_TIER_LABELS[vendor.tier]}
-                      </Badge>
-                    ) : null}
-                    <span className="text-muted-foreground hidden w-28 text-right text-xs sm:inline">
-                      {vendor.lastAssessedAt
-                        ? `Assessed ${formatDate(vendor.lastAssessedAt)}`
-                        : "Not assessed"}
-                    </span>
-                    <span className="text-muted-foreground hidden w-20 text-right text-xs md:inline">
-                      {vendor._count.assessments}{" "}
-                      {vendor._count.assessments === 1
-                        ? "assessment"
-                        : "assessments"}
-                    </span>
-                    <span
-                      className={`w-12 text-right text-sm font-semibold tabular-nums ${ragTextClass(vendor.overallScore)}`}
-                    >
-                      {vendor.overallScore !== null
-                        ? formatPercent(vendor.overallScore)
-                        : "—"}
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            <>
+              <div className="text-muted-foreground hidden items-center gap-4 px-3 text-xs font-medium md:flex">
+                <span className="flex-1">Vendor</span>
+                <span className="w-20">Tier</span>
+                <span className="w-12 text-right">Score</span>
+                <span className="w-24 text-right">Last assessed</span>
+              </div>
+              <div className="flex flex-col divide-y rounded-lg border">
+                {vendors.map((vendor) => (
+                  <Link
+                    key={vendor.id}
+                    href={`/vendors/${vendor.id}`}
+                    className="hover:bg-accent/40 flex items-center justify-between gap-4 p-3 transition-colors"
+                  >
+                    <div className="flex min-w-0 flex-col">
+                      <span className="truncate text-sm font-medium">
+                        {vendor.name}
+                      </span>
+                      <span className="text-muted-foreground truncate text-xs">
+                        {vendor.contactEmail}
+                      </span>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-4">
+                      {vendor.tier ? (
+                        <Badge variant="outline">
+                          {VENDOR_TIER_LABELS[vendor.tier]}
+                        </Badge>
+                      ) : null}
+                      <span className="text-muted-foreground hidden w-28 text-right text-xs sm:inline">
+                        {vendor.lastAssessedAt
+                          ? `Assessed ${formatDate(vendor.lastAssessedAt)}`
+                          : "Not assessed"}
+                      </span>
+                      <span className="text-muted-foreground hidden w-20 text-right text-xs md:inline">
+                        {vendor._count.assessments}{" "}
+                        {vendor._count.assessments === 1
+                          ? "assessment"
+                          : "assessments"}
+                      </span>
+                      <ScoreBadge score={vendor.overallScore} size="sm" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </>
           )}
           <Pagination
             page={page}

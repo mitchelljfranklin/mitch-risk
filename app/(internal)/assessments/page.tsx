@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AssessmentStatusBadge } from "@/components/assessment-status-badge";
+import { ScoreBadge } from "@/components/score-badge";
 import { AutoSubmitSelect } from "@/components/auto-submit-select";
 import { EmptyState } from "@/components/empty-state";
 import { Pagination } from "@/components/pagination";
@@ -26,7 +27,7 @@ import {
   ASSESSMENT_STATUS_LABELS,
   isAssessmentOverdue,
 } from "@/lib/schemas/assessment";
-import { formatDate, formatPercent, ragTextClass } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -61,6 +62,12 @@ export default async function AssessmentsPage({
     Boolean(sp.from) ||
     Boolean(sp.to) ||
     overdue;
+
+  const STATUS_ACCENT: Record<string, string> = {
+    SUBMITTED: "border-l-[var(--rag-amber)]",
+    UNDER_REVIEW: "border-l-blue-500",
+    COMPLETED: "border-l-[var(--rag-green)]",
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -171,6 +178,12 @@ export default async function AssessmentsPage({
         )
       ) : (
         <>
+          <div className="text-muted-foreground flex items-center gap-3 px-3 text-xs font-medium">
+            <span className="flex-1">Assessment · Vendor</span>
+            <span className="hidden w-16 text-right sm:inline">Score</span>
+            <span className="hidden w-28 text-right sm:inline">Status</span>
+            <span className="hidden w-24 text-right sm:inline">Due</span>
+          </div>
           <div className="flex flex-col gap-2">
             {assessments.map((assessment) => {
               const isOverdue = isAssessmentOverdue(
@@ -181,7 +194,7 @@ export default async function AssessmentsPage({
                 <Link
                   key={assessment.id}
                   href={`/assessments/${assessment.id}`}
-                  className="hover:bg-accent/40 flex items-center justify-between gap-3 rounded-md border p-3"
+                  className={`hover:bg-accent/40 flex items-center justify-between gap-3 rounded-md border p-3 ${isOverdue ? "border-l-destructive border-l-4" : (STATUS_ACCENT[assessment.status] ?? "")}`}
                 >
                   <div className="flex min-w-0 flex-col">
                     <span className="truncate text-sm font-medium">
@@ -205,11 +218,7 @@ export default async function AssessmentsPage({
                   </div>
                   <div className="flex shrink-0 items-center gap-3">
                     {assessment.score !== null ? (
-                      <span
-                        className={`hidden w-12 text-right text-sm font-semibold tabular-nums sm:inline ${ragTextClass(assessment.score)}`}
-                      >
-                        {formatPercent(assessment.score)}
-                      </span>
+                      <ScoreBadge score={assessment.score} size="sm" />
                     ) : null}
                     {isOverdue ? (
                       <Badge variant="destructive">Overdue</Badge>

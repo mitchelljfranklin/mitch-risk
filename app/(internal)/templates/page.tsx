@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { EmptyState } from "@/components/empty-state";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { listTemplates } from "@/lib/db/templates";
@@ -52,11 +53,11 @@ export default async function TemplatesPage() {
       </div>
 
       {templates.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          {canCreateTemplate
-            ? "No templates yet. Create your first questionnaire."
-            : "No templates yet."}
-        </p>
+        <EmptyState
+          icon="templates"
+          title="No templates yet"
+          description="Create your first assessment template."
+        />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {templates.map((template) => (

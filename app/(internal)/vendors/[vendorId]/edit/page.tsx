@@ -1,7 +1,13 @@
 import { notFound } from "next/navigation";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { VendorForm } from "@/components/vendor-form";
 import { updateVendorAction } from "@/lib/actions/vendors";
 import { requirePermission } from "@/lib/auth";
@@ -41,6 +47,7 @@ export default async function EditVendorPage({ params }: EditVendorPageProps) {
       <Card>
         <CardHeader>
           <CardTitle>Vendor details</CardTitle>
+          <CardDescription>Update vendor details.</CardDescription>
         </CardHeader>
         <CardContent>
           <VendorForm

@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
 import { type VendorFormState } from "@/lib/actions/vendors";
 import {
   DATA_SENSITIVITIES,
@@ -31,6 +32,7 @@ type VendorAction = (
 type VendorFormProps = {
   action: VendorAction;
   vendorId?: string;
+  mode?: "create" | "edit";
   owners: { id: string; name: string }[];
   defaults?: {
     name: string;
@@ -51,12 +53,14 @@ const initialState: VendorFormState = undefined;
 export function VendorForm({
   action,
   vendorId,
+  mode,
   owners,
   defaults,
 }: VendorFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
   useActionFeedback(state);
   const cancelHref = vendorId ? `/vendors/${vendorId}` : "/vendors";
+  const isEdit = mode === "edit" || Boolean(vendorId);
 
   return (
     <form action={formAction} className="grid gap-4">
@@ -87,6 +91,7 @@ export function VendorForm({
           />
         </div>
       </div>
+      <Separator className="my-1" />
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="grid gap-2">
           <Label htmlFor="tier">Tier</Label>
@@ -143,6 +148,7 @@ export function VendorForm({
           </Select>
         </div>
       </div>
+      <Separator className="my-1" />
       <div className="grid gap-2">
         <Label htmlFor="serviceDescription">Service provided</Label>
         <Input
@@ -161,6 +167,7 @@ export function VendorForm({
           defaultValue={defaults?.contractRenewalDate}
         />
       </div>
+      <Separator className="my-1" />
       <div className="grid gap-2">
         <Label htmlFor="notes">Notes</Label>
         <Textarea
@@ -177,7 +184,7 @@ export function VendorForm({
       ) : null}
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending}>
-          {isPending ? "Saving..." : "Save vendor"}
+          {isPending ? "Saving..." : isEdit ? "Save changes" : "Create vendor"}
         </Button>
         <Button asChild variant="outline">
           <Link href={cancelHref}>Cancel</Link>

@@ -1,6 +1,12 @@
 type EmptyStateProps = {
   icon:
-    "vendors" | "assessments" | "templates" | "findings" | "audit" | "email";
+    | "vendors"
+    | "assessments"
+    | "templates"
+    | "frameworks"
+    | "findings"
+    | "audit"
+    | "email";
   title: string;
   description: string;
 };
@@ -73,6 +79,52 @@ const ICONS: Record<EmptyStateProps["icon"], React.ReactNode> = {
       />
       <circle cx="50" cy="44" r="2" fill="currentColor" />
       <circle cx="44" cy="44" r="2" fill="currentColor" />
+    </svg>
+  ),
+  frameworks: (
+    <svg viewBox="0 0 64 64" fill="none" className="size-16" aria-hidden="true">
+      <rect
+        x="6"
+        y="12"
+        width="20"
+        height="14"
+        rx="3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <rect
+        x="38"
+        y="12"
+        width="20"
+        height="14"
+        rx="3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <rect
+        x="6"
+        y="38"
+        width="20"
+        height="14"
+        rx="3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <rect
+        x="38"
+        y="38"
+        width="20"
+        height="14"
+        rx="3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M22 19h16M22 45h16M16 26v12M48 26v12"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   ),
   findings: (

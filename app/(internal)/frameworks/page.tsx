@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { EmptyState } from "@/components/empty-state";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { listFrameworks } from "@/lib/db/frameworks";
@@ -29,9 +30,11 @@ export default async function FrameworksPage() {
       </div>
 
       {frameworks.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          No frameworks seeded yet.
-        </p>
+        <EmptyState
+          icon="frameworks"
+          title="No frameworks"
+          description="Framework data could not be loaded."
+        />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {frameworks.map((framework) => (

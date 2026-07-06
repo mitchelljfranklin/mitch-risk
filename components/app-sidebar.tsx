@@ -103,6 +103,7 @@ export function AppSidebar({
               alt={orgName}
               width={120}
               height={32}
+              loading="lazy"
               className="h-8 w-auto max-w-[120px] rounded object-contain"
             />
           ) : (

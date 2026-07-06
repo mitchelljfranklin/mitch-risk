@@ -62,7 +62,9 @@ export default async function FrameworkDetailPage({
         </h1>
       </div>
 
-      <SearchInput placeholder="Search controls…" />
+      <div className="bg-background sticky top-14 z-10 pb-2">
+        <SearchInput placeholder="Search controls…" />
+      </div>
 
       {controls.length === 0 ? (
         <p className="text-muted-foreground text-sm">

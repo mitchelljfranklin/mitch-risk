@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { validatePortalPassword } from "./actions";
@@ -30,38 +31,39 @@ export function PasswordGate({ token }: PasswordGateProps) {
   );
 
   return (
-    <form
-      action={formAction}
-      className="mt-24 flex flex-col items-center gap-4"
-    >
-      <h1 className="text-xl font-semibold tracking-tight">
-        Password required
-      </h1>
-      <p className="text-muted-foreground text-center text-sm">
-        This questionnaire is password protected. Enter the password provided by
-        the requester to continue.
-      </p>
-      <div className="flex w-64 flex-col gap-2">
-        <Label htmlFor="portal-password" className="sr-only">
-          Password
-        </Label>
-        <Input
-          id="portal-password"
-          name="password"
-          type="password"
-          placeholder="Enter password"
-          autoFocus
-          required
-        />
-      </div>
-      {state?.message ? (
-        <p className="text-destructive text-sm" role="alert">
-          {state.message}
-        </p>
-      ) : null}
-      <Button type="submit" disabled={isPending}>
-        {isPending ? "Verifying..." : "Continue"}
-      </Button>
+    <form action={formAction} className="flex flex-col items-center gap-4">
+      <Card>
+        <CardContent className="flex flex-col items-center gap-4 pt-6">
+          <h1 className="text-xl font-semibold tracking-tight">
+            Password required
+          </h1>
+          <p className="text-muted-foreground text-center text-sm">
+            This questionnaire is password protected. Enter the password
+            provided by the requester to continue.
+          </p>
+          <div className="flex w-64 flex-col gap-2">
+            <Label htmlFor="portal-password" className="sr-only">
+              Password
+            </Label>
+            <Input
+              id="portal-password"
+              name="password"
+              type="password"
+              placeholder="Enter password"
+              autoFocus
+              required
+            />
+          </div>
+          {state?.message ? (
+            <p className="text-destructive text-sm" role="alert">
+              {state.message}
+            </p>
+          ) : null}
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Verifying..." : "Continue"}
+          </Button>
+        </CardContent>
+      </Card>
     </form>
   );
 }

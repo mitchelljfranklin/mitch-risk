@@ -23,6 +23,7 @@ export default async function AuthLayout({
               alt={organization.name}
               width={96}
               height={56}
+              loading="lazy"
               className="h-14 w-auto object-contain"
             />
             <h1 className="text-muted-foreground text-sm font-medium">

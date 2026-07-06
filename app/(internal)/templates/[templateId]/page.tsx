@@ -7,8 +7,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ChevronDown, ChevronUp, MoreHorizontal } from "lucide-react";
 import {
   addSectionAction,
   createNewVersionAction,
@@ -98,13 +105,7 @@ export default async function TemplateBuilderPage({
         ]}
       />
       <div>
-        <Link
-          href="/templates"
-          className="text-muted-foreground text-sm hover:underline"
-        >
-          ← Templates
-        </Link>
-        <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
             {template.name}
             <Badge variant="outline">v{template.version}</Badge>
@@ -158,22 +159,46 @@ export default async function TemplateBuilderPage({
                 </ConfirmDialog>
               </form>
             ) : null}
-            <Button asChild variant="outline">
-              <Link href={`/templates/${template.id}/preview`}>Preview</Link>
-            </Button>
-            {canCreateTemplate ? (
-              <form action={duplicateTemplateAction}>
-                <input type="hidden" name="templateId" value={template.id} />
-                <Button type="submit" variant="outline">
-                  Duplicate
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <MoreHorizontal className="size-4" />
                 </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link href={`/templates/${template.id}/preview`}>
+                    Preview
+                  </Link>
+                </DropdownMenuItem>
+                {canCreateTemplate ? (
+                  <DropdownMenuItem
+                    onClick={() => {
+                      const form = document.getElementById(
+                        "duplicate-template-form",
+                      ) as HTMLFormElement;
+                      if (form) form.requestSubmit();
+                    }}
+                  >
+                    Duplicate
+                  </DropdownMenuItem>
+                ) : null}
+                <DropdownMenuItem asChild>
+                  <a href={`/api/templates/${template.id}/export`} download>
+                    Export
+                  </a>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {canCreateTemplate ? (
+              <form
+                id="duplicate-template-form"
+                action={duplicateTemplateAction}
+                className="hidden"
+              >
+                <input type="hidden" name="templateId" value={template.id} />
               </form>
             ) : null}
-            <Button asChild variant="outline">
-              <a href={`/api/templates/${template.id}/export`} download>
-                Export
-              </a>
-            </Button>
           </div>
         </div>
       </div>
@@ -299,7 +324,7 @@ export default async function TemplateBuilderPage({
                       disabled={sectionIndex === 0}
                       aria-label="Move section up"
                     >
-                      ↑
+                      <ChevronUp size={14} />
                     </Button>
                   </form>
                   <form action={moveSectionAction}>
@@ -317,7 +342,7 @@ export default async function TemplateBuilderPage({
                       disabled={sectionIndex === template.sections.length - 1}
                       aria-label="Move section down"
                     >
-                      ↓
+                      <ChevronDown size={14} />
                     </Button>
                   </form>
                 </div>
@@ -405,7 +430,7 @@ export default async function TemplateBuilderPage({
                             disabled={questionIndex === 0}
                             aria-label="Move question up"
                           >
-                            ↑
+                            <ChevronUp size={14} />
                           </Button>
                         </form>
                         <form action={moveQuestionAction}>
@@ -429,7 +454,7 @@ export default async function TemplateBuilderPage({
                             }
                             aria-label="Move question down"
                           >
-                            ↓
+                            <ChevronDown size={14} />
                           </Button>
                         </form>
                         <Button asChild variant="ghost" size="sm">

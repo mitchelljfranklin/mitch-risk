@@ -1,6 +1,12 @@
 import { redirect } from "next/navigation";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { getCurrentUser } from "@/lib/auth";
 import { countUsers } from "@/lib/db/users";
 
@@ -22,6 +28,9 @@ export default async function ForgotPasswordPage() {
     <Card>
       <CardHeader>
         <CardTitle>Forgot password</CardTitle>
+        <CardDescription>
+          Enter your email and we&apos;ll send you a reset link.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <ForgotPasswordForm />

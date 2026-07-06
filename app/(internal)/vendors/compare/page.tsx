@@ -16,8 +16,9 @@ import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getAssessment } from "@/lib/db/assessments";
 import { getVendor, listVendorOptions } from "@/lib/db/vendors";
+import { ScoreBadge } from "@/components/score-badge";
 import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
-import { formatPercent, formatResponseValue } from "@/lib/utils";
+import { formatResponseValue } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -186,9 +187,7 @@ export default async function CompareVendorsPage({
             <CardTitle className="text-base">{vendorA.name}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-semibold">
-              {aScore !== null ? formatPercent(aScore) : "—"}
-            </p>
+            <ScoreBadge score={aScore} size="lg" />
             <p className="text-muted-foreground text-xs">
               {assessmentA.title} · {assessmentA.status.toLowerCase()}
             </p>
@@ -199,9 +198,7 @@ export default async function CompareVendorsPage({
             <CardTitle className="text-base">{vendorB.name}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-semibold">
-              {bScore !== null ? formatPercent(bScore) : "—"}
-            </p>
+            <ScoreBadge score={bScore} size="lg" />
             <p className="text-muted-foreground text-xs">
               {assessmentB.title} · {assessmentB.status.toLowerCase()}
             </p>
@@ -211,7 +208,7 @@ export default async function CompareVendorsPage({
 
       <div className="overflow-x-auto rounded-lg border">
         <table className="w-full text-sm">
-          <thead>
+          <thead className="bg-background sticky top-14">
             <tr className="bg-muted/50 border-b">
               <th scope="col" className="p-3 text-left font-medium">
                 Question
@@ -233,8 +230,19 @@ export default async function CompareVendorsPage({
               const aCompliant = ar?.isCompliant;
               const bCompliant = br?.isCompliant;
 
+              const aAnswer = ar?.isNotApplicable
+                ? "N/A"
+                : formatResponseValue(ar?.value);
+              const bAnswer = br?.isNotApplicable
+                ? "N/A"
+                : formatResponseValue(br?.value);
+              const answersDiffer = aq && bq && aAnswer !== bAnswer;
+
               return (
-                <tr key={text} className="border-b">
+                <tr
+                  key={text}
+                  className={`even:bg-muted/30 border-b ${answersDiffer ? "bg-accent/20" : ""}`}
+                >
                   <td className="p-3">
                     <span className="text-muted-foreground text-xs">
                       {aq?.sectionTitle ?? bq?.sectionTitle ?? "—"}
@@ -261,9 +269,7 @@ export default async function CompareVendorsPage({
                               : "text-muted-foreground"
                         }
                       >
-                        {ar?.isNotApplicable
-                          ? "N/A"
-                          : formatResponseValue(ar?.value)}
+                        {aAnswer}
                       </span>
                     ) : (
                       <span className="text-muted-foreground">—</span>
@@ -280,9 +286,7 @@ export default async function CompareVendorsPage({
                               : "text-muted-foreground"
                         }
                       >
-                        {br?.isNotApplicable
-                          ? "N/A"
-                          : formatResponseValue(br?.value)}
+                        {bAnswer}
                       </span>
                     ) : (
                       <span className="text-muted-foreground">—</span>

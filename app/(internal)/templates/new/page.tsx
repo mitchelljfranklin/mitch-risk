@@ -1,3 +1,4 @@
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
@@ -13,6 +14,12 @@ export default async function NewTemplatePage() {
 
   return (
     <div className="flex max-w-lg flex-col gap-6">
+      <Breadcrumbs
+        segments={[
+          { label: "Templates", href: "/templates" },
+          { label: "New" },
+        ]}
+      />
       <h1 className="text-2xl font-semibold tracking-tight">New template</h1>
       <Card>
         <CardHeader>

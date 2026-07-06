@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardCharts } from "@/components/dashboard-charts";
 import { StatCard, ScoreStatCard } from "@/components/stat-card";
+import { ScoreBadge } from "@/components/score-badge";
 import { AssessmentTimeline } from "@/components/assessment-timeline";
 import { requireUser } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
@@ -13,7 +14,7 @@ import { getFindingSummary } from "@/lib/db/findings";
 import { listUpcomingKeyDates } from "@/lib/db/dashboard";
 import { prisma } from "@/lib/prisma";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
-import { formatDate, formatPercent } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -301,21 +302,7 @@ export default async function DashboardPage() {
                             }
                           </Badge>
                         ) : null}
-                        <span
-                          className={`text-sm font-semibold tabular-nums ${
-                            vendor.overallScore !== null
-                              ? vendor.overallScore >= 0.85
-                                ? "text-[var(--rag-green)]"
-                                : vendor.overallScore >= 0.6
-                                  ? "text-[var(--rag-amber)]"
-                                  : "text-[var(--rag-red)]"
-                              : "text-muted-foreground"
-                          }`}
-                        >
-                          {vendor.overallScore !== null
-                            ? formatPercent(vendor.overallScore)
-                            : "—"}
-                        </span>
+                        <ScoreBadge score={vendor.overallScore} size="sm" />
                       </div>
                     </Link>
                   ))}

@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { getCurrentUser } from "@/lib/auth";
 import { shouldShowLocalAuth, verifyBreakGlassToken } from "@/lib/break-glass";
 import { getClientIp } from "@/lib/client-ip";
@@ -95,11 +96,18 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <LoginForm />
             <Link
               href="/forgot-password"
-              className="hover:text-primary text-muted-foreground -mt-2 text-center text-xs hover:underline"
+              className="hover:text-primary text-muted-foreground text-center text-xs hover:underline"
             >
               Forgot password?
             </Link>
           </>
+        ) : null}
+        {showLocalAuth && ssoProviders.length > 0 ? (
+          <div className="flex items-center gap-3">
+            <Separator className="flex-1" />
+            <span className="text-muted-foreground text-xs">or</span>
+            <Separator className="flex-1" />
+          </div>
         ) : null}
         {ssoProviders.length > 0 ? (
           <SsoButtons providers={ssoProviders} />

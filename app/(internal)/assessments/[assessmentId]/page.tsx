@@ -29,6 +29,7 @@ import { SendForms } from "./send-forms";
 import { SendBackDialog } from "./send-back-dialog";
 import { FindingStatusForm } from "./finding-status-form";
 import { ReviewPanel } from "@/components/review-panel";
+import { ScoreBadge } from "@/components/score-badge";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getAssessment } from "@/lib/db/assessments";
@@ -40,7 +41,7 @@ import {
   SEVERITY_STYLES,
 } from "@/lib/schemas/assessment";
 import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
-import { cn, formatDate, formatPercent, ragTextClass } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -424,14 +425,7 @@ export default async function AssessmentDetailPage({
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
             <div className="flex items-baseline gap-3">
-              <p
-                className={cn(
-                  "text-3xl font-semibold tabular-nums",
-                  ragTextClass(assessment.score),
-                )}
-              >
-                {formatPercent(assessment.score)}
-              </p>
+              <ScoreBadge score={assessment.score} size="lg" />
               <span className="text-muted-foreground text-sm">
                 {assessment.score >= 0.85
                   ? "Low risk"
@@ -464,66 +458,77 @@ export default async function AssessmentDetailPage({
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
-            {assessment.findings.map((finding) => (
-              <div key={finding.id} className="rounded-md border p-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span
-                    className={cn(
-                      "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium",
-                      SEVERITY_STYLES[finding.severity] ??
-                        "bg-muted text-muted-foreground",
-                    )}
-                  >
-                    {finding.severity}
-                  </span>
-                  <span
-                    className={cn(
-                      "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium",
-                      FINDING_STATUS_STYLES[finding.status] ??
-                        "bg-muted text-muted-foreground",
-                    )}
-                  >
-                    {FINDING_STATUS_LABELS[finding.status] ?? finding.status}
-                  </span>
-                  <span className="text-sm font-medium">{finding.title}</span>
-                </div>
-                <p className="text-muted-foreground mt-1 text-sm">
-                  {finding.description}
-                </p>
-                {finding.controlCodes.length > 0 ? (
-                  <div className="mt-1 flex flex-wrap gap-1">
-                    {finding.controlCodes.map((code) => (
-                      <Badge
-                        key={code}
-                        variant="outline"
-                        className="font-mono text-xs"
-                      >
-                        {code}
-                      </Badge>
-                    ))}
+            {assessment.findings.map((finding) => {
+              const severityAccent: Record<string, string> = {
+                CRITICAL: "border-l-4 border-l-destructive",
+                HIGH: "border-l-4 border-l-[var(--rag-amber)]",
+                MEDIUM: "border-l-4 border-l-yellow-500",
+                LOW: "border-l-4 border-l-muted-foreground",
+              };
+              return (
+                <div
+                  key={finding.id}
+                  className={`rounded-md border p-3 ${severityAccent[finding.severity] ?? ""}`}
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className={cn(
+                        "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium",
+                        SEVERITY_STYLES[finding.severity] ??
+                          "bg-muted text-muted-foreground",
+                      )}
+                    >
+                      {finding.severity}
+                    </span>
+                    <span
+                      className={cn(
+                        "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium",
+                        FINDING_STATUS_STYLES[finding.status] ??
+                          "bg-muted text-muted-foreground",
+                      )}
+                    >
+                      {FINDING_STATUS_LABELS[finding.status] ?? finding.status}
+                    </span>
+                    <span className="text-sm font-medium">{finding.title}</span>
                   </div>
-                ) : null}
-                {finding.resolutionNote || finding.resolvedAt ? (
-                  <p className="text-muted-foreground mt-1 text-xs">
-                    {finding.resolutionNote
-                      ? `“${finding.resolutionNote}” · `
-                      : ""}
-                    {finding.resolvedBy?.name ?? "Deleted user"}
-                    {finding.resolvedAt
-                      ? ` · ${formatDate(finding.resolvedAt)}`
-                      : ""}
+                  <p className="text-muted-foreground mt-1 text-sm">
+                    {finding.description}
                   </p>
-                ) : null}
-                {canReview ? (
-                  <FindingStatusForm
-                    findingId={finding.id}
-                    assessmentId={assessment.id}
-                    currentStatus={finding.status}
-                    currentNote={finding.resolutionNote ?? ""}
-                  />
-                ) : null}
-              </div>
-            ))}
+                  {finding.controlCodes.length > 0 ? (
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {finding.controlCodes.map((code) => (
+                        <Badge
+                          key={code}
+                          variant="outline"
+                          className="font-mono text-xs"
+                        >
+                          {code}
+                        </Badge>
+                      ))}
+                    </div>
+                  ) : null}
+                  {finding.resolutionNote || finding.resolvedAt ? (
+                    <p className="text-muted-foreground mt-1 text-xs">
+                      {finding.resolutionNote
+                        ? `“${finding.resolutionNote}” · `
+                        : ""}
+                      {finding.resolvedBy?.name ?? "Deleted user"}
+                      {finding.resolvedAt
+                        ? ` · ${formatDate(finding.resolvedAt)}`
+                        : ""}
+                    </p>
+                  ) : null}
+                  {canReview ? (
+                    <FindingStatusForm
+                      findingId={finding.id}
+                      assessmentId={assessment.id}
+                      currentStatus={finding.status}
+                      currentNote={finding.resolutionNote ?? ""}
+                    />
+                  ) : null}
+                </div>
+              );
+            })}
           </CardContent>
         </Card>
       ) : assessment.score !== null ? (

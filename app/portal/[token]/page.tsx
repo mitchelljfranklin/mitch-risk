@@ -62,6 +62,7 @@ function PortalShell({
             alt="Logo"
             width={80}
             height={40}
+            loading="lazy"
             className="h-10 w-auto object-contain"
           />
         </div>
@@ -168,7 +169,7 @@ export default async function PortalPage({ params }: PortalPageProps) {
             </div>
             <ThemeToggle />
           </header>
-          <div className="rounded-md border border-[var(--rag-green)] bg-[var(--rag-green)]/10 px-4 py-3">
+          <div className="rounded-md border border-[var(--success)] bg-[var(--success)]/10 px-4 py-3">
             <p className="text-sm font-medium">
               ✓ Your responses have been submitted.
             </p>
@@ -200,7 +201,7 @@ export default async function PortalPage({ params }: PortalPageProps) {
                     <span
                       className={
                         review.decision === "APPROVED"
-                          ? "text-[var(--rag-green)]"
+                          ? "text-[var(--success)]"
                           : "text-muted-foreground"
                       }
                     >

@@ -44,20 +44,29 @@ export function ResetPasswordForm({ token }: { token: string }) {
           required
         />
       </div>
-      {state?.message ? (
+      {state?.ok ? (
+        <p className="text-sm text-[var(--success)]" role="alert">
+          {state.message}
+        </p>
+      ) : null}
+      {!state?.ok && state?.message ? (
         <p className="text-destructive text-sm" role="alert">
           {state.message}
         </p>
       ) : null}
-      <Button type="submit" disabled={isPending}>
-        {isPending ? "Resetting..." : "Reset password"}
-      </Button>
-      <Link
-        href="/login"
-        className="text-muted-foreground text-center text-xs hover:underline"
-      >
-        Back to sign in
-      </Link>
+      {!state?.ok ? (
+        <>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Resetting..." : "Reset password"}
+          </Button>
+          <Link
+            href="/login"
+            className="text-muted-foreground text-center text-xs hover:underline"
+          >
+            Back to sign in
+          </Link>
+        </>
+      ) : null}
     </form>
   );
 }

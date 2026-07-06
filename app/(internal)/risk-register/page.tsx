@@ -32,6 +32,7 @@ import {
 import { RISK_WEIGHTS } from "@/lib/schemas/template";
 import { formatDate } from "@/lib/utils";
 import { FindingStatusForm } from "../assessments/[assessmentId]/finding-status-form";
+import { ControlCodePills } from "@/components/control-code-pills";
 
 export const dynamic = "force-dynamic";
 
@@ -51,6 +52,13 @@ export default async function RiskRegisterPage({
   );
 
   const sp = await searchParams;
+  const SEVERITY_ACCENT: Record<string, string> = {
+    CRITICAL: "border-l-4 border-l-destructive",
+    HIGH: "border-l-4 border-l-[var(--rag-amber)]",
+    MEDIUM: "border-l-4 border-l-yellow-500",
+    LOW: "border-l-4 border-l-muted-foreground",
+  };
+
   const sort = (sp.sort as FindingSort) || "priority";
   const page = sp.page ? parseInt(sp.page, 10) || 1 : 1;
 
@@ -182,30 +190,20 @@ export default async function RiskRegisterPage({
         <>
           <div className="flex flex-col gap-3">
             {findings.map((finding) => (
-              <Card key={finding.id}>
+              <Card
+                key={finding.id}
+                className={SEVERITY_ACCENT[finding.severity] ?? ""}
+              >
                 <CardHeader>
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div className="flex min-w-0 flex-col gap-1">
                       <CardTitle className="text-base">
                         {finding.title}
                       </CardTitle>
-                      <span className="text-muted-foreground text-xs">
-                        <Link
-                          href={`/vendors/${finding.vendorId}`}
-                          className="hover:text-primary hover:underline"
-                        >
-                          {finding.vendorName}
-                        </Link>
-                        {" · "}
-                        <Link
-                          href={`/assessments/${finding.assessmentId}`}
-                          className="hover:text-primary hover:underline"
-                        >
-                          {finding.assessmentTitle}
-                        </Link>
-                        {" · "}
+                      <p className="text-muted-foreground text-xs">
+                        {finding.vendorName} · {finding.assessmentTitle} ·{" "}
                         {formatDate(finding.createdAt)}
-                      </span>
+                      </p>
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
                       <Badge
@@ -228,17 +226,7 @@ export default async function RiskRegisterPage({
                     {finding.description}
                   </p>
                   {finding.controlCodes.length > 0 ? (
-                    <div className="flex flex-wrap gap-1">
-                      {finding.controlCodes.map((code) => (
-                        <Badge
-                          key={code}
-                          variant="outline"
-                          className="font-mono text-xs"
-                        >
-                          {code}
-                        </Badge>
-                      ))}
-                    </div>
+                    <ControlCodePills codes={finding.controlCodes} />
                   ) : null}
                   {finding.resolutionNote ? (
                     <p className="text-muted-foreground text-xs">
