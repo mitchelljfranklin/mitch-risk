@@ -6,6 +6,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { DuplicateTemplateMenuItem } from "@/components/duplicate-template-menu-item";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -171,18 +172,7 @@ export default async function TemplateBuilderPage({
                     Preview
                   </Link>
                 </DropdownMenuItem>
-                {canCreateTemplate ? (
-                  <DropdownMenuItem
-                    onClick={() => {
-                      const form = document.getElementById(
-                        "duplicate-template-form",
-                      ) as HTMLFormElement;
-                      if (form) form.requestSubmit();
-                    }}
-                  >
-                    Duplicate
-                  </DropdownMenuItem>
-                ) : null}
+                {canCreateTemplate ? <DuplicateTemplateMenuItem /> : null}
                 <DropdownMenuItem asChild>
                   <a href={`/api/templates/${template.id}/export`} download>
                     Export
