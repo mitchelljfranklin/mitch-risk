@@ -1,5 +1,6 @@
 "use server";
 
+import { randomBytes } from "crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -8,6 +9,8 @@ import { PERMISSIONS } from "@/lib/permissions";
 import { createVendor, deleteVendor, updateVendor } from "@/lib/db/vendors";
 import { logAudit } from "@/lib/db/audit";
 import { getField } from "@/lib/actions/helpers";
+import { prisma } from "@/lib/prisma";
+import { storage } from "@/lib/storage";
 import {
   vendorSchema,
   vendorCsvRowSchema,
@@ -253,4 +256,65 @@ export async function importVendorsAction(
     message: `Imported ${createdCount} vendor${createdCount !== 1 ? "s" : ""}.`,
     count: createdCount,
   };
+}
+
+const ALLOWED_ATTACHMENT_EXTS = ["pdf", "png", "jpg", "jpeg", "docx", "xlsx"];
+const MAX_ATTACHMENT_BYTES = 20 * 1024 * 1024;
+
+export async function addVendorAttachmentAction(formData: FormData) {
+  const user = await requirePermission(PERMISSIONS.VENDORS_EDIT);
+
+  const vendorId = getField(formData, "vendorId");
+  const file = formData.get("attachmentFile") as File | null;
+
+  if (!vendorId || !file || !(file instanceof File) || file.size === 0) return;
+
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+  if (!ALLOWED_ATTACHMENT_EXTS.includes(ext)) return;
+
+  if (file.size > MAX_ATTACHMENT_BYTES) return;
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const storageKey = `attachment-${randomBytes(12).toString("hex")}.${ext}`;
+
+  await storage.save(storageKey, buffer);
+
+  await prisma.attachment.create({
+    data: {
+      entityType: "Vendor",
+      entityId: vendorId,
+      fileName: file.name,
+      storageKey,
+      mimeType: file.type || "application/octet-stream",
+      sizeBytes: file.size,
+    },
+  });
+
+  if (user) {
+    await logAudit(user.id, "UPDATE_VENDOR", "Vendor", vendorId);
+  }
+
+  revalidatePath(`/vendors/${vendorId}`);
+}
+
+export async function removeVendorAttachmentAction(formData: FormData) {
+  await requirePermission(PERMISSIONS.VENDORS_EDIT);
+
+  const attachmentId = getField(formData, "attachmentId");
+  const vendorId = getField(formData, "vendorId");
+  if (!attachmentId || !vendorId) return;
+
+  const attachment = await prisma.attachment.findUnique({
+    where: { id: attachmentId },
+  });
+  if (!attachment) return;
+
+  try {
+    await storage.delete(attachment.storageKey);
+  } catch {
+    // file already gone
+  }
+
+  await prisma.attachment.delete({ where: { id: attachmentId } });
+  revalidatePath(`/vendors/${vendorId}`);
 }

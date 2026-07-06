@@ -115,6 +115,11 @@ export default async function VendorDetailPage({
     certAttachmentMap.set(a.entityId, list);
   }
 
+  const vendorAttachments = await prisma.attachment.findMany({
+    where: { entityType: "Vendor", entityId: vendor.id },
+    orderBy: { createdAt: "desc" },
+  });
+
   return (
     <div className="flex max-w-5xl flex-col gap-6">
       {sp.created ? <FlashToast message="Vendor created." /> : null}
@@ -183,7 +188,8 @@ export default async function VendorDetailPage({
       vendor.owner ||
       vendor.dataSensitivity ||
       vendor.contractRenewalDate ||
-      vendor.website ? (
+      vendor.website ||
+      vendorAttachments.length > 0 ? (
         <Card>
           <CardHeader>
             <CardTitle>Overview</CardTitle>
@@ -241,6 +247,26 @@ export default async function VendorDetailPage({
                   {formatDate(vendor.contractRenewalDate)}
                   {vendor.contractRenewalDate < new Date() ? " · overdue" : ""}
                 </span>
+              </div>
+            ) : null}
+            {vendorAttachments.length > 0 ? (
+              <div className="flex flex-col gap-1 sm:col-span-2">
+                <span className="text-muted-foreground text-xs">
+                  Attachments
+                </span>
+                <div className="flex flex-col gap-1">
+                  {vendorAttachments.map((a) => (
+                    <a
+                      key={a.id}
+                      href={`/api/attachments/${a.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary text-sm hover:underline"
+                    >
+                      {a.fileName} ↗
+                    </a>
+                  ))}
+                </div>
               </div>
             ) : null}
           </CardContent>

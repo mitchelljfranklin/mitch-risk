@@ -14,6 +14,7 @@ import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getVendor } from "@/lib/db/vendors";
 import { listUsers } from "@/lib/db/users";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -26,13 +27,24 @@ type EditVendorPageProps = {
 export default async function EditVendorPage({ params }: EditVendorPageProps) {
   await requirePermission(PERMISSIONS.VENDORS_EDIT);
   const { vendorId } = await params;
-  const [vendor, owners] = await Promise.all([
+  const [vendor, owners, attachmentRows] = await Promise.all([
     getVendor(vendorId),
     listUsers(),
+    prisma.attachment.findMany({
+      where: { entityType: "Vendor", entityId: vendorId },
+      orderBy: { createdAt: "desc" },
+    }),
   ]);
   if (!vendor) {
     notFound();
   }
+
+  const attachments = attachmentRows.map((a) => ({
+    id: a.id,
+    fileName: a.fileName,
+    sizeBytes: a.sizeBytes,
+    createdAt: a.createdAt.toISOString(),
+  }));
 
   return (
     <div className="flex max-w-3xl flex-col gap-6">
@@ -54,6 +66,7 @@ export default async function EditVendorPage({ params }: EditVendorPageProps) {
             action={updateVendorAction}
             vendorId={vendor.id}
             owners={owners}
+            attachments={attachments}
             defaults={{
               name: vendor.name,
               contactName: vendor.contactName ?? "",

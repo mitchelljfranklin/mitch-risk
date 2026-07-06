@@ -23,6 +23,7 @@ import {
   VENDOR_TIERS,
 } from "@/lib/schemas/vendor";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
+import { VendorAttachments } from "./vendor-attachments";
 
 type VendorAction = (
   state: VendorFormState,
@@ -34,6 +35,12 @@ type VendorFormProps = {
   vendorId?: string;
   mode?: "create" | "edit";
   owners: { id: string; name: string }[];
+  attachments?: {
+    id: string;
+    fileName: string;
+    sizeBytes: number;
+    createdAt: string;
+  }[];
   defaults?: {
     name: string;
     contactName: string;
@@ -55,6 +62,7 @@ export function VendorForm({
   vendorId,
   mode,
   owners,
+  attachments,
   defaults,
 }: VendorFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
@@ -190,6 +198,12 @@ export function VendorForm({
           <Link href={cancelHref}>Cancel</Link>
         </Button>
       </div>
+      {isEdit && vendorId ? (
+        <>
+          <Separator className="my-1" />
+          <VendorAttachments vendorId={vendorId} attachments={attachments} />
+        </>
+      ) : null}
     </form>
   );
 }

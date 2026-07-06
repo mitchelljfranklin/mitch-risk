@@ -120,7 +120,7 @@ export async function deleteCertificationAction(formData: FormData) {
 const ALLOWED_ATTACHMENT_EXTS = ["pdf", "png", "jpg", "jpeg", "docx", "xlsx"];
 const MAX_ATTACHMENT_BYTES = 20 * 1024 * 1024; // 20 MB
 
-async function handleAttachmentUpload(
+export async function handleAttachmentUpload(
   formData: FormData,
   entityType: string,
   entityId: string,
@@ -149,20 +149,6 @@ async function handleAttachmentUpload(
         sizeBytes: file.size,
       },
     });
-
-    const existing = await prisma.attachment.findMany({
-      where: { entityType, entityId },
-      orderBy: { createdAt: "asc" },
-    });
-    if (existing.length > 1) {
-      const oldest = existing[0];
-      await prisma.attachment.delete({ where: { id: oldest.id } });
-      try {
-        await storage.delete(oldest.storageKey);
-      } catch {
-        // file already gone
-      }
-    }
   } catch {
     try {
       await storage.delete(storageKey);
@@ -170,4 +156,25 @@ async function handleAttachmentUpload(
       // clean up failed
     }
   }
+}
+
+export async function removeAttachmentAction(formData: FormData) {
+  await requirePermission(PERMISSIONS.VENDORS_EDIT);
+
+  const attachmentId = getField(formData, "attachmentId");
+  if (!attachmentId) return;
+
+  const attachment = await prisma.attachment.findUnique({
+    where: { id: attachmentId },
+  });
+  if (!attachment) return;
+
+  try {
+    await storage.delete(attachment.storageKey);
+  } catch {
+    // file already gone
+  }
+
+  await prisma.attachment.delete({ where: { id: attachmentId } });
+  revalidatePath(`/vendors/${attachment.entityId}`);
 }
