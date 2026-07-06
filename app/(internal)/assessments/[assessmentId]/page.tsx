@@ -659,7 +659,6 @@ export default async function AssessmentDetailPage({
                           <AttachEvidenceButton
                             key={item.id}
                             evidenceId={item.id}
-                            assessmentId={assessment.id}
                             fileName={item.fileName}
                           />
                         ),

@@ -319,23 +319,30 @@ export async function removeVendorAttachmentAction(formData: FormData) {
   revalidatePath(`/vendors/${vendorId}`);
 }
 
-export async function attachEvidenceToVendorAction(formData: FormData) {
+export async function attachEvidenceToCertificationAction(
+  _previousState: { ok: boolean; message: string } | undefined,
+  formData: FormData,
+): Promise<{ ok: boolean; message: string }> {
   const user = await requirePermission(PERMISSIONS.VENDORS_EDIT);
 
   const evidenceId = getField(formData, "evidenceId");
-  const displayName = (formData.get("displayName") as string)?.trim();
-  const notes = (formData.get("notes") as string)?.trim() || undefined;
+  const name = getField(formData, "name").trim();
+  const issuer = getField(formData, "issuer").trim() || undefined;
+  const expiresDate = getField(formData, "expiresDate");
+  const notes = getField(formData, "notes").trim() || undefined;
+  const displayName = getField(formData, "displayName").trim();
 
-  if (!evidenceId) return;
+  if (!evidenceId) return { ok: false, message: "Missing evidence." };
+  if (!name) return { ok: false, message: "Certification name is required." };
+  if (!expiresDate) return { ok: false, message: "Expiry date is required." };
 
   const evidence = await prisma.evidence.findUnique({
     where: { id: evidenceId },
     include: { assessment: { select: { vendorId: true } } },
   });
-  if (!evidence) return;
+  if (!evidence) return { ok: false, message: "Evidence not found." };
 
   const vendorId = evidence.assessment.vendorId;
-
   const file = await storage.read(evidence.storageKey);
 
   const ext = evidence.fileName.split(".").pop() ?? "dat";
@@ -343,26 +350,40 @@ export async function attachEvidenceToVendorAction(formData: FormData) {
 
   await storage.save(newKey, file);
 
+  const certification = await prisma.vendorCertification.create({
+    data: {
+      vendorId,
+      name,
+      issuer,
+      expiresDate: new Date(expiresDate),
+      notes,
+    },
+  });
+
   await prisma.attachment.create({
     data: {
-      entityType: "Vendor",
-      entityId: vendorId,
+      entityType: "VendorCertification",
+      entityId: certification.id,
       fileName: evidence.fileName,
       storageKey: newKey,
       mimeType: evidence.mimeType,
       sizeBytes: evidence.sizeBytes,
       displayName: displayName || evidence.fileName,
-      notes,
     },
   });
 
   if (user) {
     await logAudit(user.id, "UPDATE_VENDOR", "Vendor", vendorId, {
-      note: "Attached evidence to vendor",
-      evidenceId,
+      note: "Created certification with attached evidence",
+      certificationId: certification.id,
     });
   }
 
   revalidatePath(`/assessments/${evidence.assessmentId}`);
   revalidatePath(`/vendors/${vendorId}`);
+
+  return {
+    ok: true,
+    message: `Certification "${name}" added with attachment.`,
+  };
 }
