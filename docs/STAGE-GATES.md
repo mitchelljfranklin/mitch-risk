@@ -129,6 +129,13 @@ A phase cannot be marked **Ready for review** unless all of these are true:
 | 91 | Assessment activity timeline | Approved |
 | 92 | Assessment status bar + chart removal + bar unification | Approved |
 | 93 | Sticky header + scroll-to-top | Approved |
+| 94 | Comment visibility (internal vs vendor) + review UX | Approved |
+| 95 | Collapsible review panel | Approved |
+| 96 | Widen detail pages (max-w-3xl → max-w-5xl) | Approved |
+| 97-101 | UI/UX polish across all pages | Approved |
+| 102 | CSV framework import | Approved |
+| 103 | Generic Attachment model for file uploads | Approved |
+| 104 | External cloud storage (AWS S3 + Azure Blob) | Approved |
 
 ---
 
@@ -2344,6 +2351,99 @@ server (the "dashboard stat cards" test still matches). No schema/RBAC/OpenAPI c
 
 ---
 
+## Phase 94 — Comment visibility (internal vs vendor) + review UX improvements
+
+**Scope:** make comment authorship clear and surface internal reviewer feedback to vendors.
+
+- [x] `Comment.visibility` field (`INTERNAL` | `VENDOR`) added to the model; internal comments display a "vendor visible" badge.
+- [x] Per-question portal comments now include internal reviewer comments alongside vendor ones (full thread visible to both sides on clarification-requested questions).
+- [x] Submission notification email now includes a reviewer message.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓. No schema/migration beyond the visibility column.
+
+---
+
+## Phase 95 — Collapsible review panel on assessment detail
+
+**Scope:** keep long assessment detail pages scannable while retaining full review functionality.
+
+- [x] New `ReviewPanel` client component wraps per-response review controls with expand/collapse toggles.
+- [x] Default collapsed state shows a summary count; expanded shows the full review form.
+- [x] Review progress bar integrated into the panel header.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓. No schema/migration.
+
+---
+
+## Phase 96 — Widen detail pages (max-w-3xl → max-w-5xl)
+
+**Scope:** give deep-navigation detail pages and long forms more horizontal room.
+
+- [x] Assessment detail and vendor detail pages widened from `max-w-3xl` to `max-w-5xl`.
+- [x] 9 additional pages in follow-up: template builder, framework detail, control detail, risk register, bulk-send, vendors/compare, profile, vendor edit, vendor new.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓. No schema/migration.
+
+---
+
+## Phases 97-101 — UI/UX polish across all pages
+
+**Scope:** a rolling polish pass across the entire platform for readability, consistency, and quick-glance scanning.
+
+- [x] New `ScoreBadge` RAG-coloured score pill component used across vendor cards, assessment rows, and the risk register.
+- [x] Left-accent coloured borders for status and severity indicators (cards and list rows).
+- [x] Standardised empty-state illustrations and messaging on all list pages.
+- [x] Auth page polish: `CardDescription` on login/setup, login separator divider, password-gate `Card` wrapper.
+- [x] Table column headers standardised across settings tabs and list pages.
+- [x] Framework detail page gained a sticky search bar.
+- [x] Template builder gained `DropdownMenu` actions with `ChevronUp`/`ChevronDown` reorder buttons.
+- [x] Vendor form fields grouped into logical card sections (Contact, Profile, Classification).
+- [x] Risk register converted to compact severity-accented metadata cards with collapsible filter controls.
+- [x] Vendor compare page gained a sticky `<thead>` and diff highlighting for changed cell values.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 206 passed, Playwright 14/14. No schema/migration.
+
+---
+
+## Phase 102 — CSV framework import
+
+**Scope:** let admins bulk-import controls as a new framework from a CSV file.
+
+- [x] `/frameworks/import` page with downloadable CSV template (columns: code, title, domain, guidance).
+- [x] Robust CSV parser handles quoted fields, mixed line endings, and validation errors per row.
+- [x] Import creates a `Framework` row with its `Control` children in a single transaction; audit logged.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓. Migration adds `FrameworkImport` audit label.
+
+---
+
+## Phase 103 — Generic Attachment model for file uploads
+
+**Scope:** replace the ad-hoc evidence-only upload with a polymorphic `Attachment` model usable by certifications and vendors.
+
+- [x] `Attachment` model with `entityType` + `entityId` (polymorphic), `fileName`, `key`, `mimeType`, `sizeBytes`.
+- [x] Certifications gained file upload support (attach SOC 2 reports, ISO certificates); displayed in the cert manager.
+- [x] Vendors gained multi-attachment support with upload and remove controls (`VendorAttachments` component).
+- [x] All files served through `GET /api/attachments/[attachmentId]` (authenticated).
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓. Migration adds the `Attachment` model; evidence rows migrated.
+
+---
+
+## Phase 104 — External cloud storage (AWS S3 + Azure Blob)
+
+**Scope:** add S3 and Azure Blob backends behind the existing `FileStorage` interface, configurable in Settings.
+
+- [x] `lib/storage/s3.ts` — S3 implementation using `@aws-sdk/client-s3` (dynamic import, optional peer dep).
+- [x] `lib/storage/azure.ts` — Azure Blob implementation using `@azure/storage-blob` (dynamic import, optional peer dep).
+- [x] New **Storage** tab in Settings with backend selector (Local disk / AWS S3 / Azure Blob), bucket/container name, region, and encrypted credentials.
+- [x] Lazy factory init: the provider SDK is only loaded when its backend is selected; the app boots without cloud SDKs installed.
+- [x] `lib/storage/index.ts` `getFileStorage()` resolves the active backend at runtime from Settings.
+
+**Gates:** lint 0 errors, typecheck ✓, build ✓, format ✓, vitest 206 passed. No schema/migration (Settings rows only); optional peer deps in `package.json`.
+
+---
+
 ## Sign-off log
 
 | Phase | Status | Reviewer | Date | Notes |
@@ -2441,3 +2541,19 @@ server (the "dashboard stat cards" test still matches). No schema/RBAC/OpenAPI c
 | 59 | Approved | User | 2026-07-03 | Reverse-proxy hardening: proxy-aware getClientIp (trusted-hop XFF / CLIENT_IP_HEADER) across login/break-glass/portal/API + API-key IP allowlist; TRUSTED_PROXY_COUNT/CLIENT_IP_HEADER env; README proxy guide (Caddy/nginx/Zoraxy/Azure); +12 unit tests |
 | 58 | Approved | User | 2026-07-03 | Settings & auth: Test SMTP button, SSO toggle fix (React 19 form-reset + Radix; key-remount across sso/api/limits toggles), email-template master-detail Sheet + reset-to-default, removed per-answer "Reject" (+ data migration), SSO-only login + break-glass URL; 131 unit + 10 e2e |
 | 57 | Approved | user | 2026-07-03 | Mobile & a11y: 28 fixes — settings tabs scroll, dense rows wrap, responsive controls, not-found.tsx, toast/idle/command-palette ARIA, skip-link, error reset(), img CLS, Firefox scrollbar, empty-state SVG aria-hidden, semantic sidebar, pagination live region, fieldset grouping; 122 unit + 9 e2e |
+| 85 | Approved | User | 2026-07-04 | Compact dashboard chart cards: md:grid-cols-3 xl:grid-cols-4, aspect-[7/4] wrappers, tuned donut radii. 14/14 e2e prod |
+| 86 | Approved | User | 2026-07-04 | Vendors by tier horizontal bar chart in dashboard grid. Later removed in P92. No migration |
+| 87 | Approved | User | 2026-07-04 | Donut radii iteration: 30/50 → 45/70 → 55/85 → 65/95. No migration |
+| 88 | Approved | User | 2026-07-04 | Assessment status RadialBarChart (concentric arcs + LabelList). Later replaced by horizontal bar in P92. 14/14 e2e prod |
+| 89 | Approved | User | 2026-07-04 | Demo-data seed script (prisma/seed-demo.ts): 50 vendors, ~65 assessments, 4 compliance profiles, 11 certs, idempotent with --reset. 206 unit, 14/14 e2e prod |
+| 90 | Approved | User | 2026-07-04 | Deferred UX polish: extracted ProgressBar component (5 sites), text-[10px]->text-xs (12 occurrences), type=button on ThemeToggle. 206 unit, 14/14 e2e prod |
+| 91 | Approved | User | 2026-07-04 | Assessment activity timeline: interactive AreaChart (7d/30d/90d selector + gradient fill + tooltip) replacing CalendarHeatmap. 206 unit, 14/14 e2e prod |
+| 92 | Approved | User | 2026-07-04 | Assessment status bar (horizontal, matching findings chart), removed Vendors-by-tier chart (redundant), unified bar sizes (barSize=20 / barCategoryGap=30%). 206 unit, 14/14 e2e prod |
+| 93 | Approved | User | 2026-07-04 | Sticky header + scroll-to-top: top bar pinned (sticky top-0 z-10 bg-background), floating ChevronUp button at >=300px scroll with smooth-scroll. No migration |
+| 94 | Approved | User | 2026-07-06 | Comment visibility (internal vs vendor) + review UX: visibility field on Comment model, vendor-visible badge, per-question portal comments show internal reviewer comments on clarification-requested questions |
+| 95 | Approved | User | 2026-07-06 | Collapsible review panel: ReviewPanel client component with expand/collapse toggles on assessment detail, summary count when collapsed, review progress bar in header |
+| 96 | Approved | User | 2026-07-06 | Widen detail pages: max-w-3xl → max-w-5xl on assessment and vendor detail, plus 9 more pages in follow-up (template builder, framework, control, risk register, bulk-send, compare, profile, vendor edit, vendor new) |
+| 97-101 | Approved | User | 2026-07-06 | UI/UX polish: ScoreBadge component, left-accent borders for status/severity, empty state standardisation, auth page polish, table column headers, framework sticky search, template builder DropdownMenu, vendor form grouping, risk register compact + collapsible, vendor compare sticky thead + diff highlighting. 206 unit, 14/14 e2e prod |
+| 102 | Approved | User | 2026-07-06 | CSV framework import: dedicated /frameworks/import page with downloadable CSV template, robust CSV parser with row-level validation, imports as new framework with controls in a single transaction |
+| 103 | Approved | User | 2026-07-06 | Generic Attachment model: polymorphic (entityType+entityId), certifications file upload, vendor multi-attachments with upload/remove, authenticated /api/attachments/[attachmentId] serving route |
+| 104 | Approved | User | 2026-07-06 | External cloud storage: S3 + Azure Blob implementations behind FileStorage interface, Storage settings tab, lazy factory init, encrypted credentials, dynamic SDK imports, optional peer dependencies |

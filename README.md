@@ -37,6 +37,16 @@ docker compose up -d
 - Track vendor risk profiles with trend history and domain compliance heatmaps
 - Side-by-side vendor assessment comparison (same vendor or cross-vendor)
 - Threaded reviewer/vendor collaboration with approve/reject/clarify workflow
+- Cross-vendor risk register with severity-accented cards and inline finding status updates
+- Vendor profile enrichment (risk owner, data sensitivity, service description, contract renewal)
+- Certification tracking with expiry reminders (30/7-day windows)
+- Multiple file attachments per vendor and certification
+- Configurable external cloud storage (AWS S3, Azure Blob)
+- CSV framework import with downloadable template
+- Demo data seed script for realistic testing
+- Assessment activity timeline with time-range selector
+- Collapsible review panel on assessment detail
+- Sticky header and scroll-to-top button
 - Dashboard with portfolio metrics, animated stat cards, donut/bar charts, calendar heatmap, and top deficient controls
 - REST API with session + API key authentication (Bearer tokens, IP allowlisting)
 - Interactive Swagger UI at `/docs`
@@ -68,7 +78,10 @@ Authenticated API endpoints under `/api/v1/`:
 - `GET /api/v1/vendors/{id}` — vendor detail
 - `GET /api/v1/vendors/{id}/score` — score summary
 - `GET /api/v1/vendors/{id}/export` — download vendor CSV
+- `POST /api/v1/vendors/import` — create vendor from JSON
 - `GET /api/v1/audit` — query audit log (JSON or CSV, page-based pagination)
+
+Files are served through the authenticated `GET /api/attachments/{attachmentId}` route.
 
 Full docs: **http://localhost:3000/docs** (authenticated)
 
@@ -80,6 +93,7 @@ All operational settings are managed in-app via **Settings** (ADMIN role) — no
 - Email templates with `{{tokens}}` (invite, password-protected invite, reminder, escalation, submission)
 - Scoring weights and RAG thresholds
 - Reminder offsets, escalation timing, assessment defaults, auto-logout (Configuration tab)
+- Storage backend selection (Local disk, AWS S3, Azure Blob) with encrypted credentials
 - API keys with IP allowlisting and expiry
 - SSO providers (Entra ID, Google, OIDC) — see [ssoConfig.md](./ssoConfig.md) for per-provider setup
 - User management with roles ADMIN/REVIEWER
@@ -158,13 +172,21 @@ The app keeps state in **two** places, and both must be backed up together:
   name, brand colours, SMTP, scoring, the logo *reference*, etc. — stored in the `AppSetting`
   table).
 - **App container disk (`evidence_data` volume, mounted at `/app/.storage`)** — the actual
-  uploaded **file bytes**: vendor evidence files and the org logo image. Configured via
-  `EVIDENCE_STORAGE_PATH`. Files are served only through an authenticated route, never a public
-  URL. (The storage sits behind a swappable interface, so it can move to S3/MinIO later.)
+  uploaded **file bytes**: vendor evidence files, certification attachments, vendor attachments,
+  and the org logo image. Configured via `EVIDENCE_STORAGE_PATH`. Files are served only through
+  an authenticated route, never a public URL.
+
+Files are managed through a generic **Attachment** model (`entityType` + `entityId`) — not just
+evidence, but also certification files and general vendor attachments. All storage sits behind a
+swappable `FileStorage` interface. The default implementation is **local disk**, but **AWS S3**
+and **Azure Blob** backends are available as opt-in alternatives configurable in Settings →
+Storage. Cloud SDKs (`@aws-sdk/client-s3`, `@azure/storage-blob`) are optional peer dependencies
+— the app boots without them and only loads the configured provider's SDK at runtime when a cloud
+backend is selected. Credentials are encrypted at rest with `APP_ENCRYPTION_KEY`.
 
 > The database stores *metadata and references* (e.g. `logoKey`, evidence filename → assessment
-> link); the volume stores the *files themselves*. A database-only backup will leave uploaded
-> files orphaned, and a files-only backup will lose the links — always capture both.
+> link); the volume (or cloud bucket) stores the *files themselves*. A database-only backup will
+> leave uploaded files orphaned, and a files-only backup will lose the links — always capture both.
 
 ## Backup
 

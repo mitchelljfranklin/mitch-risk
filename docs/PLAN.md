@@ -687,6 +687,83 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   by a compact **Highest-risk vendors** top-6 card with **"View all → /vendors"**. The activity
   heatmap stays, compact, at the bottom. Result: ~9 stacked bands → ~3 on desktop.
 
+- **Phase 85 — Compact dashboard chart cards.** The chart grid was tightened from a loose 2-up
+  layout to `md:grid-cols-3 xl:grid-cols-4` with `aspect-[7/4]` wrappers for denser information
+  display, and donut radii were tuned through multiple iterations.
+
+- **Phase 86 — Vendors by tier chart.** A horizontal bar chart showing vendor counts per tier was
+  added to the dashboard grid. Computed from existing vendor tiers with zero new queries. Later
+  removed in Phase 92 as redundant with the Risk-by-tier stacked bar and tier stat cards.
+
+- **Phase 87 — Donut radii adjustments.** Iterative tuning of chart donut inner/outer radii
+  (`30/50 → 45/70 → 55/85 → 65/95`) for visual balance across the dashboard.
+
+- **Phase 88 — Assessment status RadialBar chart.** The assessment-status donut was replaced with
+  a `RadialBarChart` + `LabelList` (concentric arcs with status name inside). Later replaced by a
+  horizontal bar chart in Phase 92 for consistent visual language and better cross-status comparison.
+
+- **Phase 89 — Demo-data seed script.** `prisma/seed-demo.ts` generates realistic synthetic data:
+  50 vendors with varied tiers/contacts/enriched fields, ~65 assessments from random starter
+  templates, 4 compliance profiles, 11 certifications across a 6-month date spread, and audit log
+  entries. Idempotent (checks for existing demo data); `--reset` flag to regenerate.
+
+- **Phase 90 — Deferred UX polish.** Extracted a shared `ProgressBar` component used across 5
+  call sites (portal, dashboard, vendor detail, findings panel, assessment detail). Standardised
+  `text-[10px]` → `text-xs` across 12 occurrences in 9 files. Added `type="button"` to the
+  `ThemeToggle` to prevent accidental form submission.
+
+- **Phase 91 — Assessment activity timeline.** Replaced the static `CalendarHeatmap` with an
+  interactive `AreaChart` showing assessment activity over time (`components/assessment-timeline.tsx`).
+  Includes a time-range selector (7d / 30d / 90d), gradient fill, tooltip, and date-axis labels.
+
+- **Phase 92 — Assessment status bar + chart removal + bar unification.** The assessment-status
+  `RadialBarChart` was replaced with a horizontal `BarChart` matching findings-by-severity. The
+  redundant Vendors-by-tier chart was removed. All dashboard bar sizes were unified:
+  `barSize={20}` for non-stacked bars, `barCategoryGap="30%"` for the stacked risk-by-tier.
+
+- **Phase 93 — Sticky header + scroll-to-top.** The top bar header became `sticky top-0 z-10`
+  so it stays pinned on scroll across all internal pages. A new `ScrollToTop` floating
+  `ChevronUp` button appears at ≥300px scroll depth with smooth-scroll behaviour.
+
+- **Phase 94 — Comment visibility (internal vs vendor).** A `visibility` field was added to the
+  `Comment` model (`INTERNAL` | `VENDOR`). Internal comments get a "vendor visible" badge.
+  Per-question portal comments now show internal reviewer comments alongside vendor ones on
+  clarification-requested questions, so the full thread is visible to both sides.
+
+- **Phase 95 — Collapsible review panel.** A new `ReviewPanel` client component wraps the
+  per-response review controls on the assessment detail page with expand/collapse toggles,
+  keeping long assessment pages scannable while retaining full review functionality.
+
+- **Phase 96 — Widen detail pages.** Assessment and vendor detail pages were widened from
+  `max-w-3xl` to `max-w-5xl`, and 9 additional detail/editor pages followed in a follow-up
+  pass — giving long forms, response tables, and review controls more horizontal room.
+
+- **Phases 97-101 — UI/UX polish across all pages.** A rolling polish pass across the entire
+  platform: new `ScoreBadge` RAG-coloured score pill component; left-accent coloured borders
+  for status and severity indicators; standardised empty-state illustrations on all list
+  pages; auth page polish (`CardDescription`, login separator divider, password-gate `Card`
+  wrapper); table column-header cleanup; framework page sticky search bar; template builder
+  `DropdownMenu` actions with `ChevronUp`/`ChevronDown` reorder; vendor form field grouping
+  into logical sections; risk register compact metadata cards with collapsible filter
+  controls; vendor compare page sticky `<thead>` and diff-highlighted changed cells.
+
+- **Phase 102 — CSV framework import.** A dedicated `/frameworks/import` page with a
+  downloadable CSV template lets admins bulk-import controls as a new framework. A robust
+  CSV parser handles quoted fields, mixed line endings, and validation errors; each import
+  creates a `Framework` row with its `Control` children in a single transaction.
+
+- **Phase 103 — Generic Attachment model.** A polymorphic `Attachment` model (`entityType` +
+  `entityId`) replaced the ad-hoc evidence-only upload. Certifications gained file upload
+  support (attach SOC 2 reports, ISO certificates). Vendors gained multi-attachment support
+  with upload and remove controls. All files are served through a single authenticated
+  `/api/attachments/[attachmentId]` route.
+
+- **Phase 104 — External cloud storage.** AWS S3 and Azure Blob implementations were added
+  behind the existing `FileStorage` interface. A new **Storage** tab in Settings lets admins
+  select the active backend (Local disk / S3 / Azure Blob), with encrypted credentials via
+  `APP_ENCRYPTION_KEY`. Cloud SDKs are dynamically imported (optional peer dependencies) and
+  initialised lazily so the app boots without them unless configured.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

@@ -25,7 +25,7 @@ over sprawling configuration. Do not add features that are not in the plan witho
 - **@react-pdf/renderer** — PDF assessment reports (Phase 19)
 - **Swagger UI (CDN)** — interactive API documentation at `/docs` (Phase 29)
 - **bcryptjs** — user password hashing and API key hashing
-- **Local-disk volume** — evidence file storage behind a storage interface (save/read/delete/list; S3/MinIO swappable later); files served only via an authenticated route
+- **Local-disk volume** — evidence file storage behind a storage interface (save/read/delete/list; S3 and Azure Blob swappable via in-app Settings); files served only via an authenticated route
 - **System cron -> secured `/api/cron/run`** — reminders, escalations, recurring assessments, audit-log & email-log pruning, orphaned-file sweep
 - **Docker Compose** (app + Postgres), reverse proxy (Caddy/nginx) for TLS — self-hosted
 
@@ -35,9 +35,14 @@ over sprawling configuration. Do not add features that are not in the plan witho
 app/                 # Next.js App Router
   (internal)/        # authenticated dashboard
     settings/         #   email-tracking, api-form, audit-form, etc.
+    risk-register/    #   cross-vendor findings register
+    vendors/import/   #   CSV bulk vendor import
+    templates/import/ #   JSON template import
+    frameworks/import/ # CSV framework import
   (auth)/            # login, first-run setup
   portal/[token]/    # public vendor questionnaire (no login)
   api/               # cron, file serving, auth, REST API v1, Swagger docs
+    attachments/[attachmentId]/ # authenticated file serving
   docs/              # Swagger UI page
   style-guide/       # component showcase
 components/          # shadcn ui primitives + domain composites
@@ -51,39 +56,64 @@ components/          # shadcn ui primitives + domain composites
   keyboard-shortcuts.tsx # ? key modal with g+letter navigation
   confirm-dialog.tsx # reusable confirmation modal for destructive actions
   idle-timer.tsx     # inactivity detection with countdown + auto-sign-out
+  score-badge.tsx    # RAG-colored score pill
+  review-panel.tsx   # collapsible review panel for assessments
+  scroll-to-top.tsx  # floating scroll-to-top button
+  vendor-attachments.tsx # vendor attachment list with upload/remove
+  duplicate-template-menu-item.tsx # client wrapper for template duplication
+  control-code-pills.tsx # collapsible control code pills
+  progress-bar.tsx   # shared progress bar
+  page-main.tsx      # client wrapper for full-width dashboard
+  assessment-timeline.tsx # interactive activity area chart
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
+    helpers.ts       #   shared action helpers (getField, etc.)
+    findings.ts      #   finding status updates
+    frameworks.ts    #   framework CRUD + CSV import
   db/                # typed data-access layer (assessments, audit, collaboration,
                      #   compliance, frameworks, notifications, roles, scoring, templates, users, vendors)
   email/             # Nodemailer mailer + token replacer
   schemas/           # shared zod schemas + inferred types
+    framework.ts     #   framework + CSV import schema
+    certification.ts #   vendor certification schema
   settings/          # DB-backed operational config (schema, accessor, read/write)
   api-keys.ts        # API key generation, bcrypt hashing, CIDR IP matching
+  api-auth.ts        # unified authenticateRequest() — session + Bearer token + permission check
+  api-response.ts    # shared API error wrapper (runApiHandler + apiError)
+  auth.ts            # Auth.js config + permission guards (requirePermission/hasPermission)
   break-glass.ts     # SSO-only login bypass: token gen/hash/verify + show-local-auth rule
   client-ip.ts       # proxy-aware client IP (trusted-hop X-Forwarded-For / CLIENT_IP_HEADER)
-  api-auth.ts        # unified authenticateRequest() — session + Bearer token + permission check
-  auth.ts            # Auth.js config + permission guards (requirePermission/hasPermission)
-  permissions.ts     # RBAC permission catalog, default system roles, permission helpers
+  control-selection.ts # per-framework tri-state "select all" logic
   crypto.ts          # AES-256-GCM encryption for secret settings
+  dashboard-insights.ts # pure dashboard computation helpers
   env.ts             # zod-validated deployment env
   json.ts            # deep-clone helper for JSON-safe values
   openapi.json       # OpenAPI 3.0 spec powering Swagger UI at /docs
   pdf-report.tsx     # @react-pdf/renderer assessment report generator
+  permissions.ts     # RBAC permission catalog, default system roles, permission helpers
   portal.ts          # portal state machine (visibility, required questions)
   prisma.ts          # shared Prisma client instance
   rate-limit.ts      # in-memory sliding-window rate limiter
   scoring.ts         # weighted scoring engine + compliance checker
   theme-tokens.tsx   # server-rendered CSS variable injection (brand colours)
+  timing-safe.ts     # constant-time string comparison
   tokens.ts          # opaque portal token generation + expiry
+  upload-validation.ts # file upload MIME type validation
   utils.ts           # cn(), formatDate(), formatPercent()
-  storage/           # file storage interface (save/read/delete/list) + local-disk implementation
+  view-preference.ts # cookie-backed view preference (rows/cards)
+  storage/           # file storage interface (save/read/delete/list)
+                     #   local-disk, s3.ts (AWS S3), azure.ts (Azure Blob)
 hooks/              # React hooks (use-form-toast, use-mobile)
+types/               # shared TypeScript type declarations
+  cloud-storage.d.ts #   optional cloud SDK type shim
 emails/              # React Email templates (invite, reminder, escalation, dynamic)
 prisma/              # schema.prisma, migrations, seed.ts
   seed-data/         # ISO 27001, SOC 2, NIST CSF, Essential Eight seed data + types
 scripts/             # backup.sh, backup.ps1
 e2e/                 # Playwright end-to-end tests
 docs/                # PLAN.md, STAGE-GATES.md
+proxy.ts             # Next.js 16 proxy (CSP nonce + security headers)
+APPSECURITY.md       # application security hardening documentation
 ```
 
 ## Commands
@@ -267,7 +297,8 @@ from the catalog and role defaults).
 - TypeScript `strict`; validate all external input with **zod** (shared client/server schemas).
 - Do not add code comments unless explicitly requested.
 - **Runtime configuration**: operational/end-user settings (branding, email/SMTP, reminder
-  cadence, escalation recipients, scoring weights & thresholds, file limits, users, roles) are managed
+  cadence, escalation recipients, scoring weights & thresholds, file limits, users, roles,
+  storage backend) are managed
   in-app via DB-backed Settings (requires the relevant manage permission) — never by editing files once the product is
   running. Only deployment bootstrap/infra belongs in env (`DATABASE_URL`, `AUTH_SECRET`,
   `APP_ENCRYPTION_KEY`, `CRON_SECRET`, `APP_URL`, storage path). This split is for end-user

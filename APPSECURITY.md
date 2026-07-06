@@ -484,6 +484,36 @@ Portal file uploads are restricted by:
 - No virus/malware scanning of uploaded files
 - No per-file access audit logging (who accessed which file and when)
 
+### 9.7 Cloud Storage (S3 / Azure Blob)
+
+External cloud storage is supported through the same `FileStorage` interface. A Storage tab in Settings lets admins configure AWS S3 or Azure Blob as the storage backend. The provider is selected lazily at runtime — no restart required.
+
+**Provider selection:**
+- Default: local disk (`EVIDENCE_STORAGE_PATH` env var)
+- Configurable per-provider: S3 (bucket, region, access key ID, secret access key) and Azure (connection string, container name)
+- Secrets are encrypted at rest using the same AES-256-GCM pattern as SMTP/SSO credentials
+- Falls back to local disk if cloud initialization fails (no data loss, logged to console)
+
+**Strengths:**
+- Same `FileStorage` interface for all providers — no application code changes needed to switch
+- Dynamic SDK imports (`@aws-sdk/client-s3`, `@azure/storage-blob`) — no bundle bloat for local-only deployments
+- Credential fields are write-only (blank submissions preserve existing secrets)
+- Graceful degradation on initialization failure
+
+**Considerations:**
+- No automatic file migration between providers. Switching storage backends requires manual migration of existing files
+- Cloud SDKs are optional peer dependencies — must be installed manually (`npm install @aws-sdk/client-s3` or `npm install @azure/storage-blob`)
+- S3 `ListObjectsV2` API calls incur cost during the cron orphan sweep (acceptable for the data volumes of a small-business TPRM tool)
+- Cloud credentials stored in the database — a DB compromise could expose them if `APP_ENCRYPTION_KEY` is also compromised
+
+### 9.8 Attachment Model
+
+A polymorphic `Attachment` model (`entityType` + `entityId`) supports file uploads on any entity. Currently used for:
+- **VendorCertification** — certificates, audit reports
+- **Vendor** — contracts, letters of engagement, scope documents
+
+Attachments are served through `GET /api/attachments/[attachmentId]` with the same security profile as evidence files (authenticated, `nosniff`, MIME allowlist for inline display). Files are stored through the same `FileStorage` interface and deleted on record removal.
+
 ---
 
 ## 10. Logging, Audit & Monitoring
@@ -514,6 +544,7 @@ The audit covers 44 distinct actions across the following domains:
 - **API Keys:** create, revoke, enable, delete
 - **Roles:** create, update, delete, duplicate
 - **Certifications:** create, update, delete
+- **Frameworks:** import
 - **Comments:** add comment
 - **Findings:** update status
 
