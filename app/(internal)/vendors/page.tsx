@@ -214,7 +214,6 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
                 <span className="flex-1">Vendor</span>
                 <span className="w-20">Tier</span>
                 <span className="w-12 text-right">Score</span>
-                <span className="w-24 text-right">Last assessed</span>
               </div>
               <div className="flex flex-col divide-y rounded-lg border">
                 {vendors.map((vendor) => (
@@ -237,17 +236,6 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
                           {VENDOR_TIER_LABELS[vendor.tier]}
                         </Badge>
                       ) : null}
-                      <span className="text-muted-foreground hidden w-28 text-right text-xs sm:inline">
-                        {vendor.lastAssessedAt
-                          ? `Assessed ${formatDate(vendor.lastAssessedAt)}`
-                          : "Not assessed"}
-                      </span>
-                      <span className="text-muted-foreground hidden w-20 text-right text-xs md:inline">
-                        {vendor._count.assessments}{" "}
-                        {vendor._count.assessments === 1
-                          ? "assessment"
-                          : "assessments"}
-                      </span>
                       <ScoreBadge score={vendor.overallScore} size="sm" />
                     </div>
                   </Link>
