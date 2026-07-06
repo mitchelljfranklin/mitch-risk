@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,63 @@ import {
 } from "@/components/ui/select";
 import { AUDIT_ACTION_LABELS, type AuditLogEntry } from "@/lib/db/audit";
 import type { AuditLogResult } from "@/lib/db/audit";
+import type { Prisma } from "@prisma/client";
 import { formatDate } from "@/lib/utils";
+
+function entityLink(entityType: string, entityId: string): string {
+  switch (entityType) {
+    case "Vendor":
+      return `/vendors/${entityId}`;
+    case "Assessment":
+      return `/assessments/${entityId}`;
+    case "Template":
+      return `/templates/${entityId}`;
+    case "Framework":
+      return `/frameworks/${entityId}`;
+    case "User":
+      return `/settings?tab=users`;
+    case "Role":
+      return `/settings?tab=roles`;
+    case "VendorCertification":
+      return `/vendors/${entityId}`;
+    default:
+      return "#";
+  }
+}
+
+function formatMeta(meta: Prisma.JsonValue): string {
+  if (Array.isArray(meta)) {
+    return meta.map(String).join(", ");
+  }
+  if (!meta || typeof meta !== "object") {
+    return String(meta ?? "");
+  }
+  const record = meta as Record<string, unknown>;
+  const parts: string[] = [];
+  if (typeof record.decision === "string") {
+    const label =
+      record.decision === "CLARIFICATION_REQUESTED"
+        ? "clarification requested"
+        : (record.decision as string).toLowerCase();
+    parts.push(label);
+  }
+  if (typeof record.note === "string" && record.note) {
+    parts.push(`"${record.note}"`);
+  }
+  if (typeof record.status === "string") {
+    parts.push(record.status);
+  }
+  if (typeof record.change === "string") {
+    parts.push(record.change.replace(/_/g, " "));
+  }
+  if (typeof record.newRole === "string") {
+    parts.push(record.newRole);
+  }
+  if (typeof record.message === "string" && record.message) {
+    parts.push(record.message);
+  }
+  return parts.join(" · ") || JSON.stringify(record);
+}
 
 type AuditFormProps = {
   result: AuditLogResult;
@@ -195,7 +252,6 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
                   <th className="p-3 text-left font-medium">User</th>
                   <th className="p-3 text-left font-medium">Action</th>
                   <th className="p-3 text-left font-medium">Entity</th>
-                  <th className="p-3 text-left font-medium">ID</th>
                 </tr>
               </thead>
               <tbody>
@@ -216,10 +272,23 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
                       </Badge>
                     </td>
                     <td className="text-muted-foreground p-3 text-xs">
-                      {log.entityType ?? "—"}
-                    </td>
-                    <td className="text-muted-foreground p-3 font-mono text-xs">
-                      {log.entityId ? log.entityId.slice(0, 8) : "—"}
+                      <div className="flex flex-col gap-0.5">
+                        {log.entityId && log.entityType ? (
+                          <Link
+                            href={entityLink(log.entityType, log.entityId)}
+                            className="text-primary hover:underline"
+                          >
+                            {log.entityName ?? "Deleted"}
+                          </Link>
+                        ) : (
+                          <span>{log.entityType ?? "—"}</span>
+                        )}
+                        {log.meta ? (
+                          <span className="text-muted-foreground/60">
+                            {formatMeta(log.meta)}
+                          </span>
+                        ) : null}
+                      </div>
                     </td>
                   </tr>
                 ))}

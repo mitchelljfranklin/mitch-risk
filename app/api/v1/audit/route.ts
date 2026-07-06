@@ -42,7 +42,8 @@ export async function GET(request: Request) {
         csvEscape("Action"),
         csvEscape("User"),
         csvEscape("Entity Type"),
-        csvEscape("Entity ID"),
+        csvEscape("Entity Name"),
+        csvEscape("Meta"),
         csvEscape("Timestamp"),
       ].join(",");
       const rows = entries.map((log) =>
@@ -51,7 +52,12 @@ export async function GET(request: Request) {
           csvEscape(AUDIT_ACTION_LABELS[log.action] ?? log.action),
           csvEscape(log.user.name),
           csvEscape(log.entityType ?? ""),
-          csvEscape(log.entityId ?? ""),
+          csvEscape(log.entityName ?? ""),
+          csvEscape(
+            log.meta && typeof log.meta === "object"
+              ? JSON.stringify(log.meta)
+              : "",
+          ),
           csvEscape(log.createdAt.toISOString()),
         ].join(","),
       );
@@ -72,6 +78,8 @@ export async function GET(request: Request) {
         userName: log.user.name,
         entityType: log.entityType,
         entityId: log.entityId,
+        entityName: log.entityName,
+        meta: log.meta,
         createdAt: log.createdAt,
       })),
       page: result.page,

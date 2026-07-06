@@ -51,6 +51,8 @@ export type AuditLogEntry = {
   action: string;
   entityType: string | null;
   entityId: string | null;
+  entityName: string | null;
+  meta: Prisma.JsonValue | null;
   createdAt: Date;
   user: { id: string; name: string };
 };
@@ -101,16 +103,109 @@ export async function listAuditLogs(
     prisma.auditLog.count({ where }),
   ]);
 
+  const entityNames = await resolveEntityNames(rows);
+
   const entries: AuditLogEntry[] = rows.map((row) => ({
     id: row.id,
     action: row.action,
     entityType: row.entityType,
     entityId: row.entityId,
+    entityName:
+      entityNames.get(row.entityType ?? "")?.get(row.entityId ?? "") ?? null,
+    meta: (row.meta as Prisma.JsonValue) ?? null,
     createdAt: row.createdAt,
     user: row.user ?? { id: "", name: "Deleted user" },
   }));
 
   return { entries, totalCount, page, pageSize };
+}
+
+async function resolveEntityNames(
+  rows: { entityType: string | null; entityId: string | null }[],
+): Promise<Map<string, Map<string, string>>> {
+  const byType = new Map<string, string[]>();
+
+  for (const row of rows) {
+    if (!row.entityType || !row.entityId) continue;
+    const list = byType.get(row.entityType) ?? [];
+    list.push(row.entityId);
+    byType.set(row.entityType, list);
+  }
+
+  const result = new Map<string, Map<string, string>>();
+
+  await Promise.all(
+    [...byType.entries()].map(async ([type, ids]) => {
+      const uniqueIds = [...new Set(ids)];
+      const map = new Map<string, string>();
+
+      try {
+        if (type === "Vendor") {
+          const vendors = await prisma.vendor.findMany({
+            where: { id: { in: uniqueIds } },
+            select: { id: true, name: true },
+          });
+          for (const v of vendors) map.set(v.id, v.name);
+        } else if (type === "Assessment") {
+          const assessments = await prisma.assessment.findMany({
+            where: { id: { in: uniqueIds } },
+            select: { id: true, title: true },
+          });
+          for (const a of assessments) map.set(a.id, a.title);
+        } else if (type === "Template") {
+          const templates = await prisma.template.findMany({
+            where: { id: { in: uniqueIds } },
+            select: { id: true, name: true },
+          });
+          for (const t of templates) map.set(t.id, t.name);
+        } else if (type === "VendorCertification") {
+          const certs = await prisma.vendorCertification.findMany({
+            where: { id: { in: uniqueIds } },
+            select: { id: true, name: true },
+          });
+          for (const c of certs) map.set(c.id, c.name);
+        } else if (type === "Framework") {
+          const frameworks = await prisma.framework.findMany({
+            where: { id: { in: uniqueIds } },
+            select: { id: true, name: true },
+          });
+          for (const f of frameworks) map.set(f.id, f.name);
+        } else if (type === "User") {
+          const users = await prisma.user.findMany({
+            where: { id: { in: uniqueIds } },
+            select: { id: true, name: true },
+          });
+          for (const u of users) {
+            map.set(u.id, u.name ?? "Deleted user");
+          }
+        } else if (type === "Role") {
+          const roles = await prisma.role.findMany({
+            where: { id: { in: uniqueIds } },
+            select: { id: true, name: true },
+          });
+          for (const r of roles) map.set(r.id, r.name);
+        } else if (type === "Finding") {
+          const findings = await prisma.finding.findMany({
+            where: { id: { in: uniqueIds } },
+            select: { id: true, title: true },
+          });
+          for (const f of findings) map.set(f.id, f.title);
+        } else if (type === "ApiKey") {
+          const keys = await prisma.apiKey.findMany({
+            where: { id: { in: uniqueIds } },
+            select: { id: true, name: true },
+          });
+          for (const k of keys) map.set(k.id, k.name);
+        }
+      } catch {
+        // entity type may have been deleted — just return no names
+      }
+
+      result.set(type, map);
+    }),
+  );
+
+  return result;
 }
 
 export function listAuditActions() {
