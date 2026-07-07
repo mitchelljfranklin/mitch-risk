@@ -101,7 +101,7 @@ export async function finalizeAssessment(
   }
 
   const result = await prisma.assessment.updateMany({
-    where: { id: assessmentId, status: "UNDER_REVIEW" },
+    where: { id: assessmentId, status: { in: ["SUBMITTED", "UNDER_REVIEW"] } },
     data: { status: "COMPLETED" },
   });
 
