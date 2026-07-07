@@ -1282,12 +1282,29 @@ Unexpected errors return a generic `{"error":{"message":"Internal error","status
 | GET | `/api/brand/logo` | None | Serve org logo (cache-busted) |
 | GET | `/api/attachments/[id]` | Session / API key | Serve attachment file |
 | GET | `/api/docs` | None | Serve OpenAPI spec JSON |
-| GET | `/api/v1/vendors` | Bearer token | List vendors |
-| POST | `/api/v1/vendors` | Bearer token | Create vendor |
-| GET | `/api/v1/vendors/[id]` | Bearer token | Get vendor detail |
-| PUT | `/api/v1/vendors/[id]` | Bearer token | Update vendor |
-| DELETE | `/api/v1/vendors/[id]` | Bearer token | Delete vendor |
-| GET | `/api/v1/audit` | Bearer token | List audit log entries |
+| **Vendors** ||||
+| GET | `/api/v1/vendors` | Bearer token | List vendors (`?query=`, `?tier=`) |
+| POST | `/api/v1/vendors/import` | Bearer token | Create vendor from JSON |
+| GET | `/api/v1/vendors/{id}` | Bearer token | Get vendor detail |
+| PUT | `/api/v1/vendors/{id}` | Bearer token | Update vendor |
+| DELETE | `/api/v1/vendors/{id}` | Bearer token | Delete vendor |
+| GET | `/api/v1/vendors/{id}/score` | Bearer token | Score summary |
+| GET | `/api/v1/vendors/{id}/export` | Bearer token | Export vendor as JSON |
+| GET | `/api/v1/vendors/{id}/assessments` | Bearer token | List vendor's assessments |
+| GET | `/api/v1/vendors/{id}/certifications` | Bearer token | List vendor's certifications |
+| **Assessments** ||||
+| GET | `/api/v1/assessments` | Bearer token | List assessments (filters, CSV) |
+| GET | `/api/v1/assessments/{id}` | Bearer token | Full assessment detail |
+| **Findings** ||||
+| GET | `/api/v1/findings` | Bearer token | List findings (filters) |
+| PATCH | `/api/v1/findings/{id}` | Bearer token | Update finding status |
+| **Frameworks** ||||
+| GET | `/api/v1/frameworks` | Bearer token | List frameworks |
+| GET | `/api/v1/frameworks/{id}` | Bearer token | Framework detail + controls |
+| **Dashboard** ||||
+| GET | `/api/v1/dashboard/summary` | Bearer token | Portfolio metrics aggregation |
+| **Audit** ||||
+| GET | `/api/v1/audit` | Bearer token | Query audit log (JSON/CSV) |
 
 ### 11.4 Swagger/OpenAPI
 
