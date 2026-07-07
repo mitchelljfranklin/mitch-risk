@@ -1,0 +1,32 @@
+---
+import DocsLayout from "../../layouts/DocsLayout.astro";
+---
+
+<DocsLayout>
+  <h1>Findings API</h1>
+
+  <h2>Endpoints</h2>
+
+  <table class="key-table">
+    <tr>
+      <th>Method</th>
+      <th>Path</th>
+      <th>Permission</th>
+      <th>Purpose</th>
+    </tr>
+    <tr>
+      <td><code>GET</code></td>
+      <td><code>/api/v1/findings</code></td>
+      <td><code>assessments:view</code></td>
+      <td>List findings (<code>?status=</code>, <code>?severity=</code>, <code>?vendorId=</code>, <code>?page=</code>)</td>
+    </tr>
+    <tr>
+      <td><code>PATCH</code></td>
+      <td><code>/api/v1/findings/&#123;id&#125;</code></td>
+      <td><code>assessments:review</code></td>
+      <td>Update status (REMEDIATED or RISK_ACCEPTED only)</td>
+    </tr>
+  </table>
+
+  <p>Only <strong>Open</strong> findings can transition — already-closed findings return 400. The <code>resolutionNote</code> field is optional.</p>
+</DocsLayout>

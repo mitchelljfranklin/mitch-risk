@@ -1,0 +1,30 @@
+---
+import DocsLayout from "../../layouts/DocsLayout.astro";
+---
+
+<DocsLayout>
+  <h1>Frameworks API</h1>
+
+  <h2>Endpoints</h2>
+
+  <table class="key-table">
+    <tr>
+      <th>Method</th>
+      <th>Path</th>
+      <th>Permission</th>
+      <th>Purpose</th>
+    </tr>
+    <tr>
+      <td><code>GET</code></td>
+      <td><code>/api/v1/frameworks</code></td>
+      <td><code>frameworks:view</code></td>
+      <td>List frameworks with control counts</td>
+    </tr>
+    <tr>
+      <td><code>GET</code></td>
+      <td><code>/api/v1/frameworks/&#123;id&#125;</code></td>
+      <td><code>frameworks:view</code></td>
+      <td>Framework detail with controls (<code>?search=</code> to filter)</td>
+    </tr>
+  </table>
+</DocsLayout>

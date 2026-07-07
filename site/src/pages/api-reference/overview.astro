@@ -1,0 +1,107 @@
+---
+import DocsLayout from "../../layouts/DocsLayout.astro";
+---
+
+<DocsLayout>
+  <h1>API Overview</h1>
+
+  <p>The REST API provides programmatic access to vendors, assessments, findings, frameworks, and dashboard metrics. All endpoints are documented with request/response schemas, error codes, and examples.</p>
+
+  <h2>Base URL</h2>
+
+  <p>All API endpoints are under <code>/api/v1/</code>:</p>
+
+  <pre><code>https://your-app.example.com/api/v1/vendors</code></pre>
+
+  <h2>Authentication</h2>
+
+  <p>Two methods are supported:</p>
+
+  <h3>Session cookie</h3>
+  <p>Log in via the web app (<code>/login</code>). The auth cookie is sent automatically on API requests from the same browser. Works in the interactive Swagger UI at <code>/docs</code>.</p>
+
+  <h3>API key (Bearer token)</h3>
+  <p>Generate keys in Settings → API. Use the full key value:</p>
+
+  <pre><code>curl -H "Authorization: Bearer mrk_a1b2c3d4.e5f6g7h8..." \
+  https://your-app.example.com/api/v1/vendors</code></pre>
+
+  <p>Key properties:</p>
+  <ul>
+    <li>Format: <code>mrk_&lt;8-hex-prefix&gt;.&lt;48-hex-secret&gt;</code></li>
+    <li>API keys are <strong>full-access</strong> — they grant all 21 permissions regardless of the creating user's role</li>
+    <li>IP allowlisting via CIDR (empty = all IPs allowed)</li>
+    <li>Configurable expiry and per-key rate limiting</li>
+    <li>Keys must be enabled globally in Settings → API before they work</li>
+  </ul>
+
+  <h2>Error format</h2>
+
+  <p>All errors return a consistent JSON envelope:</p>
+
+  <pre><code>{`{
+  "error": "Human-readable description"
+}`}</code></pre>
+
+  <table class="key-table">
+    <tr>
+      <th>Status</th>
+      <th>Meaning</th>
+    </tr>
+    <tr>
+      <td>401</td>
+      <td>Missing or invalid authentication</td>
+    </tr>
+    <tr>
+      <td>403</td>
+      <td>Authenticated but lacking the required permission</td>
+    </tr>
+    <tr>
+      <td>400</td>
+      <td>Invalid request body or parameters</td>
+    </tr>
+    <tr>
+      <td>404</td>
+      <td>Resource not found</td>
+    </tr>
+    <tr>
+      <td>500</td>
+      <td>Unexpected server error (stack traces never exposed)</td>
+    </tr>
+  </table>
+
+  <h2>Endpoint summary</h2>
+
+  <table class="key-table">
+    <tr>
+      <th>Group</th>
+      <th>Key endpoints</th>
+    </tr>
+    <tr>
+      <td><strong>Vendors</strong></td>
+      <td>List, detail, create, update, delete, score, export, certifications</td>
+    </tr>
+    <tr>
+      <td><strong>Assessments</strong></td>
+      <td>List (paginated, filterable, CSV), full detail (questions + responses + findings)</td>
+    </tr>
+    <tr>
+      <td><strong>Findings</strong></td>
+      <td>List (cross-vendor, filterable), update status (REMEDIATED / RISK_ACCEPTED)</td>
+    </tr>
+    <tr>
+      <td><strong>Frameworks</strong></td>
+      <td>List, detail with controls</td>
+    </tr>
+    <tr>
+      <td><strong>Dashboard</strong></td>
+      <td>Portfolio metrics aggregation</td>
+    </tr>
+    <tr>
+      <td><strong>Audit</strong></td>
+      <td>Query audit log (JSON or CSV, paginated, date-range filterable)</td>
+    </tr>
+  </table>
+
+  <p>The <a href="https://your-app.example.com/docs">Swagger UI</a> at <code>/docs</code> provides the full interactive machine-readable specification.</p>
+</DocsLayout>

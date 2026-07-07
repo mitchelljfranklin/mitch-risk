@@ -1,0 +1,101 @@
+---
+import DocsLayout from "../../layouts/DocsLayout.astro";
+---
+
+<DocsLayout>
+  <h1>Review &amp; Findings</h1>
+
+  <p>After a vendor submits an assessment, the review process begins. Reviewers evaluate each response, approve or request clarification, and manage the findings that emerge from non-compliant answers.</p>
+
+  <h2>Review workflow</h2>
+
+  <p><img src="/screenshots/review-panel.svg" alt="Review panel showing per-question approvals and comments" /></p>
+
+  <p>When a reviewer opens a submitted assessment, its status changes to <strong>Under Review</strong>. Each question-response pair can be:</p>
+  <ul>
+    <li><strong>Approved</strong> — the answer is accepted as-is (whether compliant or not)</li>
+    <li><strong>Clarification requested</strong> — the reviewer asks the vendor to provide more information; the portal reopens for that vendor</li>
+  </ul>
+
+  <h3>Send-back-to-vendor</h3>
+
+  <p>When a reviewer requests clarification:</p>
+  <ol>
+    <li>The assessment returns to <strong>In Progress</strong> status</li>
+    <li>The vendor receives an email with the reviewer's note</li>
+    <li>The portal shows an amber banner: "Additional information requested"</li>
+    <li>The vendor can modify flagged answers and re-submit</li>
+  </ol>
+
+  <p>This loop can repeat multiple times — there's no limit on clarification rounds.</p>
+
+  <h3>Comments</h3>
+
+  <p>Comments can be attached to any question (not just responses). Each comment has a <strong>visibility</strong> setting:</p>
+  <ul>
+    <li><strong>Internal</strong> — staff-only, never shown to the vendor in the portal</li>
+    <li><strong>Vendor</strong> — visible in the vendor's read-only view after submission</li>
+  </ul>
+
+  <p>Comments support threading (replies), which keeps discussions organized per-question.</p>
+
+  <h2>Findings</h2>
+
+  <p>A finding is generated when an auto-scorable answer does not match the expected answer. Findings are the actionable output of the assessment process.</p>
+
+  <h3>Auto-generated findings</h3>
+
+  <p>The scoring engine automatically creates findings for non-compliant responses:</p>
+  <ul>
+    <li>Keyed by <code>responseId</code> — each response gets at most one finding</li>
+    <li>Tagged with the framework control codes mapped to that question</li>
+    <li>Severity matches the question's risk weight (Critical → Critical finding, etc.)</li>
+  </ul>
+
+  <p>If a finding already exists for that response (e.g., from a previous scoring run), it's <strong>upserted</strong> — the reviewer's status and resolution note are preserved.</p>
+
+  <h3>Finding lifecycle</h3>
+
+  <pre><code>OPEN ────────────────────────────────────────────▶ REMEDIATED
+  │                                                      ▲
+  └───────────────────────────────────────▶ RISK_ACCEPTED │
+                              (manual decision)           │</code></pre>
+
+  <table class="key-table">
+    <tr>
+      <th>Status</th>
+      <th>Meaning</th>
+    </tr>
+    <tr>
+      <td><strong>Open</strong></td>
+      <td>Active gap — needs attention</td>
+    </tr>
+    <tr>
+      <td><strong>Remediated</strong></td>
+      <td>Vendor has fixed the issue</td>
+    </tr>
+    <tr>
+      <td><strong>Risk Accepted</strong></td>
+      <td>Organisation acknowledges the risk and accepts it</td>
+    </tr>
+  </table>
+
+  <p>Only <strong>Open</strong> findings can transition. Once closed, they can't be reopened via the UI (this is an intentional guard against accidental status reversal).</p>
+
+  <h3>Risk Register</h3>
+
+  <p>All findings across all vendors are visible in the Risk Register — a unified cross-vendor view:</p>
+
+  <ul>
+    <li><strong>Filter</strong> by status, severity, or vendor</li>
+    <li><strong>Sort</strong> by priority (Open first, then severity, then newest)</li>
+    <li>Each card shows the finding title, control codes, status, and linked assessment</li>
+    <li>Control codes are collapsible (shown as pills, collapsed beyond 3)</li>
+  </ul>
+
+  <p>Clicking a finding navigates to the assessment detail for full context.</p>
+
+  <h3>Manual findings</h3>
+
+  <p>In addition to auto-generated findings, staff can create manual findings directly on an assessment. These have <code>responseId = null</code> and are preserved during scoring reconciliation (the engine never deletes manual findings).</p>
+</DocsLayout>

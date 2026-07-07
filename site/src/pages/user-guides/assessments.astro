@@ -1,0 +1,116 @@
+---
+import DocsLayout from "../../layouts/DocsLayout.astro";
+---
+
+<DocsLayout>
+  <h1>Assessments</h1>
+
+  <p>An assessment is a questionnaire sent to a vendor. It freezes a template's questions at send time, so template edits never affect in-flight assessments.</p>
+
+  <h2>Lifecycle</h2>
+
+  <pre><code>DRAFT ──▶ SENT ──▶ IN PROGRESS ──▶ SUBMITTED ──▶ UNDER REVIEW ──▶ COMPLETED
+               │          │              │
+               │          │              └──────── REVIEWER REQUESTS CLARIFICATION
+               │          │
+               └── CRON DETECTS OVERDUE ──▶ OVERDUE</code></pre>
+
+  <table class="key-table">
+    <tr>
+      <th>Status</th>
+      <th>Meaning</th>
+    </tr>
+    <tr>
+      <td><strong>Draft</strong></td>
+      <td>Created but not yet sent. Editable.</td>
+    </tr>
+    <tr>
+      <td><strong>Sent</strong></td>
+      <td>Invitation emailed. Vendor hasn't opened the portal.</td>
+    </tr>
+    <tr>
+      <td><strong>In Progress</strong></td>
+      <td>Vendor is actively answering. Auto-saved as they go.</td>
+    </tr>
+    <tr>
+      <td><strong>Submitted</strong></td>
+      <td>Vendor has finalized. Awaiting review.</td>
+    </tr>
+    <tr>
+      <td><strong>Under Review</strong></td>
+      <td>Reviewer is evaluating responses.</td>
+    </tr>
+    <tr>
+      <td><strong>Completed</strong></td>
+      <td>Review finished. Score calculated. Findings reconciled.</td>
+    </tr>
+    <tr>
+      <td><strong>Overdue</strong></td>
+      <td>Past due date. Automatically set by cron when <code>SENT</code> or <code>IN_PROGRESS</code> assessments exceed their deadline.</td>
+    </tr>
+  </table>
+
+  <h2>Sending an assessment</h2>
+
+  <p>From a vendor's page or the Assessments list, pick a published template and (optionally) set a due date and portal password. The system:</p>
+  <ol>
+    <li>Snapshots every template question into <code>AssessmentQuestion</code> rows</li>
+    <li>Generates a unique 43-character opaque portal token</li>
+    <li>Emails the vendor a link: <code>https://your-app.example/portal/&lt;token&gt;</code></li>
+    <li>If a portal password is set, the vendor must enter it before accessing the questionnaire</li>
+  </ol>
+
+  <p>The portal is <strong>no-login</strong> — the token in the URL is the only authentication mechanism. Tokens expire after 30 days by default (configurable in Settings). Revoking the token makes the link dead immediately.</p>
+
+  <h2>Recurring assessments</h2>
+
+  <p>Set an assessment to repeat <strong>quarterly</strong> or <strong>annually</strong>. The cron job creates a new assessment clone, sends a fresh invitation, and schedules the next run. Useful for periodic vendor reviews without manual re-creation.</p>
+
+  <h2>Scoring engine</h2>
+
+  <p>When a vendor submits or a reviewer finalizes, the scoring engine runs:</p>
+
+  <pre><code>For each response:
+  if N/A → excluded from score
+  if answer matches expected answer → contributes full risk weight
+  if answer does not match → contributes 0, generates a finding
+  if unscorable (Free Text, File Upload, etc.) → excluded
+
+Total score = sum(weighted scores) / sum(max scores)
+              (0.0 – 1.0 ratio)</code></pre>
+
+  <h3>RAG classification</h3>
+
+  <p>The overall score maps to a red-amber-green band:</p>
+
+  <table class="key-table">
+    <tr>
+      <th>Band</th>
+      <th>Default threshold</th>
+      <th>Meaning</th>
+    </tr>
+    <tr>
+      <td><strong>Green</strong></td>
+      <td>&ge; 85%</td>
+      <td>Vendor meets expectations</td>
+    </tr>
+    <tr>
+      <td><strong>Amber</strong></td>
+      <td>60% – 84%</td>
+      <td>Some gaps — monitor</td>
+    </tr>
+    <tr>
+      <td><strong>Red</strong></td>
+      <td>&lt; 60%</td>
+      <td>Significant risks — action needed</td>
+    </tr>
+  </table>
+
+  <p>Thresholds and risk weights are configurable in Settings → Scoring.</p>
+
+  <h2>Assessment detail view</h2>
+
+  <p><img src="/screenshots/assessment-detail.svg" alt="Assessment detail showing responses, review panel, and findings" /></p>
+
+  <p>The detail view shows every question with its response, compliance status, and review decision. The <strong>collapsible review panel</strong> lets reviewers approve or request clarification per-question. The timeline at the top shows the assessment journey from creation through completion.</p>
+</DocsLayout>

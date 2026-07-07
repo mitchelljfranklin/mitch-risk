@@ -1,0 +1,105 @@
+---
+import DocsLayout from "../layouts/DocsLayout.astro";
+---
+
+<DocsLayout>
+  <h1>Quick Start</h1>
+
+  <p>Get mitch-risk running in under 5 minutes.</p>
+
+  <h2>Prerequisites</h2>
+
+  <ul>
+    <li><a href="https://docs.docker.com/get-docker/">Docker</a> and Docker Compose</li>
+    <li><a href="https://nodejs.org/">Node.js</a> 22+ (for local development)</li>
+  </ul>
+
+  <h2>Docker Compose (recommended)</h2>
+
+  <pre><code>git clone https://github.com/mitchelljfranklin/mitch-risk
+cd mitch-risk
+docker compose up</code></pre>
+
+  <p>The app starts on <code>http://localhost:3000</code>. On first launch, since no users exist, you'll be redirected to <code>/setup</code> to create the admin account.</p>
+
+  <p>Docker Compose provisions:</p>
+  <ul>
+    <li><strong>App</strong> — Next.js server on port 3000 with automatic Prisma migration and seeding</li>
+    <li><strong>PostgreSQL 17</strong> — database on port 5432 with persistent volume</li>
+  </ul>
+
+  <p>The seed script creates the three default roles (Admin, Reviewer, Viewer) and seeds ISO 27001, SOC 2, NIST CSF, and Essential Eight compliance frameworks.</p>
+
+  <h2>First login</h2>
+
+  <ol>
+    <li>Open <code>http://localhost:3000</code></li>
+    <li>You'll see the setup page — create your admin account (12+ character password)</li>
+    <li>After setup, log in with that email and password</li>
+    <li>You're on the dashboard — no vendors or assessments yet</li>
+  </ol>
+
+  <h2>Next steps</h2>
+
+  <ol>
+    <li><strong>Configure email</strong> — go to Settings → Email to set up SMTP (SendGrid, Mailgun, or any relay). Without this, assessment invitations can't be sent.</li>
+    <li><strong>Create a template</strong> — build a questionnaire with sections and questions. Or import one from JSON.</li>
+    <li><strong>Add a vendor</strong> — enter vendor name, contact email, and risk tier.</li>
+    <li><strong>Send an assessment</strong> — from the vendor page or Assessments list, pick a template and send.</li>
+  </ol>
+
+  <h2>Local development</h2>
+
+  <pre><code>npm install
+cp .env.example .env           # edit with your secrets
+npx prisma migrate deploy       # apply migrations
+npx prisma db seed              # seed frameworks + roles
+npm run dev                     # http://localhost:3000</code></pre>
+
+  <h2>Environment variables</h2>
+
+  <table class="key-table">
+    <tr>
+      <th>Variable</th>
+      <th>Required</th>
+      <th>Purpose</th>
+    </tr>
+    <tr>
+      <td><code>DATABASE_URL</code></td>
+      <td>Always</td>
+      <td>PostgreSQL connection string</td>
+    </tr>
+    <tr>
+      <td><code>AUTH_SECRET</code></td>
+      <td>Always</td>
+      <td>Session/JWT signing secret</td>
+    </tr>
+    <tr>
+      <td><code>APP_ENCRYPTION_KEY</code></td>
+      <td>Always</td>
+      <td>Encrypts secrets at rest (&gt;= 32 chars)</td>
+    </tr>
+    <tr>
+      <td><code>CRON_SECRET</code></td>
+      <td>Production</td>
+      <td>Secures the cron endpoint</td>
+    </tr>
+    <tr>
+      <td><code>APP_URL</code></td>
+      <td>Production</td>
+      <td>Public URL for email/portal links</td>
+    </tr>
+    <tr>
+      <td><code>EVIDENCE_STORAGE_PATH</code></td>
+      <td>Optional</td>
+      <td>File upload storage path</td>
+    </tr>
+    <tr>
+      <td><code>TRUSTED_PROXY_COUNT</code></td>
+      <td>Proxy</td>
+      <td>Number of trusted proxy hops</td>
+    </tr>
+  </table>
+
+  <p>All operational settings (SMTP, scoring weights, RAG thresholds, branding) are configured in-app via the Settings page — no file editing needed after initial setup.</p>
+</DocsLayout>

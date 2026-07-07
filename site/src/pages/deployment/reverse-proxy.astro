@@ -1,0 +1,73 @@
+---
+import DocsLayout from "../../layouts/DocsLayout.astro";
+---
+
+<DocsLayout>
+  <h1>Reverse Proxy</h1>
+
+  <p>mitch-risk expects to run behind a reverse proxy that handles TLS. The app listens on port 3000 (HTTP only) and trusts the proxy to provide HTTPS.</p>
+
+  <h2>TRUSTED_PROXY_COUNT</h2>
+
+  <p>This is the most important deployment setting. It tells the app how many trusted proxies sit in front of it, which determines the correct client IP for rate limiting and API key IP allowlisting.</p>
+
+  <table class="key-table">
+    <tr>
+      <th>Value</th>
+      <th>When</th>
+    </tr>
+    <tr>
+      <td><code>0</code> (default)</td>
+      <td>No proxy — app is directly reachable. X-Forwarded-For is <strong>ignored</strong> (prevents spoofing)</td>
+    </tr>
+    <tr>
+      <td><code>1</code></td>
+      <td>One proxy (Caddy, nginx, Traefik, Zoraxy, Azure App Service)</td>
+    </tr>
+    <tr>
+      <td><code>2</code></td>
+      <td>CDN in front of a proxy</td>
+    </tr>
+  </table>
+
+  <p>Setting this wrong either makes every request appear to come from the proxy (too low) or lets clients spoof allowlisted IPs (too high).</p>
+
+  <h2>Caddy</h2>
+
+  <pre><code>{`risk.example.com {
+    reverse_proxy localhost:3000
+}`}</code></pre>
+
+  <p>Caddy auto-provisions TLS via Let's Encrypt. Set <code>TRUSTED_PROXY_COUNT=1</code>.</p>
+
+  <h2>nginx</h2>
+
+  <pre><code>{`server {
+    listen 443 ssl;
+    server_name risk.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/risk.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/risk.example.com/privkey.pem;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}`}</code></pre>
+
+  <p>Set <code>TRUSTED_PROXY_COUNT=1</code>.</p>
+
+  <h2>Custom CLIENT_IP_HEADER</h2>
+
+  <p>If your proxy sets a dedicated client-IP header (e.g. Cloudflare <code>cf-connecting-ip</code>, Azure <code>x-azure-clientip</code>, or <code>x-real-ip</code>), set <code>CLIENT_IP_HEADER</code> to that value. This is an alternative to <code>TRUSTED_PROXY_COUNT</code> — choose one, not both.</p>
+
+  <h2>Security notes</h2>
+
+  <ul>
+    <li>The app's CSP uses <code>strict-dynamic</code> with nonces — it must <strong>not</strong> be stripped or re-compressed by the proxy</li>
+    <li><code>X-Forwarded-Proto</code> should be set by your proxy for correct OAuth callback URL generation</li>
+    <li>Do <strong>not</strong> enable <code>upgrade-insecure-requests</code> in the proxy — the app intentionally omits this to support HTTP-only self-hosted deployments behind a proxy</li>
+  </ul>
+</DocsLayout>

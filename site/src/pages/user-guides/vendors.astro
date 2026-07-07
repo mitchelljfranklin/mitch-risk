@@ -1,0 +1,97 @@
+---
+import DocsLayout from "../../layouts/DocsLayout.astro";
+---
+
+<DocsLayout>
+  <h1>Vendors</h1>
+
+  <p>A vendor represents a third-party organisation being evaluated for risk. Beyond the assessment pipeline, the vendor profile captures metadata, certifications, and attachments that inform the overall risk picture.</p>
+
+  <h2>Vendor profile</h2>
+
+  <p>Each vendor record contains:</p>
+
+  <table class="key-table">
+    <tr>
+      <th>Field</th>
+      <th>Purpose</th>
+    </tr>
+    <tr>
+      <td><strong>Name</strong></td>
+      <td>Organisation name</td>
+    </tr>
+    <tr>
+      <td><strong>Contact</strong></td>
+      <td>Primary contact name and email (portal invitations go here)</td>
+    </tr>
+    <tr>
+      <td><strong>Risk tier</strong></td>
+      <td>LOW / MEDIUM / HIGH / CRITICAL — drives dashboard filtering and prioritisation</td>
+    </tr>
+    <tr>
+      <td><strong>Data sensitivity</strong></td>
+      <td>PUBLIC / INTERNAL / CONFIDENTIAL / RESTRICTED — what data the vendor handles</td>
+    </tr>
+    <tr>
+      <td><strong>Service description</strong></td>
+      <td>Free text describing what the vendor provides</td>
+    </tr>
+    <tr>
+      <td><strong>Risk owner</strong></td>
+      <td>The staff member accountable for this vendor relationship</td>
+    </tr>
+    <tr>
+      <td><strong>Contract renewal date</strong></td>
+      <td>Triggers 30-day and 7-day expiry notices via cron</td>
+    </tr>
+    <tr>
+      <td><strong>Overall score</strong></td>
+      <td>Aggregate across all completed assessments (0.0 – 1.0, null until at least one is scored)</td>
+    </tr>
+  </table>
+
+  <h2>Certifications</h2>
+
+  <p>Track vendor certifications (ISO 27001, SOC 2 Type II, PCI DSS, etc.) with expiry monitoring:</p>
+
+  <ul>
+    <li><strong>Name</strong> and <strong>issuer</strong> for identification</li>
+    <li><strong>Issued date</strong> and <strong>expiry date</strong> for tracking</li>
+    <li><strong>Notes</strong> for scope, certificate numbers, etc.</li>
+    <li><strong>File attachments</strong> — upload and store the certificate document</li>
+  </ul>
+
+  <p>The cron job sends 30-day and 7-day expiry notices to the vendor's risk owner. Expired certifications are visually flagged in the certifications list.</p>
+
+  <h2>Attachments</h2>
+
+  <p>Attachments are generic files attached to any entity (vendor or certification). They have:</p>
+
+  <ul>
+    <li><strong>File name</strong> — the original uploaded filename</li>
+    <li><strong>Display name</strong> — a human-friendly label (e.g. "DPA 2025" instead of "dpa_v3_final.pdf")</li>
+    <li><strong>Notes</strong> — context about the file</li>
+    <li><strong>Size and MIME type</strong> — validated on upload (20 MB max, configurable)</li>
+  </ul>
+
+  <p>Files are served through an authenticated route (<code>/api/attachments/[id]</code>) — never exposed via raw public URLs. Uploaded files are validated against a dangerous MIME type blocklist (HTML, JS, SVG, executables).</p>
+
+  <h2>Vendor import</h2>
+
+  <p>Vendors can be created in bulk via CSV import:</p>
+  <ul>
+    <li>Download the CSV template from the Vendors → Import page</li>
+    <li>Fill in vendor details (name, contact, tier, data sensitivity, etc.)</li>
+    <li>Upload — each row is validated against the vendor schema</li>
+    <li>Errors are reported per-row; valid rows are created</li>
+  </ul>
+
+  <h2>Vendor comparison</h2>
+
+  <p>Compare two vendors side-by-side — select any two from the vendor list. The comparison view shows a sticky header table with alternating rows, highlighting:</p>
+  <ul>
+    <li>Score and tier differences</li>
+    <li>Assessment counts and statuses</li>
+    <li>Domain-level compliance breakdowns</li>
+  </ul>
+</DocsLayout>

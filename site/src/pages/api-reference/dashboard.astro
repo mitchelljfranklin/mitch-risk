@@ -1,0 +1,36 @@
+---
+import DocsLayout from "../../layouts/DocsLayout.astro";
+---
+
+<DocsLayout>
+  <h1>Dashboard API</h1>
+
+  <h2>Endpoints</h2>
+
+  <table class="key-table">
+    <tr>
+      <th>Method</th>
+      <th>Path</th>
+      <th>Permission</th>
+      <th>Purpose</th>
+    </tr>
+    <tr>
+      <td><code>GET</code></td>
+      <td><code>/api/v1/dashboard/summary</code></td>
+      <td><code>assessments:view</code></td>
+      <td>Portfolio metrics aggregation</td>
+    </tr>
+  </table>
+
+  <p>Returns vendor counts, average score, RAG distribution, vendor-by-tier counts, top 10 deficient controls, open findings count, and assessment status breakdown. No per-vendor PII — aggregation only.</p>
+
+  <pre><code>{`{
+  "vendorCount": 42,
+  "averageScore": 0.73,
+  "openFindings": 12,
+  "scoreDistribution": { "green": 25, "amber": 10, "red": 4, "unscored": 3 },
+  "topDeficientControls": [
+    { "code": "A.5.29", "title": "Information security during disruption", "vendorCount": 8 }
+  ]
+}`}</code></pre>
+</DocsLayout>

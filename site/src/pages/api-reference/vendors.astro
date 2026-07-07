@@ -1,0 +1,35 @@
+---
+import DocsLayout from "../../layouts/DocsLayout.astro";
+---
+
+<DocsLayout>
+  <h1>Vendors API</h1>
+
+  <h2>Endpoints</h2>
+
+  <table class="key-table">
+    <tr><th>Method</th><th>Path</th><th>Permission</th><th>Purpose</th></tr>
+    <tr><td><code>GET</code></td><td><code>/api/v1/vendors</code></td><td><code>vendors:view</code></td><td>List vendors</td></tr>
+    <tr><td><code>POST</code></td><td><code>/api/v1/vendors/import</code></td><td><code>vendors:create</code></td><td>Create vendor from JSON body</td></tr>
+    <tr><td><code>GET</code></td><td><code>/api/v1/vendors/&#123;id&#125;</code></td><td><code>vendors:view</code></td><td>Vendor detail with assessments</td></tr>
+    <tr><td><code>PUT</code></td><td><code>/api/v1/vendors/&#123;id&#125;</code></td><td><code>vendors:edit</code></td><td>Update vendor (partial update)</td></tr>
+    <tr><td><code>DELETE</code></td><td><code>/api/v1/vendors/&#123;id&#125;</code></td><td><code>vendors:delete</code></td><td>Delete vendor (cascades to assessments)</td></tr>
+    <tr><td><code>GET</code></td><td><code>/api/v1/vendors/&#123;id&#125;/score</code></td><td><code>vendors:view</code></td><td>Lightweight score summary</td></tr>
+    <tr><td><code>GET</code></td><td><code>/api/v1/vendors/&#123;id&#125;/export</code></td><td><code>vendors:view</code></td><td>Export vendor as JSON download</td></tr>
+    <tr><td><code>GET</code></td><td><code>/api/v1/vendors/&#123;id&#125;/assessments</code></td><td><code>vendors:view</code></td><td>List that vendor's assessments</td></tr>
+    <tr><td><code>GET</code></td><td><code>/api/v1/vendors/&#123;id&#125;/certifications</code></td><td><code>vendors:view</code></td><td>List that vendor's certifications</td></tr>
+  </table>
+
+  <h2>Examples</h2>
+
+  <p><strong>List vendors filtered by tier:</strong></p>
+  <pre><code>{`curl -H "Authorization: Bearer mrk_..." "https://app.example.com/api/v1/vendors?tier=HIGH"`}</code></pre>
+
+  <p><strong>Create a vendor:</strong></p>
+  <pre><code>{`curl -X POST -H "Authorization: Bearer mrk_..." -H "Content-Type: application/json" -d '{"name":"Acme Corp","contactEmail":"jane@acme.example","tier":"HIGH"}' "https://app.example.com/api/v1/vendors/import"`}</code></pre>
+
+  <p><strong>Update vendor tier:</strong></p>
+  <pre><code>{`curl -X PUT -H "Authorization: Bearer mrk_..." -H "Content-Type: application/json" -d '{"tier":"CRITICAL"}' "https://app.example.com/api/v1/vendors/cmr123"`}</code></pre>
+
+  <p>See the <a href="/api-reference/openapi/">OpenAPI Spec</a> for full request/response schemas.</p>
+</DocsLayout>

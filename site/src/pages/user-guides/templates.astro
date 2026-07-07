@@ -1,0 +1,143 @@
+---
+import DocsLayout from "../../layouts/DocsLayout.astro";
+---
+
+<DocsLayout>
+  <h1>Templates</h1>
+
+  <p>Templates are reusable questionnaire blueprints. They define the structure, questions, risk weights, and expected answers that drive assessment scoring.</p>
+
+  <h2>Structure</h2>
+
+  <p>A template contains <strong>sections</strong> (ordered groups) which contain <strong>questions</strong>. Each question captures a specific piece of vendor information — from simple yes/no checks to file uploads and numeric ratings.</p>
+
+  <p><img src="/screenshots/template-builder.svg" alt="Template builder showing sections and questions" /></p>
+
+  <h2>Question types</h2>
+
+  <p>12 types are available, each with different auto-scoring behavior:</p>
+
+  <table class="key-table">
+    <tr>
+      <th>Type</th>
+      <th>Scorable?</th>
+      <th>Use case</th>
+    </tr>
+    <tr>
+      <td><strong>Yes/No</strong></td>
+      <td>Yes</td>
+      <td>Binary compliance checks</td>
+    </tr>
+    <tr>
+      <td><strong>Multiple Choice</strong></td>
+      <td>Yes</td>
+      <td>Single pick from defined options</td>
+    </tr>
+    <tr>
+      <td><strong>Checkbox</strong></td>
+      <td>Yes</td>
+      <td>Boolean true/false confirmation</td>
+    </tr>
+    <tr>
+      <td><strong>Numeric / Rating</strong></td>
+      <td>Yes</td>
+      <td>Quantifiable thresholds (e.g. "How many backups?")</td>
+    </tr>
+    <tr>
+      <td><strong>Combobox / Multi-Select</strong></td>
+      <td>Yes</td>
+      <td>Controlled vocabulary from a predefined list</td>
+    </tr>
+    <tr>
+      <td><strong>Free Text / URL / Email</strong></td>
+      <td>No</td>
+      <td>Manual review — reviewer decides compliance</td>
+    </tr>
+    <tr>
+      <td><strong>File Upload / Date</strong></td>
+      <td>No</td>
+      <td>Evidence submission, timeline dates</td>
+    </tr>
+  </table>
+
+  <h2>Risk weights</h2>
+
+  <p>Every question carries a risk weight that determines its impact on the overall score:</p>
+
+  <table class="key-table">
+    <tr>
+      <th>Weight</th>
+      <th>Default value</th>
+      <th>When to use</th>
+    </tr>
+    <tr>
+      <td><strong>Critical</strong></td>
+      <td>10</td>
+      <td>Questions that would be deal-breaking if answered non-compliant</td>
+    </tr>
+    <tr>
+      <td><strong>High</strong></td>
+      <td>6</td>
+      <td>Core security or compliance requirements</td>
+    </tr>
+    <tr>
+      <td><strong>Medium</strong></td>
+      <td>3</td>
+      <td>Standard due diligence questions</td>
+    </tr>
+    <tr>
+      <td><strong>Low</strong></td>
+      <td>1</td>
+      <td>Supplementary or nice-to-have questions</td>
+    </tr>
+  </table>
+
+  <p>Weights are configurable in Settings → Scoring.</p>
+
+  <h2>Expected answers</h2>
+
+  <p>For scorable question types, you set an <strong>expected answer</strong> — the compliant response. The scoring engine compares the vendor's answer against this:</p>
+  <ul>
+    <li><strong>Match</strong> → Compliant (contributes full weight to score)</li>
+    <li><strong>Mismatch</strong> → Non-compliant (generates a finding)</li>
+    <li><strong>N/A</strong> → Excluded from scoring (no impact)</li>
+  </ul>
+
+  <p>Example: "Do you encrypt data at rest?" — type Yes/No, expected answer "Yes". A vendor answering "No" triggers a finding mapped to ISO 27001 A.8.24 and SOC 2 CC6.1.</p>
+
+  <h2>Conditional logic</h2>
+
+  <p>Questions can be shown or hidden based on answers to earlier questions. Rules use operators like <code>equals</code>, <code>notEquals</code>, <code>contains</code>, and <code>answered</code>:</p>
+
+  <pre><code>{`{
+  "match": "all",
+  "rules": [
+    { "questionId": "q1", "operator": "equals", "value": "Yes" }
+  ]
+}`}</code></pre>
+
+  <p>Multiple rules can be combined with AND (<code>match: "all"</code>) or OR (<code>match: "any"</code>) logic. When a question is hidden by conditional logic, it's not required and not shown in the vendor portal.</p>
+
+  <h2>Control mapping</h2>
+
+  <p>Each question can be mapped to one or more controls across compliance frameworks. When a response is non-compliant, the finding is tagged with these control codes. This powers the Risk Register view and the "Top Deficient Controls" dashboard chart.</p>
+
+  <p>A single question like "Do you have a BCP?" might map to:</p>
+  <ul>
+    <li><strong>ISO 27001</strong> A.5.29 (Information security during disruption)</li>
+    <li><strong>SOC 2</strong> CC7.5 (Recovery plans)</li>
+    <li><strong>NIST CSF</strong> RC.RP-1 (Recovery plan execution)</li>
+    <li><strong>Essential Eight</strong> Maturity Level 2</li>
+  </ul>
+
+  <h2>Publishing</h2>
+
+  <p>Templates have three states:</p>
+  <ul>
+    <li><strong>Draft</strong> — editable, not available for assessments</li>
+    <li><strong>Published</strong> — locked, available for new assessments</li>
+    <li><strong>Archived</strong> — hidden from the assessment creation picker</li>
+  </ul>
+
+  <p>Publishing a template freezes its structure. To modify a published template, create a new version — this preserves existing assessment snapshots (each assessment freezes its questions at send time, so template edits don't affect in-flight assessments).</p>
+</DocsLayout>
