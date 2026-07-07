@@ -25,5 +25,8 @@
 - **Advanced**
   - [Cron & Automation](advanced/cron.md)
   - [Security](advanced/security.md)
+  - [Threat Model](advanced/threat-model.md)
+  - [Compliance Coverage](advanced/compliance-coverage.md)
+  - [Integration Examples](advanced/integration-examples.md)
 - [FAQ](faq.md)
 - [GitHub](https://github.com/mitchelljfranklin/mitch-risk)
