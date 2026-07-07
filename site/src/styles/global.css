@@ -1,4 +1,10 @@
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 :root {
   --sl-sidebar-width: 260px;
@@ -11,14 +17,19 @@
   --sl-color-accent-bg: #eff6ff;
   --sl-color-hover: #f1f5f9;
   --sl-radius: 8px;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   font-size: 16px;
   line-height: 1.7;
   color: var(--sl-color-text);
   background: var(--sl-color-bg);
 }
 
-body { min-height: 100vh; }
+body {
+  min-height: 100vh;
+}
 
 .layout {
   display: flex;
@@ -51,9 +62,14 @@ body { min-height: 100vh; }
   text-decoration: none;
 }
 
-.sidebar-nav { flex: 1; padding: 0.75rem 0; }
+.sidebar-nav {
+  flex: 1;
+  padding: 0.75rem 0;
+}
 
-.nav-section { padding-bottom: 0.5rem; }
+.nav-section {
+  padding-bottom: 0.5rem;
+}
 
 .nav-label {
   padding: 0.5rem 1.5rem 0.25rem;
@@ -74,7 +90,9 @@ body { min-height: 100vh; }
   transition: background 0.15s;
 }
 
-.nav-link:hover { background: var(--sl-color-hover); }
+.nav-link:hover {
+  background: var(--sl-color-hover);
+}
 .nav-link.active {
   color: var(--sl-color-accent);
   background: var(--sl-color-accent-bg);
@@ -123,16 +141,26 @@ body { min-height: 100vh; }
   margin-bottom: 0.5rem;
 }
 
-.content p { margin-bottom: 1rem; }
-.content ul, .content ol { margin-bottom: 1rem; padding-left: 1.5rem; }
-.content li { margin-bottom: 0.25rem; }
+.content p {
+  margin-bottom: 1rem;
+}
+.content ul,
+.content ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+.content li {
+  margin-bottom: 0.25rem;
+}
 
 .content a {
   color: var(--sl-color-accent);
   text-decoration: none;
 }
 
-.content a:hover { text-decoration: underline; }
+.content a:hover {
+  text-decoration: underline;
+}
 
 .content code {
   font-family: "JetBrains Mono", "Fira Code", monospace;
@@ -181,7 +209,11 @@ body { min-height: 100vh; }
   border-bottom: 1px solid var(--sl-color-border);
 }
 
-.content td:first-child { white-space: nowrap; font-family: "JetBrains Mono", "Fira Code", monospace; font-size: 0.85em; }
+.content td:first-child {
+  white-space: nowrap;
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  font-size: 0.85em;
+}
 
 .content blockquote {
   margin: 1rem 0;
@@ -191,9 +223,15 @@ body { min-height: 100vh; }
   border-radius: 0 var(--sl-radius) var(--sl-radius) 0;
 }
 
-.content blockquote p:last-child { margin-bottom: 0; }
+.content blockquote p:last-child {
+  margin-bottom: 0;
+}
 
-.content hr { margin: 2rem 0; border: none; border-top: 1px solid var(--sl-color-border); }
+.content hr {
+  margin: 2rem 0;
+  border: none;
+  border-top: 1px solid var(--sl-color-border);
+}
 
 .content img {
   max-width: 100%;
@@ -209,8 +247,13 @@ body { min-height: 100vh; }
 }
 
 @media (max-width: 768px) {
-  .sidebar { display: none; }
-  .content { margin-left: 0; padding: 1.5rem; }
+  .sidebar {
+    display: none;
+  }
+  .content {
+    margin-left: 0;
+    padding: 1.5rem;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -224,7 +267,14 @@ body { min-height: 100vh; }
     --sl-color-accent-bg: #1e3a5f;
     --sl-color-hover: #1e293b;
   }
-  .content pre { background: #020617; border: 1px solid var(--sl-color-border); }
-  .content th { background: var(--sl-color-bg-nav); }
-  .content img { border-color: var(--sl-color-border); }
+  .content pre {
+    background: #020617;
+    border: 1px solid var(--sl-color-border);
+  }
+  .content th {
+    background: var(--sl-color-bg-nav);
+  }
+  .content img {
+    border-color: var(--sl-color-border);
+  }
 }
