@@ -71,7 +71,7 @@ export async function authenticateRequest(
   for (const apiKey of candidates) {
     if (apiKey.expiresAt && apiKey.expiresAt < new Date()) continue;
 
-    if (!verifyApiKey(key, apiKey.keyHash)) continue;
+    if (!(await verifyApiKey(key, apiKey.keyHash))) continue;
 
     const ip = getClientIp(request.headers);
     if (!isIpAllowed(apiKey.allowedIps, ip)) continue;

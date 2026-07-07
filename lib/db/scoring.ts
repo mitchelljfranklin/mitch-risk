@@ -83,6 +83,7 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
       where: {
         assessmentId,
         responseId: { not: null },
+        status: "OPEN",
         NOT: { responseId: { in: nonCompliantResponseIds } },
       },
     });

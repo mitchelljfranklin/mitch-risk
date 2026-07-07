@@ -28,12 +28,12 @@ export function extractKeyPrefix(key: string): string | null {
   return key.slice(0, separatorIndex);
 }
 
-export function hashApiKey(key: string): string {
-  return bcrypt.hashSync(key, BCRYPT_ROUNDS);
+export async function hashApiKey(key: string): Promise<string> {
+  return bcrypt.hash(key, BCRYPT_ROUNDS);
 }
 
-export function verifyApiKey(key: string, hash: string): boolean {
-  return bcrypt.compareSync(key, hash);
+export async function verifyApiKey(key: string, hash: string): Promise<boolean> {
+  return bcrypt.compare(key, hash);
 }
 
 function parseIps(allowedIps: string): string[] {

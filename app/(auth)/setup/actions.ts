@@ -7,6 +7,7 @@ import { countUsers, createUser } from "@/lib/db/users";
 import { ensureSystemRoles, getRoleByName } from "@/lib/db/roles";
 import { SYSTEM_ROLE_NAMES } from "@/lib/permissions";
 import { setupAdminSchema } from "@/lib/schemas/auth";
+import { Prisma } from "@prisma/client";
 
 export type SetupState = { error: string } | undefined;
 
@@ -33,7 +34,17 @@ export async function createInitialAdmin(
     return { error: "Could not initialize the Admin role. Please try again." };
   }
 
-  await createUser({ ...parsed.data, roleId: adminRole.id });
+  try {
+    await createUser({ ...parsed.data, roleId: adminRole.id });
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return { error: "Setup has already been completed." };
+    }
+    throw error;
+  }
 
   try {
     await signIn("credentials", {

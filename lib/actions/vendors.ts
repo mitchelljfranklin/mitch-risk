@@ -86,11 +86,11 @@ export async function updateVendorAction(
 export async function deleteVendorAction(formData: FormData) {
   await requirePermission(PERMISSIONS.VENDORS_DELETE);
   const vendorId = getField(formData, "vendorId");
-  await deleteVendor(vendorId);
   const user = await getCurrentUser();
   if (user) {
     await logAudit(user.id, "DELETE_VENDOR", "Vendor", vendorId);
   }
+  await deleteVendor(vendorId);
   redirect("/vendors");
 }
 
@@ -248,7 +248,13 @@ export async function removeVendorAttachmentAction(formData: FormData) {
   const attachment = await prisma.attachment.findUnique({
     where: { id: attachmentId },
   });
-  if (!attachment) return;
+  if (
+    !attachment ||
+    attachment.entityType !== "Vendor" ||
+    attachment.entityId !== vendorId
+  ) {
+    return;
+  }
 
   try {
     await storage.delete(attachment.storageKey);

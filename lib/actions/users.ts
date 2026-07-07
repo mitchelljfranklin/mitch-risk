@@ -170,12 +170,12 @@ export async function deleteUserAction(formData: FormData) {
     }
   }
 
-  await deleteUser(userId);
   if (actor) {
     await logAudit(actor.id, "DELETE_USER", "User", userId, {
       email: target.email,
     });
   }
+  await deleteUser(userId);
   revalidatePath("/settings");
 }
 

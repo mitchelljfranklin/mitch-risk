@@ -43,7 +43,7 @@ beforeAll(async () => {
   const key = await prisma.apiKey.create({
     data: {
       name: KEY_NAME,
-      keyHash: hashApiKey(fullKey),
+      keyHash: await hashApiKey(fullKey),
       keyPrefix: generated.keyPrefix,
       prefix: generated.displayPrefix,
       createdBy: viewer.id,

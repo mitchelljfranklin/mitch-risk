@@ -100,10 +100,10 @@ export async function finalizeAssessment(
     return { ok: false, missing: unreviewed };
   }
 
-  await prisma.assessment.update({
-    where: { id: assessmentId },
+  const result = await prisma.assessment.updateMany({
+    where: { id: assessmentId, status: "UNDER_REVIEW" },
     data: { status: "COMPLETED" },
   });
 
-  return { ok: true, missing: 0 };
+  return { ok: result.count > 0, missing: 0 };
 }

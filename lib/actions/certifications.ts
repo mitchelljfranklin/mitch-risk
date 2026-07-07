@@ -57,6 +57,10 @@ export async function saveCertificationAction(
   let savedId: string | undefined;
 
   if (certificationId) {
+    const existingCert = await getCertification(certificationId);
+    if (!existingCert || existingCert.vendorId !== vendorId) {
+      return { ok: false, message: "Certification does not belong to this vendor." };
+    }
     await updateCertification(certificationId, parsed.data);
     savedId = certificationId;
     if (user) {
@@ -163,12 +167,20 @@ export async function removeAttachmentAction(formData: FormData) {
   await requirePermission(PERMISSIONS.VENDORS_EDIT);
 
   const attachmentId = getField(formData, "attachmentId");
-  if (!attachmentId) return;
+  const vendorId = getField(formData, "vendorId");
+  if (!attachmentId || !vendorId) return;
 
   const attachment = await prisma.attachment.findUnique({
     where: { id: attachmentId },
   });
   if (!attachment) return;
+
+  if (attachment.entityType === "Vendor") {
+    if (attachment.entityId !== vendorId) return;
+  } else if (attachment.entityType === "VendorCertification") {
+    const certification = await getCertification(attachment.entityId);
+    if (!certification || certification.vendorId !== vendorId) return;
+  }
 
   try {
     await storage.delete(attachment.storageKey);
@@ -177,5 +189,9 @@ export async function removeAttachmentAction(formData: FormData) {
   }
 
   await prisma.attachment.delete({ where: { id: attachmentId } });
-  revalidatePath(`/vendors/${attachment.entityId}`);
+  const entityId =
+    attachment.entityType === "VendorCertification"
+      ? vendorId
+      : attachment.entityId;
+  revalidatePath(`/vendors/${entityId}`);
 }

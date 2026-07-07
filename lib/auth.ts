@@ -264,13 +264,15 @@ async function resolveSsoUser(
     if (!provisionRoleId) {
       return null;
     }
-    localUser = await prisma.user.create({
-      data: {
+    localUser = await prisma.user.upsert({
+      where: { email },
+      create: {
         email,
         name,
         passwordHash: "",
         roleId: provisionRoleId,
       },
+      update: {},
     });
   }
 

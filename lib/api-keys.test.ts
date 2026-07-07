@@ -30,12 +30,12 @@ describe("API key generation and verification", () => {
     expect(firstKey.keyPrefix).not.toBe(secondKey.keyPrefix);
   });
 
-  it("hashing and verification round-trips correctly", () => {
+  it("hashing and verification round-trips correctly", async () => {
     const { fullKey } = generateApiKey();
-    const hashed = hashApiKey(fullKey);
+    const hashed = await hashApiKey(fullKey);
     expect(hashed).not.toBe(fullKey);
-    expect(verifyApiKey(fullKey, hashed)).toBe(true);
-    expect(verifyApiKey("wrong-key", hashed)).toBe(false);
+    expect(await verifyApiKey(fullKey, hashed)).toBe(true);
+    expect(await verifyApiKey("wrong-key", hashed)).toBe(false);
   });
 });
 

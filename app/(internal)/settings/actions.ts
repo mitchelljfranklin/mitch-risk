@@ -423,7 +423,7 @@ export async function createApiKeyAction(
   const created = await db.apiKey.create({
     data: {
       name,
-      keyHash: hashApiKey(fullKey),
+      keyHash: await hashApiKey(fullKey),
       keyPrefix,
       prefix: displayPrefix,
       createdBy: user!.id,

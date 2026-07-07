@@ -67,6 +67,14 @@ export async function reviewAction(formData: FormData) {
     return;
   }
 
+  const responseRecord = await prisma.response.findUnique({
+    where: { id: responseId },
+    select: { assessmentId: true },
+  });
+  if (!responseRecord || responseRecord.assessmentId !== assessmentId) {
+    return;
+  }
+
   const existing = await prisma.answerReview.findUnique({
     where: { responseId },
     select: { note: true, decision: true },
