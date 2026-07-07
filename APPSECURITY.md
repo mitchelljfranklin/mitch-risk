@@ -789,19 +789,19 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 
 | ID | Finding | Impact | Mitigation |
 |----|---------|--------|------------|
-| L-1 | Portal password uses bcrypt 10 rounds (vs 12) | Slightly weaker brute-force resistance | Minor — both are strong; see M-16 for resolution |
-| L-2 | No read-audit events | Cannot determine who viewed sensitive data | Acceptable for small-business scope |
-| L-3 | No audit log tamper-proofing | DB-level attacker can modify audit records | Add hash-chain or append-only table |
-| L-4 | No container resource limits | DoS via resource exhaustion | Add CPU/memory limits in compose |
-| L-5 | Key derivation uses single-pass SHA-256 | Non-ideal for PBKDF purposes | Low severity — input is high-entropy random key |
+| L-1 | Portal password uses bcrypt 10 rounds (vs 12) | Slightly weaker brute-force resistance | Deferred — depends on M-16 (bump portal password rounds to 12); addressed with Medium items |
+| L-2 | No read-audit events | Cannot determine who viewed sensitive data | Deferred — feature work, acceptable for small-business scope |
+| L-3 | No audit log tamper-proofing | DB-level attacker can modify audit records | Deferred — feature work (hash-chaining / append-only table) |
+| L-4 | No container resource limits | DoS via resource exhaustion | Deferred — ops change in docker-compose.yml, not code |
+| L-5 | Key derivation uses single-pass SHA-256 | Non-ideal for PBKDF purposes | Deferred — input is high-entropy random key; acceptable for current threat model |
 | L-6 | No IPv6 CIDR support in API key IP allowlisting | IPv6 CIDR restrictions not enforced | Add IPv6 CIDR support to `ipInCidr()` |
 | L-7 | No CSP violation reporting | Cannot detect CSP misconfigurations | Add `report-uri` directive |
-| L-8 | `hasLocalPassword` throws on null `passwordHash` (`lib/db/users.ts:119-121`) — if called against a denormalized result where column wasn't selected | Unexpected exception if function contract is violated | `(passwordHash ?? "").trim().length > 0` |
-| L-9 | `resolveEntityNames` silent catch swallows errors (`lib/db/audit.ts:200`) — audit log entity name resolution fails silently with no logging | Underlying DB or schema issues hidden; debugging made harder | `console.error` before `continue` |
-| L-10 | `Record<string, unknown>` bypasses Prisma type-safety in `listNotificationLogs` (`lib/db/notifications.ts:104`) — where filter typed as loose object | Typo in filter key silently ignored at compile time; query silently returns wrong results | Type as `Prisma.NotificationLogWhereInput` |
-| L-11 | Azure connection string suffix (-8 chars) in `_fingerprint` (`lib/storage/index.ts:121`) — partial key material in an in-memory debug string | Could be serialized in error traces/logs; insufficient for exploitation alone but violates "never log secrets" principle | Hash the fingerprint (SHA-256 first 8 hex chars) instead of slicing plaintext |
-| L-12 | `removeAttachmentAction` uses wrong `entityId` for `revalidatePath` when `entityType` is `VendorCertification` (`lib/actions/certifications.ts:180`) — revalidates a non-existent vendor path | No-op cache invalidation; harmless but incorrect | Resolve the vendor ID from the certification record and use that for `revalidatePath` |
-| L-13 | Missing `Cache-Control: no-store` on auth pages — login, reset-password, setup pages | Browsers/proxies could cache auth pages; Next.js dynamic routes mitigate but explicit headers are defense-in-depth | Add `Cache-Control: no-store, no-cache, must-revalidate` response header on all `(auth)` routes |
+| L-8 | ~~`hasLocalPassword` throws on null `passwordHash` (`lib/db/users.ts:119-121`)~~ | Unexpected exception if function contract is violated | **FIXED** — `(passwordHash ?? "").trim().length > 0` |
+| L-9 | ~~`resolveEntityNames` silent catch swallows errors (`lib/db/audit.ts:200`)~~ | Underlying DB or schema issues hidden; debugging made harder | **FIXED** — `console.error` added before `continue` |
+| L-10 | ~~`Record<string, unknown>` bypasses Prisma type-safety in `listNotificationLogs` (`lib/db/notifications.ts:104`)~~ | Typo in filter key silently ignored at compile time | **FIXED** — typed as `Prisma.NotificationLogWhereInput` |
+| L-11 | ~~Azure connection string suffix (-8 chars) in `_fingerprint` (`lib/storage/index.ts:121`)~~ | Could be serialized in error traces/logs | **FIXED** — now hashes full connection string with SHA-256, uses first 8 hex chars |
+| L-12 | ~~`removeAttachmentAction` uses wrong `entityId` for `revalidatePath` when `entityType` is `VendorCertification` (`lib/actions/certifications.ts:180`)~~ | No-op cache invalidation; harmless but incorrect | **FIXED** — resolved by H-9 ownership fix; now correctly resolves vendor ID from certification record |
+| L-13 | ~~Missing `Cache-Control: no-store` on auth pages~~ | Browsers/proxies could cache auth pages | **FIXED** — added `export const dynamic = "force-dynamic"` to auth layout for explicit no-cache signal |
 
 ---
 

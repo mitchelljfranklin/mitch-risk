@@ -7,6 +7,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { dirname, relative, resolve, sep } from "node:path";
+import { createHash } from "node:crypto";
 
 import { env } from "@/lib/env";
 
@@ -118,7 +119,8 @@ async function resolveStorage(settings: StorageSettings): Promise<FileStorage> {
 }
 
 function settingsFingerprint(settings: StorageSettings): string {
-  return `${settings.provider}|${settings.s3Bucket}|${settings.s3Region}|${settings.azureContainerName}|${settings.azureConnectionString.slice(-8)}`;
+  const raw = `${settings.provider}|${settings.s3Bucket}|${settings.s3Region}|${settings.azureContainerName}|${settings.azureConnectionString}`;
+  return createHash("sha256").update(raw).digest("hex").slice(0, 8);
 }
 
 let _storage: FileStorage | null = null;

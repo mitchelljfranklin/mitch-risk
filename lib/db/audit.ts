@@ -197,7 +197,8 @@ async function resolveEntityNames(
           });
           for (const k of keys) map.set(k.id, k.name);
         }
-      } catch {
+      } catch (error) {
+        console.error("[audit] resolveEntityNames failed:", error);
         // entity type may have been deleted — just return no names
       }
 

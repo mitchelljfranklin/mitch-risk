@@ -1,5 +1,6 @@
 import { cache } from "react";
 
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 export type NotificationCounts = {
@@ -101,7 +102,7 @@ const DEFAULT_EMAIL_LOG_PAGE_SIZE = 10;
 export async function listEmailLogs(
   filters?: EmailLogFilters,
 ): Promise<EmailLogResult> {
-  const where: Record<string, unknown> = {};
+  const where: Prisma.NotificationLogWhereInput = {};
 
   if (filters?.status) {
     where.status = filters.status;

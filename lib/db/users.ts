@@ -117,7 +117,7 @@ export function findUserByEmail(email: string): Promise<User | null> {
 }
 
 export function hasLocalPassword(passwordHash: string): boolean {
-  return passwordHash.trim().length > 0;
+  return (passwordHash ?? "").trim().length > 0;
 }
 
 export async function getUserAuthInfo(
