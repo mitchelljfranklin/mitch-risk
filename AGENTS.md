@@ -141,6 +141,7 @@ ones before declaring any phase complete.
 - `npm run lint` — ESLint (must be clean before any gate sign-off)
 - `npm run typecheck` — `tsc --noEmit` (must be clean before any gate sign-off)
 - `npm run format:check` — Prettier check (clean before any gate sign-off); `npm run format` to fix
+- `npm run precheck` — run typecheck + lint + format:check in sequence (same checks as CI)
 - `npm run test` — unit + integration tests (Vitest). **Integration tests delete/reset DB data
   and refuse to run unless pointed at a test database.** Set `TEST_DATABASE_URL` to a dedicated
   DB (name must contain `test`) — never run against dev/prod. See README → Testing.
@@ -163,6 +164,9 @@ ones before declaring any phase complete.
 - **Apply new Prisma migrations to _both_ the dev DB and the test DB** (`prisma migrate deploy`
   against each; the test DB is `TEST_DATABASE_URL`) before running `npm run test`, or integration
   tests fail on missing columns.
+- **CI runs typecheck + lint + format:check + build on every push.** The same checks are available
+  locally via `npm run precheck` (typecheck + lint + format:check). Run `npm run format` to auto-fix
+  formatting issues before pushing — Prettier failures are the most common CI rejection.
 - **Server Actions that feed `useActionState`.** An action that returns a value for
   `useActionState` must **not** call `revalidatePath` for its own current route — in production
   that re-render drops the returned state (no success toast, modal won't auto-close). Return the
