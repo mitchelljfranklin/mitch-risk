@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { isDangerousUploadMime, validateMagicBytes } from "@/lib/upload-validation";
+import {
+  isDangerousUploadMime,
+  validateMagicBytes,
+} from "@/lib/upload-validation";
 
 const FAKE_PDF = Buffer.from("%PDF-1.4\ntrailer");
 const FAKE_PNG = Buffer.from([

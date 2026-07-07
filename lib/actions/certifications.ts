@@ -60,7 +60,10 @@ export async function saveCertificationAction(
   if (certificationId) {
     const existingCert = await getCertification(certificationId);
     if (!existingCert || existingCert.vendorId !== vendorId) {
-      return { ok: false, message: "Certification does not belong to this vendor." };
+      return {
+        ok: false,
+        message: "Certification does not belong to this vendor.",
+      };
     }
     await updateCertification(certificationId, parsed.data);
     savedId = certificationId;

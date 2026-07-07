@@ -32,7 +32,10 @@ export async function hashApiKey(key: string): Promise<string> {
   return bcrypt.hash(key, BCRYPT_ROUNDS);
 }
 
-export async function verifyApiKey(key: string, hash: string): Promise<boolean> {
+export async function verifyApiKey(
+  key: string,
+  hash: string,
+): Promise<boolean> {
   return bcrypt.compare(key, hash);
 }
 

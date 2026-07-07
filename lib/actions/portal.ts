@@ -22,7 +22,10 @@ import { saveProgressSchema } from "@/lib/schemas/portal";
 import { getAssessmentSettings, getFileSettings } from "@/lib/settings";
 import { storage } from "@/lib/storage";
 import { rateLimit } from "@/lib/rate-limit";
-import { isDangerousUploadMime, validateMagicBytes } from "@/lib/upload-validation";
+import {
+  isDangerousUploadMime,
+  validateMagicBytes,
+} from "@/lib/upload-validation";
 
 async function clientIp(): Promise<string> {
   const requestHeaders = await headers();

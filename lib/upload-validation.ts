@@ -61,10 +61,7 @@ function compareMagic(
   return signature.every((byte, index) => buffer[offset + index] === byte);
 }
 
-export function validateMagicBytes(
-  extension: string,
-  buffer: Buffer,
-): boolean {
+export function validateMagicBytes(extension: string, buffer: Buffer): boolean {
   const lowerExt = extension.toLowerCase();
 
   if (lowerExt === "webp") {
