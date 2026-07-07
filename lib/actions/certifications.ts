@@ -14,10 +14,14 @@ import {
   updateCertification,
 } from "@/lib/db/certifications";
 import { logAudit } from "@/lib/db/audit";
-import { getField } from "@/lib/actions/helpers";
+import { getField } from "@/lib/utils";
 import { certificationSchema } from "@/lib/schemas/certification";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
+import {
+  ALLOWED_ATTACHMENT_EXTS,
+  MAX_ATTACHMENT_BYTES,
+} from "@/lib/upload-validation";
 
 export type CertificationActionState =
   { ok: boolean; message: string } | undefined;
@@ -116,9 +120,6 @@ export async function deleteCertificationAction(formData: FormData) {
   }
   revalidatePath(`/vendors/${existing.vendorId}`);
 }
-
-const ALLOWED_ATTACHMENT_EXTS = ["pdf", "png", "jpg", "jpeg", "docx", "xlsx"];
-const MAX_ATTACHMENT_BYTES = 20 * 1024 * 1024; // 20 MB
 
 export async function handleAttachmentUpload(
   formData: FormData,

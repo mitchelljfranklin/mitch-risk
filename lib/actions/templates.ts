@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { logAudit, logAuditSafe } from "@/lib/db/audit";
-import { getField } from "@/lib/actions/helpers";
+import { getField } from "@/lib/utils";
 import {
   addQuestion,
   addSection,

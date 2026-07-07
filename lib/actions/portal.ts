@@ -25,8 +25,8 @@ import { rateLimit } from "@/lib/rate-limit";
 import { isDangerousUploadMime } from "@/lib/upload-validation";
 
 async function clientIp(): Promise<string> {
-  const h = await headers();
-  return getClientIp(h);
+  const requestHeaders = await headers();
+  return getClientIp(requestHeaders);
 }
 
 export async function saveProgressAction(

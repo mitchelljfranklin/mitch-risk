@@ -87,19 +87,18 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
       },
     });
 
+    const responseMap = new Map(assessment.responses.map((r) => [r.id, r]));
+    const questionMap = new Map(assessment.questions.map((q) => [q.id, q]));
+
     for (const result of scored) {
       if (result.isCompliant !== false) {
         continue;
       }
-      const response = assessment.responses.find(
-        (candidate) => candidate.id === result.id,
-      );
+      const response = responseMap.get(result.id);
       if (!response) {
         continue;
       }
-      const question = assessment.questions.find(
-        (candidate) => candidate.id === response.assessmentQuestionId,
-      );
+      const question = questionMap.get(response.assessmentQuestionId);
       if (!question) {
         continue;
       }

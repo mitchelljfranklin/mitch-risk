@@ -59,10 +59,6 @@ export type SendEmailOptions = {
   updateLogId?: string;
 };
 
-function errorMessage(err: unknown): string {
-  return err instanceof Error ? err.message : "unknown error";
-}
-
 async function createNotificationLog(
   data: Prisma.NotificationLogCreateInput,
 ): Promise<string> {
@@ -174,9 +170,14 @@ export async function sendEmail(
     await updateNotificationLogStatus(notificationLogId, "SENT", null);
     return { ok: true, subject: resolvedSubject, notificationLogId };
   } catch (sendError) {
-    const errMsg = errorMessage(sendError);
+    const errorMessage =
+      sendError instanceof Error ? sendError.message : "unknown error";
     console.error("Failed to send email:", sendError);
-    await updateNotificationLogStatus(notificationLogId, "FAILED", errMsg);
+    await updateNotificationLogStatus(
+      notificationLogId,
+      "FAILED",
+      errorMessage,
+    );
     return { ok: false, subject: resolvedSubject, notificationLogId };
   }
 }
@@ -219,8 +220,12 @@ export async function sendTestEmail(
     await updateNotificationLogStatus(notificationLogId, "SENT", null);
     return { ok: true, message: "Test email sent." };
   } catch (sendError) {
-    const errMsg = `Failed: ${errorMessage(sendError)}`;
-    await updateNotificationLogStatus(notificationLogId, "FAILED", errMsg);
-    return { ok: false, message: errMsg };
+    const errorMessage = `Failed: ${sendError instanceof Error ? sendError.message : "unknown error"}`;
+    await updateNotificationLogStatus(
+      notificationLogId,
+      "FAILED",
+      errorMessage,
+    );
+    return { ok: false, message: errorMessage };
   }
 }

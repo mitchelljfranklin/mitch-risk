@@ -6,6 +6,7 @@ import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { createFramework, createControls } from "@/lib/db/frameworks";
 import { logAudit } from "@/lib/db/audit";
+import { parseCsvRows } from "@/lib/csv-parser";
 import {
   frameworkCsvRowSchema,
   frameworkImportSchema,
@@ -46,7 +47,7 @@ export async function importFrameworkAction(
     return { ok: false, message: "CSV file is too large (max 1 MB)." };
   }
 
-  const rows = parseCsv(text);
+  const rows = parseCsvRows(text);
   if (rows.length === 0) {
     return { ok: false, message: "CSV file contains no data rows." };
   }
@@ -135,50 +136,4 @@ export async function importFrameworkAction(
     message: `Imported "${framework.name} v${framework.version}" with ${controls.length} controls.`,
     frameworkId: framework.id,
   };
-}
-
-function parseCsv(text: string): string[][] {
-  const rows: string[][] = [];
-  let current = "";
-  let inQuotes = false;
-  let row: string[] = [];
-
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    if (inQuotes) {
-      if (char === '"') {
-        if (i + 1 < text.length && text[i + 1] === '"') {
-          current += '"';
-          i++;
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        current += char;
-      }
-    } else if (char === '"') {
-      inQuotes = true;
-    } else if (char === ",") {
-      row.push(current);
-      current = "";
-    } else if (char === "\n") {
-      row.push(current);
-      current = "";
-      if (row.length > 0) {
-        rows.push(row);
-        row = [];
-      }
-    } else if (char === "\r") {
-      // skip
-    } else {
-      current += char;
-    }
-  }
-
-  row.push(current);
-  if (row.length > 0 && row.some((cell) => cell !== "")) {
-    rows.push(row);
-  }
-
-  return rows;
 }

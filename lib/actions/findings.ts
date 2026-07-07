@@ -7,7 +7,7 @@ import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { updateFindingStatus } from "@/lib/db/findings";
 import { logAudit } from "@/lib/db/audit";
-import { getField } from "@/lib/actions/helpers";
+import { getField } from "@/lib/utils";
 import { FINDING_STATUSES } from "@/lib/schemas/assessment";
 
 export async function updateFindingStatusAction(formData: FormData) {

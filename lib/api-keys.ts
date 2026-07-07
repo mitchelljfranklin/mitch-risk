@@ -72,9 +72,11 @@ function ipInCidr(ip: string, cidr: string): boolean {
 }
 
 function ipToNumber(ip: string): number {
-  return (
-    ip
-      .split(".")
-      .reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0
-  );
+  let ipAddressNumber = 0;
+  const parts = ip.split(".");
+  for (const octet of parts) {
+    ipAddressNumber = (ipAddressNumber << 8) + parseInt(octet, 10);
+  }
+  const numericIp = ipAddressNumber >>> 0;
+  return numericIp;
 }

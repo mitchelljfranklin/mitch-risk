@@ -29,6 +29,8 @@ function makeKey(category: string, field: string): string {
   return `${category}.${field}`;
 }
 
+const NO_SECRETS = new Set<string>();
+
 async function readCategoryRecord(
   category: string,
 ): Promise<Record<string, unknown>> {
@@ -87,7 +89,7 @@ export const getOrganizationSettings = cache(
 export async function updateOrganizationSettings(
   input: OrganizationSettings,
 ): Promise<void> {
-  await persistCategory("organization", input, new Set());
+  await persistCategory("organization", input, NO_SECRETS);
 }
 
 const EMAIL_SECRET_FIELDS: ReadonlySet<string> = new Set(["smtpPassword"]);
@@ -211,7 +213,7 @@ export async function updateScoringSettings(
   await persistCategory(
     "scoring",
     input as unknown as Record<string, unknown>,
-    new Set(),
+    NO_SECRETS,
   );
 }
 
@@ -233,7 +235,7 @@ export async function updateEmailTemplateFields(
   await persistCategory(
     EMAIL_TEMPLATE_CATEGORY,
     fields as Record<string, unknown>,
-    new Set(),
+    NO_SECRETS,
   );
 }
 
@@ -265,7 +267,7 @@ export async function updateSsoSettings(input: SsoSettings): Promise<void> {
   await persistCategory(
     "sso",
     input as unknown as Record<string, unknown>,
-    new Set(),
+    NO_SECRETS,
   );
 }
 
@@ -282,7 +284,7 @@ export async function updateAppearanceSettings(
   await persistCategory(
     "appearance",
     input as unknown as Record<string, unknown>,
-    new Set(),
+    NO_SECRETS,
   );
 }
 
@@ -326,7 +328,7 @@ export async function updateAssessmentSettings(
   await persistCategory(
     "assessments",
     input as unknown as Record<string, unknown>,
-    new Set(),
+    NO_SECRETS,
   );
 }
 
@@ -334,7 +336,7 @@ export async function updateFileSettings(input: FileSettings): Promise<void> {
   await persistCategory(
     "files",
     input as unknown as Record<string, unknown>,
-    new Set(),
+    NO_SECRETS,
   );
 }
 

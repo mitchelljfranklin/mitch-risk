@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { Prisma } from "@prisma/client";
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import {
@@ -11,7 +12,7 @@ import {
   updateRole,
 } from "@/lib/db/roles";
 import { logAudit } from "@/lib/db/audit";
-import { getField } from "@/lib/actions/helpers";
+import { getField } from "@/lib/utils";
 import { roleSchema } from "@/lib/schemas/role";
 
 export type RoleActionState = { ok: boolean; message: string } | undefined;
@@ -44,8 +45,14 @@ export async function createRoleAction(
     if (actor) {
       await logAudit(actor.id, "CREATE_ROLE", "Role", role.id);
     }
-  } catch {
-    return { ok: false, message: "A role with this name already exists." };
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return { ok: false, message: "A role with this name already exists." };
+    }
+    throw error;
   }
 
   // No revalidatePath here: this result is consumed by useActionState in a modal.

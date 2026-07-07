@@ -82,7 +82,6 @@ components/          # shadcn ui primitives + domain composites
   assessment-timeline.tsx # interactive activity area chart
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
-    helpers.ts       #   shared action helpers (getField, etc.)
     findings.ts      #   finding status updates
     frameworks.ts    #   framework CRUD + CSV import
   db/                # typed data-access layer (assessments, audit, collaboration,
@@ -100,6 +99,7 @@ lib/                 # cross-cutting logic
   client-ip.ts       # proxy-aware client IP (trusted-hop X-Forwarded-For / CLIENT_IP_HEADER)
   control-selection.ts # per-framework tri-state "select all" logic
   crypto.ts          # AES-256-GCM encryption for secret settings
+  csv-parser.ts      # shared CSV parser (handles quoted fields, CRLF line endings)
   dashboard-insights.ts # pure dashboard computation helpers
   env.ts             # zod-validated deployment env
   json.ts            # deep-clone helper for JSON-safe values
@@ -114,7 +114,7 @@ lib/                 # cross-cutting logic
   timing-safe.ts     # constant-time string comparison
   tokens.ts          # opaque portal token generation + expiry
   upload-validation.ts # file upload MIME type validation
-  utils.ts           # cn(), formatDate(), formatPercent()
+  utils.ts           # cn(), formatDate(), formatPercent(), getField(), formatResponseValue(), csvEscape()
   view-preference.ts # cookie-backed view preference (rows/cards)
   storage/           # file storage interface (save/read/delete/list)
                      #   local-disk, s3.ts (AWS S3), azure.ts (Azure Blob)
@@ -251,6 +251,33 @@ Code is read far more often than it is written. Optimise for the next human who 
   documented convention rather than inventing one.
 - **Automated consistency.** Prettier handles formatting and ESLint handles linting; both run
   clean before any gate sign-off (`npm run lint`, `npm run format:check`).
+
+### Code should look human-written
+
+Good code reads like a human being wrote it for another human being to maintain. Avoid
+patterns that require the reader to be a TypeScript expert or to hold complex state in
+their head:
+
+- **Prefer clarity over cleverness.** A 5-line `if/else if/else` chain is always better than a
+  nested ternary or a `match/case` that requires the reader to decode what each branch means.
+  Nobody should have to squint at a line to understand what it does.
+- **One thought per line.** No dense one-liners that do three things at once (e.g.
+  `.filter().map().sort()` all on one line). Break chained operations into intermediate
+  variables with descriptive names — the compiler will optimise them anyway.
+- **Straightforward control flow.** Use early returns and guard clauses. Functions should read
+  top-to-bottom like a story, not require jumping between indentation levels to follow logic.
+- **No over-engineered abstractions.** Do not create a helper function, class, or generic just
+  because a two-line check is repeated twice in the same file. Inline it. Do not create
+  wrappers that add zero behaviour over what they wrap. Every abstraction must pay for itself
+  by reducing total cognitive load, not increasing it.
+- **Duplicate code is noise.** If logic appears in two places, extract it into a shared location
+  (function in `lib/`, component in `components/`). The DRY rule is strict in this repository
+  — see "Reusability & DRY" above.
+- **Errors should be specific.** Do not catch a broad exception and surface a generic message
+  that could also mean "database is down" or "network timeout". Match on the actual error type
+  or code. Re-throw what you cannot handle.
+- **Your code should pass the "read aloud" test.** If you cannot read a line out loud and have
+  it sound like a plain-English instruction, rename the variables until you can.
 
 ## Role-based access control (build access-control in, every time)
 

@@ -15,7 +15,7 @@ import {
 } from "@/lib/db/users";
 import { getRole } from "@/lib/db/roles";
 import { logAudit } from "@/lib/db/audit";
-import { getField } from "@/lib/actions/helpers";
+import { getField } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 

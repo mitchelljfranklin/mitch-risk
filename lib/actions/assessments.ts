@@ -8,7 +8,7 @@ import { PERMISSIONS } from "@/lib/permissions";
 import { sendEmail, sendTestEmail } from "@/lib/email/mailer";
 import { env } from "@/lib/env";
 import { logAudit } from "@/lib/db/audit";
-import { getField } from "@/lib/actions/helpers";
+import { getField } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 import {
   createAssessment,
@@ -227,6 +227,94 @@ export type BulkSendState =
     }
   | undefined;
 
+type BulkVendorResult =
+  { status: "sent"; emailFailed: boolean } | { status: "skipped" };
+
+async function processBulkVendorSend(params: {
+  vendorId: string;
+  templateId: string;
+  dueDate: string;
+  reviewerId: string;
+  portalPassword: string | undefined;
+  user: { id: string } | null;
+}): Promise<BulkVendorResult> {
+  const vendor = await prisma.vendor.findUnique({
+    where: { id: params.vendorId },
+    select: { name: true, contactEmail: true },
+  });
+  if (!vendor) {
+    console.error(`[bulk-send] vendor not found: ${params.vendorId}`);
+    return { status: "skipped" };
+  }
+
+  const vendorTitle = params.vendorId.slice(0, 8);
+  const assessment = await createAssessment(params.vendorId, {
+    title: `Bulk assessment — ${vendorTitle}`,
+    templateId: params.templateId,
+    dueDate: params.dueDate,
+    reviewerId: params.reviewerId || "",
+  });
+
+  await sendAssessment(assessment.id, params.portalPassword);
+
+  if (params.user) {
+    await logAudit(
+      params.user.id,
+      "SEND_ASSESSMENT",
+      "Assessment",
+      assessment.id,
+    );
+  }
+
+  let emailFailed = false;
+  if (vendor.contactEmail) {
+    try {
+      const sent = await getAssessmentForEmail(assessment.id);
+      if (sent?.accessToken) {
+        const portalUrl = `${env.APP_URL}/portal/${sent.accessToken}`;
+        await sendEmail(
+          vendor.contactEmail,
+          params.portalPassword ? "invite-password" : "invite",
+          {
+            vendorName: vendor.name,
+            assessmentTitle: sent.title,
+            portalUrl,
+            dueDate: params.dueDate,
+            portalPassword: params.portalPassword ?? "",
+          },
+          { assessmentId: assessment.id, sentById: params.user?.id },
+        );
+        await setAssessmentRecipients(assessment.id, [vendor.contactEmail]);
+      }
+    } catch (emailError) {
+      emailFailed = true;
+      console.error(
+        `[bulk-send] email failed for vendor ${params.vendorId} (assessment ${assessment.id}):`,
+        emailError,
+      );
+    }
+  }
+
+  return { status: "sent", emailFailed };
+}
+
+function buildBulkSendMessage(
+  sentCount: number,
+  skippedCount: number,
+  emailFailedCount: number,
+): string {
+  const parts = [`Sent ${sentCount} assessment${sentCount !== 1 ? "s" : ""}`];
+  if (skippedCount > 0) {
+    parts.push(`${skippedCount} could not be sent`);
+  }
+  if (emailFailedCount > 0) {
+    parts.push(
+      `${emailFailedCount} email${emailFailedCount !== 1 ? "s" : ""} failed to deliver`,
+    );
+  }
+  return `${parts.join(". ")}.`;
+}
+
 export async function sendBulkAssessmentsAction(
   previousState: BulkSendState,
   formData: FormData,
@@ -253,61 +341,23 @@ export async function sendBulkAssessmentsAction(
 
   for (const vendorId of vendorIds) {
     try {
-      const vendor = await prisma.vendor.findUnique({
-        where: { id: vendorId },
-        select: { name: true, contactEmail: true },
-      });
-      if (!vendor) {
-        skippedCount++;
-        console.error(`[bulk-send] vendor not found: ${vendorId}`);
-        continue;
-      }
-
-      const vendorTitle = vendorId.slice(0, 8);
-      const assessment = await createAssessment(vendorId, {
-        title: `Bulk assessment — ${vendorTitle}`,
+      const result = await processBulkVendorSend({
+        vendorId,
         templateId,
         dueDate,
-        reviewerId: reviewerId || "",
+        reviewerId,
+        portalPassword,
+        user,
       });
 
-      await sendAssessment(assessment.id, portalPassword);
-
-      if (user) {
-        await logAudit(user.id, "SEND_ASSESSMENT", "Assessment", assessment.id);
-      }
-
-      // The assessment is created and sent at this point. Email delivery is
-      // best-effort: a failure here must not mark the whole vendor as skipped.
-      if (vendor.contactEmail) {
-        try {
-          const sent = await getAssessmentForEmail(assessment.id);
-          if (sent?.accessToken) {
-            const portalUrl = `${env.APP_URL}/portal/${sent.accessToken}`;
-            await sendEmail(
-              vendor.contactEmail,
-              portalPassword ? "invite-password" : "invite",
-              {
-                vendorName: vendor.name,
-                assessmentTitle: sent.title,
-                portalUrl,
-                dueDate: dueDate,
-                portalPassword: portalPassword ?? "",
-              },
-              { assessmentId: assessment.id, sentById: user?.id },
-            );
-            await setAssessmentRecipients(assessment.id, [vendor.contactEmail]);
-          }
-        } catch (emailError) {
+      if (result.status === "sent") {
+        sentCount++;
+        if (result.emailFailed) {
           emailFailedCount++;
-          console.error(
-            `[bulk-send] email failed for vendor ${vendorId} (assessment ${assessment.id}):`,
-            emailError,
-          );
         }
+      } else {
+        skippedCount++;
       }
-
-      sentCount++;
     } catch (error) {
       skippedCount++;
       console.error(
@@ -320,19 +370,9 @@ export async function sendBulkAssessmentsAction(
   revalidatePath("/assessments");
   revalidatePath("/vendors");
 
-  const parts = [`Sent ${sentCount} assessment${sentCount !== 1 ? "s" : ""}`];
-  if (skippedCount > 0) {
-    parts.push(`${skippedCount} could not be sent`);
-  }
-  if (emailFailedCount > 0) {
-    parts.push(
-      `${emailFailedCount} email${emailFailedCount !== 1 ? "s" : ""} failed to deliver`,
-    );
-  }
-
   return {
     ok: true,
-    message: `${parts.join(". ")}.`,
+    message: buildBulkSendMessage(sentCount, skippedCount, emailFailedCount),
     sent: sentCount,
     skipped: skippedCount,
     emailFailed: emailFailedCount,

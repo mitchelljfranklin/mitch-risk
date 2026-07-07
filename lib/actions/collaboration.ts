@@ -16,7 +16,7 @@ import { getAssessmentRecipients } from "@/lib/db/assessments";
 import { logAudit } from "@/lib/db/audit";
 import { sendEmail } from "@/lib/email/mailer";
 import { env } from "@/lib/env";
-import { getField } from "@/lib/actions/helpers";
+import { getField } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 
 const VALID_DECISIONS = ["APPROVED", "CLARIFICATION_REQUESTED"];

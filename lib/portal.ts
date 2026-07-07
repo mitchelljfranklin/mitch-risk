@@ -59,7 +59,7 @@ export type PortalQuestionSummary = {
 function isOperator(value: unknown): value is ConditionOperator {
   return (
     typeof value === "string" &&
-    (CONDITION_OPERATORS as readonly string[]).includes(value)
+    CONDITION_OPERATORS.includes(value as ConditionOperator)
   );
 }
 
@@ -71,7 +71,6 @@ export function parseConditionalLogic(
   }
   const record = logic as Record<string, unknown>;
 
-  // New shape: { match, rules: [...] }
   if (Array.isArray(record.rules)) {
     const rules: ConditionRule[] = [];
     for (const raw of record.rules) {

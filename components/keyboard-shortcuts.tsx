@@ -268,7 +268,6 @@ export function KeyboardShortcuts({ permissions }: CommandPaletteProps) {
                     </span>
                   ) : null}
                 </div>
-                {item.permission ? null : null}
               </button>
             ))
           )}

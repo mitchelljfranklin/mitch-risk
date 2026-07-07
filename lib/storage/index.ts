@@ -146,19 +146,19 @@ export async function getStorage(): Promise<FileStorage> {
 
 export const storage: FileStorage = {
   async save(key, data) {
-    const s = await getStorage();
-    return s.save(key, data);
+    const storageInstance = await getStorage();
+    return storageInstance.save(key, data);
   },
   async read(key) {
-    const s = await getStorage();
-    return s.read(key);
+    const storageInstance = await getStorage();
+    return storageInstance.read(key);
   },
   async delete(key) {
-    const s = await getStorage();
-    return s.delete(key);
+    const storageInstance = await getStorage();
+    return storageInstance.delete(key);
   },
   async list() {
-    const s = await getStorage();
-    return s.list();
+    const storageInstance = await getStorage();
+    return storageInstance.list();
   },
 };

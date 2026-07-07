@@ -169,13 +169,16 @@ export async function getVendorHeatmap(
   return [...controlMap.entries()].map(([id, entry]) => {
     const hasQuestions = entry.total > 0;
     const ratio = hasQuestions ? entry.compliant / entry.total : 0;
-    const rag = hasQuestions
-      ? ratio >= green
-        ? "green"
-        : ratio >= amber
-          ? "amber"
-          : "red"
-      : "none";
+    let rag: HeatmapControl["rag"];
+    if (!hasQuestions) {
+      rag = "none";
+    } else if (ratio >= green) {
+      rag = "green";
+    } else if (ratio >= amber) {
+      rag = "amber";
+    } else {
+      rag = "red";
+    }
     return {
       id,
       code: entry.code,
@@ -234,6 +237,88 @@ export async function getPortfolioSummary(): Promise<{
       latestAssessmentDate: vendor.assessments[0]?.createdAt ?? null,
     })),
   };
+}
+
+function computeScoreDistribution(
+  vendors: Array<{ overallScore: number | null }>,
+  ragThresholds: { green: number; amber: number },
+) {
+  const distribution = { green: 0, amber: 0, red: 0, unscored: 0 };
+  let totalScore = 0;
+  let scoredCount = 0;
+
+  for (const vendor of vendors) {
+    if (vendor.overallScore === null) {
+      distribution.unscored++;
+    } else {
+      totalScore += vendor.overallScore;
+      scoredCount++;
+      distribution[ragBand(vendor.overallScore, ragThresholds)]++;
+    }
+  }
+
+  return { distribution, totalScore, scoredCount };
+}
+
+type VendorWithAssessments = {
+  id: string;
+  assessments: Array<{ id: string }>;
+};
+
+async function computeTopDeficientControls(
+  allVendors: VendorWithAssessments[],
+) {
+  const latestPerVendor = new Map<string, string>();
+  for (const vendor of allVendors) {
+    const latest = vendor.assessments[0];
+    if (latest) {
+      latestPerVendor.set(vendor.id, latest.id);
+    }
+  }
+
+  const latestIds = [...latestPerVendor.values()];
+  const deficientResponses =
+    latestIds.length > 0
+      ? await prisma.response.findMany({
+          where: { assessmentId: { in: latestIds }, isCompliant: false },
+          select: {
+            assessmentQuestion: { select: { controlIds: true } },
+            assessment: { select: { vendorId: true } },
+          },
+        })
+      : [];
+
+  const controlVendorMap = new Map<string, Set<string>>();
+  for (const response of deficientResponses) {
+    for (const controlId of response.assessmentQuestion.controlIds) {
+      const vendorSet = controlVendorMap.get(controlId) ?? new Set();
+      vendorSet.add(response.assessment.vendorId);
+      controlVendorMap.set(controlId, vendorSet);
+    }
+  }
+
+  const topEntries = [...controlVendorMap.entries()]
+    .sort(([, setA], [, setB]) => setB.size - setA.size)
+    .slice(0, 10);
+
+  const topControlIds = topEntries.map(([id]) => id);
+  const topControls =
+    topControlIds.length > 0
+      ? await prisma.control.findMany({
+          where: { id: { in: topControlIds } },
+          select: { id: true, code: true, title: true },
+        })
+      : [];
+
+  const controlMap = new Map(
+    topControls.map((control) => [control.id, control]),
+  );
+
+  return topEntries.map(([id, vendorSet]) => ({
+    code: controlMap.get(id)?.code ?? "?",
+    title: controlMap.get(id)?.title ?? "Unknown",
+    vendorCount: vendorSet.size,
+  }));
 }
 
 export async function getDashboardData() {
@@ -313,19 +398,10 @@ export async function getDashboardData() {
     ragThresholds,
   );
 
-  const distribution = { green: 0, amber: 0, red: 0, unscored: 0 };
-  let totalScore = 0;
-  let scoredCount = 0;
-
-  for (const vendor of allVendors) {
-    if (vendor.overallScore === null) {
-      distribution.unscored++;
-    } else {
-      totalScore += vendor.overallScore;
-      scoredCount++;
-      distribution[ragBand(vendor.overallScore, ragThresholds)]++;
-    }
-  }
+  const { distribution, totalScore, scoredCount } = computeScoreDistribution(
+    allVendors,
+    ragThresholds,
+  );
 
   const portfolio = allVendors.map((vendor) => ({
     id: vendor.id,
@@ -337,54 +413,7 @@ export async function getDashboardData() {
     latestAssessmentDate: vendor.assessments[0]?.createdAt ?? null,
   }));
 
-  const latestPerVendor = new Map<string, string>();
-  for (const vendor of allVendors) {
-    const latest = vendor.assessments[0];
-    if (latest) latestPerVendor.set(vendor.id, latest.id);
-  }
-
-  const latestIds = [...latestPerVendor.values()];
-  const deficientResponses =
-    latestIds.length > 0
-      ? await prisma.response.findMany({
-          where: { assessmentId: { in: latestIds }, isCompliant: false },
-          select: {
-            assessmentQuestion: { select: { controlIds: true } },
-            assessment: { select: { vendorId: true } },
-          },
-        })
-      : [];
-
-  const controlVendorMap = new Map<string, Set<string>>();
-  for (const response of deficientResponses) {
-    for (const controlId of response.assessmentQuestion.controlIds) {
-      const vendorSet = controlVendorMap.get(controlId) ?? new Set();
-      vendorSet.add(response.assessment.vendorId);
-      controlVendorMap.set(controlId, vendorSet);
-    }
-  }
-
-  const topEntries = [...controlVendorMap.entries()]
-    .sort((a, b) => b[1].size - a[1].size)
-    .slice(0, 10);
-
-  const topControlIds = topEntries.map(([id]) => id);
-  const topControls =
-    topControlIds.length > 0
-      ? await prisma.control.findMany({
-          where: { id: { in: topControlIds } },
-          select: { id: true, code: true, title: true },
-        })
-      : [];
-
-  const controlMap = new Map(
-    topControls.map((control) => [control.id, control]),
-  );
-  const topDeficient = topEntries.map(([id, vendorSet]) => ({
-    code: controlMap.get(id)?.code ?? "?",
-    title: controlMap.get(id)?.title ?? "Unknown",
-    vendorCount: vendorSet.size,
-  }));
+  const topDeficient = await computeTopDeficientControls(allVendors);
 
   const vendorsByTier: Record<string, number> = {
     CRITICAL: 0,

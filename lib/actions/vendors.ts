@@ -8,9 +8,14 @@ import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { createVendor, deleteVendor, updateVendor } from "@/lib/db/vendors";
 import { logAudit } from "@/lib/db/audit";
-import { getField } from "@/lib/actions/helpers";
+import { getField } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
+import {
+  ALLOWED_ATTACHMENT_EXTS,
+  MAX_ATTACHMENT_BYTES,
+} from "@/lib/upload-validation";
+import { parseCsvWithHeaders } from "@/lib/csv-parser";
 import {
   vendorSchema,
   vendorCsvRowSchema,
@@ -94,67 +99,6 @@ export type VendorsImportState =
   | { ok: false; error: string; count?: undefined }
   | undefined;
 
-function parseCsv(text: string): Record<string, string>[] {
-  const rows: string[][] = [];
-  let current = "";
-  let inQuotes = false;
-  let row: string[] = [];
-
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    if (inQuotes) {
-      if (char === '"') {
-        if (i + 1 < text.length && text[i + 1] === '"') {
-          current += '"';
-          i++;
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        current += char;
-      }
-    } else if (char === '"') {
-      inQuotes = true;
-    } else if (char === ",") {
-      row.push(current);
-      current = "";
-    } else if (char === "\n") {
-      row.push(current);
-      current = "";
-      if (row.length > 0) {
-        rows.push(row);
-        row = [];
-      }
-    } else if (char === "\r") {
-      // skip
-    } else {
-      current += char;
-    }
-  }
-
-  row.push(current);
-  if (row.length > 0 && row.some((cell) => cell !== "")) {
-    rows.push(row);
-  }
-
-  if (rows.length < 2) return [];
-
-  const headers = rows[0].map((h) => h.trim().toLowerCase());
-  const result: Record<string, string>[] = [];
-
-  for (let i = 1; i < rows.length; i++) {
-    const values = rows[i];
-    if (values.length === 0 || values.every((v) => v.trim() === "")) continue;
-    const entry: Record<string, string> = {};
-    headers.forEach((h, j) => {
-      entry[h] = (values[j] ?? "").trim();
-    });
-    result.push(entry);
-  }
-
-  return result;
-}
-
 export async function importVendorsAction(
   previousState: VendorsImportState,
   formData: FormData,
@@ -167,7 +111,7 @@ export async function importVendorsAction(
   }
 
   const text = await file.text();
-  const rows = parseCsv(text);
+  const rows = parseCsvWithHeaders(text);
   if (rows.length === 0) {
     return {
       ok: false,
@@ -258,9 +202,6 @@ export async function importVendorsAction(
   };
 }
 
-const ALLOWED_ATTACHMENT_EXTS = ["pdf", "png", "jpg", "jpeg", "docx", "xlsx"];
-const MAX_ATTACHMENT_BYTES = 20 * 1024 * 1024;
-
 export async function addVendorAttachmentAction(formData: FormData) {
   const user = await requirePermission(PERMISSIONS.VENDORS_EDIT);
 
@@ -318,61 +259,60 @@ export async function removeVendorAttachmentAction(formData: FormData) {
   await prisma.attachment.delete({ where: { id: attachmentId } });
   revalidatePath(`/vendors/${vendorId}`);
 }
-export async function attachEvidenceToCertificationAction(
-  _previousState: { ok: boolean; message: string } | undefined,
+async function handleGeneralAttachment(
   formData: FormData,
-): Promise<{ ok: boolean; message: string }> {
-  const user = await requirePermission(PERMISSIONS.VENDORS_EDIT);
+  vendorId: string,
+  evidenceId: string,
+  evidence: {
+    fileName: string;
+    mimeType: string;
+    sizeBytes: number;
+    assessmentId: string;
+  },
+  newKey: string,
+  user: { id: string } | null,
+) {
+  const displayName = getField(formData, "displayName").trim();
+  const notes = getField(formData, "notes").trim() || undefined;
 
-  const evidenceId = getField(formData, "evidenceId");
-  const attachType = getField(formData, "attachType"); // "certification" | "general"
-
-  if (!evidenceId) return { ok: false, message: "Missing evidence." };
-
-  const evidence = await prisma.evidence.findUnique({
-    where: { id: evidenceId },
-    include: { assessment: { select: { vendorId: true } } },
+  await prisma.attachment.create({
+    data: {
+      entityType: "Vendor",
+      entityId: vendorId,
+      fileName: evidence.fileName,
+      storageKey: newKey,
+      mimeType: evidence.mimeType,
+      sizeBytes: evidence.sizeBytes,
+      displayName: displayName || evidence.fileName,
+      notes,
+    },
   });
-  if (!evidence) return { ok: false, message: "Evidence not found." };
 
-  const vendorId = evidence.assessment.vendorId;
-  const file = await storage.read(evidence.storageKey);
-  const ext = evidence.fileName.split(".").pop() ?? "dat";
-  const newKey = `attachment-${randomBytes(12).toString("hex")}.${ext}`;
-
-  await storage.save(newKey, file);
-
-  if (attachType === "general") {
-    const displayName = getField(formData, "displayName").trim();
-    const notes = getField(formData, "notes").trim() || undefined;
-
-    await prisma.attachment.create({
-      data: {
-        entityType: "Vendor",
-        entityId: vendorId,
-        fileName: evidence.fileName,
-        storageKey: newKey,
-        mimeType: evidence.mimeType,
-        sizeBytes: evidence.sizeBytes,
-        displayName: displayName || evidence.fileName,
-        notes,
-      },
+  if (user) {
+    await logAudit(user.id, "UPDATE_VENDOR", "Vendor", vendorId, {
+      note: "Attached evidence to vendor",
+      evidenceId,
     });
-
-    if (user) {
-      await logAudit(user.id, "UPDATE_VENDOR", "Vendor", vendorId, {
-        note: "Attached evidence to vendor",
-        evidenceId,
-      });
-    }
-
-    revalidatePath(`/assessments/${evidence.assessmentId}`);
-    revalidatePath(`/vendors/${vendorId}`);
-
-    return { ok: true, message: "File attached to vendor." };
   }
 
-  // certification path
+  revalidatePath(`/assessments/${evidence.assessmentId}`);
+  revalidatePath(`/vendors/${vendorId}`);
+
+  return { ok: true, message: "File attached to vendor." } as const;
+}
+
+async function handleCertificationAttachment(
+  formData: FormData,
+  vendorId: string,
+  evidence: {
+    fileName: string;
+    mimeType: string;
+    sizeBytes: number;
+    assessmentId: string;
+  },
+  newKey: string,
+  user: { id: string } | null,
+) {
   const name = getField(formData, "name").trim();
   const issuer = getField(formData, "issuer").trim() || undefined;
   const expiresDate = getField(formData, "expiresDate");
@@ -412,4 +352,48 @@ export async function attachEvidenceToCertificationAction(
     ok: true,
     message: `Certification "${name}" added with attachment.`,
   };
+}
+
+export async function attachEvidenceToCertificationAction(
+  _previousState: { ok: boolean; message: string } | undefined,
+  formData: FormData,
+): Promise<{ ok: boolean; message: string }> {
+  const user = await requirePermission(PERMISSIONS.VENDORS_EDIT);
+
+  const evidenceId = getField(formData, "evidenceId");
+  const attachType = getField(formData, "attachType");
+
+  if (!evidenceId) return { ok: false, message: "Missing evidence." };
+
+  const evidence = await prisma.evidence.findUnique({
+    where: { id: evidenceId },
+    include: { assessment: { select: { vendorId: true } } },
+  });
+  if (!evidence) return { ok: false, message: "Evidence not found." };
+
+  const vendorId = evidence.assessment.vendorId;
+  const file = await storage.read(evidence.storageKey);
+  const ext = evidence.fileName.split(".").pop() ?? "dat";
+  const newKey = `attachment-${randomBytes(12).toString("hex")}.${ext}`;
+
+  await storage.save(newKey, file);
+
+  if (attachType === "general") {
+    return handleGeneralAttachment(
+      formData,
+      vendorId,
+      evidenceId,
+      evidence,
+      newKey,
+      user,
+    );
+  }
+
+  return handleCertificationAttachment(
+    formData,
+    vendorId,
+    evidence,
+    newKey,
+    user,
+  );
 }
