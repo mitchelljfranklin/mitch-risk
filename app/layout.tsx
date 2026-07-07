@@ -17,8 +17,9 @@ const geistMono = Geist_Mono({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const organization = await getOrganizationSettings();
-  const orgName = organization.name || "mitch-risk";
+  const orgName = await getOrganizationSettings()
+    .then((org) => org.name || "mitch-risk")
+    .catch(() => "mitch-risk");
   return {
     title: { template: `%s — ${orgName}`, default: orgName },
     description: "Vendor risk management for small businesses",
@@ -30,7 +31,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const appearance = await getAppearanceSettings();
+  const appearance = await getAppearanceSettings().catch(() => ({
+    primaryHex: "",
+    secondaryHex: "",
+    ragGreenHex: "",
+    ragAmberHex: "",
+    ragRedHex: "",
+    ragUnscoredHex: "",
+    borderRadius: 10,
+    logoKey: "",
+  }));
   const faviconUrl = appearance.logoKey
     ? `/api/brand/logo?v=${appearance.logoKey}`
     : "/favicon.ico";

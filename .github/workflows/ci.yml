@@ -13,6 +13,8 @@ jobs:
       DATABASE_URL: "postgresql://ci:ci@localhost:5432/ci_build"
       AUTH_SECRET: "ci-build-auth-secret-00000000000000000000"
       APP_ENCRYPTION_KEY: "ci-build-encryption-key-0000000000000"
+      NEXT_TELEMETRY_DISABLED: "1"
+      NODE_OPTIONS: "--no-experimental-strip-types"
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
