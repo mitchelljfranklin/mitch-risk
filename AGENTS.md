@@ -126,6 +126,8 @@ prisma/              # schema.prisma, migrations, seed.ts
 scripts/             # backup.sh, backup.ps1
 e2e/                 # Playwright end-to-end tests
 docs/                # Docsify-powered user documentation site (GitHub Pages)
+                     #   docs/openapi.json must be kept in sync with lib/openapi.json
+                     #   (copy when API endpoints change)
 proxy.ts             # Next.js 16 proxy (CSP nonce + security headers)
 ```
 

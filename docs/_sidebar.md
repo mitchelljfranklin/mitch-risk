@@ -18,6 +18,7 @@
   - [Frameworks](api-reference/frameworks.md)
   - [Dashboard](api-reference/dashboard.md)
   - [Audit](api-reference/audit.md)
+  - [OpenAPI Spec](/api-reference/openapi/)
 - **Deployment**
   - [Docker](deployment/docker.md)
   - [Reverse Proxy](deployment/reverse-proxy.md)

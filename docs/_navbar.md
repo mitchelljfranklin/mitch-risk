@@ -1,2 +1,2 @@
 - [GitHub](https://github.com/mitchelljfranklin/mitch-risk)
-- [Swagger API Docs](/api/docs)
+- [API Reference](/api-reference/openapi/)
