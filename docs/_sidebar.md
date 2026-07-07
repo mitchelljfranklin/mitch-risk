@@ -6,6 +6,10 @@
   - [Review & Findings](user-guides/review.md)
   - [Vendors](user-guides/vendors.md)
   - [RBAC & Roles](user-guides/rbac.md)
+- **Configuration**
+  - [SSO](configuration/sso.md)
+  - [Email](configuration/email.md)
+  - [Scoring](configuration/scoring.md)
 - **API Reference**
   - [Overview](api-reference/overview.md)
   - [Vendors](api-reference/vendors.md)
@@ -18,5 +22,8 @@
   - [Docker](deployment/docker.md)
   - [Reverse Proxy](deployment/reverse-proxy.md)
   - [Cloud Storage](deployment/cloud-storage.md)
+- **Advanced**
+  - [Cron & Automation](advanced/cron.md)
+  - [Security](advanced/security.md)
 - [FAQ](faq.md)
 - [GitHub](https://github.com/mitchelljfranklin/mitch-risk)

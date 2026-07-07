@@ -20,7 +20,7 @@ RAG thresholds: Green ≥85%, Amber 60–84%, Red <60%.
 
 ## How do I set up SSO (Single Sign-On)?
 
-SSO is configured in Settings → SSO. Microsoft Entra ID, Google, and generic OIDC providers are supported. Enable the provider, enter your client ID and secret, and optionally restrict to a specific email domain. See `docs/ssoConfig.md` for per-provider setup instructions.
+SSO is configured in Settings → SSO. Microsoft Entra ID, Google, and generic OIDC providers are supported. See the [SSO Configuration](/configuration/sso.md) guide for per-provider setup instructions.
 
 ## How do I configure email?
 
