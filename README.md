@@ -73,17 +73,40 @@ docker compose up -d
 
 ## API
 
-Authenticated API endpoints under `/api/v1/`:
-- `GET /api/v1/vendors` — list/search vendors
+Authenticated REST API under `/api/v1/`. Authenticate via session cookie (web login) or Bearer token (API key — generate in Settings → API).
+
+### Vendors
+- `GET /api/v1/vendors` — list/search vendors (`?query=`, `?tier=`)
 - `GET /api/v1/vendors/{id}` — vendor detail
+- `PUT /api/v1/vendors/{id}` — update vendor
+- `DELETE /api/v1/vendors/{id}` — delete vendor
 - `GET /api/v1/vendors/{id}/score` — score summary
-- `GET /api/v1/vendors/{id}/export` — download vendor CSV
+- `GET /api/v1/vendors/{id}/export` — download vendor JSON
 - `POST /api/v1/vendors/import` — create vendor from JSON
-- `GET /api/v1/audit` — query audit log (JSON or CSV, page-based pagination)
+- `GET /api/v1/vendors/{id}/assessments` — list vendor's assessments
+- `GET /api/v1/vendors/{id}/certifications` — list vendor's certifications
+
+### Assessments
+- `GET /api/v1/assessments` — list assessments (filters: `?vendorId=`, `?status=`, `?fromDate=`, `?toDate=`, `?format=csv`)
+- `GET /api/v1/assessments/{id}` — full assessment detail (questions, responses, findings, comments)
+
+### Findings
+- `GET /api/v1/findings` — list findings (filters: `?status=`, `?severity=`, `?vendorId=`)
+- `PATCH /api/v1/findings/{id}` — update finding status (`{ "status": "REMEDIATED" | "RISK_ACCEPTED" }`)
+
+### Frameworks
+- `GET /api/v1/frameworks` — list compliance frameworks
+- `GET /api/v1/frameworks/{id}` — framework detail with controls (`?search=`)
+
+### Dashboard
+- `GET /api/v1/dashboard/summary` — portfolio metrics (scores, findings, RAG distribution, top deficient controls)
+
+### Audit
+- `GET /api/v1/audit` — query audit log (JSON or CSV, `?page=`, `?action=`, `?userId=`, `?fromDate=`, `?toDate=`)
 
 Files are served through the authenticated `GET /api/attachments/{attachmentId}` route.
 
-Full docs: **http://localhost:3000/docs** (authenticated)
+Full interactive docs: **http://localhost:3000/docs**
 
 ## Configuration
 

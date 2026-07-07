@@ -55,6 +55,7 @@ function assessmentOrderBy(
 export type AssessmentFilters = {
   query?: string;
   status?: string;
+  vendorId?: string;
   fromDate?: string;
   toDate?: string;
   overdue?: boolean;
@@ -72,6 +73,10 @@ export async function listAssessments(filters?: AssessmentFilters) {
       { title: { contains: term, mode: "insensitive" } },
       { vendor: { name: { contains: term, mode: "insensitive" } } },
     ];
+  }
+
+  if (filters?.vendorId) {
+    where.vendorId = filters.vendorId;
   }
 
   if (filters?.overdue) {

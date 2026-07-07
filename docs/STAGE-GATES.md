@@ -141,6 +141,7 @@ A phase cannot be marked **Ready for review** unless all of these are true:
 | 107 | Audit log: entity names + meta instead of truncated CUIDs | Approved |
 | 108 | STORAGE.md documentation | Approved |
 | 109 | Attach evidence dual-path + displayName in Attachment UI | Approved |
+| 110 | REST API expansion (11 new endpoints) | Ready for review |
 
 ---
 
@@ -2605,3 +2606,4 @@ server (the "dashboard stat cards" test still matches). No schema/RBAC/OpenAPI c
 | 107 | Approved | User | 2026-07-06 | Audit log: entity names replace truncated CUIDs as clickable links; meta field (review decisions, notes) displayed as contextual sub-line. API/CSV export includes entityName + meta |
 | 108 | Approved | User | 2026-07-06 | STORAGE.md: comprehensive cloud storage setup guide covering AWS S3 and Azure Blob |
 | 109 | Approved | User | 2026-07-06 | Attach evidence dual-path: dropdown choice ("Certification" creates VendorCertification + attaches file, "General" attaches to vendor); file copy via storage read/new-key/save; displayName and notes fields on Attachment model; displayName surfaced across all UI locations
+| 110 | Ready for review | User | 2026-07-07 | REST API expansion: 11 new endpoints — PUT/DELETE vendors, GET assessments list/detail, GET vendor assessments, GET/PATCH findings, GET frameworks list/detail, GET dashboard summary, GET vendor certifications. All follow existing auth pattern (authenticateRequest + permission guard). OpenAPI spec expanded to 18 paths, 26 schemas. 4 new unit test files (29 tests). No new permissions needed. No DB migration. |

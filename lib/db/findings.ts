@@ -208,7 +208,7 @@ export function updateFindingStatus(params: {
   findingId: string;
   status: FindingStatus;
   resolutionNote?: string;
-  resolvedById: string;
+  resolvedById: string | null;
 }) {
   const resolved = params.status !== "OPEN";
   return prisma.finding.update({

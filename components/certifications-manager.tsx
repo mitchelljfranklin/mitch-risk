@@ -198,7 +198,10 @@ export function CertificationsManager({
 }: {
   vendorId: string;
   certifications: CertificationView[];
-  attachments: Map<string, { id: string; fileName: string; displayName: string | null }[]>;
+  attachments: Map<
+    string,
+    { id: string; fileName: string; displayName: string | null }[]
+  >;
   canEdit: boolean;
 }) {
   const [editing, setEditing] = useState<EditorTarget | null>(null);

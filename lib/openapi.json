@@ -26,15 +26,27 @@
   "tags": [
     {
       "name": "Vendors",
-      "description": "Vendor management — list, search, view, export, and import vendors"
+      "description": "Vendor management — list, search, view, export, import, update, and delete vendors. Certifications for each vendor."
     },
     {
       "name": "Assessments",
-      "description": "Assessment exports — CSV data and PDF reports"
+      "description": "Assessment management — list, detail, CSV export, and PDF reports"
     },
     {
       "name": "Templates",
       "description": "Template management — export questionnaire templates as JSON"
+    },
+    {
+      "name": "Findings",
+      "description": "Findings management — list open findings and update their status (Remediated / Risk Accepted)"
+    },
+    {
+      "name": "Frameworks",
+      "description": "Compliance frameworks — list frameworks and view framework detail with controls"
+    },
+    {
+      "name": "Dashboard",
+      "description": "Dashboard metrics — aggregated portfolio overview for dashboards and BI tools"
     },
     {
       "name": "Audit",
@@ -117,6 +129,76 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/VendorDetail" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "put": {
+        "tags": ["Vendors"],
+        "summary": "Update vendor",
+        "description": "Updates a vendor's details. All fields are optional — fields omitted from the request body retain their existing values.",
+        "operationId": "updateVendor",
+        "parameters": [
+          {
+            "name": "vendorId",
+            "in": "path",
+            "required": true,
+            "description": "The vendor's unique ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VendorUpdate" },
+              "example": {
+                "name": "Acme Corp (Updated)",
+                "tier": "HIGH",
+                "contactName": "Jane Smith"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Vendor updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VendorUpdated" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "tags": ["Vendors"],
+        "summary": "Delete vendor",
+        "description": "Permanently deletes a vendor and all associated assessments, responses, evidence, and findings. This action is irreversible.",
+        "operationId": "deleteVendor",
+        "parameters": [
+          {
+            "name": "vendorId",
+            "in": "path",
+            "required": true,
+            "description": "The vendor's unique ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vendor deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeletedResponse" }
               }
             }
           },
@@ -433,6 +515,351 @@
           "404": { "$ref": "#/components/responses/NotFound" }
         }
       }
+    },
+    "/v1/assessments": {
+      "get": {
+        "tags": ["Assessments"],
+        "summary": "List assessments",
+        "description": "Returns paginated assessment list with optional filters: vendorId, status, fromDate, toDate, query. Supports JSON and CSV output.",
+        "operationId": "listAssessments",
+        "parameters": [
+          {
+            "name": "vendorId",
+            "in": "query",
+            "description": "Filter by vendor ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by assessment status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "SENT",
+                "IN_PROGRESS",
+                "SUBMITTED",
+                "UNDER_REVIEW",
+                "COMPLETED",
+                "OVERDUE"
+              ]
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "description": "Start of date range (ISO 8601)",
+            "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "description": "End of date range (ISO 8601)",
+            "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number (default 1)",
+            "schema": { "type": "integer", "minimum": 1, "default": 1 }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Response format",
+            "schema": {
+              "type": "string",
+              "enum": ["json", "csv"],
+              "default": "json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of assessments (JSON) or CSV download",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AssessmentList" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" }
+        }
+      }
+    },
+    "/v1/assessments/{assessmentId}": {
+      "get": {
+        "tags": ["Assessments"],
+        "summary": "Get assessment detail",
+        "description": "Returns full assessment detail: vendor info, template, questions with responses, review decisions, findings, and threaded comments.",
+        "operationId": "getAssessment",
+        "parameters": [
+          {
+            "name": "assessmentId",
+            "in": "path",
+            "required": true,
+            "description": "The assessment's unique ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full assessment detail",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AssessmentDetail" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/vendors/{vendorId}/assessments": {
+      "get": {
+        "tags": ["Vendors"],
+        "summary": "List vendor assessments",
+        "description": "Returns all assessments for a specific vendor. Convenience shortcut for /v1/assessments?vendorId=X.",
+        "operationId": "listVendorAssessments",
+        "parameters": [
+          {
+            "name": "vendorId",
+            "in": "path",
+            "required": true,
+            "description": "The vendor's unique ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number (default 1)",
+            "schema": { "type": "integer", "minimum": 1, "default": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of vendor assessments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorAssessmentList"
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/vendors/{vendorId}/certifications": {
+      "get": {
+        "tags": ["Vendors"],
+        "summary": "List vendor certifications",
+        "description": "Returns all certifications for a vendor with attachment details.",
+        "operationId": "listVendorCertifications",
+        "parameters": [
+          {
+            "name": "vendorId",
+            "in": "path",
+            "required": true,
+            "description": "The vendor's unique ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of vendor certifications",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CertificationList" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/findings": {
+      "get": {
+        "tags": ["Findings"],
+        "summary": "List findings",
+        "description": "Returns paginated findings across all vendors. Filter by status, severity, or vendorId.",
+        "operationId": "listFindings",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by finding status",
+            "schema": {
+              "type": "string",
+              "enum": ["OPEN", "REMEDIATED", "RISK_ACCEPTED"]
+            }
+          },
+          {
+            "name": "severity",
+            "in": "query",
+            "description": "Filter by severity",
+            "schema": {
+              "type": "string",
+              "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+            }
+          },
+          {
+            "name": "vendorId",
+            "in": "query",
+            "description": "Filter by vendor ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number (default 1)",
+            "schema": { "type": "integer", "minimum": 1, "default": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated findings list",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FindingList" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" }
+        }
+      }
+    },
+    "/v1/findings/{findingId}": {
+      "patch": {
+        "tags": ["Findings"],
+        "summary": "Update finding status",
+        "description": "Transition a finding from OPEN to REMEDIATED or RISK_ACCEPTED. Cannot transition from already-closed states.",
+        "operationId": "updateFindingStatus",
+        "parameters": [
+          {
+            "name": "findingId",
+            "in": "path",
+            "required": true,
+            "description": "The finding's unique ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FindingStatusUpdate" },
+              "example": {
+                "status": "REMEDIATED",
+                "resolutionNote": "Vendor has implemented the required control."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Finding status updated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FindingUpdated" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/frameworks": {
+      "get": {
+        "tags": ["Frameworks"],
+        "summary": "List frameworks",
+        "description": "Returns all compliance frameworks with control counts.",
+        "operationId": "listFrameworks",
+        "responses": {
+          "200": {
+            "description": "List of frameworks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/FrameworkSummary" }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" }
+        }
+      }
+    },
+    "/v1/frameworks/{frameworkId}": {
+      "get": {
+        "tags": ["Frameworks"],
+        "summary": "Get framework detail",
+        "description": "Returns a framework with all its controls. Supports optional search query to filter controls by code, title, domain, or guidance.",
+        "operationId": "getFramework",
+        "parameters": [
+          {
+            "name": "frameworkId",
+            "in": "path",
+            "required": true,
+            "description": "The framework's unique ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search controls by text (code, title, domain, guidance)",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Framework detail with controls",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FrameworkDetail" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/dashboard/summary": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Get dashboard summary",
+        "description": "Returns aggregated portfolio metrics: vendor counts, average score, RAG score distribution, vendor-by-tier counts, top 10 deficient controls, open findings count, and assessment status breakdown. No per-vendor PII \u2014 aggregation only.",
+        "operationId": "getDashboardSummary",
+        "responses": {
+          "200": {
+            "description": "Dashboard metrics",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DashboardSummary" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" }
+        }
+      }
     }
   },
   "components": {
@@ -474,6 +901,15 @@
           "application/json": {
             "schema": { "$ref": "#/components/schemas/Error" },
             "example": { "error": "Not found" }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "The request body or parameters are invalid.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" },
+            "example": { "error": "Invalid vendor data." }
           }
         }
       }
@@ -879,6 +1315,454 @@
                   }
                 }
               }
+            }
+          }
+        }
+      },
+      "DeletedResponse": {
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" }
+        }
+      },
+      "VendorUpdate": {
+        "type": "object",
+        "description": "Vendor fields for update. All fields are optional \u2014 omitted fields retain their existing values.",
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "contactName": { "type": "string" },
+          "contactEmail": { "type": "string", "format": "email" },
+          "tier": {
+            "type": "string",
+            "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+          },
+          "website": { "type": "string" },
+          "notes": { "type": "string" },
+          "serviceDescription": { "type": "string" },
+          "dataSensitivity": {
+            "type": "string",
+            "enum": ["PUBLIC", "INTERNAL", "CONFIDENTIAL", "RESTRICTED"]
+          },
+          "contractRenewalDate": { "type": "string", "format": "date" },
+          "ownerId": { "type": "string" }
+        }
+      },
+      "VendorUpdated": {
+        "type": "object",
+        "description": "The vendor record after a successful update",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "contactName": { "type": "string", "nullable": true },
+          "contactEmail": { "type": "string" },
+          "tier": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+          },
+          "website": { "type": "string", "nullable": true },
+          "notes": { "type": "string", "nullable": true },
+          "serviceDescription": { "type": "string", "nullable": true },
+          "dataSensitivity": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["PUBLIC", "INTERNAL", "CONFIDENTIAL", "RESTRICTED"]
+          },
+          "contractRenewalDate": {
+            "type": "string",
+            "nullable": true,
+            "format": "date"
+          },
+          "ownerId": { "type": "string", "nullable": true },
+          "overallScore": {
+            "type": "number",
+            "nullable": true,
+            "format": "float"
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "AssessmentSummary": {
+        "type": "object",
+        "description": "Lightweight assessment entry for list views",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "vendorId": { "type": "string" },
+          "vendorName": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SENT",
+              "IN_PROGRESS",
+              "SUBMITTED",
+              "UNDER_REVIEW",
+              "COMPLETED",
+              "OVERDUE"
+            ]
+          },
+          "score": { "type": "number", "nullable": true, "format": "float" },
+          "dueDate": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "sentAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "submittedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "templateName": { "type": "string", "nullable": true },
+          "templateVersion": { "type": "integer", "nullable": true },
+          "reviewerName": { "type": "string", "nullable": true }
+        }
+      },
+      "AssessmentList": {
+        "type": "object",
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AssessmentSummary" }
+          },
+          "page": { "type": "integer" },
+          "pageSize": { "type": "integer" },
+          "totalCount": { "type": "integer" }
+        }
+      },
+      "AssessmentDetail": {
+        "type": "object",
+        "description": "Full assessment detail including vendor, template, questions with responses, review decisions, findings, and threaded comments",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "status": { "type": "string" },
+          "score": { "type": "number", "nullable": true, "format": "float" },
+          "dueDate": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "sentAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "submittedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "vendor": { "$ref": "#/components/schemas/VendorDetail" },
+          "template": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "version": { "type": "integer" }
+            }
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "questions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string" },
+                      "text": { "type": "string" },
+                      "type": { "type": "string" },
+                      "riskWeight": { "type": "string" },
+                      "required": { "type": "boolean" },
+                      "response": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                          "answer": {},
+                          "compliance": { "type": "string" },
+                          "reviewDecision": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "reviewNote": { "type": "string", "nullable": true },
+                          "evidenceFiles": {
+                            "type": "array",
+                            "items": { "type": "string" }
+                          }
+                        }
+                      },
+                      "controlCodes": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "findings": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FindingSummary" }
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "userName": { "type": "string" },
+                "body": { "type": "string" },
+                "createdAt": { "type": "string", "format": "date-time" }
+              }
+            }
+          }
+        }
+      },
+      "VendorAssessmentList": {
+        "type": "object",
+        "properties": {
+          "vendorId": { "type": "string" },
+          "vendorName": { "type": "string" },
+          "entries": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AssessmentSummary" }
+          },
+          "page": { "type": "integer" },
+          "pageSize": { "type": "integer" },
+          "totalCount": { "type": "integer" }
+        }
+      },
+      "CertificationSummary": {
+        "type": "object",
+        "description": "A vendor certification record",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "issuer": { "type": "string", "nullable": true },
+          "issuedDate": {
+            "type": "string",
+            "nullable": true,
+            "format": "date"
+          },
+          "expiresDate": {
+            "type": "string",
+            "nullable": true,
+            "format": "date"
+          },
+          "notes": { "type": "string", "nullable": true },
+          "attachmentCount": { "type": "integer" }
+        }
+      },
+      "CertificationList": {
+        "type": "object",
+        "properties": {
+          "vendorId": { "type": "string" },
+          "vendorName": { "type": "string" },
+          "entries": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CertificationSummary" }
+          }
+        }
+      },
+      "FindingSummary": {
+        "type": "object",
+        "description": "A finding raised from an assessment response",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string", "nullable": true },
+          "severity": {
+            "type": "string",
+            "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["OPEN", "REMEDIATED", "RISK_ACCEPTED"]
+          },
+          "controlCodes": { "type": "array", "items": { "type": "string" } },
+          "resolutionNote": { "type": "string", "nullable": true },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "assessmentId": { "type": "string" },
+          "assessmentTitle": { "type": "string" },
+          "vendorId": { "type": "string" },
+          "vendorName": { "type": "string" }
+        }
+      },
+      "FindingList": {
+        "type": "object",
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FindingSummary" }
+          },
+          "page": { "type": "integer" },
+          "pageSize": { "type": "integer" },
+          "totalCount": { "type": "integer" }
+        }
+      },
+      "FindingStatusUpdate": {
+        "type": "object",
+        "required": ["status"],
+        "description": "Payload to update a finding's status",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["REMEDIATED", "RISK_ACCEPTED"],
+            "description": "New status for the finding"
+          },
+          "resolutionNote": {
+            "type": "string",
+            "description": "Explanation for the status change"
+          }
+        }
+      },
+      "FindingUpdated": {
+        "type": "object",
+        "description": "The finding record after a status update",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "status": { "type": "string" },
+          "severity": { "type": "string" },
+          "resolutionNote": { "type": "string", "nullable": true },
+          "resolvedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          }
+        }
+      },
+      "FrameworkSummary": {
+        "type": "object",
+        "description": "Lightweight framework entry for list views",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "version": { "type": "string", "nullable": true },
+          "description": { "type": "string", "nullable": true },
+          "controlCount": { "type": "integer" }
+        }
+      },
+      "FrameworkDetail": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "version": { "type": "string", "nullable": true },
+          "description": { "type": "string", "nullable": true },
+          "controls": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ControlSummary" }
+          }
+        }
+      },
+      "ControlSummary": {
+        "type": "object",
+        "description": "A single framework control",
+        "properties": {
+          "id": { "type": "string" },
+          "domain": { "type": "string", "nullable": true },
+          "code": { "type": "string" },
+          "title": { "type": "string" },
+          "guidance": { "type": "string", "nullable": true },
+          "order": { "type": "integer", "nullable": true }
+        }
+      },
+      "DashboardSummary": {
+        "type": "object",
+        "description": "Aggregated portfolio metrics for dashboards and BI tools",
+        "properties": {
+          "vendors": { "type": "integer", "description": "Total vendor count" },
+          "vendorCount": {
+            "type": "integer",
+            "description": "Alias for vendors"
+          },
+          "averageScore": {
+            "type": "number",
+            "nullable": true,
+            "format": "float",
+            "description": "Portfolio-wide average score (0\u20131)"
+          },
+          "openFindings": {
+            "type": "integer",
+            "description": "Count of open findings across the portfolio"
+          },
+          "needsAttention": {
+            "type": "integer",
+            "description": "Vendors with status overdue or score below threshold"
+          },
+          "scoreDistribution": {
+            "type": "object",
+            "description": "RAG score distribution counts",
+            "properties": {
+              "green": { "type": "integer" },
+              "amber": { "type": "integer" },
+              "red": { "type": "integer" },
+              "unscored": { "type": "integer" }
+            }
+          },
+          "topDeficientControls": {
+            "type": "array",
+            "description": "Top 10 most-failed controls across the portfolio",
+            "items": {
+              "type": "object",
+              "properties": {
+                "controlCode": { "type": "string" },
+                "controlTitle": { "type": "string" },
+                "failCount": { "type": "integer" }
+              }
+            }
+          },
+          "riskByTier": {
+            "type": "array",
+            "description": "Vendor count by risk tier",
+            "items": {
+              "type": "object",
+              "properties": {
+                "tier": { "type": "string" },
+                "count": { "type": "integer" }
+              }
+            }
+          },
+          "assessmentStatusCounts": {
+            "type": "object",
+            "description": "Assessment count by status",
+            "properties": {
+              "COMPLETED": { "type": "integer" },
+              "IN_PROGRESS": { "type": "integer" },
+              "OVERDUE": { "type": "integer" },
+              "UNDER_REVIEW": { "type": "integer" },
+              "SENT": { "type": "integer" },
+              "DRAFT": { "type": "integer" },
+              "SUBMITTED": { "type": "integer" }
+            }
+          },
+          "vendorsByTier": {
+            "type": "object",
+            "description": "Vendor count by tier (keyed by tier name)",
+            "properties": {
+              "LOW": { "type": "integer" },
+              "MEDIUM": { "type": "integer" },
+              "HIGH": { "type": "integer" },
+              "CRITICAL": { "type": "integer" }
             }
           }
         }

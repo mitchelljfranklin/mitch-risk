@@ -799,6 +799,27 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   filenames. All attachment display locations (VendorAttachments, CertificationsManager,
   vendor detail, vendor edit) now render `displayName ?? fileName`.
 
+- **Phase 110 — REST API expansion (11 new endpoints).** Filled the major gaps in the public
+  REST API to support end-user integrations (SIEM, GRC, ticketing, custom dashboards). New
+  endpoints in 5 groups:
+  1. **Vendor CRUD:** `PUT /v1/vendors/{id}` (update) and `DELETE /v1/vendors/{id}` (delete)
+     complete the RESTful lifecycle with `vendorSchema` validation and 404 guards.
+  2. **Assessment data:** `GET /v1/assessments` (paginated list with vendor/status/date
+     filters, JSON+CSV), `GET /v1/assessments/{id}` (full detail: questions, responses,
+     review decisions, findings, threaded comments), and
+     `GET /v1/vendors/{id}/assessments` (convenience shortcut).
+  3. **Findings / Risk Register:** `GET /v1/findings` (paginated, filterable by status,
+     severity, vendorId) and `PATCH /v1/findings/{id}` (status transition from OPEN to
+     REMEDIATED/RISK_ACCEPTED with resolution note).
+  4. **Frameworks + Dashboard:** `GET /v1/frameworks` (list with control counts),
+     `GET /v1/frameworks/{id}` (detail with controls, optional search), and
+     `GET /v1/dashboard/summary` (aggregated portfolio metrics — no PII).
+  5. **Certifications:** `GET /v1/vendors/{id}/certifications` (with attachment metadata).
+  All endpoints follow the existing auth pattern (`authenticateRequest` + permission guard).
+  OpenAPI spec expanded from 9 to 18 endpoints with 26 schemas. New unit test files (4 files,
+  29 tests) cover 401/403/404/400/happy-path for every endpoint. No new permissions needed
+  — all required keys already exist in the catalog.
+
 ## 8. Out of scope (v1+)
 
 External scanning/continuous monitoring, vendor marketplace, and heavy settings screens. These

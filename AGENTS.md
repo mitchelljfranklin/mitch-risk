@@ -43,6 +43,13 @@ app/                 # Next.js App Router
   portal/[token]/    # public vendor questionnaire (no login)
   api/               # cron, file serving, auth, REST API v1, Swagger docs
     attachments/[attachmentId]/ # authenticated file serving
+    v1/                 #   REST v1 endpoints
+      vendors/          #     vendor CRUD + import
+      assessments/      #     assessment list + detail
+      findings/         #     finding list + status update
+      frameworks/       #     framework list + detail
+      dashboard/        #     dashboard summary
+      audit/            #     audit log
   docs/              # Swagger UI page
   style-guide/       # component showcase
 components/          # shadcn ui primitives + domain composites
