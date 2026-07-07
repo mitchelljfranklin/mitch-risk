@@ -239,7 +239,7 @@ export async function sendAssessment(
 
   const token = generateAccessToken();
   const passwordHash = portalPassword
-    ? bcrypt.hashSync(portalPassword, 10)
+    ? bcrypt.hashSync(portalPassword, 12)
     : null;
 
   await prisma.$transaction(async (tx) => {
