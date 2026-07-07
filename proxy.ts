@@ -29,6 +29,10 @@ function buildContentSecurityPolicy(
     `frame-ancestors 'none'`,
   ];
 
+  if (!isDevelopment) {
+    directives.push(`report-uri /api/csp-report`);
+  }
+
   return directives.join("; ");
 }
 

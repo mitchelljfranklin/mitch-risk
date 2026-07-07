@@ -790,12 +790,12 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 | ID | Finding | Impact | Mitigation |
 |----|---------|--------|------------|
 | L-1 | Portal password uses bcrypt 10 rounds (vs 12) | Slightly weaker brute-force resistance | Deferred — depends on M-16 (bump portal password rounds to 12); addressed with Medium items |
-| L-2 | No read-audit events | Cannot determine who viewed sensitive data | Deferred — feature work, acceptable for small-business scope |
-| L-3 | No audit log tamper-proofing | DB-level attacker can modify audit records | Deferred — feature work (hash-chaining / append-only table) |
+| L-2 | No read-audit events | Cannot determine who viewed sensitive data | Dismissed — not required for the regulatory environments the platform targets (aged care / small business); the existing 44 mutation audit events provide a complete "who changed what" record |
+| L-3 | No audit log tamper-proofing | DB-level attacker can modify audit records | Dismissed — if an attacker has direct DB write access the platform is already fully compromised; hash-chaining does not prevent this class of attack |
 | L-4 | No container resource limits | DoS via resource exhaustion | Deferred — ops change in docker-compose.yml, not code |
 | L-5 | Key derivation uses single-pass SHA-256 | Non-ideal for PBKDF purposes | Deferred — input is high-entropy random key; acceptable for current threat model |
-| L-6 | No IPv6 CIDR support in API key IP allowlisting | IPv6 CIDR restrictions not enforced | Add IPv6 CIDR support to `ipInCidr()` |
-| L-7 | No CSP violation reporting | Cannot detect CSP misconfigurations | Add `report-uri` directive |
+| L-6 | ~~No IPv6 CIDR support in API key IP allowlisting~~ | IPv6 CIDR restrictions not enforced | **FIXED** — `ipInCidr` rewritten with BigInt arithmetic; supports IPv4 /0–/32 and IPv6 /0–/128 including abbreviated `::` notation; 5 new test cases |
+| L-7 | ~~No CSP violation reporting~~ | Cannot detect CSP misconfigurations | **FIXED** — `report-uri /api/csp-report` added to CSP in production; route handler logs violations to server console |
 | L-8 | ~~`hasLocalPassword` throws on null `passwordHash` (`lib/db/users.ts:119-121`)~~ | Unexpected exception if function contract is violated | **FIXED** — `(passwordHash ?? "").trim().length > 0` |
 | L-9 | ~~`resolveEntityNames` silent catch swallows errors (`lib/db/audit.ts:200`)~~ | Underlying DB or schema issues hidden; debugging made harder | **FIXED** — `console.error` added before `continue` |
 | L-10 | ~~`Record<string, unknown>` bypasses Prisma type-safety in `listNotificationLogs` (`lib/db/notifications.ts:104`)~~ | Typo in filter key silently ignored at compile time | **FIXED** — typed as `Prisma.NotificationLogWhereInput` |

@@ -64,22 +64,65 @@ function ipInCidr(ip: string, cidr: string): boolean {
     const bits = parseInt(bitsStr, 10);
     if (isNaN(bits)) return false;
 
-    const ipNum = ipToNumber(ip);
-    const rangeNum = ipToNumber(range);
-    const mask = ~(2 ** (32 - bits) - 1);
+    const isV6 = range.includes(":");
 
+    if (isV6) {
+      if (bits < 0 || bits > 128) return false;
+      const ipNum = ip6ToBigInt(ip);
+      const rangeNum = ip6ToBigInt(range);
+      const maxBits = BigInt(128);
+      const mask =
+        (BigInt(-1) << (maxBits - BigInt(bits))) &
+        ((BigInt(1) << maxBits) - BigInt(1));
+      return (ipNum & mask) === (rangeNum & mask);
+    }
+
+    if (bits < 0 || bits > 32) return false;
+    const ipNum = ip4ToBigInt(ip);
+    const rangeNum = ip4ToBigInt(range);
+    const mask =
+      ~((BigInt(1) << BigInt(32 - bits)) - BigInt(1)) & BigInt(0xffffffff);
     return (ipNum & mask) === (rangeNum & mask);
   } catch {
     return false;
   }
 }
 
-function ipToNumber(ip: string): number {
-  let ipAddressNumber = 0;
+function ip4ToBigInt(ip: string): bigint {
+  let result = BigInt(0);
   const parts = ip.split(".");
   for (const octet of parts) {
-    ipAddressNumber = (ipAddressNumber << 8) + parseInt(octet, 10);
+    result = (result << BigInt(8)) + BigInt(parseInt(octet, 10));
   }
-  const numericIp = ipAddressNumber >>> 0;
-  return numericIp;
+  return result & BigInt(0xffffffff);
+}
+
+function ip6ToBigInt(ip: string): bigint {
+  const normalized = expandIpv6(ip);
+  let result = BigInt(0);
+  const groups = normalized.split(":");
+  for (const group of groups) {
+    result = (result << BigInt(16)) + BigInt(parseInt(group || "0", 16));
+  }
+  return result;
+}
+
+function expandIpv6(ip: string): string {
+  if (ip.includes("::")) {
+    const parts = ip.split("::");
+    const left = parts[0] ? parts[0].split(":").length : 0;
+    const right = parts[1] ? parts[1].split(":").length : 0;
+    const missing = 8 - left - right;
+    const fill = Array(missing).fill("0").join(":");
+    const leftPart = parts[0] || "";
+    const rightPart = parts[1] || "";
+    const expanded =
+      leftPart +
+      (leftPart ? ":" : "") +
+      fill +
+      (rightPart ? ":" : "") +
+      rightPart;
+    return expanded.replace(/^:+|:+$/g, "");
+  }
+  return ip;
 }

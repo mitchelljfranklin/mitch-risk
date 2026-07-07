@@ -83,4 +83,29 @@ describe("IP allowlisting", () => {
     expect(isIpAllowed("192.168.1.1\n10.0.0.0/8", "10.5.5.5")).toBe(true);
     expect(isIpAllowed("192.168.1.1\n10.0.0.0/8", "172.16.0.1")).toBe(false);
   });
+
+  it("matches IPv6 exact address", () => {
+    expect(isIpAllowed("2001:db8::1", "2001:db8::1")).toBe(true);
+    expect(isIpAllowed("2001:db8::1", "2001:db8::2")).toBe(false);
+  });
+
+  it("matches IPv6 CIDR /64", () => {
+    expect(isIpAllowed("2001:db8::/32", "2001:db8:1234:5678::1")).toBe(true);
+    expect(isIpAllowed("2001:db8::/32", "2001:db9::1")).toBe(false);
+  });
+
+  it("matches IPv6 abbreviated notation", () => {
+    expect(isIpAllowed("::1", "::1")).toBe(true);
+    expect(isIpAllowed("::1/128", "::1")).toBe(true);
+    expect(isIpAllowed("::1/128", "::2")).toBe(false);
+  });
+
+  it("rejects invalid CIDR prefix bits", () => {
+    expect(isIpAllowed("10.0.0.0/33", "10.0.0.1")).toBe(false);
+    expect(isIpAllowed("2001:db8::/129", "2001:db8::1")).toBe(false);
+  });
+
+  it("treats v4 and v6 as separate address families", () => {
+    expect(isIpAllowed("::ffff:192.168.1.1", "192.168.1.1")).toBe(false);
+  });
 });
