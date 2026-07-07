@@ -76,8 +76,11 @@ A lightweight, self-hosted vendor risk management platform for small businesses.
 | [Review & Findings](user-guides/review.md) | Review responses and manage findings |
 | [Vendors](user-guides/vendors.md) | Manage vendor profiles, certifications, and attachments |
 | [RBAC & Roles](user-guides/rbac.md) | Configure permissions and access control |
+| [SSO](configuration/sso.md) | Set up single sign-on with Entra ID, Google, or OIDC |
+| [Email](configuration/email.md) | Configure SMTP, email templates, and logging |
+| [Scoring](configuration/scoring.md) | Tune risk weights and RAG thresholds |
+| [Cron & Automation](advanced/cron.md) | Schedule reminders, escalations, recurring assessments |
+| [Security](advanced/security.md) | Auth methods, API keys, CSP, encryption |
 | [API Reference](api-reference/overview.md) | Integrate with the REST API |
 | [Docker](deployment/docker.md) | Deploy with Docker Compose |
-| [Reverse Proxy](deployment/reverse-proxy.md) | Configure HTTPS and proxy headers |
-| [Cloud Storage](deployment/cloud-storage.md) | Set up AWS S3 or Azure Blob storage |
 | [FAQ](faq.md) | Common questions and answers |
