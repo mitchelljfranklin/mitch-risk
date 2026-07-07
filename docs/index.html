@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-themeable-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -53,9 +53,11 @@
       nameLink: {
         "/": "#/?id=mitch-risk",
       },
-      // Themeable dark theme configuration
-      formatUpdated: "{YYYY}-{MM}-{DD}",
     };
+
+    // Force dark theme before docsify renders
+    document.documentElement.setAttribute("data-themeable-theme", "dark");
+  </script>
   </script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
