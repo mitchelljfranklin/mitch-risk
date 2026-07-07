@@ -41,7 +41,7 @@ docker compose up -d
 - Vendor profile enrichment (risk owner, data sensitivity, service description, contract renewal)
 - Certification tracking with expiry reminders (30/7-day windows)
 - Multiple file attachments per vendor and certification
-- Configurable external cloud storage (AWS S3, Azure Blob) with setup guide (`docs/STORAGE.md`)
+- Configurable external cloud storage (AWS S3, Azure Blob) with setup guide (`STORAGE.md`)
 - CSV framework import with downloadable template
 - Demo data seed script for realistic testing
 - Assessment activity timeline with time-range selector
@@ -207,7 +207,7 @@ Storage. Cloud SDKs (`@aws-sdk/client-s3`, `@azure/storage-blob`) are regular de
 installed automatically. Credentials are encrypted at rest with `APP_ENCRYPTION_KEY`.
 
 For detailed cloud setup instructions (IAM policies, SAS tokens, migration), see
-[`docs/STORAGE.md`](docs/STORAGE.md).
+[`STORAGE.md`](STORAGE.md).
 
 > The database stores *metadata and references* (e.g. `logoKey`, evidence filename → assessment
 > link); the volume (or cloud bucket) stores the *files themselves*. A database-only backup will
@@ -280,7 +280,8 @@ This triggers: vendor reminders, overdue escalations, recurring assessment creat
 
 ## Documentation
 
-- [Architecture Solution Design](docs/ARCHITECTURE.md) — full platform architecture with diagrams
-- [Security Overview](docs/APPSECURITY.md) — security architecture and hardening
-- [Cloud Storage Setup](docs/STORAGE.md) — AWS S3 and Azure Blob configuration
-- [SSO Configuration](docs/ssoConfig.md) — Entra ID, Google, and generic OIDC setup
+- [**User Documentation**](https://mitchelljfranklin.github.io/mitch-risk/) — Docsify-powered site with user guides, API reference, and deployment instructions
+- [Architecture Solution Design](ARCHITECTURE.md) — full platform architecture with diagrams
+- [Security Overview](APPSECURITY.md) — security architecture and hardening
+- [Cloud Storage Setup](STORAGE.md) — AWS S3 and Azure Blob configuration
+- [SSO Configuration](ssoConfig.md) — Entra ID, Google, and generic OIDC setup

@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="360" viewBox="0 0 800 360">
-  <rect width="800" height="360" fill="#f8fafc" rx="12"/>
-  <rect width="800" height="360" fill="none" stroke="#e2e8f0" stroke-width="1" rx="12"/>
-  <text x="400" y="180" text-anchor="middle" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="18">Coming soon — real screenshot</text>
-  <text x="400" y="200" text-anchor="middle" fill="#cbd5e1" font-family="system-ui,sans-serif" font-size="12">Review Panel</text>
-</svg>

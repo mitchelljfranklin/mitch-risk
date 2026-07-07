@@ -1,0 +1,22 @@
+- [Welcome](/)
+- **User Guides**
+  - [Quick Start](quick-start.md)
+  - [Templates](user-guides/templates.md)
+  - [Assessments](user-guides/assessments.md)
+  - [Review & Findings](user-guides/review.md)
+  - [Vendors](user-guides/vendors.md)
+  - [RBAC & Roles](user-guides/rbac.md)
+- **API Reference**
+  - [Overview](api-reference/overview.md)
+  - [Vendors](api-reference/vendors.md)
+  - [Assessments](api-reference/assessments.md)
+  - [Findings](api-reference/findings.md)
+  - [Frameworks](api-reference/frameworks.md)
+  - [Dashboard](api-reference/dashboard.md)
+  - [Audit](api-reference/audit.md)
+- **Deployment**
+  - [Docker](deployment/docker.md)
+  - [Reverse Proxy](deployment/reverse-proxy.md)
+  - [Cloud Storage](deployment/cloud-storage.md)
+- [FAQ](faq.md)
+- [GitHub](https://github.com/mitchelljfranklin/mitch-risk)

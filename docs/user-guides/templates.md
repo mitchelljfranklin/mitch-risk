@@ -1,0 +1,107 @@
+# Templates
+
+Templates are reusable questionnaire blueprints. They define the structure (sections, questions, risk weights, control mappings) that assessments are built from.
+
+## Template Structure
+
+```
+Template
+  ├── Section 1 (title, order)
+  │   ├── Question 1 (text, type, riskWeight, expectedAnswer, options, conditionalLogic, controlIds)
+  │   └── Question 2
+  └── Section 2
+      ├── Question 3
+      └── Question 4
+```
+
+Each question is a self-contained unit with its own type, risk weight, expected answer, and framework control mappings. When an assessment is created, questions are **frozen** into the assessment — editing the template afterward does not affect existing assessments.
+
+## Question Types
+
+12 question types are supported:
+
+| Type | Description | Auto-Scored |
+|------|-------------|:-----------:|
+| `YES_NO` | Binary yes/no choice | Yes |
+| `MULTIPLE_CHOICE` | Single selection from a list | Yes |
+| `FREE_TEXT` | Open-ended text input | No |
+| `FILE_UPLOAD` | File attachment (evidence) | No |
+| `DATE` | Calendar date picker | No |
+| `NUMERIC` | Number input | Yes |
+| `COMBOBOX` | Dropdown with single selection | Yes |
+| `MULTI_SELECT` | Multiple selections from a list | Yes |
+| `RATING` | Numeric rating (e.g. 1-5) | Yes |
+| `URL` | URL input | No |
+| `EMAIL` | Email input | No |
+| `CHECKBOX` | Boolean true/false | Yes |
+
+> **Note:** Non-scorable types (Free Text, File Upload, Date, URL, Email) require manual review. They are excluded from the auto-score calculation.
+
+## Risk Weights
+
+Each question carries a risk weight that determines its contribution to the overall score:
+
+| Risk Weight | Value | Description |
+|-------------|:-----:|-------------|
+| `CRITICAL` | 10 | Essential control — failure is high-risk |
+| `HIGH` | 6 | Important control with significant security impact |
+| `MEDIUM` | 3 | Standard control with moderate impact |
+| `LOW` | 1 | Good-to-have control with minimal direct risk |
+
+Weights are configurable in Settings → Scoring. The default values above can be adjusted to match your organisation's risk appetite.
+
+## Expected Answers
+
+Expected answers define the compliant response for auto-scored questions. The scoring engine compares the vendor's answer against this value:
+
+- For `YES_NO` and `MULTIPLE_CHOICE`: string equality
+- For `NUMERIC` and `RATING`: numeric equality
+- For `COMBOBOX`: string equality
+- For `MULTI_SELECT`: sorted array comparison (same length, all values match)
+- For `CHECKBOX`: boolean comparison
+
+Questions without an expected answer (or with unscorable types) are excluded from the score.
+
+## Conditional Logic
+
+Show or hide questions based on previous answers using condition rules stored as JSON:
+
+```json
+{
+  "match": "all",
+  "rules": [
+    { "questionId": "<question-id>", "operator": "equals", "value": "YES" }
+  ]
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `match` | `"all"` for AND logic, `"any"` for OR logic |
+| `rules` | Array of condition objects |
+| `questionId` | The ID of the controlling question |
+| `operator` | `equals`, `notEquals`, `contains`, `notContains`, `gt`, `lt`, `gte`, `lte`, `answered`, `notAnswered` |
+| `value` | The value to compare against |
+
+Conditional logic is evaluated client-side in the portal and server-side during submission — hidden questions cannot be answered or submitted.
+
+## Control Mapping
+
+Each question can map to multiple framework controls. This is the link between assessment answers and compliance:
+
+- One question can map to controls across **different frameworks** simultaneously
+- A question about business continuity, for example, might map to ISO 27001 A.5.29, SOC 2 CC7.1, and NIST CSF RC.RP-01
+- When an answer is non-compliant, findings are generated with the mapped control codes
+- Control mapping is configured in the question editor via the framework picker
+
+## Publishing States
+
+Templates have three states that control their availability:
+
+| State | Description |
+|-------|-------------|
+| **Draft** | Editable, not visible for assessment creation. Default state for new templates. |
+| **Published** | Read-only, available for assessment creation. Can be versioned. |
+| **Archived** | Hidden from active use. Existing assessments using this template are unaffected. |
+
+> Templates must be published before they can be used to create assessments. Unpublishing returns a template to Draft state. Versioning creates a new editable draft while preserving the published version.

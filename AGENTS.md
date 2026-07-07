@@ -125,7 +125,7 @@ prisma/              # schema.prisma, migrations, seed.ts
   seed-data/         # ISO 27001, SOC 2, NIST CSF, Essential Eight seed data + types
 scripts/             # backup.sh, backup.ps1
 e2e/                 # Playwright end-to-end tests
-docs/                # PLAN.md, STAGE-GATES.md, STORAGE.md, APPSECURITY.md, ARCHITECTURE.md, ssoConfig.md
+docs/                # Docsify-powered user documentation site (GitHub Pages)
 proxy.ts             # Next.js 16 proxy (CSP nonce + security headers)
 ```
 
@@ -171,8 +171,8 @@ ones before declaring any phase complete.
 ## Working agreement — stage gates
 
 This project is delivered in **gated phases**. The authoritative plan is
-[`docs/PLAN.md`](docs/PLAN.md); the gate checklists and sign-off log are in
-[`docs/STAGE-GATES.md`](docs/STAGE-GATES.md).
+[`PLAN.md`](PLAN.md); the gate checklists and sign-off log are in
+[`STAGE-GATES.md`](STAGE-GATES.md).
 
 Rules:
 
@@ -180,7 +180,7 @@ Rules:
    **Approved** in the sign-off log.
 2. When a phase's work is done, run the verification commands, fill in its gate checklist
    with evidence, and set the phase to **Ready for review**. Then stop and ask for sign-off.
-3. Keep `docs/PLAN.md`, `docs/STAGE-GATES.md`, and this file accurate as reality changes.
+3. Keep `PLAN.md`, `STAGE-GATES.md`, and this file accurate as reality changes.
 
 ## Definition of Done — no placeholders
 
@@ -220,7 +220,7 @@ Every delivered item, in every phase, must meet this bar:
   Prisma query is reused, put it in the data-access layer (`lib/db/`).
 - **Reuse before create.** Before adding a token, component, helper, or schema, search for an
   existing one and reuse/extend it. If a thing is needed in two or more places, extract it.
-- See `docs/PLAN.md` section 9 for the reusable-asset map.
+- See `PLAN.md` section 9 for the reusable-asset map.
 
 ## Code readability & best practices
 
