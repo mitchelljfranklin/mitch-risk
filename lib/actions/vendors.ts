@@ -14,6 +14,7 @@ import { storage } from "@/lib/storage";
 import {
   ALLOWED_ATTACHMENT_EXTS,
   MAX_ATTACHMENT_BYTES,
+  validateMagicBytes,
 } from "@/lib/upload-validation";
 import { parseCsvWithHeaders } from "@/lib/csv-parser";
 import {
@@ -216,6 +217,7 @@ export async function addVendorAttachmentAction(formData: FormData) {
   if (file.size > MAX_ATTACHMENT_BYTES) return;
 
   const buffer = Buffer.from(await file.arrayBuffer());
+  if (!validateMagicBytes(ext, buffer)) return;
   const storageKey = `attachment-${randomBytes(12).toString("hex")}.${ext}`;
 
   await storage.save(storageKey, buffer);

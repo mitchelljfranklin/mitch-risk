@@ -22,7 +22,7 @@ import { saveProgressSchema } from "@/lib/schemas/portal";
 import { getAssessmentSettings, getFileSettings } from "@/lib/settings";
 import { storage } from "@/lib/storage";
 import { rateLimit } from "@/lib/rate-limit";
-import { isDangerousUploadMime } from "@/lib/upload-validation";
+import { isDangerousUploadMime, validateMagicBytes } from "@/lib/upload-validation";
 
 async function clientIp(): Promise<string> {
   const requestHeaders = await headers();
@@ -107,9 +107,15 @@ export async function uploadEvidenceAction(
     return { ok: false, error: "This file type is not allowed." };
   }
 
-  await deleteEvidenceForQuestion(assessment.id, assessmentQuestionId);
-
   const buffer = Buffer.from(await file.arrayBuffer());
+  if (!validateMagicBytes(extension, buffer)) {
+    return {
+      ok: false,
+      error: `The file content does not match a .${extension} file.`,
+    };
+  }
+
+  await deleteEvidenceForQuestion(assessment.id, assessmentQuestionId);
   const storageKey = `${assessment.id}/${randomBytes(8).toString("hex")}-${sanitizeFileName(file.name)}`;
   await storage.save(storageKey, buffer);
 

@@ -21,6 +21,7 @@ import { storage } from "@/lib/storage";
 import {
   ALLOWED_ATTACHMENT_EXTS,
   MAX_ATTACHMENT_BYTES,
+  validateMagicBytes,
 } from "@/lib/upload-validation";
 
 export type CertificationActionState =
@@ -139,6 +140,7 @@ export async function handleAttachmentUpload(
   if (file.size > MAX_ATTACHMENT_BYTES) return;
 
   const buffer = Buffer.from(await file.arrayBuffer());
+  if (!validateMagicBytes(ext, buffer)) return;
   const storageKey = `attachment-${randomBytes(12).toString("hex")}.${ext}`;
 
   await storage.save(storageKey, buffer);
