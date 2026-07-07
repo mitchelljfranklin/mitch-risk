@@ -86,11 +86,11 @@ Authorization is **permission-based**, not role-based. Three system roles are se
 
 | Role | Description | Permissions |
 |------|-------------|-------------|
-| **Admin** | Full access (locked, cannot be deleted or edited) | All 21 permissions |
+| **Admin** | Full access (locked, cannot be deleted or edited) | All 20 permissions |
 | **Reviewer** | Write + review access | All vendor, assessment, and template CRUD, plus frameworks view/edit. Cannot manage users, roles, settings, API, or view audit |
 | **Viewer** | Read-only | `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view` |
 
-Admins can create custom roles with any subset of the 21 fine-grained `resource:action` permissions.
+Admins can create custom roles with any subset of the 20 fine-grained `resource:action` permissions.
 
 ### 3.2 Permission Catalog
 
@@ -161,8 +161,8 @@ Key lifecycle events (create, revoke, enable, delete) are audited.
 ### 4.4 IP Allowlisting
 
 API keys support optional IP allowlisting via `allowedIps` (newline-separated entries). Supported formats:
-- Exact IP (IPv4): `192.168.1.100`
-- CIDR notation (IPv4 only): `10.0.0.0/8`
+- Exact IP: `192.168.1.100` or `2001:db8::1`
+- CIDR notation: `10.0.0.0/8` (IPv4) or `2001:db8::/32` (IPv6)
 - Multiple entries: one per line
 
 IP resolution uses a trusted-proxy-aware parser (`lib/client-ip.ts`):
@@ -197,9 +197,7 @@ All REST v1 endpoints go through `runApiHandler()` (`lib/api-response.ts`):
 - Generic 500 on errors — no data leakage
 
 **Considerations:**
-- `bcrypt.compareSync` is used for API key verification (synchronous). Under high API throughput, this could become a bottleneck. Consider `bcrypt.compare` (async) for key verification
 - API keys always receive `ALL_PERMISSIONS`. There is no per-key permission scoping
-- IPv6 CIDR matching is not supported in `ipInCidr()`
 - No API key usage metrics (requests-per-key, failure rate) beyond `lastUsedAt`
 
 ---
@@ -257,7 +255,6 @@ SENT → IN_PROGRESS (first save) → SUBMITTED (vendor submits)
 - Cookie attributes: httpOnly, secure, sameSite=lax, path-scoped
 
 **Considerations:**
-- Portal password uses bcrypt 10 rounds (vs 12 elsewhere). Minor inconsistency
 - `accessToken` is stored in plaintext alongside `tokenHash` for URL construction. Both are needed for functionality, but the accessToken column is a single-point exfiltration risk if the DB is compromised
 - The `portal-auth` cookie value is the token itself (used for comparison). While httpOnly protects from XSS, the token still appears in the cookie store
 
@@ -379,7 +376,6 @@ Client IP resolution (`lib/client-ip.ts`) supports multi-proxy topologies:
 
 **Considerations:**
 - No HSTS header — rely on reverse proxy for HSTS enforcement
-- No CSP violation reporting (`report-uri` / `report-to`)
 - `connect-src: 'self'` — any future frontend API calls to external services will require CSP updates
 - Nonce uses `randomUUID()` — adequate, but `randomBytes(16)` would explicitly signal cryptographic intent
 
@@ -389,7 +385,7 @@ Client IP resolution (`lib/client-ip.ts`) supports multi-proxy topologies:
 
 ### 8.1 Implementation
 
-An **in-memory sliding-window rate limiter** (`lib/rate-limit.ts`) with:
+An **in-memory fixed-window rate limiter** (`lib/rate-limit.ts`) with:
 - Fixed 60-second windows
 - Maximum 50,000 tracked entries (FIFO eviction when full)
 - Periodic sweep of expired entries (every 60s)
@@ -459,6 +455,7 @@ Evidence and attachment files are served **only** through an authenticated route
 Portal file uploads are restricted by:
 - **Extension allowlist:** Configurable via `FileSettings` (default: `pdf, png, jpg, jpeg, docx, xlsx`)
 - **Size limit:** Configurable `maxUploadMb` (default: 20 MB)
+- **Magic-byte validation:** File signatures are validated against expected magic bytes for the declared extension — a file renamed from `.exe` to `.pdf` is rejected
 - **MIME type validation:** Uploads are checked against a server-side MIME deny-list — script-renderable types (`text/html`, `image/svg+xml`, JavaScript MIME types) are rejected. The extension check is the primary filter; MIME validation is defense-in-depth
 
 ### 9.5 File Lifecycle & Cleanup
@@ -477,7 +474,6 @@ Portal file uploads are restricted by:
 - Multi-layer cleanup: record deletion, upload replacement, cron sweep
 
 **Considerations:**
-- No magic-byte (file signature) validation on upload — a file with a `.pdf` extension but malicious content would pass. Content-Type sniffing is the primary defense via `nosniff`
 - No virus/malware scanning of uploaded files
 - No per-file access audit logging (who accessed which file and when)
 

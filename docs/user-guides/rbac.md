@@ -1,8 +1,8 @@
 # RBAC & Roles
 
-mitch-risk uses **permission-based** access control, not "is authenticated" gating. Three system roles are built in, and admins can create custom roles with any combination of the 21 fine-grained permissions.
+mitch-risk uses **permission-based** access control, not "is authenticated" gating. Three system roles are built in, and admins can create custom roles with any combination of the 20 fine-grained permissions.
 
-## Permission Catalog (21 Permissions)
+## Permission Catalog (20 Permissions)
 
 ### Vendors (4)
 
@@ -39,7 +39,7 @@ mitch-risk uses **permission-based** access control, not "is authenticated" gati
 | `frameworks:view` | View framework list and framework detail with controls |
 | `frameworks:edit` | Import and edit frameworks |
 
-### Administration (6)
+### Administration (5)
 
 | Permission Key | Description |
 |---------------|-------------|
@@ -53,7 +53,7 @@ mitch-risk uses **permission-based** access control, not "is authenticated" gati
 
 | Role | Permissions | Who It's For |
 |------|:----------:|--------------|
-| **Admin** | 21 (all) | Full platform control. Locked — cannot be deleted or edited. |
+| **Admin** | 20 (all) | Full platform control. Locked — cannot be deleted or edited. |
 | **Reviewer** | 15 | Staff who manage vendors and assessments. Cannot manage users, roles, settings, API, or view audit. |
 | **Viewer** | 4 | Read-only: `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view` |
 
@@ -68,7 +68,7 @@ Admins can create custom roles in **Settings → Roles**:
 3. Select the permissions to grant.
 4. Assign the role to any user.
 
-Custom roles can have any subset of the 21 permissions. Use them to create role profiles like "Auditor" (audit + view only), "Vendor Manager" (vendors + assessments + templates), or "API-only" (just the relevant API permission set).
+Custom roles can have any subset of the 20 permissions. Use them to create role profiles like "Auditor" (audit + view only), "Vendor Manager" (vendors + assessments + templates), or "API-only" (just the relevant API permission set).
 
 ## Enforcement
 

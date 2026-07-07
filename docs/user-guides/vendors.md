@@ -53,6 +53,7 @@ Vendors support file attachments for contracts, agreements, scope documents, and
 
 - **Upload validation** — MIME type blocklist rejects dangerous types (HTML, SVG, JS, executables)
 - **Extension allowlist** — configurable (default: pdf, png, jpg, jpeg, docx, xlsx)
+- **Magic-byte validation** — file signatures checked to detect renamed files
 - **Size limit** — configurable `maxUploadMb` (default: 20 MB)
 - **Authenticated serving** — files served via `GET /api/attachments/[id]`, never directly from storage
 - **Inline display** restricted to PDF, PNG, JPEG, GIF, WebP — all other types force download

@@ -560,7 +560,7 @@ When SSO is enforced (`disableLocalAuth = true`), a break-glass token allows loc
 
 ### 5.4 Role-Based Access Control (RBAC)
 
-#### Permission Catalog (21 keys)
+#### Permission Catalog (20 keys)
 
 ```
 ┌─────────────────┬──────────────────────────────────────────────┐
@@ -589,7 +589,7 @@ When SSO is enforced (`disableLocalAuth = true`), a break-glass token allows loc
 
 | Role | Permissions Count | Description |
 |---|---|---|
-| **Admin** | 21 (all) | Full system control (locked, cannot be deleted) |
+| **Admin** | 20 (all) | Full system control (locked, cannot be deleted) |
 | **Reviewer** | 15 | Vendor/Assessment/Template CRUD + Frameworks view/edit. Cannot manage users, roles, settings, API, or view audit |
 | **Viewer** | 4 | Read-only: `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view` |
 
@@ -1033,6 +1033,7 @@ type StoredFile = { key: string; modifiedAt: Date };
 
 All file uploads pass through `lib/upload-validation.ts`:
 
+- **Magic-byte validation:** File signatures checked against expected bytes for the declared extension (pdf, png, jpg, jpeg, gif, webp, docx, xlsx)
 - **MIME type blocklist:** HTML, JS, SVG, PHP, XML, executables, shell scripts
 - **Size limits:** Configurable `maxUploadMb` (default 20 MB)
 - **Extension allowlist:** Configurable (default: pdf, png, jpg, jpeg, docx, xlsx)
@@ -1365,7 +1366,7 @@ Unexpected errors return a generic `{"error":{"message":"Internal error","status
 │                                                                  │
 │  Layer 6: RATE LIMITING                                          │
 │  ┌─────────────────────────────────────────────────────────┐    │
-│  │ • In-memory sliding-window per concern                   │    │
+│  │ • In-memory fixed-window per concern                   │    │
 │  │ • Login, portal, password reset, API, break-glass        │    │
 │  │ • All limits configurable via Settings                    │    │
 │  └─────────────────────────────────────────────────────────┘    │
@@ -1831,7 +1832,7 @@ AuditLog
 |---|---|---|---|
 | **ISO 27001:2022** | 2022 | Annex A controls | `prisma/seed-data/` |
 | **SOC 2** | 2020 | Trust Services Criteria (TSC) | `prisma/seed-data/` |
-| **NIST CSF** | 1.1 | Framework Core (Identify, Protect, Detect, Respond, Recover) | `prisma/seed-data/` |
+| **NIST CSF** | 2.0 | Framework Core (Govern, Identify, Protect, Detect, Respond, Recover) | `prisma/seed-data/` |
 | **Essential Eight** | 2023 | Maturity Model (Levels 0-3) | `prisma/seed-data/` |
 
 ### 17.3 Findings & Control Mapping
@@ -1961,7 +1962,7 @@ lib/                          Business logic
   api-keys.ts                 API key generation
   api-auth.ts                 Unified authentication
   api-response.ts             API error handling
-  rate-limit.ts               Sliding-window rate limiter
+  rate-limit.ts               Fixed-window rate limiter
   crypto.ts                   AES-256-GCM encryption
   timing-safe.ts              Constant-time comparison
   client-ip.ts                Proxy-aware IP resolution

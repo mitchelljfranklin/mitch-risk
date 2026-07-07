@@ -77,4 +77,5 @@ Additional headers: `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, 
 - Dangerous MIME types blocked (HTML, JS, SVG, PHP, executables, shell scripts)
 - Configurable max upload size (default 20 MB)
 - Configurable allowed extensions (default: pdf, png, jpg, jpeg, docx, xlsx)
+- Magic-byte (file signature) validation detects renamed files
 - Files served through authenticated routes — never via raw public URLs

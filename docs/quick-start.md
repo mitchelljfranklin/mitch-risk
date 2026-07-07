@@ -68,6 +68,8 @@ Open `http://localhost:3000`.
 | `npm run build` | Production build |
 | `npm run lint` | Run ESLint |
 | `npm run typecheck` | TypeScript check |
+| `npm run format:check` | Prettier format check |
+| `npm run precheck` | Run typecheck + lint + format:check (same as CI) |
 | `npm run test` | Run unit + integration tests |
 | `npm run test:e2e` | Run Playwright e2e tests |
 | `npm run db:migrate` | Apply Prisma migrations |
