@@ -202,6 +202,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth(async () => {
       session: async ({ session, token }) => {
         if (typeof token.id === "string") {
           session.user.id = token.id;
+
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id },
+            select: { disabled: true, roleId: true },
+          });
+
+          if (dbUser) {
+            token.roleId = dbUser.roleId;
+          }
+
+          if (dbUser?.disabled) {
+            session.user.roleId = "";
+            session.user.roleName = "";
+            session.user.permissions = [];
+            return session;
+          }
         }
 
         if (typeof token.roleId === "string" && token.roleId.length > 0) {

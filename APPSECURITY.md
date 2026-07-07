@@ -726,38 +726,82 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 
 ## 15. Risk Register
 
+> Updated July 2026 — deep code audit. Items marked ~~strikethrough~~ were dismissed by AGENTS.md design decisions or resolved since the previous review. Previous register items H-3 (CRON_SECRET already in compose) and M-6 (HSTS left to reverse proxy per AGENTS.md) are removed.
+
+### Critical Severity
+
+| ID | Finding | Impact | Mitigation |
+|----|---------|--------|------------|
+| C-1 | ~~`copyJson` is not a clone (`lib/json.ts:3-7`) — returns the same object reference, no deep copy~~ | Shared reference mutation in `sendAssessment` / `duplicateTemplate` silently corrupts source template data | **FIXED** — changed to `structuredClone(value)` |
+| C-2 | ~~Scoring failure leaves assessment stuck at SUBMITTED (`lib/db/assessments.ts:512-517`) — status update and `scoreAssessment()` not in a transaction~~ | Assessment permanently locked at SUBMITTED with no score, no findings, no vendor aggregate update | **FIXED** — compensating rollback: scoring failure reverts status to previous state |
+| C-3 | ~~`bcrypt.hashSync` blocks event loop inside DB transaction (`lib/db/assessments.ts:290`) — synchronous bcrypt (~50ms) while holding open `$transaction`~~ | Blocks all requests during transaction; single-threaded event loop stall | **FIXED** — hash password BEFORE the transaction, pass pre-hashed value in |
+| C-4 | ~~Disabled user's session stays valid until JWT expires (`lib/auth.ts:202-219`) — `session` callback never re-checks `user.disabled` flag~~ | Admin disabling a user mid-session has zero effect until re-login or token natural expiry | **FIXED** — session callback now queries `user.disabled` and returns empty permissions if true, and also refreshes stale `roleId` from DB |
+
 ### High Severity
 
 | ID | Finding | Impact | Mitigation |
 |----|---------|--------|------------|
 | H-1 | Container runs as root (`Dockerfile:21`) | Container compromise = host root access | Set `USER node` in Dockerfile before CMD |
 | H-2 | Hardcoded DB credentials in `docker-compose.yml` | Credential exposure in version control | Use `.env` files or Docker secrets |
-| H-3 | No `CRON_SECRET` in compose env | App fails to boot in production | Add `CRON_SECRET` to compose env |
-| H-4 | API keys have `ALL_PERMISSIONS` without scoping | Key compromise = full platform access | Implement per-key permission scoping |
+| H-3 | API keys always receive `ALL_PERMISSIONS` without scoping (`lib/api-auth.ts:89-96`) | Key compromise = full platform access. No way to create read-only or scoped keys | Add `permissions` JSON column to `ApiKey`; let creator scope keys; return scoped permissions |
+| H-4 | N+1 `findFirst` in scoring transaction loop (`lib/db/scoring.ts:110`) — each non-compliant response fires a sequential DB query inside `$transaction` | 50+ non-compliant responses = 50+ sequential DB roundtrips; latency scales linearly | Batch `tx.finding.findMany` before loop, build `Map<responseId, findingId>`, look up in Map |
+| H-5 | TOCTOU race in `finalizeAssessment` (`lib/db/collaboration.ts:87-109`) — reads all response review decisions, then writes COMPLETED with no atomic guard | Concurrent request can change a review decision between read and write, allowing premature finalization | Use `prisma.assessment.updateMany({ where: { id, status: "UNDER_REVIEW" }, data: ... })` — atomically finalize only if still under review |
+| H-6 | `importFrameworkAction` — no transaction between `createFramework` and `createControls` (`lib/actions/frameworks.ts:113-128`) | Controls creation fails → framework persists with zero controls (inconsistent DB state) | Wrap both in `prisma.$transaction` |
+| H-7 | Audit log written AFTER delete (`lib/actions/vendors.ts:89-95`, `lib/actions/users.ts:173-175`) | If logging fails, who deleted the record is lost. Contrast with `deleteAssessmentAction` which correctly logs first | Move `logAudit` to BEFORE the delete |
+| H-8 | IDOR in `reviewAction` — `responseId` not cross-checked against `assessmentId` (`lib/actions/collaboration.ts:54-107`) | Attacker passes `assessmentId=A, responseId=B` where B belongs to assessment C; review decision applied to wrong assessment's response | After loading response, verify `response.assessmentId === assessmentId` |
+| H-9 | IDOR in certification/attachment actions — no ownership verification (`lib/actions/certifications.ts`, `lib/actions/vendors.ts:241-261`) | Any user with `VENDORS_EDIT` can update/delete any vendor's certifications or attachments regardless of ownership | Load the entity first, verify ownership against requesting user's scope |
+| H-10 | Missing input validation — `addUserAction` uses manual truthiness checks only (`lib/actions/users.ts:42`); `sendToCustomEmailAction` doesn't validate per-address format (`lib/actions/assessments.ts:99`) | Invalid emails, 1-character passwords, garbage recipient addresses accepted and persisted | Add zod schemas: `z.string().email()`, `z.string().min(12)` |
+| H-11 | RISK_ACCEPTED findings silently deleted on rescore (`lib/db/scoring.ts:78-88`) — reconciliation deletes ALL findings on a response when answer becomes compliant | Reviewer's explicit `RISK_ACCEPTED` finding vanishes on vendor resubmit; finding history silently lost; partial rescore from a single-answer update (not full submit) also triggers this | Only delete `OPEN` status findings; preserve `RISK_ACCEPTED` and `REMEDIATED` |
+| H-12 | Rate limiter per-prefix bypass (`lib/api-auth.ts:65`) — API key rate limits keyed on attacker-controlled `keyPrefix` (`mrk_***`) | Attacker cycles generated prefixes for unlimited attempts (no IP fallback in the API key auth path) | Also rate-limit by raw client IP in the API key validation path, before prefix-based lookup |
+| H-13 | Rate limiter global 50K-key FIFO eviction (`lib/rate-limit.ts:29-33`) — single shared Map with blind FIFO eviction | Attacker floods 50K unique entries to evict all legitimate rate-limit keys | Per-namespace caps; reject new entries beyond a per-identifier limit instead of evicting |
+| H-14 | DB record deleted before storage files (`lib/db/assessments.ts:195-196`, `lib/db/vendors.ts:145-158`) | Crash between DB delete and file cleanup → permanently orphaned files with no DB reference to reconnect them | Delete storage files first (files are idempotent to re-delete; lost DB records are not recoverable) |
+| H-15 | SSO auto-provisioning race (`lib/auth.ts:246-258`) — `findUnique` then `create` with no unique-constraint catch | Two concurrent SSO sign-ins with same new email both pass the null check; second hits unhandled unique-constraint violation (500 error) | Use `prisma.user.upsert` or catch unique-constraint error and retry the `findUnique` |
+| H-16 | Setup page TOCTOU — `countUsers() > 0` check at render + submit (`app/(auth)/setup/actions.ts:17-19`) | Two concurrent first-run requests both pass the check and attempt `createUser`; second throws unhandled unique-constraint violation | Wrap check + create in `prisma.$transaction`; catch unique-constraint and return a clean "setup already completed" message |
+| H-17 | ~~Stale role assignment in active sessions (`lib/auth.ts:202-219`) — session callback reads `roleId` from JWT set at login only~~ | Changing a user's role mid-session had zero effect until re-login; user retained old-role permissions | **FIXED** — session callback now re-queries `roleId` from DB on every request (alongside C-4 disabled check) |
+| H-18 | No server-side session timeout enforcement — JWT has no `exp` claim tied to `sessionTimeoutMinutes` | Sessions persist beyond the configured timeout; client-side idle-timer is cosmetic defense only | Add `exp` claim to JWT based on configurable `sessionTimeoutMinutes` setting |
+| H-19 | `bcrypt.compareSync` on every API request — synchronous CPU-intensive operation on hot path (`lib/api-keys.ts:35-37`, `lib/api-auth.ts:74`) | Burst of API requests blocks event loop for 50-100ms each; creates DoS vector against all users on same process | Replace with `await bcrypt.compare(key, hash)` (async) |
 
 ### Medium Severity
 
 | ID | Finding | Impact | Mitigation |
 |----|---------|--------|------------|
 | M-1 | No MFA support | Account compromise via credential theft | Roadmap item for larger deployments |
-| M-2 | Session timeout not enforced server-side | Sessions persist beyond configured timeout | Add `exp` claim to JWT based on `sessionTimeoutMinutes` |
-| M-3 | In-memory rate limiting not shared across processes | Rate limits bypassed with multi-container deployment | Acceptable for single-container; migrate to Redis if scaled |
-| M-4 | No magic-byte validation on file uploads | Malicious files bypass extension filter | Add libmagic or file-type detection |
-| M-5 | Password min-length not enforced at login schema | Users with short passwords from legacy systems | Low risk — bcrypt comparison fails for mismatched passwords |
-| M-6 | No HSTS header | Downgrade attacks if reverse proxy misconfigured | Document HSTS at proxy level; consider app-layer defense-in-depth |
-| M-7 | `next-auth` in beta | Undiscovered vulnerabilities in auth framework | Monitor updates; migrate to stable when available |
+| M-2 | No magic-byte validation on file uploads — only MIME type (spoofable) and extension (renameable) checked | Malicious file bypasses both filters by renaming `.exe → .pdf` and setting `Content-Type: application/pdf` | Read first N bytes of uploaded buffer; validate against allowlist of magic-byte signatures for each extension |
+| M-3 | `next-auth` in beta | Undiscovered vulnerabilities in auth framework | Monitor updates; migrate to stable when available |
+| M-4 | In-memory rate limiting not shared across processes (by design for single-container; Redis needed if scaled) | Rate limits bypassed with multi-container deployment | Acceptable for single-container; migrate to Redis if scaled horizontally |
+| M-5 | Password min-length (12 chars) not enforced at login schema or `addUserAction` — only creation-time check; `addUserAction` uses manual truthiness, no zod | Users could be created with 1-char passwords via API or direct DB; existing short-password users from legacy systems | Add zod schemas to `addUserAction` with `z.string().min(12)`; login schema already relies on bcrypt mismatch but explicit validation is defense-in-depth |
+| M-6 | Break-glass token reusable indefinitely, no expiry (`lib/break-glass.ts`) — validated via bcrypt but never consumed, expired, or marked used | Once leaked (browser history, logs, forwarded URL), attacker can re-enable local auth at any time. Rate-limited at login but token itself lives forever | Add `tokenHash`, `expiresAt`, `consumed` to a DB table; consume on first use; enforce expiry |
+| M-7 | `timingSafeEqualString` leaks expected-string length (`lib/timing-safe.ts:10`) — `providedBytes.length !== expectedBytes.length` early-returns before constant-time comparison | Attacker measuring response time can determine `CRON_SECRET` length byte-by-byte, reducing brute-force search space | Hash both inputs with SHA-256 first; compare the fixed-length 32-byte digests. Removes the length side-channel entirely |
+| M-8 | Content-Disposition header injection (`app/api/v1/vendors/[vendorId]/export/route.ts:111`, `app/api/attachments/[attachmentId]/route.ts:43`) — vendor name (user-controlled) and attachment fileName (user-uploaded, stored in DB) not encoded | CRLF injection allows crafting arbitrary HTTP response headers; HTTP response splitting | Use `encodeURIComponent()` as already done correctly in `app/api/assessments/[assessmentId]/export/route.ts:96` |
+| M-9 | Page parameter `NaN` propagation — `Number(searchParams.get("page"))` yields NaN for non-numeric input, passed to Prisma skip/take (`api/v1/assessments/route.ts:22`, `api/v1/findings/route.ts:19`, `api/v1/vendors/[vendorId]/assessments/route.ts:27`) | `?page=abc` causes Prisma to receive NaN, throwing unhandled errors or returning garbage | `parseInt(pageParam, 10)` with `|| undefined` fallback and `Math.max(1, ...)` guard |
+| M-10 | Unbounded `pageSize` in audit endpoint (`app/api/v1/audit/route.ts:25-27`) — `pageSize` from user input with no upper bound | `?pageSize=10000000` fetches millions of rows; memory/CPU exhaustion DoS | `Math.min(parsedPageSize, 500)` and clamp all DB list functions |
+| M-11 | `AUTH_SECRET` minimum length is 1 character (`lib/env.ts:9`) — `z.string().min(1)` | Auth.js uses this to sign JWT session tokens and encrypt session cookies; a 1-char secret is trivial to brute-force | Change to `.min(32)` matching the `APP_ENCRYPTION_KEY` standard |
+| M-12 | Delete-user UX: no pre-deletion summary of orphaned relations (`lib/db/users.ts:91-93`) — silently SetNulls Vendor.ownerId, Assessment.reviewerId, Finding.resolvedById, AnswerReview.reviewerId | User deleted with no awareness of what will be orphaned; no opportunity to reassign | Before deletion, check for owned vendors, unresolved findings, and in-review assessments; surface a summary and allow forced re-assignment path |
+| M-13 | Portal submission: no maximum answer value length validation | Attacker can submit a 1MB string as a single answer field, bloating the DB and depleting storage | Add `z.string().max(50000)` or configurable limit to portal answer schema |
+| M-14 | Notification counts: `userId` parameter ignored for 3 of 4 queries (`lib/db/notifications.ts:20-34`) — `overdueAssessments`, `clarificationsAwaitingVendor`, `failedEmails` return org-wide counts regardless of who is asking | API says "for user X" but returns everyone's data; misleading contract | Either remove the orphaned `userId` parameter from the function signature, or add proper ownership filtering |
+| M-15 | `computeTotalScore` returns `0` for all-N/A assessments (`lib/scoring.ts:146-149`) — indistinguishable from "fully failed" | Callers can't tell "nothing to score yet" from "0% compliance"; dashboard presents a broken-looking 0% for assessments with only N/A answers | Return `null` when `totalMax === 0`; ensure all callers handle `null` appropriately |
+| M-16 | Portal password uses bcrypt at 10 rounds (vs 12 elsewhere) — `sendAssessment` passes `SALT_ROUNDS = 10` (`lib/db/assessments.ts:290`) | Slightly weaker brute-force resistance for portal password gate | Bump to 12 rounds for consistency. Hash before transaction anyway (see C-3) |
+| M-17 | Plaintext `accessToken` stored alongside hashed `tokenHash` in DB (`lib/db/assessments.ts:361-375`) — OR fallback clause `{ accessToken: token }` undermines hashing for un-migrated tokens | DB compromise exposes plaintext tokens that directly grant portal access; no need to crack SHA-256 | Migration to hash all existing `accessToken` values into `tokenHash`; remove the OR fallback |
+| M-18 | `createRoleAction` re-throws non-P2002 Prisma errors to client (`lib/actions/roles.ts:55`) — `throw error` passes raw DB errors through Next.js error boundary | Internal table names, constraint names, and Prisma error codes leak to client | Return `{ ok: false, message: "Could not create the role." }`; `console.error` the original |
+| M-19 | Rate limiter implementation is fixed-window, not sliding-window as documented in §8.1 — a burst at T:59 + T:01 achieves 2× the configured rate | Attacker can exploit window boundary for double-rate bursts against all rate-limited endpoints | Either correct the documentation or implement a true sliding window (token bucket / sorted timestamp set). The fixed-window approach is acceptable for this threat model; the documentation mismatch is the primary issue |
 
 ### Low Severity
 
 | ID | Finding | Impact | Mitigation |
 |----|---------|--------|------------|
-| L-1 | Portal password uses bcrypt 10 rounds (vs 12) | Slightly weaker brute-force resistance | Minor — both are strong |
+| L-1 | Portal password uses bcrypt 10 rounds (vs 12) | Slightly weaker brute-force resistance | Minor — both are strong; see M-16 for resolution |
 | L-2 | No read-audit events | Cannot determine who viewed sensitive data | Acceptable for small-business scope |
 | L-3 | No audit log tamper-proofing | DB-level attacker can modify audit records | Add hash-chain or append-only table |
 | L-4 | No container resource limits | DoS via resource exhaustion | Add CPU/memory limits in compose |
 | L-5 | Key derivation uses single-pass SHA-256 | Non-ideal for PBKDF purposes | Low severity — input is high-entropy random key |
 | L-6 | No IPv6 CIDR support in API key IP allowlisting | IPv6 CIDR restrictions not enforced | Add IPv6 CIDR support to `ipInCidr()` |
 | L-7 | No CSP violation reporting | Cannot detect CSP misconfigurations | Add `report-uri` directive |
+| L-8 | `hasLocalPassword` throws on null `passwordHash` (`lib/db/users.ts:119-121`) — if called against a denormalized result where column wasn't selected | Unexpected exception if function contract is violated | `(passwordHash ?? "").trim().length > 0` |
+| L-9 | `resolveEntityNames` silent catch swallows errors (`lib/db/audit.ts:200`) — audit log entity name resolution fails silently with no logging | Underlying DB or schema issues hidden; debugging made harder | `console.error` before `continue` |
+| L-10 | `Record<string, unknown>` bypasses Prisma type-safety in `listNotificationLogs` (`lib/db/notifications.ts:104`) — where filter typed as loose object | Typo in filter key silently ignored at compile time; query silently returns wrong results | Type as `Prisma.NotificationLogWhereInput` |
+| L-11 | Azure connection string suffix (-8 chars) in `_fingerprint` (`lib/storage/index.ts:121`) — partial key material in an in-memory debug string | Could be serialized in error traces/logs; insufficient for exploitation alone but violates "never log secrets" principle | Hash the fingerprint (SHA-256 first 8 hex chars) instead of slicing plaintext |
+| L-12 | `removeAttachmentAction` uses wrong `entityId` for `revalidatePath` when `entityType` is `VendorCertification` (`lib/actions/certifications.ts:180`) — revalidates a non-existent vendor path | No-op cache invalidation; harmless but incorrect | Resolve the vendor ID from the certification record and use that for `revalidatePath` |
+| L-13 | Missing `Cache-Control: no-store` on auth pages — login, reset-password, setup pages | Browsers/proxies could cache auth pages; Next.js dynamic routes mitigate but explicit headers are defense-in-depth | Add `Cache-Control: no-store, no-cache, must-revalidate` response header on all `(auth)` routes |
 
 ---
 
@@ -790,5 +834,5 @@ The platform provides mechanics (controls mapping, scoring, findings, audit trai
 
 This document is maintained as part of the mitch-risk project. Security findings should be reported via the project's issue tracker.
 
-**Last reviewed:** July 2026
+**Last reviewed:** July 2026 (deep code audit — combined risk register)
 **App version:** 0.1.0

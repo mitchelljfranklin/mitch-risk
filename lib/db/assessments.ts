@@ -237,6 +237,11 @@ export async function sendAssessment(
     throw new Error("Template not found");
   }
 
+  const token = generateAccessToken();
+  const passwordHash = portalPassword
+    ? bcrypt.hashSync(portalPassword, 10)
+    : null;
+
   await prisma.$transaction(async (tx) => {
     await tx.assessmentQuestion.deleteMany({ where: { assessmentId: id } });
 
@@ -285,10 +290,6 @@ export async function sendAssessment(
       }
     }
 
-    const token = generateAccessToken();
-    const passwordHash = portalPassword
-      ? bcrypt.hashSync(portalPassword, 10)
-      : null;
     await tx.assessment.update({
       where: { id },
       data: {
@@ -509,12 +510,22 @@ export async function submitAssessment(
     return { ok: false, missing: missing.length };
   }
 
+  const previousStatus = assessment.status;
+
   await prisma.assessment.update({
     where: { id: assessment.id },
     data: { status: "SUBMITTED", submittedAt: new Date() },
   });
 
-  await scoreAssessment(assessment.id);
+  try {
+    await scoreAssessment(assessment.id);
+  } catch {
+    await prisma.assessment.update({
+      where: { id: assessment.id },
+      data: { status: previousStatus },
+    });
+    throw new Error("Assessment scoring failed, please try submitting again.");
+  }
 
   return { ok: true, missing: 0 };
 }
