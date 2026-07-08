@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { Cell, Pie, PieChart, Bar, BarChart, XAxis, YAxis } from "recharts";
+import { Cell, Pie, PieChart, Bar, BarChart, XAxis, YAxis, Label } from "recharts";
 
 import {
   ChartContainer,
@@ -170,41 +170,55 @@ export function DashboardCharts({
             <CardTitle>Portfolio health</CardTitle>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={DONUT_CONFIG}>
+            <ChartContainer
+              config={DONUT_CONFIG}
+              className="mx-auto aspect-square max-h-[250px]"
+            >
               <PieChart>
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent hideLabel />}
+                />
                 <Pie
                   data={donutData}
                   dataKey="value"
                   nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={65}
-                  outerRadius={95}
-                  paddingAngle={2}
+                  innerRadius={60}
+                  strokeWidth={5}
                 >
+                  <Label
+                    content={({ viewBox }) => {
+                      if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                        return (
+                          <text
+                            x={viewBox.cx}
+                            y={viewBox.cy}
+                            textAnchor="middle"
+                            dominantBaseline="middle"
+                          >
+                            <tspan
+                              x={viewBox.cx}
+                              y={viewBox.cy}
+                              className="fill-foreground text-3xl font-bold"
+                            >
+                              {totalVendors}
+                            </tspan>
+                            <tspan
+                              x={viewBox.cx}
+                              y={(viewBox.cy || 0) + 24}
+                              className="fill-muted-foreground"
+                            >
+                              vendors
+                            </tspan>
+                          </text>
+                        );
+                      }
+                    }}
+                  />
                   {donutData.map((entry) => (
                     <Cell key={entry.name} fill={entry.fill} />
                   ))}
                 </Pie>
-                <text
-                  x="50%"
-                  y="47%"
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  className="fill-foreground text-2xl font-bold"
-                >
-                  {totalVendors}
-                </text>
-                <text
-                  x="50%"
-                  y="57%"
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  className="fill-muted-foreground text-xs"
-                >
-                  vendors
-                </text>
-                <ChartTooltip content={<ChartTooltipContent />} />
               </PieChart>
             </ChartContainer>
             <div className="mt-3 flex flex-wrap justify-center gap-4 text-xs">
