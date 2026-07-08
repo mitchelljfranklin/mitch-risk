@@ -4,9 +4,12 @@ import type { Metadata } from "next";
 
 import { SearchInput } from "@/components/search-input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { requirePermission } from "@/lib/auth";
-import { PERMISSIONS } from "@/lib/permissions";
+import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getFramework, listControls } from "@/lib/db/frameworks";
+import { deleteFrameworkAction } from "@/lib/actions/frameworks";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +31,7 @@ export default async function FrameworkDetailPage({
   params,
   searchParams,
 }: FrameworkDetailPageProps) {
-  await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
+  const user = await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
   const { frameworkId } = await params;
   const { q } = await searchParams;
 
@@ -38,6 +41,10 @@ export default async function FrameworkDetailPage({
   }
 
   const controls = await listControls(frameworkId, q);
+  const canDelete = hasPermission(
+    user.permissions,
+    PERMISSIONS.FRAMEWORKS_DELETE,
+  );
 
   const controlsByDomain = new Map<string, typeof controls>();
   for (const control of controls) {
@@ -55,10 +62,30 @@ export default async function FrameworkDetailPage({
         >
           ← Frameworks
         </Link>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {framework.name}{" "}
-          <span className="text-muted-foreground">{framework.version}</span>
-        </h1>
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {framework.name}{" "}
+            <span className="text-muted-foreground">{framework.version}</span>
+          </h1>
+          {canDelete ? (
+            <form
+              id={`delete-framework-${frameworkId}`}
+              action={deleteFrameworkAction}
+            >
+              <input type="hidden" name="frameworkId" value={frameworkId} />
+              <ConfirmDialog
+                title={`Delete framework "${framework.name} v${framework.version}"?`}
+                description={`This will permanently delete this framework and its ${controls.length} control${controls.length !== 1 ? "s" : ""}. Template questions mapped to these controls will lose their assignments. Existing assessments and findings are not affected.`}
+                confirmLabel="Delete"
+                formId={`delete-framework-${frameworkId}`}
+              >
+                <Button type="button" variant="destructive" size="sm">
+                  Delete framework
+                </Button>
+              </ConfirmDialog>
+            </form>
+          ) : null}
+        </div>
       </div>
 
       <div className="bg-background sticky top-14 z-10 pb-2">

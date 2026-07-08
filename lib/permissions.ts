@@ -14,6 +14,7 @@ export const PERMISSIONS = {
   TEMPLATES_DELETE: "templates:delete",
   FRAMEWORKS_VIEW: "frameworks:view",
   FRAMEWORKS_EDIT: "frameworks:edit",
+  FRAMEWORKS_DELETE: "frameworks:delete",
   AUDIT_VIEW: "audit:view",
   USERS_MANAGE: "users:manage",
   ROLES_MANAGE: "roles:manage",
@@ -73,6 +74,7 @@ export const PERMISSION_GROUPS: readonly PermissionGroup[] = [
     permissions: [
       { key: PERMISSIONS.FRAMEWORKS_VIEW, label: "View frameworks" },
       { key: PERMISSIONS.FRAMEWORKS_EDIT, label: "Edit frameworks" },
+      { key: PERMISSIONS.FRAMEWORKS_DELETE, label: "Delete frameworks" },
     ],
   },
   {
@@ -110,6 +112,7 @@ const REVIEWER_PERMISSIONS: readonly Permission[] = [
   PERMISSIONS.TEMPLATES_DELETE,
   PERMISSIONS.FRAMEWORKS_VIEW,
   PERMISSIONS.FRAMEWORKS_EDIT,
+  PERMISSIONS.FRAMEWORKS_DELETE,
 ];
 
 const VIEWER_PERMISSIONS: readonly Permission[] = [

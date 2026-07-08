@@ -33,10 +33,7 @@ test("capture vendor detail screenshot", async ({ page }) => {
     .click();
   await page.waitForURL("**/vendors");
   await page.waitForTimeout(2000);
-  await page
-    .locator("table a[href^='/vendors/']")
-    .first()
-    .click();
+  await page.locator("table a[href^='/vendors/']").first().click();
   await page.waitForURL("**/vendors/**");
   await page.waitForFunction(
     () => !document.body.textContent?.includes("Loading..."),

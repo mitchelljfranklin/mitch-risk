@@ -1,7 +1,11 @@
 import { authenticateRequest, authResultHasPermission } from "@/lib/api-auth";
 import { apiError, runApiHandler } from "@/lib/api-response";
 import { PERMISSIONS } from "@/lib/permissions";
-import { getFramework, listControls } from "@/lib/db/frameworks";
+import {
+  deleteFramework,
+  getFramework,
+  listControls,
+} from "@/lib/db/frameworks";
 
 export async function GET(
   request: Request,
@@ -37,5 +41,24 @@ export async function GET(
         order: c.order,
       })),
     });
+  });
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ frameworkId: string }> },
+) {
+  return runApiHandler(async () => {
+    const auth = await authenticateRequest(request);
+    if (!auth) return apiError("Unauthorized", 401);
+    if (!authResultHasPermission(auth, PERMISSIONS.FRAMEWORKS_DELETE))
+      return apiError("Forbidden", 403);
+
+    const { frameworkId } = await params;
+    const framework = await getFramework(frameworkId);
+    if (!framework) return apiError("Not found", 404);
+
+    await deleteFramework(frameworkId);
+    return new Response(null, { status: 204 });
   });
 }

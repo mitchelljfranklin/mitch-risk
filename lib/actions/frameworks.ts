@@ -1,11 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
-import { requirePermission } from "@/lib/auth";
+import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { PERMISSIONS } from "@/lib/permissions";
 import { logAudit } from "@/lib/db/audit";
+import { getField } from "@/lib/utils";
+import { deleteFramework } from "@/lib/db/frameworks";
 import { parseCsvRows } from "@/lib/csv-parser";
 import {
   frameworkCsvRowSchema,
@@ -142,4 +145,17 @@ export async function importFrameworkAction(
     message: `Imported "${framework.name} v${framework.version}" with ${controls.length} controls.`,
     frameworkId: framework.id,
   };
+}
+
+export async function deleteFrameworkAction(formData: FormData) {
+  await requirePermission(PERMISSIONS.FRAMEWORKS_DELETE);
+  const frameworkId = getField(formData, "frameworkId");
+  await logAudit(
+    (await getCurrentUser())?.id ?? "",
+    "DELETE_FRAMEWORK",
+    "Framework",
+    frameworkId,
+  );
+  await deleteFramework(frameworkId);
+  redirect("/frameworks");
 }

@@ -79,3 +79,7 @@ export function getControl(
     include: { framework: true },
   });
 }
+
+export function deleteFramework(id: string) {
+  return prisma.framework.delete({ where: { id } });
+}
