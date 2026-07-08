@@ -851,8 +851,8 @@ The vendor portal is a **no-login**, token-based experience. No vendor account i
                     └──────┬──────┘
                            │ OK
                     ┌──────▼──────────────────────┐
-                    │ Lookup assessment by token  │
-                    │ (WHERE accessToken = token) │
+                    │ Lookup assessment by token hash   │
+                    │ (WHERE tokenHash = SHA-256(token)) │
                     └──────┬──────────────────────┘
                            │
           ┌────────────────┼────────────────────┐

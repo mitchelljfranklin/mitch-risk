@@ -231,5 +231,5 @@ Once at least one provider works:
 ### Security notes
 - Client secrets are encrypted at rest and never returned to the browser; re-enter a secret
   only when rotating it (leaving it blank keeps the current one).
-- Break-glass tokens are stored only as a bcrypt hash; regenerate to revoke the old URL.
+- Break-glass tokens are bcrypt-hashed and stored as a JSON object with expiry and consumed flag. Tokens expire 24 hours after generation and are single-use (consumed on first successful verification). Regenerate to issue a new URL.
 - SSO users authenticate against your IdP — mitch-risk never sees their IdP password.

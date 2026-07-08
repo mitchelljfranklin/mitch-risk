@@ -40,7 +40,7 @@ Key SSO security features:
 - **Conditional provider registration:** `buildSsoProviders()` only registers providers if they are enabled in Settings AND have a configured clientId. Disabled providers expose no OAuth/OIDC callback routes.
 - **Domain restriction:** Optional `allowedDomain` setting restricts SSO to a specific email domain (e.g., `@company.com`). Enforced in the `signIn` callback.
 - **Auto-provisioning:** First SSO login creates a local user with the configured `autoProvisionRoleId`. Auto-provisioned users get an **empty `passwordHash`**, preventing local-login bypass.
-- **SSO-only login + break-glass:** When `disableLocalAuth` is enabled and at least one SSO provider is configured, the local login form is hidden. A single-use break-glass URL (`/login?breakGlass=<token>`) restores the local form for emergency access. Break-glass tokens use 24-byte random hex, bcrypt-hashed in DB, and are rate-limited.
+- **SSO-only login + break-glass:** When `disableLocalAuth` is enabled and at least one SSO provider is configured, the local login form is hidden. A break-glass URL (`/login?breakGlass=<token>`) restores the local form for emergency access. Break-glass tokens use 24-byte random hex, bcrypt-hashed in DB, expire 24 hours after generation, are consumed on first successful verification, and are rate-limited.
 
 ### 2.2 Session Security
 
@@ -155,7 +155,7 @@ Key lifecycle events (create, revoke, enable, delete) are audited.
 `authenticateRequest()` (`lib/api-auth.ts`) handles all API authentication:
 
 1. **Session first:** Tries Auth.js session cookie. If valid, returns user identity + role permissions
-2. **API key fallback:** If `api.enabled` is true, extracts Bearer token → prefix lookup → bcrypt verify → checks expiry → checks IP allowlist → updates `lastUsedAt`
+2. **API key fallback:** If `api.enabled` is true, per-IP rate limit → extracts Bearer token → per-prefix rate limit → prefix lookup → bcrypt verify → checks expiry → checks IP allowlist → updates `lastUsedAt`
 3. **Authorization:** API keys route through `hasPermission()` with `ALL_PERMISSIONS` regardless of creator status
 
 ### 4.4 IP Allowlisting
@@ -387,7 +387,8 @@ Client IP resolution (`lib/client-ip.ts`) supports multi-proxy topologies:
 
 An **in-memory fixed-window rate limiter** (`lib/rate-limit.ts`) with:
 - Fixed 60-second windows
-- Maximum 50,000 tracked entries (FIFO eviction when full)
+- Maximum 100,000 tracked entries (hard limit, rejects when full)
+- Per-namespace cap of 5,000 entries
 - Periodic sweep of expired entries (every 60s)
 
 This is intentionally per-process/in-memory — correct for the single-container Docker Compose deployment. A shared store (Redis) is required only if horizontally scaled.
@@ -405,7 +406,7 @@ All configurable via DB-backed `AssessmentSettings` (Settings → Limits tab):
 | `portalPasswordAttemptsPerMin` | 5/min | Portal password attempts per token |
 | `passwordResetPerMin` | 1/min | Password reset requests per IP |
 | `breakGlassPerMin` | 10/min | Break-glass login attempts per IP |
-| `apiDefaultRateLimitPerMin` | 30/min | API key prefix lookups |
+| `apiDefaultRateLimitPerMin` | 30/min | API key requests (IP-based, then prefix-based) |
 
 ### 8.3 Strengths & Considerations
 
@@ -413,12 +414,12 @@ All configurable via DB-backed `AssessmentSettings` (Settings → Limits tab):
 - Granular rate limit points across login, portal, API, and recovery paths
 - All configurable via DB settings — no redeploy needed to adjust
 - Credentials callback is also rate-limited (the actual auth path), not just the form action
-- Eviction prevents unbounded memory growth
+- Hard caps (100K global / 5K per namespace) prevent unbounded memory growth
 - Over-limit responses are generic (no enumeration signal)
 
 **Considerations:**
 - In-memory only — not shared across containers or processes. Acceptable for single-container deployment
-- FIFO eviction (not LRU) — a sustained attack could evict legitimate entries
+- Fixed-window (not sliding) — a burst at window boundaries can achieve 2× rate; acceptable for this threat model
 - No exponential backoff or lockout escalation — flat per-minute limits
 - No `X-RateLimit-*` response headers for client awareness
 

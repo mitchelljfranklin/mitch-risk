@@ -23,9 +23,10 @@ When SSO-only mode is enabled (local login hidden), a **break-glass URL** provid
 
 1. Generate under **Settings → SSO → Break-glass**
 2. URL format: `/login?break-glass=<token>`
-3. Token is bcrypt-hashed in the database (not stored plaintext)
-4. Opens the local login form; rate-limited to 10/min per IP
-5. Regenerate to revoke the old URL
+3. Token is bcrypt-hashed and stored as a JSON object with a consumed flag (not stored plaintext)
+4. Tokens expire 24 hours after generation and are single-use
+5. Opens the local login form; rate-limited to 10/min per IP
+6. Regenerate to issue a new URL
 
 ## Session security
 

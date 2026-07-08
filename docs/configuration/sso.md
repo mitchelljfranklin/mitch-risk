@@ -89,7 +89,7 @@ Use for any OpenID Connect provider (Auth0, Keycloak, Authentik, Authelia, VoidA
 
 Once at least one provider works:
 
-1. **Settings → SSO → Break-glass → Generate break-glass URL** — copy and store securely (shown once)
+1. **Settings → SSO → Break-glass → Generate break-glass URL** — copy and store securely (shown once). The token expires in 24 hours and is consumed on first use.
 2. Tick **Disable email/password sign-in** and Save
 3. Login page now shows only SSO buttons. Local login remains at the break-glass URL, and auto-keeps available if no SSO provider is enabled (anti-lock-out)
 
