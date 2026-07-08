@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { type TemplateForBuilder } from "@/lib/db/templates";
+import ReactMarkdown from "react-markdown";
 import { summarizeConditionalLogic } from "@/lib/portal";
 
 type PreviewQuestion =
@@ -162,9 +163,9 @@ export function TemplatePreview({
                         ) : null}
                       </p>
                       {question.helpText ? (
-                        <p className="text-muted-foreground text-xs">
-                          {question.helpText}
-                        </p>
+                        <div className="text-muted-foreground prose prose-xs dark:prose-invert max-w-none text-xs">
+                          <ReactMarkdown>{question.helpText}</ReactMarkdown>
+                        </div>
                       ) : null}
                       {condition ? (
                         <p className="text-muted-foreground text-xs italic">

@@ -19,6 +19,7 @@
     "hooks": "@/hooks"
   },
   "registries": {
-    "@stepper": "https://francozeta-stepper.vercel.app/{name}.json"
+    "@stepper": "https://francozeta-stepper.vercel.app/{name}.json",
+    "@plate": "https://platejs.org/r/{name}.json"
   }
 }

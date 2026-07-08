@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ThemeToggle } from "@/components/theme-toggle";
+import ReactMarkdown from "react-markdown";
 import { ProgressBar } from "@/components/progress-bar";
 import {
   removePortalEvidenceAction,
@@ -668,9 +669,9 @@ export function PortalQuestionnaire({
                     ) : null}
                   </div>
                   {question.helpText ? (
-                    <p className="text-muted-foreground text-xs">
-                      {question.helpText}
-                    </p>
+                    <div className="text-muted-foreground prose prose-xs dark:prose-invert max-w-none text-xs">
+                      <ReactMarkdown>{question.helpText}</ReactMarkdown>
+                    </div>
                   ) : null}
                   {(() => {
                     const review = reviewByQuestionId[question.id];

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useActionState } from "react";
+import ReactMarkdown from "react-markdown";
 
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -53,6 +54,8 @@ function TemplateEditorSheet({
     resetEmailTemplateAction,
     initialState,
   );
+  const [previewBody, setPreviewBody] = useState(false);
+  const [liveBody, setLiveBody] = useState(body);
   useActionFeedback(saveState);
   useActionFeedback(resetState);
 
@@ -83,14 +86,32 @@ function TemplateEditorSheet({
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="template-body">Body</Label>
-          <Textarea
-            id="template-body"
-            name="body"
-            defaultValue={body}
-            rows={10}
-            required
-          />
+          <div className="flex items-center justify-between gap-2">
+            <Label htmlFor="template-body">Body</Label>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-6 text-xs"
+              onClick={() => setPreviewBody(!previewBody)}
+            >
+              {previewBody ? "Edit" : "Preview"}
+            </Button>
+          </div>
+          {previewBody ? (
+            <div className="prose prose-sm dark:prose-invert max-w-none rounded-md border p-3 text-sm">
+              <ReactMarkdown>{liveBody}</ReactMarkdown>
+            </div>
+          ) : (
+            <Textarea
+              id="template-body"
+              name="body"
+              defaultValue={body}
+              rows={10}
+              required
+              onChange={(e) => setLiveBody(e.target.value)}
+            />
+          )}
         </div>
         <p className="text-muted-foreground text-xs">
           Tokens: {TEMPLATE_TOKENS}.
