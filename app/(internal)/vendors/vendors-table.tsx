@@ -9,6 +9,7 @@ import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -83,6 +84,7 @@ export function VendorsTable({
   const columns: ColumnDef<VendorRow>[] = [
     {
       id: "name",
+      enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Vendor" />
       ),
@@ -100,6 +102,7 @@ export function VendorsTable({
     },
     {
       id: "tier",
+      enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Tier" />
       ),
@@ -114,6 +117,7 @@ export function VendorsTable({
     },
     {
       id: "score",
+      enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Score" />
       ),
@@ -128,6 +132,7 @@ export function VendorsTable({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     manualSorting: true,
     manualPagination: true,
     onSortingChange: (updater) => {

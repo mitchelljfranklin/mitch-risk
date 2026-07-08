@@ -9,6 +9,7 @@ import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -97,6 +98,7 @@ export function AssessmentsTable({
   const columns: ColumnDef<AssessmentRow>[] = [
     {
       id: "created",
+      enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Assessment · Vendor" />
       ),
@@ -130,6 +132,7 @@ export function AssessmentsTable({
     },
     {
       id: "score",
+      enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Score" />
       ),
@@ -140,6 +143,7 @@ export function AssessmentsTable({
     },
     {
       id: "status",
+      enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
       ),
@@ -163,6 +167,7 @@ export function AssessmentsTable({
     },
     {
       id: "dueDate",
+      enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Due" />
       ),
@@ -179,6 +184,7 @@ export function AssessmentsTable({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     manualSorting: true,
     manualPagination: true,
     onSortingChange: (updater) => {
