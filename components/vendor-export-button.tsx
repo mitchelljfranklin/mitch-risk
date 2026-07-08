@@ -81,7 +81,9 @@ export function VendorExportButton({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem
-          onClick={() => downloadCsv(buildCsv(allVendors), "vendors-export.csv")}
+          onClick={() =>
+            downloadCsv(buildCsv(allVendors), "vendors-export.csv")
+          }
         >
           All vendors
         </DropdownMenuItem>

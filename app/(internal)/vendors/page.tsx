@@ -27,7 +27,12 @@ import { VendorsTable } from "./vendors-table";
 import { VendorExportButton } from "@/components/vendor-export-button";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
-import { listVendors, exportAllVendors, VENDOR_SORTS, type VendorSort } from "@/lib/db/vendors";
+import {
+  listVendors,
+  exportAllVendors,
+  VENDOR_SORTS,
+  type VendorSort,
+} from "@/lib/db/vendors";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 import { formatDate } from "@/lib/utils";
 import { parseListView, VENDOR_VIEW_COOKIE } from "@/lib/view-preference";
@@ -90,7 +95,8 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
               notes: v.notes,
               serviceDescription: v.serviceDescription,
               dataSensitivity: v.dataSensitivity,
-              contractRenewalDate: v.contractRenewalDate?.toISOString().slice(0, 10) ?? null,
+              contractRenewalDate:
+                v.contractRenewalDate?.toISOString().slice(0, 10) ?? null,
             }))}
             allVendors={exportVendors.map((v) => ({
               id: v.id,
@@ -102,7 +108,8 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
               notes: v.notes,
               serviceDescription: v.serviceDescription,
               dataSensitivity: v.dataSensitivity,
-              contractRenewalDate: v.contractRenewalDate?.toISOString().slice(0, 10) ?? null,
+              contractRenewalDate:
+                v.contractRenewalDate?.toISOString().slice(0, 10) ?? null,
             }))}
           />
           {canCreateVendor ? (

@@ -218,7 +218,9 @@ export async function importVendorsAction(
     parts.push(`${updatedCount} updated`);
   }
   if (rowErrors.length > 0) {
-    parts.push(`${rowErrors.length} row${rowErrors.length !== 1 ? "s" : ""} skipped`);
+    parts.push(
+      `${rowErrors.length} row${rowErrors.length !== 1 ? "s" : ""} skipped`,
+    );
   }
 
   return {
