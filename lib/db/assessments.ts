@@ -20,7 +20,8 @@ export const ASSESSMENT_SORTS = {
   "score-asc": "Score (low → high)",
   "score-desc": "Score (high → low)",
   vendor: "Vendor (A–Z)",
-  status: "Status",
+  status: "Status (A–Z)",
+  "status-desc": "Status (Z–A)",
 } as const;
 
 export type AssessmentSort = keyof typeof ASSESSMENT_SORTS;
@@ -47,6 +48,8 @@ function assessmentOrderBy(
       return { vendor: { name: "asc" } };
     case "status":
       return { status: "asc" };
+    case "status-desc":
+      return { status: "desc" };
     default:
       return { createdAt: "desc" };
   }

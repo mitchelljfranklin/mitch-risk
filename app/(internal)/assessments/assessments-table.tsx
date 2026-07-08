@@ -47,7 +47,7 @@ const SORT_KEY_MAP: Record<
 > = {
   created: { asc: "created-asc", desc: "created" },
   score: { asc: "score-asc", desc: "score-desc" },
-  status: { asc: "status", desc: "status" },
+  status: { asc: "status", desc: "status-desc" },
   dueDate: { asc: "due-asc", desc: "due-desc" },
 };
 

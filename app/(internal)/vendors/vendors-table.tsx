@@ -39,7 +39,7 @@ type VendorRow = {
 const SORT_KEY_MAP: Record<string, { asc: VendorSort; desc: VendorSort }> = {
   name: { asc: "name", desc: "name-desc" },
   score: { asc: "score-asc", desc: "score-desc" },
-  tier: { asc: "tier", desc: "tier" },
+  tier: { asc: "tier", desc: "tier-desc" },
 };
 
 function sortParamToState(sort: VendorSort | undefined): SortingState {

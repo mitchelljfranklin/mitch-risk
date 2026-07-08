@@ -13,7 +13,8 @@ export const VENDOR_SORTS = {
   "name-desc": "Name (Z–A)",
   "score-asc": "Score (low → high)",
   "score-desc": "Score (high → low)",
-  tier: "Tier",
+  tier: "Tier (A–Z)",
+  "tier-desc": "Tier (Z–A)",
   "last-assessed": "Last assessed",
   assessments: "Most assessments",
 } as const;
@@ -34,6 +35,8 @@ function vendorOrderBy(
       return { overallScore: { sort: "desc", nulls: "last" } };
     case "tier":
       return { tier: { sort: "asc", nulls: "last" } };
+    case "tier-desc":
+      return { tier: { sort: "desc", nulls: "last" } };
     case "last-assessed":
       return { lastAssessedAt: { sort: "desc", nulls: "last" } };
     case "assessments":
