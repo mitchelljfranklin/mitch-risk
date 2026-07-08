@@ -634,7 +634,7 @@ External input is validated comprehensively via **zod** schemas at every boundar
 
 - `CRON_SECRET` is **required in production** — the app refuses to boot without it (enforced at env validation). Build phase is exempted so `next build` runs without runtime secrets
 - `TRUSTED_PROXY_COUNT` defaults to `0` (no proxy) — must be set to the actual hop count behind a reverse proxy
-- Hardcoded credentials in `docker-compose.yml` (`POSTGRES_USER: mitch`, `POSTGRES_PASSWORD: mitch`) should be overridden via `.env` files or Docker secrets in production
+- DB credentials in `docker-compose.yml` are development defaults — production deployments must override via the deployment environment. The container does not distinguish between env-file and env-var sources
 - Port 3000 is published directly in the provided compose file — production deployments should place a reverse proxy (Caddy, nginx) in front and not publish port 3000 externally
 
 ### 12.3 Database
@@ -659,7 +659,6 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 
 **Considerations:**
 - Container runs as root — highest priority hardening item
-- Hardcoded DB credentials in compose file
 - No read-only root filesystem
 - No resource limits
 - No non-root user in Dockerfile
@@ -736,7 +735,7 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 | ID | Finding | Impact | Mitigation |
 |----|---------|--------|------------|
 | H-1 | Container runs as root (`Dockerfile:21`) | Container compromise = host root access | Set `USER node` in Dockerfile before CMD |
-| H-2 | Hardcoded DB credentials in `docker-compose.yml` | Credential exposure in version control | Use `.env` files or Docker secrets |
+| H-2 | ~~Hardcoded DB credentials in `docker-compose.yml`~~ | Credential exposure in version control | Dismissed — the compose file carries development defaults. In production, credentials must be overridden via the deployment environment regardless of whether a `.env` file exists. The container does not distinguish between env-file and env-var sources. Anyone deploying to production must already change `DATABASE_URL`, so credentials change naturally with it |
 | H-3 | ~~API keys always receive `ALL_PERMISSIONS` without scoping (`lib/api-auth.ts:89-96`)~~ | Key compromise = full platform access. No way to create read-only or scoped keys | **FIXED** — Added `permissions String[]` column to `ApiKey`; `PermissionSelector` component in Settings → API lets admins scope keys to specific permission groups; `authenticateRequest()` reads scoped permissions from the key record (empty = ALL for backward compat); all existing keys migrated to full access; no API route changes required — existing `authResultHasPermission()` gates handle scoping automatically |
 | H-4 | ~~N+1 `findFirst` in scoring loop (`lib/db/scoring.ts:110`)~~ | 50+ non-compliant responses = 50+ sequential DB roundtrips | **FIXED** — batched with `tx.finding.findMany` before loop; O(1) Map lookup |
 | H-5 | ~~TOCTOU race in `finalizeAssessment` (`lib/db/collaboration.ts:87-109`)~~ | Concurrent request could change a review decision between read and write, allowing premature finalization | **FIXED** — uses `updateMany` with atomic `status: "UNDER_REVIEW"` guard |
