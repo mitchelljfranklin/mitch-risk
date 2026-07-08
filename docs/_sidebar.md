@@ -9,6 +9,8 @@
   - [Vendors](user-guides/vendors.md)
   - [RBAC & Roles](user-guides/rbac.md)
 - **Configuration**
+  - [Overview](configuration/overview.md)
+  - [Appearance](configuration/appearance.md)
   - [SSO](configuration/sso.md)
   - [Email](configuration/email.md)
   - [Scoring](configuration/scoring.md)
