@@ -1,6 +1,8 @@
 "use client";
 
 import { useActionState, useRef } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -49,6 +51,13 @@ export function EmailTrackingForm({
   const { entries, totalCount, page, pageSize } = result;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
   const formRef = useRef<HTMLFormElement>(null);
+  const searchParams = useSearchParams();
+  const hasFilters =
+    Boolean(searchParams.get("status")) ||
+    Boolean(searchParams.get("type")) ||
+    Boolean(searchParams.get("recipient")) ||
+    Boolean(searchParams.get("fromDate")) ||
+    Boolean(searchParams.get("toDate"));
 
   return (
     <div className="flex flex-col gap-6">
@@ -149,6 +158,11 @@ export function EmailTrackingForm({
         <Button type="submit" size="sm">
           Filter
         </Button>
+        {hasFilters ? (
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/settings?tab=email-tracking">Clear</Link>
+          </Button>
+        ) : null}
       </form>
 
       {entries.length === 0 ? (

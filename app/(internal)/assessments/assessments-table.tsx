@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -91,24 +91,9 @@ export function AssessmentsTable({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleSortingChange = useCallback(
-    (updater: SortingState | ((prev: SortingState) => SortingState)) => {
-      return (prev: SortingState) => {
-        const next = typeof updater === "function" ? updater(prev) : updater;
-        const params = new URLSearchParams(searchParams.toString());
-        if (next.length === 0) {
-          params.delete("sort");
-        } else {
-          params.set("sort", stateToSortParam(next));
-        }
-        params.delete("page");
-        router.replace(`?${params.toString()}`, { scroll: false });
-        return next;
-      };
-    },
-    [router, searchParams],
+  const [sorting, setSorting] = useState<SortingState>(() =>
+    sortParamToState(initialSort),
   );
-
   const columns: ColumnDef<AssessmentRow>[] = [
     {
       id: "created",
@@ -196,11 +181,23 @@ export function AssessmentsTable({
     getPaginationRowModel: getPaginationRowModel(),
     manualSorting: true,
     manualPagination: true,
-    onSortingChange: handleSortingChange as (
-      updater: SortingState | ((prev: SortingState) => SortingState),
-    ) => void,
+    onSortingChange: (updater) => {
+      setSorting((previous) => {
+        const next =
+          typeof updater === "function" ? updater(previous) : updater;
+        const params = new URLSearchParams(searchParams.toString());
+        if (next.length === 0) {
+          params.delete("sort");
+        } else {
+          params.set("sort", stateToSortParam(next));
+        }
+        params.delete("page");
+        router.replace(`?${params.toString()}`, { scroll: false });
+        return next;
+      });
+    },
     state: {
-      sorting: sortParamToState(initialSort),
+      sorting,
       pagination: { pageIndex: page - 1, pageSize },
     },
     pageCount: Math.max(1, Math.ceil(totalCount / pageSize)),

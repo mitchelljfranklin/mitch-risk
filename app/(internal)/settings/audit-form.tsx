@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -116,6 +117,12 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
   const { entries, totalCount, page, pageSize } = result;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
   const formRef = useRef<HTMLFormElement>(null);
+  const searchParams = useSearchParams();
+  const hasFilters =
+    Boolean(searchParams.get("action")) ||
+    Boolean(searchParams.get("userId")) ||
+    Boolean(searchParams.get("fromDate")) ||
+    Boolean(searchParams.get("toDate"));
 
   return (
     <div className="flex flex-col gap-6">
@@ -195,6 +202,11 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
         <Button type="submit" size="sm">
           Filter
         </Button>
+        {hasFilters ? (
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/settings?tab=audit">Clear</Link>
+          </Button>
+        ) : null}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm">
