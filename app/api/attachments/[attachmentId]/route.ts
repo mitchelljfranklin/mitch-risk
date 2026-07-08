@@ -41,7 +41,7 @@ export async function GET(
           : "application/octet-stream",
         "Content-Disposition": isInline
           ? "inline"
-          : `attachment; filename="${attachment.fileName}"`,
+          : `attachment; filename="${encodeURIComponent(attachment.fileName)}"`,
         "Content-Length": String(file.length),
         "X-Content-Type-Options": "nosniff",
       },

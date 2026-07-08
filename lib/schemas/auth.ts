@@ -52,6 +52,13 @@ export const profileNameSchema = z.object({
   name: z.string().min(1, "Name is required"),
 });
 
+export const userCreateSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.email("Enter a valid email address"),
+  password: z.string().min(12, "Use at least 12 characters"),
+  roleId: z.string().min(1, "Role is required"),
+});
+
 export const setupAdminSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.email("Enter a valid email address"),

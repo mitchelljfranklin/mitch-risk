@@ -19,9 +19,7 @@ export async function GET(request: Request) {
       fromDate: searchParams.get("fromDate") ?? undefined,
       toDate: searchParams.get("toDate") ?? undefined,
       overdue: searchParams.get("overdue") === "true" ? true : undefined,
-      page: searchParams.get("page")
-        ? Number(searchParams.get("page"))
-        : undefined,
+      page: parseInt(searchParams.get("page") ?? "1", 10) || 1,
     });
 
     const format = searchParams.get("format") ?? "json";

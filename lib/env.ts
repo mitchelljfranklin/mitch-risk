@@ -6,7 +6,9 @@ const environmentSchema = z
       .enum(["development", "test", "production"])
       .default("development"),
     DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
-    AUTH_SECRET: z.string().min(1, "AUTH_SECRET is required"),
+    AUTH_SECRET: z
+      .string()
+      .min(32, "AUTH_SECRET must be at least 32 characters"),
     APP_ENCRYPTION_KEY: z
       .string()
       .min(32, "APP_ENCRYPTION_KEY must be at least 32 characters"),

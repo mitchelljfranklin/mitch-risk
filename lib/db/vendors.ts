@@ -147,7 +147,6 @@ export async function deleteVendor(id: string): Promise<void> {
     where: { assessment: { vendorId: id } },
     select: { storageKey: true },
   });
-  await prisma.vendor.delete({ where: { id } });
   for (const item of evidence) {
     try {
       await storage.delete(item.storageKey);
@@ -155,6 +154,7 @@ export async function deleteVendor(id: string): Promise<void> {
       // Best-effort; orphan-sweep cron cleans any leftovers.
     }
   }
+  await prisma.vendor.delete({ where: { id } });
 }
 
 export function getVendorForExport(id: string) {

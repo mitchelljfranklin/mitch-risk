@@ -16,6 +16,7 @@ import {
 import { getRole } from "@/lib/db/roles";
 import { logAudit } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
+import { userCreateSchema } from "@/lib/schemas/auth";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 
@@ -34,30 +35,31 @@ export async function addUserAction(
 ): Promise<UserActionState> {
   await requirePermission(PERMISSIONS.USERS_MANAGE);
 
-  const name = getField(formData, "name");
-  const email = getField(formData, "email");
-  const password = getField(formData, "password");
-  const roleId = getField(formData, "roleId");
-
-  if (!name || !email || !password || !roleId) {
+  const parsed = userCreateSchema.safeParse({
+    name: getField(formData, "name"),
+    email: getField(formData, "email"),
+    password: getField(formData, "password"),
+    roleId: getField(formData, "roleId"),
+  });
+  if (!parsed.success) {
     return {
       ok: false,
-      message: "Name, email, password, and role are required.",
+      message: parsed.error.issues[0]?.message ?? "Invalid input.",
     };
   }
 
-  const role = await getRole(roleId);
+  const role = await getRole(parsed.data.roleId);
   if (!role) {
     return { ok: false, message: "Selected role does not exist." };
   }
 
   try {
-    await createUser({ name, email, password, roleId });
+    await createUser(parsed.data);
   } catch (error) {
     if (isUniqueConstraintError(error)) {
       return { ok: false, message: "A user with this email already exists." };
     }
-    console.error(`[users] failed to create user ${email}:`, error);
+    console.error(`[users] failed to create user ${parsed.data.email}:`, error);
     return {
       ok: false,
       message: "Could not create the user. Please try again.",
@@ -66,7 +68,7 @@ export async function addUserAction(
 
   const actor = await getCurrentUser();
   if (actor) {
-    await logAudit(actor.id, "CREATE_USER", "User", email);
+    await logAudit(actor.id, "CREATE_USER", "User", parsed.data.email);
   }
 
   // Result is consumed by useActionState in a modal; the client refreshes after

@@ -27,7 +27,7 @@ export default async function InternalLayout({
   const [organization, notificationCounts, appearance, assessment] =
     await Promise.all([
       getOrganizationSettings(),
-      getNotificationCounts(user.id),
+      getNotificationCounts(),
       getAppearanceSettings(),
       getAssessmentSettings(),
     ]);

@@ -48,7 +48,7 @@ afterAll(async () => {
 
 describe.sequential("notification counts (integration)", () => {
   it("returns non-negative counts whose total is the sum of its parts", async () => {
-    const counts = await getNotificationCounts("any-user-id");
+    const counts = await getNotificationCounts();
     expect(counts.unreviewedSubmissions).toBeGreaterThanOrEqual(0);
     expect(counts.overdueAssessments).toBeGreaterThanOrEqual(0);
     expect(counts.clarificationsAwaitingVendor).toBeGreaterThanOrEqual(0);
@@ -114,7 +114,7 @@ describe.sequential("notification counts (integration)", () => {
       data: { status: "SUBMITTED", submittedAt: new Date() },
     });
 
-    const counts = await getNotificationCounts("any-user-id");
+    const counts = await getNotificationCounts();
     expect(counts.unreviewedSubmissions).toBeGreaterThanOrEqual(1);
   });
 });

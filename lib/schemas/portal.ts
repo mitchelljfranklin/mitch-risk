@@ -3,7 +3,7 @@ import { z } from "zod";
 export const portalAnswerSchema = z.object({
   assessmentQuestionId: z.string().min(1),
   value: z.union([
-    z.string(),
+    z.string().max(50000),
     z.number(),
     z.boolean(),
     z.null(),

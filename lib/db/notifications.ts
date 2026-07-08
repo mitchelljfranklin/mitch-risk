@@ -12,7 +12,7 @@ export type NotificationCounts = {
 };
 
 export const getNotificationCounts = cache(
-  async (userId: string): Promise<NotificationCounts> => {
+  async (): Promise<NotificationCounts> => {
     const now = new Date();
     const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
@@ -23,10 +23,7 @@ export const getNotificationCounts = cache(
       failedEmails,
     ] = await Promise.all([
       prisma.assessment.count({
-        where: {
-          status: "SUBMITTED",
-          OR: [{ reviewerId: userId }, { reviewerId: null }],
-        },
+        where: { status: "SUBMITTED" },
       }),
       prisma.assessment.count({
         where: {

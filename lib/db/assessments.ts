@@ -192,8 +192,8 @@ export async function deleteAssessment(id: string): Promise<void> {
     where: { assessmentId: id },
     select: { storageKey: true },
   });
-  await prisma.assessment.delete({ where: { id } });
   await deleteStoredFiles(evidence.map((item) => item.storageKey));
+  await prisma.assessment.delete({ where: { id } });
 }
 
 export async function deleteEvidenceForQuestion(

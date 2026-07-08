@@ -108,7 +108,7 @@ function buildVendorCsvResponse(
   return new Response(csv, {
     headers: {
       "Content-Type": "text/csv",
-      "Content-Disposition": `attachment; filename="${vendor.name.replaceAll(" ", "-")}.csv"`,
+      "Content-Disposition": `attachment; filename="${encodeURIComponent(vendor.name.replaceAll(" ", "-") + ".csv")}"`,
     },
   });
 }

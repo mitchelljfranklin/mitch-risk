@@ -16,9 +16,7 @@ export async function GET(request: Request) {
       status: searchParams.get("status") ?? undefined,
       severity: searchParams.get("severity") ?? undefined,
       vendorId: searchParams.get("vendorId") ?? undefined,
-      page: searchParams.get("page")
-        ? Number(searchParams.get("page"))
-        : undefined,
+      page: parseInt(searchParams.get("page") ?? "1", 10) || 1,
     });
 
     return Response.json({ entries: findings, page, pageSize, totalCount });

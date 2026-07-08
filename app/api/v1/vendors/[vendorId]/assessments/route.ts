@@ -23,9 +23,7 @@ export async function GET(
     const { assessments, totalCount, page, pageSize } = await listAssessments({
       vendorId,
       status: searchParams.get("status") ?? undefined,
-      page: searchParams.get("page")
-        ? Number(searchParams.get("page"))
-        : undefined,
+      page: parseInt(searchParams.get("page") ?? "1", 10) || 1,
     });
 
     return Response.json({

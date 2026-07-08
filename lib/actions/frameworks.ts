@@ -3,8 +3,8 @@
 import { revalidatePath } from "next/cache";
 
 import { requirePermission } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { PERMISSIONS } from "@/lib/permissions";
-import { createFramework, createControls } from "@/lib/db/frameworks";
 import { logAudit } from "@/lib/db/audit";
 import { parseCsvRows } from "@/lib/csv-parser";
 import {
@@ -110,22 +110,28 @@ export async function importFrameworkAction(
     });
   }
 
-  const framework = await createFramework({
-    name: meta.data.name,
-    version: meta.data.version,
-    description: meta.data.description,
-  });
+  const framework = await prisma.$transaction(async (tx) => {
+    const created = await tx.framework.create({
+      data: {
+        name: meta.data.name,
+        version: meta.data.version,
+        description: meta.data.description,
+      },
+    });
 
-  await createControls(
-    controls.map((control) => ({
-      frameworkId: framework.id,
-      domain: control.domain,
-      code: control.code,
-      title: control.title,
-      guidance: control.guidance,
-      order: control.order,
-    })),
-  );
+    await tx.control.createMany({
+      data: controls.map((control) => ({
+        frameworkId: created.id,
+        domain: control.domain,
+        code: control.code,
+        title: control.title,
+        guidance: control.guidance,
+        order: control.order,
+      })),
+    });
+
+    return created;
+  });
 
   await logAudit(user.id, "CREATE_FRAMEWORK", "Framework", framework.id);
 

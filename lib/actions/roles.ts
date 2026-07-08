@@ -52,7 +52,10 @@ export async function createRoleAction(
     ) {
       return { ok: false, message: "A role with this name already exists." };
     }
-    throw error;
+    return {
+      ok: false,
+      message: "Could not create the role. Please try again.",
+    };
   }
 
   // No revalidatePath here: this result is consumed by useActionState in a modal.
