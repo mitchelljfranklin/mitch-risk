@@ -28,4 +28,6 @@ COPY --from=build /app/prisma ./prisma
 RUN mkdir -p /app/.storage/evidence /app/data/uploads && chown -R node:node /app/.storage /app/data
 EXPOSE 3000
 USER node
-CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && node server.js"]
+# The seed is guarded by a marker file so it runs once per volume lifetime.
+# Set SKIP_SEED=true to bypass entirely (e.g. managed database deployments).
+CMD ["sh", "-c", "npx prisma migrate deploy && ( [ \"$SKIP_SEED\" = true ] && echo 'Seed skipped (SKIP_SEED=true).' || ( [ -f /app/.storage/.seeded ] && echo 'Seed already applied.' || ( npx prisma db seed && touch /app/.storage/.seeded ) ) ) && node server.js"]
