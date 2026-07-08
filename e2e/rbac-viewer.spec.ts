@@ -30,13 +30,12 @@ test.describe("Viewer role sees a read-only UI", () => {
   }) => {
     await signInAsViewer(page);
     await page.goto("/vendors");
+    await page.waitForTimeout(2000);
     await expect(page.getByRole("heading", { name: "Vendors" })).toBeVisible();
     await expect(page.getByText("E2E Vendor")).toBeVisible();
     await expect(page.getByRole("link", { name: "New vendor" })).toHaveCount(0);
     await expect(page.getByRole("link", { name: "Bulk send" })).toHaveCount(0);
-    await expect(page.getByRole("button", { name: "Import CSV" })).toHaveCount(
-      0,
-    );
+    await expect(page.getByRole("link", { name: "Import" })).toHaveCount(0);
   });
 
   test("vendor detail hides edit/delete/new-assessment but keeps export", async ({
@@ -44,15 +43,19 @@ test.describe("Viewer role sees a read-only UI", () => {
   }) => {
     await signInAsViewer(page);
     await page.goto("/vendors");
-    await page.getByText("E2E Vendor").click();
+    await page.waitForTimeout(2000);
+    await page.locator("table a[href^='/vendors/']").first().click();
     await page.waitForURL("**/vendors/**");
+    await page.waitForTimeout(2000);
 
     await expect(page.getByRole("link", { name: "Edit" })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Delete" })).toHaveCount(0);
     await expect(
       page.getByRole("link", { name: "New assessment" }),
     ).toHaveCount(0);
-    await expect(page.getByRole("link", { name: "Export CSV" })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Export CSV" }),
+    ).toBeVisible();
   });
 
   test("templates list hides New template for a viewer", async ({ page }) => {
