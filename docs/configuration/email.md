@@ -1,6 +1,6 @@
-# Email Configuration
+﻿# Email Configuration
 
-mitch-risk sends email notifications (assessment invitations, reminders, escalations, password resets) via **Nodemailer over SMTP**. Any standard SMTP relay works — SendGrid, Mailgun, AWS SES, or your organisation's mail server.
+Mitch‑Risk sends email notifications (assessment invitations, reminders, escalations, password resets) via **Nodemailer over SMTP**. Any standard SMTP relay works — SendGrid, Mailgun, AWS SES, or your organisation's mail server.
 
 Configuration is in-app under **Settings → Email** (requires **Settings: manage** permission).
 
@@ -13,7 +13,7 @@ Configuration is in-app under **Settings → Email** (requires **Settings: manag
    - **SMTP User** — authentication username
    - **SMTP Password** — password or API key (encrypted at rest with AES-256-GCM)
    - **From Address** — email address that sends notifications
-   - **From Name** — display name (e.g. "mitch-risk")
+   - **From Name** — display name (e.g. "Mitch‑Risk")
 3. Click **Test SMTP** to verify the connection
 4. Click **Save**
 

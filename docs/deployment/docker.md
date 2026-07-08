@@ -1,12 +1,12 @@
-# Docker Deployment
+﻿# Docker Deployment
 
-Deploy mitch-risk with Docker Compose for a self-hosted, single-container setup.
+Deploy Mitch‑Risk with Docker Compose for a self-hosted, single-container setup.
 
 ## Quick Deploy
 
 ```bash
 git clone https://github.com/mitchelljfranklin/mitch-risk.git
-cd mitch-risk
+cd Mitch‑Risk
 cp .env.example .env
 ```
 

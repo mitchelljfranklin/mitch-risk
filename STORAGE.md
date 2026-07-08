@@ -1,6 +1,6 @@
-# Storage Configuration
+﻿# Storage Configuration
 
-mitch-risk stores evidence files and attachments on disk by default. External cloud storage (AWS S3 and Azure Blob) can be configured in the Settings → Storage tab without changing any application code.
+Mitch‑Risk stores evidence files and attachments on disk by default. External cloud storage (AWS S3 and Azure Blob) can be configured in the Settings → Storage tab without changing any application code.
 
 ## Contents
 
@@ -123,7 +123,7 @@ Attach this policy to the IAM user.
 2. Select **Application running outside AWS**
 3. Copy the **Access key ID** and **Secret access key** (you won't see the secret again)
 
-### Step 5: Configure in mitch-risk
+### Step 5: Configure in Mitch‑Risk
 
 1. Go to **Settings → Storage**
 2. Set **Provider** to **Amazon S3**
@@ -205,7 +205,7 @@ The platform supports two authentication methods for Azure:
 
 > Access keys grant full administrative access to the storage account. SAS tokens are preferred because they support scoped permissions and expiry.
 
-### Step 4: Configure in mitch-risk
+### Step 4: Configure in Mitch‑Risk
 
 1. Go to **Settings → Storage**
 2. Set **Provider** to **Azure Blob**
@@ -288,7 +288,7 @@ Changing the storage provider does **not** automatically migrate existing files.
 | Error | Likely cause | Solution |
 |-------|-------------|----------|
 | `AuthorizationResourceTypeMismatch` / `SignedResourceTypes 'o' is required` | SAS token missing Object permission | Regenerate the SAS token and ensure **Object** is checked under Allowed resource types |
-| `InvalidUri` / URL contains doubled container name | SAS URL construction issue | Update to the latest version of mitch-risk — this was fixed in a recent update |
+| `InvalidUri` / URL contains doubled container name | SAS URL construction issue | Update to the latest version of Mitch‑Risk — this was fixed in a recent update |
 | `AuthenticationFailed` / `Server failed to authenticate` | SAS token expired or invalid | Check if the SAS token has a valid start/expiry date; regenerate if expired |
 | `ContainerNotFound` | Container name is incorrect or doesn't exist | Verify the container name in Settings — it will be auto-created if it doesn't exist, but the SAS token must have Create permissions |
 | `This request is not authorized` with `srt=c` | SAS token missing Container permission | Regenerate with Container checked under Allowed resource types |

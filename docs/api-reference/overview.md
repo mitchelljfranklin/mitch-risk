@@ -1,6 +1,6 @@
-# API Reference
+﻿# API Reference
 
-The mitch-risk REST API provides programmatic access to vendors, assessments, findings, frameworks, dashboard metrics, and audit logs.
+The Mitch‑Risk REST API provides programmatic access to vendors, assessments, findings, frameworks, dashboard metrics, and audit logs.
 
 ## Base URL
 

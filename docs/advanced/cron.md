@@ -1,6 +1,6 @@
-# Cron & Automation
+﻿# Cron & Automation
 
-mitch-risk includes a cron endpoint that handles scheduled maintenance. An external scheduler (system cron, Kubernetes CronJob, etc.) hits this endpoint periodically.
+Mitch‑Risk includes a cron endpoint that handles scheduled maintenance. An external scheduler (system cron, Kubernetes CronJob, etc.) hits this endpoint periodically.
 
 ## Setup
 

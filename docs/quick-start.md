@@ -1,6 +1,6 @@
-# Quick Start
+﻿# Quick Start
 
-Get mitch-risk running in minutes with Docker Compose.
+Get Mitch‑Risk running in minutes with Docker Compose.
 
 ## Prerequisites
 
@@ -12,7 +12,7 @@ Get mitch-risk running in minutes with Docker Compose.
 
 ```bash
 git clone https://github.com/mitchelljfranklin/mitch-risk.git
-cd mitch-risk
+cd Mitch‑Risk
 cp .env.example .env
 ```
 

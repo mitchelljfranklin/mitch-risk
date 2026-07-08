@@ -1,6 +1,6 @@
-# Cloud Storage
+﻿# Cloud Storage
 
-mitch-risk supports three storage backends for evidence files and attachments: local disk (default), AWS S3, and Azure Blob Storage. Switching between them requires no code changes — configure in Settings → Storage and the change takes effect immediately.
+Mitch‑Risk supports three storage backends for evidence files and attachments: local disk (default), AWS S3, and Azure Blob Storage. Switching between them requires no code changes — configure in Settings → Storage and the change takes effect immediately.
 
 ## Architecture
 

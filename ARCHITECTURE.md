@@ -1,4 +1,4 @@
-# mitch-risk — Architecture Solution Design Document
+# Mitch‑Risk — Architecture Solution Design Document
 
 > **Version:** 1.0  
 > **Last Updated:** July 2026  
@@ -32,7 +32,7 @@
 
 ## 1. Executive Summary
 
-**mitch-risk** is a lightweight, self-hosted third party vendor risk management solution. It enables small-to-medium businesses to:
+**Mitch‑Risk** is a lightweight, self-hosted third party vendor risk management solution. It enables small-to-medium businesses to:
 
 - Build and version questionnaire templates with conditional logic
 - Send assessments to vendors via no-login secure portal links

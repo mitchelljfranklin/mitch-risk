@@ -1,6 +1,6 @@
-# Reverse Proxy
+﻿# Reverse Proxy
 
-mitch-risk is designed to run behind a TLS-terminating reverse proxy (Caddy, nginx, Zoraxy, Azure Application Gateway, etc.). The app itself serves HTTP on port 3000 — the proxy handles HTTPS and forwards headers.
+Mitch‑Risk is designed to run behind a TLS-terminating reverse proxy (Caddy, nginx, Zoraxy, Azure Application Gateway, etc.). The app itself serves HTTP on port 3000 — the proxy handles HTTPS and forwards headers.
 
 ## TRUSTED_PROXY_COUNT
 

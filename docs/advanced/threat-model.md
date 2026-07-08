@@ -1,6 +1,6 @@
-# Threat Model
+﻿# Threat Model
 
-This page summarises the security threats mitch-risk is designed to mitigate, helping security architects and assessors evaluate the platform's security posture.
+This page summarises the security threats Mitch‑Risk is designed to mitigate, helping security architects and assessors evaluate the platform's security posture.
 
 ## What We Protect
 

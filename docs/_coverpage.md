@@ -1,8 +1,8 @@
-<!-- _coverpage.md -->
+﻿<!-- _coverpage.md -->
 
 ![logo](favicon.svg)
 
-# mitch-risk
+# Mitch‑Risk
 
 > Lightweight third party vendor risk management
 

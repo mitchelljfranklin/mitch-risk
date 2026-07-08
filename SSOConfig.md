@@ -1,10 +1,10 @@
-# SSO configuration guide
+﻿# SSO configuration guide
 
-This guide explains how to connect **mitch-risk** to a Single Sign-On (SSO) identity provider
+This guide explains how to connect **Mitch‑Risk** to a Single Sign-On (SSO) identity provider
 (IdP) so internal staff can sign in with their organisation account instead of a local
 email/password.
 
-mitch-risk supports three sign-in integrations, all configured in-app under
+Mitch‑Risk supports three sign-in integrations, all configured in-app under
 **Settings → SSO** (requires the **Settings: manage** permission):
 
 | Integration | Use it for |
@@ -17,11 +17,11 @@ All three can be enabled at once; each appears as its own button on the login sc
 
 ---
 
-## 1. How SSO works in mitch-risk
+## 1. How SSO works in Mitch‑Risk
 
-- **Standard OIDC / OAuth 2.0.** mitch-risk is the *relying party*; your IdP is the
+- **Standard OIDC / OAuth 2.0.** Mitch‑Risk is the *relying party*; your IdP is the
   *authorization server*. Sign-in uses the OpenID Connect Authorization Code flow.
-- **Just-in-time user provisioning.** The first time someone signs in via SSO, mitch-risk
+- **Just-in-time user provisioning.** The first time someone signs in via SSO, Mitch‑Risk
   creates a local user for them (or links to an existing local user **with the same email
   address**) and assigns the **Default role for new SSO users** (falls back to *Reviewer* if
   unset). Change a user's role afterwards under **Settings → Users**.
@@ -49,7 +49,7 @@ All three can be enabled at once; each appears as its own button on the login sc
 1. **Set a public HTTPS URL.** `APP_URL` (env) must be your real public origin, e.g.
    `https://risk.example.com`. This determines the redirect/callback URL your IdP must trust.
    See the "Running behind a reverse proxy" section of the [README](./README.md).
-2. **You need admin access** to both mitch-risk (an Admin account) and your IdP.
+2. **You need admin access** to both Mitch‑Risk (an Admin account) and your IdP.
 3. **Know your redirect URI.** Each integration has a fixed callback path:
 
    | Integration | Redirect / callback URL to register at the IdP |
@@ -61,14 +61,14 @@ All three can be enabled at once; each appears as its own button on the login sc
    Replace `YOUR_DOMAIN` with your `APP_URL` host. Use `https://` in production — most IdPs
    reject plain-HTTP redirect URIs for anything other than `localhost`.
 
-4. **Required scopes/claims:** `openid`, `profile`, `email`. mitch-risk reads `sub`
+4. **Required scopes/claims:** `openid`, `profile`, `email`. Mitch‑Risk reads `sub`
    (stable ID), `email`, and `name` (or `preferred_username`).
 
 ---
 
 ## 3. In-app configuration (all providers)
 
-1. Sign in to mitch-risk as an Admin → **Settings → SSO**.
+1. Sign in to Mitch‑Risk as an Admin → **Settings → SSO**.
 2. Fill in the fields for your chosen provider (see per-provider sections below).
 3. Set **Default role for new SSO users** (e.g. *Reviewer*).
 4. (Optional) Set **Restrict to domain** to your email domain.
@@ -84,7 +84,7 @@ All three can be enabled at once; each appears as its own button on the login sc
 In Azure, you create an **App registration** (it also appears under *Enterprise applications*).
 
 1. **Azure Portal → Microsoft Entra ID → App registrations → New registration.**
-   - Name: `mitch-risk`.
+   - Name: `Mitch‑Risk`.
    - Supported account types: choose per your needs (single-tenant is typical for internal
      staff).
    - Redirect URI: platform **Web**, value
@@ -93,7 +93,7 @@ In Azure, you create an **App registration** (it also appears under *Enterprise 
 3. **Certificates & secrets → New client secret** → copy the secret **Value** (not the ID).
 4. **API permissions**: the Microsoft Graph delegated `openid`, `profile`, `email`, `User.Read`
    permissions are sufficient (present by default). Grant admin consent if prompted.
-5. In mitch-risk **Settings → SSO → Microsoft Entra ID**:
+5. In Mitch‑Risk **Settings → SSO → Microsoft Entra ID**:
    - Tick **Enabled**.
    - **Client ID** = Application (client) ID.
    - **Client secret** = the secret Value.
@@ -114,7 +114,7 @@ In Azure, you create an **App registration** (it also appears under *Enterprise 
 3. Application type: **Web application**.
    - Authorised redirect URI: `https://YOUR_DOMAIN/api/auth/callback/google`.
 4. Copy the **Client ID** and **Client secret**.
-5. In mitch-risk **Settings → SSO → Google Workspace**:
+5. In Mitch‑Risk **Settings → SSO → Google Workspace**:
    - Tick **Enabled**, paste **Client ID** and **Client secret**, Save.
 6. To limit sign-in to your company, set **Restrict to domain** (e.g. `example.com`).
 
@@ -128,7 +128,7 @@ redirect URI `https://YOUR_DOMAIN/api/auth/callback/oidc`.
 
 ### 6.1 Finding your Issuer URL
 
-The **Issuer URL** is the base URL that hosts your provider's discovery document. mitch-risk
+The **Issuer URL** is the base URL that hosts your provider's discovery document. Mitch‑Risk
 appends `/.well-known/openid-configuration` automatically. To verify, open:
 
 ```
@@ -232,4 +232,4 @@ Once at least one provider works:
 - Client secrets are encrypted at rest and never returned to the browser; re-enter a secret
   only when rotating it (leaving it blank keeps the current one).
 - Break-glass tokens are bcrypt-hashed and stored as a JSON object with expiry and consumed flag. Tokens expire 24 hours after generation and are single-use (consumed on first successful verification). Regenerate to issue a new URL.
-- SSO users authenticate against your IdP — mitch-risk never sees their IdP password.
+- SSO users authenticate against your IdP — Mitch‑Risk never sees their IdP password.

@@ -1,12 +1,12 @@
-# SSO Configuration
+﻿# SSO Configuration
 
-mitch-risk supports Single Sign-On for internal staff via **Microsoft Entra ID**, **Google Workspace**, and any **generic OIDC** provider. All configuration is done in-app under **Settings → SSO** (requires the **Settings: manage** permission).
+Mitch‑Risk supports Single Sign-On for internal staff via **Microsoft Entra ID**, **Google Workspace**, and any **generic OIDC** provider. All configuration is done in-app under **Settings → SSO** (requires the **Settings: manage** permission).
 
 All three providers can be enabled at once; each appears as its own button on the login screen.
 
 ## How SSO works
 
-- **Standard OIDC / OAuth 2.0.** mitch-risk is the relying party; your IdP is the authorization server. Uses the Authorization Code flow.
+- **Standard OIDC / OAuth 2.0.** Mitch‑Risk is the relying party; your IdP is the authorization server. Uses the Authorization Code flow.
 - **Just-in-time provisioning.** First SSO login creates a local user linked to the IdP email, assigned the default role (falls back to Reviewer). Change a user's role later under **Settings → Users**.
 - **Email is the identity key.** Your IdP must return an `email` claim. It provisions/links the account and enforces optional domain restriction.
 - **Domain restriction.** Optional — rejects logins whose email domain doesn't match (e.g. `example.com`).
@@ -17,7 +17,7 @@ All three providers can be enabled at once; each appears as its own button on th
 ## Prerequisites
 
 1. **Set a public HTTPS URL.** `APP_URL` must be your real origin (e.g. `https://risk.example.com`). This determines the callback/redirect URI.
-2. **Admin access** to both mitch-risk and your IdP.
+2. **Admin access** to both Mitch‑Risk and your IdP.
 3. **Know your redirect URI:**
 
 | Integration | Callback URL |
@@ -41,11 +41,11 @@ All three providers can be enabled at once; each appears as its own button on th
 ## Microsoft Entra ID
 
 1. **Azure Portal → Microsoft Entra ID → App registrations → New registration**
-   - Name: `mitch-risk`
+   - Name: `Mitch‑Risk`
    - Redirect URI: Web, `https://YOUR_DOMAIN/api/auth/callback/microsoft-entra-id`
 2. Copy the **Application (client) ID**
 3. **Certificates & secrets → New client secret** — copy the Value
-4. In mitch-risk **Settings → SSO → Microsoft Entra ID**: tick Enabled, paste Client ID and Client secret, Save
+4. In Mitch‑Risk **Settings → SSO → Microsoft Entra ID**: tick Enabled, paste Client ID and Client secret, Save
 
 > The built-in Entra integration uses Microsoft's multi-tenant `common` endpoint. To restrict to your organisation, set **Restrict to domain** to your tenant's email domain, or use **Custom OIDC** with your tenant issuer `https://login.microsoftonline.com/<tenant-id>/v2.0`.
 
@@ -54,7 +54,7 @@ All three providers can be enabled at once; each appears as its own button on th
 1. **Google Cloud Console → APIs & Services → Credentials → Create OAuth client ID**
 2. Configure OAuth consent screen (Internal user type keeps it to your Workspace)
 3. Application type: **Web application**, redirect URI: `https://YOUR_DOMAIN/api/auth/callback/google`
-4. In mitch-risk **Settings → SSO → Google Workspace**: tick Enabled, paste Client ID and Client secret, Save
+4. In Mitch‑Risk **Settings → SSO → Google Workspace**: tick Enabled, paste Client ID and Client secret, Save
 5. To limit sign-in to your company, set **Restrict to domain**
 
 ## Custom OIDC

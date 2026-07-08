@@ -1,4 +1,4 @@
-# mitch-risk — Project Plan
+# Mitch‑Risk — Project Plan
 
 A lightweight third party vendor risk management solution, inspired by UpGuard's questionnaire and
 framework-alignment features, deliberately kept simple and easy to manage.

@@ -1,4 +1,4 @@
-# mitch-risk
+# Mitch‑Risk
 
 A lightweight third party vendor risk management solution.
 

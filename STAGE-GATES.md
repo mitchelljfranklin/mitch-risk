@@ -1,4 +1,4 @@
-# Stage Gates
+﻿# Stage Gates
 
 This document is the control point for delivery. Each phase has a gate that must be
 **Approved** before the next phase begins. The purpose is to guarantee each phase is
@@ -803,7 +803,7 @@ for creating assessments and fetching scores.
 
 **Evidence** (recorded 2026-07-01):
 
-- **NIST CSF 2.0** — `prisma/seed-data/nist-csf.ts` seeds 129 subcategories grouped into 6 functions: Govern (GV: 30 controls — OC, RM, RR, PO, OV, SC), Identify (ID: 22 — AM, RA, IM), Protect (PR: 32 — AA, AT, DS, PS, IR), Detect (DE: 17 — CM, AE), Respond (RS: 17 — MA, AN, CO, MI), Recover (RC: 11 — RP, CO). Each control has `code` (e.g., `GV.OC-01`), `title`, `domain`, and mitch-risk guidance.
+- **NIST CSF 2.0** — `prisma/seed-data/nist-csf.ts` seeds 129 subcategories grouped into 6 functions: Govern (GV: 30 controls — OC, RM, RR, PO, OV, SC), Identify (ID: 22 — AM, RA, IM), Protect (PR: 32 — AA, AT, DS, PS, IR), Detect (DE: 17 — CM, AE), Respond (RS: 17 — MA, AN, CO, MI), Recover (RC: 11 — RP, CO). Each control has `code` (e.g., `GV.OC-01`), `title`, `domain`, and Mitch‑Risk guidance.
 - **Essential Eight** — `prisma/seed-data/essential-eight.ts` seeds 55 controls across 8 strategies: Application Control (7), Patch Applications (8), Microsoft Office Macros (6), User Application Hardening (7), Restrict Admin Privileges (7), Patch Operating Systems (7), Multi-Factor Authentication (6), Regular Backups (7). Controls are labelled with maturity levels (ML1/ML2/ML3).
 - **Starter templates** — NIST CSF 2.0 Starter (20 questions, all 9 types, pre-mapped to the first 20 NIST controls) and Essential Eight Starter (12 questions, pre-mapped to the first 12 E8 controls). Both are seeded as PUBLISHED templates.
 - **Idempotent** — seed runs twice without duplicates; stable counts: 4 frameworks, 328 controls, 4 starter templates.
@@ -1591,7 +1591,7 @@ message.
 **Scope:** stop the integration test suite from mutating/wiping a real database.
 
 **Root cause:** `vitest.setup.ts` loaded `.env`, so integration tests ran against the dev
-`DATABASE_URL`. `settings.integration.test.ts` reset organization to `mitch-risk` + deleted all
+`DATABASE_URL`. `settings.integration.test.ts` reset organization to `Mitch‑Risk` + deleted all
 `email` settings; the appearance test left appearance blank; `notifications.integration.test.ts`
 called an unfiltered `notificationLog.deleteMany()`. Net effect: General/Email/Appearance
 settings and the whole email-tracking history were destroyed on every `npm run test`.

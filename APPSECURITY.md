@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-mitch-risk is a lightweight third party vendor risk management solution built on Next.js 16 (App Router) with TypeScript, Prisma/PostgreSQL, and Auth.js (NextAuth v5). This document provides a detailed security architecture review for security architects, compliance assessors, and penetration testers evaluating the platform for organisational use.
+Mitch‑Risk is a lightweight third party vendor risk management solution built on Next.js 16 (App Router) with TypeScript, Prisma/PostgreSQL, and Auth.js (NextAuth v5). This document provides a detailed security architecture review for security architects, compliance assessors, and penetration testers evaluating the platform for organisational use.
 
 **Overall security posture:** The platform implements strong security fundamentals for its target scale (single-container, self-hosted deployment). Cryptographic primitives are sound (bcrypt 12 rounds, AES-256-GCM, SHA-256 token hashing, timing-safe comparisons). Input validation is comprehensive via zod. RBAC is granular with UI-level enforcement. The primary hardening opportunities are operational (non-root container user, secrets management in deployment config), not cryptographic or architectural.
 
@@ -828,7 +828,7 @@ The platform provides mechanics (controls mapping, scoring, findings, audit trai
 
 ## 17. Security Contact & Reporting
 
-This document is maintained as part of the mitch-risk project. Security findings should be reported via the project's issue tracker.
+This document is maintained as part of the Mitch‑Risk project. Security findings should be reported via the project's issue tracker.
 
 **Last reviewed:** July 2026 (deep code audit — combined risk register)
 **App version:** 0.1.0

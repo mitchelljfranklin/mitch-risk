@@ -1,6 +1,6 @@
-# Compliance Coverage
+﻿# Compliance Coverage
 
-mitch-risk maps assessment questions to compliance framework controls, enabling organisations to demonstrate vendor due diligence against industry standards. This page details what's covered and how the mapping works.
+Mitch‑Risk maps assessment questions to compliance framework controls, enabling organisations to demonstrate vendor due diligence against industry standards. This page details what's covered and how the mapping works.
 
 ## Frameworks Included
 

@@ -1,4 +1,4 @@
-# mitch-risk
+﻿# Mitch‑Risk
 
 A lightweight, self-hosted third party vendor risk management solution. Build security questionnaires, send them to vendors via no-login secure links, auto-score responses, map answers to compliance frameworks, and track vendor risk profiles over time.
 

@@ -1,6 +1,6 @@
-# RBAC & Roles
+﻿# RBAC & Roles
 
-mitch-risk uses **permission-based** access control, not "is authenticated" gating. Three system roles are built in, and admins can create custom roles with any combination of the 20 fine-grained permissions.
+Mitch‑Risk uses **permission-based** access control, not "is authenticated" gating. Three system roles are built in, and admins can create custom roles with any combination of the 20 fine-grained permissions.
 
 ## Permission Catalog (20 Permissions)
 

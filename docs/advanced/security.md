@@ -1,8 +1,8 @@
-# Security
+﻿# Security
 
 ## Authentication methods
 
-mitch-risk supports two authentication paths for internal staff:
+Mitch‑Risk supports two authentication paths for internal staff:
 
 ### Email / password
 

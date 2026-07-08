@@ -1,6 +1,6 @@
-# Integration Examples
+﻿# Integration Examples
 
-Practical examples for integrating mitch-risk with external systems via the REST API. All examples use curl and assume an API key generated under **Settings → API**.
+Practical examples for integrating Mitch‑Risk with external systems via the REST API. All examples use curl and assume an API key generated under **Settings → API**.
 
 ## Authentication
 
