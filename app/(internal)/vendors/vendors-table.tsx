@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   type ColumnDef,
   type SortingState,
@@ -75,11 +75,22 @@ export function VendorsTable({
   totalCount,
 }: VendorsTableProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [sorting, setSorting] = useState<SortingState>(() =>
     sortParamToState(initialSort),
   );
+  const mountedRef = useRef(false);
+
+  useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return;
+    }
+    const params = new URLSearchParams(window.location.search);
+    params.set("sort", stateToSortParam(sorting));
+    params.delete("page");
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }, [sorting, router]);
 
   const columns: ColumnDef<VendorRow>[] = [
     {
@@ -138,21 +149,7 @@ export function VendorsTable({
     getSortedRowModel: getSortedRowModel(),
     manualSorting: true,
     manualPagination: true,
-    onSortingChange: (updater) => {
-      setSorting((previous) => {
-        const next =
-          typeof updater === "function" ? updater(previous) : updater;
-        const params = new URLSearchParams(searchParams.toString());
-        if (next.length === 0) {
-          params.delete("sort");
-        } else {
-          params.set("sort", stateToSortParam(next));
-        }
-        params.delete("page");
-        router.replace(`?${params.toString()}`, { scroll: false });
-        return next;
-      });
-    },
+    onSortingChange: setSorting,
     state: {
       sorting,
       pagination: { pageIndex: page - 1, pageSize },
