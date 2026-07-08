@@ -35,7 +35,7 @@ When SSO-only mode is enabled (local login hidden), a **break-glass URL** provid
 | Session type | Stateless JWT (Auth.js v5) |
 | Cookie flags | `httpOnly`, `secure` (production), `sameSite: lax` |
 | Signing secret | `AUTH_SECRET` env var (validated at boot) |
-| Client-side idle timeout | Configurable (default 30 min) — auto-signs out after inactivity. Note: this is a client-side UX feature; the JWT itself is stateless with no server-enforced `exp` claim tied to the idle timer |
+| Client-side idle timeout | Configurable (default 30 min). A 60s countdown warns before forced sign-out. The server also enforces session expiry via a sliding-window JWT `exp` claim, refreshed on every request — the session is invalidated regardless of client-side activity after the configured timeout |
 
 ## API security
 

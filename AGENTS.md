@@ -112,6 +112,7 @@ lib/                 # cross-cutting logic
   prisma.ts          # shared Prisma client instance
   rate-limit.ts      # in-memory fixed-window rate limiter
   scoring.ts         # weighted scoring engine + compliance checker
+  session.ts         # computeSessionExpiry() — JWT `exp` sliding-window helper
   theme-tokens.tsx   # server-rendered CSS variable injection (brand colours)
   timing-safe.ts     # constant-time string comparison
   tokens.ts          # opaque portal token generation + expiry

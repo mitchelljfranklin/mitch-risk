@@ -50,7 +50,7 @@ Key SSO security features:
 | Cookie flags | `httpOnly`, `secure` (in production), `sameSite: "lax"` | Set by Auth.js |
 | Trust host | `trustHost: true` | Required for correct cookie/redirect derivation behind a reverse proxy |
 | Callback URL | Derived from `APP_URL` or `AUTH_URL` env var | Override for proxied deployments |
-| Session timeout | Not enforced server-side | Client-side idle-timer (`lib/components/idle-timer.tsx`) with configurable countdown; the JWT itself has no `exp` check against `sessionTimeoutMinutes` |
+| Session timeout | Server-enforced via JWT `exp` claim | Sliding window — updated on every request; `computeSessionExpiry()` reads `sessionTimeoutMinutes` from settings (0 = unlimited). Client-side idle timer provides 60s countdown warning before forced sign-out |
 
 ### 2.3 Password Reset Flow
 
@@ -74,7 +74,6 @@ Key SSO security features:
 **Considerations:**
 - `next-auth` v5 is currently in beta. Monitor the Auth.js release cycle for stable versions and security advisories
 - `trustHost: true` is broad. Consider scoping to the `APP_URL` host if deployment topology allows
-- Session timeout is not enforced server-side in JWT claims. The JWT `exp` field should be evaluated against the configurable `sessionTimeoutMinutes` setting
 - No built-in MFA for local accounts — this is acceptable for small-business use; organisations requiring MFA should use SSO with an enterprise IdP (see Strengths above)
 
 ---
@@ -755,7 +754,7 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 | H-15 | ~~SSO auto-provisioning race (`lib/auth.ts:246-258`) — `findUnique` then `create` with no unique-constraint catch~~ | Two concurrent SSO sign-ins with same new email both pass the null check; second hits unhandled unique-constraint violation (500 error) | **FIXED** — replaced `findUnique` + `create` with `prisma.user.upsert` (atomic find-or-create) |
 | H-16 | ~~Setup page TOCTOU — `countUsers() > 0` check at render + submit (`app/(auth)/setup/actions.ts:17-19`)~~ | Two concurrent first-run requests both pass the check and attempt `createUser`; second throws unhandled unique-constraint violation | **FIXED** — `createUser` wrapped in try/catch handling `Prisma.PrismaClientKnownRequestError` with code `P2002`, returning clean "Setup has already been completed" message |
 | H-17 | ~~Stale role assignment in active sessions (`lib/auth.ts:202-219`) — session callback reads `roleId` from JWT set at login only~~ | Changing a user's role mid-session had zero effect until re-login; user retained old-role permissions | **FIXED** — session callback now re-queries `roleId` from DB on every request (alongside C-4 disabled check) |
-| H-18 | No server-side session timeout enforcement — JWT has no `exp` claim tied to `sessionTimeoutMinutes` | Sessions persist beyond the configured timeout; client-side idle-timer is cosmetic defense only | Add `exp` claim to JWT based on configurable `sessionTimeoutMinutes` setting |
+| H-18 | ~~No server-side session timeout enforcement — JWT has no `exp` claim tied to `sessionTimeoutMinutes`~~ | Sessions persist beyond the configured timeout; client-side idle-timer was cosmetic defense only | **FIXED** — JWT callback now reads `sessionTimeoutMinutes` from settings and sets `token.exp` with a sliding window (updated on every request); `computeSessionExpiry()` in `lib/session.ts`; Auth.js `jose` library validates `exp` on decode, rejecting expired JWTs automatically |
 | H-19 | ~~`bcrypt.compareSync` on every API request — synchronous CPU-intensive operation on hot path (`lib/api-keys.ts:35-37`, `lib/api-auth.ts:74`)~~ | Burst of API requests blocks event loop for 50-100ms each; creates DoS vector against all users on same process | **FIXED** — `verifyApiKey` and `hashApiKey` changed to async `bcrypt.compare` / `bcrypt.hash`; callers updated (api-auth.ts, settings/actions.ts, tests) |
 
 ### Medium Severity

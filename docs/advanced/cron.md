@@ -48,6 +48,6 @@ All abuse-protection limits are configurable under **Settings → Limits**:
 | Password reset | 1/min | Per email, prevents spam |
 | Break-glass | 10/min | Per IP |
 | API key default | 30/min | Per IP, then per key prefix |
-| Session timeout | 30 min | Idle time before auto-logout (client-side; JWT has no server-enforced expiry) |
+| Session timeout | 30 min | Idle time before auto-logout (client-side countdown + server-enforced JWT `exp`) |
 
 The rate limiter is **in-memory per process** — sufficient for single-container deployment. For horizontal scaling, a Redis-backed limiter would be needed (not currently implemented).

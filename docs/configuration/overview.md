@@ -89,7 +89,7 @@ Configure rate limits, session behaviour, file restrictions, and data retention.
 | Setting | Default | Description |
 |---------|---------|-------------|
 | **Login rate limit** | 10/min | Maximum login attempts per IP per minute |
-| **Session timeout** | 30 min | Inactivity timer before auto-sign-out (0 = disabled) |
+| **Session timeout** | 30 min | Inactivity timer before auto-sign-out (0 = disabled). Enforced via client-side countdown + server-side JWT expiry |
 | **Portal page loads** | 30/min | Maximum portal questionnaire page loads per IP per minute |
 | **Portal uploads** | 10/min | Maximum file uploads per IP per minute on the portal |
 | **Portal submissions** | 5/min | Maximum questionnaire submissions per IP per minute |

@@ -23,6 +23,7 @@ import {
   getSsoSecret,
   getSsoSettings,
 } from "@/lib/settings";
+import { computeSessionExpiry } from "@/lib/session";
 
 export const getRolePermissions = cache(
   async (roleId: string): Promise<{ name: string; permissions: string[] }> => {
@@ -174,6 +175,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth(async () => {
       },
 
       jwt: async ({ token, user, account }) => {
+        const settings = await getAssessmentSettings();
+        const exp = computeSessionExpiry(settings.sessionTimeoutMinutes);
+        if (exp !== undefined) {
+          token.exp = exp;
+        }
+
         if (account && account.provider !== "credentials") {
           const localUser = await resolveSsoUser(
             account.provider,
