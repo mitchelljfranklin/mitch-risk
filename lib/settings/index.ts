@@ -240,12 +240,20 @@ export async function updateEmailTemplateFields(
 }
 
 const BREAK_GLASS_KEY = "sso.breakGlassHash";
+const BREAK_GLASS_EXPIRY_HOURS = 24;
 
 export async function setBreakGlassHash(hash: string): Promise<void> {
+  const value = {
+    hash,
+    expiresAt: new Date(
+      Date.now() + BREAK_GLASS_EXPIRY_HOURS * 60 * 60 * 1000,
+    ).toISOString(),
+    consumed: false,
+  };
   await prisma.appSetting.upsert({
     where: { key: BREAK_GLASS_KEY },
-    update: { value: hash, category: "sso" },
-    create: { key: BREAK_GLASS_KEY, category: "sso", value: hash },
+    update: { value, category: "sso" },
+    create: { key: BREAK_GLASS_KEY, category: "sso", value },
   });
 }
 
@@ -253,9 +261,27 @@ export async function getBreakGlassHash(): Promise<string | null> {
   const row = await prisma.appSetting.findUnique({
     where: { key: BREAK_GLASS_KEY },
   });
-  return row && typeof row.value === "string" && row.value.length > 0
-    ? row.value
-    : null;
+  if (!row || !row.value || typeof row.value !== "object") return null;
+  const value = row.value as Record<string, unknown>;
+  const hash = value.hash as string | undefined;
+  const expiresAt = value.expiresAt as string | undefined;
+  const consumed = value.consumed as boolean | undefined;
+  if (!hash || consumed || !expiresAt) return null;
+  if (new Date(expiresAt) <= new Date()) return null;
+  return hash;
+}
+
+export async function consumeBreakGlassHash(): Promise<void> {
+  const row = await prisma.appSetting.findUnique({
+    where: { key: BREAK_GLASS_KEY },
+  });
+  if (!row || !row.value || typeof row.value !== "object") return;
+  const value = row.value as Record<string, unknown>;
+  if (!value.hash || value.consumed) return;
+  await prisma.appSetting.update({
+    where: { key: BREAK_GLASS_KEY },
+    data: { value: { ...value, consumed: true } },
+  });
 }
 
 export async function getSsoSettings(): Promise<SsoSettings> {

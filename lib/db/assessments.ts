@@ -362,7 +362,7 @@ export function regenerateAssessmentToken(id: string) {
 export function getAssessmentByToken(token: string) {
   const tokenHash = hashToken(token);
   return prisma.assessment.findFirst({
-    where: { OR: [{ tokenHash }, { accessToken: token }] },
+    where: { tokenHash },
     include: {
       vendor: { select: { name: true } },
       questions: { orderBy: { order: "asc" } },
@@ -378,7 +378,7 @@ export function getAssessmentByToken(token: string) {
 export function getAssessmentForToken(token: string) {
   const tokenHash = hashToken(token);
   return prisma.assessment.findFirst({
-    where: { OR: [{ tokenHash }, { accessToken: token }] },
+    where: { tokenHash },
     select: { id: true, status: true, tokenExpiresAt: true },
   });
 }

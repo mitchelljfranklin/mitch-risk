@@ -1,7 +1,8 @@
 const store = new Map<string, { count: number; resetAt: number }>();
 
 const WINDOW_MS = 60_000;
-const MAX_TRACKED_KEYS = 50_000;
+const MAX_TRACKED_KEYS = 100_000;
+const MAX_PER_NAMESPACE = 5_000;
 const SWEEP_INTERVAL_MS = 60_000;
 
 let lastSweepAt = 0;
@@ -22,14 +23,13 @@ function sweepExpired(now: number): void {
   }
 }
 
-function evictOldestIfFull(): void {
-  if (store.size < MAX_TRACKED_KEYS) {
-    return;
+function namespaceCount(namespace: string): number {
+  const prefix = `${namespace}:`;
+  let count = 0;
+  for (const key of store.keys()) {
+    if (key.startsWith(prefix)) count++;
   }
-  const oldestKey = store.keys().next().value;
-  if (oldestKey !== undefined) {
-    store.delete(oldestKey);
-  }
+  return count;
 }
 
 export function rateLimit(
@@ -44,7 +44,8 @@ export function rateLimit(
 
   const entry = store.get(key);
   if (!entry || now >= entry.resetAt) {
-    evictOldestIfFull();
+    if (store.size >= MAX_TRACKED_KEYS) return false;
+    if (namespaceCount(namespace) >= MAX_PER_NAMESPACE) return false;
     store.set(key, { count: 1, resetAt: now + WINDOW_MS });
     return true;
   }

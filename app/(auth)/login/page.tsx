@@ -19,6 +19,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import {
   getAssessmentSettings,
   getBreakGlassHash,
+  consumeBreakGlassHash,
   getOrganizationSettings,
   getSsoSettings,
 } from "@/lib/settings";
@@ -75,6 +76,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       breakGlassValid = hash
         ? verifyBreakGlassToken(breakGlassToken, hash)
         : false;
+      if (breakGlassValid) {
+        await consumeBreakGlassHash();
+      }
     }
   }
 
