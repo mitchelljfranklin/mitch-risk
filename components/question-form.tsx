@@ -115,13 +115,18 @@ export function QuestionForm({
             <ReactMarkdown>{liveHelpText}</ReactMarkdown>
           </div>
         ) : (
-          <Textarea
-            id="helpText"
-            name="helpText"
-            value={liveHelpText}
-            rows={3}
-            onChange={(e) => setLiveHelpText(e.target.value)}
-          />
+          <>
+            <Textarea
+              id="helpText"
+              name="helpText"
+              value={liveHelpText}
+              rows={3}
+              onChange={(e) => setLiveHelpText(e.target.value)}
+            />
+            <p className="text-muted-foreground text-xs">
+              Markdown formatting is supported — use **bold**, *italic*, lists, and links.
+            </p>
+          </>
         )}
       </div>
 

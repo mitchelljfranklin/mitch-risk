@@ -114,7 +114,7 @@ function TemplateEditorSheet({
           )}
         </div>
         <p className="text-muted-foreground text-xs">
-          Tokens: {TEMPLATE_TOKENS}.
+          Markdown formatting is supported — use **bold**, *italic*, lists, and links. Tokens: {TEMPLATE_TOKENS}.
         </p>
 
         <SheetFooter className="px-0">
