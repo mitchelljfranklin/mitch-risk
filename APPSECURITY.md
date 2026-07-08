@@ -29,7 +29,7 @@ Internal users authenticate via email/password credentials or Single Sign-On (SS
 
 - **Password hashing:** bcryptjs with **12 salt rounds** (`PASSWORD_SALT_ROUNDS`). All password operations (create, verify, reset) use bcrypt constant-time comparison.
 - **Password policy:** Minimum 12 characters enforced at creation and reset. The login schema only validates non-empty (min 1 char) — the 12-char floor is a creation-time guarantee; short passwords are rejected by bcrypt hash mismatch at login regardless.
-- **Session strategy:** Stateless JWT (`strategy: "jwt"`). No database session table. JWTs are signed with `AUTH_SECRET` (required env var, validated at boot).
+- **Session strategy:** Stateless JWT (`strategy: "jwt"`). No database session table. JWTs are signed with `AUTH_SECRET` (required env var, validated at boot). JWTs carry a server-enforced `exp` claim with a configurable sliding window (default 30 min, 0 = unlimited), refreshed on every request via `computeSessionExpiry()`.
 - **First-run setup:** When `countUsers() === 0`, the login page redirects to `/setup`. The first admin is created with a 12+ character password. After setup, `/setup` returns 404. This ensures no default admin credentials exist.
 
 **SSO (Single Sign-On):**
@@ -86,7 +86,7 @@ Authorization is **permission-based**, not role-based. Three system roles are se
 
 | Role | Description | Permissions |
 |------|-------------|-------------|
-| **Admin** | Full access (locked, cannot be deleted or edited) | All 20 permissions |
+| **Admin** | Full access (locked, cannot be deleted or edited) | All 21 permissions |
 | **Reviewer** | Write + review access | All vendor, assessment, and template CRUD, plus frameworks view/edit. Cannot manage users, roles, settings, API, or view audit |
 | **Viewer** | Read-only | `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view` |
 
@@ -110,7 +110,7 @@ Permission definitions, default role mappings, and helpers live in `lib/permissi
 1. **Server-side guard:** Every page, Server Action, and API route calls `requirePermission("<key>")` before executing. Unauthorized access returns a redirect to `/dashboard` (pages) or 403 (API routes).
 2. **UI gating:** Controls that trigger gated actions are **hidden** (not greyed-out) via server-rendered conditionals. A Viewer sees a clean read-only screen — no write buttons, no redirect-on-click traps.
 3. **Navigation + tabs:** Sidebar items the user lacks permission for are not rendered. Settings tab parameters are sanitized against the user's allowed permission set.
-4. **API key auth:** Programmatic access via API keys grants **all permissions** regardless of the creating user's role. Keys are independent of the creator — deleting or disabling the creating user does not revoke the key.
+4. **API key auth:** Programmatic access via API keys grants **scoped permissions** configurable at key creation. An empty scope defaults to full access (backward compatible). Keys are independent of the creator — deleting or disabling the creating user does not revoke the key.
 
 ### 3.4 Strengths & Considerations
 
@@ -456,6 +456,7 @@ Portal file uploads are restricted by:
 - **Size limit:** Configurable `maxUploadMb` (default: 20 MB)
 - **Magic-byte validation:** File signatures are validated against expected magic bytes for the declared extension — a file renamed from `.exe` to `.pdf` is rejected
 - **MIME type validation:** Uploads are checked against a server-side MIME deny-list — script-renderable types (`text/html`, `image/svg+xml`, JavaScript MIME types) are rejected. The extension check is the primary filter; MIME validation is defense-in-depth
+- **Drag-and-drop upload:** Vendor attachments and certifications support drag-and-drop upload with inline validation feedback, backed by the same server-side pipeline (extension, size, magic-byte, MIME). The form-based file input fallback remains available
 
 ### 9.5 File Lifecycle & Cleanup
 
@@ -624,9 +625,9 @@ External input is validated comprehensively via **zod** schemas at every boundar
 | Aspect | Current State | Recommendation |
 |--------|---------------|----------------|
 | Base image | `node:22-slim` (Debian) | Appropriate — slim variant reduces attack surface |
-| Non-root user | **Runs as root** | Add `USER node` after `npm install` |
-| Read-only root filesystem | Not configured | Add `read_only: true` in compose, mount writable volumes only where needed |
-| Resource limits | Not configured | Add CPU/memory limits in compose |
+| Non-root user | `USER node` (non-root) | H-1 fix — directories `/app/.storage/evidence` and `/app/data/uploads` created with `node:node` ownership before user switch |
+| Read-only root filesystem | Not configured | Deploying with `read_only: true` would require additional writable volume mounts |
+| Resource limits | Configured (1.0 CPU / 1 GB app, 0.5 CPU / 512 MB db) | L-4 fix — env-overridable: `APP_CPU_LIMIT`, `APP_MEMORY_LIMIT`, `DB_CPU_LIMIT`, `DB_MEMORY_LIMIT` |
 | Health check | `/api/health` (200 = healthy) | Adequate |
 | Exposed port | 3000 (no reverse proxy) | Document requirement for reverse proxy (Caddy/nginx) |
 
@@ -658,7 +659,7 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 - Auto-migration on start (no manual migration step)
 
 **Considerations:**
-- No read-only root filesystem
+- No read-only root filesystem — deploying with `read_only: true` would require additional writable volume mounts
 
 ---
 
@@ -757,8 +758,8 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 |----|---------|--------|------------|
 | M-1 | ~~No MFA support~~ | Account compromise via credential theft | Dismissed — organisations using SSO with an enterprise IdP (Microsoft Entra ID, Google Workspace, generic OIDC) can enforce MFA via the IdP's own conditional access / authentication policies. Local accounts are for small deployments that may not need MFA; SSO users inherit the IdP's full authentication strength |
 | M-2 | ~~No magic-byte validation on file uploads — only MIME type (spoofable) and extension (renameable) checked~~ | Malicious file bypasses both filters by renaming `.exe → .pdf` and setting `Content-Type: application/pdf` | **FIXED** — `validateMagicBytes()` in `lib/upload-validation.ts` checks file signatures for pdf, png, jpg, jpeg, gif, webp, docx, xlsx; wired into all three upload paths (portal, certifications, vendor attachments) + 14 unit tests |
-| M-3 | `next-auth` in beta | Undiscovered vulnerabilities in auth framework | Monitor updates; migrate to stable when available |
-| M-4 | In-memory rate limiting not shared across processes (by design for single-container; Redis needed if scaled) | Rate limits bypassed with multi-container deployment | Acceptable for single-container; migrate to Redis if scaled horizontally |
+| M-3 | `next-auth` in beta | Undiscovered vulnerabilities in auth framework | **Deferred** — Monitor the Auth.js release cycle for stable versions and security advisories; migrate when available |
+| M-4 | In-memory rate limiting not shared across processes (by design for single-container; Redis needed if scaled) | Rate limits bypassed with multi-container deployment | **Accepted (by design)** — Acceptable for single-container; migrate to Redis if scaled horizontally |
 | M-5 | ~~Password min-length (12 chars) not enforced at `addUserAction`~~ | Users could be created with 1-char passwords via action | **FIXED** — `addUserAction` now uses `userCreateSchema` with `z.string().min(12)` (resolved with H-10) |
 | M-6 | ~~Break-glass token reusable indefinitely, no expiry (`lib/break-glass.ts`)~~ | Once leaked, attacker can re-enable local auth at any time | **FIXED** — 24-hour expiry from creation; single-use (consumed on first successful verification); stored as JSON `{hash, expiresAt, consumed}` in settings |
 | M-7 | ~~`timingSafeEqualString` leaks expected-string length (`lib/timing-safe.ts:10`)~~ | Attacker measuring response time can determine `CRON_SECRET` length byte-by-byte | **FIXED** — both inputs are SHA-256 hashed before comparison; constant-time compare on fixed-length 32-byte digests |

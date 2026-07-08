@@ -206,10 +206,10 @@ The platform is designed around three principles:
 
 | Layer | Technology | Version | Purpose |
 |---|---|---|---|
-| **Runtime** | Node.js | >= 20 | Application runtime |
+| **Runtime** | Node.js | >= 22 | Application runtime |
 | **Framework** | Next.js | 16 (App Router) | Full-stack server + client |
 | **Language** | TypeScript | ^5 | Strict type safety |
-| **Database** | PostgreSQL | >= 16 | Relational persistence |
+| **Database** | PostgreSQL | >= 17 | Relational persistence |
 | **ORM** | Prisma | ^6 | Typed DB access + migrations |
 | **Auth** | Auth.js (NextAuth v5) | ^5 | JWT session management |
 
@@ -466,6 +466,7 @@ The platform is designed around three principles:
 ### 5.2 Session Auth (NextAuth v5)
 
 - **Strategy:** JWT (stateless), no database session store
+- **Session expiry:** Sliding-window JWT `exp` claim via `computeSessionExpiry()`. Configurable via `sessionTimeoutMinutes` in Settings (default 30 min). The `exp` claim is refreshed on each authenticated request. `sessionTimeoutMinutes = 0` disables server-side expiry
 - **Providers:**
   - **Credentials** — email + bcryptjs password (12 rounds), rate-limited at login
   - **Microsoft Entra ID** — OIDC, configurable via Settings
@@ -554,13 +555,13 @@ When SSO is enforced (`disableLocalAuth = true`), a break-glass token allows loc
 - `mrk_` namespace prefix for identification
 - 8-char hex prefix stored in `keyPrefix` for indexed DB lookup (prevents full table scan)
 - 48-char hex secret bcrypt-hashed (12 rounds), stored as `keyHash`
-- API keys have **full access** (ALL_PERMISSIONS) — independent of creating user's role
+- API keys can be **scoped** to a specific set of permissions (via `permissions[]`). When left empty (default), the key retains full access (ALL_PERMISSIONS) for backward compatibility. Scoped keys are restricted to only the granted permissions
 - IP allowlisting via CIDR matching (`ipInCidr()`)
 - Configurable per-key rate limit (`rateLimitPerMin`)
 
 ### 5.4 Role-Based Access Control (RBAC)
 
-#### Permission Catalog (20 keys)
+#### Permission Catalog (21 keys)
 
 ```
 ┌─────────────────┬──────────────────────────────────────────────┐
@@ -576,7 +577,8 @@ When SSO is enforced (`disableLocalAuth = true`), a break-glass token allows loc
 │ Templates       │ templates:view, templates:create,            │
 │                 │ templates:edit, templates:delete             │
 ├─────────────────┼──────────────────────────────────────────────┤
-│ Frameworks      │ frameworks:view, frameworks:edit             │
+│ Frameworks      │ frameworks:view, frameworks:edit,            │
+│                 │ frameworks:delete                           │
 ├─────────────────┼──────────────────────────────────────────────┤
 │ Audit           │ audit:view                                  │
 ├─────────────────┼──────────────────────────────────────────────┤
@@ -589,8 +591,8 @@ When SSO is enforced (`disableLocalAuth = true`), a break-glass token allows loc
 
 | Role | Permissions Count | Description |
 |---|---|---|
-| **Admin** | 20 (all) | Full system control (locked, cannot be deleted) |
-| **Reviewer** | 15 | Vendor/Assessment/Template CRUD + Frameworks view/edit. Cannot manage users, roles, settings, API, or view audit |
+| **Admin** | 21 (all) | Full system control (locked, cannot be deleted) |
+| **Reviewer** | 16 | Vendor/Assessment/Template/Framework CRUD. Cannot manage users, roles, settings, API, or view audit |
 | **Viewer** | 4 | Read-only: `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view` |
 
 #### Enforcement Layers

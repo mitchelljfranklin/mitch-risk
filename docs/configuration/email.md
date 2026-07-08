@@ -19,7 +19,7 @@ Configuration is in-app under **Settings → Email** (requires **Settings: manag
 
 ## Email templates
 
-All email subjects and bodies are customisable under **Settings → Email → Templates**. Available tokens:
+All email subjects and bodies are customisable under **Settings → Email → Templates**. The body editor is a WYSIWYG Markdown editor with a live preview. When an email is sent, the Markdown body is automatically converted to styled HTML — vendors and reviewers receive properly formatted emails. Tokens work in both subjects and bodies:
 
 ```
 {{vendorName}}, {{assessmentTitle}}, {{portalUrl}}, {{dueDate}},

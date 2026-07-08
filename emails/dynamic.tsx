@@ -13,11 +13,7 @@ type DynamicEmailProps = {
   htmlBody?: string;
 };
 
-export function DynamicEmail({
-  heading,
-  body,
-  htmlBody,
-}: DynamicEmailProps) {
+export function DynamicEmail({ heading, body, htmlBody }: DynamicEmailProps) {
   const paragraphs = body.split("\n").filter((line) => line.length > 0);
 
   return (

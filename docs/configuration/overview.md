@@ -44,7 +44,7 @@ Configure SMTP delivery and customise all email templates.
 | Section | Description |
 |---------|-------------|
 | **SMTP server** | Host, port, username, password, and sender details (from name and address) |
-| **Email templates** | 8 template types with customisable subject lines and body content using `{{tokens}}` |
+| **Email templates** | 8 template types with customisable subject lines and body content. Body written in Markdown with a WYSIWYG editor — converted to styled HTML when sent. Supports `{{tokens}}` |
 
 See [Email Configuration](configuration/email.md) for template token reference and SMTP setup.
 

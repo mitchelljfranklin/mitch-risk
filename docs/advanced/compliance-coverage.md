@@ -113,6 +113,8 @@ A,5.2,Information security roles and responsibilities,Information security roles
 
 The import runs in a single database transaction — either all controls are created or none are.
 
+Frameworks can be deleted from the Frameworks list or via the API (`DELETE /api/v1/frameworks/{id}`). Deleting a framework permanently removes it and all its controls. Template questions mapped to these controls lose their assignments, but existing assessments and findings are not affected — the scoring engine handles missing control references gracefully. Requires `frameworks:delete` permission (Admin and Reviewer roles).
+
 ## Coverage Limitations
 
 - **Mapping is template-driven** — question-to-control links must be configured by the admin building templates. The platform doesn't auto-suggest or auto-map

@@ -73,6 +73,7 @@ The assessments list shows all assessments in a table with columns for assessmen
 The vendor portal is a no-login experience:
 - **Token in URL** provides access — 43-character base64url string
 - **Optional password gate** — bcrypt-hashed, rate-limited (5 attempts/min default)
+- **Rich help text** — questions display formatted Markdown guidance (bold, italic, lists, links) to help vendors understand requirements
 - **Auto-save** — progress is persisted as the vendor answers
 - **Conditional logic** — only relevant questions are shown
 - **Read-only after submission** — vendor can view their answers but not edit

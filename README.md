@@ -16,7 +16,7 @@ But that value comes at a cost — the subscription, the onboarding overhead, th
 
 Mitch‑Risk bridges that gap. It strips third party vendor risk management down to its essentials: build a questionnaire, send it, score the answers, track compliance over time. No AI risk scoring, no vendor universe crawling, no board reporting module. Just the core workflow, done well, running in Docker Compose.
 
-> **Security-hardened.** Mitch‑Risk has undergone a comprehensive security audit — 52 findings across 4 severity levels. 32 of 38 actionable items have been resolved. [Read the full report](APPSECURITY.md).
+> **Security-hardened.** Mitch‑Risk has undergone a comprehensive security audit — 55 findings across 4 severity levels. 52 items resolved (fixed or dismissed), 3 deferred or monitored. [Read the full report](APPSECURITY.md).
 
 ---
 
@@ -36,15 +36,24 @@ docker compose up -d
 
 ### Questionnaires
 - 12 question types: yes/no, multiple choice, checkbox grids, numeric ranges, free text, file uploads, and more
+- WYSIWYG Markdown editor for question help text with live preview
 - Conditional logic with match-all/match-any rule groups
 - Publish, unpublish, version, and duplicate templates
-- JSON import/export for template portability
+- JSON import/export via step-by-step wizard for template portability
 
 ### Vendor Portal
 - No-login secure links with 256-bit opaque tokens (SHA-256 hashed)
+- Rich Markdown help text rendered for each question
 - Optional password gate (bcrypt at 12 rounds)
 - Auto-save with progress persistence and resume capability
 - Expiry and revocation — revoke a link and it stops working immediately
+
+### Vendors
+- CSV bulk import/export with upsert support (include `id` column to update existing vendors)
+- Drag-and-drop file upload for attachments and certifications
+- Vendor detail pages with certifications, attachments, assessments, and framework compliance views
+- Side-by-side vendor comparison
+- Bulk send assessments to multiple vendors via 3-step wizard
 
 ### Scoring & Compliance
 - Weighted RAG scoring engine with configurable thresholds
@@ -67,19 +76,19 @@ docker compose up -d
 - Portfolio metrics with animated count-up stat cards
 - Donut chart of vendor risk distribution, bar chart of findings by severity
 - Assessment activity timeline with time-range selector
-- GitHub-style calendar heatmap of assessment volume
+- Sortable, filterable data tables across vendors, assessments, findings, and audit log
 - PDF assessment reports and CSV exports
 
 ### API
 - REST v1 under `/api/v1/` — vendors, assessments, findings, frameworks, dashboard, audit
-- Session cookie auth (web login) + API key auth (Bearer tokens)
+- Session cookie auth (web login) + API key auth (Bearer tokens) with per-key permission scoping
 - IP allowlisting with IPv4/IPv6 CIDR support
 - Configurable API key expiry (30/90/180/365 days or permanent)
 - Interactive Swagger UI at `/docs`
 
 ### Access Control
 - 3 system roles (Admin, Reviewer, Viewer) + custom roles
-- 20 granular `resource:action` permissions
+- 21 granular `resource:action` permissions
 - UI controls hidden (not greyed) — Viewer sees a clean read-only screen
 - Sidebar navigation and settings tabs permission-filtered
 
@@ -87,8 +96,10 @@ docker compose up -d
 - bcryptjs at 12 rounds for passwords, API keys, and break-glass tokens
 - AES-256-GCM encryption for SMTP credentials and SSO secrets at rest
 - Nonce-based strict-dynamic Content Security Policy
+- Server-enforced JWT session expiry with sliding-window refresh and configurable timeout
+- Non-root container (`USER node`) with resource limits (CPU/memory) in Docker Compose
 - Break-glass emergency access with 24-hour expiry and single-use consumption
-- Magic-byte file signature validation on uploads
+- Magic-byte file signature validation on uploads with drag-and-drop UX
 - Rate limiting on login, portal, API, file uploads, and password reset
 - `AUTH_SECRET` minimum 32 characters enforced at boot
 
@@ -112,10 +123,12 @@ docker compose up -d
 | Framework | Next.js 16 (App Router) + TypeScript |
 | Database | PostgreSQL + Prisma ORM |
 | UI | Tailwind CSS v4 + shadcn/ui (light/dark) |
+| Tables | @tanstack/react-table |
 | Auth | Auth.js v5 (credentials + SSO) |
 | Email | Nodemailer SMTP + React Email templates |
 | Charts | recharts |
 | Reports | @react-pdf/renderer |
+| Markdown | @uiw/react-md-editor, react-markdown, marked |
 | Deployment | Docker Compose |
 
 ---
@@ -129,7 +142,7 @@ Authenticated REST API under `/api/v1/`. Authenticate via session cookie (web lo
 | **Vendors** | `GET/PUT/DELETE /api/v1/vendors/{id}`, list, import, export, score, assessments, certifications |
 | **Assessments** | `GET /api/v1/assessments` (list with filters), `GET /api/v1/assessments/{id}` (full detail) |
 | **Findings** | `GET /api/v1/findings` (filters: status, severity, vendor), `PATCH /api/v1/findings/{id}` (status update) |
-| **Frameworks** | `GET /api/v1/frameworks` (list), `GET /api/v1/frameworks/{id}` (detail with controls) |
+| **Frameworks** | `GET /api/v1/frameworks` (list), `GET /api/v1/frameworks/{id}` (detail with controls), `DELETE /api/v1/frameworks/{id}` (delete) |
 | **Dashboard** | `GET /api/v1/dashboard/summary` — portfolio metrics, RAG distribution, top deficient controls |
 | **Audit** | `GET /api/v1/audit` — paginated, filterable audit log (JSON or CSV) |
 

@@ -7,7 +7,7 @@ Templates are reusable questionnaire blueprints. They define the structure (sect
 ```
 Template
   ├── Section 1 (title, order)
-  │   ├── Question 1 (text, type, riskWeight, expectedAnswer, options, conditionalLogic, controlIds)
+  │   ├── Question 1 (text, type, riskWeight, expectedAnswer, options, conditionalLogic, controlIds, helpText)
   │   └── Question 2
   └── Section 2
       ├── Question 3
@@ -15,6 +15,12 @@ Template
 ```
 
 Each question is a self-contained unit with its own type, risk weight, expected answer, and framework control mappings. When an assessment is created, questions are **frozen** into the assessment — editing the template afterward does not affect existing assessments.
+
+## Help Text (Markdown)
+
+Each question can include optional **help text** — supplementary guidance displayed to the vendor in the questionnaire portal. Help text is written using a WYSIWYG Markdown editor with a toolbar for bold, italic, lists, links, and other formatting.
+
+Help text is rendered as rich Markdown in the vendor portal and the template preview, helping vendors understand what each question is asking for. Existing plain text continues to work — it is already valid Markdown.
 
 ## Question Types
 
