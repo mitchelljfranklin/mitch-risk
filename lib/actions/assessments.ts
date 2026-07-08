@@ -238,18 +238,23 @@ async function processBulkVendorSend(params: {
   portalPassword: string | undefined;
   user: { id: string } | null;
 }): Promise<BulkVendorResult> {
-  const vendor = await prisma.vendor.findUnique({
-    where: { id: params.vendorId },
-    select: { name: true, contactEmail: true },
-  });
+  const [vendor, template] = await Promise.all([
+    prisma.vendor.findUnique({
+      where: { id: params.vendorId },
+      select: { name: true, contactEmail: true },
+    }),
+    prisma.template.findUnique({
+      where: { id: params.templateId },
+      select: { name: true },
+    }),
+  ]);
   if (!vendor) {
     console.error(`[bulk-send] vendor not found: ${params.vendorId}`);
     return { status: "skipped" };
   }
 
-  const vendorTitle = params.vendorId.slice(0, 8);
   const assessment = await createAssessment(params.vendorId, {
-    title: `Bulk assessment — ${vendorTitle}`,
+    title: `${template?.name ?? "Assessment"} — ${vendor.name}`,
     templateId: params.templateId,
     dueDate: params.dueDate,
     reviewerId: params.reviewerId || "",
