@@ -80,7 +80,7 @@ Open `http://localhost:3000`.
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `DATABASE_URL` | Yes | — | PostgreSQL connection string |
-| `AUTH_SECRET` | Yes | — | Auth.js JWT signing secret (used for session tokens) |
+| `AUTH_SECRET` | Yes | — | Auth.js JWT signing secret (min 32 chars, used for session tokens) |
 | `APP_ENCRYPTION_KEY` | Yes | — | Key for AES-256-GCM encryption of secrets at rest (min 32 chars) |
 | `CRON_SECRET` | Yes (prod) | — | Secret passed in `X-Cron-Secret` header to trigger cron jobs |
 | `APP_URL` | No | `http://localhost:3000` | Public URL used for portal links and auth callbacks |

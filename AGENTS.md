@@ -90,6 +90,8 @@ lib/                 # cross-cutting logic
   schemas/           # shared zod schemas + inferred types
     framework.ts     #   framework + CSV import schema
     certification.ts #   vendor certification schema
+    auth.ts          #   credentials, password reset, profile update, user create, setup admin
+    portal.ts        #   portal answer + progress save schemas
   settings/          # DB-backed operational config (schema, accessor, read/write)
   api-keys.ts        # API key generation, bcrypt hashing, CIDR IP matching
   api-auth.ts        # unified authenticateRequest() — session + Bearer token + permission check
@@ -108,7 +110,7 @@ lib/                 # cross-cutting logic
   permissions.ts     # RBAC permission catalog, default system roles, permission helpers
   portal.ts          # portal state machine (visibility, required questions)
   prisma.ts          # shared Prisma client instance
-  rate-limit.ts      # in-memory sliding-window rate limiter
+  rate-limit.ts      # in-memory fixed-window rate limiter
   scoring.ts         # weighted scoring engine + compliance checker
   theme-tokens.tsx   # server-rendered CSS variable injection (brand colours)
   timing-safe.ts     # constant-time string comparison

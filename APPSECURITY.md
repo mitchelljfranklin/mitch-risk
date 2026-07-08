@@ -280,7 +280,7 @@ If `APP_ENCRYPTION_KEY` changes (making stored secrets undecryptable), the platf
 
 ### 6.3 Timing-Safe Comparisons
 
-- **Cron secret:** Compared using `crypto.timingSafeEqual()` with length check before comparison
+- **Cron secret:** Both inputs are SHA-256 hashed before comparison with `crypto.timingSafeEqual()` on the fixed-length 32-byte digests, eliminating length side-channels
 - **Password verification:** `bcrypt.compare()` is inherently constant-time
 
 ### 6.4 Hashing Summary
@@ -613,7 +613,6 @@ External input is validated comprehensively via **zod** schemas at every boundar
 - Settings validation prevents malformed configuration
 
 **Considerations:**
-- Portal answer values have no maximum length validation — an attacker could submit a 1MB string as a single answer
 - Email template token replacement does not HTML-sanitize token values. Since tokens come from DB fields (names, dates), the risk is low, but a compromised DB could inject HTML into outgoing emails
 - No Content-Type validation of file uploads by magic bytes — extension-based validation only
 
