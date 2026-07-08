@@ -31,8 +31,8 @@ import {
   resetPasswordAction,
   toggleUserAction,
   type UserActionState,
-  type DeletionImpact,
 } from "@/lib/actions/users";
+import type { DeletionImpact } from "@/lib/db/users";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
 import { formatDate } from "@/lib/utils";
 

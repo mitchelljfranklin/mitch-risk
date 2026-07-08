@@ -11,7 +11,6 @@ import {
   createUser,
   deleteUser,
   getUserDeletionImpact,
-  type DeletionImpact,
   resetUserPassword,
   toggleUserDisabled,
 } from "@/lib/db/users";
@@ -189,8 +188,6 @@ export async function getUserDeletionImpactAction(formData: FormData) {
   if (!userId) return null;
   return getUserDeletionImpact(userId);
 }
-
-export type { DeletionImpact };
 
 export async function resetPasswordAction(formData: FormData) {
   await requirePermission(PERMISSIONS.USERS_MANAGE);
