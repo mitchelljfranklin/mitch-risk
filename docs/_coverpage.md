@@ -11,7 +11,7 @@
 - Auto-score responses with configurable RAG thresholds
 - Map answers to ISO 27001, SOC 2, NIST CSF, and Essential Eight
 
-[Get Started](quick-start.md)
+[Get Started](welcome/introduction.md)
 [GitHub](https://github.com/mitchelljfranklin/mitch-risk)
 
 ![color](#f8fafc)

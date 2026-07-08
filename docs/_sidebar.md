@@ -1,6 +1,7 @@
-- [Welcome](/)
-- **User Guides**
+- **Welcome**
+  - [Introduction](welcome/introduction.md)
   - [Quick Start](quick-start.md)
+- **User Guides**
   - [Templates](user-guides/templates.md)
   - [Assessments](user-guides/assessments.md)
   - [Review & Findings](user-guides/review.md)
