@@ -111,6 +111,7 @@ export default async function SettingsPage({
         lastUsedAt: true,
         allowedIps: true,
         rateLimitPerMin: true,
+        permissions: true,
         createdAt: true,
       },
     }),

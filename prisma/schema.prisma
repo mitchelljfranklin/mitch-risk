@@ -487,6 +487,7 @@ model ApiKey {
   lastUsedAt     DateTime?
   allowedIps     String    @default("")
   rateLimitPerMin Int?
+  permissions    String[]  @default([])
   createdAt      DateTime  @default(now())
 
   @@index([keyPrefix])

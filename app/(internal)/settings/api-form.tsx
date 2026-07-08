@@ -23,6 +23,7 @@ import {
   saveApiSettingsAction,
   toggleApiKeyAction,
 } from "./actions";
+import { PermissionSelector } from "@/components/permission-selector";
 
 type ApiKeyRow = {
   id: string;
@@ -33,6 +34,7 @@ type ApiKeyRow = {
   lastUsedAt: Date | null;
   allowedIps: string;
   rateLimitPerMin: number | null;
+  permissions: string[];
   createdAt: Date;
 };
 
@@ -199,6 +201,7 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
               />
             </div>
           </div>
+          <PermissionSelector />
           <div className="flex items-center gap-3">
             <Button type="submit" size="sm" disabled={createPending}>
               {createPending ? "Creating..." : "Create key"}
@@ -221,6 +224,20 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
                   <div className="flex items-center gap-2">
                     <code className="font-mono text-xs">{key.prefix}</code>
                     <span className="text-sm font-medium">{key.name}</span>
+                    {key.permissions && key.permissions.length > 0 ? (
+                      <Badge
+                        variant="secondary"
+                        className="text-xs"
+                        title={key.permissions.join(", ")}
+                      >
+                        {key.permissions.length} permission
+                        {key.permissions.length !== 1 ? "s" : ""}
+                      </Badge>
+                    ) : (
+                      <Badge variant="secondary" className="text-xs">
+                        Full access
+                      </Badge>
+                    )}
                     {key.disabled ? (
                       <Badge variant="destructive" className="text-xs">
                         Revoked

@@ -43,6 +43,7 @@ When SSO-only mode is enabled (local login hidden), a **break-glass URL** provid
 - Keys are bcrypt-hashed in the database; prefix enables indexed lookup without full table scan
 - IP allowlisting via CIDR (empty = all IPs allowed)
 - Configurable expiry (30/90/180/365 days or permanent)
+- Per-key permission scoping — restrict keys to specific permission groups (e.g., read-only audit key) or grant full access
 - API key auth must be enabled globally under **Settings → API**
 
 ## Portal token security

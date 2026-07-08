@@ -887,7 +887,7 @@
         }
       },
       "Forbidden": {
-        "description": "The caller is authenticated but their role lacks the permission required for this endpoint. API keys inherit the permissions of the role assigned to the user who created them. Ask an admin to grant the relevant permission (Settings → Roles).",
+        "description": "The caller is authenticated but lacks the permission required for this endpoint. API keys can be scoped to specific permissions at creation (Settings → API); browser sessions inherit permissions from the user's assigned role. Ask an admin to grant the relevant permission (Settings → Roles).",
         "content": {
           "application/json": {
             "schema": { "$ref": "#/components/schemas/Error" },

@@ -157,6 +157,7 @@ Manage API keys for programmatic access.
 | **Enable API** | Global toggle to enable or disable all API access |
 | **Create key** | Generate API keys with optional expiry (30/90/180/365 days or permanent) |
 | **IP allowlisting** | Restrict keys to specific IPv4/IPv6 addresses or CIDR ranges |
+| **Permission scoping** | Restrict keys to specific permission groups (e.g., read-only audit key) or grant full access |
 | **Revoke** | Instantly disable a key without deleting it |
 | **Audit** | All key lifecycle events (create, revoke, enable, delete) are logged |
 

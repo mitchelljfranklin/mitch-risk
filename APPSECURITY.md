@@ -121,7 +121,6 @@ Permission definitions, default role mappings, and helpers live in `lib/permissi
 - Last-admin protection prevents admin lockout (cannot delete, demote, or disable the last remaining admin)
 
 **Considerations:**
-- API keys always receive `ALL_PERMISSIONS`. There is no per-key permission scoping. A compromised key has full platform access. Scope-limiting keys to specific collections or actions would improve the API security model.
 - Unauthorized page access returns a redirect, not a 403 page. This provides a weaker signal to the user about access denial.
 
 ---
@@ -197,7 +196,6 @@ All REST v1 endpoints go through `runApiHandler()` (`lib/api-response.ts`):
 - Generic 500 on errors — no data leakage
 
 **Considerations:**
-- API keys always receive `ALL_PERMISSIONS`. There is no per-key permission scoping
 - No API key usage metrics (requests-per-key, failure rate) beyond `lastUsedAt`
 
 ---
@@ -739,7 +737,7 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 |----|---------|--------|------------|
 | H-1 | Container runs as root (`Dockerfile:21`) | Container compromise = host root access | Set `USER node` in Dockerfile before CMD |
 | H-2 | Hardcoded DB credentials in `docker-compose.yml` | Credential exposure in version control | Use `.env` files or Docker secrets |
-| H-3 | API keys always receive `ALL_PERMISSIONS` without scoping (`lib/api-auth.ts:89-96`) | Key compromise = full platform access. No way to create read-only or scoped keys | Add `permissions` JSON column to `ApiKey`; let creator scope keys; return scoped permissions |
+| H-3 | ~~API keys always receive `ALL_PERMISSIONS` without scoping (`lib/api-auth.ts:89-96`)~~ | Key compromise = full platform access. No way to create read-only or scoped keys | **FIXED** — Added `permissions String[]` column to `ApiKey`; `PermissionSelector` component in Settings → API lets admins scope keys to specific permission groups; `authenticateRequest()` reads scoped permissions from the key record (empty = ALL for backward compat); all existing keys migrated to full access; no API route changes required — existing `authResultHasPermission()` gates handle scoping automatically |
 | H-4 | ~~N+1 `findFirst` in scoring loop (`lib/db/scoring.ts:110`)~~ | 50+ non-compliant responses = 50+ sequential DB roundtrips | **FIXED** — batched with `tx.finding.findMany` before loop; O(1) Map lookup |
 | H-5 | ~~TOCTOU race in `finalizeAssessment` (`lib/db/collaboration.ts:87-109`)~~ | Concurrent request could change a review decision between read and write, allowing premature finalization | **FIXED** — uses `updateMany` with atomic `status: "UNDER_REVIEW"` guard |
 | H-6 | ~~`importFrameworkAction` — no transaction between `createFramework` and `createControls` (`lib/actions/frameworks.ts:113-128`)~~ | Controls creation fails → framework persists with zero controls | **FIXED** — wrapped in `prisma.$transaction` with inline `tx.framework.create` + `tx.control.createMany` |

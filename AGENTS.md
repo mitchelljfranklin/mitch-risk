@@ -80,6 +80,7 @@ components/          # shadcn ui primitives + domain composites
   auto-submit-select.tsx # select that auto-submits form on change
   page-main.tsx      # client wrapper for full-width dashboard
   assessment-timeline.tsx # interactive activity area chart
+  permission-selector.tsx # grouped permission checkboxes (API key scoping, role editing)
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
     findings.ts      #   finding status updates

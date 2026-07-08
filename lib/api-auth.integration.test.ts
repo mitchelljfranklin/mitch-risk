@@ -12,13 +12,17 @@ import { prisma } from "@/lib/prisma";
 
 const VIEWER_EMAIL = "apikey-viewer@example.test";
 const KEY_NAME = "P64 full-access key";
+const SCOPED_KEY_NAME = "P64 scoped key";
 
 let fullKey = "";
 let keyId = "";
+let scopedKey = "";
 let viewerId = "";
 
 async function cleanup() {
-  await prisma.apiKey.deleteMany({ where: { name: KEY_NAME } });
+  await prisma.apiKey.deleteMany({
+    where: { name: { in: [KEY_NAME, SCOPED_KEY_NAME] } },
+  });
   await prisma.user.deleteMany({ where: { email: VIEWER_EMAIL } });
 }
 
@@ -51,6 +55,18 @@ beforeAll(async () => {
   });
   keyId = key.id;
 
+  const scopedGenerated = generateApiKey();
+  scopedKey = scopedGenerated.fullKey;
+  const scopedApiKey = await prisma.apiKey.create({
+    data: {
+      name: SCOPED_KEY_NAME,
+      keyHash: await hashApiKey(scopedKey),
+      keyPrefix: scopedGenerated.keyPrefix,
+      prefix: scopedGenerated.displayPrefix,
+      createdBy: viewer.id,
+      permissions: [PERMISSIONS.VENDORS_VIEW, PERMISSIONS.AUDIT_VIEW],
+    },
+  });
   await prisma.appSetting.upsert({
     where: { key: "api.enabled" },
     update: { value: true },
@@ -67,6 +83,12 @@ afterAll(async () => {
 function bearerRequest(): Request {
   return new Request("http://localhost/api/v1/vendors", {
     headers: { authorization: `Bearer ${fullKey}` },
+  });
+}
+
+function scopedBearerRequest(): Request {
+  return new Request("http://localhost/api/v1/vendors", {
+    headers: { authorization: `Bearer ${scopedKey}` },
   });
 }
 
@@ -102,5 +124,22 @@ describe("API key authentication (integration)", () => {
     expect(auth).not.toBeNull();
     expect(auth?.userId).toBeNull();
     expect(auth?.permissions).toContain(PERMISSIONS.API_MANAGE);
+  });
+
+  it("scoped key has only the granted permissions", async () => {
+    const auth = await authenticateRequest(scopedBearerRequest());
+    expect(auth).not.toBeNull();
+    expect(auth?.method).toBe("apikey");
+    expect(auth?.permissions).toContain(PERMISSIONS.VENDORS_VIEW);
+    expect(auth?.permissions).toContain(PERMISSIONS.AUDIT_VIEW);
+    expect(auth?.permissions).not.toContain(PERMISSIONS.VENDORS_CREATE);
+    expect(auth?.permissions).not.toContain(PERMISSIONS.API_MANAGE);
+    expect(auth?.permissions).not.toContain(PERMISSIONS.ASSESSMENTS_DELETE);
+  });
+
+  it("scoped key lacks full access markers", async () => {
+    const auth = await authenticateRequest(scopedBearerRequest());
+    expect(auth).not.toBeNull();
+    expect(auth?.permissions.length).toBe(2);
   });
 });

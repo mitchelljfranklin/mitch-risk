@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
-import { PERMISSIONS } from "@/lib/permissions";
+import { PERMISSIONS, isValidPermission } from "@/lib/permissions";
 import { logAudit } from "@/lib/db/audit";
 import {
   getAppearanceSettings,
@@ -403,6 +403,19 @@ export async function createApiKeyAction(
   const allowedIps = (formData.get("allowedIps") as string) || "";
   const rateLimitStr = (formData.get("rateLimit") as string) || "";
 
+  const rawPermissions = formData.getAll("permissions") as string[];
+  const hasFullAccess = formData.get("fullAccess") !== null;
+  let permissions: string[] = [];
+  if (!hasFullAccess && rawPermissions.length > 0) {
+    permissions = rawPermissions.filter(isValidPermission);
+    if (permissions.length === 0) {
+      return {
+        ok: false,
+        message: "Select at least one permission or enable full access.",
+      };
+    }
+  }
+
   const { generateApiKey, hashApiKey } = await import("@/lib/api-keys");
   const { getCurrentUser } = await import("@/lib/auth");
   const { prisma: db } = await import("@/lib/prisma");
@@ -430,6 +443,7 @@ export async function createApiKeyAction(
       expiresAt,
       allowedIps,
       rateLimitPerMin: rateLimitStr ? parseInt(rateLimitStr, 10) || null : null,
+      permissions,
     },
   });
 

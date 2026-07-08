@@ -90,13 +90,15 @@ export async function authenticateRequest(
       data: { lastUsedAt: new Date() },
     });
 
-    // API keys are full-access and independent of the creating account: they
-    // grant every permission and keep working even if the creator is disabled
-    // or deleted. Minting keys is gated by API_MANAGE (Admin-only by default).
+    const permissions =
+      apiKey.permissions && apiKey.permissions.length > 0
+        ? apiKey.permissions
+        : [...ALL_PERMISSIONS];
+
     return {
       userId: apiKey.createdBy,
       roleId: null,
-      permissions: [...ALL_PERMISSIONS],
+      permissions,
       method: "apikey",
     };
   }
