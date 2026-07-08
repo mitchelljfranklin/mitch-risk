@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useActionState, useState } from "react";
-import ReactMarkdown from "react-markdown";
+import MDEditor from "@uiw/react-md-editor";
 
 import { ConditionalRulesEditor } from "@/components/conditional-rules-editor";
 import { ControlMultiSelect } from "@/components/control-multi-select";
@@ -81,7 +81,6 @@ export function QuestionForm({
   );
   useFormToast(state);
   const [type, setType] = useState<QuestionType>(defaults?.type ?? "YES_NO");
-  const [helpPreview, setHelpPreview] = useState(false);
   const [liveHelpText, setLiveHelpText] = useState(defaults?.helpText ?? "");
 
   return (
@@ -98,36 +97,22 @@ export function QuestionForm({
       </div>
 
       <div className="grid gap-2">
-        <div className="flex items-center justify-between gap-2">
-          <Label htmlFor="helpText">Help text</Label>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-6 text-xs"
-            onClick={() => setHelpPreview(!helpPreview)}
-          >
-            {helpPreview ? "Edit" : "Preview"}
-          </Button>
-        </div>
-        {helpPreview ? (
-          <div className="prose prose-sm dark:prose-invert max-w-none rounded-md border p-3 text-sm">
-            <ReactMarkdown>{liveHelpText}</ReactMarkdown>
-          </div>
-        ) : (
-          <>
-            <Textarea
-              id="helpText"
-              name="helpText"
-              value={liveHelpText}
-              rows={3}
-              onChange={(e) => setLiveHelpText(e.target.value)}
-            />
-            <p className="text-muted-foreground text-xs">
-              Markdown formatting is supported — use **bold**, *italic*, lists, and links.
-            </p>
-          </>
-        )}
+        <Label htmlFor="helpText">Help text</Label>
+        <input type="hidden" name="helpText" value={liveHelpText} />
+        <p className="text-muted-foreground text-xs">
+          Markdown formatting is supported — use **bold**, *italic*, lists, and
+          links.
+        </p>
+        <MDEditor
+          value={liveHelpText}
+          onChange={(val) => setLiveHelpText(val ?? "")}
+          preview="live"
+          height={200}
+          visibleDragbar={false}
+          commandsFilter={(cmd) =>
+            cmd.name !== "image" ? cmd : { ...cmd, disabled: true }
+          }
+        />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">

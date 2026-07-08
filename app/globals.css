@@ -164,3 +164,34 @@
     background: var(--muted-foreground);
   }
 }
+
+/* react-md-editor theme overrides — sync to shadcn design tokens */
+.w-md-editor {
+  border-color: hsl(var(--border)) !important;
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+  box-shadow: none !important;
+}
+.w-md-editor-toolbar {
+  background-color: hsl(var(--muted)) !important;
+  border-bottom: 1px solid hsl(var(--border)) !important;
+}
+.w-md-editor-toolbar button {
+  color: hsl(var(--muted-foreground)) !important;
+}
+.w-md-editor-toolbar button:hover {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+.w-md-editor-preview {
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+.w-md-editor-text {
+  background-color: hsl(var(--background)) !important;
+}
+.w-md-editor-text-pre > code,
+.w-md-editor-text-input {
+  color: hsl(var(--foreground)) !important;
+  font-family: inherit !important;
+}

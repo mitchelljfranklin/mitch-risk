@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useActionState } from "react";
-import ReactMarkdown from "react-markdown";
+import MDEditor from "@uiw/react-md-editor";
 
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -16,7 +16,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Textarea } from "@/components/ui/textarea";
 import {
   EMAIL_TEMPLATE_DEFINITIONS,
   type EmailTemplateDefinition,
@@ -54,7 +53,6 @@ function TemplateEditorSheet({
     resetEmailTemplateAction,
     initialState,
   );
-  const [previewBody, setPreviewBody] = useState(false);
   const [liveBody, setLiveBody] = useState(body);
   useActionFeedback(saveState);
   useActionFeedback(resetState);
@@ -86,35 +84,19 @@ function TemplateEditorSheet({
           />
         </div>
         <div className="grid gap-2">
-          <div className="flex items-center justify-between gap-2">
-            <Label htmlFor="template-body">Body</Label>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="h-6 text-xs"
-              onClick={() => setPreviewBody(!previewBody)}
-            >
-              {previewBody ? "Edit" : "Preview"}
-            </Button>
-          </div>
-          {previewBody ? (
-            <div className="prose prose-sm dark:prose-invert max-w-none rounded-md border p-3 text-sm">
-              <ReactMarkdown>{liveBody}</ReactMarkdown>
-            </div>
-          ) : (
-            <Textarea
-              id="template-body"
-              name="body"
-              value={liveBody}
-              rows={10}
-              required
-              onChange={(e) => setLiveBody(e.target.value)}
-            />
-          )}
+          <Label>Body</Label>
+          <input type="hidden" name="body" value={liveBody} />
+          <MDEditor
+            value={liveBody}
+            onChange={(val) => setLiveBody(val ?? "")}
+            preview="live"
+            height={300}
+            visibleDragbar={false}
+          />
         </div>
         <p className="text-muted-foreground text-xs">
-          Markdown formatting is supported — use **bold**, *italic*, lists, and links. Tokens: {TEMPLATE_TOKENS}.
+          Markdown formatting is supported — use **bold**, *italic*, lists, and
+          links. Tokens: {TEMPLATE_TOKENS}.
         </p>
 
         <SheetFooter className="px-0">
