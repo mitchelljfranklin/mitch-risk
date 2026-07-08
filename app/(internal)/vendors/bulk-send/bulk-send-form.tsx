@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, startTransition } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -96,7 +96,9 @@ export function BulkSendForm({
     for (const id of selectedIds) {
       formData.append("vendorIds", id);
     }
-    formAction(formData);
+    startTransition(() => {
+      formAction(formData);
+    });
   }
 
   const templateLabel = templates.find((t) => t.id === templateId)?.label ?? "";

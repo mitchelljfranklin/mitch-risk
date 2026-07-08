@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useState, startTransition } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -84,7 +84,9 @@ export function FrameworkImportForm() {
     formData.set("version", version);
     if (description) formData.set("description", description);
     formData.set("csvFile", file);
-    formAction(formData);
+    startTransition(() => {
+      formAction(formData);
+    });
   }
 
   const canProceed =

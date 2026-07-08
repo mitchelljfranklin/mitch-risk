@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useRef, useState } from "react";
+import { useActionState, useRef, useState, startTransition } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -142,7 +142,9 @@ export function ImportTemplateForm() {
     });
     const formData = new FormData();
     formData.set("file", file);
-    formAction(formData);
+    startTransition(() => {
+      formAction(formData);
+    });
   }
 
   const totalQuestions = parsed
