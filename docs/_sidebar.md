@@ -1,5 +1,6 @@
 - **Welcome**
   - [Introduction](welcome/introduction.md)
+  - [Screenshots](welcome/screenshots.md)
   - [Quick Start](quick-start.md)
 - **User Guides**
   - [Templates](user-guides/templates.md)
