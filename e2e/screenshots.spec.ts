@@ -27,7 +27,10 @@ test("capture dashboard screenshot", async ({ page }) => {
 
 test("capture vendor detail screenshot", async ({ page }) => {
   await signInAsAdmin(page);
-  await page.locator('[data-sidebar="menu-button"]').filter({ hasText: "Vendors" }).click();
+  await page
+    .locator('[data-sidebar="menu-button"]')
+    .filter({ hasText: "Vendors" })
+    .click();
   await page.waitForURL("**/vendors");
   await page.waitForFunction(
     () => !document.body.textContent?.includes("Loading..."),
@@ -49,7 +52,10 @@ test("capture vendor detail screenshot", async ({ page }) => {
 
 test("capture assessment review screenshot", async ({ page }) => {
   await signInAsAdmin(page);
-  await page.locator('[data-sidebar="menu-button"]').filter({ hasText: "Assessments" }).click();
+  await page
+    .locator('[data-sidebar="menu-button"]')
+    .filter({ hasText: "Assessments" })
+    .click();
   await page.waitForURL("**/assessments");
   await page.waitForFunction(
     () => !document.body.textContent?.includes("Loading..."),
@@ -67,7 +73,10 @@ test("capture assessment review screenshot", async ({ page }) => {
 
 test("capture template builder screenshot", async ({ page }) => {
   await signInAsAdmin(page);
-  await page.locator('[data-sidebar="menu-button"]').filter({ hasText: "Templates" }).click();
+  await page
+    .locator('[data-sidebar="menu-button"]')
+    .filter({ hasText: "Templates" })
+    .click();
   await page.waitForURL("**/templates");
   await page.waitForFunction(
     () => !document.body.textContent?.includes("Loading..."),
