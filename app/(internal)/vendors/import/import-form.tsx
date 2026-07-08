@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState, startTransition } from "react";
+import { useActionState, useState, useEffect, startTransition } from "react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -42,6 +43,7 @@ const CSV_TEMPLATE = [
 ].join("\n");
 
 export function ImportVendorsForm() {
+  const router = useRouter();
   const [state, formAction, isPending] = useActionState(
     importVendorsAction,
     undefined as VendorsImportState,
@@ -51,6 +53,12 @@ export function ImportVendorsForm() {
   const [previewHeaders, setPreviewHeaders] = useState<string[]>([]);
 
   useFormToast(state as { ok: boolean; message?: string } | undefined);
+
+  useEffect(() => {
+    if (state?.ok) {
+      router.push("/vendors");
+    }
+  }, [state?.ok, router]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];

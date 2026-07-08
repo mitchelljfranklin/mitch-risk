@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useRef, useState, startTransition } from "react";
+import { useActionState, useEffect, useRef, useState, startTransition } from "react";
+import { useRouter } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -85,6 +86,7 @@ const JSON_TEMPLATE = JSON.stringify(
 const initialState: TemplateImportState = undefined;
 
 export function ImportTemplateForm() {
+  const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const [state, formAction, isPending] = useActionState(
     (previous: TemplateImportState, data: FormData) => {
@@ -101,6 +103,12 @@ export function ImportTemplateForm() {
   const [parseError, setParseError] = useState<string | null>(null);
 
   useFormToast(state);
+
+  useEffect(() => {
+    if (state?.ok) {
+      router.push("/templates");
+    }
+  }, [state?.ok, router]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
