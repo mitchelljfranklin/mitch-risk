@@ -112,6 +112,11 @@ export function AppearanceForm({
           accept="image/*"
           className="cursor-pointer"
         />
+        {state && !state.ok ? (
+          <p className="text-destructive text-xs" role="alert">
+            {state.message}
+          </p>
+        ) : null}
         {hasLogo ? (
           <div className="flex flex-col gap-2">
             <img

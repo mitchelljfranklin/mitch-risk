@@ -148,6 +148,9 @@ export function PortalQuestionnaire({
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadingQuestion, setUploadingQuestion] = useState<string | null>(
+    null,
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const isFirstRender = useRef(true);
@@ -277,12 +280,14 @@ export function PortalQuestionnaire({
       return;
     }
     setUploadError(null);
+    setUploadingQuestion(questionId);
     const formData = new FormData();
     formData.set("token", token);
     formData.set("assessmentQuestionId", questionId);
     formData.set("file", file);
 
     const result = await uploadEvidenceAction(formData);
+    setUploadingQuestion(null);
     if (result.ok) {
       setEvidence((current) => ({
         ...current,
@@ -413,15 +418,19 @@ export function PortalQuestionnaire({
     }
 
     if (question.type === "FILE_UPLOAD") {
+      const isUploading = uploadingQuestion === question.id;
+      const accept = allowedExtensions.map((ext) => `.${ext}`).join(",");
       return (
         <div className="flex flex-col gap-2">
           <Input
             type="file"
-            disabled={disabled}
+            accept={accept}
+            disabled={disabled || isUploading}
             onChange={(event) => handleFileUpload(question.id, event)}
           />
           <p className="text-muted-foreground text-xs">
             Max {maxUploadMb} MB. Allowed: {allowedExtensions.join(", ")}.
+            {isUploading ? " Uploading…" : null}
           </p>
           {(evidence[question.id] ?? []).map((file) => (
             <span

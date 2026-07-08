@@ -111,6 +111,10 @@ export async function importVendorsAction(
     return { ok: false, error: "No file selected." };
   }
 
+  if (file.size > 1_000_000) {
+    return { ok: false, error: "File is too large (max 1 MB)." };
+  }
+
   const text = await file.text();
   const rows = parseCsvWithHeaders(text);
   if (rows.length === 0) {

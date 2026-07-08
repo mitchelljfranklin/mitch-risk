@@ -88,9 +88,17 @@ export async function saveCertificationAction(
     }
   }
 
-  await handleAttachmentUpload(formData, "VendorCertification", savedId);
+  const attachmentResult = await handleAttachmentUpload(
+    formData,
+    "VendorCertification",
+    savedId,
+  );
+  const attachmentNote =
+    attachmentResult && !attachmentResult.ok
+      ? ` Attachment failed: ${attachmentResult.message}`
+      : "";
 
-  return { ok: true, message: "Certification saved." };
+  return { ok: true, message: `Certification saved.${attachmentNote}` };
 }
 
 export async function deleteCertificationAction(formData: FormData) {
@@ -133,17 +141,26 @@ export async function handleAttachmentUpload(
   formData: FormData,
   entityType: string,
   entityId: string,
-) {
+): Promise<{ ok: boolean; message: string } | undefined> {
   const file = formData.get("attachmentFile") as File | null;
-  if (!file || !(file instanceof File) || file.size === 0) return;
+  if (!file || !(file instanceof File) || file.size === 0) return undefined;
 
   const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
-  if (!ALLOWED_ATTACHMENT_EXTS.includes(ext)) return;
+  if (!ALLOWED_ATTACHMENT_EXTS.includes(ext)) {
+    return { ok: false, message: "File type not allowed." };
+  }
 
-  if (file.size > MAX_ATTACHMENT_BYTES) return;
+  if (file.size > MAX_ATTACHMENT_BYTES) {
+    return {
+      ok: false,
+      message: `File is too large (max ${MAX_ATTACHMENT_BYTES / (1024 * 1024)} MB).`,
+    };
+  }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  if (!validateMagicBytes(ext, buffer)) return;
+  if (!validateMagicBytes(ext, buffer)) {
+    return { ok: false, message: "This file type is not accepted." };
+  }
   const storageKey = `attachment-${randomBytes(12).toString("hex")}.${ext}`;
 
   await storage.save(storageKey, buffer);
@@ -163,9 +180,11 @@ export async function handleAttachmentUpload(
     try {
       await storage.delete(storageKey);
     } catch {
-      // clean up failed
+      // Attachment storage cleanup failed — orphaned file will be swept by cron
     }
   }
+
+  return { ok: true, message: "File uploaded." };
 }
 
 export async function removeAttachmentAction(formData: FormData) {

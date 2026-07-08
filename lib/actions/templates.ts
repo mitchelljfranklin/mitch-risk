@@ -346,6 +346,10 @@ export async function importTemplateAction(
     return { ok: false, error: "No file selected." };
   }
 
+  if (file.size > 1_000_000) {
+    return { ok: false, error: "File is too large (max 1 MB)." };
+  }
+
   let data: ImportJson;
   try {
     data = JSON.parse(await file.text());
