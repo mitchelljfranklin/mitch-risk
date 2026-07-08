@@ -287,6 +287,21 @@ their head:
 - **Your code should pass the "read aloud" test.** If you cannot read a line out loud and have
   it sound like a plain-English instruction, rename the variables until you can.
 
+**Concrete anti-patterns — avoid these:**
+
+| Pattern | Problem | Do instead |
+|---|---|---|
+| `+!!foo` or `~~foo` | Implicit coercion tricks no one reads fluently | `Number(foo)` or `Math.floor(foo)` |
+| `const { data } = await fn()` destructuring into generic names | Loses what `data` actually is | `const { data: vendors }` or just `const result = await fn()` |
+| `Array.reduce()` for building objects or side-effects | `reduce` signals "fold/accumulate" — a `for` loop is clearer for mutation | `for...of` when mutating; `reduce` only for pure accumulation |
+| `.forEach()` when you need `break`/`continue` | `forEach` can't early-exit | `for...of` with `break` or `continue` |
+| Boolean trap parameters: `fn(data, true, false)` | Caller can't tell what `true`/`false` mean | Options object: `fn(data, { skipValidation: true })` |
+| Mutation of function parameters | Surprises the caller when their input changes | Clone or return a new value |
+| Variables declared far from their use | Forces the reader to scroll and remember | Declare at the point of first use |
+| Regex that takes >10 seconds to parse by eye | Regex is write-once, read-never | Split into named sub-patterns or use a parser |
+| Side effects inside getters or property access | `obj.foo` looks pure but isn't | Make it an explicit method: `obj.getFoo()` |
+| Implicit `any` from untyped catch / destructure | Hides type errors until runtime | Type catch as `unknown`; type all destructures |
+
 ## Role-based access control (build access-control in, every time)
 
 Authorization is permission-based, not "is authenticated". Roles are DB-backed
