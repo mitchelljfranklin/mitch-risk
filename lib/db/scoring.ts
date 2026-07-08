@@ -91,6 +91,18 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
     const responseMap = new Map(assessment.responses.map((r) => [r.id, r]));
     const questionMap = new Map(assessment.questions.map((q) => [q.id, q]));
 
+    const nonCompliantIds = scored
+      .filter((result) => result.isCompliant === false)
+      .map((result) => result.id);
+
+    const existingFindings = await tx.finding.findMany({
+      where: { assessmentId, responseId: { in: nonCompliantIds } },
+      select: { id: true, responseId: true },
+    });
+    const findingByResponseId = new Map(
+      existingFindings.map((f) => [f.responseId, f.id]),
+    );
+
     for (const result of scored) {
       if (result.isCompliant !== false) {
         continue;
@@ -108,10 +120,7 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
         .map((controlId) => controlCodeById.get(controlId))
         .filter((code): code is string => Boolean(code));
 
-      const existing = await tx.finding.findFirst({
-        where: { assessmentId, responseId: result.id },
-        select: { id: true },
-      });
+      const existingId = findingByResponseId.get(result.id);
 
       const shared = {
         controlCodes,
@@ -119,9 +128,8 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
         title: question.text.slice(0, 100),
       };
 
-      if (existing) {
-        // Preserve reviewer-managed status/resolutionNote/resolvedBy.
-        await tx.finding.update({ where: { id: existing.id }, data: shared });
+      if (existingId) {
+        await tx.finding.update({ where: { id: existingId }, data: shared });
       } else {
         await tx.finding.create({
           data: {

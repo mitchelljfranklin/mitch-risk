@@ -112,7 +112,7 @@ describe("scoring engine", () => {
     expect(computeTotalScore(scored)).toBeCloseTo(13 / 19, 4);
   });
 
-  it("returns 0 when no scoreable questions exist", () => {
+  it("returns null when no scoreable questions exist (all N/A)", () => {
     const responses = questions.map((q) => ({
       id: q.id,
       assessmentQuestionId: q.id,
@@ -121,7 +121,7 @@ describe("scoring engine", () => {
     }));
     expect(
       computeTotalScore(scoreResponses(questions, responses, defaultWeights)),
-    ).toBe(0);
+    ).toBeNull();
   });
 
   it("isCompliant handles numeric string coercion", () => {

@@ -143,8 +143,8 @@ export function scoreResponses(
   });
 }
 
-export function computeTotalScore(scored: ScoredResponse[]): number {
+export function computeTotalScore(scored: ScoredResponse[]): number | null {
   const totalWeighted = scored.reduce((sum, r) => sum + r.weightedScore, 0);
   const totalMax = scored.reduce((sum, r) => sum + r.maxScore, 0);
-  return totalMax > 0 ? totalWeighted / totalMax : 0;
+  return totalMax > 0 ? totalWeighted / totalMax : null;
 }

@@ -62,6 +62,10 @@ export async function authenticateRequest(
       : 30
   ) as number;
 
+  const ip = getClientIp(request.headers);
+
+  if (!rateLimit("apikey-ip", ip, defaultRate)) return null;
+
   if (!rateLimit("apikey", keyPrefix, defaultRate)) return null;
 
   const candidates = await prisma.apiKey.findMany({
