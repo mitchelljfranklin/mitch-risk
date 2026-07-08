@@ -51,7 +51,7 @@ Vendors support file attachments for contracts, agreements, scope documents, and
 
 ### Attachment Security
 
-- **Upload validation** — MIME type blocklist rejects dangerous types (HTML, SVG, JS, executables)
+- **Upload validation** — MIME type deny-list rejects dangerous types (HTML, SVG, JS, executables)
 - **Extension allowlist** — configurable (default: pdf, png, jpg, jpeg, docx, xlsx)
 - **Magic-byte validation** — file signatures checked to detect renamed files
 - **Size limit** — configurable `maxUploadMb` (default: 20 MB)

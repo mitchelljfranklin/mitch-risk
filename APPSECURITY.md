@@ -116,7 +116,7 @@ Permission definitions, default role mappings, and helpers live in `lib/permissi
 ### 3.4 Strengths & Considerations
 
 **Strengths:**
-- Granular 17-key catalog — no blanket "is authenticated" gating
+- Granular 20-key catalog — no blanket "is authenticated" gating
 - UI controls hidden, not greyed-out — clean least-privilege experience
 - API key independence from creator account
 - Last-admin protection prevents admin lockout (cannot delete, demote, or disable the last remaining admin)

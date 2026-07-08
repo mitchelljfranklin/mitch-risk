@@ -14,7 +14,7 @@ Yes. Set an optional portal password when sending the assessment. Vendors must e
 
 ## How is the scoring calculated?
 
-Each question has a risk weight (Critical=10, High=6, Medium=3, Low=1). Compliant answers earn the full weight; non-compliant answers earn 0. The total score is `sum(weightedScores) / sum(maxScores)`, yielding a 0–100% ratio. Only auto-scorable question types (Yes/No, Multiple Choice, Numeric, Combo Box, Multi-Select, Rating, Checkbox) are included — free text and file uploads require manual review.
+Each question has a risk weight (Critical=10, High=6, Medium=3, Low=1). Compliant answers earn the full weight; non-compliant answers earn 0. The total score is `sum(weightedScores) / sum(maxScores)`, yielding a 0–1 ratio (displayed as 0–100%). Only auto-scorable question types (Yes/No, Multiple Choice, Numeric, Combo Box, Multi-Select, Rating, Checkbox) are included — free text and file uploads require manual review.
 
 RAG thresholds: Green ≥85%, Amber 60–84%, Red <60%.
 

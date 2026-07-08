@@ -35,14 +35,14 @@ When SSO-only mode is enabled (local login hidden), a **break-glass URL** provid
 | Session type | Stateless JWT (Auth.js v5) |
 | Cookie flags | `httpOnly`, `secure` (production), `sameSite: lax` |
 | Signing secret | `AUTH_SECRET` env var (validated at boot) |
-| Client-side idle timeout | Configurable (default 30 min) — auto-signs out after inactivity |
+| Client-side idle timeout | Configurable (default 30 min) — auto-signs out after inactivity. Note: this is a client-side UX feature; the JWT itself is stateless with no server-enforced `exp` claim tied to the idle timer |
 
 ## API security
 
 - **API keys** format: `mrk_<8-hex-prefix>.<48-hex-secret>`
 - Keys are bcrypt-hashed in the database; prefix enables indexed lookup without full table scan
 - IP allowlisting via CIDR (empty = all IPs allowed)
-- Configurable per-key rate limiting and expiry
+- Configurable expiry (30/90/180/365 days or permanent)
 - API key auth must be enabled globally under **Settings → API**
 
 ## Portal token security
@@ -73,10 +73,13 @@ form-action 'self'
 
 Additional headers: `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`.
 
+CSP violation reports are sent to `/api/csp-report` in production (logged to server console).
+
 ## File upload security
 
-- Dangerous MIME types blocked (HTML, JS, SVG, PHP, executables, shell scripts)
+- Dangerous MIME types rejected via deny-list (HTML, JS, SVG, PHP, executables, shell scripts)
 - Configurable max upload size (default 20 MB)
 - Configurable allowed extensions (default: pdf, png, jpg, jpeg, docx, xlsx)
 - Magic-byte (file signature) validation detects renamed files
+- Content-Disposition headers URI-encoded to prevent header injection
 - Files served through authenticated routes — never via raw public URLs
