@@ -1,17 +1,53 @@
 "use client";
 
-import { useActionState, useRef } from "react";
+import { useActionState, useRef, useState } from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Stepper,
+  StepperContent,
+  StepperIndicator,
+  StepperItem,
+  StepperLabel,
+  StepperList,
+  StepperNext,
+  StepperPrevious,
+  StepperSeparator,
+  StepperTrigger,
+} from "@/components/ui/stepper";
 import { useFormToast } from "@/hooks/use-form-toast";
-import { Download } from "lucide-react";
 import {
   importTemplateAction,
   type TemplateImportState,
 } from "@/lib/actions/templates";
+import { Download } from "lucide-react";
+
+type ParsedTemplate = {
+  name: string;
+  description?: string;
+  sections: {
+    title: string;
+    questions: {
+      text: string;
+      type: string;
+      riskWeight: string;
+      required: boolean;
+      controlCodes?: string[];
+    }[];
+  }[];
+};
 
 const JSON_TEMPLATE = JSON.stringify(
   {
@@ -60,72 +96,246 @@ export function ImportTemplateForm() {
     },
     initialState,
   );
+  const [rawText, setRawText] = useState<string | null>(null);
+  const [parsed, setParsed] = useState<ParsedTemplate | null>(null);
+  const [parseError, setParseError] = useState<string | null>(null);
+
   useFormToast(state);
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = reader.result as string;
+      setRawText(text);
+      setParseError(null);
+      try {
+        const template = JSON.parse(text) as ParsedTemplate;
+        if (
+          !template.name ||
+          typeof template.name !== "string" ||
+          !Array.isArray(template.sections)
+        ) {
+          setParseError(
+            "Invalid template structure. Expected name and sections array.",
+          );
+          setParsed(null);
+          return;
+        }
+        setParsed(template);
+      } catch {
+        setParseError("Invalid JSON file.");
+        setParsed(null);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function handleImport() {
+    if (!rawText) return;
+    const blob = new Blob([rawText], {
+      type: "application/json;charset=utf-8",
+    });
+    const file = new File([blob], "template.json", {
+      type: "application/json",
+    });
+    const formData = new FormData();
+    formData.set("file", file);
+    formAction(formData);
+  }
+
+  const totalQuestions = parsed
+    ? parsed.sections.reduce(
+        (acc, section) => acc + section.questions.length,
+        0,
+      )
+    : 0;
+  const totalControls = parsed
+    ? parsed.sections.reduce(
+        (acc, section) =>
+          acc +
+          section.questions.reduce(
+            (qAcc, q) => qAcc + (q.controlCodes?.length ?? 0),
+            0,
+          ),
+        0,
+      )
+    : 0;
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Upload JSON</CardTitle>
+        <CardTitle>Import template from JSON</CardTitle>
       </CardHeader>
       <CardContent>
-        <form ref={formRef} action={formAction} className="flex flex-col gap-4">
-          <div className="grid gap-2">
-            <div className="flex items-center justify-between gap-2">
-              <Label htmlFor="file">JSON file</Label>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="h-6 px-1.5 text-xs"
-                onClick={() => {
-                  const blob = new Blob([JSON_TEMPLATE], {
-                    type: "application/json;charset=utf-8",
-                  });
-                  const url = URL.createObjectURL(blob);
-                  const link = document.createElement("a");
-                  link.href = url;
-                  link.download = "template-import-template.json";
-                  link.click();
-                  URL.revokeObjectURL(url);
-                }}
-              >
-                <Download className="size-3" />
-                Template
+        <Stepper defaultValue="upload" className="flex flex-col gap-6">
+          <StepperList className="mx-auto flex w-fit items-center gap-2">
+            <StepperItem value="upload">
+              <StepperTrigger className="flex flex-col items-center gap-1">
+                <StepperIndicator className="flex size-8 items-center justify-center rounded-full border-2 text-sm font-medium" />
+                <StepperLabel className="text-xs font-medium">
+                  Upload
+                </StepperLabel>
+              </StepperTrigger>
+              <StepperSeparator className="bg-muted-foreground/20 mx-2 h-0.5 w-12" />
+            </StepperItem>
+            <StepperItem value="confirm">
+              <StepperTrigger className="flex flex-col items-center gap-1">
+                <StepperIndicator className="flex size-8 items-center justify-center rounded-full border-2 text-sm font-medium" />
+                <StepperLabel className="text-xs font-medium">
+                  Review
+                </StepperLabel>
+              </StepperTrigger>
+            </StepperItem>
+          </StepperList>
+
+          <StepperContent value="upload" className="flex flex-col gap-4">
+            <div className="grid gap-2">
+              <div className="flex items-center justify-between gap-2">
+                <Label htmlFor="file">JSON file</Label>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 px-1.5 text-xs"
+                  onClick={() => {
+                    const blob = new Blob([JSON_TEMPLATE], {
+                      type: "application/json;charset=utf-8",
+                    });
+                    const url = URL.createObjectURL(blob);
+                    const anchor = document.createElement("a");
+                    anchor.href = url;
+                    anchor.download = "template-import-template.json";
+                    anchor.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                >
+                  <Download className="size-3" />
+                  Template
+                </Button>
+              </div>
+              <Input
+                id="file"
+                type="file"
+                accept=".json"
+                onChange={handleFileChange}
+                required
+              />
+              <p className="text-muted-foreground text-xs">
+                Upload a valid JSON template file. Export an existing template
+                from the template builder (Actions → Export) to see the expected
+                structure.
+              </p>
+            </div>
+
+            {parseError ? (
+              <p className="text-destructive text-sm" role="alert">
+                {parseError}
+              </p>
+            ) : null}
+
+            {parsed ? (
+              <div className="rounded-md border p-4">
+                <p className="text-sm font-medium">{parsed.name}</p>
+                {parsed.description ? (
+                  <p className="text-muted-foreground mt-1 text-xs">
+                    {parsed.description}
+                  </p>
+                ) : null}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Badge variant="secondary" className="text-xs">
+                    {parsed.sections.length} section
+                    {parsed.sections.length !== 1 ? "s" : ""}
+                  </Badge>
+                  <Badge variant="secondary" className="text-xs">
+                    {totalQuestions} question
+                    {totalQuestions !== 1 ? "s" : ""}
+                  </Badge>
+                  {totalControls > 0 ? (
+                    <Badge variant="secondary" className="text-xs">
+                      {totalControls} control code
+                      {totalControls !== 1 ? "s" : ""}
+                    </Badge>
+                  ) : null}
+                </div>
+                <div className="mt-3 max-h-64 overflow-auto rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-xs">Section</TableHead>
+                        <TableHead className="text-xs">Questions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {parsed.sections.map((section, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="text-xs">
+                            {section.title}
+                          </TableCell>
+                          <TableCell className="text-muted-foreground text-xs">
+                            {section.questions.length}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            ) : null}
+
+            <StepperNext asChild>
+              <Button size="sm" className="w-fit" disabled={!parsed}>
+                Next →
+              </Button>
+            </StepperNext>
+          </StepperContent>
+
+          <StepperContent value="confirm" className="flex flex-col gap-4">
+            {parsed ? (
+              <div className="rounded-md border p-4">
+                <p className="text-sm">
+                  You are about to import template{" "}
+                  <span className="font-semibold">{parsed.name}</span>
+                  {parsed.description ? (
+                    <span className="text-muted-foreground">
+                      {" "}
+                      — {parsed.description}
+                    </span>
+                  ) : null}
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                  <span className="text-muted-foreground">
+                    {parsed.sections.length} section
+                    {parsed.sections.length !== 1 ? "s" : ""} · {totalQuestions}{" "}
+                    question
+                    {totalQuestions !== 1 ? "s" : ""}
+                    {totalControls > 0
+                      ? ` · ${totalControls} control code${totalControls !== 1 ? "s" : ""}`
+                      : ""}
+                  </span>
+                </div>
+              </div>
+            ) : null}
+
+            <div className="flex items-center gap-3">
+              <StepperPrevious asChild>
+                <Button variant="outline" size="sm">
+                  ← Back
+                </Button>
+              </StepperPrevious>
+              <Button size="sm" disabled={isPending} onClick={handleImport}>
+                {isPending ? "Importing…" : "Import template"}
               </Button>
             </div>
-            <Input
-              id="file"
-              type="file"
-              name="file"
-              accept=".json"
-              disabled={isPending}
-              required
-            />
-            <p className="text-muted-foreground text-xs">
-              Upload a valid JSON template file. You can export an existing
-              template as JSON from the template builder (Actions → Export) to
-              see the expected structure.
-            </p>
-          </div>
 
-          <Button
-            type="submit"
-            disabled={isPending}
-            className="w-fit"
-            variant="outline"
-          >
-            {isPending ? "Importing…" : "Import template"}
-          </Button>
-
-          {state?.error ? (
-            <p className="text-destructive text-sm" role="alert">
-              {state.error}
-            </p>
-          ) : null}
-          {state?.ok ? (
-            <p className="text-sm text-[var(--success)]">{state.message}</p>
-          ) : null}
-        </form>
+            {state?.error ? (
+              <p className="text-destructive text-sm" role="alert">
+                {state.error}
+              </p>
+            ) : null}
+          </StepperContent>
+        </Stepper>
       </CardContent>
     </Card>
   );
