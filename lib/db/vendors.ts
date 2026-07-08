@@ -100,6 +100,24 @@ export function listAllVendorsBasic() {
   });
 }
 
+export function exportAllVendors() {
+  return prisma.vendor.findMany({
+    orderBy: { name: "asc" },
+    select: {
+      id: true,
+      name: true,
+      contactName: true,
+      contactEmail: true,
+      tier: true,
+      website: true,
+      notes: true,
+      serviceDescription: true,
+      dataSensitivity: true,
+      contractRenewalDate: true,
+    },
+  });
+}
+
 export function getVendor(id: string) {
   return prisma.vendor.findUnique({
     where: { id },

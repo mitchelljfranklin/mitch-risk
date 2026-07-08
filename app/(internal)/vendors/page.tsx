@@ -24,9 +24,10 @@ import { Pagination } from "@/components/pagination";
 import { ScoreBadge } from "@/components/score-badge";
 import { ViewToggle } from "@/components/view-toggle";
 import { VendorsTable } from "./vendors-table";
+import { VendorExportButton } from "@/components/vendor-export-button";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
-import { listVendors, VENDOR_SORTS, type VendorSort } from "@/lib/db/vendors";
+import { listVendors, exportAllVendors, VENDOR_SORTS, type VendorSort } from "@/lib/db/vendors";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 import { formatDate } from "@/lib/utils";
 import { parseListView, VENDOR_VIEW_COOKIE } from "@/lib/view-preference";
@@ -59,6 +60,7 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
     sort,
     page,
   });
+  const exportVendors = await exportAllVendors();
   const hasFilters = Boolean(sp.query) || Boolean(sp.tier);
 
   const cookieStore = await cookies();
@@ -77,6 +79,20 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
           <Button asChild variant="outline">
             <Link href="/vendors/compare">Compare</Link>
           </Button>
+          <VendorExportButton
+            vendors={exportVendors.map((v) => ({
+              id: v.id,
+              name: v.name,
+              contactName: v.contactName ?? "",
+              contactEmail: v.contactEmail,
+              tier: v.tier,
+              website: v.website,
+              notes: v.notes,
+              serviceDescription: v.serviceDescription,
+              dataSensitivity: v.dataSensitivity,
+              contractRenewalDate: v.contractRenewalDate?.toISOString().slice(0, 10) ?? null,
+            }))}
+          />
           {canCreateVendor ? (
             <Button asChild variant="outline">
               <Link href="/vendors/import">Import</Link>
