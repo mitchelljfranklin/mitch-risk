@@ -165,8 +165,8 @@ export function DashboardCharts({
             <CardTitle>Portfolio health</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="aspect-[7/4]">
-              <ChartContainer config={DONUT_CONFIG}>
+            <div className="min-h-[260px]">
+              <ChartContainer config={DONUT_CONFIG} className="!aspect-auto">
                 <PieChart>
                   <Pie
                     data={donutData}
@@ -208,8 +208,8 @@ export function DashboardCharts({
             <CardTitle>Open findings by severity</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="aspect-[7/4]">
-              <ChartContainer config={SEVERITY_CONFIG}>
+            <div className="min-h-[260px]">
+              <ChartContainer config={SEVERITY_CONFIG} className="!aspect-auto">
                 <BarChart
                   data={severityData}
                   layout="vertical"
@@ -246,8 +246,11 @@ export function DashboardCharts({
             <CardTitle>Assessment status</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="aspect-[7/4]">
-              <ChartContainer config={{ value: { label: "Assessments" } }}>
+            <div className="min-h-[260px]">
+              <ChartContainer
+                config={{ value: { label: "Assessments" } }}
+                className="!aspect-auto"
+              >
                 <BarChart
                   data={statusDonutData}
                   layout="vertical"
@@ -281,8 +284,8 @@ export function DashboardCharts({
             <CardTitle>Risk by tier</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="aspect-[7/4]">
-              <ChartContainer config={TIER_CONFIG}>
+            <div className="min-h-[260px]">
+              <ChartContainer config={TIER_CONFIG} className="!aspect-auto">
                 <BarChart
                   data={tierData}
                   layout="vertical"
