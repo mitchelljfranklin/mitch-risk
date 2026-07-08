@@ -63,7 +63,7 @@ const JSON_TEMPLATE = JSON.stringify(
             type: "YES_NO",
             riskWeight: "HIGH",
             required: true,
-            controlCodes: ["AC-01"],
+            controlCodes: ["A.5.15"],
           },
           {
             text: "How often are access rights reviewed?",
@@ -72,7 +72,7 @@ const JSON_TEMPLATE = JSON.stringify(
             required: true,
             options: ["Monthly", "Quarterly", "Annually", "Never"],
             expectedAnswer: "Quarterly",
-            controlCodes: ["AC-02"],
+            controlCodes: ["A.5.18"],
           },
         ],
       },
