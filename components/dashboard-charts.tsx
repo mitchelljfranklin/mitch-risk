@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Cell, Pie, PieChart, Bar, BarChart, XAxis, YAxis } from "recharts";
 
@@ -165,27 +165,25 @@ export function DashboardCharts({
             <CardTitle>Portfolio health</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="min-h-[260px]">
-              <ChartContainer config={DONUT_CONFIG} className="!aspect-auto">
-                <PieChart>
-                  <Pie
-                    data={donutData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={65}
-                    outerRadius={95}
-                    paddingAngle={2}
-                  >
-                    {donutData.map((entry) => (
-                      <Cell key={entry.name} fill={entry.fill} />
-                    ))}
-                  </Pie>
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                </PieChart>
-              </ChartContainer>
-            </div>
+            <ChartContainer config={DONUT_CONFIG}>
+              <PieChart>
+                <Pie
+                  data={donutData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={65}
+                  outerRadius={95}
+                  paddingAngle={2}
+                >
+                  {donutData.map((entry) => (
+                    <Cell key={entry.name} fill={entry.fill} />
+                  ))}
+                </Pie>
+                <ChartTooltip content={<ChartTooltipContent />} />
+              </PieChart>
+            </ChartContainer>
             <div className="mt-3 flex flex-wrap justify-center gap-4 text-xs">
               {donutData.map((d) => (
                 <span key={d.name} className="flex items-center gap-1">
@@ -208,34 +206,32 @@ export function DashboardCharts({
             <CardTitle>Open findings by severity</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="min-h-[260px]">
-              <ChartContainer config={SEVERITY_CONFIG} className="!aspect-auto">
-                <BarChart
-                  data={severityData}
-                  layout="vertical"
-                  margin={{ left: 0, right: 20 }}
-                >
-                  <XAxis type="number" hide allowDecimals={false} />
-                  <YAxis
-                    type="category"
-                    dataKey="name"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12 }}
-                    width={65}
-                  />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="value" radius={4} barSize={20}>
-                    {severityData.map((entry) => (
-                      <Cell
-                        key={entry.name}
-                        fill={SEVERITY_FILLS[entry.name] ?? RED_FILL}
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ChartContainer>
-            </div>
+            <ChartContainer config={SEVERITY_CONFIG}>
+              <BarChart
+                data={severityData}
+                layout="vertical"
+                margin={{ left: 0, right: 20 }}
+              >
+                <XAxis type="number" hide allowDecimals={false} />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12 }}
+                  width={65}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="value" radius={4} barSize={20}>
+                  {severityData.map((entry) => (
+                    <Cell
+                      key={entry.name}
+                      fill={SEVERITY_FILLS[entry.name] ?? RED_FILL}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ChartContainer>
           </CardContent>
         </Card>
       ) : null}
@@ -246,34 +242,29 @@ export function DashboardCharts({
             <CardTitle>Assessment status</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="min-h-[260px]">
-              <ChartContainer
-                config={{ value: { label: "Assessments" } }}
-                className="!aspect-auto"
+            <ChartContainer config={{ value: { label: "Assessments" } }}>
+              <BarChart
+                data={statusDonutData}
+                layout="vertical"
+                margin={{ left: 0, right: 20 }}
               >
-                <BarChart
-                  data={statusDonutData}
-                  layout="vertical"
-                  margin={{ left: 0, right: 20 }}
-                >
-                  <XAxis type="number" hide allowDecimals={false} />
-                  <YAxis
-                    type="category"
-                    dataKey="name"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12 }}
-                    width={80}
-                  />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="value" radius={4} barSize={20}>
-                    {statusDonutData.map((entry) => (
-                      <Cell key={entry.name} fill={entry.fill} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ChartContainer>
-            </div>
+                <XAxis type="number" hide allowDecimals={false} />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12 }}
+                  width={80}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="value" radius={4} barSize={20}>
+                  {statusDonutData.map((entry) => (
+                    <Cell key={entry.name} fill={entry.fill} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ChartContainer>
           </CardContent>
         </Card>
       ) : null}
@@ -284,36 +275,34 @@ export function DashboardCharts({
             <CardTitle>Risk by tier</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="min-h-[260px]">
-              <ChartContainer config={TIER_CONFIG} className="!aspect-auto">
-                <BarChart
-                  data={tierData}
-                  layout="vertical"
-                  margin={{ left: 0, right: 20 }}
-                  barCategoryGap="30%"
-                >
-                  <XAxis type="number" hide allowDecimals={false} />
-                  <YAxis
-                    type="category"
-                    dataKey="tier"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12 }}
-                    width={80}
-                  />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="green" stackId="t" fill={GREEN_FILL} />
-                  <Bar dataKey="amber" stackId="t" fill={AMBER_FILL} />
-                  <Bar dataKey="red" stackId="t" fill={RED_FILL} />
-                  <Bar
-                    dataKey="unscored"
-                    stackId="t"
-                    fill={UNSCORED_FILL}
-                    radius={[0, 4, 4, 0]}
-                  />
-                </BarChart>
-              </ChartContainer>
-            </div>
+            <ChartContainer config={TIER_CONFIG}>
+              <BarChart
+                data={tierData}
+                layout="vertical"
+                margin={{ left: 0, right: 20 }}
+                barCategoryGap="30%"
+              >
+                <XAxis type="number" hide allowDecimals={false} />
+                <YAxis
+                  type="category"
+                  dataKey="tier"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12 }}
+                  width={80}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="green" stackId="t" fill={GREEN_FILL} />
+                <Bar dataKey="amber" stackId="t" fill={AMBER_FILL} />
+                <Bar dataKey="red" stackId="t" fill={RED_FILL} />
+                <Bar
+                  dataKey="unscored"
+                  stackId="t"
+                  fill={UNSCORED_FILL}
+                  radius={[0, 4, 4, 0]}
+                />
+              </BarChart>
+            </ChartContainer>
             <div className="mt-3 flex flex-wrap justify-center gap-4 text-xs">
               {(["green", "amber", "red", "unscored"] as const).map((key) => (
                 <span key={key} className="flex items-center gap-1">
