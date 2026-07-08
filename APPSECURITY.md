@@ -806,17 +806,7 @@ The following ZAP alerts are false positives introduced by Next.js App Router ar
 | PT-FP2 | Path Traversal (1 instance) | High | `/api/auth/signin/oidc?callbackUrl=` | Auth.js validates `callbackUrl` as a URL for HTTP redirect only; it never performs filesystem access. The attack vector ZAP probed (`/oidc`) has no path traversal semantics — it's a URL path that would fail redirect validation |
 | PT-FP3 | Absence of Anti-CSRF Tokens (5 instances) | Medium | `/login`, `/forgot-password` | ZAP looks for traditional CSRF tokens (`__RequestVerificationToken`, `_csrf`, etc.). Next.js Server Actions use built-in CSRF via `$ACTION_KEY` — a cryptographic hash bound to the specific action and session. The `$ACTION_KEY` field in every Server Action form is the CSRF token, but ZAP doesn't recognise it |
 | PT-FP4 | CSP Header Not Set (Systemic) | Medium | `mitchtask.mnafranklin.com/*` | By design per AGENTS.md/proxy.ts: CSP is applied only to document GET requests via nonce-based `strict-dynamic`. API routes, RSC payloads, and static assets (`_next/static/*`) intentionally receive no CSP header — CSP on non-document responses is unnecessary and adds overhead |
-| PT-FP5 | CSP: style-src unsafe-inline (Systemic) | Medium | `mitchtask.mnafranklin.com/*` | Intentional — Tailwind CSS v4 injects styles dynamically at build/runtime. The app's nonce-based CSP uses `'unsafe-inline'` for style-src as a deliberate design decision (documented in AGENTS.md). Script-src uses `strict-dynamic` with nonce, not `unsafe-inline` |
-
-### Third-Party Dependency Findings
-
-These findings relate to external infrastructure, not the Mitch-Risk application itself.
-
-| ID | ZAP Alert | Risk | External Domain | Details |
-|----|-----------|------|-----------------|---------|
-| PT-3P1 | Vulnerable JS Library — Angular v21.2.16 (CVE-2026-54267) | High | `autho.mnafranklin.com` | Logto OIDC admin console uses Angular 21.2.16 with a known CVE. This is the identity provider's admin UI, not Mitch‑Risk. Logto should update Angular in their next release |
-| PT-3P2 | Cross-Domain Misconfiguration (`Access-Control-Allow-Origin: *`) | Medium | `plausible.io/api/event` | Plausible analytics intentionally uses open CORS for cross-domain event tracking. Not the Mitch‑Risk domain |
-| PT-3P3 | Various CSP/Cookie/HSTS findings | Med/Low | `autho.mnafranklin.com`, `edge.microsoft.com`, `bing.com` | All CSP, cookie flag, HSTS, and header findings on third-party domains are the responsibility of those providers, not Mitch‑Risk |
+| PT-FP5 | CSP: style-src unsafe-inline (Systemic) | Medium | `mitchtask.mnafranklin.com/*` | Intentional — Tailwind CSS v4 injects styles dynamically at build/runtime. The app's nonce-based CSP uses `'unsafe-inline'` for style-src as a deliberate design decision (documented). Script-src uses `strict-dynamic` with nonce, not `unsafe-inline` |
 
 ---
 

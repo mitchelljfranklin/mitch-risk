@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useToast } from "@/components/toast";
+import { toast } from "sonner";
 
 type ActionState =
   { ok?: boolean; message?: string; error?: string } | undefined;
 
 export function useFormToast(state: ActionState) {
-  const { toast } = useToast();
   const prevRef = useRef(state);
 
   useEffect(() => {
@@ -17,8 +16,12 @@ export function useFormToast(state: ActionState) {
     const isSuccess = state.ok ?? false;
 
     if (message) {
-      toast(message, isSuccess ? "success" : "error");
+      if (isSuccess) {
+        toast.success(message);
+      } else {
+        toast.error(message);
+      }
     }
     prevRef.current = state;
-  }, [state, toast]);
+  }, [state]);
 }

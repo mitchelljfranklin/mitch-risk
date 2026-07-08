@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-
-import { useToast } from "@/components/toast";
+import { toast } from "sonner";
 
 type FlashToastProps = {
   message: string;
@@ -10,14 +9,19 @@ type FlashToastProps = {
 };
 
 export function FlashToast({ message, variant = "success" }: FlashToastProps) {
-  const { toast } = useToast();
   const fired = useRef(false);
 
   useEffect(() => {
     if (fired.current) return;
     fired.current = true;
-    toast(message, variant);
-  }, [message, variant, toast]);
+    if (variant === "error") {
+      toast.error(message);
+    } else if (variant === "info") {
+      toast(message, { icon: undefined });
+    } else {
+      toast.success(message);
+    }
+  }, [message, variant]);
 
   return null;
 }

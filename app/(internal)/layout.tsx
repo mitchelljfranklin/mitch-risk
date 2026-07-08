@@ -9,7 +9,7 @@ import {
 import { UserMenu } from "@/components/user-menu";
 import { PageMain } from "@/components/page-main";
 import { ScrollToTop } from "@/components/scroll-to-top";
-import { ToastProvider } from "@/components/toast";
+import { Toaster } from "@/components/ui/sonner";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 import { IdleTimer } from "@/components/idle-timer";
 import { requireUser } from "@/lib/auth";
@@ -33,7 +33,7 @@ export default async function InternalLayout({
     ]);
 
   return (
-    <ToastProvider>
+    <>
       <IdleTimer timeoutMinutes={assessment.sessionTimeoutMinutes} />
       <KeyboardShortcuts permissions={user.permissions} />
       <SidebarProvider>
@@ -60,6 +60,7 @@ export default async function InternalLayout({
           <ScrollToTop />
         </SidebarInset>
       </SidebarProvider>
-    </ToastProvider>
+      <Toaster />
+    </>
   );
 }
