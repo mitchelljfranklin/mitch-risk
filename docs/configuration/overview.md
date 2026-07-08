@@ -52,7 +52,7 @@ See [Email Configuration](configuration/email.md) for template token reference a
 
 ## Email Tracking
 
-A read-only log of every email sent by the platform. Filter by status (SENT/FAILED), type (invite/reminder/escalation/etc.), recipient, or date range. Failed sends can be retried. Requires **Settings: manage** permission.
+A read-only log of every email sent by the platform. Filter by status (SENT/FAILED), type (invite/reminder/escalation/etc.), recipient, or date range. Click **Clear** to reset all active filters. Failed sends can be retried. Requires **Settings: manage** permission.
 
 ---
 
@@ -167,4 +167,4 @@ API authentication supports Bearer tokens and session cookies. Full interactive 
 
 ## Audit
 
-A read-only, paginated log of all administrative actions. Filter by action type, user, or date range. Export to CSV. 44 distinct action types are tracked including logins, user management, vendor CRUD, assessment lifecycle, template operations, and settings changes. Requires **Audit: view** permission.
+A read-only, paginated log of all administrative actions. Filter by action type, user, or date range. Click **Clear** to reset all active filters. Export to CSV (all results or current page). 44 distinct action types are tracked including logins, user management, vendor CRUD, assessment lifecycle, template operations, and settings changes. Requires **Audit: view** permission.

@@ -105,3 +105,13 @@ Templates have three states that control their availability:
 | **Archived** | Hidden from active use. Existing assessments using this template are unaffected. |
 
 > Templates must be published before they can be used to create assessments. Unpublishing returns a template to Draft state. Versioning creates a new editable draft while preserving the published version.
+
+## Template Import (JSON)
+
+Import a complete template definition from a JSON file using a step-by-step wizard.
+
+1. Navigate to **Templates → Import**.
+2. **Upload** — Select a JSON file, or download the JSON template from the link provided on the page. The app parses the file and shows a preview with section and question counts.
+3. **Review** — Confirm the import. Click **Import template** to create the template.
+
+The JSON structure must match the template schema (`name`, optional `description`, `sections` array with `questions`). Each question requires `text`, `type`, and `riskWeight` at minimum. Control codes in questions must reference existing controls from a seeded framework. Max file size: 1 MB.

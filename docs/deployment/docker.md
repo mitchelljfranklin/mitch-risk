@@ -31,6 +31,14 @@ The stack includes two containers:
 | `CRON_SECRET` | `.env` | Secret for triggering cron jobs |
 | `POSTGRES_PASSWORD` | `.env` / `docker-compose.yml` | Database password |
 
+### Container Security
+
+- **Non-root user:** The application container runs as the `node` user (not root) for defense in depth.
+- **Resource limits:** Both the app and database containers have configurable resource limits:
+  - `APP_CPU_LIMIT` (default: 1.0), `APP_MEMORY_LIMIT` (default: 1g)
+  - `DB_CPU_LIMIT` (default: 0.5), `DB_MEMORY_LIMIT` (default: 512m)
+  - Set these in `.env` or `docker-compose.yml` to tune or disable limits for your deployment.
+
 ### Generate Strong Secrets
 
 ```bash

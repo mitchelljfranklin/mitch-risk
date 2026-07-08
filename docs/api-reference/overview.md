@@ -34,7 +34,7 @@ Authorization: Bearer mrk_<prefix>.<secret>
 
 **Key format:** `mrk_<8-hex-prefix>.<48-hex-secret>`
 
-API keys have **full platform access** (all permissions). They are independent of the creating user's role and permissions.
+API keys can be granted **full platform access** (all permissions) or **scoped** to a specific subset of permissions (e.g., read-only audit access). Scoped keys are restricted to only the permissions assigned at creation time. Keys are independent of the creating user's role and permissions.
 
 > **Important:** The full key is shown **only once** at creation. Copy it immediately — only the key prefix is displayed afterward.
 

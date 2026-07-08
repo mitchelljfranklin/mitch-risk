@@ -20,6 +20,10 @@ Vendors are the third-party organisations you assess. The vendor record stores p
 
 The overall score is automatically updated whenever an assessment for this vendor is completed. It represents the vendor's compliance posture based on their most recent assessment.
 
+## Vendor List
+
+The vendors list view shows all vendors in a table with columns for name, tier, and score. **Click any column header** to sort the table — click again to reverse the order. A sort dropdown is also available in the filter bar with options to sort by name, tier, or score. Use the **View toggle** to switch between table rows and card layout.
+
 ## Certifications
 
 Track vendor-held certifications with expiry monitoring:
@@ -52,6 +56,7 @@ Vendors support file attachments for contracts, agreements, scope documents, and
 ### Attachment Security
 
 - **Upload validation** — MIME type deny-list rejects dangerous types (HTML, SVG, JS, executables)
+- **Drag-and-drop** — files can be added by dragging and dropping onto the attachment area, or by clicking to browse
 - **Extension allowlist** — configurable (default: pdf, png, jpg, jpeg, docx, xlsx)
 - **Magic-byte validation** — file signatures checked to detect renamed files
 - **Size limit** — configurable `maxUploadMb` (default: 20 MB)
@@ -60,13 +65,24 @@ Vendors support file attachments for contracts, agreements, scope documents, and
 
 ## Vendor Import (CSV)
 
-Bulk-import vendors via CSV:
+Bulk-import or bulk-update vendors via CSV using a step-by-step wizard.
 
-1. Download the CSV template from the Vendors page.
-2. Fill in vendor details (name, contact, tier, etc.).
-3. Upload the CSV — each row creates or updates a vendor record.
+1. Navigate to **Vendors → Import**.
+2. **Upload** — Select a CSV file, or download the CSV template from the link provided on the page. The app parses the file and shows a preview of the first 10 rows.
+3. **Review** — Confirm the import. The summary shows how many rows will be processed. Click **Import vendors** to execute.
 
-CSV parsing handles quoted fields, CRLF line endings, and validates all values against the vendor schema before import.
+**CSV columns:** `id` (optional — include to update an existing vendor), `name`, `contactemail` (both required), plus optional: `contactname`, `tier`, `website`, `notes`, `servicedescription`, `datasensitivity`, `contractrenewaldate`. Max file size: 1 MB.
+
+Rows with an `id` matching an existing vendor record will **update** that vendor instead of creating a new one. Rows without an `id` (or with an `id` not found) will create new vendor records. Invalid rows are skipped and reported in the result summary.
+
+## Vendor Export (CSV)
+
+Download vendor data as a CSV file from the Vendors page using the **Export CSV** dropdown:
+
+- **All vendors** — exports every vendor in the database (unfiltered, regardless of current search/tier filters).
+- **Current page** — exports only the vendors matching the current search, tier filter, sort, and page.
+
+The CSV includes columns: `id`, `name`, `contactname`, `contactemail`, `tier`, `website`, `notes`, `servicedescription`, `datasensitivity`, `contractrenewaldate`. The `id` column can be used to update vendors via import (see [Vendor Import](#vendor-import-csv)).
 
 ## Vendor Comparison
 

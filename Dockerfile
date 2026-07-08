@@ -25,5 +25,7 @@ COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/public ./public
 COPY --from=build /app/.next/static ./.next/static
 COPY --from=build /app/prisma ./prisma
+RUN mkdir -p /app/.storage/evidence /app/data/uploads && chown -R node:node /app/.storage /app/data
 EXPOSE 3000
+USER node
 CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && node server.js"]

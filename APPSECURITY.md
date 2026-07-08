@@ -658,10 +658,7 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 - Auto-migration on start (no manual migration step)
 
 **Considerations:**
-- Container runs as root — highest priority hardening item
 - No read-only root filesystem
-- No resource limits
-- No non-root user in Dockerfile
 
 ---
 
@@ -734,7 +731,7 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 
 | ID | Finding | Impact | Mitigation |
 |----|---------|--------|------------|
-| H-1 | Container runs as root (`Dockerfile:21`) | Container compromise = host root access | Set `USER node` in Dockerfile before CMD |
+| H-1 | ~~Container runs as root (`Dockerfile:21`)~~ | Container compromise = host root access | **FIXED** — Added `USER node` in Dockerfile runner stage; created `/app/.storage/evidence` and `/app/data/uploads` directories with `node:node` ownership before switching user |
 | H-2 | ~~Hardcoded DB credentials in `docker-compose.yml`~~ | Credential exposure in version control | Dismissed — the compose file carries development defaults. In production, credentials must be overridden via the deployment environment regardless of whether a `.env` file exists. The container does not distinguish between env-file and env-var sources. Anyone deploying to production must already change `DATABASE_URL`, so credentials change naturally with it |
 | H-3 | ~~API keys always receive `ALL_PERMISSIONS` without scoping (`lib/api-auth.ts:89-96`)~~ | Key compromise = full platform access. No way to create read-only or scoped keys | **FIXED** — Added `permissions String[]` column to `ApiKey`; `PermissionSelector` component in Settings → API lets admins scope keys to specific permission groups; `authenticateRequest()` reads scoped permissions from the key record (empty = ALL for backward compat); all existing keys migrated to full access; no API route changes required — existing `authResultHasPermission()` gates handle scoping automatically |
 | H-4 | ~~N+1 `findFirst` in scoring loop (`lib/db/scoring.ts:110`)~~ | 50+ non-compliant responses = 50+ sequential DB roundtrips | **FIXED** — batched with `tx.finding.findMany` before loop; O(1) Map lookup |
@@ -785,7 +782,7 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 | L-1 |~~Portal password uses bcrypt 10 rounds (vs 12)~~ | Slightly weaker brute-force resistance | **FIXED** — resolved by M-16 above |
 | L-2 | No read-audit events | Cannot determine who viewed sensitive data | Dismissed — not required for the regulatory environments the platform targets (aged care / small business); the existing 44 mutation audit events provide a complete "who changed what" record |
 | L-3 | No audit log tamper-proofing | DB-level attacker can modify audit records | Dismissed — if an attacker has direct DB write access the platform is already fully compromised; hash-chaining does not prevent this class of attack |
-| L-4 | No container resource limits | DoS via resource exhaustion | Deferred — ops change in docker-compose.yml, not code |
+| L-4 | ~~No container resource limits~~ | DoS via resource exhaustion | **FIXED** — Added `deploy.resources.limits` to `docker-compose.yml` for both `app` (1.0 CPU / 1 GB memory) and `db` (0.5 CPU / 512 MB memory). Limits are env-overridable (`APP_CPU_LIMIT`, `APP_MEMORY_LIMIT`, `DB_CPU_LIMIT`, `DB_MEMORY_LIMIT`) so deployers can tune or disable them |
 | L-5 | Key derivation uses single-pass SHA-256 | Non-ideal for PBKDF purposes | Deferred — input is high-entropy random key; acceptable for current threat model |
 | L-6 | ~~No IPv6 CIDR support in API key IP allowlisting~~ | IPv6 CIDR restrictions not enforced | **FIXED** — `ipInCidr` rewritten with BigInt arithmetic; supports IPv4 /0–/32 and IPv6 /0–/128 including abbreviated `::` notation; 5 new test cases |
 | L-7 | ~~No CSP violation reporting~~ | Cannot detect CSP misconfigurations | **FIXED** — `report-uri /api/csp-report` added to CSP in production; route handler logs violations to server console |

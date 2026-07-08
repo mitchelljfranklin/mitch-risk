@@ -32,12 +32,9 @@ test("capture vendor detail screenshot", async ({ page }) => {
     .filter({ hasText: "Vendors" })
     .click();
   await page.waitForURL("**/vendors");
-  await page.waitForFunction(
-    () => !document.body.textContent?.includes("Loading..."),
-  );
+  await page.waitForTimeout(2000);
   await page
-    .getByRole("link")
-    .filter({ hasText: "Demo AgileFort" })
+    .locator("table a[href^='/vendors/']")
     .first()
     .click();
   await page.waitForURL("**/vendors/**");

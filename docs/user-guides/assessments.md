@@ -54,6 +54,20 @@ Assessments are questionnaires sent to vendors. They freeze a template's questio
 4. The vendor receives an email with the portal link: `https://app.example.com/portal/<token>`
 5. Tokens can be revoked or regenerated at any time from the assessment detail page.
 
+## Bulk Send
+
+Send the same questionnaire to multiple vendors at once from **Vendors → Bulk Send**. The process uses a 3-step wizard:
+
+1. **Configure** — Select a template, set a due date, optionally assign a reviewer and portal password.
+2. **Vendors** — Search, filter, and select which vendors to send to. Use the "Select all" checkbox or pick individual vendors.
+3. **Send** — Review the summary and confirm. Each vendor receives their own assessment titled "Template Name — Vendor Name" with a unique portal token and invite email.
+
+The result shows counts of assessments sent, skipped (vendors with no contact email), and email delivery failures.
+
+## Assessment List
+
+The assessments list shows all assessments in a table with columns for assessment/vendor, score, status, and due date. **Click any column header** to sort the table — click again to reverse the order. The sort dropdown provides the same sort options (creation date, score, status, due date, vendor name). The selected sort is reflected in the URL for shareable links.
+
 ## Portal Access
 
 The vendor portal is a no-login experience:
