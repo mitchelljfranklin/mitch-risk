@@ -470,7 +470,7 @@ export async function submitAssessment(
   token: string,
 ): Promise<{ ok: boolean; missing: number }> {
   const assessment = await prisma.assessment.findUnique({
-    where: { accessToken: token },
+    where: { tokenHash: hashToken(token) },
     include: {
       questions: {
         select: { id: true, required: true, conditionalLogic: true },
