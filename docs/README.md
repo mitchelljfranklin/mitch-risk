@@ -1,6 +1,6 @@
 # mitch-risk
 
-A lightweight, self-hosted vendor risk management platform for small businesses. Build security questionnaires, send them to vendors via no-login secure links, auto-score responses, map answers to compliance frameworks, and track vendor risk profiles over time.
+A lightweight, self-hosted third party vendor risk management solution. Build security questionnaires, send them to vendors via no-login secure links, auto-score responses, map answers to compliance frameworks, and track vendor risk profiles over time.
 
 ## Key Concepts
 

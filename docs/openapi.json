@@ -3,7 +3,7 @@
   "info": {
     "title": "mitch-risk API",
     "version": "1.0.0",
-    "description": "REST API for mitch-risk — a lightweight vendor risk management platform. Supports two authentication methods: browser session cookies (log in via the web app) and API keys (generated in Settings → API). API keys use Bearer token authentication and must be enabled by an admin before they can be used. API keys grant full access to every endpoint and remain valid independently of the account that created them. Keys can be IP-restricted and have configurable expiry.",
+    "description": "REST API for mitch-risk — a lightweight third party vendor risk management solution. Supports two authentication methods: browser session cookies (log in via the web app) and API keys (generated in Settings → API). API keys use Bearer token authentication and must be enabled by an admin before they can be used. API keys grant full access to every endpoint and remain valid independently of the account that created them. Keys can be IP-restricted and have configurable expiry.",
     "contact": {
       "name": "mitch-risk",
       "url": "https://github.com/anomalyco/mitch-risk"

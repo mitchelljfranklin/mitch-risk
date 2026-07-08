@@ -1,6 +1,6 @@
 # mitch-risk
 
-A lightweight vendor risk management platform for small businesses.
+A lightweight third party vendor risk management solution.
 
 ## Quick start (Docker Compose)
 

@@ -22,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
     .catch(() => "mitch-risk");
   return {
     title: { template: `%s — ${orgName}`, default: orgName },
-    description: "Vendor risk management for small businesses",
+    description: "Lightweight third party vendor risk management solution",
   };
 }
 

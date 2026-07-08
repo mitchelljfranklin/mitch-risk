@@ -1,6 +1,6 @@
 # mitch-risk — Project Plan
 
-A lightweight vendor risk management platform, inspired by UpGuard's questionnaire and
+A lightweight third party vendor risk management solution, inspired by UpGuard's questionnaire and
 framework-alignment features, deliberately kept simple and easy to manage.
 
 ## 1. Goals & non-goals

@@ -32,7 +32,7 @@
 
 ## 1. Executive Summary
 
-**mitch-risk** is a lightweight, self-hosted vendor risk management (VRM) platform. It enables small-to-medium businesses to:
+**mitch-risk** is a lightweight, self-hosted third party vendor risk management solution. It enables small-to-medium businesses to:
 
 - Build and version questionnaire templates with conditional logic
 - Send assessments to vendors via no-login secure portal links

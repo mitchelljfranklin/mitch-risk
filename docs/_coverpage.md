@@ -4,7 +4,7 @@
 
 # mitch-risk
 
-> Lightweight vendor risk management for small businesses
+> Lightweight third party vendor risk management
 
 - Build security questionnaires with 12 question types and conditional logic
 - Send assessments via no-login secure portal links

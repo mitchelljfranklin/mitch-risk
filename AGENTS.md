@@ -4,7 +4,7 @@ Operating guide for any agent or developer working in this repository.
 
 ## Project
 
-**mitch-risk** — a lightweight vendor risk management platform for a small business.
+**mitch-risk** — a lightweight third party vendor risk management solution.
 It lets internal staff build questionnaires, send them to vendors via a no-login secure
 link, auto-score the responses, map answers to ISO 27001 / SOC 2 / NIST CSF / Essential Eight
 controls, surface gaps as findings, and track each vendor's risk profile over time. Supports
