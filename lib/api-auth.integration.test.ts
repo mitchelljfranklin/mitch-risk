@@ -57,7 +57,7 @@ beforeAll(async () => {
 
   const scopedGenerated = generateApiKey();
   scopedKey = scopedGenerated.fullKey;
-  const scopedApiKey = await prisma.apiKey.create({
+  await prisma.apiKey.create({
     data: {
       name: SCOPED_KEY_NAME,
       keyHash: await hashApiKey(scopedKey),

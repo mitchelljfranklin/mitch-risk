@@ -40,10 +40,7 @@ export function PermissionSelector({
               <legend className="text-xs font-semibold">{group.label}</legend>
               <div className="flex flex-wrap gap-x-4 gap-y-2">
                 {group.permissions.map((permission) => (
-                  <div
-                    key={permission.key}
-                    className="flex items-center gap-2"
-                  >
+                  <div key={permission.key} className="flex items-center gap-2">
                     <Checkbox
                       id={`perm-${permission.key}`}
                       name="permissions"

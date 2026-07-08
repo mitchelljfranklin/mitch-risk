@@ -78,7 +78,11 @@ function CertificationEditor({
           Track an attestation (SOC 2, ISO 27001, …) and its expiry.
         </SheetDescription>
       </SheetHeader>
-      <form action={formAction} className="flex flex-1 flex-col gap-4 px-4">
+      <form
+        id="cert-editor-form"
+        action={formAction}
+        className="flex flex-1 flex-col gap-4 px-4"
+      >
         <input type="hidden" name="vendorId" value={vendorId} />
         {!isNew ? (
           <input type="hidden" name="certificationId" value={cert?.id} />
@@ -144,17 +148,9 @@ function CertificationEditor({
             Upload a certificate, report, or contract. Max 20 MB.
           </p>
         </div>
-        <SheetFooter className="px-0">
-          <Button type="submit" disabled={isPending}>
-            {isPending ? "Saving..." : "Save certification"}
-          </Button>
-          <Button type="button" variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-        </SheetFooter>
       </form>
       {attachments && attachments.length > 0 ? (
-        <div className="border-t pt-4">
+        <div className="border-t px-4 pt-4">
           <span className="text-xs font-medium">Attachments</span>
           <div className="mt-2 flex flex-col gap-1.5">
             {attachments.map((a) => (
@@ -186,6 +182,14 @@ function CertificationEditor({
           </div>
         </div>
       ) : null}
+      <SheetFooter className="px-4">
+        <Button type="submit" form="cert-editor-form" disabled={isPending}>
+          {isPending ? "Saving..." : "Save certification"}
+        </Button>
+        <Button type="button" variant="outline" onClick={onClose}>
+          Cancel
+        </Button>
+      </SheetFooter>
     </SheetContent>
   );
 }

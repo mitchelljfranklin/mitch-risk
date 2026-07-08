@@ -73,7 +73,7 @@ export function VendorForm({
 
   return (
     <>
-      <form action={formAction} className="grid gap-4">
+      <form id="vendor-edit-form" action={formAction} className="grid gap-4">
         {vendorId ? (
           <input type="hidden" name="vendorId" value={vendorId} />
         ) : null}
@@ -196,24 +196,20 @@ export function VendorForm({
             {state.error}
           </p>
         ) : null}
-        <div className="flex items-center gap-3">
-          <Button type="submit" disabled={isPending}>
-            {isPending
-              ? "Saving..."
-              : isEdit
-                ? "Save changes"
-                : "Create vendor"}
-          </Button>
-          <Button asChild variant="outline">
-            <Link href={cancelHref}>Cancel</Link>
-          </Button>
-        </div>
       </form>
       {isEdit && vendorId ? (
         <div className="rounded-lg border p-4">
           <VendorAttachments vendorId={vendorId} attachments={attachments} />
         </div>
       ) : null}
+      <div className="flex items-center gap-3">
+        <Button type="submit" form="vendor-edit-form" disabled={isPending}>
+          {isPending ? "Saving..." : isEdit ? "Save changes" : "Create vendor"}
+        </Button>
+        <Button asChild variant="outline">
+          <Link href={cancelHref}>Cancel</Link>
+        </Button>
+      </div>
     </>
   );
 }
