@@ -90,7 +90,7 @@ Authorization is **permission-based**, not role-based. Three system roles are se
 | **Reviewer** | Write + review access | All vendor, assessment, and template CRUD, plus frameworks view/edit. Cannot manage users, roles, settings, API, or view audit |
 | **Viewer** | Read-only | `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view` |
 
-Admins can create custom roles with any subset of the 20 fine-grained `resource:action` permissions.
+Admins can create custom roles with any subset of the 21 fine-grained `resource:action` permissions.
 
 ### 3.2 Permission Catalog
 
@@ -99,7 +99,7 @@ Admins can create custom roles with any subset of the 20 fine-grained `resource:
 | `vendors` | `view`, `create`, `edit`, `delete` |
 | `assessments` | `view`, `create`, `edit`, `review`, `delete` |
 | `templates` | `view`, `create`, `edit`, `delete` |
-| `frameworks` | `view`, `edit` |
+| `frameworks` | `view`, `edit`, `delete` |
 | `audit` | `view` |
 | `administration` | `users:manage`, `roles:manage`, `settings:manage`, `api:manage` |
 
@@ -115,7 +115,7 @@ Permission definitions, default role mappings, and helpers live in `lib/permissi
 ### 3.4 Strengths & Considerations
 
 **Strengths:**
-- Granular 20-key catalog — no blanket "is authenticated" gating
+- Granular 21-key catalog — no blanket "is authenticated" gating
 - UI controls hidden, not greyed-out — clean least-privilege experience
 - API key independence from creator account
 - Last-admin protection prevents admin lockout (cannot delete, demote, or disable the last remaining admin)
@@ -155,7 +155,7 @@ Key lifecycle events (create, revoke, enable, delete) are audited.
 
 1. **Session first:** Tries Auth.js session cookie. If valid, returns user identity + role permissions
 2. **API key fallback:** If `api.enabled` is true, per-IP rate limit → extracts Bearer token → per-prefix rate limit → prefix lookup → bcrypt verify → checks expiry → checks IP allowlist → updates `lastUsedAt`
-3. **Authorization:** API keys route through `hasPermission()` with `ALL_PERMISSIONS` regardless of creator status
+3. **Authorization:** API keys use their scoped `permissions[]` array — a subset of the full permission catalog configured at key creation. An empty scope (default) maps to `ALL_PERMISSIONS` for backward compatibility. Keys are independent of the creator — deleting or disabling the creating user does not revoke the key
 
 ### 4.4 IP Allowlisting
 
@@ -169,8 +169,6 @@ IP resolution uses a trusted-proxy-aware parser (`lib/client-ip.ts`):
 2. Falls back to `X-Forwarded-For` with `TRUSTED_PROXY_COUNT`-aware rightmost-hop selection
 3. Falls back to `X-Real-IP`
 4. Returns `"unknown"` if nothing resolves
-
-**Note:** IPv6 CIDR matching is not currently supported. IPv6 exact-match IPs work but CIDR prefixes are IPv4-only.
 
 ### 4.5 API Error Handling
 
@@ -216,7 +214,7 @@ Vendors access questionnaires via opaque, expiring tokens — no login or accoun
 ### 5.2 Portal Password Gate
 
 An optional password can be set on assessments for an additional layer of access control:
-- Password is bcrypt-hashed (10 rounds) as `portalPasswordHash`
+- Password is bcrypt-hashed (12 rounds) as `portalPasswordHash`
 - Validation is rate-limited per token (default 5/min, configurable via `portalPasswordAttemptsPerMin`)
 - On success, a `portal-auth` cookie is set allowing password-free return visits
 - The cookie is compared server-side against the token parameter
@@ -253,7 +251,7 @@ SENT → IN_PROGRESS (first save) → SUBMITTED (vendor submits)
 - Cookie attributes: httpOnly, secure, sameSite=lax, path-scoped
 
 **Considerations:**
-- `accessToken` is stored in plaintext alongside `tokenHash` for URL construction. Both are needed for functionality, but the accessToken column is a single-point exfiltration risk if the DB is compromised
+- `accessToken` is stored in plaintext alongside `tokenHash` for URL construction and email templates. The plaintext column is a single-point exfiltration risk if the DB is compromised. Token lookups (`getAssessmentByToken`, `getAssessmentForToken`) use `tokenHash` only, reducing the attack surface compared to plaintext comparisons
 - The `portal-auth` cookie value is the token itself (used for comparison). While httpOnly protects from XSS, the token still appears in the cookie store
 
 ---
@@ -614,7 +612,6 @@ External input is validated comprehensively via **zod** schemas at every boundar
 
 **Considerations:**
 - Email template token replacement does not HTML-sanitize token values. Since tokens come from DB fields (names, dates), the risk is low, but a compromised DB could inject HTML into outgoing emails
-- No Content-Type validation of file uploads by magic bytes — extension-based validation only
 
 ---
 
@@ -678,6 +675,11 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 | `@react-pdf/renderer` | ^4.5.1 | PDF generation |
 | `@react-email/components` | ^1.0.12 | Email template rendering |
 | `recharts` | ^2.15.4 | Dashboard charts |
+| `sonner` | ^2.0.7 | Toast notifications (shadcn/ui) |
+| `@tanstack/react-table` | ^8.21.3 | Sortable data tables |
+| `@uiw/react-md-editor` | ^4.0.5 | WYSIWYG Markdown editor |
+| `react-markdown` | ^10.1.0 | Markdown rendering (portal help text) |
+| `marked` | ^17.0.1 | Markdown-to-HTML conversion (email) |
 
 ### 13.2 Supply Chain Notes
 
@@ -775,6 +777,7 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 | M-17 | ~~Plaintext `accessToken` stored alongside hashed `tokenHash` in DB~~ | DB compromise exposes plaintext tokens that directly grant portal access | **FIXED** — migrated existing tokens via SQL; removed OR fallback in `getAssessmentByToken` + `getAssessmentForToken`; lookups use `tokenHash` only |
 | M-18 | ~~`createRoleAction` re-throws non-P2002 Prisma errors to client (`lib/actions/roles.ts:55`)~~ | Internal table names, constraints leak to client | **FIXED** — returns generic error message instead of re-throwing |
 | M-19 | ~~Rate limiter implementation is fixed-window, not sliding-window as documented~~ | Documentation mismatch | **FIXED** — all docs (APPSECURITY.md, AGENTS.md, ARCHITECTURE.md, threat-model.md) updated to "fixed-window" |
+| M-20 | `submitAssessment` uses plaintext `accessToken` lookup (`lib/db/assessments.ts`) | Incomplete M-17 fix — portal submission path still queries by plaintext token instead of hashing first. If the DB is compromised, plaintext tokens in the `accessToken` column grant direct portal access without needing to crack SHA-256 hashes. `getAssessmentByToken` and `getAssessmentForToken` were fixed in M-17 to use `tokenHash` lookups, but `submitAssessment` was missed | Medium — DB compromise is required for exploitation; tokens are single-assessment scoped (not admin access). Fix: hash the token and query `tokenHash` column in `submitAssessment`, matching the pattern used by all other token lookup functions |
 
 ### Low Severity
 
@@ -839,5 +842,5 @@ The platform provides mechanics (controls mapping, scoring, findings, audit trai
 
 This document is maintained as part of the Mitch‑Risk project. Security findings should be reported via the project's issue tracker.
 
-**Last reviewed:** July 2026 (deep code audit + ZAP 2.17.0 external penetration test — 3 High / 7 Medium / 12 Low / 9 Info; 0 exploitable)
+**Last reviewed:** July 2026 (fresh deep code audit — 10 factual corrections, 1 new medium finding M-20, dependency table refreshed)
 **App version:** 0.1.0
