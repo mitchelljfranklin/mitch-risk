@@ -17,5 +17,8 @@
     "ui": "@/components/ui",
     "lib": "@/lib",
     "hooks": "@/hooks"
+  },
+  "registries": {
+    "@stepper": "https://francozeta-stepper.vercel.app/{name}.json"
   }
 }
