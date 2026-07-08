@@ -1,8 +1,8 @@
 ﻿# RBAC & Roles
 
-Mitch‑Risk uses **permission-based** access control, not "is authenticated" gating. Three system roles are built in, and admins can create custom roles with any combination of the 20 fine-grained permissions.
+Mitch‑Risk uses **permission-based** access control, not "is authenticated" gating. Three system roles are built in, and admins can create custom roles with any combination of the 21 fine-grained permissions.
 
-## Permission Catalog (20 Permissions)
+## Permission Catalog (21 Permissions)
 
 ### Vendors (4)
 
@@ -32,12 +32,13 @@ Mitch‑Risk uses **permission-based** access control, not "is authenticated" ga
 | `templates:edit` | Edit templates, publish/unpublish, version |
 | `templates:delete` | Delete templates |
 
-### Frameworks (2)
+### Frameworks (3)
 
 | Permission Key | Description |
 |---------------|-------------|
 | `frameworks:view` | View framework list and framework detail with controls |
 | `frameworks:edit` | Import and edit frameworks |
+| `frameworks:delete` | Delete frameworks and all associated controls |
 
 ### Administration (5)
 
@@ -53,8 +54,8 @@ Mitch‑Risk uses **permission-based** access control, not "is authenticated" ga
 
 | Role | Permissions | Who It's For |
 |------|:----------:|--------------|
-| **Admin** | 20 (all) | Full platform control. Locked — cannot be deleted or edited. |
-| **Reviewer** | 15 | Staff who manage vendors and assessments. Cannot manage users, roles, settings, API, or view audit. |
+| **Admin** | 21 (all) | Full platform control. Locked — cannot be deleted or edited. |
+| **Reviewer** | 16 | Staff who manage vendors and assessments. Cannot manage users, roles, settings, API, or view audit. |
 | **Viewer** | 4 | Read-only: `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view` |
 
 System roles are seeded on first run and cannot be deleted. The Admin role cannot be modified.
@@ -68,7 +69,7 @@ Admins can create custom roles in **Settings → Roles**:
 3. Select the permissions to grant.
 4. Assign the role to any user.
 
-Custom roles can have any subset of the 20 permissions. Use them to create role profiles like "Auditor" (audit + view only), "Vendor Manager" (vendors + assessments + templates), or "API-only" (just the relevant API permission set).
+Custom roles can have any subset of the 21 permissions. Use them to create role profiles like "Auditor" (audit + view only), "Vendor Manager" (vendors + assessments + templates), or "API-only" (just the relevant API permission set).
 
 ## Enforcement
 
@@ -101,6 +102,7 @@ Access control is enforced at every layer:
 | Edit/publish templates | Yes | Yes | No |
 | View frameworks | Yes | Yes | Yes |
 | Edit/import frameworks | Yes | Yes | No |
+| Delete frameworks | Yes | Yes | No |
 | View audit log | Yes | No | No |
 | Manage users | Yes | No | No |
 | Manage roles | Yes | No | No |

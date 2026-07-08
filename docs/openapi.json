@@ -839,6 +839,27 @@
           "403": { "$ref": "#/components/responses/Forbidden" },
           "404": { "$ref": "#/components/responses/NotFound" }
         }
+      },
+      "delete": {
+        "tags": ["Frameworks"],
+        "summary": "Delete a framework",
+        "description": "Permanently deletes a framework and all its controls. Template questions mapped to these controls lose their assignments. Existing assessments and findings are unaffected. Requires frameworks:delete permission.",
+        "operationId": "deleteFramework",
+        "parameters": [
+          {
+            "name": "frameworkId",
+            "in": "path",
+            "required": true,
+            "description": "The framework's unique ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Framework deleted successfully" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
       }
     },
     "/v1/dashboard/summary": {
