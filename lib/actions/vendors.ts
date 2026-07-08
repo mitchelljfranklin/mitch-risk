@@ -124,12 +124,13 @@ export async function importVendorsAction(
     };
   }
 
-  const vendors: VendorInput[] = [];
+  const vendorRows: { id: string; input: VendorInput }[] = [];
   const rowErrors: string[] = [];
 
   for (let i = 0; i < rows.length; i++) {
     const raw = rows[i];
     const parsed = vendorCsvRowSchema.safeParse({
+      id: raw.id ?? raw.ID ?? "",
       name: raw.name ?? "",
       contactName: raw.contactname ?? raw.contactName ?? "",
       contactEmail: raw.contactemail ?? raw.contactEmail ?? "",
@@ -144,20 +145,22 @@ export async function importVendorsAction(
     });
 
     if (parsed.success) {
-      const vendorInput: VendorInput = {
-        name: parsed.data.name,
-        contactName: parsed.data.contactName,
-        contactEmail: parsed.data.contactEmail,
-        tier: parsed.data.tier as VendorInput["tier"],
-        website: parsed.data.website,
-        notes: parsed.data.notes,
-        serviceDescription: parsed.data.serviceDescription,
-        dataSensitivity: parsed.data
-          .dataSensitivity as VendorInput["dataSensitivity"],
-        contractRenewalDate: parsed.data.contractRenewalDate,
-        ownerId: "",
-      };
-      vendors.push(vendorInput);
+      vendorRows.push({
+        id: parsed.data.id,
+        input: {
+          name: parsed.data.name,
+          contactName: parsed.data.contactName,
+          contactEmail: parsed.data.contactEmail,
+          tier: parsed.data.tier as VendorInput["tier"],
+          website: parsed.data.website,
+          notes: parsed.data.notes,
+          serviceDescription: parsed.data.serviceDescription,
+          dataSensitivity: parsed.data
+            .dataSensitivity as VendorInput["dataSensitivity"],
+          contractRenewalDate: parsed.data.contractRenewalDate,
+          ownerId: "",
+        },
+      });
     } else {
       rowErrors.push(
         `Row ${i + 2}: ${parsed.error.issues[0]?.message ?? "invalid"}`,
@@ -165,7 +168,7 @@ export async function importVendorsAction(
     }
   }
 
-  if (vendors.length === 0) {
+  if (vendorRows.length === 0) {
     return {
       ok: false,
       error:
@@ -174,36 +177,54 @@ export async function importVendorsAction(
   }
 
   let createdCount = 0;
+  let updatedCount = 0;
   const user = await getCurrentUser();
 
-  for (const vendorInput of vendors) {
+  for (const { id, input } of vendorRows) {
     try {
-      const vendor = await createVendor(vendorInput);
+      if (id) {
+        const existing = await prisma.vendor.findUnique({
+          where: { id },
+          select: { id: true },
+        });
+        if (existing) {
+          await updateVendor(id, input);
+          if (user) {
+            await logAudit(user.id, "UPDATE_VENDOR", "Vendor", id);
+          }
+          updatedCount++;
+          continue;
+        }
+      }
+      const vendor = await createVendor(input);
       if (user) {
         await logAudit(user.id, "IMPORT_VENDOR", "Vendor", vendor.id);
       }
       createdCount++;
     } catch (err) {
       rowErrors.push(
-        `${vendorInput.name}: ${err instanceof Error ? err.message : "failed"}`,
+        `${input.name}: ${err instanceof Error ? err.message : "failed"}`,
       );
     }
   }
 
   revalidatePath("/vendors");
 
+  const parts: string[] = [];
+  if (createdCount > 0) {
+    parts.push(`${createdCount} created`);
+  }
+  if (updatedCount > 0) {
+    parts.push(`${updatedCount} updated`);
+  }
   if (rowErrors.length > 0) {
-    return {
-      ok: true,
-      message: `Imported ${createdCount} vendor${createdCount !== 1 ? "s" : ""}. ${rowErrors.length} row${rowErrors.length !== 1 ? "s" : ""} skipped.`,
-      count: createdCount,
-    };
+    parts.push(`${rowErrors.length} row${rowErrors.length !== 1 ? "s" : ""} skipped`);
   }
 
   return {
     ok: true,
-    message: `Imported ${createdCount} vendor${createdCount !== 1 ? "s" : ""}.`,
-    count: createdCount,
+    message: `Import complete: ${parts.join(", ")}.`,
+    count: createdCount + updatedCount,
   };
 }
 

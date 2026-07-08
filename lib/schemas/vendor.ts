@@ -48,6 +48,7 @@ export const vendorSchema = z.object({
 export type VendorInput = z.infer<typeof vendorSchema>;
 
 export const vendorCsvRowSchema = z.object({
+  id: z.string().optional().default(""),
   name: z.string().min(1, "Vendor name is required"),
   contactName: z.string().optional().default(""),
   contactEmail: z.string().min(1, "Contact email is required"),

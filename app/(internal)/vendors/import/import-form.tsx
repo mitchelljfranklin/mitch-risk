@@ -36,10 +36,10 @@ import {
 import { Download } from "lucide-react";
 
 const CSV_TEMPLATE = [
-  "name,contactname,contactemail,tier,website,notes,servicedescription,datasensitivity,contractrenewaldate",
-  "Acme Corp,John Doe,john@acme.com,CRITICAL,https://acme.com,Our payment processor,Handles all payment processing,CONFIDENTIAL,2026-12-31",
-  "Beta Ltd,Jane Smith,jane@beta.com,HIGH,https://beta.com,Cloud hosting provider,Infrastructure as a Service,INTERNAL,",
-  "Gamma Inc,,admin@gamma.com,MEDIUM,,,Marketing analytics tool,PUBLIC,2026-06-15",
+  "id,name,contactname,contactemail,tier,website,notes,servicedescription,datasensitivity,contractrenewaldate",
+  ",Acme Corp,John Doe,john@acme.com,CRITICAL,https://acme.com,Our payment processor,Handles all payment processing,CONFIDENTIAL,2026-12-31",
+  ",Beta Ltd,Jane Smith,jane@beta.com,HIGH,https://beta.com,Cloud hosting provider,Infrastructure as a Service,INTERNAL,",
+  ",Gamma Inc,,admin@gamma.com,MEDIUM,,,Marketing analytics tool,PUBLIC,2026-06-15",
 ].join("\n");
 
 export function ImportVendorsForm() {
@@ -147,13 +147,15 @@ export function ImportVendorsForm() {
                 onChange={handleFileChange}
               />
               <p className="text-muted-foreground text-xs">
-                CSV must have columns: <code>name</code>,{" "}
-                <code>contactemail</code>, plus optional:{" "}
+                CSV must have columns: <code>id</code> (optional),{" "}
+                <code>name</code>, <code>contactemail</code>, plus optional:{" "}
                 <code>contactname</code>, <code>tier</code>,{" "}
                 <code>website</code>, <code>notes</code>,{" "}
                 <code>servicedescription</code>, <code>datasensitivity</code>,{" "}
                 <code>contractrenewaldate</code>. Only <code>name</code> and{" "}
-                <code>contactemail</code> are required. Max 1 MB.
+                <code>contactemail</code> are required. Max 1 MB. Include a
+                vendor <code>id</code> to update an existing vendor instead of
+                creating a new one.
               </p>
             </div>
 
