@@ -115,6 +115,11 @@ export function DashboardCharts({
   ].filter((d) => d.value > 0);
 
   const hasDonut = donutData.length >= 2;
+  const totalVendors =
+    scoreDistribution.green +
+    scoreDistribution.amber +
+    scoreDistribution.red +
+    scoreDistribution.unscored;
 
   const severityData = [
     { name: "Critical", value: findingsBySeverity.CRITICAL },
@@ -181,6 +186,24 @@ export function DashboardCharts({
                     <Cell key={entry.name} fill={entry.fill} />
                   ))}
                 </Pie>
+                <text
+                  x="50%"
+                  y="47%"
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  className="fill-foreground text-2xl font-bold"
+                >
+                  {totalVendors}
+                </text>
+                <text
+                  x="50%"
+                  y="57%"
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  className="fill-muted-foreground text-xs"
+                >
+                  vendors
+                </text>
                 <ChartTooltip content={<ChartTooltipContent />} />
               </PieChart>
             </ChartContainer>
