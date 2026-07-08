@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { PERMISSION_GROUPS } from "@/lib/permissions";
 
@@ -17,13 +18,11 @@ export function PermissionSelector({
   return (
     <div className="flex flex-col gap-4 rounded-md border p-4">
       <div className="flex items-center gap-3">
-        <input
-          type="checkbox"
+        <Checkbox
           id="fullAccess"
           name="fullAccess"
-          defaultChecked={defaultFullAccess}
-          onChange={(event) => setFullAccess(event.target.checked)}
-          className="border-input size-4 shrink-0 rounded-[4px] border"
+          checked={fullAccess}
+          onCheckedChange={(checked) => setFullAccess(!!checked)}
         />
         <Label htmlFor="fullAccess" className="text-sm font-medium">
           Full access
@@ -41,13 +40,14 @@ export function PermissionSelector({
               <legend className="text-xs font-semibold">{group.label}</legend>
               <div className="flex flex-wrap gap-x-4 gap-y-2">
                 {group.permissions.map((permission) => (
-                  <div key={permission.key} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
+                  <div
+                    key={permission.key}
+                    className="flex items-center gap-2"
+                  >
+                    <Checkbox
                       id={`perm-${permission.key}`}
                       name="permissions"
                       value={permission.key}
-                      className="border-input size-4 shrink-0 rounded-[4px] border"
                     />
                     <Label
                       htmlFor={`perm-${permission.key}`}
