@@ -10,9 +10,14 @@ import {
 type DynamicEmailProps = {
   heading: string;
   body: string;
+  htmlBody?: string;
 };
 
-export function DynamicEmail({ heading, body }: DynamicEmailProps) {
+export function DynamicEmail({
+  heading,
+  body,
+  htmlBody,
+}: DynamicEmailProps) {
   const paragraphs = body.split("\n").filter((line) => line.length > 0);
 
   return (
@@ -21,9 +26,16 @@ export function DynamicEmail({ heading, body }: DynamicEmailProps) {
       <Body style={{ fontFamily: "sans-serif", padding: "32px" }}>
         <Container>
           <Heading as="h2">{heading}</Heading>
-          {paragraphs.map((line) => (
-            <Text key={line.slice(0, 20)}>{line}</Text>
-          ))}
+          {htmlBody ? (
+            <section
+              style={{ lineHeight: "1.6", color: "#333" }}
+              dangerouslySetInnerHTML={{ __html: htmlBody }}
+            />
+          ) : (
+            paragraphs.map((line) => (
+              <Text key={line.slice(0, 20)}>{line}</Text>
+            ))
+          )}
 
           <Text
             style={{

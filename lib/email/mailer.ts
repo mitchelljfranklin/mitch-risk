@@ -1,5 +1,6 @@
 import { render } from "@react-email/components";
 import { type Prisma } from "@prisma/client";
+import { marked } from "marked";
 import nodemailer from "nodemailer";
 
 import { DynamicEmail } from "@/emails/dynamic";
@@ -122,6 +123,7 @@ export async function sendEmail(
 
   const resolvedSubject = replaceTokens(subject, tokens);
   const resolvedBody = replaceTokens(body, tokens);
+  const htmlBody = await marked.parse(resolvedBody);
 
   const notificationLogId = options?.updateLogId
     ? options.updateLogId
@@ -158,6 +160,7 @@ export async function sendEmail(
       DynamicEmail({
         heading: resolvedSubject,
         body: resolvedBody,
+        htmlBody,
       }),
     );
     await transport.sendMail({
