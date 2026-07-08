@@ -106,7 +106,7 @@ function TemplateEditorSheet({
             <Textarea
               id="template-body"
               name="body"
-              defaultValue={body}
+              value={liveBody}
               rows={10}
               required
               onChange={(e) => setLiveBody(e.target.value)}

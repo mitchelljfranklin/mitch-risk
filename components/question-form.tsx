@@ -118,7 +118,7 @@ export function QuestionForm({
           <Textarea
             id="helpText"
             name="helpText"
-            defaultValue={defaults?.helpText}
+            value={liveHelpText}
             rows={3}
             onChange={(e) => setLiveHelpText(e.target.value)}
           />
