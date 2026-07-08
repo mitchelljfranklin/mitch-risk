@@ -84,6 +84,7 @@ export function VendorsTable({
   const columns: ColumnDef<VendorRow>[] = [
     {
       id: "name",
+      accessorKey: "name",
       enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Vendor" />
@@ -102,6 +103,7 @@ export function VendorsTable({
     },
     {
       id: "tier",
+      accessorKey: "tier",
       enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Tier" />
@@ -117,6 +119,7 @@ export function VendorsTable({
     },
     {
       id: "score",
+      accessorKey: "overallScore",
       enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Score" />

@@ -98,6 +98,7 @@ export function AssessmentsTable({
   const columns: ColumnDef<AssessmentRow>[] = [
     {
       id: "created",
+      accessorKey: "title",
       enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Assessment · Vendor" />
@@ -132,6 +133,7 @@ export function AssessmentsTable({
     },
     {
       id: "score",
+      accessorKey: "score",
       enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Score" />
@@ -143,6 +145,7 @@ export function AssessmentsTable({
     },
     {
       id: "status",
+      accessorKey: "status",
       enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
@@ -167,6 +170,7 @@ export function AssessmentsTable({
     },
     {
       id: "dueDate",
+      accessorKey: "dueDate",
       enableSorting: true,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Due" />
