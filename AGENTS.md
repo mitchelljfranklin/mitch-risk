@@ -55,8 +55,8 @@ app/                 # Next.js App Router
 components/          # shadcn ui primitives + domain composites
   ui/                # badge, button, card, chart, checkbox, dropdown-menu, input,
                      #   label, radio-group, select, separator, sheet, sidebar,
-                     #   skeleton, tabs, textarea, tooltip, alert-dialog, data-table, table
-  toast.tsx          # toast notification system (success/error/info)
+                     #   skeleton, sonner, tabs, textarea, tooltip, alert-dialog,
+                     #   data-table, table
   stat-card.tsx      # animated count-up stat cards
   empty-state.tsx    # SVG illustration empty states
   keyboard-shortcuts.tsx # ? key modal with g+letter navigation
@@ -176,8 +176,8 @@ ones before declaring any phase complete.
   `useActionState` must **not** call `revalidatePath` for its own current route — in production
   that re-render drops the returned state (no success toast, modal won't auto-close). Return the
   state and let the client refresh: use the `useActionFeedback` hook (toast + guarded
-  `router.refresh()`). Toasts render via a module-level store (`components/toast.tsx`) so they
-  survive a route refresh.
+  `router.refresh()`). Toasts render via Sonner's `<Toaster />` portal (`components/ui/sonner.tsx`),
+  which survives route refreshes.
 
 ## Working agreement — stage gates
 

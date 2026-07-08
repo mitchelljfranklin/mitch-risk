@@ -1590,7 +1590,7 @@ Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()
 │                                                                  │
 │  LAYER 3: SHARED UTILITIES                                      │
 │  ┌─────────────────────────────────────────────────────────┐    │
-│  │  toast.tsx — global toast store (survives route refresh) │ │
+│  │  sonner.tsx — Sonner <Toaster /> (portal-based)             │ │
 │  │  useActionFeedback.tsx — toast + router.refresh()        │ │
 │  │  keyboardShortcuts.tsx — g+letter nav, ? help modal      │ │
 │  │  idle-timer.tsx — inactivity countdown, auto-sign-out    │ │
@@ -1627,13 +1627,18 @@ Server Components CANNOT:
 ┌─────────────────────────────────────────────────────────────────┐
 │                    TOAST SYSTEM                                   │
 │                                                                  │
-│  Architecture: Module-level store (components/toast.tsx)         │
-│  survives Next.js route refreshes without dropping messages.     │
+│  Architecture: Sonner (shadcn/ui wrapper) via                    │
+│  components/ui/sonner.tsx — portal-based rendering into          │
+│  document.body, survives Next.js route refreshes.                │
+│                                                                  │
+│  Components:                                                     │
+│    <Toaster /> — renders icons for success/error/info/warning    │
+│    toast.success() / toast.error() / toast() — imperative API    │
 │                                                                  │
 │  Usage:                                                          │
 │    Server Action → redirect → FlashToast component               │
 │    Client Action → useActionFeedback hook                         │
-│      → toast.success/error/info()                                │
+│      → toast.success(message) / toast.error(message)             │
 │      → router.refresh() (guarded, not revalidatePath)            │
 │                                                                  │
 │  Anti-pattern (prod drops state):                                │
