@@ -19,6 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { AUDIT_ACTION_LABELS, type AuditLogEntry } from "@/lib/db/audit";
 import type { AuditLogResult } from "@/lib/db/audit";
 import type { Prisma } from "@prisma/client";
@@ -244,34 +252,36 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
         <p className="text-muted-foreground text-sm">No audit entries found.</p>
       ) : (
         <>
-          <div className="overflow-x-auto rounded-lg border">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-muted/50 border-b">
-                  <th className="p-3 text-left font-medium">Date</th>
-                  <th className="p-3 text-left font-medium">User</th>
-                  <th className="p-3 text-left font-medium">Action</th>
-                  <th className="p-3 text-left font-medium">Entity</th>
-                </tr>
-              </thead>
-              <tbody>
+          <div className="overflow-x-auto rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>User</TableHead>
+                  <TableHead>Action</TableHead>
+                  <TableHead>Entity</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {entries.map((log) => (
-                  <tr key={log.id} className="hover:bg-accent/40 border-b">
-                    <td className="text-muted-foreground p-3 text-xs whitespace-nowrap">
+                  <TableRow key={log.id}>
+                    <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
                       {formatDate(log.createdAt)}{" "}
                       {log.createdAt.getHours().toString().padStart(2, "0")}:
                       {log.createdAt.getMinutes().toString().padStart(2, "0")}
-                    </td>
-                    <td className="p-3 font-medium">{log.user.name}</td>
-                    <td className="p-3">
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {log.user.name}
+                    </TableCell>
+                    <TableCell>
                       <Badge
                         variant={ACTION_VARIANT[log.action] ?? "outline"}
                         className="text-xs"
                       >
                         {AUDIT_ACTION_LABELS[log.action] ?? log.action}
                       </Badge>
-                    </td>
-                    <td className="text-muted-foreground p-3 text-xs">
+                    </TableCell>
+                    <TableCell className="text-muted-foreground text-xs">
                       <div className="flex flex-col gap-0.5">
                         {log.entityId && log.entityType ? (
                           <Link
@@ -289,11 +299,11 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
                           </span>
                         ) : null}
                       </div>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
           <div className="flex items-center justify-between gap-4">
             <span className="text-muted-foreground text-xs">

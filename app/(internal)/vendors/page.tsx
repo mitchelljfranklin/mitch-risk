@@ -18,6 +18,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { AutoSubmitSelect } from "@/components/auto-submit-select";
 import { EmptyState } from "@/components/empty-state";
 import { Pagination } from "@/components/pagination";
@@ -212,39 +220,47 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
               ))}
             </div>
           ) : (
-            <>
-              <div className="text-muted-foreground hidden items-center gap-4 px-3 text-xs font-medium md:flex">
-                <span className="flex-1">Vendor</span>
-                <span className="w-20">Tier</span>
-                <span className="w-12 text-right">Score</span>
-              </div>
-              <div className="flex flex-col divide-y rounded-lg border">
-                {vendors.map((vendor) => (
-                  <Link
-                    key={vendor.id}
-                    href={`/vendors/${vendor.id}`}
-                    className="hover:bg-accent/40 flex items-center justify-between gap-4 p-3 transition-colors"
-                  >
-                    <div className="flex min-w-0 flex-col">
-                      <span className="truncate text-sm font-medium">
-                        {vendor.name}
-                      </span>
-                      <span className="text-muted-foreground truncate text-xs">
-                        {vendor.contactEmail}
-                      </span>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-4">
-                      {vendor.tier ? (
-                        <Badge variant="outline">
-                          {VENDOR_TIER_LABELS[vendor.tier]}
-                        </Badge>
-                      ) : null}
-                      <ScoreBadge score={vendor.overallScore} size="sm" />
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </>
+            <div className="overflow-hidden rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Vendor</TableHead>
+                    <TableHead className="hidden w-20 md:table-cell">
+                      Tier
+                    </TableHead>
+                    <TableHead className="hidden w-12 text-right md:table-cell">
+                      Score
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {vendors.map((vendor) => (
+                    <TableRow key={vendor.id}>
+                      <TableCell className="p-3">
+                        <Link href={`/vendors/${vendor.id}`} className="block">
+                          <span className="truncate text-sm font-medium">
+                            {vendor.name}
+                          </span>
+                          <span className="text-muted-foreground block truncate text-xs">
+                            {vendor.contactEmail}
+                          </span>
+                        </Link>
+                      </TableCell>
+                      <TableCell className="hidden p-3 md:table-cell">
+                        {vendor.tier ? (
+                          <Badge variant="outline">
+                            {VENDOR_TIER_LABELS[vendor.tier]}
+                          </Badge>
+                        ) : null}
+                      </TableCell>
+                      <TableCell className="hidden p-3 text-right md:table-cell">
+                        <ScoreBadge score={vendor.overallScore} size="sm" />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
           <Pagination
             page={page}

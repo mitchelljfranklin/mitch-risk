@@ -55,7 +55,7 @@ app/                 # Next.js App Router
 components/          # shadcn ui primitives + domain composites
   ui/                # badge, button, card, chart, checkbox, dropdown-menu, input,
                      #   label, radio-group, select, separator, sheet, sidebar,
-                     #   skeleton, tabs, textarea, tooltip, alert-dialog
+                     #   skeleton, tabs, textarea, tooltip, alert-dialog, data-table, table
   toast.tsx          # toast notification system (success/error/info)
   stat-card.tsx      # animated count-up stat cards
   empty-state.tsx    # SVG illustration empty states
@@ -80,6 +80,8 @@ components/          # shadcn ui primitives + domain composites
   page-main.tsx      # client wrapper for full-width dashboard
   assessment-timeline.tsx # interactive activity area chart
   permission-selector.tsx # grouped permission checkboxes (API key scoping, role editing)
+  data-table-column-header.tsx # sortable/hideable TanStack Table column header
+  data-table-pagination.tsx # unified pagination (page size, first/prev/next/last)
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
     findings.ts      #   finding status updates

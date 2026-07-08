@@ -11,6 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { AssessmentStatusBadge } from "@/components/assessment-status-badge";
 import { ScoreBadge } from "@/components/score-badge";
 import { AutoSubmitSelect } from "@/components/auto-submit-select";
@@ -178,56 +186,81 @@ export default async function AssessmentsPage({
         )
       ) : (
         <>
-          <div className="text-muted-foreground flex items-center gap-3 px-3 text-xs font-medium">
-            <span className="flex-1">Assessment · Vendor</span>
-            <span className="hidden w-16 text-right sm:inline">Score</span>
-            <span className="hidden w-28 text-right sm:inline">Status</span>
-            <span className="hidden w-24 text-right sm:inline">Due</span>
-          </div>
-          <div className="flex flex-col gap-2">
-            {assessments.map((assessment) => {
-              const isOverdue = isAssessmentOverdue(
-                assessment.dueDate,
-                assessment.status,
-              );
-              return (
-                <Link
-                  key={assessment.id}
-                  href={`/assessments/${assessment.id}`}
-                  className={`hover:bg-accent/40 flex items-center justify-between gap-3 rounded-md border p-3 ${isOverdue ? "border-l-destructive border-l-4" : (STATUS_ACCENT[assessment.status] ?? "")}`}
-                >
-                  <div className="flex min-w-0 flex-col">
-                    <span className="truncate text-sm font-medium">
-                      {assessment.title}
-                    </span>
-                    <span className="text-muted-foreground truncate text-xs">
-                      {assessment.vendor.name}
-                      {assessment.template
-                        ? ` · ${assessment.template.name} v${assessment.template.version}`
-                        : ""}
-                      {assessment.dueDate ? (
-                        <span
-                          className={isOverdue ? "text-[var(--rag-red)]" : ""}
+          <div className="overflow-hidden rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Assessment · Vendor</TableHead>
+                  <TableHead className="hidden w-16 text-right sm:table-cell">
+                    Score
+                  </TableHead>
+                  <TableHead className="hidden w-28 text-right sm:table-cell">
+                    Status
+                  </TableHead>
+                  <TableHead className="hidden w-24 text-right sm:table-cell">
+                    Due
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {assessments.map((assessment) => {
+                  const isOverdue = isAssessmentOverdue(
+                    assessment.dueDate,
+                    assessment.status,
+                  );
+                  const accentClass = isOverdue
+                    ? "border-l-destructive border-l-4"
+                    : (STATUS_ACCENT[assessment.status] ?? "");
+                  return (
+                    <TableRow key={assessment.id} className={accentClass}>
+                      <TableCell className="p-3">
+                        <Link
+                          href={`/assessments/${assessment.id}`}
+                          className="block"
                         >
-                          {` · due ${formatDate(assessment.dueDate)}`}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </span>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-3">
-                    {assessment.score !== null ? (
-                      <ScoreBadge score={assessment.score} size="sm" />
-                    ) : null}
-                    {isOverdue ? (
-                      <Badge variant="destructive">Overdue</Badge>
-                    ) : null}
-                    <AssessmentStatusBadge status={assessment.status} />
-                  </div>
-                </Link>
-              );
-            })}
+                          <span className="truncate text-sm font-medium">
+                            {assessment.title}
+                          </span>
+                          <span className="text-muted-foreground block truncate text-xs">
+                            {assessment.vendor.name}
+                            {assessment.template
+                              ? ` · ${assessment.template.name} v${assessment.template.version}`
+                              : ""}
+                            {assessment.dueDate ? (
+                              <span
+                                className={
+                                  isOverdue ? "text-[var(--rag-red)]" : ""
+                                }
+                              >
+                                {` · due ${formatDate(assessment.dueDate)}`}
+                              </span>
+                            ) : (
+                              ""
+                            )}
+                          </span>
+                        </Link>
+                      </TableCell>
+                      <TableCell className="hidden p-3 text-right sm:table-cell">
+                        {assessment.score !== null ? (
+                          <ScoreBadge score={assessment.score} size="sm" />
+                        ) : null}
+                      </TableCell>
+                      <TableCell className="hidden p-3 text-right sm:table-cell">
+                        {isOverdue ? (
+                          <Badge variant="destructive">Overdue</Badge>
+                        ) : null}{" "}
+                        <AssessmentStatusBadge status={assessment.status} />
+                      </TableCell>
+                      <TableCell className="text-muted-foreground hidden p-3 text-right text-xs sm:table-cell">
+                        {assessment.dueDate
+                          ? formatDate(assessment.dueDate)
+                          : "—"}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
           </div>
           <Pagination
             page={page}

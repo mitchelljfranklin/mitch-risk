@@ -12,6 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { EMAIL_TYPE_LABELS, type EmailLogEntry } from "@/lib/db/notifications";
 import type { EmailLogResult } from "@/lib/db/notifications";
 import { formatDate } from "@/lib/utils";
@@ -147,27 +155,27 @@ export function EmailTrackingForm({
         <p className="text-muted-foreground text-sm">No email logs found.</p>
       ) : (
         <>
-          <div className="overflow-x-auto rounded-lg border">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-muted/50 border-b">
-                  <th className="p-3 text-left font-medium">Date</th>
-                  <th className="p-3 text-left font-medium">Recipient</th>
-                  <th className="p-3 text-left font-medium">Subject</th>
-                  <th className="p-3 text-left font-medium">Type</th>
-                  <th className="p-3 text-left font-medium">Status</th>
-                  <th className="p-3 text-left font-medium">Detail</th>
-                  <th className="p-3 text-left font-medium">Assessment</th>
-                  <th className="p-3 text-left font-medium">Sent by</th>
-                  <th className="p-3 text-left font-medium" />
-                </tr>
-              </thead>
-              <tbody>
+          <div className="overflow-x-auto rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Recipient</TableHead>
+                  <TableHead>Subject</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Detail</TableHead>
+                  <TableHead>Assessment</TableHead>
+                  <TableHead>Sent by</TableHead>
+                  <TableHead />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {entries.map((log) => (
                   <EmailLogRow key={log.id} log={log} />
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
           <div className="flex items-center justify-between gap-4">
             <span className="text-muted-foreground text-xs">
@@ -211,28 +219,28 @@ function EmailLogRow({ log }: { log: EmailLogEntry }) {
   const [, action, isPending] = useActionState(retryEmailSendAction, undefined);
 
   return (
-    <tr className="hover:bg-accent/40 border-b">
-      <td className="text-muted-foreground p-3 text-xs whitespace-nowrap">
+    <TableRow>
+      <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
         {formatDate(log.sentAt)}{" "}
         {log.sentAt.getHours().toString().padStart(2, "0")}:
         {log.sentAt.getMinutes().toString().padStart(2, "0")}
-      </td>
-      <td className="p-3 font-mono text-xs">{log.sentTo}</td>
-      <td
-        className="text-muted-foreground max-w-48 truncate p-3 text-xs"
+      </TableCell>
+      <TableCell className="font-mono text-xs">{log.sentTo}</TableCell>
+      <TableCell
+        className="text-muted-foreground max-w-48 truncate text-xs"
         title={log.subject}
       >
         {log.subject}
-      </td>
-      <td className="p-3">
+      </TableCell>
+      <TableCell className="p-3">
         <Badge
           variant={TYPE_VARIANT[log.type] ?? "outline"}
           className="text-xs"
         >
           {EMAIL_TYPE_LABELS[log.type] ?? log.type}
         </Badge>
-      </td>
-      <td className="p-3">
+      </TableCell>
+      <TableCell className="p-3">
         <Badge
           variant={
             log.status === "SENT"
@@ -249,8 +257,8 @@ function EmailLogRow({ log }: { log: EmailLogEntry }) {
               ? "Failed"
               : log.status}
         </Badge>
-      </td>
-      <td className="text-muted-foreground max-w-36 truncate p-3 text-xs">
+      </TableCell>
+      <TableCell className="text-muted-foreground max-w-36 truncate text-xs">
         {log.status === "FAILED" && log.errorMessage ? (
           <span title={log.errorMessage}>{log.errorMessage}</span>
         ) : log.status === "SENT" ? (
@@ -258,8 +266,8 @@ function EmailLogRow({ log }: { log: EmailLogEntry }) {
         ) : (
           "—"
         )}
-      </td>
-      <td className="p-3 text-xs">
+      </TableCell>
+      <TableCell className="text-xs">
         {log.assessmentId && log.assessmentTitle ? (
           <a
             href={`/assessments/${log.assessmentId}`}
@@ -270,11 +278,11 @@ function EmailLogRow({ log }: { log: EmailLogEntry }) {
         ) : (
           <span className="text-muted-foreground">—</span>
         )}
-      </td>
-      <td className="text-muted-foreground p-3 text-xs">
+      </TableCell>
+      <TableCell className="text-muted-foreground text-xs">
         {log.sentBy?.name ?? "System"}
-      </td>
-      <td className="p-3">
+      </TableCell>
+      <TableCell>
         {log.status === "FAILED" ? (
           <form action={action} className="inline">
             <input type="hidden" name="logId" value={log.id} />
@@ -288,7 +296,7 @@ function EmailLogRow({ log }: { log: EmailLogEntry }) {
             </Button>
           </form>
         ) : null}
-      </td>
-    </tr>
+      </TableCell>
+    </TableRow>
   );
 }
