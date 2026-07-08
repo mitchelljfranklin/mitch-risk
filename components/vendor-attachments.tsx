@@ -1,15 +1,17 @@
 "use client";
 
+import { useRef, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import {
   addVendorAttachmentAction,
   removeVendorAttachmentAction,
 } from "@/lib/actions/vendors";
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/utils";
-import { Trash2 } from "lucide-react";
+import { FileUp, Trash2 } from "lucide-react";
 
 type AttachmentData = {
   id: string;
@@ -33,6 +35,37 @@ export function VendorAttachments({
   vendorId: string;
   attachments?: AttachmentData[];
 }) {
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [dragActive, setDragActive] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  async function submitUpload(formData: FormData) {
+    setUploadError(null);
+    setIsUploading(true);
+    const result = await addVendorAttachmentAction(formData);
+    setIsUploading(false);
+    if (!result.ok) setUploadError(result.message);
+  }
+
+  function handleDrag(event: React.DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    setDragActive(event.type === "dragenter" || event.type === "dragover");
+  }
+
+  function handleDrop(event: React.DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    setDragActive(false);
+    const file = event.dataTransfer.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("vendorId", vendorId);
+    formData.append("attachmentFile", file);
+    submitUpload(formData);
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
@@ -77,20 +110,55 @@ export function VendorAttachments({
 
       <Separator />
 
-      <form action={addVendorAttachmentAction} className="flex items-end gap-3">
+      <form action={submitUpload} className="flex flex-col gap-2">
         <input type="hidden" name="vendorId" value={vendorId} />
-        <div className="grid flex-1 gap-2">
-          <Label htmlFor="vendor-file">Add file</Label>
+        <div
+          role="button"
+          tabIndex={0}
+          onDragEnter={handleDrag}
+          onDragOver={handleDrag}
+          onDragLeave={handleDrag}
+          onDrop={handleDrop}
+          onClick={() => inputRef.current?.click()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
+          }}
+          className={cn(
+            "flex flex-col items-center justify-center gap-1 rounded-md border-2 border-dashed p-4 transition-colors",
+            dragActive
+              ? "border-primary bg-primary/5"
+              : "border-muted-foreground/25 hover:border-muted-foreground/50",
+          )}
+        >
+          <FileUp className="text-muted-foreground size-5" />
+          <span className="text-muted-foreground text-xs">
+            Drop a file or click to browse
+          </span>
           <Input
+            ref={inputRef}
             id="vendor-file"
             name="attachmentFile"
             type="file"
             accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx"
             required
+            className="hidden"
           />
         </div>
-        <Button type="submit" variant="outline" size="sm">
-          Upload
+
+        {uploadError ? (
+          <p className="text-destructive text-xs" role="alert">
+            {uploadError}
+          </p>
+        ) : null}
+
+        <Button
+          type="submit"
+          variant="outline"
+          size="sm"
+          disabled={isUploading}
+        >
+          <FileUp className="size-3.5" />
+          {isUploading ? "Uploading…" : "Upload"}
         </Button>
       </form>
     </div>

@@ -1,6 +1,15 @@
 ﻿"use client";
 
-import { Cell, Pie, PieChart, Bar, BarChart, XAxis, YAxis, Label } from "recharts";
+import {
+  Cell,
+  Pie,
+  PieChart,
+  Bar,
+  BarChart,
+  XAxis,
+  YAxis,
+  Label,
+} from "recharts";
 
 import {
   ChartContainer,

@@ -59,7 +59,6 @@ components/          # shadcn ui primitives + domain composites
   toast.tsx          # toast notification system (success/error/info)
   stat-card.tsx      # animated count-up stat cards
   empty-state.tsx    # SVG illustration empty states
-  calendar-heatmap.tsx # GitHub-style activity grid
   keyboard-shortcuts.tsx # ? key modal with g+letter navigation
   confirm-dialog.tsx # reusable confirmation modal for destructive actions
   idle-timer.tsx     # inactivity detection with countdown + auto-sign-out

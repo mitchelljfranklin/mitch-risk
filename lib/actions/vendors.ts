@@ -203,21 +203,34 @@ export async function importVendorsAction(
   };
 }
 
-export async function addVendorAttachmentAction(formData: FormData) {
+export async function addVendorAttachmentAction(
+  formData: FormData,
+): Promise<{ ok: boolean; message: string }> {
   const user = await requirePermission(PERMISSIONS.VENDORS_EDIT);
 
   const vendorId = getField(formData, "vendorId");
   const file = formData.get("attachmentFile") as File | null;
 
-  if (!vendorId || !file || !(file instanceof File) || file.size === 0) return;
+  if (!vendorId || !file || !(file instanceof File) || file.size === 0) {
+    return { ok: false, message: "No file selected." };
+  }
 
   const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
-  if (!ALLOWED_ATTACHMENT_EXTS.includes(ext)) return;
+  if (!ALLOWED_ATTACHMENT_EXTS.includes(ext)) {
+    return { ok: false, message: "File type not allowed." };
+  }
 
-  if (file.size > MAX_ATTACHMENT_BYTES) return;
+  if (file.size > MAX_ATTACHMENT_BYTES) {
+    return {
+      ok: false,
+      message: `File is too large (max ${MAX_ATTACHMENT_BYTES / (1024 * 1024)} MB).`,
+    };
+  }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  if (!validateMagicBytes(ext, buffer)) return;
+  if (!validateMagicBytes(ext, buffer)) {
+    return { ok: false, message: "This file type is not accepted." };
+  }
   const storageKey = `attachment-${randomBytes(12).toString("hex")}.${ext}`;
 
   await storage.save(storageKey, buffer);
@@ -238,6 +251,7 @@ export async function addVendorAttachmentAction(formData: FormData) {
   }
 
   revalidatePath(`/vendors/${vendorId}`);
+  return { ok: true, message: "File uploaded." };
 }
 
 export async function removeVendorAttachmentAction(formData: FormData) {
