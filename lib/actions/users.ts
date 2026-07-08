@@ -10,6 +10,8 @@ import {
   countUsersWithPermission,
   createUser,
   deleteUser,
+  getUserDeletionImpact,
+  type DeletionImpact,
   resetUserPassword,
   toggleUserDisabled,
 } from "@/lib/db/users";
@@ -180,6 +182,15 @@ export async function deleteUserAction(formData: FormData) {
   await deleteUser(userId);
   revalidatePath("/settings");
 }
+
+export async function getUserDeletionImpactAction(formData: FormData) {
+  await requirePermission(PERMISSIONS.USERS_MANAGE);
+  const userId = getField(formData, "userId");
+  if (!userId) return null;
+  return getUserDeletionImpact(userId);
+}
+
+export type { DeletionImpact };
 
 export async function resetPasswordAction(formData: FormData) {
   await requirePermission(PERMISSIONS.USERS_MANAGE);

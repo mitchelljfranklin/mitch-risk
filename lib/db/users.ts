@@ -92,6 +92,40 @@ export function deleteUser(id: string) {
   return prisma.user.delete({ where: { id } });
 }
 
+export type DeletionImpact = {
+  ownedVendors: number;
+  reviewingAssessments: number;
+  resolvedFindings: number;
+  answerReviews: number;
+  createdApiKeys: number;
+};
+
+export async function getUserDeletionImpact(
+  userId: string,
+): Promise<DeletionImpact> {
+  const [
+    ownedVendors,
+    reviewingAssessments,
+    resolvedFindings,
+    answerReviews,
+    createdApiKeys,
+  ] = await Promise.all([
+    prisma.vendor.count({ where: { ownerId: userId } }),
+    prisma.assessment.count({ where: { reviewerId: userId } }),
+    prisma.finding.count({ where: { resolvedById: userId } }),
+    prisma.answerReview.count({ where: { reviewerId: userId } }),
+    prisma.apiKey.count({ where: { createdBy: userId } }),
+  ]);
+
+  return {
+    ownedVendors,
+    reviewingAssessments,
+    resolvedFindings,
+    answerReviews,
+    createdApiKeys,
+  };
+}
+
 export function countAdminsExcluding(
   userId: string,
   permission: string,

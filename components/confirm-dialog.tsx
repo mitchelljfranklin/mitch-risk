@@ -16,7 +16,7 @@ import { buttonVariants } from "@/components/ui/button";
 
 type ConfirmDialogProps = {
   title: string;
-  description: string;
+  description: ReactNode;
   confirmLabel?: string;
   variant?: "destructive" | "default";
   formId?: string;

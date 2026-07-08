@@ -27,9 +27,11 @@ import {
   addUserAction,
   changeRoleAction,
   deleteUserAction,
+  getUserDeletionImpactAction,
   resetPasswordAction,
   toggleUserAction,
   type UserActionState,
+  type DeletionImpact,
 } from "@/lib/actions/users";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
 import { formatDate } from "@/lib/utils";
@@ -131,6 +133,20 @@ function EditUserForm({
   roles: RoleOption[];
   isSelf: boolean;
 }) {
+  const [deletionImpact, setDeletionImpact] = useState<DeletionImpact | null>(
+    null,
+  );
+  const [loadingImpact, setLoadingImpact] = useState(false);
+
+  const loadImpact = async () => {
+    setLoadingImpact(true);
+    const formData = new FormData();
+    formData.set("userId", user.id);
+    const impact = await getUserDeletionImpactAction(formData);
+    setDeletionImpact(impact);
+    setLoadingImpact(false);
+  };
+
   return (
     <div className="flex flex-1 flex-col gap-6 px-4">
       <div className="grid gap-2">
@@ -224,19 +240,72 @@ function EditUserForm({
       {!isSelf ? (
         <div className="grid gap-2 border-t pt-4">
           <Label>Danger zone</Label>
-          <form id={`delete-user-${user.id}`} action={deleteUserAction}>
-            <input type="hidden" name="userId" value={user.id} />
-            <ConfirmDialog
-              title="Delete user?"
-              description={`${user.name} will be permanently removed. Their audit history and past review decisions are kept but shown as "Deleted user". This cannot be undone.`}
-              confirmLabel="Delete"
-              formId={`delete-user-${user.id}`}
+          {deletionImpact ? (
+            <form id={`delete-user-${user.id}`} action={deleteUserAction}>
+              <input type="hidden" name="userId" value={user.id} />
+              <ConfirmDialog
+                title="Delete user?"
+                description={
+                  <span>
+                    {user.name} will be permanently removed. This cannot be
+                    undone.
+                    <ul className="mt-2 list-disc pl-4 text-sm">
+                      {deletionImpact.ownedVendors > 0 && (
+                        <li>
+                          {deletionImpact.ownedVendors} vendor(s) will lose
+                          their owner assignment
+                        </li>
+                      )}
+                      {deletionImpact.reviewingAssessments > 0 && (
+                        <li>
+                          {deletionImpact.reviewingAssessments} assessment(s)
+                          will lose their reviewer
+                        </li>
+                      )}
+                      {deletionImpact.resolvedFindings > 0 && (
+                        <li>
+                          {deletionImpact.resolvedFindings} finding(s) will have
+                          their resolver cleared
+                        </li>
+                      )}
+                      {deletionImpact.answerReviews > 0 && (
+                        <li>
+                          {deletionImpact.answerReviews} answer review(s) will
+                          be anonymized
+                        </li>
+                      )}
+                      {deletionImpact.createdApiKeys > 0 && (
+                        <li>
+                          {deletionImpact.createdApiKeys} API key(s) will lose
+                          their creator reference
+                        </li>
+                      )}
+                    </ul>
+                    <p className="mt-2">
+                      Audit history is preserved (shown as &quot;Deleted
+                      user&quot;).
+                    </p>
+                  </span>
+                }
+                confirmLabel="Delete"
+                formId={`delete-user-${user.id}`}
+              >
+                <Button type="button" size="sm" variant="destructive">
+                  Delete user
+                </Button>
+              </ConfirmDialog>
+            </form>
+          ) : (
+            <Button
+              type="button"
+              size="sm"
+              variant="destructive"
+              onClick={loadImpact}
+              disabled={loadingImpact}
             >
-              <Button type="button" size="sm" variant="destructive">
-                Delete user
-              </Button>
-            </ConfirmDialog>
-          </form>
+              {loadingImpact ? "Loading..." : "Delete user"}
+            </Button>
+          )}
         </div>
       ) : null}
     </div>
