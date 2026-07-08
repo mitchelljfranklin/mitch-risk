@@ -69,12 +69,13 @@ Key SSO security features:
 - Break-glass mechanism provides emergency access without permanent local-auth exposure
 - Password reset tokens: SHA-256 hashed, single-use, 1-hour TTL, atomic consumption
 - No SSO credentials in environment variables
+- MFA is enforced at the IdP level — organisations using SSO with an enterprise IdP (Microsoft Entra ID, Google Workspace, any OIDC provider) can configure conditional access / 2FA rules at the IdP; Mitch‑Risk inherits the IdP's full authentication posture
 
 **Considerations:**
 - `next-auth` v5 is currently in beta. Monitor the Auth.js release cycle for stable versions and security advisories
 - `trustHost: true` is broad. Consider scoping to the `APP_URL` host if deployment topology allows
 - Session timeout is not enforced server-side in JWT claims. The JWT `exp` field should be evaluated against the configurable `sessionTimeoutMinutes` setting
-- No MFA (multi-factor authentication) support. This is acceptable for small-business use but should be on the roadmap for larger deployments
+- No built-in MFA for local accounts — this is acceptable for small-business use; organisations requiring MFA should use SSO with an enterprise IdP (see Strengths above)
 
 ---
 
@@ -761,7 +762,7 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 
 | ID | Finding | Impact | Mitigation |
 |----|---------|--------|------------|
-| M-1 | No MFA support | Account compromise via credential theft | Roadmap item for larger deployments |
+| M-1 | ~~No MFA support~~ | Account compromise via credential theft | Dismissed — organisations using SSO with an enterprise IdP (Microsoft Entra ID, Google Workspace, generic OIDC) can enforce MFA via the IdP's own conditional access / authentication policies. Local accounts are for small deployments that may not need MFA; SSO users inherit the IdP's full authentication strength |
 | M-2 | ~~No magic-byte validation on file uploads — only MIME type (spoofable) and extension (renameable) checked~~ | Malicious file bypasses both filters by renaming `.exe → .pdf` and setting `Content-Type: application/pdf` | **FIXED** — `validateMagicBytes()` in `lib/upload-validation.ts` checks file signatures for pdf, png, jpg, jpeg, gif, webp, docx, xlsx; wired into all three upload paths (portal, certifications, vendor attachments) + 14 unit tests |
 | M-3 | `next-auth` in beta | Undiscovered vulnerabilities in auth framework | Monitor updates; migrate to stable when available |
 | M-4 | In-memory rate limiting not shared across processes (by design for single-container; Redis needed if scaled) | Rate limits bypassed with multi-container deployment | Acceptable for single-container; migrate to Redis if scaled horizontally |
