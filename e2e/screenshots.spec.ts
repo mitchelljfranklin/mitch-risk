@@ -4,6 +4,8 @@ import { E2E_ADMIN_EMAIL, E2E_ADMIN_PASSWORD } from "./global-setup";
 
 const SCREENSHOT_DIR = "docs/screenshots";
 
+test.use({ viewport: { width: 1280, height: 800 } });
+
 async function signInAsAdmin(page: import("@playwright/test").Page) {
   await page.goto("/login");
   await page.getByLabel("Email").fill(E2E_ADMIN_EMAIL);
@@ -20,13 +22,12 @@ test("capture dashboard screenshot", async ({ page }) => {
   await page.waitForTimeout(3000);
   await page.screenshot({
     path: `${SCREENSHOT_DIR}/dashboard.png`,
-    fullPage: true,
   });
 });
 
 test("capture vendor detail screenshot", async ({ page }) => {
   await signInAsAdmin(page);
-  await page.getByRole("link", { name: "Vendors" }).click();
+  await page.locator('[data-sidebar="menu-button"]').filter({ hasText: "Vendors" }).click();
   await page.waitForURL("**/vendors");
   await page.waitForFunction(
     () => !document.body.textContent?.includes("Loading..."),
@@ -43,13 +44,12 @@ test("capture vendor detail screenshot", async ({ page }) => {
   await page.waitForTimeout(2000);
   await page.screenshot({
     path: `${SCREENSHOT_DIR}/vendor-detail.png`,
-    fullPage: true,
   });
 });
 
 test("capture assessment review screenshot", async ({ page }) => {
   await signInAsAdmin(page);
-  await page.getByRole("link", { name: "Assessments" }).click();
+  await page.locator('[data-sidebar="menu-button"]').filter({ hasText: "Assessments" }).click();
   await page.waitForURL("**/assessments");
   await page.waitForFunction(
     () => !document.body.textContent?.includes("Loading..."),
@@ -62,13 +62,12 @@ test("capture assessment review screenshot", async ({ page }) => {
   await page.waitForTimeout(2000);
   await page.screenshot({
     path: `${SCREENSHOT_DIR}/assessment-review.png`,
-    fullPage: true,
   });
 });
 
 test("capture template builder screenshot", async ({ page }) => {
   await signInAsAdmin(page);
-  await page.getByRole("link", { name: "Templates" }).click();
+  await page.locator('[data-sidebar="menu-button"]').filter({ hasText: "Templates" }).click();
   await page.waitForURL("**/templates");
   await page.waitForFunction(
     () => !document.body.textContent?.includes("Loading..."),
@@ -81,7 +80,6 @@ test("capture template builder screenshot", async ({ page }) => {
   await page.waitForTimeout(2000);
   await page.screenshot({
     path: `${SCREENSHOT_DIR}/template-builder.png`,
-    fullPage: true,
   });
 });
 
@@ -94,6 +92,5 @@ test("capture settings screenshot", async ({ page }) => {
   await page.waitForTimeout(2000);
   await page.screenshot({
     path: `${SCREENSHOT_DIR}/settings.png`,
-    fullPage: true,
   });
 });
