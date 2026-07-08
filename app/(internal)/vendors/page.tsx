@@ -18,23 +18,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { AutoSubmitSelect } from "@/components/auto-submit-select";
 import { EmptyState } from "@/components/empty-state";
 import { Pagination } from "@/components/pagination";
+import { ScoreBadge } from "@/components/score-badge";
 import { ViewToggle } from "@/components/view-toggle";
+import { VendorsTable } from "./vendors-table";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { listVendors, VENDOR_SORTS, type VendorSort } from "@/lib/db/vendors";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
-import { ScoreBadge } from "@/components/score-badge";
 import { formatDate } from "@/lib/utils";
 import { parseListView, VENDOR_VIEW_COOKIE } from "@/lib/view-preference";
 
@@ -220,54 +213,28 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
               ))}
             </div>
           ) : (
-            <div className="overflow-hidden rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Vendor</TableHead>
-                    <TableHead className="hidden w-20 md:table-cell">
-                      Tier
-                    </TableHead>
-                    <TableHead className="hidden w-12 text-right md:table-cell">
-                      Score
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {vendors.map((vendor) => (
-                    <TableRow key={vendor.id}>
-                      <TableCell className="p-3">
-                        <Link href={`/vendors/${vendor.id}`} className="block">
-                          <span className="truncate text-sm font-medium">
-                            {vendor.name}
-                          </span>
-                          <span className="text-muted-foreground block truncate text-xs">
-                            {vendor.contactEmail}
-                          </span>
-                        </Link>
-                      </TableCell>
-                      <TableCell className="hidden p-3 md:table-cell">
-                        {vendor.tier ? (
-                          <Badge variant="outline">
-                            {VENDOR_TIER_LABELS[vendor.tier]}
-                          </Badge>
-                        ) : null}
-                      </TableCell>
-                      <TableCell className="hidden p-3 text-right md:table-cell">
-                        <ScoreBadge score={vendor.overallScore} size="sm" />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+            <VendorsTable
+              vendors={vendors.map((v) => ({
+                id: v.id,
+                name: v.name,
+                contactEmail: v.contactEmail,
+                tier: v.tier,
+                overallScore: v.overallScore,
+              }))}
+              initialSort={sort}
+              page={page}
+              pageSize={pageSize}
+              totalCount={totalCount}
+            />
           )}
-          <Pagination
-            page={page}
-            pageSize={pageSize}
-            totalCount={totalCount}
-            itemLabel="vendors"
-          />
+          {view === "cards" ? (
+            <Pagination
+              page={page}
+              pageSize={pageSize}
+              totalCount={totalCount}
+              itemLabel="vendors"
+            />
+          ) : null}
         </>
       )}
     </div>

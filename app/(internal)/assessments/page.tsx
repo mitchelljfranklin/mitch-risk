@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -11,19 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { AssessmentStatusBadge } from "@/components/assessment-status-badge";
-import { ScoreBadge } from "@/components/score-badge";
 import { AutoSubmitSelect } from "@/components/auto-submit-select";
+import { AssessmentsTable } from "./assessments-table";
 import { EmptyState } from "@/components/empty-state";
-import { Pagination } from "@/components/pagination";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import {
@@ -31,11 +20,7 @@ import {
   ASSESSMENT_SORTS,
   type AssessmentSort,
 } from "@/lib/db/assessments";
-import {
-  ASSESSMENT_STATUS_LABELS,
-  isAssessmentOverdue,
-} from "@/lib/schemas/assessment";
-import { formatDate } from "@/lib/utils";
+import { ASSESSMENT_STATUS_LABELS } from "@/lib/schemas/assessment";
 
 export const dynamic = "force-dynamic";
 
@@ -70,12 +55,6 @@ export default async function AssessmentsPage({
     Boolean(sp.from) ||
     Boolean(sp.to) ||
     overdue;
-
-  const STATUS_ACCENT: Record<string, string> = {
-    SUBMITTED: "border-l-[var(--rag-amber)]",
-    UNDER_REVIEW: "border-l-blue-500",
-    COMPLETED: "border-l-[var(--rag-green)]",
-  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -185,90 +164,22 @@ export default async function AssessmentsPage({
           />
         )
       ) : (
-        <>
-          <div className="overflow-hidden rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Assessment · Vendor</TableHead>
-                  <TableHead className="hidden w-16 text-right sm:table-cell">
-                    Score
-                  </TableHead>
-                  <TableHead className="hidden w-28 text-right sm:table-cell">
-                    Status
-                  </TableHead>
-                  <TableHead className="hidden w-24 text-right sm:table-cell">
-                    Due
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {assessments.map((assessment) => {
-                  const isOverdue = isAssessmentOverdue(
-                    assessment.dueDate,
-                    assessment.status,
-                  );
-                  const accentClass = isOverdue
-                    ? "border-l-destructive border-l-4"
-                    : (STATUS_ACCENT[assessment.status] ?? "");
-                  return (
-                    <TableRow key={assessment.id} className={accentClass}>
-                      <TableCell className="p-3">
-                        <Link
-                          href={`/assessments/${assessment.id}`}
-                          className="block"
-                        >
-                          <span className="truncate text-sm font-medium">
-                            {assessment.title}
-                          </span>
-                          <span className="text-muted-foreground block truncate text-xs">
-                            {assessment.vendor.name}
-                            {assessment.template
-                              ? ` · ${assessment.template.name} v${assessment.template.version}`
-                              : ""}
-                            {assessment.dueDate ? (
-                              <span
-                                className={
-                                  isOverdue ? "text-[var(--rag-red)]" : ""
-                                }
-                              >
-                                {` · due ${formatDate(assessment.dueDate)}`}
-                              </span>
-                            ) : (
-                              ""
-                            )}
-                          </span>
-                        </Link>
-                      </TableCell>
-                      <TableCell className="hidden p-3 text-right sm:table-cell">
-                        {assessment.score !== null ? (
-                          <ScoreBadge score={assessment.score} size="sm" />
-                        ) : null}
-                      </TableCell>
-                      <TableCell className="hidden p-3 text-right sm:table-cell">
-                        {isOverdue ? (
-                          <Badge variant="destructive">Overdue</Badge>
-                        ) : null}{" "}
-                        <AssessmentStatusBadge status={assessment.status} />
-                      </TableCell>
-                      <TableCell className="text-muted-foreground hidden p-3 text-right text-xs sm:table-cell">
-                        {assessment.dueDate
-                          ? formatDate(assessment.dueDate)
-                          : "—"}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </div>
-          <Pagination
-            page={page}
-            pageSize={pageSize}
-            totalCount={totalCount}
-            itemLabel="assessments"
-          />
-        </>
+        <AssessmentsTable
+          assessments={assessments.map((a) => ({
+            id: a.id,
+            title: a.title,
+            status: a.status,
+            score: a.score,
+            dueDate: a.dueDate?.toISOString() ?? null,
+            vendorName: a.vendor.name,
+            templateName: a.template?.name ?? null,
+            templateVersion: a.template?.version ?? null,
+          }))}
+          initialSort={sort}
+          page={page}
+          pageSize={pageSize}
+          totalCount={totalCount}
+        />
       )}
     </div>
   );
