@@ -201,32 +201,32 @@ export default async function TemplateBuilderPage({
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap items-center gap-2">
-              {versionChain.map((v, i) => (
-                <span key={v.id} className="flex items-center gap-2">
+              {versionChain.map((version, i) => (
+                <span key={version.id} className="flex items-center gap-2">
                   {i > 0 ? (
                     <span className="text-muted-foreground text-xs">→</span>
                   ) : null}
                   <Link
-                    href={`/templates/${v.id}`}
+                    href={`/templates/${version.id}`}
                     className={`hover:bg-accent flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs transition-colors ${
-                      v.id === templateId ? "border-primary bg-accent" : ""
+                      version.id === templateId ? "border-primary bg-accent" : ""
                     }`}
                   >
-                    <span className="font-medium">v{v.version}</span>
+                    <span className="font-medium">v{version.version}</span>
                     <Badge
                       variant={
-                        v.status === "DRAFT"
+                        version.status === "DRAFT"
                           ? "secondary"
-                          : v.status === "PUBLISHED"
+                          : version.status === "PUBLISHED"
                             ? "default"
                             : "outline"
                       }
                       className="text-xs"
                     >
-                      {v.status.toLowerCase()}
+                      {version.status.toLowerCase()}
                     </Badge>
                     <span className="text-muted-foreground text-xs">
-                      {formatDate(v.updatedAt)}
+                      {formatDate(version.updatedAt)}
                     </span>
                   </Link>
                 </span>

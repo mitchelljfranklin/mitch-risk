@@ -137,9 +137,9 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
               <SelectValue placeholder="All actions" />
             </SelectTrigger>
             <SelectContent>
-              {actions.map((a) => (
-                <SelectItem key={a} value={a}>
-                  {AUDIT_ACTION_LABELS[a] ?? a}
+              {actions.map((action) => (
+                <SelectItem key={action} value={action}>
+                  {AUDIT_ACTION_LABELS[action] ?? action}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -240,7 +240,7 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
                       log.entityType ?? "",
                       log.entityId ?? "",
                     ]
-                      .map((v) => `"${String(v).replace(/"/g, '""')}"`)
+                      .map((value) => `"${String(value).replace(/"/g, '""')}"`)
                       .join(","),
                   )
                   .join("\n");

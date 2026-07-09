@@ -725,15 +725,15 @@ export function PortalQuestionnaire({
                     return (
                       <div className="flex flex-col gap-2">
                         {questionComments.length > 0
-                          ? questionComments.map((c) => (
+                          ? questionComments.map((comment) => (
                               <div
-                                key={c.id}
+                                key={comment.id}
                                 className="text-muted-foreground text-xs"
                               >
                                 <span className="font-medium">
-                                  {c.authorName}
+                                  {comment.authorName}
                                 </span>{" "}
-                                · {c.body}
+                                · {comment.body}
                               </div>
                             ))
                           : null}

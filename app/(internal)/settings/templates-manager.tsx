@@ -88,7 +88,7 @@ function TemplateEditorSheet({
           <input type="hidden" name="body" value={liveBody} />
           <MDEditor
             value={liveBody}
-            onChange={(val) => setLiveBody(val ?? "")}
+            onChange={(value) => setLiveBody(value ?? "")}
             preview="live"
             height={300}
             visibleDragbar={false}

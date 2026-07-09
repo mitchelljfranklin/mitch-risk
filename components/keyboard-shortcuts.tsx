@@ -104,7 +104,6 @@ export function KeyboardShortcuts({ permissions }: CommandPaletteProps) {
     });
   }, [permissions, query]);
 
-  const selectedItem = filteredItems[selectedIndex];
   const safeIndex = Math.max(
     0,
     Math.min(selectedIndex, filteredItems.length - 1),

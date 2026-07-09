@@ -72,8 +72,8 @@ export default async function ComparePage({
   if (!right || right.vendorId !== vendorId) notFound();
 
   const allQuestionIds = new Set([
-    ...left.questions.map((q) => q.id),
-    ...right.questions.map((q) => q.id),
+    ...left.questions.map((question) => question.id),
+    ...right.questions.map((question) => question.id),
   ]);
 
   const leftResponseMap = new Map(
@@ -119,8 +119,8 @@ export default async function ComparePage({
           </thead>
           <tbody>
             {[...allQuestionIds].map((qId) => {
-              const lq = left.questions.find((q) => q.id === qId);
-              const rq = right.questions.find((q) => q.id === qId);
+              const lq = left.questions.find((question) => question.id === qId);
+              const rq = right.questions.find((question) => question.id === qId);
               const lr = lq ? leftResponseMap.get(lq.id) : undefined;
               const rr = rq ? rightResponseMap.get(rq.id) : undefined;
               const lCompliant = lr?.isCompliant;

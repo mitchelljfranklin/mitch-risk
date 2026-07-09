@@ -185,25 +185,25 @@ function AssessmentPdfDocument({ data }: { data: AssessmentPdfData }) {
                 <Text style={styles.label}>Score</Text>
               </Text>
             </View>
-            {data.questions.map((q, i) => (
+            {data.questions.map((question, i) => (
               <View key={i} style={styles.tableRow}>
-                <Text style={styles.col1}>{q.text}</Text>
+                <Text style={styles.col1}>{question.text}</Text>
                 <Text style={styles.col2}>
-                  {q.isNa ? "N/A" : q.answer || "--"}
+                  {question.isNa ? "N/A" : question.answer || "--"}
                 </Text>
-                <Text style={styles.col3}>{q.type}</Text>
-                <Text style={styles.col4}>{q.riskWeight}</Text>
-                <Text style={[styles.col5, { color: ragColor(q.isCompliant) }]}>
-                  {q.isNa
+                <Text style={styles.col3}>{question.type}</Text>
+                <Text style={styles.col4}>{question.riskWeight}</Text>
+                <Text style={[styles.col5, { color: ragColor(question.isCompliant) }]}>
+                  {question.isNa
                     ? "N/A"
-                    : q.isCompliant === true
+                    : question.isCompliant === true
                       ? "Yes"
-                      : q.isCompliant === false
+                      : question.isCompliant === false
                         ? "No"
                         : "--"}
                 </Text>
-                <Text style={[styles.col6, { color: ragColor(q.isCompliant) }]}>
-                  {ragLabel(q.scorePct)}
+                <Text style={[styles.col6, { color: ragColor(question.isCompliant) }]}>
+                  {ragLabel(question.scorePct)}
                 </Text>
               </View>
             ))}
@@ -216,13 +216,13 @@ function AssessmentPdfDocument({ data }: { data: AssessmentPdfData }) {
             <Text style={styles.sectionTitle}>
               Findings ({data.findings.length})
             </Text>
-            {data.findings.map((f, i) => (
+            {data.findings.map((finding, i) => (
               <View key={i} style={styles.findingRow}>
                 <Text style={styles.findingTitle}>
-                  {f.severity}: {f.title}
+                  {finding.severity}: {finding.title}
                 </Text>
-                <Text style={styles.findingMeta}>{f.description}</Text>
-                {f.controls.length > 0 ? (
+                <Text style={styles.findingMeta}>{finding.description}</Text>
+                {finding.controls.length > 0 ? (
                   <View
                     style={{
                       flexDirection: "row",
@@ -230,7 +230,7 @@ function AssessmentPdfDocument({ data }: { data: AssessmentPdfData }) {
                       marginTop: 2,
                     }}
                   >
-                    {f.controls.map((code) => (
+                    {finding.controls.map((code) => (
                       <Text key={code} style={styles.controlChip}>
                         {code}
                       </Text>

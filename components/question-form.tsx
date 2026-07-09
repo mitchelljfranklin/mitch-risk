@@ -105,7 +105,7 @@ export function QuestionForm({
         </p>
         <MDEditor
           value={liveHelpText}
-          onChange={(val) => setLiveHelpText(val ?? "")}
+          onChange={(value) => setLiveHelpText(value ?? "")}
           preview="live"
           height={200}
           visibleDragbar={false}

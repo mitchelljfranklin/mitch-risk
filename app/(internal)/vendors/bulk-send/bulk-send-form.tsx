@@ -71,13 +71,13 @@ export function BulkSendForm({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
 
-  const filtered = vendors.filter((v) =>
-    v.name.toLowerCase().includes(search.toLowerCase()),
+  const filtered = vendors.filter((vendor) =>
+    vendor.name.toLowerCase().includes(search.toLowerCase()),
   );
-  const selectedVendors = vendors.filter((v) => selectedIds.has(v.id));
+  const selectedVendors = vendors.filter((vendor) => selectedIds.has(vendor.id));
 
   const allSelected =
-    filtered.length > 0 && filtered.every((v) => selectedIds.has(v.id));
+    filtered.length > 0 && filtered.every((vendor) => selectedIds.has(vendor.id));
 
   function toggleAll(checked: boolean) {
     if (checked) {
@@ -139,9 +139,9 @@ export function BulkSendForm({
                 <SelectValue placeholder="Select template" />
               </SelectTrigger>
               <SelectContent>
-                {templates.map((t) => (
-                  <SelectItem key={t.id} value={t.id}>
-                    {t.label}
+                {templates.map((template) => (
+                  <SelectItem key={template.id} value={template.id}>
+                    {template.label}
                   </SelectItem>
                 ))}
               </SelectContent>

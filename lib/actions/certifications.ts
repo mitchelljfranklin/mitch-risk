@@ -137,7 +137,7 @@ export async function deleteCertificationAction(formData: FormData) {
   revalidatePath(`/vendors/${existing.vendorId}`);
 }
 
-export async function handleAttachmentUpload(
+async function handleAttachmentUpload(
   formData: FormData,
   entityType: string,
   entityId: string,
