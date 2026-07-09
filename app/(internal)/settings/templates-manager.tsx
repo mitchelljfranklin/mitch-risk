@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useActionState } from "react";
-import MDEditor from "@uiw/react-md-editor";
+import MDEditor, { commands } from "@uiw/react-md-editor";
 
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -89,9 +89,10 @@ function TemplateEditorSheet({
           <MDEditor
             value={liveBody}
             onChange={(value) => setLiveBody(value ?? "")}
-            preview="live"
+            preview="edit"
             height={300}
             visibleDragbar={false}
+            extraCommands={[commands.codeEdit, commands.codePreview]}
             commandsFilter={(cmd) => {
               const name = cmd.name ?? "";
               if (["fullscreen", "code", "code-block", "comment"].includes(name)) {

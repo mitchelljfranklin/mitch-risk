@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useActionState, useState } from "react";
-import MDEditor from "@uiw/react-md-editor";
+import MDEditor, { commands } from "@uiw/react-md-editor";
 
 import { ConditionalRulesEditor } from "@/components/conditional-rules-editor";
 import { ControlMultiSelect } from "@/components/control-multi-select";
@@ -106,9 +106,10 @@ export function QuestionForm({
         <MDEditor
           value={liveHelpText}
           onChange={(value) => setLiveHelpText(value ?? "")}
-          preview="live"
+          preview="edit"
           height={200}
           visibleDragbar={false}
+          extraCommands={[commands.codeEdit, commands.codePreview]}
           commandsFilter={(cmd) => {
             const name = cmd.name ?? "";
             if (name === "image") return { ...cmd, disabled: true };
