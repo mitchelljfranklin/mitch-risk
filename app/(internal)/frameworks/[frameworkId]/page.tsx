@@ -58,7 +58,10 @@ export default async function FrameworkDetailPage({
   return (
     <div className="flex flex-col gap-6">
       <Breadcrumbs
-        segments={[{ label: "Frameworks", href: "/frameworks" }, { label: framework.name }]}
+        segments={[
+          { label: "Frameworks", href: "/frameworks" },
+          { label: framework.name },
+        ]}
       />
       <div>
         <div className="flex items-center justify-between gap-4">

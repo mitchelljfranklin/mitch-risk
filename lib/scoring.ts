@@ -144,7 +144,10 @@ export function scoreResponses(
 }
 
 export function computeTotalScore(scored: ScoredResponse[]): number | null {
-  const totalWeighted = scored.reduce((sum, response) => sum + response.weightedScore, 0);
+  const totalWeighted = scored.reduce(
+    (sum, response) => sum + response.weightedScore,
+    0,
+  );
   const totalMax = scored.reduce((sum, response) => sum + response.maxScore, 0);
   return totalMax > 0 ? totalWeighted / totalMax : null;
 }

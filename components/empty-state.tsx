@@ -196,7 +196,12 @@ const ICONS: Record<EmptyStateProps["icon"], React.ReactNode> = {
   ),
 };
 
-export function EmptyState({ icon, title, description, compact = false }: EmptyStateProps) {
+export function EmptyState({
+  icon,
+  title,
+  description,
+  compact = false,
+}: EmptyStateProps) {
   const styles = compact ? SIZE.compact : SIZE.full;
   return (
     <div className={styles.wrapper}>

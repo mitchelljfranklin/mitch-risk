@@ -15,7 +15,9 @@ function relativeLuminance(hex: string): number {
   if (!rgb) return 0;
   const [r, g, b] = rgb.map((channel) => {
     const normalized = channel / 255;
-    return normalized <= 0.04045 ? normalized / 12.92 : Math.pow((normalized + 0.055) / 1.055, 2.4);
+    return normalized <= 0.04045
+      ? normalized / 12.92
+      : Math.pow((normalized + 0.055) / 1.055, 2.4);
   });
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }

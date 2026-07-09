@@ -88,7 +88,12 @@ export async function GET(
 
   for (const finding of assessment.findings) {
     rows.push(
-      [finding.title, finding.severity, finding.controlCodes.join("; "), finding.description]
+      [
+        finding.title,
+        finding.severity,
+        finding.controlCodes.join("; "),
+        finding.description,
+      ]
         .map((cell) => csvEscape(cell))
         .join(","),
     );

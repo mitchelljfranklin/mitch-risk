@@ -40,7 +40,10 @@ export default async function CompareVendorsPage({
     return (
       <div className="flex flex-col gap-6">
         <Breadcrumbs
-          segments={[{ label: "Vendors", href: "/vendors" }, { label: "Compare" }]}
+          segments={[
+            { label: "Vendors", href: "/vendors" },
+            { label: "Compare" },
+          ]}
         />
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">

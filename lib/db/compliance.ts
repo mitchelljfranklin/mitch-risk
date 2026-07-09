@@ -190,7 +190,6 @@ export async function getVendorHeatmap(
   });
 }
 
-
 function computeScoreDistribution(
   vendors: Array<{ overallScore: number | null }>,
   ragThresholds: { green: number; amber: number },
