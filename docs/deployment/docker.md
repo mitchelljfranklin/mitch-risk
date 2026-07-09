@@ -110,3 +110,22 @@ Schedule a system cron to hit the secured endpoint:
 ```
 
 This triggers: vendor reminders, overdue escalations, recurring assessment creation, certification/contract expiry notices, audit log pruning, email log pruning, and orphaned file sweep.
+
+## Rotating Encryption Keys
+
+`APP_ENCRYPTION_KEY` is used to encrypt secrets stored in the database (SMTP password, SSO client secrets, cloud storage credentials). **Changing this key is destructive** — all encrypted secrets become permanently unreadable. There is no key versioning or re-encryption mechanism.
+
+**To rotate safely:**
+
+1. Before changing `APP_ENCRYPTION_KEY`, open Settings and note down every encrypted value (SMTP password, SSO client secrets, cloud credentials). They will be blanked when the new key is applied.
+2. Change the key in `.env` or `docker-compose.yml`.
+3. Restart the container.
+4. Re-enter all secrets in Settings. They will be encrypted with the new key.
+
+**To recover after an accidental key change:**
+
+1. Restore the previous `APP_ENCRYPTION_KEY` value.
+2. Restart the container — existing encrypted secrets will be readable again.
+3. Follow the safe rotation procedure above.
+
+If the previous key has been permanently lost, all affected settings must be re-entered manually.
