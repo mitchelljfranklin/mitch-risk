@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";

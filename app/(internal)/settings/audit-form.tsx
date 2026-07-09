@@ -28,7 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { AUDIT_ACTION_LABELS, type AuditLogEntry } from "@/lib/db/audit";
+import { AUDIT_ACTION_LABELS } from "@/lib/db/audit";
 import type { AuditLogResult } from "@/lib/db/audit";
 import type { Prisma } from "@prisma/client";
 import { formatDate } from "@/lib/utils";

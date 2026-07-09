@@ -8,7 +8,6 @@ import { PERMISSIONS } from "@/lib/permissions";
 import {
   createCertification,
   deleteCertification,
-  deleteAttachmentsForEntity,
   getCertification,
   listAttachments,
   updateCertification,

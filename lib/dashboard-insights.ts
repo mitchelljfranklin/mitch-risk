@@ -2,12 +2,12 @@ export type RagBand = "green" | "amber" | "red" | "unscored";
 
 export type RagThresholds = { green: number; amber: number };
 
-export const DEFAULT_RAG_THRESHOLDS: RagThresholds = {
+const DEFAULT_RAG_THRESHOLDS: RagThresholds = {
   green: 0.85,
   amber: 0.6,
 };
 
-export const RISK_TIER_ORDER = [
+const RISK_TIER_ORDER = [
   "CRITICAL",
   "HIGH",
   "MEDIUM",

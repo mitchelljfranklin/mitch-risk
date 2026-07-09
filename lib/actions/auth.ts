@@ -13,7 +13,6 @@ import { env } from "@/lib/env";
 import { rateLimit } from "@/lib/rate-limit";
 import { forgotPasswordSchema, resetPasswordSchema } from "@/lib/schemas/auth";
 import { getAssessmentSettings, getOrganizationSettings } from "@/lib/settings";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function signOutAction() {

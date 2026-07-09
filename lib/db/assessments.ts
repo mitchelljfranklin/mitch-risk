@@ -26,7 +26,7 @@ export const ASSESSMENT_SORTS = {
 
 export type AssessmentSort = keyof typeof ASSESSMENT_SORTS;
 
-export const OVERDUE_STATUSES: AssessmentStatus[] = ["SENT", "IN_PROGRESS"];
+const OVERDUE_STATUSES: AssessmentStatus[] = ["SENT", "IN_PROGRESS"];
 
 const DEFAULT_ASSESSMENT_PAGE_SIZE = 25;
 

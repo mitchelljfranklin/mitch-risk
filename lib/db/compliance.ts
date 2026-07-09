@@ -190,54 +190,6 @@ export async function getVendorHeatmap(
   });
 }
 
-export async function getPortfolioSummary(): Promise<{
-  vendors: {
-    id: string;
-    name: string;
-    tier: string | null;
-    overallScore: number | null;
-    overdueCount: number;
-    latestAssessmentTitle: string | null;
-    latestAssessmentDate: Date | null;
-  }[];
-}> {
-  const vendors = await prisma.vendor.findMany({
-    orderBy: { name: "asc" },
-    select: {
-      id: true,
-      name: true,
-      tier: true,
-      overallScore: true,
-      assessments: {
-        where: { status: { notIn: ["DRAFT", "SENT", "IN_PROGRESS"] } },
-        orderBy: { createdAt: "desc" },
-        select: { id: true, title: true, createdAt: true, score: true },
-      },
-      _count: {
-        select: {
-          assessments: {
-            where: {
-              status: { in: ["SENT", "IN_PROGRESS"] },
-              dueDate: { lt: new Date() },
-            },
-          },
-        },
-      },
-    },
-  });
-
-  return {
-    vendors: vendors.map((vendor) => ({
-      id: vendor.id,
-      name: vendor.name,
-      tier: vendor.tier,
-      overallScore: vendor.overallScore,
-      overdueCount: vendor._count.assessments,
-      latestAssessmentTitle: vendor.assessments[0]?.title ?? null,
-      latestAssessmentDate: vendor.assessments[0]?.createdAt ?? null,
-    })),
-  };
-}
 
 function computeScoreDistribution(
   vendors: Array<{ overallScore: number | null }>,

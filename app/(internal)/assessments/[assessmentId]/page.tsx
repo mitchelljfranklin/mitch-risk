@@ -42,7 +42,7 @@ import {
   SEVERITY_STYLES,
 } from "@/lib/schemas/assessment";
 import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
-import { cn, formatDate } from "@/lib/utils";
+import { cn, formatDate, formatResponseValue } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -61,16 +61,6 @@ export async function generateMetadata({
   });
   if (!assessment) return { title: "Assessment not found" };
   return { title: assessment.title };
-}
-
-function formatResponseValue(value: unknown): string {
-  if (value === null || value === undefined) {
-    return "No answer";
-  }
-  if (typeof value === "string") {
-    return value.length > 0 ? value : "No answer";
-  }
-  return String(value);
 }
 
 export default async function AssessmentDetailPage({
