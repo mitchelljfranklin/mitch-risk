@@ -162,7 +162,7 @@ export default async function TemplateBuilderPage({
             ) : null}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" aria-label="Template actions">
                   <MoreHorizontal className="size-4" />
                 </Button>
               </DropdownMenuTrigger>

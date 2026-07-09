@@ -182,7 +182,8 @@ export async function submitPortalAction(
         { assessmentId: assessment.id },
       );
     }
-  } catch {
+  } catch (error: unknown) {
+    console.error("Failed to send submission notification:", error);
     // Notification is best-effort — don't block submission
   }
 
@@ -236,7 +237,8 @@ export async function removePortalEvidenceAction(
   await prisma.evidence.delete({ where: { id: evidenceId } });
   try {
     await storage.delete(evidence.storageKey);
-  } catch {
+  } catch (error: unknown) {
+    console.error("Failed to delete evidence storage:", error);
     // Best-effort; orphan-sweep cron cleans any leftovers.
   }
 }

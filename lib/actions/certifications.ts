@@ -119,7 +119,8 @@ export async function deleteCertificationAction(formData: FormData) {
   for (const a of attachments) {
     try {
       await storage.delete(a.storageKey);
-    } catch {
+    } catch (error: unknown) {
+      console.error("Failed to delete certification attachment:", error);
       // file already gone
     }
   }
@@ -176,10 +177,12 @@ export async function handleAttachmentUpload(
         sizeBytes: file.size,
       },
     });
-  } catch {
+  } catch (error: unknown) {
+    console.error("Failed to create attachment record:", error);
     try {
       await storage.delete(storageKey);
-    } catch {
+    } catch (cleanupError: unknown) {
+      console.error("Failed to clean up attachment storage:", cleanupError);
       // Attachment storage cleanup failed — orphaned file will be swept by cron
     }
   }
@@ -208,7 +211,8 @@ export async function removeAttachmentAction(formData: FormData) {
 
   try {
     await storage.delete(attachment.storageKey);
-  } catch {
+  } catch (error: unknown) {
+    console.error("Failed to delete attachment storage:", error);
     // file already gone
   }
 

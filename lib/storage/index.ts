@@ -54,7 +54,8 @@ const localDiskStorage: FileStorage = {
       let entries;
       try {
         entries = await readdir(directory, { withFileTypes: true });
-      } catch {
+      } catch (error: unknown) {
+        console.error("Failed to read directory in storage sweep:", directory, error);
         return;
       }
       for (const entry of entries) {

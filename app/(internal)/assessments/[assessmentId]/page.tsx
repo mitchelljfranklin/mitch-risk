@@ -628,7 +628,7 @@ export default async function AssessmentDetailPage({
                         <img
                           key={item.id}
                           src={`/api/files/${item.id}?inline=true`}
-                          alt={item.fileName}
+                          alt={item.note ?? `Evidence file: ${item.fileName}`}
                           loading="lazy"
                           width={400}
                           height={256}

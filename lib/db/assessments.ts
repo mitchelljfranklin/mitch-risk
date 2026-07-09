@@ -183,7 +183,8 @@ async function deleteStoredFiles(storageKeys: string[]): Promise<void> {
   for (const key of storageKeys) {
     try {
       await storage.delete(key);
-    } catch {
+    } catch (error: unknown) {
+      console.error("Failed to delete stored file:", error);
       // Best-effort: a missing file must never block the database delete.
       // The orphan-sweep cron is the backstop for any leftovers.
     }
@@ -522,7 +523,8 @@ export async function submitAssessment(
 
   try {
     await scoreAssessment(assessment.id);
-  } catch {
+  } catch (error: unknown) {
+    console.error("Scoring failed for assessment:", assessment.id, error);
     await prisma.assessment.update({
       where: { id: assessment.id },
       data: { status: previousStatus },
