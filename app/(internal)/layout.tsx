@@ -9,6 +9,7 @@ import {
 import { UserMenu } from "@/components/user-menu";
 import { PageMain } from "@/components/page-main";
 import { ScrollToTop } from "@/components/scroll-to-top";
+import { ScrollLockFix } from "@/components/scroll-lock-fix";
 import { Toaster } from "@/components/ui/sonner";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 import { IdleTimer } from "@/components/idle-timer";
@@ -34,6 +35,7 @@ export default async function InternalLayout({
 
   return (
     <>
+      <ScrollLockFix />
       <IdleTimer timeoutMinutes={assessment.sessionTimeoutMinutes} />
       <KeyboardShortcuts permissions={user.permissions} />
       <SidebarProvider>

@@ -56,11 +56,6 @@ export default async function RootLayout({
         <link rel="icon" href={faviconUrl} />
       </head>
       <body className="min-h-svh antialiased">
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){var o=new MutationObserver(function(){var s=document.querySelector('[data-state="collapsed"][data-collapsible="offcanvas"]');if(s){document.body.style.removeProperty("overflow");document.body.style.removeProperty("pointer-events");}});o.observe(document.body,{attributes:true,attributeFilter:["style"]});})();`,
-          }}
-        />
         <a
           href="#main-content"
           className="bg-primary text-primary-foreground sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:px-4 focus:py-2"
