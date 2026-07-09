@@ -165,6 +165,12 @@
   }
 }
 
+/* Radix UI adds overflow:hidden to body when sidebar closes — force it back */
+html:has([data-state="collapsed"][data-collapsible="offcanvas"]) body {
+  overflow-y: auto !important;
+  pointer-events: auto !important;
+}
+
 /* react-md-editor theme overrides — sync to shadcn design tokens */
 .w-md-editor {
   border-color: hsl(var(--border)) !important;
