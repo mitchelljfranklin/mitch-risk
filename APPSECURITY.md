@@ -74,7 +74,7 @@ Key SSO security features:
 **Considerations:**
 - `next-auth` v5 is currently in beta. Monitor the Auth.js release cycle for stable versions and security advisories
 - `trustHost: true` is broad. Consider scoping to the `APP_URL` host if deployment topology allows
-- No built-in MFA for local accounts — this is acceptable for small-business use; organisations requiring MFA should use SSO with an enterprise IdP (see Strengths above)
+- No built-in MFA for local accounts — this is acceptable for small-business use; organisations requiring MFA should use SSO with an enterprise IdP (see Strengths above). This was formally reviewed and dismissed as risk-register item M-1
 
 ---
 
@@ -371,9 +371,9 @@ Client IP resolution (`lib/client-ip.ts`) supports multi-proxy topologies:
 - Proxy config documentation in README (Caddy, nginx, Zoraxy, Azure samples)
 
 **Considerations:**
-- No HSTS header — rely on reverse proxy for HSTS enforcement
+- No HSTS header — deliberately left to the reverse proxy (AGENTS.md design decision). The reverse proxy (Caddy/nginx) should set HSTS for the deployment domain
 - `connect-src: 'self'` — any future frontend API calls to external services will require CSP updates
-- Nonce uses `randomUUID()` — adequate, but `randomBytes(16)` would explicitly signal cryptographic intent
+- Nonce uses `randomUUID()` — adequate, but `randomBytes(16)` would more explicitly signal cryptographic intent. `crypto.randomUUID()` does use `getRandomValues` internally, so this is a style preference, not a security gap
 
 ---
 
@@ -473,7 +473,7 @@ Portal file uploads are restricted by:
 
 **Considerations:**
 - No virus/malware scanning of uploaded files
-- No per-file access audit logging (who accessed which file and when)
+- No per-file access audit logging (who accessed which file and when) — formally reviewed and dismissed as risk-register item L-2
 
 ### 9.7 Cloud Storage (S3 / Azure Blob)
 
@@ -566,8 +566,8 @@ All email sends (invite, reminder, escalation, clarification, expiry notices, te
 - Failed email tracking with retry capability
 
 **Considerations:**
-- No read-audit events — viewing a vendor, assessment, or evidence file is not recorded
-- No tamper-proofing — audit logs are regular DB rows without hash-chaining or append-only guarantees. A database-level attacker could modify or delete audit records
+- No read-audit events — viewing a vendor, assessment, or evidence file is not recorded. Formally reviewed and dismissed as risk-register item L-2
+- No tamper-proofing — audit logs are regular DB rows without hash-chaining or append-only guarantees. A database-level attacker could modify or delete audit records. Formally reviewed and dismissed as risk-register item L-3
 - No SIEM-friendly export format (e.g., NDJSON or CEF/Syslog)
 - No cron execution timestamp tracking — there is no record of when the cron last ran, making it hard to detect missed runs
 
@@ -798,6 +798,9 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 | L-13 | ~~Missing `Cache-Control: no-store` on auth pages~~ | Browsers/proxies could cache auth pages | **FIXED** — added `export const dynamic = "force-dynamic"` to auth layout for explicit no-cache signal |
 | L-14 | `X-Powered-By: Next.js` header leaks technology stack | Facilitates attacker reconnaissance — confirms the framework and narrows attack surface | Add `header / -X-Powered-By` to Caddy/reverse-proxy config to suppress the header |
 | L-15 | `Server` header leaks version info on static assets (`_next/static/*`) | Facilitates attacker reconnaissance for server-specific exploits | Suppress via reverse proxy (`header / -Server` in Caddy). Header originates from the reverse proxy (Caddy/nginx), not the app |
+| L-16 | No secret rotation mechanism for `APP_ENCRYPTION_KEY` | Changing the encryption key permanently destroys all encrypted secrets (SMTP password, SSO client secrets, cloud storage credentials). Recovery requires restoring the old key or manually re-entering every encrypted secret. There is no warning UI before a key change, no key versioning, and no re-encryption tool | Low — requires deliberate action with DB access. Mitigation: document the destructive nature of key rotation; warn in Settings UI if key is being changed |
+| L-17 | No cron execution timestamp tracking | Cannot detect missed cron runs. If the system scheduler fails silently (cron daemon stops, network issues, Docker restart), there is no application-level record of when the cron last succeeded. Missed runs mean reminders, escalations, recurring assessments, and orphan sweeps go unexecuted | Low — would require a `cronLastRun` timestamp stored in DB Settings and surfaced in the UI. The cron job is idempotent, so a missed run is recoverable on the next successful invocation |
+| L-18 | No API key usage metrics beyond `lastUsedAt` | Cannot detect API key abuse patterns. No request count per key, no failure rate tracking, no per-IP breakdown. A compromised key used for data exfiltration would only show an updated `lastUsedAt` timestamp — indistinguishable from legitimate use | Low — would require per-key request counters updated in `authenticateRequest()`. Usage metrics are a nice-to-have for audit and are common in SaaS platforms; less critical for self-hosted single-tenant deployments |
 
 ### Penetration Test False Positives (ZAP 2.17.0 — 8 July 2026)
 
@@ -842,5 +845,5 @@ The platform provides mechanics (controls mapping, scoring, findings, audit trai
 
 This document is maintained as part of the Mitch‑Risk project. Security findings should be reported via the project's issue tracker.
 
-**Last reviewed:** July 2026 (fresh deep code audit — 10 factual corrections, 1 new medium finding M-20, dependency table refreshed)
+**Last reviewed:** July 2026 (considerations audit — 3 stale items synced with risk register dismissals, 3 new low-severity findings added: secret rotation, cron tracking, API key metrics)
 **App version:** 0.1.0
