@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { EmptyState } from "@/components/empty-state";
 import { notFound } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
@@ -38,13 +39,10 @@ export default async function CompareVendorsPage({
     const vendorOptions = await listVendorOptions();
     return (
       <div className="flex flex-col gap-6">
+        <Breadcrumbs
+          segments={[{ label: "Vendors", href: "/vendors" }, { label: "Compare" }]}
+        />
         <div>
-          <Link
-            href="/vendors"
-            className="text-muted-foreground text-sm hover:underline"
-          >
-            ← Vendors
-          </Link>
           <h1 className="text-2xl font-semibold tracking-tight">
             Compare vendors
           </h1>
@@ -55,9 +53,12 @@ export default async function CompareVendorsPage({
         </div>
 
         {vendorOptions.length < 2 ? (
-          <p className="text-muted-foreground text-sm">
-            You need at least two vendors to compare.
-          </p>
+          <EmptyState
+            compact
+            icon="vendors"
+            title="Not enough vendors"
+            description="You need at least two vendors to compare. Create more vendors first."
+          />
         ) : (
           <form className="flex flex-wrap items-end gap-3">
             <div className="flex flex-col gap-1">
@@ -166,13 +167,13 @@ export default async function CompareVendorsPage({
 
   return (
     <div className="flex flex-col gap-6">
+      <Breadcrumbs
+        segments={[
+          { label: "Vendors", href: "/vendors" },
+          { label: "Compare" },
+        ]}
+      />
       <div>
-        <Link
-          href="/vendors"
-          className="text-muted-foreground text-sm hover:underline"
-        >
-          ← Vendors
-        </Link>
         <h1 className="text-2xl font-semibold tracking-tight">
           Compare vendors
         </h1>

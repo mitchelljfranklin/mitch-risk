@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { SearchInput } from "@/components/search-input";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -55,13 +57,10 @@ export default async function FrameworkDetailPage({
 
   return (
     <div className="flex flex-col gap-6">
+      <Breadcrumbs
+        segments={[{ label: "Frameworks", href: "/frameworks" }, { label: framework.name }]}
+      />
       <div>
-        <Link
-          href="/frameworks"
-          className="text-muted-foreground text-sm hover:underline"
-        >
-          ← Frameworks
-        </Link>
         <div className="flex items-center justify-between gap-4">
           <h1 className="text-2xl font-semibold tracking-tight">
             {framework.name}{" "}
@@ -93,9 +92,12 @@ export default async function FrameworkDetailPage({
       </div>
 
       {controls.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          No controls match your search.
-        </p>
+        <EmptyState
+          compact
+          icon="frameworks"
+          title="No matching controls"
+          description="Try a different search term."
+        />
       ) : (
         <div className="flex flex-col gap-6">
           {[...controlsByDomain.entries()].map(([domain, domainControls]) => (

@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getAssessment } from "@/lib/db/assessments";
@@ -41,13 +41,14 @@ export default async function ComparePage({
   if (!leftId || !rightId) {
     return (
       <div className="flex flex-col gap-6">
+        <Breadcrumbs
+          segments={[
+            { label: "Vendors", href: "/vendors" },
+            { label: vendor.name, href: `/vendors/${vendorId}` },
+            { label: "Compare assessments" },
+          ]}
+        />
         <div>
-          <Link
-            href={`/vendors/${vendorId}`}
-            className="text-muted-foreground text-sm hover:underline"
-          >
-            ← {vendor.name}
-          </Link>
           <h1 className="text-2xl font-semibold tracking-tight">
             Compare assessments
           </h1>
@@ -84,13 +85,14 @@ export default async function ComparePage({
 
   return (
     <div className="flex flex-col gap-6">
+      <Breadcrumbs
+        segments={[
+          { label: "Vendors", href: "/vendors" },
+          { label: vendor.name, href: `/vendors/${vendorId}` },
+          { label: "Compare assessments" },
+        ]}
+      />
       <div>
-        <Link
-          href={`/vendors/${vendorId}`}
-          className="text-muted-foreground text-sm hover:underline"
-        >
-          ← {vendor.name}
-        </Link>
         <h1 className="text-2xl font-semibold tracking-tight">
           Compare assessments
         </h1>

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
@@ -29,13 +29,10 @@ export default async function BulkSendPage() {
 
   return (
     <div className="flex flex-col gap-6">
+      <Breadcrumbs
+        segments={[{ label: "Vendors", href: "/vendors" }, { label: "Bulk send" }]}
+      />
       <div>
-        <Link
-          href="/vendors"
-          className="text-muted-foreground text-sm hover:underline"
-        >
-          ← Vendors
-        </Link>
         <h1 className="text-2xl font-semibold tracking-tight">Bulk send</h1>
         <p className="text-muted-foreground text-sm">
           Send the same questionnaire to multiple vendors at once.

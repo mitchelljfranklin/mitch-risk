@@ -1,8 +1,9 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { EmptyState } from "@/components/empty-state";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getVendorHeatmap } from "@/lib/db/compliance";
@@ -48,13 +49,14 @@ export default async function VendorHeatmapPage({ params }: HeatmapPageProps) {
 
   return (
     <div className="flex max-w-4xl flex-col gap-6">
+      <Breadcrumbs
+        segments={[
+          { label: "Vendors", href: "/vendors" },
+          { label: vendor.name, href: `/vendors/${vendorId}` },
+          { label: `${framework.name} ${framework.version}` },
+        ]}
+      />
       <div>
-        <Link
-          href={`/vendors/${vendorId}`}
-          className="text-muted-foreground text-sm hover:underline"
-        >
-          ← {vendor.name}
-        </Link>
         <h1 className="text-2xl font-semibold tracking-tight">
           {framework.name} {framework.version}
         </h1>
@@ -64,9 +66,12 @@ export default async function VendorHeatmapPage({ params }: HeatmapPageProps) {
       </div>
 
       {controls.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          No assessment data available yet.
-        </p>
+        <EmptyState
+          compact
+          icon="assessments"
+          title="No data available"
+          description="No assessment data is available for this framework yet."
+        />
       ) : (
         <div className="flex flex-col gap-6">
           {[...grouped.entries()].map(([domain, domainControls]) => (

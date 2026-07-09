@@ -9,7 +9,23 @@ type EmptyStateProps = {
     | "email";
   title: string;
   description: string;
+  compact?: boolean;
 };
+
+const SIZE = {
+  full: {
+    wrapper: "flex flex-col items-center gap-3 py-12 text-center",
+    icon: "size-16",
+    text: "text-sm",
+    desc: "max-w-sm text-sm",
+  },
+  compact: {
+    wrapper: "flex flex-col items-center gap-2 py-6 text-center",
+    icon: "size-10",
+    text: "text-sm",
+    desc: "max-w-xs text-xs",
+  },
+} as const;
 
 const ICONS: Record<EmptyStateProps["icon"], React.ReactNode> = {
   vendors: (
@@ -180,12 +196,15 @@ const ICONS: Record<EmptyStateProps["icon"], React.ReactNode> = {
   ),
 };
 
-export function EmptyState({ icon, title, description }: EmptyStateProps) {
+export function EmptyState({ icon, title, description, compact = false }: EmptyStateProps) {
+  const styles = compact ? SIZE.compact : SIZE.full;
   return (
-    <div className="flex flex-col items-center gap-3 py-12 text-center">
-      <div className="text-muted-foreground/50">{ICONS[icon]}</div>
-      <p className="text-sm font-medium">{title}</p>
-      <p className="text-muted-foreground max-w-sm text-sm">{description}</p>
+    <div className={styles.wrapper}>
+      <div className={`text-muted-foreground/50 ${styles.icon}`}>
+        {ICONS[icon]}
+      </div>
+      <p className={`font-medium ${styles.text}`}>{title}</p>
+      <p className={`text-muted-foreground ${styles.desc}`}>{description}</p>
     </div>
   );
 }

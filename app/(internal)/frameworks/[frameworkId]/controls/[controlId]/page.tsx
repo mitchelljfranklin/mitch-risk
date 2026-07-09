@@ -1,8 +1,10 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { EmptyState } from "@/components/empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
@@ -63,13 +65,17 @@ export default async function ControlDetailPage({
 
   return (
     <div className="flex max-w-2xl flex-col gap-6">
+      <Breadcrumbs
+        segments={[
+          { label: "Frameworks", href: "/frameworks" },
+          {
+            label: `${control.framework.name} ${control.framework.version}`,
+            href: `/frameworks/${frameworkId}`,
+          },
+          { label: control.title },
+        ]}
+      />
       <div>
-        <Link
-          href={`/frameworks/${frameworkId}`}
-          className="text-muted-foreground text-sm hover:underline"
-        >
-          ← {control.framework.name} {control.framework.version}
-        </Link>
         <div className="mt-2 flex items-center gap-3">
           <Badge variant="outline" className="font-mono">
             {control.code}
@@ -96,9 +102,12 @@ export default async function ControlDetailPage({
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           {mappedTemplates.length === 0 ? (
-            <p className="text-muted-foreground text-sm">
-              No questionnaire questions map to this control yet.
-            </p>
+            <EmptyState
+              compact
+              icon="templates"
+              title="No mapped questions"
+              description="No questionnaire questions map to this control yet."
+            />
           ) : (
             mappedTemplates.map((template) => (
               <div key={template.id} className="flex flex-col gap-1">

@@ -6,6 +6,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { EmptyState } from "@/components/empty-state";
 import { DuplicateTemplateMenuItem } from "@/components/duplicate-template-menu-item";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -359,7 +360,12 @@ export default async function TemplateBuilderPage({
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
             {section.questions.length === 0 ? (
-              <p className="text-muted-foreground text-sm">No questions yet.</p>
+              <EmptyState
+                compact
+                icon="templates"
+                title="No questions"
+                description="Add a question to get started with this section."
+              />
             ) : (
               section.questions.map((question, questionIndex) => {
                 const conditionSummary = summarizeConditionalLogic(

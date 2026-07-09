@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CertificationsManager } from "@/components/certifications-manager";
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { EmptyState } from "@/components/empty-state";
 import { FlashToast } from "@/components/flash-toast";
 import { ProgressBar } from "@/components/progress-bar";
 import { deleteVendorAction } from "@/lib/actions/vendors";
@@ -469,7 +470,12 @@ export default async function VendorDetailPage({
         </CardHeader>
         <CardContent className="flex flex-col gap-2">
           {vendor.assessments.length === 0 ? (
-            <p className="text-muted-foreground text-sm">No assessments yet.</p>
+            <EmptyState
+              compact
+              icon="assessments"
+              title="No assessments"
+              description="No assessments have been created for this vendor yet."
+            />
           ) : (
             vendor.assessments.map((assessment) => (
               <Link

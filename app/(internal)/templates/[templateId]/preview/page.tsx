@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { TemplatePreview } from "@/components/template-preview";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
@@ -35,13 +35,14 @@ export default async function TemplatePreviewPage({
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6">
+      <Breadcrumbs
+        segments={[
+          { label: "Templates", href: "/templates" },
+          { label: template.name, href: `/templates/${templateId}` },
+          { label: "Preview" },
+        ]}
+      />
       <div>
-        <Link
-          href={`/templates/${templateId}`}
-          className="text-muted-foreground text-sm hover:underline"
-        >
-          ← Back to builder
-        </Link>
         <h1 className="mt-2 flex items-center gap-2 text-2xl font-semibold tracking-tight">
           {template.name}
           <Badge variant="outline">v{template.version}</Badge>
