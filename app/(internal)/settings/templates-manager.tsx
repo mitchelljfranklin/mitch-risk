@@ -92,6 +92,13 @@ function TemplateEditorSheet({
             preview="live"
             height={300}
             visibleDragbar={false}
+            commandsFilter={(cmd) => {
+              const name = cmd.name ?? "";
+              if (["fullscreen", "code", "code-block", "comment"].includes(name)) {
+                return false;
+              }
+              return cmd;
+            }}
           />
         </div>
         <p className="text-muted-foreground text-xs">

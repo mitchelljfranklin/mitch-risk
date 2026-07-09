@@ -109,9 +109,14 @@ export function QuestionForm({
           preview="live"
           height={200}
           visibleDragbar={false}
-          commandsFilter={(cmd) =>
-            cmd.name !== "image" ? cmd : { ...cmd, disabled: true }
-          }
+          commandsFilter={(cmd) => {
+            const name = cmd.name ?? "";
+            if (name === "image") return { ...cmd, disabled: true };
+            if (["fullscreen", "code", "code-block", "comment"].includes(name)) {
+              return false;
+            }
+            return cmd;
+          }}
         />
       </div>
 
