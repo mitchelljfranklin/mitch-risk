@@ -670,16 +670,16 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 | `next-auth` | ^5.0.0-beta.31 | Authentication (beta) |
 | `bcryptjs` | ^3.0.3 | Password/API key hashing |
 | `@prisma/client` | ^6.19.3 | Database ORM |
-| `nodemailer` | ^7.0.13 | Email transport |
+| `nodemailer` | ^9.0.3 | Email transport |
 | `zod` | ^4.4.3 | Input validation |
 | `@react-pdf/renderer` | ^4.5.1 | PDF generation |
 | `@react-email/components` | ^1.0.12 | Email template rendering |
-| `recharts` | ^2.15.4 | Dashboard charts |
+| `recharts` | ^3.9.1 | Dashboard charts |
 | `sonner` | ^2.0.7 | Toast notifications (shadcn/ui) |
 | `@tanstack/react-table` | ^8.21.3 | Sortable data tables |
-| `@uiw/react-md-editor` | ^4.0.5 | WYSIWYG Markdown editor |
+| `@uiw/react-md-editor` | ^4.1.1 | WYSIWYG Markdown editor |
 | `react-markdown` | ^10.1.0 | Markdown rendering (portal help text) |
-| `marked` | ^17.0.1 | Markdown-to-HTML conversion (email) |
+| `marked` | ^18.0.5 | Markdown-to-HTML conversion (email) |
 
 ### 13.2 Supply Chain Notes
 

@@ -20,7 +20,7 @@ The assessment review screen displays the vendor's questionnaire responses along
 
 ## Template Builder
 
-Templates define the questionnaire structure — sections, questions, answer types, risk weights, expected answers, and conditional logic. Twelve question types are supported, including multiple choice, checkbox grids, numeric ranges, free text, and file uploads. Templates can be versioned, published, and unpublished.
+Templates define the questionnaire structure — sections, questions, answer types, risk weights, expected answers, and conditional logic. Twelve question types are supported, including multiple choice, checkboxes, numeric ranges, free text, and file uploads. Templates can be versioned, published, and unpublished.
 
 ![Template Builder](../screenshots/template-builder.png)
 

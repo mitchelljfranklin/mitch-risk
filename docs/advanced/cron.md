@@ -15,8 +15,8 @@ Mitch‑Risk includes a cron endpoint that handles scheduled maintenance. An ext
 
 | # | Job | Description |
 |---|---|---|
-| 1 | **Reminders** | Emails vendors when assessment is due in N days. Default offsets: 7 and 1 day before due. Configurable under Settings → Limits |
-| 2 | **Escalations** | Emails reviewer when assessment is overdue beyond threshold. Default: 3 days past due. Configurable under Settings → Limits |
+| 1 | **Reminders** | Emails vendors when assessment is due in N days. Default offsets: 7 and 1 day before due. Configurable under Settings → Scheduling |
+| 2 | **Escalations** | Emails reviewer when assessment is overdue beyond threshold. Default: 3 days past due. Configurable under Settings → Scheduling |
 | 3 | **Expiry notices** | Emails risk owner when certification or contract is expiring. 30-day and 7-day windows |
 | 4 | **Recurring assessments** | Clones assessments set to quarterly/annual, sends new invitation, schedules next run |
 | 5 | **Audit log pruning** | Deletes audit entries older than retention period (configurable) |
@@ -31,12 +31,12 @@ All notification jobs (reminders, escalations, expiry notices) check for existin
 
 | Log type | Default retention | Config location |
 |---|---|---|
-| Email logs | 14 days | Settings → Limits |
-| Audit logs | Configurable | Settings → Limits |
+| Email logs | 14 days | Settings → Scheduling |
+| Audit logs | Configurable | Settings → Scheduling |
 
 ## Rate limit configuration
 
-All abuse-protection limits are configurable under **Settings → Limits**:
+All abuse-protection limits are configurable under **Settings → Scheduling**:
 
 | Limit | Default | Purpose |
 |---|---|---|

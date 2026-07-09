@@ -3,7 +3,7 @@
 > **Status: implemented — Ready for review.** All work packages below are complete; quality
 > gates (lint/typecheck/build/format) and the test suite (92 unit + 7 Playwright e2e) pass.
 > UI controls are hidden by permission server-side (Viewers get a clean read-only view), and
-> `e2e/rbac-viewer.spec.ts` asserts this. See the Phase 47 gate in `docs/STAGE-GATES.md`.
+> `e2e/rbac-viewer.spec.ts` asserts this. See the Phase 47 gate in `STAGE-GATES.md`.
 >
 > **Post-review hardening:** (1) the evidence file route requires `assessments:view`; (2) the
 > dashboard is the universal landing for any authenticated user, so the redundant
@@ -11,8 +11,7 @@
 > eliminating a redirect loop for custom roles that omit it; (3) added API 401/403 route tests.
 
 Working record for the role management feature. Review before starting; keep accurate as
-reality changes. Follows the gated-phase conventions in `docs/PLAN.md` and
-`docs/STAGE-GATES.md`.
+reality changes. Follows the gated-phase conventions in `PLAN.md` and `STAGE-GATES.md`.
 
 ## Goal
 
@@ -21,7 +20,7 @@ system roles — **Admin**, **Reviewer**, **Viewer** — plus admin-created **cu
 each carrying a set of granular `resource:action` permissions. Enforce permissions across
 pages, server actions, and API auth.
 
-> Note: `docs/PLAN.md` §8 previously listed "complex role hierarchies" as out of scope for
+> Note: `PLAN.md` §1 previously listed "complex role hierarchies" as out of scope for
 > v1. This phase intentionally introduces flat, permission-based roles (not hierarchies) and
 > updates that note.
 
@@ -164,7 +163,7 @@ Admin's permission set to the full catalog on every seed.
 
 - **Seed:** system roles (idempotent); ensure `setup/actions.ts` assigns the first user the
   Admin role id.
-- **Docs:** update `docs/PLAN.md` (add Phase 47, adjust §8 out-of-scope note),
+- **Docs:** update `PLAN.md` (add Phase 47, adjust §1 out-of-scope note),
   `docs/STAGE-GATES.md` (new gate checklist), `AGENTS.md` (Role model note). `lib/openapi.json`
   — no new REST endpoints, so no change (roles managed via server actions).
 - **Tests (Vitest):**

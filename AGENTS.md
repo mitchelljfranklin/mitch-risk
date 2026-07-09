@@ -55,8 +55,8 @@ app/                 # Next.js App Router
 components/          # shadcn ui primitives + domain composites
   ui/                # badge, button, card, chart, checkbox, dropdown-menu, input,
                      #   label, radio-group, select, separator, sheet, sidebar,
-                     #   skeleton, sonner, tabs, textarea, tooltip, alert-dialog,
-                     #   data-table, table
+                     #   skeleton, sonner, stepper, tabs, textarea, tooltip,
+                     #   alert-dialog, table
   stat-card.tsx      # animated count-up stat cards
   empty-state.tsx    # SVG illustration empty states
   keyboard-shortcuts.tsx # ? key modal with g+letter navigation
@@ -81,7 +81,6 @@ components/          # shadcn ui primitives + domain composites
   assessment-timeline.tsx # interactive activity area chart
   permission-selector.tsx # grouped permission checkboxes (API key scoping, role editing)
   data-table-column-header.tsx # sortable/hideable TanStack Table column header
-  data-table-pagination.tsx # unified pagination (page size, first/prev/next/last)
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
     findings.ts      #   finding status updates
@@ -123,8 +122,7 @@ lib/                 # cross-cutting logic
   view-preference.ts # cookie-backed view preference (rows/cards)
   storage/           # file storage interface (save/read/delete/list)
                      #   local-disk, s3.ts (AWS S3), azure.ts (Azure Blob)
-hooks/              # React hooks (use-form-toast, use-mobile)
-  types/               # shared TypeScript type declarations
+hooks/              # React hooks (use-form-toast, use-action-feedback, use-mobile)
 emails/              # React Email templates (invite, reminder, escalation, dynamic)
 prisma/              # schema.prisma, migrations, seed.ts
   seed-data/         # ISO 27001, SOC 2, NIST CSF, Essential Eight seed data + types

@@ -25,7 +25,7 @@ List and update findings across all assessments.
 }
 ```
 
-Only the `status` field is accepted. Valid values are `REMEDIATED` and `RISK_ACCEPTED`. To reopen a finding, set status back to `OPEN`.
+A JSON body with `status` set to `REMEDIATED` or `RISK_ACCEPTED`. An optional `resolutionNote` can be included.
 
 ## Examples
 

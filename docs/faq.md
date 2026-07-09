@@ -55,7 +55,11 @@ A database-only backup leaves files orphaned; a files-only backup loses the link
 
 ## Can I load demo data?
 
-Yes. Run the seed script: `npm run db:seed`. This creates sample templates, vendors, assessments, and findings for testing and evaluation. The seed is idempotent — running it multiple times won't duplicate data.
+Yes. Run the seed script: `npm run db:seed`. This creates starter templates, framework libraries, and default settings. For full demo data with sample vendors, assessments, and findings, run:
+
+```bash
+npx tsx prisma/seed-demo.ts
+``` The seed is idempotent — running it multiple times won't duplicate data.
 
 ## Can I extend or customize the platform?
 

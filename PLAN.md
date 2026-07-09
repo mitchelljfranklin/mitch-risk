@@ -41,7 +41,7 @@ framework-alignment features, deliberately kept simple and easy to manage.
 - **App structure** — `app/(internal)` authenticated dashboard; `app/portal/[token]` public
   questionnaire; `app/api/*` for cron, file serving, and auth. Reads via Server Components,
   writes via Server Actions / Route Handlers.
-- **Internal auth** — Auth.js with roles `ADMIN` and `REVIEWER`.
+- **Internal auth** — Auth.js with DB-backed roles (Admin, Reviewer, Viewer + custom roles)
 - **Vendor portal token** — On send, an assessment gets a cryptographically random opaque
   token with `tokenExpiresAt`. The portal validates existence + expiry + status server-side.
   Tokens can be revoked, regenerated, or extended by internal staff.
@@ -68,7 +68,7 @@ framework-alignment features, deliberately kept simple and easy to manage.
 
 Built from the provided ERD plus the fields needed for scoring, review, and scheduling.
 
-- **User** — internal staff; role `ADMIN` | `REVIEWER`.
+- **User** — internal staff; DB-backed role via `roleId` FK to `Role`
 - **Vendor** — name, contact, tier/criticality, cached `overallScore`, `lastAssessedAt`.
 - **Framework** -> **Control** — `Control` has `domain`, `code`, `title`, `guidance`.
 - **Template** -> **Section** -> **Question**; **Question** <-> **Control** via **QuestionControl** (m:n).

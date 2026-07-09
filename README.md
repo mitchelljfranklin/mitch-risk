@@ -240,4 +240,4 @@ docker run --rm -v mitch-risk_evidence_data:/data -v "$PWD":/backup alpine \
 | [Architecture](ARCHITECTURE.md) | Full platform architecture with diagrams |
 | [Security](APPSECURITY.md) | Security architecture, hardening, and risk register |
 | [Cloud Storage](STORAGE.md) | AWS S3 and Azure Blob configuration |
-| [SSO](ssoConfig.md) | Entra ID, Google, and generic OIDC setup |
+| [SSO](SSOConfig.md) | Entra ID, Google, and generic OIDC setup |

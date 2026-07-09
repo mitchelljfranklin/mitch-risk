@@ -12,7 +12,7 @@ Get Mitch‑Risk running in minutes with Docker Compose.
 
 ```bash
 git clone https://github.com/mitchelljfranklin/mitch-risk.git
-cd Mitch‑Risk
+cd mitch-risk
 cp .env.example .env
 ```
 

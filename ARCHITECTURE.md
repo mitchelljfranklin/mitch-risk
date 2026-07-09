@@ -1304,6 +1304,7 @@ Unexpected errors return a generic `{"error":{"message":"Internal error","status
 | **Frameworks** ||||
 | GET | `/api/v1/frameworks` | Bearer token | List frameworks |
 | GET | `/api/v1/frameworks/{id}` | Bearer token | Framework detail + controls |
+| DELETE | `/api/v1/frameworks/{id}` | Bearer token | Delete framework |
 | **Dashboard** ||||
 | GET | `/api/v1/dashboard/summary` | Bearer token | Portfolio metrics aggregation |
 | **Audit** ||||
@@ -1577,7 +1578,7 @@ Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()
 │                                                                  │
 │  LAYER 2: DOMAIN COMPOSITES                                     │
 │  ┌─────────────────────────────────────────────────────────┐    │
-│  │  AssessmentTimeline    CalendarHeatmap    ScrollToTop    │ │
+│  │  AssessmentTimeline    ScrollToTop                    │ │
 │  │  AttachEvidenceButton  AutoSubmitSelect   Breadcrumbs    │ │
 │  │  CertificationsMngr    ConfirmDialog      ControlPills   │ │
 │  │  ControlMultiSelect    CopyLink           DashboardCharts│ │
@@ -1604,7 +1605,7 @@ Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()
 ```
 Server Components (reads, no interactivity):
   • app/(internal)/*/page.tsx — data fetching, auth guards, layout
-  • Breadcrumbs, EmptyState, FlashToast
+  • Breadcrumbs, EmptyState
   • Permission gating (hasPermission checks in JSX)
 
 Client Components ("use client" directive):
@@ -1613,7 +1614,7 @@ Client Components ("use client" directive):
   • Charts (recharts) — browser rendering
   • ReviewPanel, CertificationsManager — stateful
   • AttachEvidenceButton, CopyLink — DOM events
-  • SearchInput, ViewToggle — user interaction
+  • FlashToast, SearchInput, ViewToggle — user interaction
   • KeyboardShortcuts, IdleTimer — browser APIs
 
 Server Components CANNOT:
@@ -1660,7 +1661,7 @@ Server Components CANNOT:
 │  ┌────────────────────┐    ┌────────────────────┐               │
 │  │   app (Next.js)    │    │   db (PostgreSQL)  │               │
 │  │────────────────────│    │────────────────────│               │
-│  │  image: node:20    │    │  image: postgres:16│               │
+│  │  image: node:22-slim│    │  image: postgres:17│               │
 │  │  port: 3000        │    │  port: 5432        │               │
 │  │  env:              │    │  env:              │               │
 │  │    DATABASE_URL    │───▶│    POSTGRES_USER   │               │
