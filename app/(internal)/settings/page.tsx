@@ -128,6 +128,14 @@ export default async function SettingsPage({
 
   const breakGlassConfigured = (await getBreakGlassHash()) !== null;
 
+  const cronLastRunRow = await prisma.appSetting.findUnique({
+    where: { key: "cron.lastRun" },
+  });
+  const cronLastRun =
+    cronLastRunRow && typeof cronLastRunRow.value === "string"
+      ? cronLastRunRow.value
+      : null;
+
   const users = staffAccounts.map((account) => ({
     id: account.id,
     name: account.name,
@@ -386,6 +394,7 @@ export default async function SettingsPage({
                 reminderOffsetDays={assessment.reminderOffsetDays}
                 escalationAfterDays={assessment.escalationAfterDays}
                 defaultDueInDays={assessment.defaultDueInDays}
+                cronLastRun={cronLastRun}
               />
             </CardContent>
           </Card>

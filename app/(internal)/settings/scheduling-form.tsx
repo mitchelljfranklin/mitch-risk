@@ -12,12 +12,14 @@ type SchedulingFormProps = {
   reminderOffsetDays: number[];
   escalationAfterDays: number;
   defaultDueInDays: number;
+  cronLastRun: string | null;
 };
 
 export function SchedulingForm({
   reminderOffsetDays,
   escalationAfterDays,
   defaultDueInDays,
+  cronLastRun,
 }: SchedulingFormProps) {
   const [state, action, isPending] = useActionState(
     saveSchedulingSettings,
@@ -28,6 +30,23 @@ export function SchedulingForm({
   const [reminderDays, setReminderDays] = useState<string>(
     reminderOffsetDays.join(", "),
   );
+
+  const cronLabel = (() => {
+    if (!cronLastRun) return "Never";
+    const then = new Date(cronLastRun);
+    const diffMs = new Date().getTime() - then.getTime();
+    if (diffMs < 0) return "just now";
+    const minutes = Math.floor(diffMs / 60000);
+    if (minutes < 1) return "less than a minute ago";
+    if (minutes === 1) return "1 minute ago";
+    if (minutes < 60) return `${minutes} minutes ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours === 1) return "1 hour ago";
+    if (hours < 24) return `${hours} hours ago`;
+    const days = Math.floor(hours / 24);
+    if (days === 1) return "1 day ago";
+    return `${days} days ago`;
+  })();
 
   return (
     <form action={action} className="flex flex-col gap-6">
@@ -91,6 +110,10 @@ export function SchedulingForm({
           {isPending ? "Saving..." : "Save scheduling"}
         </Button>
       </div>
+
+      <p className="text-muted-foreground text-xs">
+        Last cron run: {cronLabel}
+      </p>
     </form>
   );
 }

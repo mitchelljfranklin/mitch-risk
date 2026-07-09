@@ -345,5 +345,11 @@ export async function GET(request: Request) {
     result.prunedFiles = prunedFiles;
   }
 
+  await prisma.appSetting.upsert({
+    where: { key: "cron.lastRun" },
+    update: { value: now.toISOString() },
+    create: { key: "cron.lastRun", value: now.toISOString(), category: "cron" },
+  });
+
   return Response.json(result);
 }
