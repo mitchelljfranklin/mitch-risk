@@ -142,4 +142,21 @@ describe("API key authentication (integration)", () => {
     expect(auth).not.toBeNull();
     expect(auth?.permissions.length).toBe(2);
   });
+
+  it("increments requestCount on each successful authentication", async () => {
+    const key = await prisma.apiKey.findUnique({ where: { id: keyId } });
+    const startingCount = key?.requestCount ?? 0;
+
+    await authenticateRequest(bearerRequest());
+    const afterFirst = await prisma.apiKey.findUnique({
+      where: { id: keyId },
+    });
+    expect(afterFirst?.requestCount).toBe(startingCount + 1);
+
+    await authenticateRequest(bearerRequest());
+    const afterSecond = await prisma.apiKey.findUnique({
+      where: { id: keyId },
+    });
+    expect(afterSecond?.requestCount).toBe(startingCount + 2);
+  });
 });
