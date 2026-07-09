@@ -44,6 +44,13 @@ export const SEVERITY_STYLES: Record<string, string> = {
   LOW: "bg-muted text-muted-foreground",
 };
 
+export const SEVERITY_ACCENT: Record<string, string> = {
+  CRITICAL: "border-l-4 border-l-destructive",
+  HIGH: "border-l-4 border-l-[var(--rag-amber)]",
+  MEDIUM: "border-l-4 border-l-yellow-500",
+  LOW: "border-l-4 border-l-muted-foreground",
+};
+
 // Semantic Tailwind classes per status (chrome only — never the RAG palette).
 export const ASSESSMENT_STATUS_STYLES: Record<string, string> = {
   DRAFT: "bg-muted text-muted-foreground",

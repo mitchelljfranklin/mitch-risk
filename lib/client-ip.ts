@@ -4,7 +4,7 @@ const UNKNOWN_IP = "unknown";
 
 type HeaderGetter = { get(name: string): string | null };
 
-export type ClientIpOptions = {
+type ClientIpOptions = {
   trustedProxyCount: number;
   clientIpHeader?: string;
 };

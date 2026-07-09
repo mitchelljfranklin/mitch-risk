@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { QuestionForm } from "@/components/question-form";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { listControlOptions } from "@/lib/db/frameworks";
@@ -32,6 +33,16 @@ export default async function NewQuestionPage({
 
   return (
     <div className="flex max-w-4xl flex-col gap-6">
+      <Breadcrumbs
+        segments={[
+          { label: "Templates", href: "/templates" },
+          {
+            label: template.name,
+            href: `/templates/${templateId}`,
+          },
+          { label: "Add question" },
+        ]}
+      />
       <h1 className="text-2xl font-semibold tracking-tight">Add question</h1>
       <QuestionForm
         templateId={templateId}

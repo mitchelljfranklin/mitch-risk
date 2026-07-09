@@ -131,12 +131,6 @@ export default async function VendorDetailPage({
         ]}
       />
       <div>
-        <Link
-          href="/vendors"
-          className="text-muted-foreground text-sm hover:underline"
-        >
-          ← Vendors
-        </Link>
         <div className="mt-2 flex items-center justify-between gap-4">
           <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
             {vendor.name}

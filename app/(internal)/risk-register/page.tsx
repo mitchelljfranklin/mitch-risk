@@ -27,6 +27,7 @@ import {
   FINDING_STATUSES,
   FINDING_STATUS_LABELS,
   FINDING_STATUS_STYLES,
+  SEVERITY_ACCENT,
   SEVERITY_STYLES,
 } from "@/lib/schemas/assessment";
 import { RISK_WEIGHTS } from "@/lib/schemas/template";
@@ -52,13 +53,6 @@ export default async function RiskRegisterPage({
   );
 
   const sp = await searchParams;
-  const SEVERITY_ACCENT: Record<string, string> = {
-    CRITICAL: "border-l-4 border-l-destructive",
-    HIGH: "border-l-4 border-l-[var(--rag-amber)]",
-    MEDIUM: "border-l-4 border-l-yellow-500",
-    LOW: "border-l-4 border-l-muted-foreground",
-  };
-
   const sort = (sp.sort as FindingSort) || "priority";
   const page = sp.page ? parseInt(sp.page, 10) || 1 : 1;
 

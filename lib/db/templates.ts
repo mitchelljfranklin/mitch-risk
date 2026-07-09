@@ -15,7 +15,7 @@ export function listTemplates() {
 export function getTemplateStatus(id: string) {
   return prisma.template.findUnique({
     where: { id },
-    select: { status: true },
+    select: { name: true, status: true },
   });
 }
 

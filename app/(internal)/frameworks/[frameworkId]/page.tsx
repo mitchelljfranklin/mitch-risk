@@ -35,14 +35,14 @@ export default async function FrameworkDetailPage({
 }: FrameworkDetailPageProps) {
   const user = await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
   const { frameworkId } = await params;
-  const { q } = await searchParams;
+  const { q: searchQuery } = await searchParams;
 
   const framework = await getFramework(frameworkId);
   if (!framework) {
     notFound();
   }
 
-  const controls = await listControls(frameworkId, q);
+  const controls = await listControls(frameworkId, searchQuery);
   const canDelete = hasPermission(
     user.permissions,
     PERMISSIONS.FRAMEWORKS_DELETE,

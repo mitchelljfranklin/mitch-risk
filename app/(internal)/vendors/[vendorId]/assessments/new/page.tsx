@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { listPublishedTemplates } from "@/lib/db/templates";
@@ -34,6 +35,13 @@ export default async function NewAssessmentPage({
 
   return (
     <div className="flex max-w-2xl flex-col gap-6">
+      <Breadcrumbs
+        segments={[
+          { label: "Vendors", href: "/vendors" },
+          { label: vendor.name, href: `/vendors/${vendor.id}` },
+          { label: "New assessment" },
+        ]}
+      />
       <h1 className="text-2xl font-semibold tracking-tight">
         New assessment for {vendor.name}
       </h1>

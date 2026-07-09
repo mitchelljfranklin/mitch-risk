@@ -12,7 +12,7 @@ export type CertificationInput = z.infer<typeof certificationSchema>;
 
 export type CertificationStatus = "valid" | "expiring" | "expired";
 
-export const CERTIFICATION_EXPIRING_DAYS = 30;
+const CERTIFICATION_EXPIRING_DAYS = 30;
 
 export function certificationStatus(
   expiresDate: Date | string,

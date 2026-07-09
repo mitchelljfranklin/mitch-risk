@@ -39,6 +39,7 @@ import {
   ASSESSMENT_STATUS_LABELS,
   FINDING_STATUS_LABELS,
   FINDING_STATUS_STYLES,
+  SEVERITY_ACCENT,
   SEVERITY_STYLES,
 } from "@/lib/schemas/assessment";
 import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
@@ -202,12 +203,6 @@ export default async function AssessmentDetailPage({
         ]}
       />
       <div>
-        <Link
-          href="/assessments"
-          className="text-muted-foreground text-sm hover:underline"
-        >
-          ← Assessments
-        </Link>
         <div className="mt-2 flex flex-col gap-2">
           <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
             {assessment.title}
@@ -454,16 +449,10 @@ export default async function AssessmentDetailPage({
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
             {assessment.findings.map((finding) => {
-              const severityAccent: Record<string, string> = {
-                CRITICAL: "border-l-4 border-l-destructive",
-                HIGH: "border-l-4 border-l-[var(--rag-amber)]",
-                MEDIUM: "border-l-4 border-l-yellow-500",
-                LOW: "border-l-4 border-l-muted-foreground",
-              };
               return (
                 <div
                   key={finding.id}
-                  className={`rounded-md border p-3 ${severityAccent[finding.severity] ?? ""}`}
+                  className={`rounded-md border p-3 ${SEVERITY_ACCENT[finding.severity] ?? ""}`}
                 >
                   <div className="flex flex-wrap items-center gap-2">
                     <span

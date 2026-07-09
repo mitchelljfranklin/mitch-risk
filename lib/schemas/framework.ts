@@ -7,7 +7,7 @@ export const frameworkCsvRowSchema = z.object({
   guidance: z.string().optional().default(""),
 });
 
-export type FrameworkCsvRow = z.infer<typeof frameworkCsvRowSchema>;
+type FrameworkCsvRow = z.infer<typeof frameworkCsvRowSchema>;
 
 export const frameworkImportSchema = z.object({
   name: z.string().min(1, "Framework name is required").max(200),
@@ -15,4 +15,4 @@ export const frameworkImportSchema = z.object({
   description: z.string().max(500).optional().default(""),
 });
 
-export type FrameworkImport = z.infer<typeof frameworkImportSchema>;
+type FrameworkImport = z.infer<typeof frameworkImportSchema>;
