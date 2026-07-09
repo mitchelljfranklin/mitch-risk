@@ -116,8 +116,8 @@ export function ImportTemplateForm() {
     }
   }, [state?.ok, router]);
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
@@ -161,23 +161,16 @@ export function ImportTemplateForm() {
     });
   }
 
-  const totalQuestions = parsed
-    ? parsed.sections.reduce(
-        (acc, section) => acc + section.questions.length,
-        0,
-      )
-    : 0;
-  const totalControls = parsed
-    ? parsed.sections.reduce(
-        (acc, section) =>
-          acc +
-          section.questions.reduce(
-            (qAcc, q) => qAcc + (q.controlCodes?.length ?? 0),
-            0,
-          ),
-        0,
-      )
-    : 0;
+  let totalQuestions = 0;
+  let totalControls = 0;
+  if (parsed) {
+    for (const section of parsed.sections) {
+      totalQuestions += section.questions.length;
+      for (const question of section.questions) {
+        totalControls += question.controlCodes?.length ?? 0;
+      }
+    }
+  }
 
   return (
     <Card>

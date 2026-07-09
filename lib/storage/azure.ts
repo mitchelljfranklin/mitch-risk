@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { ContainerClient } from "@azure/storage-blob";
 import type { FileStorage, StoredFile } from "./index";
 
 type AzureConfig = {
@@ -32,7 +32,7 @@ export async function createAzureBlobStorage(
       config.containerName,
     );
     await containerClient.createIfNotExists();
-    return buildStorage(containerClient as any);
+    return buildStorage(containerClient);
   }
 
   // SAS-token format — construct a service-level URL, then get container from it.
@@ -46,7 +46,7 @@ export async function createAzureBlobStorage(
       config.containerName,
     );
     await containerClient.createIfNotExists();
-    return buildStorage(containerClient as any);
+    return buildStorage(containerClient);
   }
 
   throw new Error(
@@ -54,7 +54,7 @@ export async function createAzureBlobStorage(
   );
 }
 
-function buildStorage(containerClient: any): FileStorage {
+function buildStorage(containerClient: ContainerClient): FileStorage {
   return {
     async save(key, data) {
       const blockClient = containerClient.getBlockBlobClient(key);

@@ -82,7 +82,7 @@ export function isCompliant(
     }
     return (
       selected.length === expected.length &&
-      selected.every((v, i) => v === expected[i])
+      selected.every((value, i) => value === expected[i])
     );
   }
 
@@ -144,7 +144,7 @@ export function scoreResponses(
 }
 
 export function computeTotalScore(scored: ScoredResponse[]): number | null {
-  const totalWeighted = scored.reduce((sum, r) => sum + r.weightedScore, 0);
-  const totalMax = scored.reduce((sum, r) => sum + r.maxScore, 0);
+  const totalWeighted = scored.reduce((sum, response) => sum + response.weightedScore, 0);
+  const totalMax = scored.reduce((sum, response) => sum + response.maxScore, 0);
   return totalMax > 0 ? totalWeighted / totalMax : null;
 }

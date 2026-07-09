@@ -68,8 +68,8 @@ export default function DocsPage() {
         });
         setReady(true);
       })
-      .catch((err: Error) => {
-        setError(err.message);
+      .catch((error: Error) => {
+        setError(error.message);
       });
   }, []);
 

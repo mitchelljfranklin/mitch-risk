@@ -14,8 +14,8 @@ export async function authenticate(
   previousState: LoginState,
   formData: FormData,
 ): Promise<LoginState> {
-  const h = await headers();
-  const ip = getClientIp(h);
+  const headersList = await headers();
+  const ip = getClientIp(headersList);
 
   const settings = await getAssessmentSettings();
   const rateLimitPerMin = settings.loginRateLimitPerMin ?? 10;

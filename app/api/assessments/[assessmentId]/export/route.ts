@@ -31,6 +31,12 @@ export async function GET(
     return new Response("Not found", { status: 404 });
   }
 
+  function complianceLabel(isCompliant: boolean | null): string {
+    if (isCompliant === null) return "Unscored";
+    if (isCompliant) return "Yes";
+    return "No";
+  }
+
   const rows: string[] = [];
   rows.push(
     [
@@ -44,45 +50,46 @@ export async function GET(
       "Compliant",
       "Score %",
     ]
-      .map((h) => csvEscape(h))
+      .map((header) => csvEscape(header))
       .join(","),
   );
 
-  for (const q of assessment.questions) {
-    const r = q.response;
-    const maxScore = r?.maxScore ?? 0;
-    const weightedScore = r?.weightedScore ?? 0;
+  for (const question of assessment.questions) {
+    const response = question.response;
+    const maxScore = response?.maxScore ?? 0;
+    const weightedScore = response?.weightedScore ?? 0;
     const ratio =
       maxScore > 0 ? Math.round((weightedScore / maxScore) * 100) : "";
 
     rows.push(
       [
-        q.sectionTitle,
-        q.text,
-        QUESTION_TYPE_LABELS[q.type] ?? q.type,
-        q.riskWeight,
-        q.required ? "Yes" : "No",
-        r?.isNotApplicable ? "N/A" : String(r?.value ?? "—"),
-        r?.isNotApplicable ? "Yes" : "No",
-        r?.isCompliant === null ? "Unscored" : r?.isCompliant ? "Yes" : "No",
+        question.sectionTitle,
+        question.text,
+        QUESTION_TYPE_LABELS[question.type] ?? question.type,
+        question.riskWeight,
+        question.required ? "Yes" : "No",
+        response?.isNotApplicable ? "N/A" : String(response?.value ?? "—"),
+        response?.isNotApplicable ? "Yes" : "No",
+        complianceLabel(response?.isCompliant ?? null),
         ratio,
       ]
-        .map((v) => csvEscape(v))
+        .map((cell) => csvEscape(cell))
         .join(","),
     );
   }
 
   rows.push("");
+
   rows.push(
     ["Findings", "Severity", "Controls", "Description"]
-      .map((h) => csvEscape(h))
+      .map((header) => csvEscape(header))
       .join(","),
   );
 
-  for (const f of assessment.findings) {
+  for (const finding of assessment.findings) {
     rows.push(
-      [f.title, f.severity, f.controlCodes.join("; "), f.description]
-        .map((v) => csvEscape(v))
+      [finding.title, finding.severity, finding.controlCodes.join("; "), finding.description]
+        .map((cell) => csvEscape(cell))
         .join(","),
     );
   }

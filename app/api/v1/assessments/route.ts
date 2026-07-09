@@ -52,15 +52,15 @@ export async function GET(request: Request) {
         "templateName",
         "reviewerName",
       ];
-      const csvRows = entries.map((e) =>
+      const csvRows = entries.map((entry) =>
         headers
-          .map((h) => {
-            const val = e[h as keyof typeof e];
-            if (val === null || val === undefined) return "";
-            const str = String(val);
-            return str.includes(",") || str.includes('"')
-              ? `"${str.replace(/"/g, '""')}"`
-              : str;
+          .map((header) => {
+            const cellValue = entry[header as keyof typeof entry];
+            if (cellValue === null || cellValue === undefined) return "";
+            const cellString = String(cellValue);
+            return cellString.includes(",") || cellString.includes('"')
+              ? `"${cellString.replace(/"/g, '""')}"`
+              : cellString;
           })
           .join(","),
       );

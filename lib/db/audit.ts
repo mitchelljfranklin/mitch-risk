@@ -21,10 +21,10 @@ export function logAuditSafe(
   entityId?: string,
   meta?: Prisma.InputJsonValue,
 ): void {
-  logAudit(userId, action, entityType, entityId, meta).catch((err: unknown) => {
+  logAudit(userId, action, entityType, entityId, meta).catch((error: unknown) => {
     console.error(
       `Audit log failed (${action}):`,
-      err instanceof Error ? err.message : err,
+      error instanceof Error ? error.message : error,
     );
   });
 }

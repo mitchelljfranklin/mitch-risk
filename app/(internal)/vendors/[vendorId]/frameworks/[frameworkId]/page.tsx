@@ -78,7 +78,15 @@ export default async function VendorHeatmapPage({ params }: HeatmapPageProps) {
                 {domainControls.map((control) => (
                   <div key={control.id} className="flex items-center gap-3 p-3">
                     <span
-                      className={`size-3 shrink-0 rounded-full ${control.rag === "green" ? "bg-[var(--rag-green)]" : control.rag === "amber" ? "bg-[var(--rag-amber)]" : control.rag === "red" ? "bg-[var(--rag-red)]" : "bg-muted"}`}
+                      className={`size-3 shrink-0 rounded-full ${
+                        control.rag === "green"
+                          ? "bg-[var(--rag-green)]"
+                          : control.rag === "amber"
+                            ? "bg-[var(--rag-amber)]"
+                            : control.rag === "red"
+                              ? "bg-[var(--rag-red)]"
+                              : "bg-muted"
+                      }`}
                     />
                     <Badge variant="outline" className="font-mono">
                       {control.code}

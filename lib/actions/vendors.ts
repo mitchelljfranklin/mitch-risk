@@ -201,9 +201,9 @@ export async function importVendorsAction(
         await logAudit(user.id, "IMPORT_VENDOR", "Vendor", vendor.id);
       }
       createdCount++;
-    } catch (err) {
+    } catch (error) {
       rowErrors.push(
-        `${input.name}: ${err instanceof Error ? err.message : "failed"}`,
+        `${input.name}: ${error instanceof Error ? error.message : "failed"}`,
       );
     }
   }

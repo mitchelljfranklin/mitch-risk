@@ -330,7 +330,13 @@ export default async function VendorDetailPage({
                               : "—"}
                           </span>
                           <div
-                            className={`w-full rounded-sm ${ratio >= 0.85 ? "bg-[var(--rag-green)]" : ratio >= 0.6 ? "bg-[var(--rag-amber)]" : "bg-[var(--rag-red)]"} ${ratio === 0 ? "bg-muted" : ""}`}
+                            className={`w-full rounded-sm ${
+                              ratio >= 0.85
+                                ? "bg-[var(--rag-green)]"
+                                : ratio >= 0.6
+                                  ? "bg-[var(--rag-amber)]"
+                                  : "bg-[var(--rag-red)]"
+                            } ${ratio === 0 ? "bg-muted" : ""}`}
                             style={{ height: `${height}px` }}
                           />
                         </div>

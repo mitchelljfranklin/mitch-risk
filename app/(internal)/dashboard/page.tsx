@@ -29,9 +29,9 @@ function generateContributionDays(dates: Date[]) {
   const result: { date: string; count: number }[] = [];
   const today = new Date();
   for (let i = 365; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    const key = d.toISOString().slice(0, 10);
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+    const key = date.toISOString().slice(0, 10);
     result.push({ date: key, count: map.get(key) ?? 0 });
   }
   return result;

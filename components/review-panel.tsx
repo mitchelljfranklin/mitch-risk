@@ -60,9 +60,11 @@ export function ReviewPanel({
 }: ReviewPanelProps) {
   const [expanded, setExpanded] = useState(false);
 
-  const totalCommentCount =
-    topLevelComments.length +
-    Object.values(replies).reduce((sum, list) => sum + list.length, 0);
+  let replyCount = 0;
+  for (const replyList of Object.values(replies)) {
+    replyCount += replyList.length;
+  }
+  const totalCommentCount = topLevelComments.length + replyCount;
 
   const hasReview = review !== null && review !== undefined;
   const hasComments = totalCommentCount > 0;
