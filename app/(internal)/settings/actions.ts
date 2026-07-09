@@ -625,7 +625,7 @@ export async function saveSchedulingSettings(
 
   const reminders = reminderStr
     .split(",")
-    .map((d) => parseInt(d.trim(), 10))
+    .map((day) => parseInt(day.trim(), 10))
     .filter((d) => !isNaN(d) && d >= 0);
 
   const allowedExtensions = formData.getAll("allowedExtensions").map(String);

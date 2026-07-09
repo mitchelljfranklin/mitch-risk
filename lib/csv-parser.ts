@@ -56,12 +56,12 @@ export function parseCsvWithHeaders(text: string): Record<string, string>[] {
   const rows = parseCsvRows(text);
   if (rows.length < 2) return [];
 
-  const headers = rows[0].map((h) => h.trim().toLowerCase());
+  const headers = rows[0].map((header) => header.trim().toLowerCase());
   const result: Record<string, string>[] = [];
 
   for (let i = 1; i < rows.length; i++) {
     const values = rows[i];
-    if (values.length === 0 || values.every((v) => v.trim() === "")) continue;
+    if (values.length === 0 || values.every((value) => value.trim() === "")) continue;
     const entry: Record<string, string> = {};
     for (let j = 0; j < headers.length; j++) {
       entry[headers[j]] = (values[j] ?? "").trim();

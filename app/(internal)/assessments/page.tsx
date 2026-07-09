@@ -165,15 +165,15 @@ export default async function AssessmentsPage({
         )
       ) : (
         <AssessmentsTable
-          assessments={assessments.map((a) => ({
-            id: a.id,
-            title: a.title,
-            status: a.status,
-            score: a.score,
-            dueDate: a.dueDate?.toISOString() ?? null,
-            vendorName: a.vendor.name,
-            templateName: a.template?.name ?? null,
-            templateVersion: a.template?.version ?? null,
+          assessments={assessments.map((assessment) => ({
+            id: assessment.id,
+            title: assessment.title,
+            status: assessment.status,
+            score: assessment.score,
+            dueDate: assessment.dueDate?.toISOString() ?? null,
+            vendorName: assessment.vendor.name,
+            templateName: assessment.template?.name ?? null,
+            templateVersion: assessment.template?.version ?? null,
           }))}
           initialSort={sort}
           page={page}

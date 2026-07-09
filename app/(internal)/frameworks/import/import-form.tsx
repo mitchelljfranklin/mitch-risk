@@ -127,7 +127,7 @@ export function FrameworkImportForm() {
               <Input
                 id="name"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(event) => setName(event.target.value)}
                 required
                 placeholder="e.g. PCI DSS"
               />
@@ -137,7 +137,7 @@ export function FrameworkImportForm() {
               <Input
                 id="version"
                 value={version}
-                onChange={(e) => setVersion(e.target.value)}
+                onChange={(event) => setVersion(event.target.value)}
                 required
                 placeholder="e.g. 4.0"
               />
@@ -147,7 +147,7 @@ export function FrameworkImportForm() {
               <Textarea
                 id="description"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(event) => setDescription(event.target.value)}
                 rows={2}
                 placeholder="Brief description of the framework"
               />

@@ -57,7 +57,7 @@ export async function importFrameworkAction(
 
   const expectedHeaders = ["domain", "code", "title", "guidance"];
   const header = rows[0].map((cell) => cell.trim().toLowerCase());
-  const missing = expectedHeaders.filter((h) => !header.includes(h));
+  const missing = expectedHeaders.filter((header) => !header.includes(header));
   if (missing.length > 0) {
     return {
       ok: false,

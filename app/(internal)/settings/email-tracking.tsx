@@ -81,9 +81,9 @@ export function EmailTrackingForm({
               <SelectValue placeholder="All" />
             </SelectTrigger>
             <SelectContent>
-              {statuses.map((s) => (
-                <SelectItem key={s} value={s}>
-                  {s === "SENT" ? "Sent" : s === "FAILED" ? "Failed" : s}
+              {statuses.map((status) => (
+                <SelectItem key={status} value={status}>
+                  {status === "SENT" ? "Sent" : status === "FAILED" ? "Failed" : status}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -98,9 +98,9 @@ export function EmailTrackingForm({
               <SelectValue placeholder="All types" />
             </SelectTrigger>
             <SelectContent>
-              {types.map((t) => (
-                <SelectItem key={t} value={t}>
-                  {EMAIL_TYPE_LABELS[t] ?? t}
+              {types.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {EMAIL_TYPE_LABELS[type] ?? type}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -199,9 +199,9 @@ export function EmailTrackingForm({
               <Button asChild variant="outline" size="sm" disabled={page <= 1}>
                 <a
                   href={`/settings?tab=email-tracking&emailLogPage=${page - 1}&emailLogPageSize=${pageSize}`}
-                  onClick={(e) => {
-                    if (page <= 1) e.preventDefault();
-                  }}
+                    onClick={(event) => {
+                      if (page <= 1) event.preventDefault();
+                    }}
                 >
                   Previous
                 </a>
@@ -214,9 +214,9 @@ export function EmailTrackingForm({
               >
                 <a
                   href={`/settings?tab=email-tracking&emailLogPage=${page + 1}&emailLogPageSize=${pageSize}`}
-                  onClick={(e) => {
-                    if (page >= totalPages) e.preventDefault();
-                  }}
+                    onClick={(event) => {
+                      if (page >= totalPages) event.preventDefault();
+                    }}
                 >
                   Next
                 </a>

@@ -104,15 +104,15 @@ export default async function AssessmentDetailPage({
     : null;
 
   // Review progress across answerable (non-N/A) responses.
-  const answerable = assessment.responses.filter((r) => !r.isNotApplicable);
+  const answerable = assessment.responses.filter((response) => !response.isNotApplicable);
   const reviewCounts = {
     total: answerable.length,
-    approved: answerable.filter((r) => r.review?.decision === "APPROVED")
+    approved: answerable.filter((response) => response.review?.decision === "APPROVED")
       .length,
     clarification: answerable.filter(
       (r) => r.review?.decision === "CLARIFICATION_REQUESTED",
     ).length,
-    pending: answerable.filter((r) => !r.review).length,
+    pending: answerable.filter((response) => !response.review).length,
   };
 
   const openFindings = assessment.findings.filter(
@@ -181,12 +181,12 @@ export default async function AssessmentDetailPage({
     }>
   > = {};
   for (const [parentId, replies] of replyByParentId) {
-    repliesRecord[parentId] = replies.map((r) => ({
-      id: r.id,
-      authorName: r.authorName,
-      body: r.body,
-      visibility: r.visibility,
-      createdAt: r.createdAt.toISOString(),
+    repliesRecord[parentId] = replies.map((response) => ({
+      id: response.id,
+      authorName: response.authorName,
+      body: response.body,
+      visibility: response.visibility,
+      createdAt: response.createdAt.toISOString(),
     }));
   }
 
@@ -653,12 +653,12 @@ export default async function AssessmentDetailPage({
                         ? { decision: review.decision, note: review.note }
                         : null
                     }
-                    topLevelComments={topLevelComments.map((c) => ({
-                      id: c.id,
-                      authorName: c.authorName,
-                      body: c.body,
-                      visibility: c.visibility,
-                      createdAt: c.createdAt.toISOString(),
+                    topLevelComments={topLevelComments.map((comment) => ({
+                      id: comment.id,
+                      authorName: comment.authorName,
+                      body: comment.body,
+                      visibility: comment.visibility,
+                      createdAt: comment.createdAt.toISOString(),
                     }))}
                     replies={repliesRecord}
                     canReview={canReview}

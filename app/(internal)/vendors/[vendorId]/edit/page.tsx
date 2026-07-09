@@ -39,12 +39,12 @@ export default async function EditVendorPage({ params }: EditVendorPageProps) {
     notFound();
   }
 
-  const attachments = attachmentRows.map((a) => ({
-    id: a.id,
-    fileName: a.fileName,
-    displayName: a.displayName,
-    sizeBytes: a.sizeBytes,
-    createdAt: a.createdAt.toISOString(),
+  const attachments = attachmentRows.map((assessment) => ({
+    id: assessment.id,
+    fileName: assessment.fileName,
+    displayName: assessment.displayName,
+    sizeBytes: assessment.sizeBytes,
+    createdAt: assessment.createdAt.toISOString(),
   }));
 
   return (

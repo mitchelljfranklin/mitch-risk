@@ -32,13 +32,13 @@ export async function GET(
       name: framework.name,
       version: framework.version,
       description: framework.description,
-      controls: controls.map((c) => ({
-        id: c.id,
-        domain: c.domain,
-        code: c.code,
-        title: c.title,
-        guidance: c.guidance,
-        order: c.order,
+      controls: controls.map((control) => ({
+        id: control.id,
+        domain: control.domain,
+        code: control.code,
+        title: control.title,
+        guidance: control.guidance,
+        order: control.order,
       })),
     });
   });

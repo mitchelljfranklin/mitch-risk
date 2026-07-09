@@ -74,27 +74,27 @@ export function VendorAttachments({
 
       {(attachments ?? []).length > 0 ? (
         <div className="flex flex-col divide-y rounded-lg border">
-          {(attachments ?? []).map((a) => (
+          {(attachments ?? []).map((attachment) => (
             <div
-              key={a.id}
+              key={attachment.id}
               className="flex items-center justify-between gap-3 p-3"
             >
               <div className="flex min-w-0 flex-col">
                 <a
-                  href={`/api/attachments/${a.id}`}
+                  href={`/api/attachments/${attachment.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary truncate text-sm hover:underline"
                 >
-                  {a.displayName ?? a.fileName} ↗
+                  {attachment.displayName ?? attachment.fileName} ↗
                 </a>
                 <span className="text-muted-foreground text-xs">
-                  {formatFileSize(a.sizeBytes)} · {formatDate(a.createdAt)}
+                  {formatFileSize(attachment.sizeBytes)} · {formatDate(attachment.createdAt)}
                 </span>
               </div>
               <form action={removeVendorAttachmentAction} className="shrink-0">
                 <input type="hidden" name="vendorId" value={vendorId} />
-                <input type="hidden" name="attachmentId" value={a.id} />
+                <input type="hidden" name="attachmentId" value={attachment.id} />
                 <Button type="submit" variant="ghost" size="sm">
                   <Trash2 className="size-3.5" />
                 </Button>
@@ -120,8 +120,8 @@ export function VendorAttachments({
           onDragLeave={handleDrag}
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") inputRef.current?.click();
           }}
           className={cn(
             "flex flex-col items-center justify-center gap-1 rounded-md border-2 border-dashed p-4 transition-colors",

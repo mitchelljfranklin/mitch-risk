@@ -85,31 +85,31 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
             <Link href="/vendors/compare">Compare</Link>
           </Button>
           <VendorExportButton
-            currentVendors={vendors.map((v) => ({
-              id: v.id,
-              name: v.name,
-              contactName: v.contactName ?? "",
-              contactEmail: v.contactEmail,
-              tier: v.tier,
-              website: v.website,
-              notes: v.notes,
-              serviceDescription: v.serviceDescription,
-              dataSensitivity: v.dataSensitivity,
+            currentVendors={vendors.map((vendor) => ({
+              id: vendor.id,
+              name: vendor.name,
+              contactName: vendor.contactName ?? "",
+              contactEmail: vendor.contactEmail,
+              tier: vendor.tier,
+              website: vendor.website,
+              notes: vendor.notes,
+              serviceDescription: vendor.serviceDescription,
+              dataSensitivity: vendor.dataSensitivity,
               contractRenewalDate:
-                v.contractRenewalDate?.toISOString().slice(0, 10) ?? null,
+                vendor.contractRenewalDate?.toISOString().slice(0, 10) ?? null,
             }))}
-            allVendors={exportVendors.map((v) => ({
-              id: v.id,
-              name: v.name,
-              contactName: v.contactName ?? "",
-              contactEmail: v.contactEmail,
-              tier: v.tier,
-              website: v.website,
-              notes: v.notes,
-              serviceDescription: v.serviceDescription,
-              dataSensitivity: v.dataSensitivity,
+            allVendors={exportVendors.map((vendor) => ({
+              id: vendor.id,
+              name: vendor.name,
+              contactName: vendor.contactName ?? "",
+              contactEmail: vendor.contactEmail,
+              tier: vendor.tier,
+              website: vendor.website,
+              notes: vendor.notes,
+              serviceDescription: vendor.serviceDescription,
+              dataSensitivity: vendor.dataSensitivity,
               contractRenewalDate:
-                v.contractRenewalDate?.toISOString().slice(0, 10) ?? null,
+                vendor.contractRenewalDate?.toISOString().slice(0, 10) ?? null,
             }))}
           />
           {canCreateVendor ? (
@@ -249,12 +249,12 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
             </div>
           ) : (
             <VendorsTable
-              vendors={vendors.map((v) => ({
-                id: v.id,
-                name: v.name,
-                contactEmail: v.contactEmail,
-                tier: v.tier,
-                overallScore: v.overallScore,
+              vendors={vendors.map((vendor) => ({
+                id: vendor.id,
+                name: vendor.name,
+                contactEmail: vendor.contactEmail,
+                tier: vendor.tier,
+                overallScore: vendor.overallScore,
               }))}
               initialSort={sort}
               page={page}

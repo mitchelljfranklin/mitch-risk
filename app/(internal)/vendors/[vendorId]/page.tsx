@@ -105,7 +105,7 @@ export default async function VendorDetailPage({
       ? await prisma.attachment.findMany({
           where: {
             entityType: "VendorCertification",
-            entityId: { in: certifications.map((c) => c.id) },
+            entityId: { in: certifications.map((certification) => certification.id) },
           },
           orderBy: { createdAt: "asc" },
         })
@@ -250,15 +250,15 @@ export default async function VendorDetailPage({
                   Attachments
                 </span>
                 <div className="flex flex-col gap-1">
-                  {vendorAttachments.map((a) => (
+                  {vendorAttachments.map((assessment) => (
                     <a
-                      key={a.id}
-                      href={`/api/attachments/${a.id}`}
+                      key={assessment.id}
+                      href={`/api/attachments/${assessment.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary text-sm hover:underline"
                     >
-                      {a.displayName ?? a.fileName} ↗
+                      {assessment.displayName ?? assessment.fileName} ↗
                     </a>
                   ))}
                 </div>

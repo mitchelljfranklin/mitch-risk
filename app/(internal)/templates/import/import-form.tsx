@@ -97,8 +97,8 @@ export function ImportTemplateForm() {
   const [state, formAction, isPending] = useActionState(
     (previous: TemplateImportState, data: FormData) => {
       const result = importTemplateAction(previous, data);
-      void result.then((r) => {
-        if (r?.ok) formRef.current?.reset();
+      void result.then((result) => {
+        if (result?.ok) formRef.current?.reset();
       });
       return result;
     },

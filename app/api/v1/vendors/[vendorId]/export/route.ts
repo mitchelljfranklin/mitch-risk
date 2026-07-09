@@ -44,15 +44,15 @@ function buildVendorCsvResponse(
     csvEscape("Template"),
   ].join(",");
 
-  const rows = vendor.assessments.map((a) =>
+  const rows = vendor.assessments.map((assessment) =>
     [
-      csvEscape(a.title),
-      csvEscape(a.status),
-      a.score !== null ? Math.round(a.score * 100) + "%" : "",
-      csvEscape(a.submittedAt?.toISOString().slice(0, 10) ?? ""),
-      csvEscape(a.dueDate?.toISOString().slice(0, 10) ?? ""),
+      csvEscape(assessment.title),
+      csvEscape(assessment.status),
+      assessment.score !== null ? Math.round(assessment.score * 100) + "%" : "",
+      csvEscape(assessment.submittedAt?.toISOString().slice(0, 10) ?? ""),
+      csvEscape(assessment.dueDate?.toISOString().slice(0, 10) ?? ""),
       csvEscape(
-        a.template?.name ? `${a.template.name} v${a.template.version}` : "",
+        assessment.template?.name ? `${assessment.template.name} v${assessment.template.version}` : "",
       ),
     ].join(","),
   );

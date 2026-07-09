@@ -88,8 +88,8 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
       },
     });
 
-    const responseMap = new Map(assessment.responses.map((r) => [r.id, r]));
-    const questionMap = new Map(assessment.questions.map((q) => [q.id, q]));
+    const responseMap = new Map(assessment.responses.map((response) => [response.id, response]));
+    const questionMap = new Map(assessment.questions.map((question) => [question.id, question]));
 
     const nonCompliantIds = scored
       .filter((result) => result.isCompliant === false)
@@ -100,7 +100,7 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
       select: { id: true, responseId: true },
     });
     const findingByResponseId = new Map(
-      existingFindings.map((f) => [f.responseId, f.id]),
+      existingFindings.map((finding) => [finding.responseId, finding.id]),
     );
 
     for (const result of scored) {

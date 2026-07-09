@@ -269,9 +269,9 @@ export async function generateAssessmentPdf(
     throw new Error("Assessment not found");
   }
 
-  const questions = assessment.questions.map((q) => {
+  const questions = assessment.questions.map((question) => {
     const response = assessment.responses.find(
-      (r) => r.assessmentQuestionId === q.id,
+      (res) => res.assessmentQuestionId === question.id,
     );
     const answer = response?.isNotApplicable
       ? "N/A"
@@ -279,7 +279,7 @@ export async function generateAssessmentPdf(
         ? String(response.value)
         : "--";
 
-    const weight = q.riskWeight;
+    const weight = question.riskWeight;
     const maxScoreMap: Record<string, number> = {
       CRITICAL: 10,
       HIGH: 6,
@@ -296,11 +296,11 @@ export async function generateAssessmentPdf(
           : null;
 
     return {
-      sectionTitle: q.sectionTitle,
-      text: q.text,
-      type: q.type,
+      sectionTitle: question.sectionTitle,
+      text: question.text,
+      type: question.type,
       riskWeight: weight,
-      required: q.required,
+      required: question.required,
       answer,
       isNa: response?.isNotApplicable ?? false,
       isCompliant: response?.isCompliant ?? null,
@@ -308,11 +308,11 @@ export async function generateAssessmentPdf(
     };
   });
 
-  const findings = assessment.findings.map((f) => ({
-    title: f.title,
-    severity: f.severity,
-    controls: f.controlCodes,
-    description: f.description,
+  const findings = assessment.findings.map((finding) => ({
+    title: finding.title,
+    severity: finding.severity,
+    controls: finding.controlCodes,
+    description: finding.description,
   }));
 
   const data: AssessmentPdfData = {

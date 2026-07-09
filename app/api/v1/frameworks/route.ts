@@ -13,12 +13,12 @@ export async function GET(request: Request) {
     const frameworks = await listFrameworks();
 
     return Response.json(
-      frameworks.map((f) => ({
-        id: f.id,
-        name: f.name,
-        version: f.version,
-        description: f.description,
-        controlCount: f._count.controls,
+      frameworks.map((framework) => ({
+        id: framework.id,
+        name: framework.name,
+        version: framework.version,
+        description: framework.description,
+        controlCount: framework._count.controls,
       })),
     );
   });

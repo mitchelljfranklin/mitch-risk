@@ -77,10 +77,10 @@ export default async function ComparePage({
   ]);
 
   const leftResponseMap = new Map(
-    left.responses.map((r) => [r.assessmentQuestionId, r]),
+    left.responses.map((response) => [response.assessmentQuestionId, response]),
   );
   const rightResponseMap = new Map(
-    right.responses.map((r) => [r.assessmentQuestionId, r]),
+    right.responses.map((response) => [response.assessmentQuestionId, response]),
   );
 
   return (

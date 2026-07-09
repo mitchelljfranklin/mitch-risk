@@ -382,8 +382,8 @@ export async function importTemplateAction(
     }
   }
 
-  const allCodes = data.sections.flatMap((s) =>
-    s.questions.flatMap((q) => q.controlCodes ?? []),
+  const allCodes = data.sections.flatMap((section) =>
+    section.questions.flatMap((question) => question.controlCodes ?? []),
   );
   const uniqueCodes = [...new Set(allCodes)];
 
@@ -394,7 +394,7 @@ export async function importTemplateAction(
           select: { id: true, code: true },
         })
       : [];
-  const controlByCode = new Map(controls.map((c) => [c.code, c.id]));
+  const controlByCode = new Map(controls.map((control) => [control.code, control.id]));
 
   for (const code of uniqueCodes) {
     if (!controlByCode.has(code)) {

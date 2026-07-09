@@ -154,9 +154,9 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
               <SelectValue placeholder="All users" />
             </SelectTrigger>
             <SelectContent>
-              {users.map((u) => (
-                <SelectItem key={u.id} value={u.id}>
-                  {u.name}
+              {users.map((user) => (
+                <SelectItem key={user.id} value={user.id}>
+                  {user.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -325,9 +325,9 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
               <Button asChild variant="outline" size="sm" disabled={page <= 1}>
                 <a
                   href={`/settings?tab=audit&auditPage=${page - 1}&auditPageSize=${pageSize}`}
-                  onClick={(e) => {
-                    if (page <= 1) e.preventDefault();
-                  }}
+                    onClick={(event) => {
+                      if (page <= 1) event.preventDefault();
+                    }}
                 >
                   Previous
                 </a>
@@ -340,9 +340,9 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
               >
                 <a
                   href={`/settings?tab=audit&auditPage=${page + 1}&auditPageSize=${pageSize}`}
-                  onClick={(e) => {
-                    if (page >= totalPages) e.preventDefault();
-                  }}
+                    onClick={(event) => {
+                      if (page >= totalPages) event.preventDefault();
+                    }}
                 >
                   Next
                 </a>

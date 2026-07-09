@@ -81,7 +81,7 @@ export function BulkSendForm({
 
   function toggleAll(checked: boolean) {
     if (checked) {
-      setSelectedIds(new Set(filtered.map((v) => v.id)));
+      setSelectedIds(new Set(filtered.map((vendor) => vendor.id)));
     } else {
       setSelectedIds(new Set());
     }
@@ -101,7 +101,7 @@ export function BulkSendForm({
     });
   }
 
-  const templateLabel = templates.find((t) => t.id === templateId)?.label ?? "";
+  const templateLabel = templates.find((template) => template.id === templateId)?.label ?? "";
 
   return (
     <Stepper defaultValue="configure" className="flex flex-col gap-6">
@@ -153,7 +153,7 @@ export function BulkSendForm({
               id="dueDate"
               type="date"
               value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
+              onChange={(event) => setDueDate(event.target.value)}
             />
           </div>
           <div className="grid gap-2">
@@ -163,9 +163,9 @@ export function BulkSendForm({
                 <SelectValue placeholder="Unassigned" />
               </SelectTrigger>
               <SelectContent>
-                {reviewers.map((r) => (
-                  <SelectItem key={r.id} value={r.id}>
-                    {r.label}
+                {reviewers.map((reviewer) => (
+                  <SelectItem key={reviewer.id} value={reviewer.id}>
+                    {reviewer.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -178,7 +178,7 @@ export function BulkSendForm({
           <Input
             id="portalPassword"
             value={portalPassword}
-            onChange={(e) => setPortalPassword(e.target.value)}
+            onChange={(event) => setPortalPassword(event.target.value)}
             placeholder="Shared password for all vendors"
             className="w-72"
           />
@@ -196,7 +196,7 @@ export function BulkSendForm({
           <Input
             placeholder="Filter vendors..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(event) => setSearch(event.target.value)}
             className="w-64"
           />
           <label className="flex items-center gap-2 text-sm">
@@ -282,7 +282,7 @@ export function BulkSendForm({
             <p className="text-muted-foreground mt-1 text-xs">
               Due: {dueDate}
               {reviewerId
-                ? ` · Reviewer: ${reviewers.find((r) => r.id === reviewerId)?.label ?? reviewerId}`
+                ? ` · Reviewer: ${reviewers.find((reviewer) => reviewer.id === reviewerId)?.label ?? reviewerId}`
                 : ""}
               {portalPassword ? " · Portal password set" : ""}
             </p>

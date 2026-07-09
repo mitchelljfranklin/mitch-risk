@@ -47,24 +47,24 @@ export async function GET(
             email: assessment.reviewer.email,
           }
         : null,
-      questions: assessment.questions.map((q) => ({
-        id: q.id,
-        sectionTitle: q.sectionTitle,
-        text: q.text,
-        helpText: q.helpText,
-        type: q.type,
-        riskWeight: q.riskWeight,
-        required: q.required,
-        expectedAnswer: q.expectedAnswer,
-        options: q.options,
-        order: q.order,
-        controlIds: q.controlIds,
+      questions: assessment.questions.map((question) => ({
+        id: question.id,
+        sectionTitle: question.sectionTitle,
+        text: question.text,
+        helpText: question.helpText,
+        type: question.type,
+        riskWeight: question.riskWeight,
+        required: question.required,
+        expectedAnswer: question.expectedAnswer,
+        options: question.options,
+        order: question.order,
+        controlIds: question.controlIds,
         response: assessment.responses.find(
-          (r) => r.assessmentQuestionId === q.id,
+          (response) => response.assessmentQuestionId === question.id,
         )
           ? (() => {
               const response = assessment.responses.find(
-                (r) => r.assessmentQuestionId === q.id,
+                (res) => res.assessmentQuestionId === question.id,
               )!;
               return {
                 value: response.value,
@@ -82,32 +82,32 @@ export async function GET(
             })()
           : null,
       })),
-      findings: assessment.findings.map((f) => ({
-        id: f.id,
-        title: f.title,
-        description: f.description,
-        severity: f.severity,
-        status: f.status,
-        controlCodes: f.controlCodes,
-        resolutionNote: f.resolutionNote,
-        resolvedAt: f.resolvedAt,
-        resolvedByName: f.resolvedBy?.name ?? null,
-        createdAt: f.createdAt,
+      findings: assessment.findings.map((finding) => ({
+        id: finding.id,
+        title: finding.title,
+        description: finding.description,
+        severity: finding.severity,
+        status: finding.status,
+        controlCodes: finding.controlCodes,
+        resolutionNote: finding.resolutionNote,
+        resolvedAt: finding.resolvedAt,
+        resolvedByName: finding.resolvedBy?.name ?? null,
+        createdAt: finding.createdAt,
       })),
-      comments: assessment.comments.map((c) => ({
-        id: c.id,
-        authorType: c.authorType,
-        authorName: c.authorName,
-        body: c.body,
-        visibility: c.visibility,
-        createdAt: c.createdAt,
-        replies: c.replies.map((r) => ({
-          id: r.id,
-          authorType: r.authorType,
-          authorName: r.authorName,
-          body: r.body,
-          visibility: r.visibility,
-          createdAt: r.createdAt,
+      comments: assessment.comments.map((comment) => ({
+        id: comment.id,
+        authorType: comment.authorType,
+        authorName: comment.authorName,
+        body: comment.body,
+        visibility: comment.visibility,
+        createdAt: comment.createdAt,
+        replies: comment.replies.map((response) => ({
+          id: response.id,
+          authorType: response.authorType,
+          authorName: response.authorName,
+          body: response.body,
+          visibility: response.visibility,
+          createdAt: response.createdAt,
         })),
       })),
     });

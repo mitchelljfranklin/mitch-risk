@@ -36,7 +36,7 @@ export function SchedulingForm({
         name="reminderDays"
         value={reminderDays
           .split(",")
-          .map((d) => d.trim())
+          .map((day) => day.trim())
           .filter(Boolean)
           .join(",")}
       />
@@ -49,7 +49,7 @@ export function SchedulingForm({
         </p>
         <Input
           value={reminderDays}
-          onChange={(e) => setReminderDays(e.target.value)}
+          onChange={(event) => setReminderDays(event.target.value)}
           placeholder="7, 1"
           className="w-48"
         />

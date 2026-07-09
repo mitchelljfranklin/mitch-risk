@@ -490,7 +490,7 @@ export function PortalQuestionnaire({
                   onCheckedChange={(checked) => {
                     const next = checked
                       ? [...selected, option]
-                      : selected.filter((v) => v !== option);
+                      : selected.filter((value) => value !== option);
                     setAnswer(question.id, { value: next });
                   }}
                 />
@@ -574,13 +574,13 @@ export function PortalQuestionnaire({
     return null;
   }
 
-  const visibleQuestions = questions.filter((q) =>
-    isQuestionVisible(q.conditionalLogic, answers),
+  const visibleQuestions = questions.filter((question) =>
+    isQuestionVisible(question.conditionalLogic, answers),
   );
 
   const totalQuestions = visibleQuestions.length;
-  const answeredCount = visibleQuestions.filter((q) => {
-    const answer = answers[q.id];
+  const answeredCount = visibleQuestions.filter((question) => {
+    const answer = answers[question.id];
     if (!answer) return false;
     if (answer.isNotApplicable) return true;
     return (

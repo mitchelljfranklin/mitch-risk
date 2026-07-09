@@ -38,7 +38,7 @@ export function ControlMultiSelect({
   const normalizedFilter = filter.trim().toLowerCase();
 
   const frameworks = useMemo(
-    () => [...new Set(controls.map((c) => c.frameworkName))].sort(),
+    () => [...new Set(controls.map((control) => control.frameworkName))].sort(),
     [controls],
   );
 

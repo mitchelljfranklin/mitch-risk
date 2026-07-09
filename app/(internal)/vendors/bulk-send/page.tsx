@@ -21,10 +21,10 @@ export default async function BulkSendPage() {
     listUsersFull(),
   ]);
 
-  const reviewers = users.map((u) => ({ id: u.id, label: u.name }));
-  const templateOptions = templates.map((t) => ({
-    id: t.id,
-    label: `${t.name} v${t.version}`,
+  const reviewers = users.map((user) => ({ id: user.id, label: user.name }));
+  const templateOptions = templates.map((template) => ({
+    id: template.id,
+    label: `${template.name} v${template.version}`,
   }));
 
   return (
@@ -43,11 +43,11 @@ export default async function BulkSendPage() {
       </div>
 
       <BulkSendForm
-        vendors={vendors.map((v) => ({
-          id: v.id,
-          name: v.name,
-          contactEmail: v.contactEmail,
-          tier: v.tier,
+        vendors={vendors.map((vendor) => ({
+          id: vendor.id,
+          name: vendor.name,
+          contactEmail: vendor.contactEmail,
+          tier: vendor.tier,
         }))}
         templates={templateOptions}
         reviewers={reviewers}

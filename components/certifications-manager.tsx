@@ -153,21 +153,21 @@ function CertificationEditor({
         <div className="border-t px-4 pt-4">
           <span className="text-xs font-medium">Attachments</span>
           <div className="mt-2 flex flex-col gap-1.5">
-            {attachments.map((a) => (
+            {attachments.map((attachment) => (
               <div
-                key={a.id}
+                key={attachment.id}
                 className="flex items-center justify-between gap-2 rounded-md border p-2"
               >
                 <a
-                  href={`/api/attachments/${a.id}`}
+                  href={`/api/attachments/${attachment.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary truncate text-xs hover:underline"
                 >
-                  {a.displayName ?? a.fileName} ↗
+                  {attachment.displayName ?? attachment.fileName} ↗
                 </a>
                 <form action={removeAttachmentAction}>
-                  <input type="hidden" name="attachmentId" value={a.id} />
+                  <input type="hidden" name="attachmentId" value={attachment.id} />
                   <Button
                     type="submit"
                     variant="ghost"
@@ -245,15 +245,15 @@ export function CertificationsManager({
                   <span className="text-muted-foreground text-xs">
                     Expires {formatDate(cert.expiresDate)}
                   </span>
-                  {certAttachments.map((a) => (
+                  {certAttachments.map((attachment) => (
                     <a
-                      key={a.id}
-                      href={`/api/attachments/${a.id}`}
+                      key={attachment.id}
+                      href={`/api/attachments/${attachment.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary mt-0.5 text-xs hover:underline"
                     >
-                      {a.fileName} ↗
+                      {attachment.fileName} ↗
                     </a>
                   ))}
                 </div>

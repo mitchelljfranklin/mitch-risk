@@ -53,14 +53,14 @@ function ColorField({
           id={`${name}Color`}
           type="color"
           value={color}
-          onChange={(e) => setColor(e.target.value)}
+          onChange={(event) => setColor(event.target.value)}
           className="h-9 w-14 cursor-pointer rounded border p-1"
         />
         <Input
           id={name}
           name={name}
           value={color}
-          onChange={(e) => setColor(e.target.value)}
+          onChange={(event) => setColor(event.target.value)}
           className="w-32 font-mono"
         />
         <Button

@@ -35,12 +35,12 @@ export async function GET(
           expiresDate: cert.expiresDate,
           notes: cert.notes,
           attachmentCount: attachments.length,
-          attachments: attachments.map((a) => ({
-            id: a.id,
-            fileName: a.fileName,
-            displayName: a.displayName,
-            mimeType: a.mimeType,
-            sizeBytes: a.sizeBytes,
+          attachments: attachments.map((attachment) => ({
+            id: attachment.id,
+            fileName: attachment.fileName,
+            displayName: attachment.displayName,
+            mimeType: attachment.mimeType,
+            sizeBytes: attachment.sizeBytes,
           })),
         };
       }),

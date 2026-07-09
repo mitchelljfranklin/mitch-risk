@@ -25,7 +25,7 @@ export function SendForms({ assessmentId }: SendFormsProps) {
         <Input
           id="portalPassword"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(event) => setPassword(event.target.value)}
           placeholder="Require vendor to enter a password"
           className="w-full max-w-72"
         />

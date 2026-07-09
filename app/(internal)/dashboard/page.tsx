@@ -58,12 +58,12 @@ export default async function DashboardPage() {
   });
 
   const contributionDays = generateContributionDays(
-    recentAssessments.map((a) => a.createdAt),
+    recentAssessments.map((assessment) => assessment.createdAt),
   );
 
   const { scoreDistribution, topDeficientControls, vendors: portfolio } = data;
 
-  const needingAttention = portfolio.filter((v) => v.overdueCount > 0);
+  const needingAttention = portfolio.filter((vendor) => vendor.overdueCount > 0);
 
   const RAIL_LIST_LIMIT = 5;
   const VENDOR_LIST_LIMIT = 6;

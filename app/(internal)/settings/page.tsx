@@ -117,7 +117,7 @@ export default async function SettingsPage({
     }),
     prisma.appSetting
       .findUnique({ where: { key: "api.enabled" } })
-      .then((r) => r?.value === true),
+      .then((settingsResult) => settingsResult?.value === true),
     listAuditActions(),
     getAssessmentSettings(),
     getFileSettings(),

@@ -121,7 +121,7 @@ export function DashboardCharts({
       value: scoreDistribution.unscored,
       fill: UNSCORED_FILL,
     },
-  ].filter((d) => d.value > 0);
+  ].filter((datum) => datum.value > 0);
 
   const hasDonut = donutData.length >= 2;
   const totalVendors =
@@ -136,7 +136,7 @@ export function DashboardCharts({
     { name: "Medium", value: findingsBySeverity.MEDIUM },
     { name: "Low", value: findingsBySeverity.LOW },
   ];
-  const hasSeverity = severityData.some((d) => d.value > 0);
+  const hasSeverity = severityData.some((datum) => datum.value > 0);
 
   const statusDonutData = Object.keys(STATUS_LABELS)
     .map((key) => {
@@ -155,7 +155,7 @@ export function DashboardCharts({
         fill: statusConfig?.color ?? PRIMARY_FILL,
       };
     })
-    .filter((d) => d.value > 0);
+    .filter((datum) => datum.value > 0);
   const hasStatus = statusDonutData.length > 0;
 
   const tierData = riskByTier.map((row) => ({
@@ -231,14 +231,14 @@ export function DashboardCharts({
               </PieChart>
             </ChartContainer>
             <div className="mt-3 flex flex-wrap justify-center gap-4 text-xs">
-              {donutData.map((d) => (
-                <span key={d.name} className="flex items-center gap-1">
+              {donutData.map((datum) => (
+                <span key={datum.name} className="flex items-center gap-1">
                   <span
                     className="size-2.5 rounded-full"
-                    style={{ backgroundColor: d.fill }}
+                    style={{ backgroundColor: datum.fill }}
                   />
-                  {DONUT_CONFIG[d.name as keyof typeof DONUT_CONFIG]?.label}:{" "}
-                  {d.value}
+                  {DONUT_CONFIG[datum.name as keyof typeof DONUT_CONFIG]?.label}:{" "}
+                  {datum.value}
                 </span>
               ))}
             </div>

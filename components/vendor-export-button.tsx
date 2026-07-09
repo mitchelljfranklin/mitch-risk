@@ -37,18 +37,18 @@ const CSV_HEADER = [
 ].join(",");
 
 function buildCsv(vendors: VendorExportRow[]): string {
-  const rows = vendors.map((v) =>
+  const rows = vendors.map((vendor) =>
     [
-      csvEscape(v.id),
-      csvEscape(v.name),
-      csvEscape(v.contactName ?? ""),
-      csvEscape(v.contactEmail),
-      csvEscape(v.tier ?? ""),
-      csvEscape(v.website ?? ""),
-      csvEscape(v.notes ?? ""),
-      csvEscape(v.serviceDescription ?? ""),
-      csvEscape(v.dataSensitivity ?? ""),
-      csvEscape(v.contractRenewalDate ?? ""),
+      csvEscape(vendor.id),
+      csvEscape(vendor.name),
+      csvEscape(vendor.contactName ?? ""),
+      csvEscape(vendor.contactEmail),
+      csvEscape(vendor.tier ?? ""),
+      csvEscape(vendor.website ?? ""),
+      csvEscape(vendor.notes ?? ""),
+      csvEscape(vendor.serviceDescription ?? ""),
+      csvEscape(vendor.dataSensitivity ?? ""),
+      csvEscape(vendor.contractRenewalDate ?? ""),
     ].join(","),
   );
   return [CSV_HEADER, ...rows].join("\n");

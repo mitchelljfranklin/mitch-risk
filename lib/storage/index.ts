@@ -140,11 +140,11 @@ export async function getStorage(): Promise<FileStorage> {
   if (_storage && _fingerprint === fp) return _storage;
 
   if (!_initPromise) {
-    _initPromise = resolveStorage(settings).then((s) => {
-      _storage = s;
+    _initPromise = resolveStorage(settings).then((storageSettings) => {
+      _storage = storageSettings;
       _fingerprint = fp;
       _initPromise = null;
-      return s;
+      return storageSettings;
     });
   }
 
