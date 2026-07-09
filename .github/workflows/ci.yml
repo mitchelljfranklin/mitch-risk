@@ -17,6 +17,7 @@ jobs:
       APP_ENCRYPTION_KEY: "ci-build-encryption-key-0000000000000"
       NEXT_TELEMETRY_DISABLED: "1"
       NODE_OPTIONS: "--no-experimental-strip-types"
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
