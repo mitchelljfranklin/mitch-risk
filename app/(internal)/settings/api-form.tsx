@@ -32,6 +32,7 @@ type ApiKeyRow = {
   disabled: boolean;
   expiresAt: Date | null;
   lastUsedAt: Date | null;
+  requestCount: number;
   allowedIps: string;
   rateLimitPerMin: number | null;
   permissions: string[];
@@ -252,6 +253,9 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
                     {key.lastUsedAt
                       ? `Last used ${new Date(key.lastUsedAt).toLocaleString()}`
                       : "Never used"}
+                    {key.requestCount > 0
+                      ? ` · ${key.requestCount} request${key.requestCount !== 1 ? "s" : ""}`
+                      : ""}
                     {key.allowedIps
                       ? ` · IPs: ${key.allowedIps.replace(/\n/g, ", ")}`
                       : ""}

@@ -87,7 +87,7 @@ export async function authenticateRequest(
 
     await prisma.apiKey.update({
       where: { id: apiKey.id },
-      data: { lastUsedAt: new Date() },
+      data: { lastUsedAt: new Date(), requestCount: { increment: 1 } },
     });
 
     const permissions =

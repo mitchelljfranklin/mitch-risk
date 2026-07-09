@@ -485,6 +485,7 @@ model ApiKey {
   disabled       Boolean   @default(false)
   expiresAt      DateTime?
   lastUsedAt     DateTime?
+  requestCount   Int       @default(0)
   allowedIps     String    @default("")
   rateLimitPerMin Int?
   permissions    String[]  @default([])
