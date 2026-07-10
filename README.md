@@ -241,3 +241,5 @@ docker run --rm -v mitch-risk_evidence_data:/data -v "$PWD":/backup alpine \
 | [Security](APPSECURITY.md) | Security architecture, hardening, and risk register |
 | [Cloud Storage](STORAGE.md) | AWS S3 and Azure Blob configuration |
 | [SSO](SSOConfig.md) | Entra ID, Google, and generic OIDC setup |
+| [Security Policy](SECURITY.md) | Vulnerability reporting, supported versions, security model |
+| [Privacy Policy](PRIVACY.md) | Data processing, retention, vendor portal privacy, cookies |
