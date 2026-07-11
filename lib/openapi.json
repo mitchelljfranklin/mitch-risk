@@ -1766,6 +1766,7 @@
             "properties": {
               "COMPLETED": { "type": "integer" },
               "IN_PROGRESS": { "type": "integer" },
+              "OVERDUE": { "type": "integer" },
               "UNDER_REVIEW": { "type": "integer" },
               "SENT": { "type": "integer" },
               "DRAFT": { "type": "integer" },

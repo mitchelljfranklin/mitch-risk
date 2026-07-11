@@ -14,7 +14,8 @@ Query assessment lists and full assessment detail including questions, responses
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `vendorId` | string | Filter by vendor ID |
-| `status` | string | Filter by status (`DRAFT`, `SENT`, `IN_PROGRESS`, `SUBMITTED`, `UNDER_REVIEW`, `COMPLETED`, `OVERDUE`) |
+| `status` | string | Filter by status (`DRAFT`, `SENT`, `IN_PROGRESS`, `SUBMITTED`, `UNDER_REVIEW`, `COMPLETED`) |
+| `overdue` | boolean | Set to `true` to show only overdue assessments (past due date while SENT or IN_PROGRESS) |
 | `fromDate` | ISO 8601 | Assessments created on or after this date |
 | `toDate` | ISO 8601 | Assessments created on or before this date |
 | `format` | string | Set to `csv` for CSV export instead of JSON |

@@ -40,7 +40,7 @@ Assessments are questionnaires sent to vendors. They freeze a template's questio
 | `SUBMITTED` | Vendor has submitted all answers; portal is now read-only |
 | `UNDER_REVIEW` | Reviewer has opened the assessment for review |
 | `COMPLETED` | Review finalized, score calculated, findings generated |
-| `OVERDUE` | Past the due date while still in SENT or IN_PROGRESS (set by cron) |
+| `OVERDUE` | Past the due date while still in SENT or IN_PROGRESS (computed dynamically, not a stored status) |
 
 ## Sending an Assessment
 
