@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SparklineSvg } from "@/components/sparkline";
 
 function useCountUp(end: number, durationMs = 800) {
   const [value, setValue] = useState(0);
@@ -84,24 +85,10 @@ export function StatCard({
           ) : null}
         </p>
         {sparklineData && sparklineData.length > 1 ? (
-          <svg
-            className="h-8 w-full"
-            viewBox={`0 0 ${sparklineData.length - 1} 20`}
-            preserveAspectRatio="none"
-          >
-            <polyline
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              className="text-primary/50"
-              points={sparklineData
-                .map(
-                  (point, index) =>
-                    `${index},${20 - (point / Math.max(...sparklineData)) * 18}`,
-                )
-                .join(" ")}
-            />
-          </svg>
+          <SparklineSvg
+            data={sparklineData}
+            className="text-primary/40 h-6 w-full"
+          />
         ) : null}
       </CardContent>
     </Card>
@@ -156,24 +143,7 @@ export function ScoreStatCard({
           ) : null}
         </p>
         {sparklineData && sparklineData.length > 1 ? (
-          <svg
-            className="h-8 w-full"
-            viewBox={`0 0 ${sparklineData.length - 1} 20`}
-            preserveAspectRatio="none"
-          >
-            <polyline
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              className="opacity-50"
-              points={sparklineData
-                .map(
-                  (point, index) =>
-                    `${index},${20 - (point / Math.max(...sparklineData)) * 18}`,
-                )
-                .join(" ")}
-            />
-          </svg>
+          <SparklineSvg data={sparklineData} className="h-6 w-full" />
         ) : null}
       </CardContent>
     </Card>
