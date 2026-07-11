@@ -452,6 +452,18 @@ export async function getDashboardData() {
     vendorTrend,
     findingTrend,
     scoreTrend,
+    attentionGroups: {
+      overdue: portfolio
+        .filter((vendor) => vendor.overdueCount > 0)
+        .map((vendor) => ({ vendorId: vendor.id, vendorName: vendor.name })),
+      belowThreshold: portfolio
+        .filter(
+          (vendor) =>
+            vendor.overallScore !== null &&
+            vendor.overallScore < amberThreshold,
+        )
+        .map((vendor) => ({ vendorId: vendor.id, vendorName: vendor.name })),
+    },
   };
 }
 

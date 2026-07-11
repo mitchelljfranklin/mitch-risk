@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatCard, ScoreStatCard } from "@/components/stat-card";
+import { AttentionGroups } from "@/components/attention-groups";
 import { ScoreBadge } from "@/components/score-badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { requireUser } from "@/lib/auth";
@@ -94,11 +95,8 @@ export default async function DashboardPage() {
     findingTrend,
     scoreTrend,
     portfolioScoreTrend,
+    attentionGroups,
   } = data;
-
-  const needingAttention = portfolio.filter(
-    (vendor) => vendor.overdueCount > 0,
-  );
 
   const RAIL_LIST_LIMIT = 5;
   const VENDOR_LIST_LIMIT = 6;
@@ -186,43 +184,7 @@ export default async function DashboardPage() {
 
           {/* Insight rail: actionable lists side-by-side */}
           <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-            {needingAttention.length > 0 ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>
-                    Needs attention ({needingAttention.length})
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-col divide-y rounded-lg border">
-                    {needingAttention
-                      .slice(0, RAIL_LIST_LIMIT)
-                      .map((vendor) => (
-                        <Link
-                          key={vendor.id}
-                          href={`/vendors/${vendor.id}`}
-                          className="hover:bg-accent/40 flex items-center justify-between gap-3 p-3 transition-colors"
-                        >
-                          <span className="min-w-0 truncate text-sm font-medium">
-                            {vendor.name}
-                          </span>
-                          <Badge variant="destructive" className="shrink-0">
-                            {vendor.overdueCount} overdue
-                          </Badge>
-                        </Link>
-                      ))}
-                  </div>
-                  {needingAttention.length > RAIL_LIST_LIMIT ? (
-                    <Link
-                      href="/assessments"
-                      className="text-muted-foreground hover:text-primary mt-2 inline-block text-xs"
-                    >
-                      +{needingAttention.length - RAIL_LIST_LIMIT} more →
-                    </Link>
-                  ) : null}
-                </CardContent>
-              </Card>
-            ) : null}
+            <AttentionGroups groups={attentionGroups} />
 
             {upcoming.length > 0 ? (
               <Card>
