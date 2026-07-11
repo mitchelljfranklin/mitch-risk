@@ -23,17 +23,14 @@ export default async function FrameworkGapsPage() {
     orderBy: { name: "asc" },
   });
 
-  const allTemplateQuestions = await prisma.question.findMany({
-    where: { controlIds: { isEmpty: false } },
-    select: { controlIds: true },
+  const allMappings = await prisma.questionControl.findMany({
+    select: { controlId: true },
+    distinct: ["controlId"],
   });
 
-  const mappedControlIds = new Set<string>();
-  for (const question of allTemplateQuestions) {
-    for (const id of question.controlIds) {
-      mappedControlIds.add(id);
-    }
-  }
+  const mappedControlIds = new Set(
+    allMappings.map((mapping) => mapping.controlId),
+  );
 
   const frameworkGaps = await Promise.all(
     frameworks.map(async (framework) => {
@@ -67,8 +64,8 @@ export default async function FrameworkGapsPage() {
           Control coverage gaps
         </h1>
         <p className="text-muted-foreground text-sm">
-          Controls that have no questions mapped across any published template.
-          Use this to identify blind spots in your assessment coverage.
+          Controls that have no questions mapped across any template. Use this
+          to identify blind spots in your assessment coverage.
         </p>
       </div>
 
