@@ -127,6 +127,18 @@ function TemplateEditorSheet({
           <Button type="button" variant="outline" onClick={onClose}>
             Cancel
           </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() =>
+              window.open(
+                `/api/settings/email-preview?templateType=${definition.type}`,
+                "_blank",
+              )
+            }
+          >
+            Preview
+          </Button>
         </SheetFooter>
       </form>
 
