@@ -186,7 +186,14 @@ export async function GET(request: Request) {
               where: { id: sent.notificationLogId },
               data: { subject: logKey },
             })
-            .catch(() => undefined);
+            .catch((updateError: unknown) => {
+              console.warn(
+                "Cron: failed to tag notification log (cert expiry):",
+                updateError instanceof Error
+                  ? updateError.message
+                  : String(updateError),
+              );
+            });
           result.expiryNotices++;
         }
       }
@@ -222,7 +229,14 @@ export async function GET(request: Request) {
               where: { id: sent.notificationLogId },
               data: { subject: logKey },
             })
-            .catch(() => undefined);
+            .catch((updateError: unknown) => {
+              console.warn(
+                "Cron: failed to tag notification log (contract expiry):",
+                updateError instanceof Error
+                  ? updateError.message
+                  : String(updateError),
+              );
+            });
           result.expiryNotices++;
         }
       }

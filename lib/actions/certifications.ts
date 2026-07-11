@@ -119,7 +119,10 @@ export async function deleteCertificationAction(formData: FormData) {
     try {
       await storage.delete(a.storageKey);
     } catch (error: unknown) {
-      console.error("Failed to delete certification attachment:", error);
+      console.error(
+        "Failed to delete certification attachment:",
+        error instanceof Error ? error.message : String(error),
+      );
       // file already gone
     }
   }
@@ -177,11 +180,19 @@ async function handleAttachmentUpload(
       },
     });
   } catch (error: unknown) {
-    console.error("Failed to create attachment record:", error);
+    console.error(
+      "Failed to create attachment record:",
+      error instanceof Error ? error.message : String(error),
+    );
     try {
       await storage.delete(storageKey);
     } catch (cleanupError: unknown) {
-      console.error("Failed to clean up attachment storage:", cleanupError);
+      console.error(
+        "Failed to clean up attachment storage:",
+        cleanupError instanceof Error
+          ? cleanupError.message
+          : String(cleanupError),
+      );
     }
     return { ok: false, message: "Failed to save file record." };
   }
@@ -211,7 +222,10 @@ export async function removeAttachmentAction(formData: FormData) {
   try {
     await storage.delete(attachment.storageKey);
   } catch (error: unknown) {
-    console.error("Failed to delete attachment storage:", error);
+    console.error(
+      "Failed to delete attachment storage:",
+      error instanceof Error ? error.message : String(error),
+    );
     // file already gone
   }
 

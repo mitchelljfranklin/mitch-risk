@@ -179,7 +179,10 @@ export async function saveQuestionAction(
     try {
       conditionalLogic = JSON.parse(conditionalRaw);
     } catch (error: unknown) {
-      console.error("Failed to parse conditional logic:", error);
+      console.error(
+        "Failed to parse conditional logic:",
+        error instanceof Error ? error.message : String(error),
+      );
       return { error: "Invalid conditional logic." };
     }
   }
@@ -355,7 +358,10 @@ export async function importTemplateAction(
   try {
     data = JSON.parse(await file.text());
   } catch (error: unknown) {
-    console.error("Failed to parse import JSON:", error);
+    console.error(
+      "Failed to parse import JSON:",
+      error instanceof Error ? error.message : String(error),
+    );
     return { ok: false, error: "Invalid JSON file." };
   }
 

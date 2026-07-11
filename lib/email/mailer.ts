@@ -67,7 +67,10 @@ async function createNotificationLog(
     const created = await prisma.notificationLog.create({ data });
     return created.id;
   } catch (logError) {
-    console.error("Failed to create notification log:", logError);
+    console.error(
+      "Failed to create notification log:",
+      logError instanceof Error ? logError.message : String(logError),
+    );
     return "";
   }
 }
@@ -83,7 +86,14 @@ async function updateNotificationLogStatus(
       where: { id: notificationLogId },
       data: { status, errorMessage: errorMessageValue },
     })
-    .catch(() => undefined);
+    .catch((updateError: unknown) => {
+      console.warn(
+        "Failed to update notification log status:",
+        updateError instanceof Error
+          ? updateError.message
+          : String(updateError),
+      );
+    });
 }
 
 export async function sendEmail(

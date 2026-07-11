@@ -60,7 +60,10 @@ export async function addUserAction(
     if (isUniqueConstraintError(error)) {
       return { ok: false, message: "A user with this email already exists." };
     }
-    console.error(`[users] failed to create user ${parsed.data.email}:`, error);
+    console.error(
+      `[users] failed to create user ${parsed.data.email}:`,
+      error instanceof Error ? error.message : String(error),
+    );
     return {
       ok: false,
       message: "Could not create the user. Please try again.",

@@ -98,7 +98,10 @@ async function resolveStorage(settings: StorageSettings): Promise<FileStorage> {
         secretAccessKey: settings.s3SecretAccessKey,
       });
     } catch (error) {
-      console.error("Failed to initialise S3 storage client:", error);
+      console.error(
+        "Failed to initialise S3 storage client:",
+        error instanceof Error ? error.message : String(error),
+      );
     }
     console.warn(
       "S3 storage configured but failed to initialise — falling back to local storage.",
@@ -113,7 +116,10 @@ async function resolveStorage(settings: StorageSettings): Promise<FileStorage> {
         containerName: settings.azureContainerName,
       });
     } catch (error) {
-      console.error("Failed to initialise Azure Blob storage client:", error);
+      console.error(
+        "Failed to initialise Azure Blob storage client:",
+        error instanceof Error ? error.message : String(error),
+      );
     }
     console.warn(
       "Azure Blob storage configured but failed to initialise — falling back to local storage.",

@@ -33,7 +33,10 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Error reading logo:", error);
+    console.error(
+      "Error reading logo:",
+      error instanceof Error ? error.message : String(error),
+    );
     return new Response("Error reading logo", { status: 500 });
   }
 }

@@ -8,7 +8,10 @@ export async function runApiHandler(
   try {
     return await handler();
   } catch (error) {
-    console.error("[api] unhandled error", error);
+    console.error(
+      "[api] unhandled error",
+      error instanceof Error ? error.message : String(error),
+    );
     return apiError("Internal error", 500);
   }
 }

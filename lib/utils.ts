@@ -1,6 +1,10 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+export function sanitizeError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
 export function getField(formData: FormData, key: string): string {
   const value = formData.get(key);
   return typeof value === "string" ? value : "";

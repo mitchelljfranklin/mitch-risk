@@ -1,3 +1,9 @@
+// Reusable form field wrapper with proper aria-describedby wiring.
+// Available for adoption as forms need accessibility improvements.
+// Usage: <FormField label="Email" htmlFor="email" error={state?.errors?.email} helpText="Your work email address.">
+//   <Input id="email" name="email" />
+// </FormField>
+
 "use client";
 
 import { type ReactNode, useId } from "react";

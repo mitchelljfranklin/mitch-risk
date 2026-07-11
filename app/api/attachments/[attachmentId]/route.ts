@@ -47,7 +47,10 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error(`Error reading attachment ${attachmentId}:`, error);
+    console.error(
+      `Error reading attachment ${attachmentId}:`,
+      error instanceof Error ? error.message : String(error),
+    );
     return new Response("Error reading file", { status: 500 });
   }
 }

@@ -183,7 +183,10 @@ export async function submitPortalAction(
       );
     }
   } catch (error: unknown) {
-    console.error("Failed to send submission notification:", error);
+    console.error(
+      "Failed to send submission notification:",
+      error instanceof Error ? error.message : String(error),
+    );
     // Notification is best-effort — don't block submission
   }
 
@@ -238,7 +241,10 @@ export async function removePortalEvidenceAction(
   try {
     await storage.delete(evidence.storageKey);
   } catch (error: unknown) {
-    console.error("Failed to delete evidence storage:", error);
+    console.error(
+      "Failed to delete evidence storage:",
+      error instanceof Error ? error.message : String(error),
+    );
     // Best-effort; orphan-sweep cron cleans any leftovers.
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 export default function GlobalError({
@@ -7,6 +8,14 @@ export default function GlobalError({
 }: {
   error: Error & { digest?: string };
 }) {
+  useEffect(() => {
+    console.error(
+      "Global error boundary caught:",
+      error.message,
+      error.digest ? `(digest: ${error.digest})` : "",
+    );
+  }, [error]);
+
   return (
     <html>
       <body className="min-h-svh antialiased">

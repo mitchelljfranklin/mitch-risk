@@ -39,7 +39,10 @@ export async function GET(
   try {
     data = await storage.read(evidence.storageKey);
   } catch (error) {
-    console.error(`Error reading evidence file ${evidenceId}:`, error);
+    console.error(
+      `Error reading evidence file ${evidenceId}:`,
+      error instanceof Error ? error.message : String(error),
+    );
     return new Response("File not found", { status: 404 });
   }
 

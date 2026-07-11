@@ -119,7 +119,10 @@ export async function duplicateRoleAction(formData: FormData): Promise<void> {
     }
     revalidatePath("/settings");
   } catch (error) {
-    console.error(`[roles] failed to duplicate role ${roleId}:`, error);
+    console.error(
+      `[roles] failed to duplicate role ${roleId}:`,
+      error instanceof Error ? error.message : String(error),
+    );
   }
 }
 
@@ -139,6 +142,9 @@ export async function deleteRoleAction(formData: FormData): Promise<void> {
     }
     revalidatePath("/settings");
   } catch (error) {
-    console.error(`[roles] failed to delete role ${roleId}:`, error);
+    console.error(
+      `[roles] failed to delete role ${roleId}:`,
+      error instanceof Error ? error.message : String(error),
+    );
   }
 }

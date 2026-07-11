@@ -25,7 +25,7 @@ export function logAuditSafe(
     (error: unknown) => {
       console.error(
         `Audit log failed (${action}):`,
-        error instanceof Error ? error.message : error,
+        error instanceof Error ? error.message : String(error),
       );
     },
   );
@@ -200,7 +200,10 @@ async function resolveEntityNames(
           for (const k of keys) map.set(k.id, k.name);
         }
       } catch (error) {
-        console.error("[audit] resolveEntityNames failed:", error);
+        console.error(
+          "[audit] resolveEntityNames failed:",
+          error instanceof Error ? error.message : String(error),
+        );
         // entity type may have been deleted — just return no names
       }
 
