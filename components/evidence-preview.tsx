@@ -69,11 +69,8 @@ export function EvidencePreview({
         size="sm"
         className="ml-1 h-auto px-1.5 py-0.5"
         onClick={() => setOpen(true)}
-        asChild
       >
-        <span>
-          <ExternalLink className="size-3" />
-        </span>
+        <ExternalLink className="size-3" />
       </Button>
     </>
   );

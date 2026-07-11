@@ -184,19 +184,26 @@ export default async function ComparePage({
                     ) : null}
                   </td>
                   <td className="p-3 align-top">
-                    <span
-                      className={
-                        rCompliant === false
-                          ? "text-destructive"
-                          : rCompliant === true
-                            ? "text-[var(--rag-green)]"
-                            : "text-muted-foreground"
-                      }
-                    >
-                      {rr?.isNotApplicable
-                        ? "N/A"
-                        : formatResponseValue(rr?.value)}
-                    </span>
+                    <>
+                      <span
+                        className={
+                          rCompliant === false
+                            ? "text-destructive"
+                            : rCompliant === true
+                              ? "text-[var(--rag-green)]"
+                              : "text-muted-foreground"
+                        }
+                      >
+                        {rr?.isNotApplicable
+                          ? "N/A"
+                          : formatResponseValue(rr?.value)}
+                      </span>
+                      {diff.complianceChanged ? (
+                        <Badge variant="outline" className="ml-1 text-[10px]">
+                          changed
+                        </Badge>
+                      ) : null}
+                    </>
                   </td>
                 </tr>
               );
