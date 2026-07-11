@@ -43,6 +43,10 @@ export async function createVendorAction(
     contractRenewalDate: getField(formData, "contractRenewalDate"),
     contractValue: getField(formData, "contractValue"),
     geographicRisk: getField(formData, "geographicRisk"),
+    tags: getField(formData, "tags")
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean),
     ownerId: getField(formData, "ownerId"),
   });
   if (!parsed.success) {
@@ -74,6 +78,10 @@ export async function updateVendorAction(
     contractRenewalDate: getField(formData, "contractRenewalDate"),
     contractValue: getField(formData, "contractValue"),
     geographicRisk: getField(formData, "geographicRisk"),
+    tags: getField(formData, "tags")
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean),
     ownerId: getField(formData, "ownerId"),
   });
   if (!parsed.success) {
@@ -148,6 +156,7 @@ export async function importVendorsAction(
         raw.contractrenewaldate ?? raw.contractRenewalDate ?? "",
       contractValue: raw.contractvalue ?? raw.contractValue ?? "",
       geographicRisk: raw.geographicrisk ?? raw.geographicRisk ?? "",
+      tags: raw.tags ?? "",
     });
 
     if (parsed.success) {
@@ -166,6 +175,10 @@ export async function importVendorsAction(
           contractRenewalDate: parsed.data.contractRenewalDate,
           contractValue: parsed.data.contractValue,
           geographicRisk: parsed.data.geographicRisk,
+          tags: parsed.data.tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter(Boolean),
           ownerId: "",
         },
       });

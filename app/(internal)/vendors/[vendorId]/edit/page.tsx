@@ -82,6 +82,7 @@ export default async function EditVendorPage({ params }: EditVendorPageProps) {
                 : "",
               contractValue: vendor.contractValue ?? "",
               geographicRisk: vendor.geographicRisk ?? "",
+              tags: vendor.tags?.join(", ") ?? "",
               ownerId: vendor.ownerId ?? "",
             }}
           />

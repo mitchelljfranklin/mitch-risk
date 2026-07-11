@@ -250,6 +250,15 @@ export default async function VendorDetailPage({
             <ScoreBadge score={vendor.overallScore} />
           ) : null}
         </div>
+        {vendor.tags?.length > 0 ? (
+          <div className="mt-2 flex flex-wrap gap-1">
+            {vendor.tags.map((tag) => (
+              <Badge key={tag} variant="secondary" className="text-[11px]">
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        ) : null}
       </div>
 
       <Tabs defaultValue={safeTab}>

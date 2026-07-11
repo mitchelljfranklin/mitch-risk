@@ -51,6 +51,7 @@ function vendorOrderBy(
 export type VendorListFilters = {
   query?: string;
   tier?: string;
+  tag?: string;
   sort?: VendorSort;
   page?: number;
   pageSize?: number;
@@ -64,11 +65,16 @@ export async function listVendors(filters?: VendorListFilters) {
     where.OR = [
       { name: { contains: term, mode: "insensitive" } },
       { contactEmail: { contains: term, mode: "insensitive" } },
+      { tags: { hasSome: [term] } },
     ];
   }
 
   if (filters?.tier) {
     where.tier = filters.tier as VendorTier;
+  }
+
+  if (filters?.tag) {
+    where.tags = { has: filters.tag };
   }
 
   const page = Math.max(1, filters?.page ?? 1);
@@ -118,6 +124,7 @@ export function exportAllVendors() {
       contractRenewalDate: true,
       contractValue: true,
       geographicRisk: true,
+      tags: true,
     },
   });
 }
@@ -164,6 +171,7 @@ function toVendorData(input: VendorInput): Prisma.VendorUncheckedCreateInput {
         ? null
         : (input.geographicRisk as GeographicRisk),
     ownerId: input.ownerId || null,
+    tags: input.tags ?? [],
   };
 }
 

@@ -36,7 +36,7 @@ import {
 import { Download } from "lucide-react";
 
 const CSV_TEMPLATE = [
-  "id,name,contactname,contactemail,tier,website,notes,servicedescription,datasensitivity,contractrenewaldate,contractvalue,geographicrisk",
+  "id,name,contactname,contactemail,tier,website,notes,servicedescription,datasensitivity,contractrenewaldate,contractvalue,geographicrisk,tags",
   ",Acme Corp,John Doe,john@acme.com,CRITICAL,https://acme.com,Our payment processor,Handles all payment processing,CONFIDENTIAL,2026-12-31,HIGH,MEDIUM",
   ",Beta Ltd,Jane Smith,jane@beta.com,HIGH,https://beta.com,Cloud hosting provider,Infrastructure as a Service,INTERNAL,,MEDIUM,LOW",
   ",Gamma Inc,,admin@gamma.com,MEDIUM,,,Marketing analytics tool,PUBLIC,2026-06-15,LOW,NONE",
@@ -153,10 +153,10 @@ export function ImportVendorsForm() {
                 <code>website</code>, <code>notes</code>,{" "}
                 <code>servicedescription</code>, <code>datasensitivity</code>,{" "}
                 <code>contractrenewaldate</code>, <code>contractvalue</code>,{" "}
-                <code>geographicrisk</code>. Only <code>name</code> and{" "}
-                <code>contactemail</code> are required. Max 1 MB. Include a
-                vendor <code>id</code> to update an existing vendor instead of
-                creating a new one.
+                <code>geographicrisk</code>, <code>tags</code>. Only{" "}
+                <code>name</code> and <code>contactemail</code> are required.
+                Max 1 MB. Include a vendor <code>id</code> to update an existing
+                vendor instead of creating a new one.
               </p>
             </div>
 

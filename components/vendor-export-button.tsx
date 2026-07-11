@@ -23,6 +23,7 @@ type VendorExportRow = {
   contractRenewalDate: string | null;
   contractValue: string | null;
   geographicRisk: string | null;
+  tags: string[];
 };
 
 const CSV_HEADER = [
@@ -38,6 +39,7 @@ const CSV_HEADER = [
   "contractrenewaldate",
   "contractvalue",
   "geographicrisk",
+  "tags",
 ].join(",");
 
 function buildCsv(vendors: VendorExportRow[]): string {
@@ -55,6 +57,7 @@ function buildCsv(vendors: VendorExportRow[]): string {
       csvEscape(vendor.contractRenewalDate ?? ""),
       csvEscape(vendor.contractValue ?? ""),
       csvEscape(vendor.geographicRisk ?? ""),
+      csvEscape(vendor.tags?.length ? vendor.tags.join(", ") : ""),
     ].join(","),
   );
   return [CSV_HEADER, ...rows].join("\n");

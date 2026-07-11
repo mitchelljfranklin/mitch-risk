@@ -54,6 +54,7 @@ type VendorFormProps = {
     contractRenewalDate: string;
     contractValue: string;
     geographicRisk: string;
+    tags: string;
     ownerId: string;
   };
 };
@@ -195,6 +196,18 @@ export function VendorForm({
                   <SelectItem value="HIGH">High</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="tags">Tags</Label>
+              <Input
+                id="tags"
+                name="tags"
+                placeholder="e.g. saas, critical, finance"
+                defaultValue={defaults?.tags ?? ""}
+              />
+              <span className="text-muted-foreground text-[11px]">
+                Comma-separated labels for grouping and filtering
+              </span>
             </div>
           </div>
         </div>

@@ -134,6 +134,7 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
                 vendor.contractRenewalDate?.toISOString().slice(0, 10) ?? null,
               contractValue: vendor.contractValue,
               geographicRisk: vendor.geographicRisk,
+              tags: vendor.tags ?? [],
             }))}
             allVendors={exportVendors.map((vendor) => ({
               id: vendor.id,
@@ -149,6 +150,7 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
                 vendor.contractRenewalDate?.toISOString().slice(0, 10) ?? null,
               contractValue: vendor.contractValue,
               geographicRisk: vendor.geographicRisk,
+              tags: vendor.tags ?? [],
             }))}
           />
           {canCreateVendor ? (
@@ -265,6 +267,19 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
                       <CardDescription className="truncate">
                         {vendor.contactEmail}
                       </CardDescription>
+                      {vendor.tags?.length > 0 ? (
+                        <div className="mt-1 flex flex-wrap gap-1">
+                          {vendor.tags.map((tag) => (
+                            <Badge
+                              key={tag}
+                              variant="secondary"
+                              className="text-[10px]"
+                            >
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : null}
                     </CardHeader>
                     <CardContent className="flex items-end justify-between gap-2">
                       <div className="text-muted-foreground flex flex-col gap-0.5 text-xs">

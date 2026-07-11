@@ -232,6 +232,7 @@ model Vendor {
   dataSensitivity     DataSensitivity?
   contractValue       ContractValue?
   geographicRisk      GeographicRisk?
+  tags                String[]       @default([])
   contractRenewalDate DateTime?
   ownerId             String?
   owner               User?            @relation("VendorOwner", fields: [ownerId], references: [id], onDelete: SetNull)
