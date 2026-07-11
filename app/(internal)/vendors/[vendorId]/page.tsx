@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ScoreBadge } from "@/components/score-badge";
+import { VendorTimeline } from "@/components/vendor-timeline";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ActionGroup } from "@/components/action-group";
@@ -22,6 +23,7 @@ import { getVendorProfile } from "@/lib/db/compliance";
 import { listVendorFindings } from "@/lib/db/findings";
 import { listFrameworks } from "@/lib/db/frameworks";
 import { getVendor } from "@/lib/db/vendors";
+import { buildVendorTimeline } from "@/lib/db/vendor-timeline";
 import {
   ASSESSMENT_STATUS_LABELS,
   FINDING_STATUS_LABELS,
@@ -85,6 +87,32 @@ export default async function VendorDetailPage({
     listVendorCertifications(vendorId),
   ]);
   const openFindings = findings.filter((finding) => finding.status === "OPEN");
+
+  const timeline = buildVendorTimeline({
+    vendorId,
+    assessments: vendor.assessments.map((assessment) => ({
+      id: assessment.id,
+      title: assessment.title,
+      status: assessment.status,
+      createdAt: assessment.createdAt,
+      accessToken: assessment.accessToken,
+      submittedAt: assessment.submittedAt,
+    })),
+    findings: findings.map((finding) => ({
+      id: finding.id,
+      title: finding.title,
+      status: finding.status,
+      createdAt: finding.createdAt,
+      resolvedAt: finding.resolvedAt,
+    })),
+    certifications: certifications.map((certification) => ({
+      id: certification.id,
+      name: certification.name,
+      issuedDate: certification.issuedDate,
+      expiresDate: certification.expiresDate,
+      createdAt: certification.createdAt,
+    })),
+  });
   const certificationViews = certifications.map((cert) => ({
     id: cert.id,
     name: cert.name,
@@ -354,6 +382,15 @@ export default async function VendorDetailPage({
           </CardContent>
         </Card>
       ) : null}
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Activity</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <VendorTimeline events={timeline} />
+        </CardContent>
+      </Card>
 
       {profile && profile.domainBreakdown.length > 0 ? (
         <Card>

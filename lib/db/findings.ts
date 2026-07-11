@@ -174,6 +174,7 @@ export type VendorFinding = {
   assessmentId: string;
   assessmentTitle: string;
   createdAt: Date;
+  resolvedAt: Date | null;
 };
 
 export async function listVendorFindings(
@@ -188,6 +189,7 @@ export async function listVendorFindings(
       severity: true,
       status: true,
       createdAt: true,
+      resolvedAt: true,
       assessmentId: true,
       assessment: { select: { title: true } },
     },
@@ -201,6 +203,7 @@ export async function listVendorFindings(
     assessmentId: row.assessmentId,
     assessmentTitle: row.assessment.title,
     createdAt: row.createdAt,
+    resolvedAt: row.resolvedAt,
   }));
 }
 
