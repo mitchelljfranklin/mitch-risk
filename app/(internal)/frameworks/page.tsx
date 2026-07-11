@@ -43,6 +43,9 @@ export default async function FrameworksPage() {
             <Link href="/frameworks/import">Import framework</Link>
           </Button>
         ) : null}
+        <Button asChild variant="outline" size="sm">
+          <Link href="/frameworks/gaps">Coverage gaps</Link>
+        </Button>
       </div>
 
       {frameworks.length === 0 ? (

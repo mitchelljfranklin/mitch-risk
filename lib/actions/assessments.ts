@@ -430,3 +430,38 @@ async function getAssessmentForPortalToken(
   });
   return assessment?.accessToken ?? null;
 }
+
+export async function cloneAssessmentToVendorAction(formData: FormData) {
+  const user = await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
+  const assessmentId = getField(formData, "assessmentId");
+  const targetVendorId = getField(formData, "targetVendorId");
+
+  if (!assessmentId || !targetVendorId) {
+    return { error: "Missing assessment or vendor." };
+  }
+
+  const source = await prisma.assessment.findUnique({
+    where: { id: assessmentId },
+    select: { templateId: true, title: true },
+  });
+
+  if (!source?.templateId) {
+    return { error: "Source assessment has no template." };
+  }
+
+  const created = await prisma.assessment.create({
+    data: {
+      vendorId: targetVendorId,
+      templateId: source.templateId,
+      title: `${source.title} (copy)`,
+      status: "DRAFT",
+    },
+  });
+
+  if (user) {
+    await logAudit(user.id, "CREATE_ASSESSMENT", "Assessment", created.id);
+  }
+
+  revalidatePath("/assessments");
+  redirect(`/assessments/${created.id}`);
+}
