@@ -138,6 +138,7 @@ export default async function SettingsPage({
     orderBy: { createdAt: "desc" },
     select: {
       id: true,
+      name: true,
       url: true,
       enabled: true,
       events: true,

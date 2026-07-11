@@ -43,6 +43,7 @@ const PLATFORM_OPTIONS: { value: WebhookPlatform; label: string }[] = [
 
 type WebhookRow = {
   id: string;
+  name: string;
   url: string;
   enabled: boolean;
   events: string[];
@@ -88,6 +89,16 @@ export function WebhooksForm({ endpoints }: WebhooksFormProps) {
         >
           <h4 className="text-sm font-medium">New webhook</h4>
           <div className="grid gap-3">
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="webhookName" className="text-xs">
+                Name
+              </Label>
+              <Input
+                id="webhookName"
+                name="name"
+                placeholder="e.g. Slack alerts, Teams compliance"
+              />
+            </div>
             <div className="flex flex-col gap-1">
               <Label htmlFor="webhookUrl" className="text-xs">
                 URL
@@ -164,9 +175,14 @@ export function WebhooksForm({ endpoints }: WebhooksFormProps) {
           {endpoints.map((endpoint) => (
             <div key={endpoint.id} className="flex flex-col gap-2 p-3">
               <div className="flex items-center justify-between gap-2">
-                <span className="truncate text-sm font-medium">
-                  {endpoint.url}
-                </span>
+                <div className="min-w-0">
+                  {endpoint.name ? (
+                    <span className="text-sm font-medium">{endpoint.name}</span>
+                  ) : null}
+                  <span className="text-muted-foreground block truncate text-xs">
+                    {endpoint.url}
+                  </span>
+                </div>
                 <div className="flex shrink-0 items-center gap-2">
                   <Badge
                     variant={endpoint.enabled ? "default" : "secondary"}

@@ -819,6 +819,7 @@ export async function createWebhookAction(
   const user = await requirePermission(PERMISSIONS.WEBHOOKS_MANAGE);
 
   const url = getField(formData, "url");
+  const name = getField(formData, "name")?.trim() || "";
   const platform = (getField(formData, "platform") ||
     "GENERIC") as WebhookPlatform;
   const events = formData.getAll("events") as WebhookEvent[];
@@ -834,7 +835,7 @@ export async function createWebhookAction(
   const secret = randomBytes(32).toString("hex");
 
   await prisma.webhookEndpoint.create({
-    data: { url, secret, events, platform },
+    data: { url, name, secret, events, platform },
   });
 
   if (user) {
