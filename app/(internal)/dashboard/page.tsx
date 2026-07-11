@@ -127,6 +127,11 @@ export default async function DashboardPage() {
           <Button asChild size="sm">
             <Link href="/assessments">Assessments</Link>
           </Button>
+          <Button asChild variant="outline" size="sm">
+            <a href="/api/dashboard/report" download>
+              Portfolio report
+            </a>
+          </Button>
         </div>
       </div>
 
