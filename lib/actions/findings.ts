@@ -9,6 +9,7 @@ import { updateFindingStatus } from "@/lib/db/findings";
 import { logAudit } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
 import { FINDING_STATUSES } from "@/lib/schemas/assessment";
+import { prisma } from "@/lib/prisma";
 
 export async function updateFindingStatusAction(formData: FormData) {
   const user = await requirePermission(PERMISSIONS.ASSESSMENTS_REVIEW);
@@ -35,4 +36,52 @@ export async function updateFindingStatusAction(formData: FormData) {
     revalidatePath(`/assessments/${assessmentId}`);
   }
   revalidatePath("/risk-register");
+}
+
+export type BulkFindingsResult = { ok: boolean; message: string } | undefined;
+
+export async function bulkUpdateFindingStatusesAction(
+  _previousState: BulkFindingsResult,
+  formData: FormData,
+): Promise<BulkFindingsResult> {
+  const user = await requirePermission(PERMISSIONS.ASSESSMENTS_REVIEW);
+
+  const rawIds = getField(formData, "findingIds");
+  const status = getField(formData, "status");
+  const resolutionNote = getField(formData, "resolutionNote") || undefined;
+
+  if (!FINDING_STATUSES.includes(status as never)) {
+    return { ok: false, message: "Invalid status." };
+  }
+
+  let findingIds: string[] = [];
+  try {
+    findingIds = JSON.parse(rawIds);
+    if (!Array.isArray(findingIds) || findingIds.length === 0) {
+      return { ok: false, message: "No findings selected." };
+    }
+  } catch {
+    return { ok: false, message: "Invalid selection data." };
+  }
+
+  await prisma.$transaction(
+    findingIds.map((id) =>
+      updateFindingStatus({
+        findingId: id,
+        status: status as FindingStatus,
+        resolutionNote,
+        resolvedById: user.id,
+      }),
+    ),
+  );
+
+  for (const id of findingIds) {
+    await logAudit(user.id, "UPDATE_FINDING", "Finding", id, { status });
+  }
+
+  revalidatePath("/risk-register");
+  return {
+    ok: true,
+    message: `${findingIds.length} finding${findingIds.length !== 1 ? "s" : ""} updated.`,
+  };
 }

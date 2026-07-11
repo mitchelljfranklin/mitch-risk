@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -14,6 +13,7 @@ import { AutoSubmitSelect } from "@/components/auto-submit-select";
 import { EmptyState } from "@/components/empty-state";
 import { Pagination } from "@/components/pagination";
 import { StatCard } from "@/components/stat-card";
+import { BulkFindingsWrapper } from "@/components/bulk-findings-wrapper";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import {
@@ -26,14 +26,8 @@ import { listVendorOptions } from "@/lib/db/vendors";
 import {
   FINDING_STATUSES,
   FINDING_STATUS_LABELS,
-  FINDING_STATUS_STYLES,
-  SEVERITY_ACCENT,
-  SEVERITY_STYLES,
 } from "@/lib/schemas/assessment";
 import { RISK_WEIGHTS } from "@/lib/schemas/template";
-import { formatDate } from "@/lib/utils";
-import { FindingStatusForm } from "../assessments/[assessmentId]/finding-status-form";
-import { ControlCodePills } from "@/components/control-code-pills";
 
 export const dynamic = "force-dynamic";
 
@@ -182,63 +176,7 @@ export default async function RiskRegisterPage({
         )
       ) : (
         <>
-          <div className="flex flex-col gap-3">
-            {findings.map((finding) => (
-              <Card
-                key={finding.id}
-                className={SEVERITY_ACCENT[finding.severity] ?? ""}
-              >
-                <CardHeader>
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div className="flex min-w-0 flex-col gap-1">
-                      <CardTitle className="text-base">
-                        {finding.title}
-                      </CardTitle>
-                      <p className="text-muted-foreground text-xs">
-                        {finding.vendorName} · {finding.assessmentTitle} ·{" "}
-                        {formatDate(finding.createdAt)}
-                      </p>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-2">
-                      <Badge
-                        className={SEVERITY_STYLES[finding.severity] ?? ""}
-                      >
-                        {finding.severity.charAt(0) +
-                          finding.severity.slice(1).toLowerCase()}
-                      </Badge>
-                      <Badge
-                        className={FINDING_STATUS_STYLES[finding.status] ?? ""}
-                      >
-                        {FINDING_STATUS_LABELS[finding.status] ??
-                          finding.status}
-                      </Badge>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-2">
-                  <p className="text-muted-foreground text-sm">
-                    {finding.description}
-                  </p>
-                  {finding.controlCodes.length > 0 ? (
-                    <ControlCodePills codes={finding.controlCodes} />
-                  ) : null}
-                  {finding.resolutionNote ? (
-                    <p className="text-muted-foreground text-xs">
-                      Note: {finding.resolutionNote}
-                    </p>
-                  ) : null}
-                  {canReview ? (
-                    <FindingStatusForm
-                      findingId={finding.id}
-                      assessmentId={finding.assessmentId}
-                      currentStatus={finding.status}
-                      currentNote={finding.resolutionNote ?? ""}
-                    />
-                  ) : null}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <BulkFindingsWrapper findings={findings} canReview={canReview} />
           <Pagination
             page={page}
             pageSize={pageSize}
