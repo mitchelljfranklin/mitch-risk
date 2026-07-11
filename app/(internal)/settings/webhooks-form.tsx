@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
@@ -64,10 +64,15 @@ export function WebhooksForm({ endpoints }: WebhooksFormProps) {
   );
   useActionFeedback(createState);
 
-  if (createState?.ok) {
-    setShowNew(false);
-    router.refresh();
-  }
+  const prevOkRef = useRef(createState?.ok);
+
+  useEffect(() => {
+    if (createState?.ok && !prevOkRef.current) {
+      setShowNew(false);
+      router.refresh();
+    }
+    prevOkRef.current = createState?.ok ?? false;
+  }, [createState, router]);
 
   return (
     <div className="flex flex-col gap-6">
