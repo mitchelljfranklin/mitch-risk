@@ -24,7 +24,7 @@ All email subjects and bodies are customisable under **Settings → Email → Te
 ```
 {{vendorName}}, {{assessmentTitle}}, {{portalUrl}}, {{dueDate}},
 {{reviewerName}}, {{assessmentUrl}}, {{message}}, {{appName}},
-{{resetUrl}}, {{expiresIn}}, {{itemName}}, {{vendorUrl}},
+{{resetUrl}}, {{expiresIn}}, {{expiresDate}}, {{itemName}}, {{vendorUrl}},
 {{portalPassword}}
 ```
 
@@ -41,7 +41,7 @@ All email subjects and bodies are customisable under **Settings → Email → Te
 
 ## Email logging
 
-Every sent email creates a log entry with type, recipient, subject, and status (SENT / FAILED). Failed sends include the error message. View logs under **Settings → Email → Log**.
+Every sent email creates a log entry with type, recipient, subject, and status (SENT / FAILED). Failed sends include the error message. View logs under **Settings → Email Tracking**.
 
 Logs are pruned automatically by the cron job (default: 14 day retention, configurable under Settings → Limits).
 

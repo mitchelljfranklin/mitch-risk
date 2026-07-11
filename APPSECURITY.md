@@ -516,7 +516,7 @@ All state-changing operations are recorded in the `AuditLog` table:
 | Field | Description |
 |-------|-------------|
 | `userId` | The user who performed the action (nullable via SetNull — "Deleted user" on user deletion) |
-| `action` | One of 44 distinct action codes (e.g., `LOGIN`, `CREATE_VENDOR`, `REVIEW_DECISION`) |
+| `action` | One of 47 distinct action codes (e.g., `LOGIN`, `CREATE_VENDOR`, `REVIEW_DECISION`) |
 | `entityType` | The target entity type (e.g., `Assessment`, `Vendor`, `Template`) |
 | `entityId` | The target entity ID |
 | `meta` | JSON field for additional context (e.g., review decision, note, changed fields) |
@@ -524,7 +524,7 @@ All state-changing operations are recorded in the `AuditLog` table:
 
 ### 10.2 Audited Events
 
-The audit covers 44 distinct actions across the following domains:
+The audit covers 47 distinct actions across the following domains:
 
 - **Authentication:** LOGIN
 - **Assessments:** create, delete, send, revoke, extend, regenerate, submit, reopen, finalize, review decision, send back to vendor

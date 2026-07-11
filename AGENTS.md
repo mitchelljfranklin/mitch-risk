@@ -53,10 +53,11 @@ app/                 # Next.js App Router
   docs/              # Swagger UI page
   style-guide/       # component showcase
 components/          # shadcn ui primitives + domain composites
-  ui/                # badge, button, card, chart, checkbox, dropdown-menu, input,
-                     #   label, radio-group, select, separator, sheet, sidebar,
-                     #   skeleton, sonner, stepper, tabs, textarea, tooltip,
-                     #   alert-dialog, table
+  ui/                # badge, button, card, chart, checkbox, combobox, command,
+                     #   dialog, dropdown-menu, input, label, popover,
+                     #   radio-group, select, separator, sheet, sidebar,
+                     #   skeleton, sonner, stepper, submit-button, table, tabs,
+                     #   textarea, tooltip, alert-dialog, form-field
   stat-card.tsx      # animated count-up stat cards
   empty-state.tsx    # SVG illustration empty states
   keyboard-shortcuts.tsx # ? key modal with g+letter navigation
@@ -80,6 +81,23 @@ components/          # shadcn ui primitives + domain composites
   page-main.tsx      # client wrapper for full-width dashboard
   assessment-timeline.tsx # interactive activity area chart
   permission-selector.tsx # grouped permission checkboxes (API key scoping, role editing)
+  action-group.tsx   # responsive button group with mobile overflow
+  app-sidebar.tsx    # internal layout sidebar with RBAC-gated nav items
+  attention-groups.tsx # expandable needs-attention groups on dashboard
+  bulk-findings-wrapper.tsx # checkbox selection + bulk toolbar for findings
+  dashboard-charts.tsx # RAG donut + findings bar chart (recharts)
+  evidence-preview.tsx # sheet-embedded preview for evidence PDFs and images
+  page-skeleton.tsx  # composable loading skeleton component
+  sparkline.tsx      # SVG sparkline for trend visualization
+  vendor-timeline.tsx # chronological activity feed on vendor detail
+  flash-toast.tsx    # cookie-based server-to-client toast messages
+  scroll-lock-fix.tsx # MutationObserver fix for body overflow lock
+  copy-link.tsx      # click-to-copy URL button
+  template-preview.tsx # read-only template preview rendering
+  assessment-status-badge.tsx # assessment status badge with label mapping
+  theme-toggle.tsx   # light/dark theme toggle button
+  user-menu.tsx      # user dropdown menu (profile, logout)
+  vendor-export-button.tsx # CSV/JSON export button for vendor data
   data-table-column-header.tsx # sortable/hideable TanStack Table column header
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
@@ -130,7 +148,8 @@ scripts/             # backup.sh, backup.ps1
 e2e/                 # Playwright end-to-end tests
 docs/                # Docsify-powered user documentation site (GitHub Pages)
                      #   docs/openapi.json must be kept in sync with lib/openapi.json
-                     #   (copy when API endpoints change)
+                     #   (the live Swagger UI at /docs serves lib/openapi.json directly;
+                     #   docs/openapi.json is for the static Docsify site)
 proxy.ts             # Next.js 16 proxy (CSP nonce + security headers)
 ```
 

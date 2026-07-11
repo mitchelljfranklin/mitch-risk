@@ -2,7 +2,7 @@
 
 All operational settings in Mitch‑Risk are managed through the in-app **Settings** page. There are no YAML config files, no environment variables to tweak after deployment, and no manual database edits required. Every option is configurable via the UI by users with the **Settings: manage** permission.
 
-The Settings page is organised into 13 tabs. Eight are configuration forms, three are management screens (Users, Roles, API), and two are read-only log viewers.
+The Settings page is organised into 14 tabs. Nine are configuration forms, three are management screens (Users, Roles, API), one is a read-only audit log, and one is a system health dashboard.
 
 ---
 
@@ -167,4 +167,10 @@ API authentication supports Bearer tokens and session cookies. Full interactive 
 
 ## Audit
 
-A read-only, paginated log of all administrative actions. Filter by action type, user, or date range. Click **Clear** to reset all active filters. Export to CSV (all results or current page). 44 distinct action types are tracked including logins, user management, vendor CRUD, assessment lifecycle, template operations, and settings changes. Requires **Audit: view** permission.
+A read-only, paginated log of all administrative actions. Filter by action type, user, or date range. Click **Clear** to reset all active filters. Export to CSV (all results or current page). 47 distinct action types are tracked including logins, user management, vendor CRUD, assessment lifecycle, template operations, and settings changes. Requires **Audit: view** permission.
+
+---
+
+## Health
+
+System diagnostics for operators. Shows current application status (running), version, commit hash, build time, uptime, and memory usage. The **Database** section shows whether the connection is healthy. Requires **Settings: manage** permission.
