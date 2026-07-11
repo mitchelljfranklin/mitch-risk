@@ -541,8 +541,7 @@
                 "IN_PROGRESS",
                 "SUBMITTED",
                 "UNDER_REVIEW",
-                "COMPLETED",
-                "OVERDUE"
+                "COMPLETED"
               ]
             }
           },
@@ -1069,8 +1068,7 @@
                     "IN_PROGRESS",
                     "SUBMITTED",
                     "UNDER_REVIEW",
-                    "COMPLETED",
-                    "OVERDUE"
+                    "COMPLETED"
                   ]
                 },
                 "score": {
@@ -1420,8 +1418,7 @@
               "IN_PROGRESS",
               "SUBMITTED",
               "UNDER_REVIEW",
-              "COMPLETED",
-              "OVERDUE"
+              "COMPLETED"
             ]
           },
           "score": { "type": "number", "nullable": true, "format": "float" },
@@ -1769,7 +1766,6 @@
             "properties": {
               "COMPLETED": { "type": "integer" },
               "IN_PROGRESS": { "type": "integer" },
-              "OVERDUE": { "type": "integer" },
               "UNDER_REVIEW": { "type": "integer" },
               "SENT": { "type": "integer" },
               "DRAFT": { "type": "integer" },

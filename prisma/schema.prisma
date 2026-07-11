@@ -212,7 +212,6 @@ enum AssessmentStatus {
   SUBMITTED
   UNDER_REVIEW
   COMPLETED
-  OVERDUE
 }
 
 enum Recurrence {
