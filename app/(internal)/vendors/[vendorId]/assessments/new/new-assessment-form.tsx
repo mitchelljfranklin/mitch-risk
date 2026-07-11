@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -54,18 +55,13 @@ export function NewAssessmentForm({
       </div>
       <div className="grid gap-2">
         <Label htmlFor="templateId">Questionnaire template</Label>
-        <Select name="templateId" required>
-          <SelectTrigger id="templateId">
-            <SelectValue placeholder="Select a published template" />
-          </SelectTrigger>
-          <SelectContent>
-            {templates.map((template) => (
-              <SelectItem key={template.id} value={template.id}>
-                {template.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Combobox
+          name="templateId"
+          options={templates}
+          placeholder="Select a published template"
+          emptyText="No templates found."
+          required
+        />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="grid gap-2">
