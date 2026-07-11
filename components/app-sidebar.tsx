@@ -17,7 +17,6 @@ import { usePathname } from "next/navigation";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -36,7 +35,6 @@ import {
 type AppSidebarProps = {
   orgName: string;
   permissions: string[];
-  notificationCount: number;
   hasLogo: boolean;
   logoKey: string;
 };
@@ -52,7 +50,6 @@ const MANAGE_PERMISSIONS: Permission[] = [
 export function AppSidebar({
   orgName,
   permissions,
-  notificationCount,
   hasLogo,
   logoKey,
 }: AppSidebarProps) {
@@ -219,23 +216,6 @@ export function AppSidebar({
           </SidebarGroup>
         ) : null}
       </SidebarContent>
-      {notificationCount > 0 ? (
-        <SidebarFooter>
-          <section
-            aria-label={`${notificationCount} ${notificationCount === 1 ? "item" : "items"} need attention`}
-            className="flex items-center gap-2 px-4 py-3"
-          >
-            <div className="bg-primary text-primary-foreground flex h-6 min-w-6 items-center justify-center rounded-full px-1.5 text-xs font-semibold">
-              {notificationCount}
-            </div>
-            <span className="text-muted-foreground text-sm">
-              {notificationCount === 1
-                ? "item needs attention"
-                : "items need attention"}
-            </span>
-          </section>
-        </SidebarFooter>
-      ) : null}
     </Sidebar>
   );
 }

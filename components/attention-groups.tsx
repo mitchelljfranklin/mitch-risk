@@ -69,6 +69,9 @@ type AttentionGroupsProps = {
   belowThresholdGroups: BelowThresholdEntry[];
   keyDates?: KeyDateEntry[];
   amberThreshold: number;
+  unreviewedCount: number;
+  clarificationCount: number;
+  failedEmailCount: number;
 };
 
 export function AttentionGroups({
@@ -76,6 +79,9 @@ export function AttentionGroups({
   belowThresholdGroups,
   keyDates,
   amberThreshold,
+  unreviewedCount,
+  clarificationCount,
+  failedEmailCount,
 }: AttentionGroupsProps) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
@@ -90,10 +96,12 @@ export function AttentionGroups({
     return 0;
   }
 
-  const totalItems = GROUPS.reduce(
+  const summaryTotal = unreviewedCount + clarificationCount + failedEmailCount;
+  const groupTotal = GROUPS.reduce(
     (sum, group) => sum + totalForGroup(group.key),
     0,
   );
+  const totalItems = summaryTotal + groupTotal;
 
   if (totalItems === 0) {
     return (
@@ -115,7 +123,48 @@ export function AttentionGroups({
       <CardHeader>
         <CardTitle>Needs attention ({totalItems})</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-1">
+      <CardContent className="flex flex-col gap-3">
+        {summaryTotal > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {unreviewedCount > 0 ? (
+              <Link
+                href="/assessments?status=SUBMITTED"
+                className="bg-muted hover:bg-accent inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs transition-colors"
+              >
+                <AlertTriangle className="size-3" />
+                <span className="font-medium">{unreviewedCount}</span>
+                <span className="text-muted-foreground">
+                  {unreviewedCount === 1 ? "unreviewed" : "unreviewed"}
+                </span>
+              </Link>
+            ) : null}
+            {clarificationCount > 0 ? (
+              <Link
+                href="/assessments"
+                className="bg-muted hover:bg-accent inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs transition-colors"
+              >
+                <span className="font-medium">{clarificationCount}</span>
+                <span className="text-muted-foreground">
+                  {clarificationCount === 1
+                    ? "clarification"
+                    : "clarifications"}
+                </span>
+              </Link>
+            ) : null}
+            {failedEmailCount > 0 ? (
+              <Link
+                href="/settings?tab=email-tracking&status=FAILED"
+                className="bg-muted hover:bg-accent inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs transition-colors"
+              >
+                <span className="font-medium">{failedEmailCount}</span>
+                <span className="text-muted-foreground">
+                  failed email
+                  {failedEmailCount !== 1 ? "s" : ""} (24h)
+                </span>
+              </Link>
+            ) : null}
+          </div>
+        ) : null}
         {GROUPS.map((group) => {
           const count = totalForGroup(group.key);
           if (count === 0) return null;

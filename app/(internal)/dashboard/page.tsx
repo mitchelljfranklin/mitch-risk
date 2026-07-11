@@ -13,6 +13,7 @@ import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getDashboardData } from "@/lib/db/compliance";
 import { getFindingSummary } from "@/lib/db/findings";
 import { listUpcomingKeyDates } from "@/lib/db/dashboard";
+import { getNotificationCounts } from "@/lib/db/notifications";
 import { prisma } from "@/lib/prisma";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 import { formatDate } from "@/lib/utils";
@@ -70,11 +71,13 @@ export default async function DashboardPage() {
     PERMISSIONS.VENDORS_CREATE,
   );
 
-  const [data, findingSummary, upcoming] = await Promise.all([
-    getDashboardData(),
-    getFindingSummary(),
-    listUpcomingKeyDates(60),
-  ]);
+  const [data, findingSummary, upcoming, notificationCounts] =
+    await Promise.all([
+      getDashboardData(),
+      getFindingSummary(),
+      listUpcomingKeyDates(60),
+      getNotificationCounts(),
+    ]);
 
   const oneYearAgo = new Date();
   oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
@@ -194,6 +197,11 @@ export default async function DashboardPage() {
               belowThresholdGroups={attentionGroups.belowThreshold}
               keyDates={upcoming}
               amberThreshold={attentionGroups.amberThreshold}
+              unreviewedCount={notificationCounts.unreviewedSubmissions}
+              clarificationCount={
+                notificationCounts.clarificationsAwaitingVendor
+              }
+              failedEmailCount={notificationCounts.failedEmails}
             />
 
             {topDeficientControls.length > 0 ? (

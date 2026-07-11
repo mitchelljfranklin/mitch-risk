@@ -14,7 +14,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 import { IdleTimer } from "@/components/idle-timer";
 import { requireUser } from "@/lib/auth";
-import { getNotificationCounts } from "@/lib/db/notifications";
 import {
   getAppearanceSettings,
   getAssessmentSettings,
@@ -25,13 +24,11 @@ export default async function InternalLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const user = await requireUser();
-  const [organization, notificationCounts, appearance, assessment] =
-    await Promise.all([
-      getOrganizationSettings(),
-      getNotificationCounts(),
-      getAppearanceSettings(),
-      getAssessmentSettings(),
-    ]);
+  const [organization, appearance, assessment] = await Promise.all([
+    getOrganizationSettings(),
+    getAppearanceSettings(),
+    getAssessmentSettings(),
+  ]);
 
   return (
     <>
@@ -42,7 +39,6 @@ export default async function InternalLayout({
         <AppSidebar
           orgName={organization.name}
           permissions={user.permissions}
-          notificationCount={notificationCounts.total}
           hasLogo={Boolean(appearance.logoKey)}
           logoKey={appearance.logoKey ?? ""}
         />
