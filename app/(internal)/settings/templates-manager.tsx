@@ -129,7 +129,7 @@ function TemplateEditorSheet({
           </Button>
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             onClick={() =>
               window.open(
                 `/api/settings/email-preview?templateType=${definition.type}`,
