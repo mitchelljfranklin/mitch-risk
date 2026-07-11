@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ActionGroup } from "@/components/action-group";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { EmptyState } from "@/components/empty-state";
 import { DuplicateTemplateMenuItem } from "@/components/duplicate-template-menu-item";
@@ -115,7 +116,7 @@ export default async function TemplateBuilderPage({
               {template.status.toLowerCase()}
             </Badge>
           </h1>
-          <div className="flex items-center gap-2">
+          <ActionGroup>
             {canEditTemplate && isDraft ? (
               <form action={publishTemplateAction}>
                 <input type="hidden" name="templateId" value={template.id} />
@@ -190,7 +191,7 @@ export default async function TemplateBuilderPage({
                 <input type="hidden" name="templateId" value={template.id} />
               </form>
             ) : null}
-          </div>
+          </ActionGroup>
         </div>
       </div>
 

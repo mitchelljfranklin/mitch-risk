@@ -6,6 +6,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ScoreBadge } from "@/components/score-badge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ActionGroup } from "@/components/action-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CertificationsManager } from "@/components/certifications-manager";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -140,7 +141,7 @@ export default async function VendorDetailPage({
               <Badge variant="outline">{VENDOR_TIER_LABELS[vendor.tier]}</Badge>
             ) : null}
           </h1>
-          <div className="flex flex-wrap items-center gap-2">
+          <ActionGroup>
             {canEditVendor ? (
               <Button asChild variant="outline">
                 <Link href={`/vendors/${vendor.id}/edit`}>Edit</Link>
@@ -168,7 +169,7 @@ export default async function VendorDetailPage({
                 </ConfirmDialog>
               </form>
             ) : null}
-          </div>
+          </ActionGroup>
         </div>
         <div className="mt-1 flex items-center gap-4 text-sm">
           <span className="text-muted-foreground">

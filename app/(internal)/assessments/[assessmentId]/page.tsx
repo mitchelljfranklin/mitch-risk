@@ -6,6 +6,7 @@ import { CopyLink } from "@/components/copy-link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ActionGroup } from "@/components/action-group";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import {
   Card,
@@ -213,7 +214,7 @@ export default async function AssessmentDetailPage({
               {ASSESSMENT_STATUS_LABELS[assessment.status]}
             </Badge>
           </h1>
-          <div className="flex flex-wrap items-center gap-2">
+          <ActionGroup>
             {isReviewable && canReview ? (
               <>
                 <SendBackDialog assessmentId={assessment.id} />
@@ -274,7 +275,7 @@ export default async function AssessmentDetailPage({
                 </ConfirmDialog>
               </form>
             ) : null}
-          </div>
+          </ActionGroup>
         </div>
         <p className="text-muted-foreground mt-1 text-sm">
           <Link
