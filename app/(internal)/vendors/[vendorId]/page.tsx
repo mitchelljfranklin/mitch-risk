@@ -36,6 +36,29 @@ import {
 } from "@/lib/schemas/vendor";
 import { cn, formatDate, formatPercent } from "@/lib/utils";
 
+function computeInherentRisk(vendor: {
+  tier: string | null;
+  dataSensitivity: string | null;
+}): number | null {
+  const tierWeights: Record<string, number> = {
+    CRITICAL: 1,
+    HIGH: 0.75,
+    MEDIUM: 0.5,
+    LOW: 0.25,
+  };
+  const sensitivityWeights: Record<string, number> = {
+    RESTRICTED: 1,
+    CONFIDENTIAL: 0.75,
+    INTERNAL: 0.5,
+    PUBLIC: 0.25,
+  };
+  const tierScore = vendor.tier ? (tierWeights[vendor.tier] ?? 0.5) : 0.5;
+  const sensitivityScore = vendor.dataSensitivity
+    ? (sensitivityWeights[vendor.dataSensitivity] ?? 0.5)
+    : 0.5;
+  return (tierScore + sensitivityScore) / 2;
+}
+
 export const dynamic = "force-dynamic";
 
 type VendorDetailPageProps = {
@@ -319,6 +342,27 @@ export default async function VendorDetailPage({
             <CardTitle>Risk profile</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
+            {(() => {
+              const inherent = computeInherentRisk(vendor);
+              return inherent !== null && vendor.overallScore !== null ? (
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground text-xs">
+                      Residual (assessed)
+                    </span>
+                    <ScoreBadge score={vendor.overallScore} size="sm" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground text-xs">
+                      Inherent (pre-assessment)
+                    </span>
+                    <Badge variant="secondary" className="text-[11px]">
+                      {formatPercent(inherent)}
+                    </Badge>
+                  </div>
+                </div>
+              ) : null;
+            })()}
             {profile.overallScore !== null ? (
               <div className="flex items-center gap-2">
                 <ScoreBadge score={profile.overallScore} size="lg" />

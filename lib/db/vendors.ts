@@ -1,5 +1,7 @@
 import {
+  type ContractValue,
   type DataSensitivity,
+  type GeographicRisk,
   type Prisma,
   type VendorTier,
 } from "@prisma/client";
@@ -151,6 +153,14 @@ function toVendorData(input: VendorInput): Prisma.VendorUncheckedCreateInput {
     contractRenewalDate: input.contractRenewalDate
       ? new Date(input.contractRenewalDate)
       : null,
+    contractValue:
+      !input.contractValue || input.contractValue === ""
+        ? null
+        : (input.contractValue as ContractValue),
+    geographicRisk:
+      !input.geographicRisk || input.geographicRisk === ""
+        ? null
+        : (input.geographicRisk as GeographicRisk),
     ownerId: input.ownerId || null,
   };
 }

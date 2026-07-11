@@ -230,6 +230,8 @@ model Vendor {
   notes               String?
   serviceDescription  String?
   dataSensitivity     DataSensitivity?
+  contractValue       ContractValue?
+  geographicRisk      GeographicRisk?
   contractRenewalDate DateTime?
   ownerId             String?
   owner               User?            @relation("VendorOwner", fields: [ownerId], references: [id], onDelete: SetNull)
@@ -522,4 +524,38 @@ model Attachment {
 
   @@index([entityType, entityId])
   @@map("attachments")
+}
+
+enum ContractValue {
+  NONE
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum GeographicRisk {
+  NONE
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum WebhookEvent {
+  ASSESSMENT_SUBMITTED
+  ASSESSMENT_OVERDUE
+  FINDING_CREATED
+  FINDING_RESOLVED
+  CERTIFICATION_EXPIRING
+}
+
+model WebhookEndpoint {
+  id        String         @id @default(cuid())
+  url       String
+  secret    String
+  enabled   Boolean        @default(true)
+  events    WebhookEvent[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@map("webhook_endpoints")
 }

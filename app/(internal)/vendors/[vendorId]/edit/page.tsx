@@ -80,6 +80,8 @@ export default async function EditVendorPage({ params }: EditVendorPageProps) {
               contractRenewalDate: vendor.contractRenewalDate
                 ? vendor.contractRenewalDate.toISOString().slice(0, 10)
                 : "",
+              contractValue: vendor.contractValue ?? "",
+              geographicRisk: vendor.geographicRisk ?? "",
               ownerId: vendor.ownerId ?? "",
             }}
           />

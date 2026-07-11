@@ -5,6 +5,9 @@ import { revalidatePath } from "next/cache";
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS, isValidPermission } from "@/lib/permissions";
 import { logAudit } from "@/lib/db/audit";
+import { prisma } from "@/lib/prisma";
+import { getField } from "@/lib/utils";
+import type { WebhookEvent } from "@prisma/client";
 import {
   getAppearanceSettings,
   updateEmailSettings,
@@ -805,4 +808,76 @@ export async function saveStorageSettings(
   }
 
   return { ok: true, message: "Storage settings saved." };
+}
+
+export type WebhookActionState = { ok?: boolean; message?: string } | undefined;
+
+export async function createWebhookAction(
+  _previousState: WebhookActionState,
+  formData: FormData,
+): Promise<WebhookActionState> {
+  const user = await requirePermission(PERMISSIONS.WEBHOOKS_MANAGE);
+
+  const url = getField(formData, "url");
+  const events = formData.getAll("events") as WebhookEvent[];
+
+  if (!url) {
+    return { ok: false, message: "URL is required." };
+  }
+
+  if (events.length === 0) {
+    return { ok: false, message: "At least one event must be selected." };
+  }
+
+  const secret = randomBytes(32).toString("hex");
+
+  await prisma.webhookEndpoint.create({
+    data: { url, secret, events },
+  });
+
+  if (user) {
+    await logAudit(user.id, "CREATE_WEBHOOK", "Webhook", url);
+  }
+
+  revalidatePath("/settings");
+  return { ok: true, message: "Webhook endpoint created." };
+}
+
+export async function deleteWebhookAction(formData: FormData) {
+  const user = await requirePermission(PERMISSIONS.WEBHOOKS_MANAGE);
+  const webhookId = getField(formData, "webhookId");
+
+  if (!webhookId) return;
+
+  await prisma.webhookEndpoint.delete({ where: { id: webhookId } });
+
+  if (user) {
+    await logAudit(user.id, "DELETE_WEBHOOK", "Webhook", webhookId);
+  }
+
+  revalidatePath("/settings");
+}
+
+export async function toggleWebhookAction(formData: FormData) {
+  const user = await requirePermission(PERMISSIONS.WEBHOOKS_MANAGE);
+  const webhookId = getField(formData, "webhookId");
+  const enabled = getField(formData, "enabled") === "true";
+
+  if (!webhookId) return;
+
+  await prisma.webhookEndpoint.update({
+    where: { id: webhookId },
+    data: { enabled },
+  });
+
+  if (user) {
+    await logAudit(
+      user.id,
+      enabled ? "ENABLE_WEBHOOK" : "DISABLE_WEBHOOK",
+      "Webhook",
+      webhookId,
+    );
+  }
+
+  revalidatePath("/settings");
 }

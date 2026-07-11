@@ -52,6 +52,8 @@ type VendorFormProps = {
     serviceDescription: string;
     dataSensitivity: string;
     contractRenewalDate: string;
+    contractValue: string;
+    geographicRisk: string;
     ownerId: string;
   };
 };
@@ -160,6 +162,40 @@ export function VendorForm({
                 ))}
               </SelectContent>
             </Select>
+            <div className="grid gap-2">
+              <Label htmlFor="contractValue">Contract value</Label>
+              <Select
+                name="contractValue"
+                defaultValue={defaults?.contractValue ?? ""}
+              >
+                <SelectTrigger id="contractValue">
+                  <SelectValue placeholder="Unspecified" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="NONE">None</SelectItem>
+                  <SelectItem value="LOW">Low</SelectItem>
+                  <SelectItem value="MEDIUM">Medium</SelectItem>
+                  <SelectItem value="HIGH">High</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="geographicRisk">Geographic risk</Label>
+              <Select
+                name="geographicRisk"
+                defaultValue={defaults?.geographicRisk ?? ""}
+              >
+                <SelectTrigger id="geographicRisk">
+                  <SelectValue placeholder="Unspecified" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="NONE">None</SelectItem>
+                  <SelectItem value="LOW">Low</SelectItem>
+                  <SelectItem value="MEDIUM">Medium</SelectItem>
+                  <SelectItem value="HIGH">High</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
         <Separator className="my-1" />

@@ -42,6 +42,8 @@ export const vendorSchema = z.object({
     .union([z.literal(""), z.enum(DATA_SENSITIVITIES)])
     .optional(),
   contractRenewalDate: z.string().optional(),
+  contractValue: z.string().optional(),
+  geographicRisk: z.string().optional(),
   ownerId: z.string().optional(),
 });
 

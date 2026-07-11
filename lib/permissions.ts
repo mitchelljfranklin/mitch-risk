@@ -20,6 +20,7 @@ export const PERMISSIONS = {
   ROLES_MANAGE: "roles:manage",
   SETTINGS_MANAGE: "settings:manage",
   API_MANAGE: "api:manage",
+  WEBHOOKS_MANAGE: "webhooks:manage",
 } as const;
 
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
@@ -86,6 +87,13 @@ export const PERMISSION_GROUPS: readonly PermissionGroup[] = [
       { key: PERMISSIONS.ROLES_MANAGE, label: "Manage roles" },
       { key: PERMISSIONS.SETTINGS_MANAGE, label: "Manage settings" },
       { key: PERMISSIONS.API_MANAGE, label: "Manage API access" },
+    ],
+  },
+  {
+    resource: "webhooks",
+    label: "Webhooks",
+    permissions: [
+      { key: PERMISSIONS.WEBHOOKS_MANAGE, label: "Manage webhooks" },
     ],
   },
 ];

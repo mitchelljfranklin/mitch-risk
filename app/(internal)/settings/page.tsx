@@ -42,6 +42,7 @@ import { LimitsForm } from "./limits-form";
 import { StorageForm } from "./storage-form";
 import { EmailTrackingForm } from "./email-tracking";
 import { HealthTab } from "./health-tab";
+import { WebhooksForm } from "./webhooks-form";
 import { listEmailLogs } from "@/lib/db/notifications";
 
 export const dynamic = "force-dynamic";
@@ -61,6 +62,7 @@ export default async function SettingsPage({
     PERMISSIONS.ROLES_MANAGE,
     PERMISSIONS.API_MANAGE,
     PERMISSIONS.AUDIT_VIEW,
+    PERMISSIONS.WEBHOOKS_MANAGE,
   ]);
   const permissions = currentUser.permissions;
   const canManageSettings = hasPermission(
@@ -71,6 +73,10 @@ export default async function SettingsPage({
   const canManageRoles = hasPermission(permissions, PERMISSIONS.ROLES_MANAGE);
   const canManageApi = hasPermission(permissions, PERMISSIONS.API_MANAGE);
   const canViewAudit = hasPermission(permissions, PERMISSIONS.AUDIT_VIEW);
+  const canManageWebhooks = hasPermission(
+    permissions,
+    PERMISSIONS.WEBHOOKS_MANAGE,
+  );
 
   const sp = await searchParams;
   const [
@@ -127,6 +133,10 @@ export default async function SettingsPage({
     getEmailLogRetention(),
     getStorageSettings(),
   ]);
+
+  const webhookEndpoints = await prisma.webhookEndpoint.findMany({
+    orderBy: { createdAt: "desc" },
+  });
 
   const breakGlassConfigured = (await getBreakGlassHash()) !== null;
 
@@ -200,6 +210,7 @@ export default async function SettingsPage({
     ...(canManageUsers ? ["users"] : []),
     ...(canManageRoles ? ["roles"] : []),
     ...(canManageApi ? ["api"] : []),
+    ...(canManageWebhooks ? ["webhooks"] : []),
     ...(canViewAudit ? ["audit"] : []),
   ];
   const defaultTab =
@@ -239,6 +250,9 @@ export default async function SettingsPage({
               <TabsTrigger value="roles">Roles</TabsTrigger>
             ) : null}
             {canManageApi ? <TabsTrigger value="api">API</TabsTrigger> : null}
+            {canManageWebhooks ? (
+              <TabsTrigger value="webhooks">Webhooks</TabsTrigger>
+            ) : null}
             {canViewAudit ? (
               <TabsTrigger value="audit">Audit</TabsTrigger>
             ) : null}
@@ -302,6 +316,24 @@ export default async function SettingsPage({
             </CardContent>
           </Card>
         </TabsContent>
+
+        {canManageWebhooks ? (
+          <TabsContent value="webhooks" className="mt-4 flex flex-col gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Webhooks</CardTitle>
+                <CardDescription>
+                  Configure endpoints to receive event notifications when
+                  assessments are submitted, findings change, or certifications
+                  expire.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <WebhooksForm endpoints={webhookEndpoints} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        ) : null}
 
         <TabsContent value="email" className="mt-4 flex flex-col gap-6">
           <Card>

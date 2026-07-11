@@ -18,6 +18,7 @@ import { getClientIp } from "@/lib/client-ip";
 import { sendEmail } from "@/lib/email/mailer";
 import { env } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
+import { dispatchWebhook } from "@/lib/webhooks";
 import { saveProgressSchema } from "@/lib/schemas/portal";
 import { getAssessmentSettings, getFileSettings } from "@/lib/settings";
 import { storage } from "@/lib/storage";
@@ -155,6 +156,26 @@ export async function submitPortalAction(
 
   const result = await submitAssessment(token);
   if (!result.ok) return result;
+
+  const submitted = await prisma.assessment.findUnique({
+    where: { accessToken: token },
+    select: {
+      id: true,
+      title: true,
+      score: true,
+      vendor: { select: { name: true } },
+    },
+  });
+
+  if (submitted) {
+    dispatchWebhook("ASSESSMENT_SUBMITTED", {
+      assessmentId: submitted.id,
+      assessmentTitle: submitted.title,
+      vendorName: submitted.vendor.name,
+      score: submitted.score,
+      submittedAt: new Date().toISOString(),
+    });
+  }
 
   try {
     const assessment = await prisma.assessment.findUnique({
