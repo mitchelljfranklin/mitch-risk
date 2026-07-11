@@ -38,7 +38,8 @@ export async function GET(
   let data: Buffer;
   try {
     data = await storage.read(evidence.storageKey);
-  } catch {
+  } catch (error) {
+    console.error(`Error reading evidence file ${evidenceId}:`, error);
     return new Response("File not found", { status: 404 });
   }
 

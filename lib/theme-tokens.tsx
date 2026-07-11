@@ -27,16 +27,19 @@ function foregroundFor(hex: string): string {
 }
 
 export async function ThemeTokens() {
-  const appearance = await getAppearanceSettings().catch(() => ({
-    primaryHex: "",
-    secondaryHex: "",
-    ragGreenHex: "",
-    ragAmberHex: "",
-    ragRedHex: "",
-    ragUnscoredHex: "",
-    borderRadius: 10,
-    logoKey: "",
-  }));
+  const appearance = await getAppearanceSettings().catch((err) => {
+    console.error("Failed to load appearance settings for theme tokens:", err);
+    return {
+      primaryHex: "",
+      secondaryHex: "",
+      ragGreenHex: "",
+      ragAmberHex: "",
+      ragRedHex: "",
+      ragUnscoredHex: "",
+      borderRadius: 10,
+      logoKey: "",
+    };
+  });
   const {
     primaryHex,
     secondaryHex,

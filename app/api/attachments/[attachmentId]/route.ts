@@ -46,7 +46,8 @@ export async function GET(
         "X-Content-Type-Options": "nosniff",
       },
     });
-  } catch {
+  } catch (error) {
+    console.error(`Error reading attachment ${attachmentId}:`, error);
     return new Response("Error reading file", { status: 500 });
   }
 }

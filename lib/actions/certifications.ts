@@ -182,8 +182,8 @@ async function handleAttachmentUpload(
       await storage.delete(storageKey);
     } catch (cleanupError: unknown) {
       console.error("Failed to clean up attachment storage:", cleanupError);
-      // Attachment storage cleanup failed — orphaned file will be swept by cron
     }
+    return { ok: false, message: "Failed to save file record." };
   }
 
   return { ok: true, message: "File uploaded." };

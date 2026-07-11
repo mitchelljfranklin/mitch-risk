@@ -32,7 +32,8 @@ export async function GET() {
         "Cache-Control": "public, max-age=3600",
       },
     });
-  } catch {
+  } catch (error) {
+    console.error("Error reading logo:", error);
     return new Response("Error reading logo", { status: 500 });
   }
 }

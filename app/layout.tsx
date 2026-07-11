@@ -19,7 +19,10 @@ const geistMono = Geist_Mono({
 export async function generateMetadata(): Promise<Metadata> {
   const orgName = await getOrganizationSettings()
     .then((org) => org.name || "mitch-risk")
-    .catch(() => "mitch-risk");
+    .catch((err) => {
+      console.error("Failed to load organization settings:", err);
+      return "mitch-risk";
+    });
   return {
     title: { template: `%s — ${orgName}`, default: orgName },
     description: "Lightweight third party vendor risk management solution",
@@ -31,16 +34,19 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const appearance = await getAppearanceSettings().catch(() => ({
-    primaryHex: "",
-    secondaryHex: "",
-    ragGreenHex: "",
-    ragAmberHex: "",
-    ragRedHex: "",
-    ragUnscoredHex: "",
-    borderRadius: 10,
-    logoKey: "",
-  }));
+  const appearance = await getAppearanceSettings().catch((err) => {
+    console.error("Failed to load appearance settings:", err);
+    return {
+      primaryHex: "",
+      secondaryHex: "",
+      ragGreenHex: "",
+      ragAmberHex: "",
+      ragRedHex: "",
+      ragUnscoredHex: "",
+      borderRadius: 10,
+      logoKey: "",
+    };
+  });
   const faviconUrl = appearance.logoKey
     ? `/api/brand/logo?v=${appearance.logoKey}`
     : "/favicon.ico";

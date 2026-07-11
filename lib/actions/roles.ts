@@ -117,12 +117,10 @@ export async function duplicateRoleAction(formData: FormData): Promise<void> {
         sourceRoleId: roleId,
       });
     }
+    revalidatePath("/settings");
   } catch (error) {
     console.error(`[roles] failed to duplicate role ${roleId}:`, error);
-    return;
   }
-
-  revalidatePath("/settings");
 }
 
 export async function deleteRoleAction(formData: FormData): Promise<void> {
@@ -139,10 +137,8 @@ export async function deleteRoleAction(formData: FormData): Promise<void> {
     if (actor) {
       await logAudit(actor.id, "DELETE_ROLE", "Role", roleId);
     }
+    revalidatePath("/settings");
   } catch (error) {
     console.error(`[roles] failed to delete role ${roleId}:`, error);
-    return;
   }
-
-  revalidatePath("/settings");
 }
