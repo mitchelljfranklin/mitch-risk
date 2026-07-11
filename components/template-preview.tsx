@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { EmptyState } from "@/components/empty-state";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { type TemplateForBuilder } from "@/lib/db/templates";
@@ -131,9 +132,12 @@ export function TemplatePreview({
 
   if (template.sections.length === 0) {
     return (
-      <p className="text-muted-foreground text-sm">
-        This template has no sections yet.
-      </p>
+      <EmptyState
+        compact
+        icon="templates"
+        title="No sections yet"
+        description=""
+      />
     );
   }
 
@@ -146,7 +150,12 @@ export function TemplatePreview({
           </CardHeader>
           <CardContent className="flex flex-col gap-5">
             {section.questions.length === 0 ? (
-              <p className="text-muted-foreground text-sm">No questions.</p>
+              <EmptyState
+                compact
+                icon="templates"
+                title="No questions."
+                description=""
+              />
             ) : (
               section.questions.map((question) => {
                 const condition = summarizeConditionalLogic(

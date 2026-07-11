@@ -139,10 +139,12 @@ export default async function CompareVendorsPage({
             Compare vendors
           </h1>
         </div>
-        <p className="text-muted-foreground text-sm">
-          Both vendors must have at least one completed or under‑review
-          assessment to compare.
-        </p>
+        <EmptyState
+          compact
+          icon="assessments"
+          title="Not enough assessments"
+          description="Both vendors must have at least one completed or under‑review assessment to compare."
+        />
       </div>
     );
   }
