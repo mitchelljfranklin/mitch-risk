@@ -4,6 +4,7 @@ import {
   Building2,
   ClipboardCheck,
   ClipboardList,
+  ClipboardPenLine,
   LayoutDashboard,
   Library,
   Settings,
@@ -75,6 +76,12 @@ export function AppSidebar({
       href: "/risk-register",
       icon: ShieldAlert,
       permission: PERMISSIONS.ASSESSMENTS_VIEW,
+    },
+    {
+      title: "Self-assessment",
+      href: "/self-assessment",
+      icon: ClipboardPenLine,
+      permission: PERMISSIONS.ASSESSMENTS_CREATE,
     },
   ].filter((item) => hasPermission(permissions, item.permission));
 

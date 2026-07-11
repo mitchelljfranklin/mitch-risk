@@ -23,7 +23,8 @@ import {
 } from "@/lib/db/assessments";
 import { assessmentSchema } from "@/lib/schemas/assessment";
 
-export type AssessmentFormState = { error: string } | undefined;
+export type AssessmentFormState =
+  { ok?: boolean; error?: string; message?: string } | undefined;
 
 export async function createAssessmentAction(
   previousState: AssessmentFormState,
@@ -382,4 +383,50 @@ export async function sendBulkAssessmentsAction(
     skipped: skippedCount,
     emailFailed: emailFailedCount,
   };
+}
+
+export async function createAndStartSelfAssessmentAction(
+  formData: FormData,
+): Promise<AssessmentFormState & { portalUrl?: string }> {
+  await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
+
+  const vendorId = getField(formData, "vendorId");
+  const parsed = assessmentSchema.safeParse({
+    title: getField(formData, "title"),
+    templateId: getField(formData, "templateId"),
+    dueDate: getField(formData, "dueDate"),
+    reviewerId: "",
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+  }
+
+  const assessment = await createAssessment(vendorId, parsed.data);
+  await sendAssessment(assessment.id);
+
+  const user = await getCurrentUser();
+  if (user) {
+    await logAudit(user.id, "SEND_ASSESSMENT", "Assessment", assessment.id);
+  }
+
+  const sent = await getAssessmentForPortalToken(assessment.id);
+  const portalUrl = sent ? `${env.APP_URL}/portal/${sent}` : null;
+
+  if (!portalUrl) {
+    return {
+      error: "Assessment created but portal link could not be generated.",
+    };
+  }
+
+  return { ok: true, message: "Assessment started.", portalUrl };
+}
+
+async function getAssessmentForPortalToken(
+  assessmentId: string,
+): Promise<string | null> {
+  const assessment = await prisma.assessment.findUnique({
+    where: { id: assessmentId },
+    select: { accessToken: true },
+  });
+  return assessment?.accessToken ?? null;
 }
