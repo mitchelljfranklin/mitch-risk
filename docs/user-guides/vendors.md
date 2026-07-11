@@ -17,6 +17,7 @@ Vendors are the third-party organisations you assess. The vendor record stores p
 | **Contract Renewal** | Date when the vendor contract is up for renewal |
 | **Contract Value** | Approximate annual value: `$0–$50K`, `$50K–$250K`, `$250K–$1M`, `$1M–$5M`, `$5M+` |
 | **Geographic Risk** | Where the vendor operates: `DOMESTIC`, `REGIONAL`, `GLOBAL`, `HIGH_RISK_JURISDICTION` |
+| **Tags** | Comma-separated labels for grouping and filtering (e.g. `saas, critical, finance`) |
 | **Notes** | Free-form notes about the vendor relationship |
 | **Overall Score** | Calculated from the most recent completed assessment (0–100%) |
 

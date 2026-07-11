@@ -75,6 +75,7 @@ function buildVendorCsvResponse(
     )}`,
     `Contract value:,${csvEscape(vendor.contractValue ?? "")}`,
     `Geographic risk:,${csvEscape(vendor.geographicRisk ?? "")}`,
+    `Tags:,${csvEscape(vendor.tags?.length ? vendor.tags.join(", ") : "")}`,
     `Overall Score:,${vendor.overallScore !== null ? Math.round(vendor.overallScore * 100) + "%" : ""}`,
     "",
   ].join("\n");

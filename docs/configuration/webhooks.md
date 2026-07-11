@@ -19,13 +19,15 @@ For Slack, Teams, and Discord, paste your platform's incoming webhook URL direct
 
 ## Event Types
 
+All five event types are wired end-to-end and fire automatically when their trigger conditions are met.
+
 | Event | When It Fires |
 |---|---|
-| `ASSESSMENT_SUBMITTED` | A vendor submits their questionnaire (status changes to `SUBMITTED`) |
-| `ASSESSMENT_OVERDUE` | Cron detects an assessment past its due date |
-| `FINDING_CREATED` | Auto-scoring or manual review generates a new finding |
+| `ASSESSMENT_SUBMITTED` | A vendor submits their questionnaire |
+| `ASSESSMENT_OVERDUE` | Cron detects an assessment past its due date and an escalation email is sent |
+| `FINDING_CREATED` | Auto-scoring generates a new finding from a non-compliant answer |
 | `FINDING_RESOLVED` | A finding's status changes to `REMEDIATED` or `RISK_ACCEPTED` |
-| `CERTIFICATION_EXPIRING` | A vendor certification is within 30 days of expiry |
+| `CERTIFICATION_EXPIRING` | Cron detects a certification approaching expiry (30 or 7 day windows) |
 
 Each endpoint subscribes to the events you select — you can configure different endpoints for different event types.
 

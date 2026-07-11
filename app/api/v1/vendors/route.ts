@@ -17,6 +17,7 @@ export async function GET(request: Request) {
     const { vendors } = await listVendors({
       query: searchParams.get("query") ?? undefined,
       tier: searchParams.get("tier") ?? undefined,
+      tag: searchParams.get("tag") ?? undefined,
       pageSize: 1000,
     });
 
@@ -28,6 +29,7 @@ export async function GET(request: Request) {
         contactEmail: vendor.contactEmail,
         tier: vendor.tier,
         website: vendor.website,
+        tags: vendor.tags ?? [],
         overallScore: vendor.overallScore,
         lastAssessedAt: vendor.lastAssessedAt,
         assessmentCount: vendor._count.assessments,

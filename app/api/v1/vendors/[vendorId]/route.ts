@@ -38,6 +38,7 @@ export async function GET(
       lastAssessedAt: vendor.lastAssessedAt,
       contractValue: vendor.contractValue,
       geographicRisk: vendor.geographicRisk,
+      tags: vendor.tags ?? [],
       assessments: vendor.assessments.map((assessment) => ({
         id: assessment.id,
         title: assessment.title,
@@ -90,6 +91,7 @@ export async function PUT(
         record.contractRenewalDate ?? existing.contractRenewalDate ?? "",
       contractValue: record.contractValue ?? existing.contractValue ?? "",
       geographicRisk: record.geographicRisk ?? existing.geographicRisk ?? "",
+      tags: record.tags ?? existing.tags ?? [],
       ownerId: record.ownerId ?? existing.ownerId ?? "",
     });
 

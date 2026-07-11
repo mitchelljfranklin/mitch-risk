@@ -38,6 +38,7 @@ export async function POST(request: Request) {
       contractRenewalDate: record.contractRenewalDate ?? "",
       contractValue: record.contractValue ?? "",
       geographicRisk: record.geographicRisk ?? "",
+      tags: record.tags ?? [],
     });
 
     if (!parsed.success) {

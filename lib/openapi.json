@@ -1025,6 +1025,11 @@
           "assessmentCount": {
             "type": "integer",
             "description": "Total number of assessments"
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "User-defined labels for grouping and filtering"
           }
         }
       },
@@ -1052,6 +1057,34 @@
             "type": "string",
             "nullable": true,
             "format": "date-time"
+          },
+          "contractValue": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "$0\u2013$50K",
+              "$50K\u2013$250K",
+              "$250K\u2013$1M",
+              "$1M\u2013$5M",
+              "$5M+"
+            ],
+            "description": "Approximate annual contract value"
+          },
+          "geographicRisk": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "DOMESTIC",
+              "REGIONAL",
+              "GLOBAL",
+              "HIGH_RISK_JURISDICTION"
+            ],
+            "description": "Geographic risk classification"
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "User-defined labels for grouping and filtering"
           },
           "assessments": {
             "type": "array",
@@ -1229,6 +1262,32 @@
             "type": "string",
             "format": "date",
             "description": "Contract renewal / review date (YYYY-MM-DD)"
+          },
+          "contractValue": {
+            "type": "string",
+            "enum": [
+              "$0\u2013$50K",
+              "$50K\u2013$250K",
+              "$250K\u2013$1M",
+              "$1M\u2013$5M",
+              "$5M+"
+            ],
+            "description": "Approximate annual contract value"
+          },
+          "geographicRisk": {
+            "type": "string",
+            "enum": [
+              "DOMESTIC",
+              "REGIONAL",
+              "GLOBAL",
+              "HIGH_RISK_JURISDICTION"
+            ],
+            "description": "Geographic risk classification"
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "User-defined labels for grouping and filtering"
           }
         }
       },
@@ -1253,6 +1312,27 @@
             "type": "string",
             "nullable": true,
             "format": "date-time"
+          },
+          "contractValue": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "$0\u2013$50K",
+              "$50K\u2013$250K",
+              "$250K\u2013$1M",
+              "$1M\u2013$5M",
+              "$5M+"
+            ]
+          },
+          "geographicRisk": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["DOMESTIC", "REGIONAL", "GLOBAL", "HIGH_RISK_JURISDICTION"]
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "User-defined labels"
           },
           "ownerId": { "type": "string", "nullable": true },
           "overallScore": { "type": "number", "nullable": true },
@@ -1363,6 +1443,25 @@
             "enum": ["PUBLIC", "INTERNAL", "CONFIDENTIAL", "RESTRICTED"]
           },
           "contractRenewalDate": { "type": "string", "format": "date" },
+          "contractValue": {
+            "type": "string",
+            "enum": [
+              "$0\u2013$50K",
+              "$50K\u2013$250K",
+              "$250K\u2013$1M",
+              "$1M\u2013$5M",
+              "$5M+"
+            ]
+          },
+          "geographicRisk": {
+            "type": "string",
+            "enum": ["DOMESTIC", "REGIONAL", "GLOBAL", "HIGH_RISK_JURISDICTION"]
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "User-defined labels"
+          },
           "ownerId": { "type": "string" }
         }
       },
@@ -1391,6 +1490,27 @@
             "type": "string",
             "nullable": true,
             "format": "date"
+          },
+          "contractValue": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "$0\u2013$50K",
+              "$50K\u2013$250K",
+              "$250K\u2013$1M",
+              "$1M\u2013$5M",
+              "$5M+"
+            ]
+          },
+          "geographicRisk": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["DOMESTIC", "REGIONAL", "GLOBAL", "HIGH_RISK_JURISDICTION"]
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "User-defined labels"
           },
           "ownerId": { "type": "string", "nullable": true },
           "overallScore": {
