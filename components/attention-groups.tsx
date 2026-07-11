@@ -14,10 +14,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScoreBadge } from "@/components/score-badge";
 import { formatDate } from "@/lib/utils";
 
-type VendorEntry = {
+type OverdueEntry = {
   vendorId: string;
   vendorName: string;
-  score?: number | null;
+  overdueCount: number;
+  mostOverdueAssessmentId: string | null;
+  mostOverdueDate: Date | null;
+};
+
+type BelowThresholdEntry = {
+  vendorId: string;
+  vendorName: string;
+  score: number | null;
 };
 
 type KeyDateEntry = {
@@ -57,11 +65,18 @@ const GROUPS: GroupConfig[] = [
 ];
 
 type AttentionGroupsProps = {
-  groups: Record<string, VendorEntry[]>;
+  overdueGroups: OverdueEntry[];
+  belowThresholdGroups: BelowThresholdEntry[];
   keyDates?: KeyDateEntry[];
+  amberThreshold: number;
 };
 
-export function AttentionGroups({ groups, keyDates }: AttentionGroupsProps) {
+export function AttentionGroups({
+  overdueGroups,
+  belowThresholdGroups,
+  keyDates,
+  amberThreshold,
+}: AttentionGroupsProps) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   function toggle(key: string) {
@@ -69,8 +84,10 @@ export function AttentionGroups({ groups, keyDates }: AttentionGroupsProps) {
   }
 
   function totalForGroup(key: string): number {
+    if (key === "overdue") return overdueGroups.length;
+    if (key === "belowThreshold") return belowThresholdGroups.length;
     if (key === "keyDates") return keyDates?.length ?? 0;
-    return groups[key]?.length ?? 0;
+    return 0;
   }
 
   const totalItems = GROUPS.reduce(
@@ -132,13 +149,15 @@ export function AttentionGroups({ groups, keyDates }: AttentionGroupsProps) {
               </button>
               {isExpanded ? (
                 <div className="ml-6 flex flex-col divide-y rounded-md border">
-                  {group.key === "keyDates"
-                    ? keyDates?.map((entry, index) => {
-                        const overdue = entry.daysUntil < 0;
+                  {group.key === "overdue"
+                    ? overdueGroups.map((entry) => {
+                        const href = entry.mostOverdueAssessmentId
+                          ? `/assessments/${entry.mostOverdueAssessmentId}`
+                          : `/vendors/${entry.vendorId}?tab=assessments`;
                         return (
                           <Link
-                            key={`${entry.vendorId}-${String(entry.date)}`}
-                            href={`/vendors/${entry.vendorId}`}
+                            key={entry.vendorId}
+                            href={href}
                             className="hover:bg-accent/40 flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors"
                           >
                             <div className="flex min-w-0 flex-1 flex-col">
@@ -146,33 +165,64 @@ export function AttentionGroups({ groups, keyDates }: AttentionGroupsProps) {
                                 {entry.vendorName}
                               </span>
                               <span className="text-muted-foreground truncate text-xs">
-                                {entry.label} · {formatDate(entry.date)}
+                                {entry.overdueCount === 1
+                                  ? "1 overdue assessment"
+                                  : `${entry.overdueCount} overdue assessments`}
+                                {entry.mostOverdueDate
+                                  ? ` · oldest since ${formatDate(entry.mostOverdueDate)}`
+                                  : ""}
                               </span>
                             </div>
-                            <span
-                              className={`shrink-0 text-xs ${overdue ? "text-destructive font-medium" : "text-muted-foreground"}`}
-                            >
-                              {overdue
-                                ? `${Math.abs(entry.daysUntil)}d overdue`
-                                : `in ${entry.daysUntil}d`}
-                            </span>
                           </Link>
                         );
                       })
-                    : groups[group.key]?.map((entry) => (
-                        <Link
-                          key={entry.vendorId}
-                          href={`/vendors/${entry.vendorId}`}
-                          className="hover:bg-accent/40 flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors"
-                        >
-                          <span className="truncate font-medium">
-                            {entry.vendorName}
-                          </span>
-                          {entry.score !== undefined && entry.score !== null ? (
-                            <ScoreBadge score={entry.score} size="sm" />
-                          ) : null}
-                        </Link>
-                      ))}
+                    : group.key === "belowThreshold"
+                      ? belowThresholdGroups.map((entry) => (
+                          <Link
+                            key={entry.vendorId}
+                            href={`/vendors/${entry.vendorId}`}
+                            className="hover:bg-accent/40 flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors"
+                          >
+                            <div className="flex min-w-0 flex-1 flex-col">
+                              <span className="truncate font-medium">
+                                {entry.vendorName}
+                              </span>
+                              <span className="text-muted-foreground text-xs">
+                                below {Math.round(amberThreshold * 100)}%
+                                threshold
+                              </span>
+                            </div>
+                            {entry.score !== null ? (
+                              <ScoreBadge score={entry.score} size="sm" />
+                            ) : null}
+                          </Link>
+                        ))
+                      : keyDates?.map((entry, index) => {
+                          const overdue = entry.daysUntil < 0;
+                          return (
+                            <Link
+                              key={`${entry.vendorId}-${String(entry.date)}`}
+                              href={`/vendors/${entry.vendorId}`}
+                              className="hover:bg-accent/40 flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors"
+                            >
+                              <div className="flex min-w-0 flex-1 flex-col">
+                                <span className="truncate font-medium">
+                                  {entry.vendorName}
+                                </span>
+                                <span className="text-muted-foreground truncate text-xs">
+                                  {entry.label} · {formatDate(entry.date)}
+                                </span>
+                              </div>
+                              <span
+                                className={`shrink-0 text-xs ${overdue ? "text-destructive font-medium" : "text-muted-foreground"}`}
+                              >
+                                {overdue
+                                  ? `${Math.abs(entry.daysUntil)}d overdue`
+                                  : `in ${entry.daysUntil}d`}
+                              </span>
+                            </Link>
+                          );
+                        })}
                 </div>
               ) : null}
             </div>

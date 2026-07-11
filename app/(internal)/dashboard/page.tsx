@@ -189,7 +189,12 @@ export default async function DashboardPage() {
 
           {/* Insight rail: actionable lists side-by-side */}
           <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-            <AttentionGroups groups={attentionGroups} keyDates={upcoming} />
+            <AttentionGroups
+              overdueGroups={attentionGroups.overdue}
+              belowThresholdGroups={attentionGroups.belowThreshold}
+              keyDates={upcoming}
+              amberThreshold={attentionGroups.amberThreshold}
+            />
 
             {topDeficientControls.length > 0 ? (
               <Card>

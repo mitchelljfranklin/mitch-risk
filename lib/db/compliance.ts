@@ -449,6 +449,37 @@ export async function getDashboardData() {
     latestAssessmentDate: vendor.assessments[0]?.createdAt ?? null,
   }));
 
+  const vendorIdsWithOverdue = portfolio
+    .filter((vendor) => vendor.overdueCount > 0)
+    .map((vendor) => vendor.id);
+
+  const overdueAssessments =
+    vendorIdsWithOverdue.length > 0
+      ? await prisma.assessment.findMany({
+          where: {
+            vendorId: { in: vendorIdsWithOverdue },
+            status: { in: ["SENT", "IN_PROGRESS"] },
+            dueDate: { lt: now },
+          },
+          select: { id: true, vendorId: true, dueDate: true },
+          orderBy: { dueDate: "asc" },
+        })
+      : [];
+
+  const mostOverdueByVendor = new Map<
+    string,
+    { assessmentId: string; dueDate: Date }
+  >();
+  for (const assessment of overdueAssessments) {
+    if (!assessment.dueDate) continue;
+    if (!mostOverdueByVendor.has(assessment.vendorId)) {
+      mostOverdueByVendor.set(assessment.vendorId, {
+        assessmentId: assessment.id,
+        dueDate: assessment.dueDate,
+      });
+    }
+  }
+
   const averageScore = scoredCount > 0 ? totalScore / scoredCount : null;
 
   const topDeficient = await computeTopDeficientControls(allVendors);
@@ -484,7 +515,16 @@ export async function getDashboardData() {
     attentionGroups: {
       overdue: portfolio
         .filter((vendor) => vendor.overdueCount > 0)
-        .map((vendor) => ({ vendorId: vendor.id, vendorName: vendor.name })),
+        .map((vendor) => {
+          const mostOverdue = mostOverdueByVendor.get(vendor.id);
+          return {
+            vendorId: vendor.id,
+            vendorName: vendor.name,
+            overdueCount: vendor.overdueCount,
+            mostOverdueAssessmentId: mostOverdue?.assessmentId ?? null,
+            mostOverdueDate: mostOverdue?.dueDate ?? null,
+          };
+        }),
       belowThreshold: portfolio
         .filter(
           (vendor) =>
@@ -496,6 +536,7 @@ export async function getDashboardData() {
           vendorName: vendor.name,
           score: vendor.overallScore,
         })),
+      amberThreshold,
     },
   };
 }
