@@ -462,7 +462,11 @@ export async function getDashboardData() {
             vendor.overallScore !== null &&
             vendor.overallScore < amberThreshold,
         )
-        .map((vendor) => ({ vendorId: vendor.id, vendorName: vendor.name })),
+        .map((vendor) => ({
+          vendorId: vendor.id,
+          vendorName: vendor.name,
+          score: vendor.overallScore,
+        })),
     },
   };
 }

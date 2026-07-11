@@ -11,9 +11,14 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScoreBadge } from "@/components/score-badge";
 import { formatDate } from "@/lib/utils";
 
-type VendorEntry = { vendorId: string; vendorName: string };
+type VendorEntry = {
+  vendorId: string;
+  vendorName: string;
+  score?: number | null;
+};
 
 type KeyDateEntry = {
   vendorId: string;
@@ -158,9 +163,14 @@ export function AttentionGroups({ groups, keyDates }: AttentionGroupsProps) {
                         <Link
                           key={entry.vendorId}
                           href={`/vendors/${entry.vendorId}`}
-                          className="hover:bg-accent/40 px-3 py-2 text-sm transition-colors"
+                          className="hover:bg-accent/40 flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors"
                         >
-                          {entry.vendorName}
+                          <span className="truncate font-medium">
+                            {entry.vendorName}
+                          </span>
+                          {entry.score !== undefined && entry.score !== null ? (
+                            <ScoreBadge score={entry.score} size="sm" />
+                          ) : null}
                         </Link>
                       ))}
                 </div>
