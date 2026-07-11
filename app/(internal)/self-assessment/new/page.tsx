@@ -16,7 +16,7 @@ export const metadata = { title: "New self-assessment" };
 const INTERNAL_VENDOR_NAME = "My Organization";
 
 export default async function NewSelfAssessmentPage() {
-  await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
+  const user = await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
 
   let vendor = await prisma.vendor.findFirst({
     where: { name: INTERNAL_VENDOR_NAME },
@@ -28,7 +28,13 @@ export default async function NewSelfAssessmentPage() {
         name: INTERNAL_VENDOR_NAME,
         contactEmail: "internal@local",
         tier: null,
+        ownerId: user.id,
       },
+    });
+  } else if (!vendor.ownerId) {
+    await prisma.vendor.update({
+      where: { id: vendor.id },
+      data: { ownerId: user.id },
     });
   }
 

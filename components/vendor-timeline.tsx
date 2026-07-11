@@ -31,6 +31,8 @@ const ICON_COLORS: Record<TimelineEvent["type"], string> = {
   certification: "text-[var(--rag-green)]",
 };
 
+const ICON_SIZE = 23;
+
 export function VendorTimeline({ events }: { events: TimelineEvent[] }) {
   if (events.length === 0) {
     return (
@@ -46,11 +48,15 @@ export function VendorTimeline({ events }: { events: TimelineEvent[] }) {
         return (
           <div key={event.id} className="relative flex gap-3 pb-4">
             {index < events.length - 1 ? (
-              <div className="bg-border absolute top-6 left-[11px] h-full w-px" />
+              <div
+                className="bg-border absolute top-6 h-full w-px"
+                style={{ left: `${Math.round(ICON_SIZE / 2)}px` }}
+              />
             ) : null}
 
             <div
-              className={`relative z-10 mt-0.5 flex size-[23px] shrink-0 items-center justify-center rounded-full border ${ICON_COLORS[event.type]} bg-background`}
+              className={`relative z-10 mt-0.5 flex shrink-0 items-center justify-center rounded-full border ${ICON_COLORS[event.type]} bg-background`}
+              style={{ width: `${ICON_SIZE}px`, height: `${ICON_SIZE}px` }}
             >
               <Icon className="size-3" />
             </div>

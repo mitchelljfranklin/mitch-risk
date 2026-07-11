@@ -137,7 +137,7 @@ export function AttentionGroups({ groups, keyDates }: AttentionGroupsProps) {
                         const overdue = entry.daysUntil < 0;
                         return (
                           <Link
-                            key={index}
+                            key={`${entry.vendorId}-${String(entry.date)}`}
                             href={`/vendors/${entry.vendorId}`}
                             className="hover:bg-accent/40 flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors"
                           >

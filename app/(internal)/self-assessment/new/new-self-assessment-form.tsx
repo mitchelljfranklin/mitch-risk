@@ -30,9 +30,8 @@ export function NewSelfAssessmentForm({
   const [state, formAction, isPending] = useActionState(
     async (_prev: AssessmentFormState, formData: FormData) => {
       const result = await createAndStartSelfAssessmentAction(formData);
-      const resolved = await Promise.resolve(result);
-      if (resolved?.ok && resolved?.portalUrl) {
-        router.push(resolved.portalUrl);
+      if (result?.ok && result?.portalUrl) {
+        router.push(result.portalUrl);
       }
       return result;
     },
