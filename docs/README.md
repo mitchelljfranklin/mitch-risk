@@ -71,15 +71,18 @@ A lightweight, self-hosted third party vendor risk management solution. Build se
 | Section | What You'll Learn |
 |---------|-------------------|
 | [Quick Start](quick-start.md) | Get up and running in minutes with Docker Compose |
+| [Dashboard](user-guides/dashboard.md) | Portfolio metrics, charts, keyboard shortcuts, and idle timeout |
 | [Templates](user-guides/templates.md) | Build and publish assessment templates |
 | [Assessments](user-guides/assessments.md) | Send, score, and manage vendor assessments |
 | [Review & Findings](user-guides/review.md) | Review responses and manage findings |
 | [Scoring Methodology](user-guides/scoring.md) | Understand inherent risk, weighted scoring, RAG, and residual risk |
+| [Self-Assessment](user-guides/self-assessment.md) | Assess your own organization using the vendor portal |
 | [Vendors](user-guides/vendors.md) | Manage vendor profiles, certifications, and attachments |
 | [RBAC & Roles](user-guides/rbac.md) | Configure permissions and access control |
 | [SSO](configuration/sso.md) | Set up single sign-on with Entra ID, Google, or OIDC |
 | [Email](configuration/email.md) | Configure SMTP, email templates, and logging |
 | [Scoring](configuration/scoring.md) | Tune risk weights and RAG thresholds |
+| [Webhooks](configuration/webhooks.md) | Configure outbound event notifications |
 | [Cron & Automation](advanced/cron.md) | Schedule reminders, escalations, recurring assessments |
 | [Security](advanced/security.md) | Auth methods, API keys, CSP, encryption |
 | [API Reference](api-reference/overview.md) | Integrate with the REST API |

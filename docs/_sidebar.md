@@ -3,10 +3,12 @@
   - [Screenshots](welcome/screenshots.md)
   - [Quick Start](quick-start.md)
 - **User Guides**
+  - [Dashboard](user-guides/dashboard.md)
   - [Templates](user-guides/templates.md)
   - [Assessments](user-guides/assessments.md)
   - [Review & Findings](user-guides/review.md)
   - [Scoring Methodology](user-guides/scoring.md)
+  - [Self-Assessment](user-guides/self-assessment.md)
   - [Vendors](user-guides/vendors.md)
   - [RBAC & Roles](user-guides/rbac.md)
 - **Configuration**
@@ -15,6 +17,7 @@
   - [SSO](configuration/sso.md)
   - [Email](configuration/email.md)
   - [Scoring](configuration/scoring.md)
+  - [Webhooks](configuration/webhooks.md)
 - **API Reference**
   - [Overview](api-reference/overview.md)
   - [Vendors](api-reference/vendors.md)

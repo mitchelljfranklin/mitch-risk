@@ -2,7 +2,7 @@
 
 All operational settings in Mitch‑Risk are managed through the in-app **Settings** page. There are no YAML config files, no environment variables to tweak after deployment, and no manual database edits required. Every option is configurable via the UI by users with the **Settings: manage** permission.
 
-The Settings page is organised into 15 tabs. Ten are configuration forms, three are management screens (Users, Roles, API), one is a read-only audit log, and one is a system health dashboard.
+The Settings page is organised into 16 tabs. Eleven are configuration forms, three are management screens (Users, Roles, API), one is a webhook endpoint manager, one is a read-only audit log, and one is a system health dashboard.
 
 ---
 

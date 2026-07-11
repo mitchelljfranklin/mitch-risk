@@ -134,5 +134,14 @@ The assessment detail page shows:
 - **Review panel** — collapsible per-question review with approve/clarify actions
 - **Comments** — threaded, per-question, with internal/vendor visibility control
 - **Findings panel** — linked findings with status and control codes
-- **Evidence** — uploaded files with download links
-- **Activity timeline** — chronological log of all assessment events
+- **Evidence** — uploaded files with inline preview (PDFs open in a side sheet, images display in-line)
+- **Activity timeline** — interactive area chart showing assessment activity over time with configurable time range
+
+## Comparing Assessments
+
+Compare two assessments to see what changed between submissions:
+
+- **Same-vendor over time** — pick two assessments for the same vendor to see score trend and which answers changed
+- **Compliance change badges** — arrows show whether each answer's compliance improved (↑), degraded (↓), or stayed the same
+- **Answer diff** — side-by-side comparison showing previous and current answers for each question
+- Navigate from the vendor detail page via **Compare last two** or from the assessment list

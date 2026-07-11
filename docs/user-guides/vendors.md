@@ -15,6 +15,8 @@ Vendors are the third-party organisations you assess. The vendor record stores p
 | **Service Description** | Description of the service or product provided |
 | **Risk Owner** | Internal staff member responsible for this vendor |
 | **Contract Renewal** | Date when the vendor contract is up for renewal |
+| **Contract Value** | Approximate annual value: `$0–$50K`, `$50K–$250K`, `$250K–$1M`, `$1M–$5M`, `$5M+` |
+| **Geographic Risk** | Where the vendor operates: `DOMESTIC`, `REGIONAL`, `GLOBAL`, `HIGH_RISK_JURISDICTION` |
 | **Notes** | Free-form notes about the vendor relationship |
 | **Overall Score** | Calculated from the most recent completed assessment (0–100%) |
 
@@ -71,7 +73,7 @@ Bulk-import or bulk-update vendors via CSV using a step-by-step wizard.
 2. **Upload** — Select a CSV file, or download the CSV template from the link provided on the page. The app parses the file and shows a preview of the first 10 rows.
 3. **Review** — Confirm the import. The summary shows how many rows will be processed. Click **Import vendors** to execute.
 
-**CSV columns:** `id` (optional — include to update an existing vendor), `name`, `contactemail` (both required), plus optional: `contactname`, `tier`, `website`, `notes`, `servicedescription`, `datasensitivity`, `contractrenewaldate`. Max file size: 1 MB.
+**CSV columns:** `id` (optional — include to update an existing vendor), `name`, `contactemail` (both required), plus optional: `contactname`, `tier`, `website`, `notes`, `servicedescription`, `datasensitivity`, `contractrenewaldate`, `contractvalue`, `geographicrisk`. Max file size: 1 MB.
 
 Rows with an `id` matching an existing vendor record will **update** that vendor instead of creating a new one. Rows without an `id` (or with an `id` not found) will create new vendor records. Invalid rows are skipped and reported in the result summary.
 
@@ -82,16 +84,16 @@ Download vendor data as a CSV file from the Vendors page using the **Export CSV*
 - **All vendors** — exports every vendor in the database (unfiltered, regardless of current search/tier filters).
 - **Current page** — exports only the vendors matching the current search, tier filter, sort, and page.
 
-The CSV includes columns: `id`, `name`, `contactname`, `contactemail`, `tier`, `website`, `notes`, `servicedescription`, `datasensitivity`, `contractrenewaldate`. The `id` column can be used to update vendors via import (see [Vendor Import](#vendor-import-csv)).
+The CSV includes columns: `id`, `name`, `contactname`, `contactemail`, `tier`, `website`, `notes`, `servicedescription`, `datasensitivity`, `contractrenewaldate`, `contractvalue`, `geographicrisk`. The `id` column can be used to update vendors via import (see [Vendor Import](#vendor-import-csv)).
 
 ## Vendor Comparison
 
-Compare two vendors side-by-side:
+Compare two vendors side-by-side or compare assessments from the same vendor to track changes over time:
 
-- **Same-vendor over time** — compare two assessments for the same vendor to see trend
-- **Cross-vendor** — compare assessments from different vendors against each other
-- **Score comparison** with RAG badges
-- **Domain-level breakdown** showing compliance by framework domain
+- **Same-vendor over time** — compare two assessments for the same vendor to see score trend and answer changes. Available from the vendor detail page (Risk Profile → Compare last two)
+- **Cross-vendor** — compare assessments from different vendors against each other via the vendor comparison page
+- **Score comparison** with RAG badges and trend indicators
+- **Answer diff** — side-by-side view showing previous and current responses with compliance change arrows
 - **Findings count** comparison by severity
 
-Use the **Compare** button on the vendor detail page or assessment list to initiate a comparison.
+Use the **Compare** button on the vendor list page to initiate a cross-vendor comparison.

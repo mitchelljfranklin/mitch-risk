@@ -1,8 +1,8 @@
 ﻿# RBAC & Roles
 
-Mitch‑Risk uses **permission-based** access control, not "is authenticated" gating. Three system roles are built in, and admins can create custom roles with any combination of the 21 fine-grained permissions.
+Mitch‑Risk uses **permission-based** access control, not "is authenticated" gating. Three system roles are built in, and admins can create custom roles with any combination of the 22 fine-grained permissions.
 
-## Permission Catalog (21 Permissions)
+## Permission Catalog (22 Permissions)
 
 ### Vendors (4)
 
@@ -49,12 +49,13 @@ Mitch‑Risk uses **permission-based** access control, not "is authenticated" ga
 | `roles:manage` | Create, edit, delete, duplicate roles |
 | `settings:manage` | Manage all in-app settings (email, scoring, branding, storage, etc.) |
 | `api:manage` | Create, revoke, enable, delete API keys |
+| `webhooks:manage` | Create, edit, enable, delete webhook endpoints |
 
 ## Default System Roles
 
 | Role | Permissions | Who It's For |
 |------|:----------:|--------------|
-| **Admin** | 21 (all) | Full platform control. Locked — cannot be deleted or edited. |
+| **Admin** | 22 (all) | Full platform control. Locked — cannot be deleted or edited. |
 | **Reviewer** | 16 | Staff who manage vendors and assessments. Cannot manage users, roles, settings, API, or view audit. |
 | **Viewer** | 4 | Read-only: `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view` |
 
@@ -69,7 +70,7 @@ Admins can create custom roles in **Settings → Roles**:
 3. Select the permissions to grant.
 4. Assign the role to any user.
 
-Custom roles can have any subset of the 21 permissions. Use them to create role profiles like "Auditor" (audit + view only), "Vendor Manager" (vendors + assessments + templates), or "API-only" (just the relevant API permission set).
+Custom roles can have any subset of the 22 permissions. Use them to create role profiles like "Auditor" (audit + view only), "Vendor Manager" (vendors + assessments + templates), or "API-only" (just the relevant API permission set).
 
 ## Enforcement
 
@@ -108,3 +109,4 @@ Access control is enforced at every layer:
 | Manage roles | Yes | No | No |
 | Manage settings | Yes | No | No |
 | Manage API keys | Yes | No | No |
+| Manage webhooks | Yes | No | No |
