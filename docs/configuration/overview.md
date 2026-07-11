@@ -2,7 +2,7 @@
 
 All operational settings in Mitch‑Risk are managed through the in-app **Settings** page. There are no YAML config files, no environment variables to tweak after deployment, and no manual database edits required. Every option is configurable via the UI by users with the **Settings: manage** permission.
 
-The Settings page is organised into 14 tabs. Nine are configuration forms, three are management screens (Users, Roles, API), one is a read-only audit log, and one is a system health dashboard.
+The Settings page is organised into 15 tabs. Ten are configuration forms, three are management screens (Users, Roles, API), one is a read-only audit log, and one is a system health dashboard.
 
 ---
 
@@ -168,6 +168,21 @@ API authentication supports Bearer tokens and session cookies. Full interactive 
 ## Audit
 
 A read-only, paginated log of all administrative actions. Filter by action type, user, or date range. Click **Clear** to reset all active filters. Export to CSV (all results or current page). 47 distinct action types are tracked including logins, user management, vendor CRUD, assessment lifecycle, template operations, and settings changes. Requires **Audit: view** permission.
+
+---
+
+## Webhooks
+
+Configure outbound HTTP callbacks that fire when key events occur. Each endpoint gets a unique signing secret for HMAC-SHA256 payload verification.
+
+| Feature | Description |
+|---------|-------------|
+| **URL** | The HTTPS endpoint that receives POST requests with JSON payloads |
+| **Events** | Assessment submitted, assessment overdue, finding created, finding resolved, certification expiring |
+| **Enable/Disable** | Toggle endpoints on or off without deleting |
+| **Secret** | Randomly generated per-endpoint signing secret |
+
+Requires **Webhooks: manage** permission (Admin by default).
 
 ---
 

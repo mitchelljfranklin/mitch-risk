@@ -138,6 +138,8 @@ lib/                 # cross-cutting logic
   upload-validation.ts # file upload MIME type validation
   utils.ts           # cn(), formatDate(), formatPercent(), getField(), formatResponseValue(), csvEscape()
   view-preference.ts # cookie-backed view preference (rows/cards)
+  webhooks.ts        # HMAC-signed webhook dispatch to configured endpoints
+  compare.ts         # assessment comparison helper (ResponseDiff, compliance change detection)
   storage/           # file storage interface (save/read/delete/list)
                      #   local-disk, s3.ts (AWS S3), azure.ts (Azure Blob)
 hooks/              # React hooks (use-form-toast, use-action-feedback, use-mobile)

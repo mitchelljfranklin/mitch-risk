@@ -106,9 +106,20 @@ docker compose up -d
 - Configurable API key expiry (30/90/180/365 days or permanent)
 - Interactive Swagger UI at `/docs`
 
+### Webhooks
+- Outbound event notifications for assessments submitted, findings changed, certifications expiring
+- HMAC-SHA256 signed payloads with per-endpoint secrets
+- Configured in Settings → Webhooks (Admin only)
+- 5 event types: assessment.submitted, assessment.overdue, finding.created, finding.resolved, certification.expiring
+
+### Inherent Risk
+- Pre-assessment risk score based on vendor tier, data sensitivity, contract value, and geographic risk
+- Displayed alongside residual (post-assessment) score on vendor detail pages
+- Contract value and geographic risk fields on vendor create/edit forms
+
 ### Access Control
 - 3 system roles (Admin, Reviewer, Viewer) + custom roles
-- 21 granular `resource:action` permissions
+- 22 granular `resource:action` permissions
 - UI controls hidden (not greyed) — Viewer sees a clean read-only screen
 - Sidebar navigation and settings tabs permission-filtered
 
