@@ -41,6 +41,8 @@ export async function createVendorAction(
     serviceDescription: getField(formData, "serviceDescription"),
     dataSensitivity: getField(formData, "dataSensitivity"),
     contractRenewalDate: getField(formData, "contractRenewalDate"),
+    contractValue: getField(formData, "contractValue"),
+    geographicRisk: getField(formData, "geographicRisk"),
     ownerId: getField(formData, "ownerId"),
   });
   if (!parsed.success) {
@@ -70,6 +72,8 @@ export async function updateVendorAction(
     serviceDescription: getField(formData, "serviceDescription"),
     dataSensitivity: getField(formData, "dataSensitivity"),
     contractRenewalDate: getField(formData, "contractRenewalDate"),
+    contractValue: getField(formData, "contractValue"),
+    geographicRisk: getField(formData, "geographicRisk"),
     ownerId: getField(formData, "ownerId"),
   });
   if (!parsed.success) {
@@ -142,6 +146,8 @@ export async function importVendorsAction(
       dataSensitivity: raw.datasensitivity ?? raw.dataSensitivity ?? "",
       contractRenewalDate:
         raw.contractrenewaldate ?? raw.contractRenewalDate ?? "",
+      contractValue: raw.contractvalue ?? raw.contractValue ?? "",
+      geographicRisk: raw.geographicrisk ?? raw.geographicRisk ?? "",
     });
 
     if (parsed.success) {
@@ -158,6 +164,8 @@ export async function importVendorsAction(
           dataSensitivity: parsed.data
             .dataSensitivity as VendorInput["dataSensitivity"],
           contractRenewalDate: parsed.data.contractRenewalDate,
+          contractValue: parsed.data.contractValue,
+          geographicRisk: parsed.data.geographicRisk,
           ownerId: "",
         },
       });

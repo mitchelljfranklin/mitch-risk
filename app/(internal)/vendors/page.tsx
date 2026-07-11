@@ -132,6 +132,8 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
               dataSensitivity: vendor.dataSensitivity,
               contractRenewalDate:
                 vendor.contractRenewalDate?.toISOString().slice(0, 10) ?? null,
+              contractValue: vendor.contractValue,
+              geographicRisk: vendor.geographicRisk,
             }))}
             allVendors={exportVendors.map((vendor) => ({
               id: vendor.id,
@@ -145,6 +147,8 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
               dataSensitivity: vendor.dataSensitivity,
               contractRenewalDate:
                 vendor.contractRenewalDate?.toISOString().slice(0, 10) ?? null,
+              contractValue: vendor.contractValue,
+              geographicRisk: vendor.geographicRisk,
             }))}
           />
           {canCreateVendor ? (

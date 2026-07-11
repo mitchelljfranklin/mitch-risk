@@ -36,6 +36,8 @@ export async function GET(
       notes: vendor.notes,
       overallScore: vendor.overallScore,
       lastAssessedAt: vendor.lastAssessedAt,
+      contractValue: vendor.contractValue,
+      geographicRisk: vendor.geographicRisk,
       assessments: vendor.assessments.map((assessment) => ({
         id: assessment.id,
         title: assessment.title,
@@ -86,6 +88,8 @@ export async function PUT(
       dataSensitivity: record.dataSensitivity ?? existing.dataSensitivity ?? "",
       contractRenewalDate:
         record.contractRenewalDate ?? existing.contractRenewalDate ?? "",
+      contractValue: record.contractValue ?? existing.contractValue ?? "",
+      geographicRisk: record.geographicRisk ?? existing.geographicRisk ?? "",
       ownerId: record.ownerId ?? existing.ownerId ?? "",
     });
 

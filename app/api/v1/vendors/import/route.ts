@@ -36,6 +36,8 @@ export async function POST(request: Request) {
       serviceDescription: record.serviceDescription ?? "",
       dataSensitivity: record.dataSensitivity ?? "",
       contractRenewalDate: record.contractRenewalDate ?? "",
+      contractValue: record.contractValue ?? "",
+      geographicRisk: record.geographicRisk ?? "",
     });
 
     if (!parsed.success) {

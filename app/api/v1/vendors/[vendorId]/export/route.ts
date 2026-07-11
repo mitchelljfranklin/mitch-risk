@@ -73,6 +73,8 @@ function buildVendorCsvResponse(
     `Contract renewal:,${csvEscape(
       vendor.contractRenewalDate?.toISOString().slice(0, 10) ?? "",
     )}`,
+    `Contract value:,${csvEscape(vendor.contractValue ?? "")}`,
+    `Geographic risk:,${csvEscape(vendor.geographicRisk ?? "")}`,
     `Overall Score:,${vendor.overallScore !== null ? Math.round(vendor.overallScore * 100) + "%" : ""}`,
     "",
   ].join("\n");

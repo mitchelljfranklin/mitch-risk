@@ -82,6 +82,8 @@ export const vendorCsvRowSchema = z.object({
     .optional()
     .default("")
     .transform((v) => (v && !Number.isNaN(Date.parse(v)) ? v : "")),
+  contractValue: z.string().optional().default(""),
+  geographicRisk: z.string().optional().default(""),
 });
 
 export type VendorCsvRow = z.infer<typeof vendorCsvRowSchema>;

@@ -116,6 +116,8 @@ export function exportAllVendors() {
       serviceDescription: true,
       dataSensitivity: true,
       contractRenewalDate: true,
+      contractValue: true,
+      geographicRisk: true,
     },
   });
 }
