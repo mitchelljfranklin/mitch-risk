@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
+import { AlertTriangle } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ import {
   VENDOR_SORTS,
   type VendorSort,
 } from "@/lib/db/vendors";
+import { prisma } from "@/lib/prisma";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 import { formatDate } from "@/lib/utils";
 import { parseListView, VENDOR_VIEW_COOKIE } from "@/lib/view-preference";
@@ -43,6 +45,11 @@ export const metadata = { title: "Vendors" };
 
 type VendorsPageProps = {
   searchParams: Promise<Record<string, string | undefined>>;
+};
+
+type VendorFindingsSummary = {
+  openCount: number;
+  severityDots: string[];
 };
 
 export default async function VendorsPage({ searchParams }: VendorsPageProps) {
@@ -67,6 +74,34 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
   });
   const exportVendors = await exportAllVendors();
   const hasFilters = Boolean(sp.query) || Boolean(sp.tier);
+
+  const vendorIds = vendors.map((vendor) => vendor.id);
+  const recentFindings = await prisma.finding.findMany({
+    where: {
+      status: "OPEN",
+      assessment: { vendorId: { in: vendorIds } },
+    },
+    select: {
+      severity: true,
+      assessment: { select: { vendorId: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const findingsSummaryByVendor: Record<string, VendorFindingsSummary> = {};
+  for (const vendorId of vendorIds) {
+    findingsSummaryByVendor[vendorId] = { openCount: 0, severityDots: [] };
+  }
+  for (const finding of recentFindings) {
+    const vendorId = finding.assessment.vendorId;
+    const summary = findingsSummaryByVendor[vendorId];
+    if (summary) {
+      summary.openCount++;
+      if (summary.severityDots.length < 3) {
+        summary.severityDots.push(finding.severity);
+      }
+    }
+  }
 
   const cookieStore = await cookies();
   const view = parseListView(cookieStore.get(VENDOR_VIEW_COOKIE)?.value);
@@ -240,8 +275,38 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
                             ? "assessment"
                             : "assessments"}
                         </span>
+                        {(findingsSummaryByVendor[vendor.id]?.openCount ?? 0) >
+                        0 ? (
+                          <span className="text-destructive flex items-center gap-1">
+                            <AlertTriangle className="size-3" />
+                            {findingsSummaryByVendor[vendor.id]!.openCount} open
+                            finding
+                            {findingsSummaryByVendor[vendor.id]!.openCount !== 1
+                              ? "s"
+                              : ""}
+                          </span>
+                        ) : null}
                       </div>
-                      <ScoreBadge score={vendor.overallScore} size="lg" />
+                      <div className="flex flex-col items-end gap-1.5">
+                        <ScoreBadge score={vendor.overallScore} size="lg" />
+                        {findingsSummaryByVendor[vendor.id]?.severityDots
+                          .length ? (
+                          <div className="flex gap-0.5">
+                            {findingsSummaryByVendor[
+                              vendor.id
+                            ]!.severityDots.map((severity, index) => (
+                              <span
+                                key={index}
+                                className={`size-1.5 rounded-full ${
+                                  severity === "CRITICAL" || severity === "HIGH"
+                                    ? "bg-[var(--rag-red)]"
+                                    : "bg-[var(--rag-amber)]"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
                     </CardContent>
                   </Card>
                 </Link>
