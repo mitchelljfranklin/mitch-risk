@@ -1,12 +1,12 @@
 import Link from "next/link";
+import dynamicImport from "next/dynamic";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DashboardCharts } from "@/components/dashboard-charts";
 import { StatCard, ScoreStatCard } from "@/components/stat-card";
 import { ScoreBadge } from "@/components/score-badge";
-import { AssessmentTimeline } from "@/components/assessment-timeline";
+import { Skeleton } from "@/components/ui/skeleton";
 import { requireUser } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getDashboardData } from "@/lib/db/compliance";
@@ -15,6 +15,31 @@ import { listUpcomingKeyDates } from "@/lib/db/dashboard";
 import { prisma } from "@/lib/prisma";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 import { formatDate } from "@/lib/utils";
+
+const DashboardCharts = dynamicImport(
+  () =>
+    import("@/components/dashboard-charts").then((mod) => ({
+      default: mod.DashboardCharts,
+    })),
+  {
+    loading: () => (
+      <div className="flex flex-col gap-6">
+        <Skeleton className="h-[300px] w-full rounded-lg" />
+        <Skeleton className="h-[300px] w-full rounded-lg" />
+      </div>
+    ),
+  },
+);
+
+const AssessmentTimeline = dynamicImport(
+  () =>
+    import("@/components/assessment-timeline").then((mod) => ({
+      default: mod.AssessmentTimeline,
+    })),
+  {
+    loading: () => <Skeleton className="h-[200px] w-full rounded-lg" />,
+  },
+);
 
 export const dynamic = "force-dynamic";
 

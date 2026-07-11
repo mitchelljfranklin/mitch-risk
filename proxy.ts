@@ -37,6 +37,10 @@ function buildContentSecurityPolicy(
 }
 
 function applySecurityHeaders(headers: Headers): void {
+  // Strict-Transport-Security (HSTS) and upgrade-insecure-requests are
+  // intentionally NOT set here. HSTS is delegated to the reverse proxy
+  // (Caddy/nginx) which handles TLS termination. upgrade-insecure-requests
+  // breaks same-origin Server Actions on HTTP-accessed self-hosted deployments.
   headers.set("x-frame-options", "DENY");
   headers.set("referrer-policy", "strict-origin-when-cross-origin");
   headers.set("x-content-type-options", "nosniff");

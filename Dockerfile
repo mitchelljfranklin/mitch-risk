@@ -17,6 +17,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npx prisma generate
 RUN npm run build
+RUN node -e "const { execSync } = require('child_process'); const fs = require('fs'); const commit = (() => { try { return execSync('git rev-parse --short HEAD', { encoding: 'utf8', timeout: 3000 }).trim().slice(0, 7); } catch { return 'unknown'; } })(); fs.writeFileSync('.next/build-info.json', JSON.stringify({ version: '0.1.0', commit, buildTime: new Date().toISOString() }));"
 
 FROM base AS runner
 ENV NODE_ENV=production
@@ -24,6 +25,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/public ./public
 COPY --from=build /app/.next/static ./.next/static
+COPY --from=build /app/.next/build-info.json ./.next/build-info.json
 COPY --from=build /app/prisma ./prisma
 RUN mkdir -p /app/.storage/evidence /app/data/uploads && chown -R node:node /app/.storage /app/data
 EXPOSE 3000

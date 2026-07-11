@@ -31,19 +31,12 @@ services:
     environment:
       NODE_ENV: production
       DATABASE_URL: "postgresql://mitch:mitch@db:5432/mitch_risk?schema=public"
-      # Replace these defaults for any real deployment.
-      AUTH_SECRET: "dev-only-auth-secret-change-me-0123456789abcdef"
-      # WARNING: Changing APP_ENCRYPTION_KEY after initial setup permanently
-      # destroys all encrypted secrets (SMTP password, SSO client secrets,
-      # cloud storage credentials). Recovery requires restoring the old key
-      # or manually re-entering every encrypted secret in Settings.
-      APP_ENCRYPTION_KEY: "dev-only-encryption-key-change-me-0123456789"
-      APP_URL: "http://localhost:3000"
-      # REQUIRED in production — the app refuses to start without it.
-      CRON_SECRET: "change-me-cron-secret-0123456789abcdef"
-      EVIDENCE_STORAGE_PATH: "/app/.storage/evidence"
-      # Number of trusted reverse proxies in front of the app (default 1).
-      TRUSTED_PROXY_COUNT: "1"
+      AUTH_SECRET: "${AUTH_SECRET:-dev-only-auth-secret-change-me}"
+      APP_ENCRYPTION_KEY: "${APP_ENCRYPTION_KEY:-dev-only-encryption-key-change-me}"
+      APP_URL: "${APP_URL:-http://localhost:3000}"
+      CRON_SECRET: "${CRON_SECRET:-change-me-cron-secret}"
+      EVIDENCE_STORAGE_PATH: "${EVIDENCE_STORAGE_PATH:-/app/.storage/evidence}"
+      TRUSTED_PROXY_COUNT: "${TRUSTED_PROXY_COUNT:-1}"
     # For local development the app port is exposed to the host. For
     # production behind a reverse proxy (Caddy/nginx), either remove this
     # port mapping or switch to an internal-only network so the app port

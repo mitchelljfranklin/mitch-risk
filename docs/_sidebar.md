@@ -22,7 +22,7 @@
   - [Frameworks](api-reference/frameworks.md)
   - [Dashboard](api-reference/dashboard.md)
   - [Audit](api-reference/audit.md)
-  - [OpenAPI Spec](/api-reference/openapi/)
+  - [OpenAPI / Swagger](api-reference/openapi.md)
 - **Deployment**
   - [Docker](deployment/docker.md)
   - [Azure Container Apps](deployment/azure-container-apps.md)

@@ -34,7 +34,7 @@ over sprawling configuration. Do not add features that are not in the plan witho
 ```
 app/                 # Next.js App Router
   (internal)/        # authenticated dashboard
-    settings/         #   email-tracking, api-form, audit-form, etc.
+    settings/         #   email-tracking, api-form, audit-form, health-tab, etc.
     risk-register/    #   cross-vendor findings register
     vendors/import/   #   CSV bulk vendor import
     templates/import/ #   JSON template import

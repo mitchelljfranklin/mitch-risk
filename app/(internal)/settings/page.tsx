@@ -193,6 +193,7 @@ export default async function SettingsPage({
           "scheduling",
           "limits",
           "sso",
+          "storage",
           "health",
         ]
       : []),
