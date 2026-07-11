@@ -5,12 +5,14 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { SubmitButton } from "@/components/ui/submit-button";
 import {
   addVendorAttachmentAction,
   removeVendorAttachmentAction,
 } from "@/lib/actions/vendors";
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/utils";
+import { EmptyState } from "@/components/empty-state";
 import { FileUp, Trash2 } from "lucide-react";
 
 type AttachmentData = {
@@ -100,17 +102,26 @@ export function VendorAttachments({
                   name="attachmentId"
                   value={attachment.id}
                 />
-                <Button type="submit" variant="ghost" size="sm">
+                <SubmitButton
+                  type="submit"
+                  variant="ghost"
+                  size="sm"
+                  className="h-auto p-1"
+                  aria-label="Remove attachment"
+                >
                   <Trash2 className="size-3.5" />
-                </Button>
+                </SubmitButton>
               </form>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-muted-foreground text-sm">
-          No attachments yet. Upload contracts, letters, or other documents.
-        </p>
+        <EmptyState
+          compact
+          icon="vendors"
+          title="No attachments yet"
+          description="Upload contracts, letters, or other documents."
+        />
       )}
 
       <Separator />

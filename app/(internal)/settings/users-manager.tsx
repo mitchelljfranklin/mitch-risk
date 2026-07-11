@@ -5,6 +5,7 @@ import { useActionState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -165,9 +166,9 @@ function EditUserForm({
               ))}
             </SelectContent>
           </Select>
-          <Button type="submit" size="sm" variant="secondary">
+          <SubmitButton type="submit" size="sm" variant="secondary">
             Save
-          </Button>
+          </SubmitButton>
         </form>
       </div>
 
@@ -181,9 +182,9 @@ function EditUserForm({
             value={user.disabled ? "false" : "true"}
           />
           {user.disabled ? (
-            <Button type="submit" size="sm" variant="secondary">
+            <SubmitButton type="submit" size="sm" variant="secondary">
               Enable sign-in
-            </Button>
+            </SubmitButton>
           ) : (
             <ConfirmDialog
               title="Disable user?"

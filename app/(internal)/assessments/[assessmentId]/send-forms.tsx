@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SubmitButton } from "@/components/ui/submit-button";
 import {
   generateLinkAction,
   sendAssessmentAction,
@@ -39,17 +39,17 @@ export function SendForms({ assessmentId }: SendFormsProps) {
         <form action={sendAssessmentAction} className="flex items-center gap-2">
           <input type="hidden" name="assessmentId" value={assessmentId} />
           <input type="hidden" name="portalPassword" value={password} />
-          <Button type="submit" size="sm">
+          <SubmitButton type="submit" size="sm">
             Send to vendor
-          </Button>
+          </SubmitButton>
         </form>
 
         <form action={generateLinkAction} className="flex items-center gap-2">
           <input type="hidden" name="assessmentId" value={assessmentId} />
           <input type="hidden" name="portalPassword" value={password} />
-          <Button type="submit" variant="outline" size="sm">
+          <SubmitButton type="submit" variant="outline" size="sm">
             Generate link only
-          </Button>
+          </SubmitButton>
         </form>
 
         <form
@@ -64,9 +64,9 @@ export function SendForms({ assessmentId }: SendFormsProps) {
             placeholder="custom@example.com"
             className="h-9 w-48"
           />
-          <Button type="submit" variant="outline" size="sm">
+          <SubmitButton type="submit" variant="outline" size="sm">
             Send to
-          </Button>
+          </SubmitButton>
         </form>
       </div>
     </>

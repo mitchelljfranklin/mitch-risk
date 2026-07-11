@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { addCommentAction, reviewAction } from "@/lib/actions/collaboration";
 import { formatDate } from "@/lib/utils";
 
@@ -155,9 +156,9 @@ export function ReviewPanel({
                 className="h-16 min-h-16 text-xs"
                 rows={3}
               />
-              <Button type="submit" size="sm">
+              <SubmitButton type="submit" size="sm">
                 Save
-              </Button>
+              </SubmitButton>
             </form>
           ) : review ? (
             <div className="flex items-center gap-2">
@@ -238,9 +239,9 @@ export function ReviewPanel({
                       <SelectItem value="VENDOR">Visible to vendor</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button type="submit" size="sm" variant="ghost">
+                  <SubmitButton type="submit" size="sm" variant="ghost">
                     Reply
-                  </Button>
+                  </SubmitButton>
                 </form>
               ) : null}
             </div>
@@ -269,9 +270,9 @@ export function ReviewPanel({
                   <SelectItem value="VENDOR">Visible to vendor</SelectItem>
                 </SelectContent>
               </Select>
-              <Button type="submit" size="sm" variant="ghost">
+              <SubmitButton type="submit" size="sm" variant="ghost">
                 Comment
-              </Button>
+              </SubmitButton>
             </form>
           ) : null}
         </div>

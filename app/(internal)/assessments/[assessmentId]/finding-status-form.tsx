@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SubmitButton } from "@/components/ui/submit-button";
 import {
   Select,
   SelectContent,
@@ -53,9 +53,9 @@ export function FindingStatusForm({
         placeholder="Resolution note (optional)"
         className="h-8 flex-1 text-xs"
       />
-      <Button type="submit" size="sm" variant="secondary">
+      <SubmitButton type="submit" size="sm" variant="secondary">
         Save
-      </Button>
+      </SubmitButton>
     </form>
   );
 }
