@@ -1,6 +1,7 @@
 import { computeTotalScore, scoreResponses } from "@/lib/scoring";
 import { prisma } from "@/lib/prisma";
 import { getScoringSettings } from "@/lib/settings";
+import { dispatchWebhook } from "@/lib/webhooks";
 
 export async function scoreAssessment(assessmentId: string): Promise<void> {
   const assessment = await prisma.assessment.findUnique({
@@ -54,6 +55,7 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
   const controlCodeById = new Map(
     controls.map((control) => [control.id, control.code]),
   );
+  const newFindingIds: string[] = [];
 
   await prisma.$transaction(async (tx) => {
     for (const result of scored) {
@@ -135,7 +137,7 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
       if (existingId) {
         await tx.finding.update({ where: { id: existingId }, data: shared });
       } else {
-        await tx.finding.create({
+        const created = await tx.finding.create({
           data: {
             assessmentId,
             responseId: result.id,
@@ -144,6 +146,7 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
               "The vendor's answer did not meet the expected response.",
           },
         });
+        newFindingIds.push(created.id);
       }
     }
 
@@ -170,4 +173,32 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
       });
     }
   });
+
+  if (newFindingIds.length > 0) {
+    const assessmentWithVendor = await prisma.assessment.findUnique({
+      where: { id: assessmentId },
+      select: {
+        id: true,
+        title: true,
+        vendor: { select: { id: true, name: true } },
+      },
+    });
+    if (assessmentWithVendor) {
+      const newFindings = await prisma.finding.findMany({
+        where: { id: { in: newFindingIds } },
+        select: { id: true, title: true, severity: true },
+      });
+      for (const finding of newFindings) {
+        dispatchWebhook("FINDING_CREATED", {
+          findingId: finding.id,
+          findingTitle: finding.title,
+          severity: finding.severity,
+          assessmentId,
+          assessmentTitle: assessmentWithVendor.title,
+          vendorId: assessmentWithVendor.vendor.id,
+          vendorName: assessmentWithVendor.vendor.name,
+        });
+      }
+    }
+  }
 }

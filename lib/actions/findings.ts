@@ -5,11 +5,12 @@ import { revalidatePath } from "next/cache";
 
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
-import { updateFindingStatus } from "@/lib/db/findings";
+import { updateFindingStatus, getFinding } from "@/lib/db/findings";
 import { logAudit } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
 import { FINDING_STATUSES } from "@/lib/schemas/assessment";
 import { prisma } from "@/lib/prisma";
+import { dispatchWebhook } from "@/lib/webhooks";
 
 export async function updateFindingStatusAction(formData: FormData) {
   const user = await requirePermission(PERMISSIONS.ASSESSMENTS_REVIEW);
@@ -31,6 +32,19 @@ export async function updateFindingStatusAction(formData: FormData) {
   });
 
   await logAudit(user.id, "UPDATE_FINDING", "Finding", findingId, { status });
+
+  if (status !== "OPEN") {
+    const finding = await getFinding(findingId);
+    if (finding) {
+      dispatchWebhook("FINDING_RESOLVED", {
+        findingId,
+        severity: finding.severity,
+        status,
+        resolutionNote,
+        assessmentId: finding.assessmentId,
+      });
+    }
+  }
 
   if (assessmentId) {
     revalidatePath(`/assessments/${assessmentId}`);
@@ -78,6 +92,22 @@ export async function bulkUpdateFindingStatusesAction(
 
   for (const id of findingIds) {
     await logAudit(user.id, "UPDATE_FINDING", "Finding", id, { status });
+  }
+
+  if (status !== "OPEN") {
+    const resolvedFindings = await prisma.finding.findMany({
+      where: { id: { in: findingIds } },
+      select: { id: true, severity: true, assessmentId: true },
+    });
+    for (const finding of resolvedFindings) {
+      dispatchWebhook("FINDING_RESOLVED", {
+        findingId: finding.id,
+        severity: finding.severity,
+        status,
+        resolutionNote,
+        assessmentId: finding.assessmentId,
+      });
+    }
   }
 
   revalidatePath("/risk-register");

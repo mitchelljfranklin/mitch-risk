@@ -12,6 +12,7 @@ import {
   getEmailLogRetention,
 } from "@/lib/settings";
 import { storage } from "@/lib/storage";
+import { dispatchWebhook } from "@/lib/webhooks";
 
 export async function GET(request: Request) {
   const providedSecret = request.headers.get("x-cron-secret");
@@ -140,6 +141,12 @@ export async function GET(request: Request) {
         { assessmentId: a.id },
       );
       result.escalations++;
+      dispatchWebhook("ASSESSMENT_OVERDUE", {
+        assessmentId: a.id,
+        assessmentTitle: a.title,
+        vendorName: a.vendor.name,
+        dueDate: a.dueDate ? a.dueDate.toISOString() : null,
+      });
     }
 
     // --- certification & contract expiry notices (to the vendor's risk owner) ---
@@ -195,6 +202,12 @@ export async function GET(request: Request) {
               );
             });
           result.expiryNotices++;
+          dispatchWebhook("CERTIFICATION_EXPIRING", {
+            vendorId: cert.vendorId,
+            vendorName: cert.vendorName,
+            certificationName: cert.name,
+            expiresDate: cert.expiresDate.toISOString(),
+          });
         }
       }
 
