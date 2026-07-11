@@ -24,6 +24,7 @@ import { listVendorFindings } from "@/lib/db/findings";
 import { listFrameworks } from "@/lib/db/frameworks";
 import { getVendor } from "@/lib/db/vendors";
 import { buildVendorTimeline } from "@/lib/db/vendor-timeline";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ASSESSMENT_STATUS_LABELS,
   FINDING_STATUS_LABELS,
@@ -175,6 +176,23 @@ export default async function VendorDetailPage({
     orderBy: { createdAt: "desc" },
   });
 
+  const defaultTab = sp.tab ?? "overview";
+  const allowedTabs = [
+    "overview",
+    "compliance",
+    ...(canViewFindings ? ["findings"] : []),
+    "assessments",
+  ];
+  const safeTab = allowedTabs.includes(defaultTab) ? defaultTab : "overview";
+
+  const hasOverviewFields =
+    vendor.serviceDescription ||
+    vendor.owner ||
+    vendor.dataSensitivity ||
+    vendor.contractRenewalDate ||
+    vendor.website ||
+    vendorAttachments.length > 0;
+
   return (
     <div className="flex max-w-5xl flex-col gap-6">
       {sp.created ? <FlashToast message="Vendor created." /> : null}
@@ -184,6 +202,7 @@ export default async function VendorDetailPage({
           { label: vendor.name },
         ]}
       />
+
       <div>
         <div className="mt-2 flex items-center justify-between gap-4">
           <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
@@ -233,369 +252,459 @@ export default async function VendorDetailPage({
         </div>
       </div>
 
-      {vendor.serviceDescription ||
-      vendor.owner ||
-      vendor.dataSensitivity ||
-      vendor.contractRenewalDate ||
-      vendor.website ||
-      vendorAttachments.length > 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Overview</CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-4 sm:grid-cols-2">
-            {vendor.serviceDescription ? (
-              <div className="flex flex-col gap-0.5 sm:col-span-2">
-                <span className="text-muted-foreground text-xs">
-                  Service provided
-                </span>
-                <span className="text-sm">{vendor.serviceDescription}</span>
-              </div>
-            ) : null}
-            <div className="flex flex-col gap-0.5">
-              <span className="text-muted-foreground text-xs">Risk owner</span>
-              <span className="text-sm">
-                {vendor.owner?.name ?? "Unassigned"}
-              </span>
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <span className="text-muted-foreground text-xs">
-                Data sensitivity
-              </span>
-              <span className="text-sm">
-                {vendor.dataSensitivity
-                  ? DATA_SENSITIVITY_LABELS[vendor.dataSensitivity]
-                  : "Unspecified"}
-              </span>
-            </div>
-            {vendor.website ? (
-              <div className="flex flex-col gap-0.5">
-                <span className="text-muted-foreground text-xs">Website</span>
-                <a
-                  href={vendor.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary truncate text-sm hover:underline"
-                >
-                  {vendor.website}
-                </a>
-              </div>
-            ) : null}
-            {vendor.contractRenewalDate ? (
-              <div className="flex flex-col gap-0.5">
-                <span className="text-muted-foreground text-xs">
-                  Contract renewal
-                </span>
-                <span
-                  className={`text-sm ${
-                    vendor.contractRenewalDate < new Date()
-                      ? "text-destructive font-medium"
-                      : ""
-                  }`}
-                >
-                  {formatDate(vendor.contractRenewalDate)}
-                  {vendor.contractRenewalDate < new Date() ? " · overdue" : ""}
-                </span>
-              </div>
-            ) : null}
-            {vendorAttachments.length > 0 ? (
-              <div className="flex flex-col gap-1 sm:col-span-2">
-                <span className="text-muted-foreground text-xs">
-                  Attachments
-                </span>
-                <div className="flex flex-col gap-1">
-                  {vendorAttachments.map((assessment) => (
-                    <a
-                      key={assessment.id}
-                      href={`/api/attachments/${assessment.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary text-sm hover:underline"
-                    >
-                      {assessment.displayName ?? assessment.fileName} ↗
-                    </a>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-          </CardContent>
-        </Card>
-      ) : null}
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Certifications &amp; attestations</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <CertificationsManager
-            vendorId={vendor.id}
-            certifications={certificationViews}
-            attachments={certAttachmentMap}
-            canEdit={canEditVendor}
-          />
-        </CardContent>
-      </Card>
-
-      {profile ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Risk profile</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            {(() => {
-              const inherent = computeInherentRisk(vendor);
-              return inherent !== null && vendor.overallScore !== null ? (
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground text-xs">
-                      Residual (assessed)
-                    </span>
-                    <ScoreBadge score={vendor.overallScore} size="sm" />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground text-xs">
-                      Inherent (pre-assessment)
-                    </span>
-                    <Badge variant="secondary" className="text-[11px]">
-                      {formatPercent(inherent)}
-                    </Badge>
-                  </div>
-                </div>
-              ) : null;
-            })()}
-            {profile.overallScore !== null ? (
-              <div className="flex items-center gap-2">
-                <ScoreBadge score={profile.overallScore} size="lg" />
-                <span className="text-muted-foreground text-xs">overall</span>
-                {profile.trend !== "stable" ? (
-                  <Badge
-                    variant={profile.trend === "up" ? "default" : "destructive"}
-                    className="text-[11px]"
-                  >
-                    {profile.trend === "up"
-                      ? "Trending up ↑"
-                      : "Trending down ↓"}
-                  </Badge>
-                ) : (
-                  <Badge variant="secondary" className="text-[11px]">
-                    Stable →
-                  </Badge>
-                )}
-              </div>
-            ) : (
-              <p className="text-muted-foreground text-sm">
-                No score yet — submit an assessment.
-              </p>
-            )}
-            {profile.history.length > 0 ? (
-              <div className="flex flex-col gap-2">
-                <span className="text-muted-foreground text-xs font-medium">
-                  Trend
-                </span>
-                <div
-                  className="flex items-end gap-1"
-                  style={{ height: "60px" }}
-                >
-                  {profile.history
-                    .slice(0, 8)
-                    .reverse()
-                    .map((item) => {
-                      const ratio = item.score ?? 0;
-                      const height = Math.max(4, Math.round(ratio * 56));
-                      return (
-                        <div
-                          key={item.id}
-                          className="flex flex-1 flex-col items-center gap-1"
-                          title={`${item.title}: ${item.score !== null ? formatPercent(item.score) : "—"}`}
-                        >
-                          <span className="text-muted-foreground text-xs">
-                            {item.score !== null
-                              ? formatPercent(item.score)
-                              : "—"}
-                          </span>
-                          <div
-                            className={`w-full rounded-sm ${
-                              ratio >= 0.85
-                                ? "bg-[var(--rag-green)]"
-                                : ratio >= 0.6
-                                  ? "bg-[var(--rag-amber)]"
-                                  : "bg-[var(--rag-red)]"
-                            } ${ratio === 0 ? "bg-muted" : ""}`}
-                            style={{ height: `${height}px` }}
-                          />
-                        </div>
-                      );
-                    })}
-                </div>
-                {profile.history.length > 1 ? (
-                  <Link
-                    href={`/vendors/${vendor.id}/compare?left=${profile.history[1]?.id}&right=${profile.history[0]?.id}`}
-                    className="text-muted-foreground text-xs hover:underline"
-                  >
-                    Compare last two →
-                  </Link>
-                ) : null}
-              </div>
-            ) : null}
-          </CardContent>
-        </Card>
-      ) : null}
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Activity</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <VendorTimeline events={timeline} />
-        </CardContent>
-      </Card>
-
-      {profile && profile.domainBreakdown.length > 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Domain compliance</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-3">
-            {profile.domainBreakdown.map((item) => {
-              const ratioPercent = Math.round(item.complianceRatio * 100);
-              return (
-                <div key={item.domain} className="flex flex-col gap-1">
-                  <div className="flex items-center justify-between text-sm">
-                    <span>{item.domain}</span>
-                    <span className="text-muted-foreground">
-                      {ratioPercent}%
-                    </span>
-                  </div>
-                  <ProgressBar
-                    value={ratioPercent}
-                    className={cn(
-                      ratioPercent >= 85
-                        ? "bg-[var(--rag-green)]"
-                        : ratioPercent >= 60
-                          ? "bg-[var(--rag-amber)]"
-                          : "bg-[var(--rag-red)]",
-                    )}
-                  />
-                </div>
-              );
-            })}
-          </CardContent>
-        </Card>
-      ) : null}
-
-      {frameworks.length > 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Framework heatmaps</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2">
-            {frameworks.map((framework) => (
-              <Link
-                key={framework.id}
-                href={`/vendors/${vendor.id}/frameworks/${framework.id}`}
-                className="hover:bg-accent/40 text-sm"
-              >
-                {framework.name}{" "}
-                {framework.version === "2022" ? "(ISO 27001)" : ""}
-              </Link>
-            ))}
-          </CardContent>
-        </Card>
-      ) : null}
-
-      {canViewFindings && findings.length > 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>
+      <Tabs defaultValue={safeTab}>
+        <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="compliance">Compliance</TabsTrigger>
+          {canViewFindings ? (
+            <TabsTrigger value="findings">
               Findings
               {openFindings.length > 0 ? (
-                <span className="text-muted-foreground ml-2 text-sm font-normal">
-                  {openFindings.length} open
-                </span>
-              ) : null}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2">
-            {findings.map((finding) => (
-              <Link
-                key={finding.id}
-                href={`/assessments/${finding.assessmentId}`}
-                className="hover:bg-accent/40 flex items-center justify-between gap-3 rounded-md border p-3"
-              >
-                <div className="flex min-w-0 flex-col">
-                  <span className="truncate text-sm font-medium">
-                    {finding.title}
-                  </span>
-                  <span className="text-muted-foreground truncate text-xs">
-                    {finding.assessmentTitle}
-                  </span>
-                </div>
-                <div className="flex shrink-0 items-center gap-2">
-                  <Badge className={SEVERITY_STYLES[finding.severity] ?? ""}>
-                    {finding.severity.charAt(0) +
-                      finding.severity.slice(1).toLowerCase()}
-                  </Badge>
-                  <Badge
-                    className={FINDING_STATUS_STYLES[finding.status] ?? ""}
-                  >
-                    {FINDING_STATUS_LABELS[finding.status] ?? finding.status}
-                  </Badge>
-                </div>
-              </Link>
-            ))}
-          </CardContent>
-        </Card>
-      ) : null}
-
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between gap-2">
-            <CardTitle>Assessments</CardTitle>
-            {canCreateAssessment ? (
-              <Button asChild size="sm">
-                <Link href={`/vendors/${vendor.id}/assessments/new`}>
-                  New assessment
-                </Link>
-              </Button>
-            ) : null}
-          </div>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-2">
-          {vendor.assessments.length === 0 ? (
-            <EmptyState
-              compact
-              icon="assessments"
-              title="No assessments"
-              description="No assessments have been created for this vendor yet."
-            />
-          ) : (
-            vendor.assessments.map((assessment) => (
-              <Link
-                key={assessment.id}
-                href={`/assessments/${assessment.id}`}
-                className="hover:bg-accent/40 flex items-center justify-between gap-3 rounded-md border p-3"
-              >
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">
-                    {assessment.title}
-                  </span>
-                  <span className="text-muted-foreground text-xs">
-                    {assessment.template
-                      ? `${assessment.template.name} v${assessment.template.version}`
-                      : "No template"}
-                    {assessment.dueDate
-                      ? ` · due ${formatDate(assessment.dueDate)}`
-                      : ""}
-                  </span>
-                </div>
-                <Badge variant="secondary">
-                  {ASSESSMENT_STATUS_LABELS[assessment.status]}
+                <Badge variant="secondary" className="ml-1 text-[10px]">
+                  {openFindings.length}
                 </Badge>
-              </Link>
-            ))
+              ) : null}
+            </TabsTrigger>
+          ) : null}
+          <TabsTrigger value="assessments">Assessments</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="mt-4 flex flex-col gap-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            {hasOverviewFields ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Overview</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-4">
+                  {vendor.serviceDescription ? (
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-muted-foreground text-xs">
+                        Service provided
+                      </span>
+                      <span className="text-sm">
+                        {vendor.serviceDescription}
+                      </span>
+                    </div>
+                  ) : null}
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-muted-foreground text-xs">
+                      Risk owner
+                    </span>
+                    <span className="text-sm">
+                      {vendor.owner?.name ?? "Unassigned"}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-muted-foreground text-xs">
+                      Data sensitivity
+                    </span>
+                    <span className="text-sm">
+                      {vendor.dataSensitivity
+                        ? DATA_SENSITIVITY_LABELS[vendor.dataSensitivity]
+                        : "Unspecified"}
+                    </span>
+                  </div>
+                  {vendor.website ? (
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-muted-foreground text-xs">
+                        Website
+                      </span>
+                      <a
+                        href={vendor.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary truncate text-sm hover:underline"
+                      >
+                        {vendor.website}
+                      </a>
+                    </div>
+                  ) : null}
+                  {vendor.contractRenewalDate ? (
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-muted-foreground text-xs">
+                        Contract renewal
+                      </span>
+                      <span
+                        className={`text-sm ${
+                          vendor.contractRenewalDate < new Date()
+                            ? "text-destructive font-medium"
+                            : ""
+                        }`}
+                      >
+                        {formatDate(vendor.contractRenewalDate)}
+                        {vendor.contractRenewalDate < new Date()
+                          ? " · overdue"
+                          : ""}
+                      </span>
+                    </div>
+                  ) : null}
+                  {vendorAttachments.length > 0 ? (
+                    <div className="flex flex-col gap-1">
+                      <span className="text-muted-foreground text-xs">
+                        Attachments
+                      </span>
+                      <div className="flex flex-col gap-1">
+                        {vendorAttachments.map((attachment) => (
+                          <a
+                            key={attachment.id}
+                            href={`/api/attachments/${attachment.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary text-sm hover:underline"
+                          >
+                            {attachment.displayName ?? attachment.fileName} ↗
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                </CardContent>
+              </Card>
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Overview</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <EmptyState
+                    compact
+                    icon="vendors"
+                    title="No overview details"
+                    description="Edit this vendor to add service details, a risk owner, and other profile information."
+                  />
+                </CardContent>
+              </Card>
+            )}
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Risk profile</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4">
+                {(() => {
+                  const inherent = computeInherentRisk(vendor);
+                  return inherent !== null ? (
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground text-xs">
+                          Inherent (pre-assessment)
+                        </span>
+                        <Badge variant="secondary" className="text-[11px]">
+                          {formatPercent(inherent)}
+                        </Badge>
+                      </div>
+                      {vendor.overallScore !== null ? (
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground text-xs">
+                            Residual (assessed)
+                          </span>
+                          <ScoreBadge score={vendor.overallScore} size="sm" />
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null;
+                })()}
+                {profile != null && profile.overallScore != null ? (
+                  <div className="flex items-center gap-2">
+                    <ScoreBadge score={profile.overallScore} size="lg" />
+                    <span className="text-muted-foreground text-xs">
+                      overall
+                    </span>
+                    {profile.trend !== "stable" ? (
+                      <Badge
+                        variant={
+                          profile.trend === "up" ? "default" : "destructive"
+                        }
+                        className="text-[11px]"
+                      >
+                        {profile.trend === "up"
+                          ? "Trending up ↑"
+                          : "Trending down ↓"}
+                      </Badge>
+                    ) : (
+                      <Badge variant="secondary" className="text-[11px]">
+                        Stable →
+                      </Badge>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground text-sm">
+                    No score yet — submit an assessment.
+                  </p>
+                )}
+                {profile && profile.history.length > 0 ? (
+                  <div className="flex flex-col gap-2">
+                    <span className="text-muted-foreground text-xs font-medium">
+                      Trend
+                    </span>
+                    <div
+                      className="flex items-end gap-1"
+                      style={{ height: "60px" }}
+                    >
+                      {profile.history
+                        .slice(0, 8)
+                        .reverse()
+                        .map((item) => {
+                          const ratio = item.score ?? 0;
+                          const height = Math.max(4, Math.round(ratio * 56));
+                          return (
+                            <div
+                              key={item.id}
+                              className="flex flex-1 flex-col items-center gap-1"
+                              title={`${item.title}: ${item.score !== null ? formatPercent(item.score) : "—"}`}
+                            >
+                              <span className="text-muted-foreground text-xs">
+                                {item.score !== null
+                                  ? formatPercent(item.score)
+                                  : "—"}
+                              </span>
+                              <div
+                                className={`w-full rounded-sm ${
+                                  ratio >= 0.85
+                                    ? "bg-[var(--rag-green)]"
+                                    : ratio >= 0.6
+                                      ? "bg-[var(--rag-amber)]"
+                                      : "bg-[var(--rag-red)]"
+                                } ${ratio === 0 ? "bg-muted" : ""}`}
+                                style={{ height: `${height}px` }}
+                              />
+                            </div>
+                          );
+                        })}
+                    </div>
+                    {profile.history.length > 1 ? (
+                      <Link
+                        href={`/vendors/${vendor.id}/compare?left=${profile.history[1]?.id}&right=${profile.history[0]?.id}`}
+                        className="text-muted-foreground text-xs hover:underline"
+                      >
+                        Compare last two →
+                      </Link>
+                    ) : null}
+                  </div>
+                ) : null}
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Certifications &amp; attestations</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CertificationsManager
+                vendorId={vendor.id}
+                certifications={certificationViews}
+                attachments={certAttachmentMap}
+                canEdit={canEditVendor}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="compliance" className="mt-4 flex flex-col gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Domain compliance</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {profile && profile.domainBreakdown.length > 0 ? (
+                <div className="flex flex-col gap-3">
+                  {profile.domainBreakdown.map((item) => {
+                    const ratioPercent = Math.round(item.complianceRatio * 100);
+                    return (
+                      <div key={item.domain} className="flex flex-col gap-1">
+                        <div className="flex items-center justify-between text-sm">
+                          <span>{item.domain}</span>
+                          <span className="text-muted-foreground">
+                            {ratioPercent}%
+                          </span>
+                        </div>
+                        <ProgressBar
+                          value={ratioPercent}
+                          className={cn(
+                            ratioPercent >= 85
+                              ? "bg-[var(--rag-green)]"
+                              : ratioPercent >= 60
+                                ? "bg-[var(--rag-amber)]"
+                                : "bg-[var(--rag-red)]",
+                          )}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <EmptyState
+                  compact
+                  icon="assessments"
+                  title="No compliance data"
+                  description="Complete an assessment to see domain compliance scores."
+                />
+              )}
+            </CardContent>
+          </Card>
+
+          {frameworks.length > 0 ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Framework heatmaps</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-2">
+                {frameworks.map((framework) => (
+                  <Link
+                    key={framework.id}
+                    href={`/vendors/${vendor.id}/frameworks/${framework.id}`}
+                    className="hover:bg-accent/40 text-sm"
+                  >
+                    {framework.name}{" "}
+                    {framework.version === "2022" ? "(ISO 27001)" : ""}
+                  </Link>
+                ))}
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle>Framework heatmaps</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <EmptyState
+                  compact
+                  icon="frameworks"
+                  title="No frameworks available"
+                  description="Import or seed framework libraries to map controls to assessment questions."
+                />
+              </CardContent>
+            </Card>
           )}
-        </CardContent>
-      </Card>
+        </TabsContent>
+
+        {canViewFindings ? (
+          <TabsContent value="findings" className="mt-4 flex flex-col gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  Findings
+                  {openFindings.length > 0 ? (
+                    <span className="text-muted-foreground ml-2 text-sm font-normal">
+                      {openFindings.length} open
+                    </span>
+                  ) : null}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {findings.length > 0 ? (
+                  <div className="flex flex-col gap-2">
+                    {findings.map((finding) => (
+                      <Link
+                        key={finding.id}
+                        href={`/assessments/${finding.assessmentId}`}
+                        className="hover:bg-accent/40 flex items-center justify-between gap-3 rounded-md border p-3"
+                      >
+                        <div className="flex min-w-0 flex-col">
+                          <span className="truncate text-sm font-medium">
+                            {finding.title}
+                          </span>
+                          <span className="text-muted-foreground truncate text-xs">
+                            {finding.assessmentTitle}
+                          </span>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-2">
+                          <Badge
+                            className={SEVERITY_STYLES[finding.severity] ?? ""}
+                          >
+                            {finding.severity.charAt(0) +
+                              finding.severity.slice(1).toLowerCase()}
+                          </Badge>
+                          <Badge
+                            className={
+                              FINDING_STATUS_STYLES[finding.status] ?? ""
+                            }
+                          >
+                            {FINDING_STATUS_LABELS[finding.status] ??
+                              finding.status}
+                          </Badge>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyState
+                    compact
+                    icon="findings"
+                    title="No findings"
+                    description="Findings are generated when assessment answers are non-compliant. Complete an assessment to see findings here."
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        ) : null}
+
+        <TabsContent value="assessments" className="mt-4 flex flex-col gap-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between gap-2">
+                <CardTitle>Assessments</CardTitle>
+                {canCreateAssessment ? (
+                  <Button asChild size="sm">
+                    <Link href={`/vendors/${vendor.id}/assessments/new`}>
+                      New assessment
+                    </Link>
+                  </Button>
+                ) : null}
+              </div>
+            </CardHeader>
+            <CardContent>
+              {vendor.assessments.length === 0 ? (
+                <EmptyState
+                  compact
+                  icon="assessments"
+                  title="No assessments"
+                  description="No assessments have been created for this vendor yet."
+                />
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {vendor.assessments.map((assessment) => (
+                    <Link
+                      key={assessment.id}
+                      href={`/assessments/${assessment.id}`}
+                      className="hover:bg-accent/40 flex items-center justify-between gap-3 rounded-md border p-3"
+                    >
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium">
+                          {assessment.title}
+                        </span>
+                        <span className="text-muted-foreground text-xs">
+                          {assessment.template
+                            ? `${assessment.template.name} v${assessment.template.version}`
+                            : "No template"}
+                          {assessment.dueDate
+                            ? ` · due ${formatDate(assessment.dueDate)}`
+                            : ""}
+                        </span>
+                      </div>
+                      <Badge variant="secondary">
+                        {ASSESSMENT_STATUS_LABELS[assessment.status]}
+                      </Badge>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Activity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <VendorTimeline events={timeline} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
