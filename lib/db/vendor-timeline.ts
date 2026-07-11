@@ -1,5 +1,3 @@
-import { type AuditLogEntry } from "@/lib/db/audit";
-
 type TimelineEvent = {
   id: string;
   type: "assessment" | "finding" | "certification";

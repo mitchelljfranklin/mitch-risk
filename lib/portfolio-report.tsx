@@ -52,18 +52,6 @@ function scoreColor(score: number | null): string {
   return "#dc2626";
 }
 
-function ragColor(
-  score: number | null,
-  thresholds?: { green: number; amber: number },
-): string {
-  if (score === null) return "#6b7280";
-  const green = thresholds?.green ?? 0.85;
-  const amber = thresholds?.amber ?? 0.6;
-  if (score >= green) return "#16a34a";
-  if (score >= amber) return "#d97706";
-  return "#dc2626";
-}
-
 const styles = StyleSheet.create({
   page: {
     padding: 40,
