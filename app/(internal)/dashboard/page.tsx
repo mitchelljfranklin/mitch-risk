@@ -86,7 +86,15 @@ export default async function DashboardPage() {
     recentAssessments.map((assessment) => assessment.createdAt),
   );
 
-  const { scoreDistribution, topDeficientControls, vendors: portfolio } = data;
+  const {
+    scoreDistribution,
+    topDeficientControls,
+    vendors: portfolio,
+    vendorTrend,
+    findingTrend,
+    scoreTrend,
+    portfolioScoreTrend,
+  } = data;
 
   const needingAttention = portfolio.filter(
     (vendor) => vendor.overdueCount > 0,
@@ -149,9 +157,22 @@ export default async function DashboardPage() {
         <>
           {/* Summary stats */}
           <div className="grid gap-4 sm:grid-cols-4">
-            <StatCard label="Vendors tracked" value={data.vendorCount} />
-            <ScoreStatCard label="Average score" score={data.averageScore} />
-            <StatCard label="Open findings" value={data.openFindings} />
+            <StatCard
+              label="Vendors tracked"
+              value={data.vendorCount}
+              trend={vendorTrend}
+            />
+            <ScoreStatCard
+              label="Average score"
+              score={data.averageScore}
+              trend={scoreTrend}
+              sparklineData={portfolioScoreTrend}
+            />
+            <StatCard
+              label="Open findings"
+              value={data.openFindings}
+              trend={findingTrend}
+            />
             <StatCard label="Needs attention" value={data.needsAttention} />
           </div>
 

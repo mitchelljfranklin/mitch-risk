@@ -38,7 +38,8 @@ type StatCardProps = {
   suffix?: string;
   format?: "number" | "percent";
   colorClass?: string;
-  trend?: "up" | "down";
+  trend?: "up" | "down" | "stable";
+  sparklineData?: number[];
 };
 
 export function StatCard({
@@ -48,6 +49,7 @@ export function StatCard({
   format = "number",
   colorClass,
   trend,
+  sparklineData,
 }: StatCardProps) {
   const animated = useCountUp(value);
   const trendIcon = trend === "up" ? "↑" : trend === "down" ? "↓" : null;
@@ -72,7 +74,7 @@ export function StatCard({
           {label}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col gap-1">
         <p
           className={`text-2xl font-semibold tabular-nums ${colorClass ?? ""}`}
         >
@@ -81,6 +83,26 @@ export function StatCard({
             <span className={`ml-1 text-sm ${trendColor}`}>{trendIcon}</span>
           ) : null}
         </p>
+        {sparklineData && sparklineData.length > 1 ? (
+          <svg
+            className="h-8 w-full"
+            viewBox={`0 0 ${sparklineData.length - 1} 20`}
+            preserveAspectRatio="none"
+          >
+            <polyline
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              className="text-primary/50"
+              points={sparklineData
+                .map(
+                  (point, index) =>
+                    `${index},${20 - (point / Math.max(...sparklineData)) * 18}`,
+                )
+                .join(" ")}
+            />
+          </svg>
+        ) : null}
       </CardContent>
     </Card>
   );
@@ -89,9 +111,16 @@ export function StatCard({
 type ScoreStatCardProps = {
   label: string;
   score: number | null;
+  trend?: "up" | "down" | "stable";
+  sparklineData?: number[];
 };
 
-export function ScoreStatCard({ label, score }: ScoreStatCardProps) {
+export function ScoreStatCard({
+  label,
+  score,
+  trend,
+  sparklineData,
+}: ScoreStatCardProps) {
   const numericScore = score !== null ? Math.round(score * 100) : 0;
   const animated = useCountUp(numericScore);
 
@@ -104,6 +133,14 @@ export function ScoreStatCard({ label, score }: ScoreStatCardProps) {
           : "text-[var(--rag-red)]"
       : "text-muted-foreground";
 
+  const trendIcon = trend === "up" ? "↑" : trend === "down" ? "↓" : null;
+  const trendColor =
+    trend === "up"
+      ? "text-[var(--rag-green)]"
+      : trend === "down"
+        ? "text-[var(--rag-red)]"
+        : "";
+
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -111,10 +148,33 @@ export function ScoreStatCard({ label, score }: ScoreStatCardProps) {
           {label}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col gap-1">
         <p className={`text-2xl font-semibold tabular-nums ${colorClass}`}>
           {score !== null ? `${animated}%` : "—"}
+          {trendIcon ? (
+            <span className={`ml-1 text-sm ${trendColor}`}>{trendIcon}</span>
+          ) : null}
         </p>
+        {sparklineData && sparklineData.length > 1 ? (
+          <svg
+            className="h-8 w-full"
+            viewBox={`0 0 ${sparklineData.length - 1} 20`}
+            preserveAspectRatio="none"
+          >
+            <polyline
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              className="opacity-50"
+              points={sparklineData
+                .map(
+                  (point, index) =>
+                    `${index},${20 - (point / Math.max(...sparklineData)) * 18}`,
+                )
+                .join(" ")}
+            />
+          </svg>
+        ) : null}
       </CardContent>
     </Card>
   );

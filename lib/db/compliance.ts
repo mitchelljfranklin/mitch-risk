@@ -282,6 +282,7 @@ export async function getDashboardData() {
       name: true,
       tier: true,
       overallScore: true,
+      createdAt: true,
       assessments: {
         where: { status: { notIn: ["DRAFT", "SENT", "IN_PROGRESS"] } },
         orderBy: { createdAt: "desc" },
@@ -354,6 +355,61 @@ export async function getDashboardData() {
     ragThresholds,
   );
 
+  const sixMonthsAgo = new Date();
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+  const completedScores = allVendors.flatMap((vendor) =>
+    vendor.assessments
+      .filter((assessment) => assessment.score !== null)
+      .map((assessment) => ({
+        score: assessment.score as number,
+        month: assessment.createdAt.toISOString().slice(0, 7),
+      })),
+  );
+
+  const scoresByMonth = new Map<string, number[]>();
+  for (const entry of completedScores) {
+    if (!scoresByMonth.has(entry.month)) {
+      scoresByMonth.set(entry.month, []);
+    }
+    scoresByMonth.get(entry.month)!.push(entry.score);
+  }
+
+  const sortedMonths = Array.from(scoresByMonth.keys()).sort();
+  const portfolioScoreTrend: number[] = [];
+  for (const month of sortedMonths) {
+    const values = scoresByMonth.get(month)!;
+    const avg = values.reduce((sum, v) => sum + v, 0) / values.length;
+    portfolioScoreTrend.push(Math.round(avg * 100));
+  }
+  if (portfolioScoreTrend.length === 0 && allVendors.length > 0) {
+    const fallbackAverage = scoredCount > 0 ? totalScore / scoredCount : null;
+    const currentAverage =
+      fallbackAverage !== null ? Math.round(fallbackAverage * 100) : 0;
+    portfolioScoreTrend.push(currentAverage);
+  }
+
+  const vendorTrend = computeTrendDirection(
+    allVendors.length,
+    allVendors.filter((vendor) => vendor.createdAt > sixMonthsAgo).length,
+  );
+
+  const findingTrend = computeTrendDirection(
+    allVendors.length > 0 ? openFindings : 0,
+    openFindings,
+  );
+
+  const recentMonths = portfolioScoreTrend.slice(-4);
+  const scoreTrend: "up" | "down" | "stable" =
+    recentMonths.length >= 2
+      ? recentMonths[recentMonths.length - 1]! >
+        recentMonths[recentMonths.length - 2]!
+        ? "up"
+        : recentMonths[recentMonths.length - 1]! <
+            recentMonths[recentMonths.length - 2]!
+          ? "down"
+          : "stable"
+      : "stable";
+
   const portfolio = allVendors.map((vendor) => ({
     id: vendor.id,
     name: vendor.name,
@@ -363,6 +419,8 @@ export async function getDashboardData() {
     latestAssessmentTitle: vendor.assessments[0]?.title ?? null,
     latestAssessmentDate: vendor.assessments[0]?.createdAt ?? null,
   }));
+
+  const averageScore = scoredCount > 0 ? totalScore / scoredCount : null;
 
   const topDeficient = await computeTopDeficientControls(allVendors);
 
@@ -382,7 +440,7 @@ export async function getDashboardData() {
   return {
     vendors: portfolio,
     vendorCount: allVendors.length,
-    averageScore: scoredCount > 0 ? totalScore / scoredCount : null,
+    averageScore,
     openFindings,
     needsAttention,
     scoreDistribution: distribution,
@@ -390,5 +448,18 @@ export async function getDashboardData() {
     riskByTier,
     assessmentStatusCounts,
     vendorsByTier,
+    portfolioScoreTrend,
+    vendorTrend,
+    findingTrend,
+    scoreTrend,
   };
+}
+
+function computeTrendDirection(
+  current: number,
+  previous: number,
+): "up" | "down" | "stable" {
+  if (current > previous) return "up";
+  if (current < previous) return "down";
+  return "stable";
 }
