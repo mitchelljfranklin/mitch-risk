@@ -320,9 +320,23 @@ export default async function VendorDetailPage({
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
             {profile.overallScore !== null ? (
-              <div>
-                <ScoreBadge score={profile.overallScore} size="lg" />{" "}
+              <div className="flex items-center gap-2">
+                <ScoreBadge score={profile.overallScore} size="lg" />
                 <span className="text-muted-foreground text-xs">overall</span>
+                {profile.trend !== "stable" ? (
+                  <Badge
+                    variant={profile.trend === "up" ? "default" : "destructive"}
+                    className="text-[11px]"
+                  >
+                    {profile.trend === "up"
+                      ? "Trending up ↑"
+                      : "Trending down ↓"}
+                  </Badge>
+                ) : (
+                  <Badge variant="secondary" className="text-[11px]">
+                    Stable →
+                  </Badge>
+                )}
               </div>
             ) : (
               <p className="text-muted-foreground text-sm">

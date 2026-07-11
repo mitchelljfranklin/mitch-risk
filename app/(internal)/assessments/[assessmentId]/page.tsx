@@ -31,6 +31,7 @@ import { SendBackDialog } from "./send-back-dialog";
 import { FindingStatusForm } from "./finding-status-form";
 import { ReviewPanel } from "@/components/review-panel";
 import { AttachEvidenceButton } from "@/components/attach-evidence-button";
+import { EvidencePreview } from "@/components/evidence-preview";
 import { ScoreBadge } from "@/components/score-badge";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
@@ -620,15 +621,25 @@ export default async function AssessmentDetailPage({
                       );
                     }
                     return (
-                      <a
-                        key={item.id}
-                        href={`/api/files/${item.id}?inline=true`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary mt-1 block text-xs hover:underline"
-                      >
-                        {isPdf ? `View PDF: ${item.fileName} ↗` : item.fileName}
-                      </a>
+                      <div key={item.id} className="mt-1 flex items-center">
+                        <a
+                          href={`/api/files/${item.id}?inline=true`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary text-xs hover:underline"
+                        >
+                          {isPdf
+                            ? `View PDF: ${item.fileName} ↗`
+                            : item.fileName}
+                        </a>
+                        <EvidencePreview
+                          evidenceId={item.id}
+                          fileName={item.fileName}
+                          mimeType={item.mimeType}
+                        >
+                          <span />
+                        </EvidencePreview>
+                      </div>
                     );
                   })}
                   {canEditVendor &&

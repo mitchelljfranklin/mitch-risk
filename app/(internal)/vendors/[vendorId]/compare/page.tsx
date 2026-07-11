@@ -10,6 +10,7 @@ import { getVendor } from "@/lib/db/vendors";
 import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
 
 import { formatResponseValue } from "@/lib/utils";
+import { compareResponses } from "@/lib/compare";
 
 export const dynamic = "force-dynamic";
 
@@ -133,6 +134,11 @@ export default async function ComparePage({
               const changed =
                 String(lr?.value ?? "") !== String(rr?.value ?? "");
 
+              const diff = compareResponses(
+                { value: lr?.value, isCompliant: lr?.isCompliant ?? null },
+                { value: rr?.value, isCompliant: rr?.isCompliant ?? null },
+              );
+
               return (
                 <tr
                   key={qId}
@@ -167,6 +173,15 @@ export default async function ComparePage({
                         ? "N/A"
                         : formatResponseValue(lr?.value)}
                     </span>
+                    {diff.complianceDegraded ? (
+                      <Badge variant="destructive" className="ml-1 text-[10px]">
+                        ↓
+                      </Badge>
+                    ) : diff.complianceImproved ? (
+                      <Badge className="ml-1 bg-[var(--rag-green)] text-[10px] text-white">
+                        ↑
+                      </Badge>
+                    ) : null}
                   </td>
                   <td className="p-3 align-top">
                     <span

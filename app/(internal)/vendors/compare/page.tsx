@@ -20,6 +20,7 @@ import { getVendor, listVendorOptions } from "@/lib/db/vendors";
 import { ScoreBadge } from "@/components/score-badge";
 import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
 import { formatResponseValue } from "@/lib/utils";
+import { compareResponses } from "@/lib/compare";
 
 export const dynamic = "force-dynamic";
 
@@ -258,6 +259,11 @@ export default async function CompareVendorsPage({
                 : formatResponseValue(br?.value);
               const answersDiffer = aq && bq && aAnswer !== bAnswer;
 
+              const diff = compareResponses(
+                { value: ar?.value, isCompliant: ar?.isCompliant ?? null },
+                { value: br?.value, isCompliant: br?.isCompliant ?? null },
+              );
+
               return (
                 <tr
                   key={text}
@@ -280,34 +286,55 @@ export default async function CompareVendorsPage({
                   </td>
                   <td className="p-3 align-top">
                     {aq ? (
-                      <span
-                        className={
-                          aCompliant === false
-                            ? "text-destructive"
-                            : aCompliant === true
-                              ? "text-[var(--rag-green)]"
-                              : "text-muted-foreground"
-                        }
-                      >
-                        {aAnswer}
-                      </span>
+                      <>
+                        <span
+                          className={
+                            aCompliant === false
+                              ? "text-destructive"
+                              : aCompliant === true
+                                ? "text-[var(--rag-green)]"
+                                : "text-muted-foreground"
+                          }
+                        >
+                          {aAnswer}
+                        </span>
+                        {diff.complianceDegraded ? (
+                          <Badge
+                            variant="destructive"
+                            className="ml-1 text-[10px]"
+                          >
+                            ↓
+                          </Badge>
+                        ) : diff.complianceImproved ? (
+                          <Badge className="ml-1 bg-[var(--rag-green)] text-[10px] text-white">
+                            ↑
+                          </Badge>
+                        ) : null}
+                      </>
                     ) : (
                       <span className="text-muted-foreground">—</span>
                     )}
                   </td>
                   <td className="p-3 align-top">
                     {bq ? (
-                      <span
-                        className={
-                          bCompliant === false
-                            ? "text-destructive"
-                            : bCompliant === true
-                              ? "text-[var(--rag-green)]"
-                              : "text-muted-foreground"
-                        }
-                      >
-                        {bAnswer}
-                      </span>
+                      <>
+                        <span
+                          className={
+                            bCompliant === false
+                              ? "text-destructive"
+                              : bCompliant === true
+                                ? "text-[var(--rag-green)]"
+                                : "text-muted-foreground"
+                          }
+                        >
+                          {bAnswer}
+                        </span>
+                        {diff.complianceChanged ? (
+                          <Badge variant="outline" className="ml-1 text-[10px]">
+                            changed
+                          </Badge>
+                        ) : null}
+                      </>
                     ) : (
                       <span className="text-muted-foreground">—</span>
                     )}

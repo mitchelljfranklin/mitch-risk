@@ -91,8 +91,37 @@ export async function getVendorProfile(vendorId: string) {
       submittedAt: assessment.submittedAt,
       score: assessment.score,
     })),
+    trend: computeTrend(vendor.assessments.map((a) => a.score)),
     domainBreakdown,
   };
+}
+
+function computeTrend(scores: (number | null)[]): "up" | "down" | "stable" {
+  const filtered = scores.filter((score): score is number => score !== null);
+  if (filtered.length < 2) return "stable";
+
+  const n = filtered.length;
+  let sumX = 0;
+  let sumY = 0;
+  let sumXY = 0;
+  let sumX2 = 0;
+
+  for (let i = 0; i < n; i++) {
+    sumX += i;
+    sumY += filtered[i]!;
+    sumXY += i * filtered[i]!;
+    sumX2 += i * i;
+  }
+
+  const denominator = n * sumX2 - sumX * sumX;
+  if (denominator === 0) return "stable";
+
+  const slope = (n * sumXY - sumX * sumY) / denominator;
+  const threshold = 0.005;
+
+  if (slope > threshold) return "up";
+  if (slope < -threshold) return "down";
+  return "stable";
 }
 
 export type HeatmapControl = {
