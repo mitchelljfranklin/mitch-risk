@@ -111,13 +111,21 @@ export default async function CompareVendorsPage({
   if (!vendorA || !vendorB) notFound();
 
   const completedA = vendorA.assessments
-    .filter((assessment) => assessment.status === "COMPLETED" || assessment.status === "UNDER_REVIEW")
+    .filter(
+      (assessment) =>
+        assessment.status === "COMPLETED" ||
+        assessment.status === "UNDER_REVIEW",
+    )
     .sort(
       (x, y) =>
         (y.submittedAt?.getTime() ?? 0) - (x.submittedAt?.getTime() ?? 0),
     )[0];
   const completedB = vendorB.assessments
-    .filter((assessment) => assessment.status === "COMPLETED" || assessment.status === "UNDER_REVIEW")
+    .filter(
+      (assessment) =>
+        assessment.status === "COMPLETED" ||
+        assessment.status === "UNDER_REVIEW",
+    )
     .sort(
       (x, y) =>
         (y.submittedAt?.getTime() ?? 0) - (x.submittedAt?.getTime() ?? 0),
@@ -150,10 +158,16 @@ export default async function CompareVendorsPage({
   const bScore = assessmentB.score;
 
   const aResponseMap = new Map(
-    assessmentA.responses.map((response) => [response.assessmentQuestionId, response]),
+    assessmentA.responses.map((response) => [
+      response.assessmentQuestionId,
+      response,
+    ]),
   );
   const bResponseMap = new Map(
-    assessmentB.responses.map((response) => [response.assessmentQuestionId, response]),
+    assessmentB.responses.map((response) => [
+      response.assessmentQuestionId,
+      response,
+    ]),
   );
 
   // Match questions by text content for cross-template comparison

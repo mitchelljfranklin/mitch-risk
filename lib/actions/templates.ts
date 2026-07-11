@@ -394,7 +394,9 @@ export async function importTemplateAction(
           select: { id: true, code: true },
         })
       : [];
-  const controlByCode = new Map(controls.map((control) => [control.code, control.id]));
+  const controlByCode = new Map(
+    controls.map((control) => [control.code, control.id]),
+  );
 
   for (const code of uniqueCodes) {
     if (!controlByCode.has(code)) {

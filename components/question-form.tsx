@@ -113,7 +113,9 @@ export function QuestionForm({
           commandsFilter={(cmd) => {
             const name = cmd.name ?? "";
             if (name === "image") return { ...cmd, disabled: true };
-            if (["fullscreen", "code", "code-block", "comment"].includes(name)) {
+            if (
+              ["fullscreen", "code", "code-block", "comment"].includes(name)
+            ) {
               return false;
             }
             return cmd;

@@ -104,11 +104,14 @@ export default async function AssessmentDetailPage({
     : null;
 
   // Review progress across answerable (non-N/A) responses.
-  const answerable = assessment.responses.filter((response) => !response.isNotApplicable);
+  const answerable = assessment.responses.filter(
+    (response) => !response.isNotApplicable,
+  );
   const reviewCounts = {
     total: answerable.length,
-    approved: answerable.filter((response) => response.review?.decision === "APPROVED")
-      .length,
+    approved: answerable.filter(
+      (response) => response.review?.decision === "APPROVED",
+    ).length,
     clarification: answerable.filter(
       (r) => r.review?.decision === "CLARIFICATION_REQUESTED",
     ).length,

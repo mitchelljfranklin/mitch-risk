@@ -52,7 +52,9 @@ function buildVendorCsvResponse(
       csvEscape(assessment.submittedAt?.toISOString().slice(0, 10) ?? ""),
       csvEscape(assessment.dueDate?.toISOString().slice(0, 10) ?? ""),
       csvEscape(
-        assessment.template?.name ? `${assessment.template.name} v${assessment.template.version}` : "",
+        assessment.template?.name
+          ? `${assessment.template.name} v${assessment.template.version}`
+          : "",
       ),
     ].join(","),
   );

@@ -25,6 +25,7 @@
   - [OpenAPI Spec](/api-reference/openapi/)
 - **Deployment**
   - [Docker](deployment/docker.md)
+  - [Azure Container Apps](deployment/azure-container-apps.md)
   - [Reverse Proxy](deployment/reverse-proxy.md)
   - [Cloud Storage](deployment/cloud-storage.md)
 - **Advanced**

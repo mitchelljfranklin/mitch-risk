@@ -209,7 +209,9 @@ export default async function TemplateBuilderPage({
                   <Link
                     href={`/templates/${version.id}`}
                     className={`hover:bg-accent flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs transition-colors ${
-                      version.id === templateId ? "border-primary bg-accent" : ""
+                      version.id === templateId
+                        ? "border-primary bg-accent"
+                        : ""
                     }`}
                   >
                     <span className="font-medium">v{version.version}</span>

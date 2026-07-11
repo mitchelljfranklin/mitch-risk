@@ -105,7 +105,9 @@ export default async function VendorDetailPage({
       ? await prisma.attachment.findMany({
           where: {
             entityType: "VendorCertification",
-            entityId: { in: certifications.map((certification) => certification.id) },
+            entityId: {
+              in: certifications.map((certification) => certification.id),
+            },
           },
           orderBy: { createdAt: "asc" },
         })

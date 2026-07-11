@@ -88,8 +88,12 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
       },
     });
 
-    const responseMap = new Map(assessment.responses.map((response) => [response.id, response]));
-    const questionMap = new Map(assessment.questions.map((question) => [question.id, question]));
+    const responseMap = new Map(
+      assessment.responses.map((response) => [response.id, response]),
+    );
+    const questionMap = new Map(
+      assessment.questions.map((question) => [question.id, question]),
+    );
 
     const nonCompliantIds = scored
       .filter((result) => result.isCompliant === false)

@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-mitch}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mitch}
+      POSTGRES_DB: ${POSTGRES_DB:-mitch_risk}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-mitch} -d ${POSTGRES_DB:-mitch_risk}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          cpus: "${DB_CPU_LIMIT:-0.5}"
+          memory: "${DB_MEMORY_LIMIT:-512m}"
+
+volumes:
+  db_data:

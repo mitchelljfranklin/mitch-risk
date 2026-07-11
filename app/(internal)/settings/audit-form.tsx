@@ -325,9 +325,9 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
               <Button asChild variant="outline" size="sm" disabled={page <= 1}>
                 <a
                   href={`/settings?tab=audit&auditPage=${page - 1}&auditPageSize=${pageSize}`}
-                    onClick={(event) => {
-                      if (page <= 1) event.preventDefault();
-                    }}
+                  onClick={(event) => {
+                    if (page <= 1) event.preventDefault();
+                  }}
                 >
                   Previous
                 </a>
@@ -340,9 +340,9 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
               >
                 <a
                   href={`/settings?tab=audit&auditPage=${page + 1}&auditPageSize=${pageSize}`}
-                    onClick={(event) => {
-                      if (page >= totalPages) event.preventDefault();
-                    }}
+                  onClick={(event) => {
+                    if (page >= totalPages) event.preventDefault();
+                  }}
                 >
                   Next
                 </a>

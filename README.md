@@ -22,7 +22,27 @@ Mitch‑Risk bridges that gap. It strips third party vendor risk management down
 
 ## Quick Start
 
+### Pre-built image (recommended)
+
 ```bash
+curl -O https://raw.githubusercontent.com/mitchelljfranklin/mitch-risk/master/docker-compose.pull.yml
+# Copy and edit .env.example, or create a minimal .env with your secrets:
+cat > .env << 'EOF'
+AUTH_SECRET=<your-secret>
+APP_ENCRYPTION_KEY=<your-key-min-32-chars>
+CRON_SECRET=<your-secret>
+APP_URL=http://localhost:3000
+EOF
+
+docker compose -f docker-compose.pull.yml up -d
+# Open http://localhost:3000/setup to create your admin account
+```
+
+### Build from source
+
+```bash
+git clone https://github.com/mitchelljfranklin/mitch-risk.git
+cd mitch-risk
 cp .env.example .env
 # Edit .env with your own AUTH_SECRET, APP_ENCRYPTION_KEY, and CRON_SECRET
 

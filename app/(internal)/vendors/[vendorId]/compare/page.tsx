@@ -80,7 +80,10 @@ export default async function ComparePage({
     left.responses.map((response) => [response.assessmentQuestionId, response]),
   );
   const rightResponseMap = new Map(
-    right.responses.map((response) => [response.assessmentQuestionId, response]),
+    right.responses.map((response) => [
+      response.assessmentQuestionId,
+      response,
+    ]),
   );
 
   return (
@@ -120,7 +123,9 @@ export default async function ComparePage({
           <tbody>
             {[...allQuestionIds].map((qId) => {
               const lq = left.questions.find((question) => question.id === qId);
-              const rq = right.questions.find((question) => question.id === qId);
+              const rq = right.questions.find(
+                (question) => question.id === qId,
+              );
               const lr = lq ? leftResponseMap.get(lq.id) : undefined;
               const rr = rq ? rightResponseMap.get(rq.id) : undefined;
               const lCompliant = lr?.isCompliant;

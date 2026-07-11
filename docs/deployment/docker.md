@@ -2,11 +2,37 @@
 
 Deploy Mitch‑Risk with Docker Compose for a self-hosted, single-container setup.
 
-## Quick Deploy
+## Quick Deploy (pre-built image)
+
+No build tools required — just Docker. Pull the pre-built image from
+[Docker Hub](https://hub.docker.com/r/mitchellfranklin/mitch-risk):
+
+```bash
+curl -O https://raw.githubusercontent.com/mitchelljfranklin/mitch-risk/master/docker-compose.pull.yml
+```
+
+Create a `.env` file with your secrets:
+
+```env
+AUTH_SECRET=<your-secret>
+APP_ENCRYPTION_KEY=<your-key-min-32-chars>
+CRON_SECRET=<your-secret>
+APP_URL=http://localhost:3000
+```
+
+```bash
+docker compose -f docker-compose.pull.yml up -d
+```
+
+The stack includes two containers:
+- **app** — Next.js application server (port 3000)
+- **db** — PostgreSQL database (internal network, port 5432)
+
+## Quick Deploy (build from source)
 
 ```bash
 git clone https://github.com/mitchelljfranklin/mitch-risk.git
-cd Mitch‑Risk
+cd mitch-risk
 cp .env.example .env
 ```
 
@@ -15,10 +41,6 @@ Edit `.env` with your secrets, then:
 ```bash
 docker compose up -d
 ```
-
-The stack includes two containers:
-- **app** — Next.js application server (port 3000)
-- **db** — PostgreSQL database (internal network, port 5432)
 
 ## Secrets to Change
 
@@ -82,7 +104,89 @@ EVIDENCE_STORAGE_PATH=/app/.storage/evidence
 TRUSTED_PROXY_COUNT=1
 ```
 
+## External Database
+
+You can use an existing PostgreSQL instance (on-premises, cloud-hosted, or
+a separate Docker container) instead of the bundled `db` service.
+
+### Option A: App container only (external DB)
+
+Use `docker-compose.external-db.yml` and set a single env var:
+
+```bash
+# Point to your existing PostgreSQL database
+export DATABASE_URL="postgresql://user:pass@host:5432/mitch_risk?schema=public"
+
+# Set the same secrets as the all-in-one deploy
+export AUTH_SECRET=<your-secret>
+export APP_ENCRYPTION_KEY=<your-key>
+export CRON_SECRET=<your-secret>
+
+docker compose -f docker-compose.external-db.yml up -d
+```
+
+The app auto-applies migrations and seeds on first start.
+
+### Option B: Standalone Postgres container
+
+Use `docker-compose.db-only.yml` to run just the database, then connect the
+app container to it via `DATABASE_URL`:
+
+```bash
+# Start the database container
+docker compose -f docker-compose.db-only.yml up -d
+
+# Then start the app with the external-db compose file
+export DATABASE_URL="postgresql://mitch:mitch@localhost:5432/mitch_risk?schema=public"
+docker compose -f docker-compose.external-db.yml up -d
+```
+
+### Option C: Manual DB setup
+
+If you prefer to run migrations and seed manually before deploying the app
+container:
+
+```bash
+# From the project root, with DATABASE_URL set:
+DATABASE_URL="postgresql://..." bash scripts/setup-db.sh
+```
+
+Or on Windows:
+
+```powershell
+$env:DATABASE_URL = "postgresql://..."
+.\scripts\setup-db.ps1
+```
+
+Then deploy the app container with `SKIP_SEED=true` to prevent re-seeding:
+
+```bash
+export SKIP_SEED=true
+docker compose -f docker-compose.external-db.yml up -d
+```
+
+### Azure Database for PostgreSQL
+
+When using Azure PostgreSQL Flexible Server, append `sslmode=require` to
+the connection string:
+
+```
+DATABASE_URL="postgresql://user:pass@server.postgres.database.azure.com:5432/mitch_risk?schema=public&sslmode=require"
+```
+
+See the full [Azure Container Apps deployment guide](azure-container-apps.md).
+
 ## Upgrading
+
+### Pre-built image
+
+```bash
+docker compose -f docker-compose.pull.yml pull
+docker compose -f docker-compose.pull.yml down
+docker compose -f docker-compose.pull.yml up -d
+```
+
+### Build from source
 
 ```bash
 git pull

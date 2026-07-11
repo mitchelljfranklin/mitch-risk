@@ -237,8 +237,8 @@ export function DashboardCharts({
                     className="size-2.5 rounded-full"
                     style={{ backgroundColor: datum.fill }}
                   />
-                  {DONUT_CONFIG[datum.name as keyof typeof DONUT_CONFIG]?.label}:{" "}
-                  {datum.value}
+                  {DONUT_CONFIG[datum.name as keyof typeof DONUT_CONFIG]?.label}
+                  : {datum.value}
                 </span>
               ))}
             </div>

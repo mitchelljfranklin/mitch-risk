@@ -95,7 +95,9 @@ function TemplateEditorSheet({
             extraCommands={[commands.codeEdit, commands.codePreview]}
             commandsFilter={(cmd) => {
               const name = cmd.name ?? "";
-              if (["fullscreen", "code", "code-block", "comment"].includes(name)) {
+              if (
+                ["fullscreen", "code", "code-block", "comment"].includes(name)
+              ) {
                 return false;
               }
               return cmd;

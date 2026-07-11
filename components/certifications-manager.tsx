@@ -167,7 +167,11 @@ function CertificationEditor({
                   {attachment.displayName ?? attachment.fileName} ↗
                 </a>
                 <form action={removeAttachmentAction}>
-                  <input type="hidden" name="attachmentId" value={attachment.id} />
+                  <input
+                    type="hidden"
+                    name="attachmentId"
+                    value={attachment.id}
+                  />
                   <Button
                     type="submit"
                     variant="ghost"

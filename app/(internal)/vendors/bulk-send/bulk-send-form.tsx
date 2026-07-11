@@ -74,10 +74,13 @@ export function BulkSendForm({
   const filtered = vendors.filter((vendor) =>
     vendor.name.toLowerCase().includes(search.toLowerCase()),
   );
-  const selectedVendors = vendors.filter((vendor) => selectedIds.has(vendor.id));
+  const selectedVendors = vendors.filter((vendor) =>
+    selectedIds.has(vendor.id),
+  );
 
   const allSelected =
-    filtered.length > 0 && filtered.every((vendor) => selectedIds.has(vendor.id));
+    filtered.length > 0 &&
+    filtered.every((vendor) => selectedIds.has(vendor.id));
 
   function toggleAll(checked: boolean) {
     if (checked) {
@@ -101,7 +104,8 @@ export function BulkSendForm({
     });
   }
 
-  const templateLabel = templates.find((template) => template.id === templateId)?.label ?? "";
+  const templateLabel =
+    templates.find((template) => template.id === templateId)?.label ?? "";
 
   return (
     <Stepper defaultValue="configure" className="flex flex-col gap-6">

@@ -89,12 +89,17 @@ export function VendorAttachments({
                   {attachment.displayName ?? attachment.fileName} ↗
                 </a>
                 <span className="text-muted-foreground text-xs">
-                  {formatFileSize(attachment.sizeBytes)} · {formatDate(attachment.createdAt)}
+                  {formatFileSize(attachment.sizeBytes)} ·{" "}
+                  {formatDate(attachment.createdAt)}
                 </span>
               </div>
               <form action={removeVendorAttachmentAction} className="shrink-0">
                 <input type="hidden" name="vendorId" value={vendorId} />
-                <input type="hidden" name="attachmentId" value={attachment.id} />
+                <input
+                  type="hidden"
+                  name="attachmentId"
+                  value={attachment.id}
+                />
                 <Button type="submit" variant="ghost" size="sm">
                   <Trash2 className="size-3.5" />
                 </Button>
@@ -121,7 +126,8 @@ export function VendorAttachments({
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
           onKeyDown={(event) => {
-            if (event.key === "Enter" || event.key === " ") inputRef.current?.click();
+            if (event.key === "Enter" || event.key === " ")
+              inputRef.current?.click();
           }}
           className={cn(
             "flex flex-col items-center justify-center gap-1 rounded-md border-2 border-dashed p-4 transition-colors",

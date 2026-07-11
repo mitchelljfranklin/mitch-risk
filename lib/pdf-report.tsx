@@ -193,7 +193,12 @@ function AssessmentPdfDocument({ data }: { data: AssessmentPdfData }) {
                 </Text>
                 <Text style={styles.col3}>{question.type}</Text>
                 <Text style={styles.col4}>{question.riskWeight}</Text>
-                <Text style={[styles.col5, { color: ragColor(question.isCompliant) }]}>
+                <Text
+                  style={[
+                    styles.col5,
+                    { color: ragColor(question.isCompliant) },
+                  ]}
+                >
                   {question.isNa
                     ? "N/A"
                     : question.isCompliant === true
@@ -202,7 +207,12 @@ function AssessmentPdfDocument({ data }: { data: AssessmentPdfData }) {
                         ? "No"
                         : "--"}
                 </Text>
-                <Text style={[styles.col6, { color: ragColor(question.isCompliant) }]}>
+                <Text
+                  style={[
+                    styles.col6,
+                    { color: ragColor(question.isCompliant) },
+                  ]}
+                >
                   {ragLabel(question.scorePct)}
                 </Text>
               </View>

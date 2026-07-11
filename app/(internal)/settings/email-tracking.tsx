@@ -83,7 +83,11 @@ export function EmailTrackingForm({
             <SelectContent>
               {statuses.map((status) => (
                 <SelectItem key={status} value={status}>
-                  {status === "SENT" ? "Sent" : status === "FAILED" ? "Failed" : status}
+                  {status === "SENT"
+                    ? "Sent"
+                    : status === "FAILED"
+                      ? "Failed"
+                      : status}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -199,9 +203,9 @@ export function EmailTrackingForm({
               <Button asChild variant="outline" size="sm" disabled={page <= 1}>
                 <a
                   href={`/settings?tab=email-tracking&emailLogPage=${page - 1}&emailLogPageSize=${pageSize}`}
-                    onClick={(event) => {
-                      if (page <= 1) event.preventDefault();
-                    }}
+                  onClick={(event) => {
+                    if (page <= 1) event.preventDefault();
+                  }}
                 >
                   Previous
                 </a>
@@ -214,9 +218,9 @@ export function EmailTrackingForm({
               >
                 <a
                   href={`/settings?tab=email-tracking&emailLogPage=${page + 1}&emailLogPageSize=${pageSize}`}
-                    onClick={(event) => {
-                      if (page >= totalPages) event.preventDefault();
-                    }}
+                  onClick={(event) => {
+                    if (page >= totalPages) event.preventDefault();
+                  }}
                 >
                   Next
                 </a>
