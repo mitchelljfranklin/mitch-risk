@@ -25,8 +25,7 @@ test("capture dashboard screenshot", async ({ page }) => {
   });
 });
 
-test("capture vendor detail screenshot", async ({ page }) => {
-  await signInAsAdmin(page);
+async function navigateToFirstVendor(page: import("@playwright/test").Page) {
   await page
     .locator('[data-sidebar="menu-button"]')
     .filter({ hasText: "Vendors" })
@@ -39,8 +38,33 @@ test("capture vendor detail screenshot", async ({ page }) => {
     () => !document.body.textContent?.includes("Loading..."),
   );
   await page.waitForTimeout(2000);
+}
+
+test("capture vendor detail overview screenshot", async ({ page }) => {
+  await signInAsAdmin(page);
+  await navigateToFirstVendor(page);
   await page.screenshot({
     path: `${SCREENSHOT_DIR}/vendor-detail.png`,
+  });
+});
+
+test("capture vendor detail compliance screenshot", async ({ page }) => {
+  await signInAsAdmin(page);
+  await navigateToFirstVendor(page);
+  await page.getByRole("tab", { name: "Compliance" }).click();
+  await page.waitForTimeout(1000);
+  await page.screenshot({
+    path: `${SCREENSHOT_DIR}/vendor-detail-compliance.png`,
+  });
+});
+
+test("capture vendor detail findings screenshot", async ({ page }) => {
+  await signInAsAdmin(page);
+  await navigateToFirstVendor(page);
+  await page.getByRole("tab", { name: /Findings/ }).click();
+  await page.waitForTimeout(1000);
+  await page.screenshot({
+    path: `${SCREENSHOT_DIR}/vendor-detail-findings.png`,
   });
 });
 

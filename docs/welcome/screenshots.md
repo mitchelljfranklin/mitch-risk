@@ -8,9 +8,25 @@ The dashboard provides a portfolio-level view with animated stat cards, a donut 
 
 ## Vendor Detail
 
-Each vendor profile shows their risk score (colour-coded with RAG thresholds), assessment history with trend sparklines, active certifications with expiry tracking, recent findings, and domain-level compliance heatmaps against all mapped frameworks.
+The vendor detail page uses a tabbed layout to organise profile information, risk scores, compliance data, findings, and assessment history into four focused views.
+
+### Overview
+
+The Overview tab shows vendor profile fields alongside the risk profile card — inherent (pre-assessment) and residual (assessed) scores, overall score with trend direction, and an interactive score history bar chart. Certifications and attestations are managed below.
 
 ![Vendor Detail](../screenshots/vendor-detail.png)
+
+### Compliance
+
+The Compliance tab displays domain-level compliance bars with RAG-coloured progress indicators, computed from the vendor's latest completed assessment. Links to per-framework control heatmaps provide drill-down into individual control compliance.
+
+![Vendor Detail — Compliance](../screenshots/vendor-detail-compliance.png)
+
+### Findings
+
+The Findings tab lists all findings for the vendor with severity and status badges, linked to their source assessments. An open findings count badge on the tab trigger provides an at-a-glance indicator of outstanding issues.
+
+![Vendor Detail — Findings](../screenshots/vendor-detail-findings.png)
 
 ## Assessment Review
 
