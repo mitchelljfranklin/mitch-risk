@@ -41,6 +41,7 @@ import { SchedulingForm } from "./scheduling-form";
 import { LimitsForm } from "./limits-form";
 import { StorageForm } from "./storage-form";
 import { EmailTrackingForm } from "./email-tracking";
+import { HealthTab } from "./health-tab";
 import { listEmailLogs } from "@/lib/db/notifications";
 
 export const dynamic = "force-dynamic";
@@ -192,6 +193,7 @@ export default async function SettingsPage({
           "scheduling",
           "limits",
           "sso",
+          "health",
         ]
       : []),
     ...(canManageUsers ? ["users"] : []),
@@ -226,6 +228,7 @@ export default async function SettingsPage({
                 <TabsTrigger value="limits">Limits</TabsTrigger>
                 <TabsTrigger value="storage">Storage</TabsTrigger>
                 <TabsTrigger value="sso">SSO</TabsTrigger>
+                <TabsTrigger value="health">Health</TabsTrigger>
               </>
             ) : null}
             {canManageUsers ? (
@@ -525,6 +528,12 @@ export default async function SettingsPage({
             </CardContent>
           </Card>
         </TabsContent>
+
+        {canManageSettings ? (
+          <TabsContent value="health" className="mt-4 flex flex-col gap-6">
+            <HealthTab />
+          </TabsContent>
+        ) : null}
       </Tabs>
     </div>
   );
