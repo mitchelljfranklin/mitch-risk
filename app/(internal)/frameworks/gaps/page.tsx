@@ -23,7 +23,7 @@ export default async function FrameworkGapsPage() {
     orderBy: { name: "asc" },
   });
 
-  const allTemplateQuestions = await prisma.templateQuestion.findMany({
+  const allTemplateQuestions = await prisma.question.findMany({
     where: { controlIds: { isEmpty: false } },
     select: { controlIds: true },
   });
