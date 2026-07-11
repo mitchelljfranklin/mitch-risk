@@ -6,45 +6,29 @@ export type ResponseDiff = {
 };
 
 export function compareResponses(
-  a: { value: unknown; isCompliant: boolean | null },
-  b: { value: unknown; isCompliant: boolean | null },
+  left: { value: unknown; isCompliant: boolean | null },
+  right: { value: unknown; isCompliant: boolean | null },
 ): ResponseDiff {
-  const aValue = String(a.value ?? "");
-  const bValue = String(b.value ?? "");
-  const answerChanged = aValue !== bValue;
+  const leftValue = String(left.value ?? "");
+  const rightValue = String(right.value ?? "");
+  const answerChanged = leftValue !== rightValue;
 
-  const aCompliant = a.isCompliant;
-  const bCompliant = b.isCompliant;
-  const complianceChanged = aCompliant !== bCompliant;
+  const leftCompliant = left.isCompliant;
+  const rightCompliant = right.isCompliant;
+  const complianceChanged = leftCompliant !== rightCompliant;
   const complianceImproved =
     complianceChanged &&
-    bCompliant === true &&
-    (aCompliant === null || aCompliant === false);
+    rightCompliant === true &&
+    (leftCompliant === null || leftCompliant === false);
   const complianceDegraded =
     complianceChanged &&
-    aCompliant === true &&
-    (bCompliant === null || bCompliant === false);
+    leftCompliant === true &&
+    (rightCompliant === null || rightCompliant === false);
 
   return {
     answerChanged,
     complianceChanged,
     complianceImproved,
     complianceDegraded,
-  };
-}
-
-export type CompareSummary = {
-  totalQuestions: number;
-  answersChanged: number;
-  complianceImproved: number;
-  complianceDegraded: number;
-};
-
-export function computeCompareSummary(diffs: ResponseDiff[]): CompareSummary {
-  return {
-    totalQuestions: diffs.length,
-    answersChanged: diffs.filter((d) => d.answerChanged).length,
-    complianceImproved: diffs.filter((d) => d.complianceImproved).length,
-    complianceDegraded: diffs.filter((d) => d.complianceDegraded).length,
   };
 }

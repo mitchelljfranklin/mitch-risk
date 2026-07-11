@@ -57,11 +57,12 @@ export async function bulkUpdateFindingStatusesAction(
   let findingIds: string[] = [];
   try {
     findingIds = JSON.parse(rawIds);
-    if (!Array.isArray(findingIds) || findingIds.length === 0) {
-      return { ok: false, message: "No findings selected." };
-    }
   } catch {
     return { ok: false, message: "Invalid selection data." };
+  }
+
+  if (!Array.isArray(findingIds) || findingIds.length === 0) {
+    return { ok: false, message: "No findings selected." };
   }
 
   await prisma.$transaction(
