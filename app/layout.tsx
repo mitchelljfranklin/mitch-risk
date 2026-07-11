@@ -20,7 +20,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const orgName = await getOrganizationSettings()
     .then((org) => org.name || "mitch-risk")
     .catch((err) => {
-      console.error("Failed to load organization settings:", err);
+      console.error(
+        "Failed to load organization settings:",
+        err instanceof Error ? err.message : String(err),
+      );
       return "mitch-risk";
     });
   return {
@@ -35,7 +38,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const appearance = await getAppearanceSettings().catch((err) => {
-    console.error("Failed to load appearance settings:", err);
+    console.error(
+      "Failed to load appearance settings:",
+      err instanceof Error ? err.message : String(err),
+    );
     return {
       primaryHex: "",
       secondaryHex: "",

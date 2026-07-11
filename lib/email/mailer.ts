@@ -185,7 +185,7 @@ export async function sendEmail(
   } catch (sendError) {
     const errorMessage =
       sendError instanceof Error ? sendError.message : "unknown error";
-    console.error("Failed to send email:", sendError);
+    console.error("Failed to send email:", errorMessage);
     await updateNotificationLogStatus(
       notificationLogId,
       "FAILED",

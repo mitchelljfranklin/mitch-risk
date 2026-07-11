@@ -28,7 +28,10 @@ function foregroundFor(hex: string): string {
 
 export async function ThemeTokens() {
   const appearance = await getAppearanceSettings().catch((err) => {
-    console.error("Failed to load appearance settings for theme tokens:", err);
+    console.error(
+      "Failed to load appearance settings for theme tokens:",
+      err instanceof Error ? err.message : String(err),
+    );
     return {
       primaryHex: "",
       secondaryHex: "",

@@ -58,7 +58,7 @@ const localDiskStorage: FileStorage = {
         console.error(
           "Failed to read directory in storage sweep:",
           directory,
-          error,
+          error instanceof Error ? error.message : String(error),
         );
         return;
       }

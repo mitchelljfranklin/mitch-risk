@@ -132,7 +132,7 @@ function safeDecryptSecret(value: string, settingKey: string): string | null {
   } catch (error) {
     console.error(
       `[settings] failed to decrypt "${settingKey}" — has APP_ENCRYPTION_KEY changed? Re-save this secret to fix.`,
-      error instanceof Error ? error.message : error,
+      error instanceof Error ? error.message : String(error),
     );
     return null;
   }

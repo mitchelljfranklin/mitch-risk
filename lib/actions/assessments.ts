@@ -295,7 +295,7 @@ async function processBulkVendorSend(params: {
       emailFailed = true;
       console.error(
         `[bulk-send] email failed for vendor ${params.vendorId} (assessment ${assessment.id}):`,
-        emailError,
+        emailError instanceof Error ? emailError.message : String(emailError),
       );
     }
   }
@@ -367,7 +367,7 @@ export async function sendBulkAssessmentsAction(
       skippedCount++;
       console.error(
         `[bulk-send] failed to send for vendor ${vendorId}:`,
-        error,
+        error instanceof Error ? error.message : String(error),
       );
     }
   }
