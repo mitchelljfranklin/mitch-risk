@@ -2,17 +2,31 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, ChevronDown, ChevronRight } from "lucide-react";
+import {
+  AlertTriangle,
+  Calendar,
+  ChevronDown,
+  ChevronRight,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatDate } from "@/lib/utils";
 
 type VendorEntry = { vendorId: string; vendorName: string };
+
+type KeyDateEntry = {
+  vendorId: string;
+  vendorName: string;
+  label: string;
+  daysUntil: number;
+  date: Date | string;
+};
 
 type GroupConfig = {
   key: string;
   label: string;
-  variant: "destructive" | "default";
+  variant: "destructive" | "default" | "outline";
   icon: React.ReactNode;
 };
 
@@ -29,21 +43,33 @@ const GROUPS: GroupConfig[] = [
     variant: "destructive",
     icon: <AlertTriangle className="size-3.5" />,
   },
+  {
+    key: "keyDates",
+    label: "Key dates (60 days)",
+    variant: "outline",
+    icon: <Calendar className="size-3.5" />,
+  },
 ];
 
 type AttentionGroupsProps = {
   groups: Record<string, VendorEntry[]>;
+  keyDates?: KeyDateEntry[];
 };
 
-export function AttentionGroups({ groups }: AttentionGroupsProps) {
+export function AttentionGroups({ groups, keyDates }: AttentionGroupsProps) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   function toggle(key: string) {
     setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
   }
 
-  const totalItems = Object.values(groups).reduce(
-    (sum, group) => sum + group.length,
+  function totalForGroup(key: string): number {
+    if (key === "keyDates") return keyDates?.length ?? 0;
+    return groups[key]?.length ?? 0;
+  }
+
+  const totalItems = GROUPS.reduce(
+    (sum, group) => sum + totalForGroup(group.key),
     0,
   );
 
@@ -69,8 +95,8 @@ export function AttentionGroups({ groups }: AttentionGroupsProps) {
       </CardHeader>
       <CardContent className="flex flex-col gap-1">
         {GROUPS.map((group) => {
-          const items = groups[group.key];
-          if (!items || items.length === 0) return null;
+          const count = totalForGroup(group.key);
+          if (count === 0) return null;
           const isExpanded = expanded[group.key] ?? false;
 
           return (
@@ -96,20 +122,47 @@ export function AttentionGroups({ groups }: AttentionGroupsProps) {
                   <span className="text-sm font-medium">{group.label}</span>
                 </span>
                 <Badge variant={group.variant} className="ml-auto text-xs">
-                  {items.length}
+                  {count}
                 </Badge>
               </button>
               {isExpanded ? (
                 <div className="ml-6 flex flex-col divide-y rounded-md border">
-                  {items.map((entry) => (
-                    <Link
-                      key={entry.vendorId}
-                      href={`/vendors/${entry.vendorId}`}
-                      className="hover:bg-accent/40 px-3 py-2 text-sm transition-colors"
-                    >
-                      {entry.vendorName}
-                    </Link>
-                  ))}
+                  {group.key === "keyDates"
+                    ? keyDates?.map((entry, index) => {
+                        const overdue = entry.daysUntil < 0;
+                        return (
+                          <Link
+                            key={index}
+                            href={`/vendors/${entry.vendorId}`}
+                            className="hover:bg-accent/40 flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors"
+                          >
+                            <div className="flex min-w-0 flex-1 flex-col">
+                              <span className="truncate font-medium">
+                                {entry.vendorName}
+                              </span>
+                              <span className="text-muted-foreground truncate text-xs">
+                                {entry.label} · {formatDate(entry.date)}
+                              </span>
+                            </div>
+                            <span
+                              className={`shrink-0 text-xs ${overdue ? "text-destructive font-medium" : "text-muted-foreground"}`}
+                            >
+                              {overdue
+                                ? `${Math.abs(entry.daysUntil)}d overdue`
+                                : `in ${entry.daysUntil}d`}
+                            </span>
+                          </Link>
+                        );
+                      })
+                    : groups[group.key]?.map((entry) => (
+                        <Link
+                          key={entry.vendorId}
+                          href={`/vendors/${entry.vendorId}`}
+                          className="hover:bg-accent/40 px-3 py-2 text-sm transition-colors"
+                        >
+                          {entry.vendorName}
+                        </Link>
+                      ))}
                 </div>
               ) : null}
             </div>

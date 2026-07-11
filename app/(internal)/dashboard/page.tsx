@@ -184,52 +184,7 @@ export default async function DashboardPage() {
 
           {/* Insight rail: actionable lists side-by-side */}
           <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-            <AttentionGroups groups={attentionGroups} />
-
-            {upcoming.length > 0 ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Upcoming key dates (60 days)</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-col divide-y rounded-lg border">
-                    {upcoming.slice(0, RAIL_LIST_LIMIT).map((item, i) => {
-                      const days = item.daysUntil;
-                      const overdue = days < 0;
-                      return (
-                        <Link
-                          key={i}
-                          href={`/vendors/${item.vendorId}`}
-                          className="hover:bg-accent/40 flex items-center justify-between gap-3 p-3 transition-colors"
-                        >
-                          <div className="flex min-w-0 flex-col">
-                            <span className="truncate text-sm font-medium">
-                              {item.vendorName}
-                            </span>
-                            <span className="text-muted-foreground truncate text-xs">
-                              {item.label} · {formatDate(item.date)}
-                            </span>
-                          </div>
-                          <span
-                            className={`shrink-0 text-xs ${overdue ? "text-destructive font-medium" : "text-muted-foreground"}`}
-                          >
-                            {overdue
-                              ? `${Math.abs(days)}d overdue`
-                              : `in ${days}d`}
-                          </span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                  {upcoming.length > RAIL_LIST_LIMIT ? (
-                    <span className="text-muted-foreground mt-2 inline-block text-xs">
-                      +{upcoming.length - RAIL_LIST_LIMIT} more in the next 60
-                      days
-                    </span>
-                  ) : null}
-                </CardContent>
-              </Card>
-            ) : null}
+            <AttentionGroups groups={attentionGroups} keyDates={upcoming} />
 
             {topDeficientControls.length > 0 ? (
               <Card>
