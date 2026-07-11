@@ -74,6 +74,7 @@ A lightweight, self-hosted third party vendor risk management solution. Build se
 | [Templates](user-guides/templates.md) | Build and publish assessment templates |
 | [Assessments](user-guides/assessments.md) | Send, score, and manage vendor assessments |
 | [Review & Findings](user-guides/review.md) | Review responses and manage findings |
+| [Scoring Methodology](user-guides/scoring.md) | Understand inherent risk, weighted scoring, RAG, and residual risk |
 | [Vendors](user-guides/vendors.md) | Manage vendor profiles, certifications, and attachments |
 | [RBAC & Roles](user-guides/rbac.md) | Configure permissions and access control |
 | [SSO](configuration/sso.md) | Set up single sign-on with Entra ID, Google, or OIDC |

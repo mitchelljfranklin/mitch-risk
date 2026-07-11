@@ -18,6 +18,8 @@ Each question has a risk weight (Critical=10, High=6, Medium=3, Low=1). Complian
 
 RAG thresholds: Green ≥85%, Amber 60–84%, Red <60%.
 
+For a complete explanation — including inherent risk, residual risk, worked examples, findings reconciliation, and configurable parameters — see the [Scoring Methodology](/user-guides/scoring) guide.
+
 ## How do I set up SSO (Single Sign-On)?
 
 SSO is configured in Settings → SSO. Microsoft Entra ID, Google, and generic OIDC providers are supported. See the [SSO Configuration](/configuration/sso.md) guide for per-provider setup instructions.

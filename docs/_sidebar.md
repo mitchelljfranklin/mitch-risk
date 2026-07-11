@@ -6,6 +6,7 @@
   - [Templates](user-guides/templates.md)
   - [Assessments](user-guides/assessments.md)
   - [Review & Findings](user-guides/review.md)
+  - [Scoring Methodology](user-guides/scoring.md)
   - [Vendors](user-guides/vendors.md)
   - [RBAC & Roles](user-guides/rbac.md)
 - **Configuration**
