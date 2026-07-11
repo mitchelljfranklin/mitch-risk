@@ -1,20 +1,13 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { PageSkeleton } from "@/components/page-skeleton";
 
 export default function Loading() {
   return (
-    <div className="flex flex-col gap-6">
-      <Skeleton className="h-8 w-40" />
-      <Skeleton className="h-4 w-56" />
-      <div className="grid gap-4 sm:grid-cols-3">
-        {[...Array(3)].map((_, index) => (
-          <Skeleton key={index} className="h-24 w-full rounded-lg" />
-        ))}
-      </div>
-      <div className="flex flex-wrap gap-2">
-        <Skeleton className="h-9 w-40" />
-        <Skeleton className="h-9 w-40" />
-      </div>
-      <Skeleton className="h-64 w-full rounded-lg" />
-    </div>
+    <PageSkeleton>
+      <PageSkeleton.Title width="w-40" />
+      <PageSkeleton.Subtitle width="w-56" />
+      <PageSkeleton.StatCards count={3} />
+      <PageSkeleton.Filters widths={["w-40", "w-40"]} />
+      <PageSkeleton.Table />
+    </PageSkeleton>
   );
 }
