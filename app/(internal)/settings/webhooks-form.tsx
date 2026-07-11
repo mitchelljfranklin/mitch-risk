@@ -9,9 +9,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
-import type { WebhookEvent } from "@prisma/client";
+import type { WebhookEvent, WebhookPlatform } from "@prisma/client";
 import {
   createWebhookAction,
   deleteWebhookAction,
@@ -27,11 +34,19 @@ const EVENT_LABELS: Record<string, string> = {
   CERTIFICATION_EXPIRING: "Certification expiring",
 };
 
+const PLATFORM_OPTIONS: { value: WebhookPlatform; label: string }[] = [
+  { value: "GENERIC", label: "Generic (HTTP)" },
+  { value: "SLACK", label: "Slack" },
+  { value: "MICROSOFT_TEAMS", label: "Microsoft Teams" },
+  { value: "DISCORD", label: "Discord" },
+];
+
 type WebhookRow = {
   id: string;
   url: string;
   enabled: boolean;
   events: string[];
+  platform: WebhookPlatform;
   createdAt: Date;
 };
 
@@ -83,6 +98,23 @@ export function WebhooksForm({ endpoints }: WebhooksFormProps) {
                 placeholder="https://example.com/webhooks/mitch-risk"
                 required
               />
+            </div>
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="webhookPlatform" className="text-xs">
+                Platform
+              </Label>
+              <Select name="platform" defaultValue="GENERIC">
+                <SelectTrigger id="webhookPlatform">
+                  <SelectValue placeholder="Select platform" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PLATFORM_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="flex flex-col gap-1">
               <Label className="text-xs">Events</Label>
@@ -172,6 +204,11 @@ export function WebhooksForm({ endpoints }: WebhooksFormProps) {
                 </div>
               </div>
               <div className="flex flex-wrap gap-1">
+                <Badge variant="outline" className="text-[10px]">
+                  {PLATFORM_OPTIONS.find(
+                    (opt) => opt.value === endpoint.platform,
+                  )?.label ?? endpoint.platform}
+                </Badge>
                 {endpoint.events.map((event) => (
                   <Badge key={event} variant="outline" className="text-[10px]">
                     {EVENT_LABELS[event] ?? event}

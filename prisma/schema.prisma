@@ -554,8 +554,16 @@ model WebhookEndpoint {
   secret    String
   enabled   Boolean        @default(true)
   events    WebhookEvent[]
+  platform  WebhookPlatform @default(GENERIC)
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
 
   @@map("webhook_endpoints")
+}
+
+enum WebhookPlatform {
+  GENERIC
+  SLACK
+  MICROSOFT_TEAMS
+  DISCORD
 }

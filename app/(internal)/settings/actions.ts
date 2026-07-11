@@ -7,7 +7,7 @@ import { PERMISSIONS, isValidPermission } from "@/lib/permissions";
 import { logAudit } from "@/lib/db/audit";
 import { prisma } from "@/lib/prisma";
 import { getField } from "@/lib/utils";
-import type { WebhookEvent } from "@prisma/client";
+import type { WebhookEvent, WebhookPlatform } from "@prisma/client";
 import {
   getAppearanceSettings,
   updateEmailSettings,
@@ -819,6 +819,8 @@ export async function createWebhookAction(
   const user = await requirePermission(PERMISSIONS.WEBHOOKS_MANAGE);
 
   const url = getField(formData, "url");
+  const platform = (getField(formData, "platform") ||
+    "GENERIC") as WebhookPlatform;
   const events = formData.getAll("events") as WebhookEvent[];
 
   if (!url) {
@@ -832,7 +834,7 @@ export async function createWebhookAction(
   const secret = randomBytes(32).toString("hex");
 
   await prisma.webhookEndpoint.create({
-    data: { url, secret, events },
+    data: { url, secret, events, platform },
   });
 
   if (user) {

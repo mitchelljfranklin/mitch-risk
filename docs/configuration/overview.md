@@ -173,11 +173,12 @@ A read-only, paginated log of all administrative actions. Filter by action type,
 
 ## Webhooks
 
-Configure outbound HTTP callbacks that fire when key events occur. Each endpoint gets a unique signing secret for HMAC-SHA256 payload verification.
+Configure outbound HTTP callbacks that fire when key events occur. Each endpoint gets a unique signing secret for HMAC-SHA256 payload verification. Platform presets (Slack, Microsoft Teams, Discord) auto-format messages for direct delivery — no middleware needed.
 
 | Feature | Description |
 |---------|-------------|
 | **URL** | The HTTPS endpoint that receives POST requests with JSON payloads |
+| **Platform** | Preset message format: Generic (HTTP with HMAC), Slack (Block Kit), Microsoft Teams (Adaptive Card), or Discord (Embed) |
 | **Events** | Assessment submitted, assessment overdue, finding created, finding resolved, certification expiring |
 | **Enable/Disable** | Toggle endpoints on or off without deleting |
 | **Secret** | Randomly generated per-endpoint signing secret |

@@ -4,6 +4,19 @@ Webhooks let your external systems receive real-time event notifications from Mi
 
 Configuration is under **Settings → Webhooks** (requires **Webhooks: manage** permission — Admin by default).
 
+## Platform Presets
+
+When creating a webhook endpoint, choose a platform preset to have the payload automatically formatted for your notification tool. No middleware required.
+
+| Platform | Format | Auth |
+|---|---|---|
+| **Generic (HTTP)** | Raw JSON with `event`, `timestamp`, and `data` fields. HMAC-SHA256 signature in `X-MitchRisk-Signature` header | HMAC secret |
+| **Slack** | Slack Block Kit message with header, fields section, and timestamp context. Uses `blocks` array with `mrkdwn` formatting | URL-based (Slack incoming webhook) |
+| **Microsoft Teams** | Adaptive Card with `FactSet` layout. Uses `application/vnd.microsoft.card.adaptive` content type | URL-based (Teams incoming webhook connector) |
+| **Discord** | Discord embed with title, colour bar, inline fields, timestamp, and footer. Uses `embeds` array | URL-based (Discord webhook URL) |
+
+For Slack, Teams, and Discord, paste your platform's incoming webhook URL directly into the **URL** field. The signing process is handled by the platform's URL-level authentication — no HMAC headers are sent for these presets.
+
 ## Event Types
 
 | Event | When It Fires |

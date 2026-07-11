@@ -136,6 +136,14 @@ export default async function SettingsPage({
 
   const webhookEndpoints = await prisma.webhookEndpoint.findMany({
     orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      url: true,
+      enabled: true,
+      events: true,
+      platform: true,
+      createdAt: true,
+    },
   });
 
   const breakGlassConfigured = (await getBreakGlassHash()) !== null;
