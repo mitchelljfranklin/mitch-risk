@@ -31,8 +31,16 @@ async function navigateToFirstVendor(page: import("@playwright/test").Page) {
     .filter({ hasText: "Vendors" })
     .click();
   await page.waitForURL("**/vendors");
+  await page.waitForFunction(
+    () => !document.body.textContent?.includes("Loading..."),
+  );
   await page.waitForTimeout(2000);
-  await page.locator("table a[href^='/vendors/']").first().click();
+  await page
+    .locator(
+      `a[href^='/vendors/']:not([href='/vendors/compare']):not([href='/vendors/import']):not([href='/vendors/new']):not([href='/vendors/bulk-send'])`,
+    )
+    .first()
+    .click();
   await page.waitForURL("**/vendors/**");
   await page.waitForFunction(
     () => !document.body.textContent?.includes("Loading..."),
@@ -51,7 +59,7 @@ test("capture vendor detail overview screenshot", async ({ page }) => {
 test("capture vendor detail compliance screenshot", async ({ page }) => {
   await signInAsAdmin(page);
   await navigateToFirstVendor(page);
-  await page.getByRole("tab", { name: "Compliance" }).click();
+  await page.getByText("Compliance", { exact: true }).click();
   await page.waitForTimeout(1000);
   await page.screenshot({
     path: `${SCREENSHOT_DIR}/vendor-detail-compliance.png`,
@@ -61,7 +69,7 @@ test("capture vendor detail compliance screenshot", async ({ page }) => {
 test("capture vendor detail findings screenshot", async ({ page }) => {
   await signInAsAdmin(page);
   await navigateToFirstVendor(page);
-  await page.getByRole("tab", { name: /Findings/ }).click();
+  await page.getByText("Findings", { exact: true }).click();
   await page.waitForTimeout(1000);
   await page.screenshot({
     path: `${SCREENSHOT_DIR}/vendor-detail-findings.png`,

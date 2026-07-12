@@ -36,7 +36,15 @@ A stacked horizontal bar chart that layers the RAG distribution by vendor tier (
 
 ## Needs Attention
 
-The **Needs Attention** section groups actionable items so you can focus on what matters:
+The **Needs Attention** section groups actionable items so you can focus on what matters. Summary pills at the top show real-time counts from the notification system, each linking to the relevant page:
+
+| Pill | Counts | Links to |
+|---|---|---|
+| **Unreviewed** | Assessments waiting for review (status `SUBMITTED`) | Assessments filtered by status |
+| **Clarifications** | Assessments sent back to vendors for clarification | Assessments list |
+| **Failed emails (24h)** | Email delivery failures in the last 24 hours | Email Tracking in Settings |
+
+Below the pills, three expandable groups provide vendor-level detail:
 
 | Group | What It Contains | Why It Matters |
 |---|---|---|

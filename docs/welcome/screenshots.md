@@ -2,7 +2,7 @@
 
 ## Dashboard
 
-The dashboard provides a portfolio-level view with animated stat cards, a donut chart of vendor risk distribution, a bar chart of findings by severity, an assessment activity timeline, and a calendar heatmap showing assessment volume over time.
+The dashboard provides a portfolio-level view with animated stat cards, a donut chart of vendor risk distribution, a bar chart of findings by severity, and an interactive assessment activity timeline. The **Needs attention** card shows actionable summary pills (unreviewed submissions, clarifications, failed emails) alongside expandable groups for overdue assessments, below-threshold vendors, and key dates.
 
 ![Dashboard](../screenshots/dashboard.png)
 
