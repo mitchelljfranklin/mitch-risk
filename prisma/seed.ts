@@ -680,13 +680,14 @@ async function seedStarterTemplates() {
       data: { templateId: template.id, title: "Core controls", order: 0 },
     });
 
-    for (const q of setup.questions) {
-      const control = setup.controls[q.controlIndex];
+    for (const question of setup.questions) {
+      const control = setup.controls[question.controlIndex];
       if (!control) continue;
 
       let expectedAnswer: unknown = undefined;
-      const options = "options" in q ? (q.options as string[]) : [];
-      const type = q.type;
+      const options =
+        "options" in question ? (question.options as string[]) : [];
+      const type = question.type;
 
       if (type === "YES_NO") expectedAnswer = "YES";
       else if (type === "COMBOBOX") expectedAnswer = options[0];
@@ -695,9 +696,9 @@ async function seedStarterTemplates() {
       await prisma.question.create({
         data: {
           sectionId: section.id,
-          text: q.text,
-          type: q.type as QuestionType,
-          riskWeight: q.riskWeight as RiskWeight,
+          text: question.text,
+          type: question.type as QuestionType,
+          riskWeight: question.riskWeight as RiskWeight,
           required: true,
           expectedAnswer:
             expectedAnswer !== undefined

@@ -82,7 +82,9 @@ export const vendorCsvRowSchema = z.object({
     .string()
     .optional()
     .default("")
-    .transform((v) => (v && !Number.isNaN(Date.parse(v)) ? v : "")),
+    .transform((value) =>
+      value && !Number.isNaN(Date.parse(value)) ? value : "",
+    ),
   contractValue: z.string().optional().default(""),
   geographicRisk: z.string().optional().default(""),
   tags: z.string().optional().default(""),

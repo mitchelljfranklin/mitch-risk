@@ -246,7 +246,7 @@ export function AttentionGroups({
                             ) : null}
                           </Link>
                         ))
-                      : keyDates?.map((entry, index) => {
+                      : keyDates?.map((entry, _index) => {
                           const overdue = entry.daysUntil < 0;
                           return (
                             <Link

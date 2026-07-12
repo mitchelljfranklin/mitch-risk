@@ -91,7 +91,9 @@ export async function getVendorProfile(vendorId: string) {
       submittedAt: assessment.submittedAt,
       score: assessment.score,
     })),
-    trend: computeTrend(vendor.assessments.map((a) => a.score)),
+    trend: computeTrend(
+      vendor.assessments.map((assessment) => assessment.score),
+    ),
     domainBreakdown,
   };
 }

@@ -63,7 +63,9 @@ describe("vendor search and export (integration)", () => {
     expect(filtered.vendors[0].name).toBe(VENDOR_A);
 
     const byTier = await listVendors({ tier: "HIGH" });
-    const tierMatches = byTier.vendors.filter((v) => v.name === VENDOR_B);
+    const tierMatches = byTier.vendors.filter(
+      (vendor) => vendor.name === VENDOR_B,
+    );
     expect(tierMatches.length).toBe(1);
     expect(tierMatches[0].name).toBe(VENDOR_B);
   });
@@ -82,7 +84,7 @@ describe("vendor search and export (integration)", () => {
 
   it("sorts vendors by name descending", async () => {
     const desc = await listVendors({ query: "P27 Vendor", sort: "name-desc" });
-    const names = desc.vendors.map((v) => v.name);
+    const names = desc.vendors.map((vendor) => vendor.name);
     expect(names.indexOf(VENDOR_B)).toBeLessThan(names.indexOf(VENDOR_A));
   });
 

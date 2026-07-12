@@ -40,9 +40,9 @@ function formatSlackMessage(
       { type: "divider" },
       {
         type: "section",
-        fields: fields.map((f) => ({
+        fields: fields.map((field) => ({
           type: "mrkdwn",
-          text: `*${f.title}:*\n${f.value}`,
+          text: `*${field.title}:*\n${field.value}`,
         })),
       },
       {
@@ -155,6 +155,7 @@ async function deliverWebhook(
 
     return response.ok;
   } catch {
+    console.error(`Webhook dispatch to ${url} failed`);
     return false;
   } finally {
     clearTimeout(timeout);

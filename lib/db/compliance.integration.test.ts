@@ -108,8 +108,8 @@ describe("compliance domain and heatmap (integration)", () => {
     if (!portal) throw new Error("portal not found");
 
     // Q1 = compliant (YES), Q2 = non-compliant (NO)
-    const q1 = portal.questions.find((q) => q.text === "Q1?");
-    const q2 = portal.questions.find((q) => q.text === "Q2?");
+    const q1 = portal.questions.find((question) => question.text === "Q1?");
+    const q2 = portal.questions.find((question) => question.text === "Q2?");
     if (!q1 || !q2) throw new Error("questions not found");
 
     await saveResponses(token, [
@@ -191,10 +191,12 @@ describe("compliance domain and heatmap (integration)", () => {
     const heatmap = await getVendorHeatmap(vendor.id, framework.id);
     expect(heatmap.length).toBeGreaterThan(0);
 
-    const unmappedControls = heatmap.filter((c) => c.rag === "none");
+    const unmappedControls = heatmap.filter(
+      (control) => control.rag === "none",
+    );
     expect(unmappedControls.length).toBeGreaterThan(0);
-    for (const c of unmappedControls) {
-      expect(c.complianceRatio).toBe(0);
+    for (const control of unmappedControls) {
+      expect(control.complianceRatio).toBe(0);
     }
 
     await prisma.vendor.deleteMany({ where: { name: VENDOR_NAME + " 2" } });
@@ -268,7 +270,9 @@ describe("compliance domain and heatmap (integration)", () => {
     if (!framework) throw new Error("no framework");
     const heatmap = await getVendorHeatmap(vendor.id, framework.id);
 
-    const mappedControl = heatmap.find((c) => c.id === controls[0].id);
+    const mappedControl = heatmap.find(
+      (control) => control.id === controls[0].id,
+    );
     expect(mappedControl).toBeDefined();
     if (!mappedControl) throw new Error("control not in heatmap");
     expect(mappedControl.rag).toBe("red");

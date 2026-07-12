@@ -239,12 +239,18 @@ describe("template new question types (integration)", () => {
     const saved = await getTemplateForBuilder(template.id);
     if (!saved) throw new Error("template not found");
 
-    const qs = saved.sections.flatMap((s) => s.questions);
-    expect(qs.length).toBe(3);
+    const questions = saved.sections.flatMap((section) => section.questions);
+    expect(questions.length).toBe(3);
 
-    const combobox = qs.find((q) => q.text === "Cloud provider?");
-    const multi = qs.find((q) => q.text === "Compliance frameworks?");
-    const rating = qs.find((q) => q.text === "Rate maturity?");
+    const combobox = questions.find(
+      (question) => question.text === "Cloud provider?",
+    );
+    const multi = questions.find(
+      (question) => question.text === "Compliance frameworks?",
+    );
+    const rating = questions.find(
+      (question) => question.text === "Rate maturity?",
+    );
     if (!combobox || !multi || !rating) throw new Error("questions missing");
 
     expect(combobox.type).toBe("COMBOBOX");

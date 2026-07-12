@@ -63,9 +63,17 @@ describe("template builder — reorder / duplicate / mappings", () => {
 
     const built = await getTemplateForBuilder(template.id);
     if (!built) throw new Error("template missing");
-    expect(built.sections.map((s) => s.title)).toEqual(["Second", "First"]);
-    const firstSection = built.sections.find((s) => s.title === "First");
-    expect(firstSection?.questions.map((q) => q.id)).toEqual([q2.id, q1.id]);
+    expect(built.sections.map((section) => section.title)).toEqual([
+      "Second",
+      "First",
+    ]);
+    const firstSection = built.sections.find(
+      (section) => section.title === "First",
+    );
+    expect(firstSection?.questions.map((question) => question.id)).toEqual([
+      q2.id,
+      q1.id,
+    ]);
   });
 
   it("duplicates a template as an independent copy with remapped conditions", async () => {
@@ -99,9 +107,11 @@ describe("template builder — reorder / duplicate / mappings", () => {
     expect(clone.parentTemplateId).toBeNull();
     expect(clone.status).toBe("DRAFT");
 
-    const cloneQuestions = clone.sections.flatMap((s) => s.questions);
+    const cloneQuestions = clone.sections.flatMap(
+      (section) => section.questions,
+    );
     const cloneGate = cloneQuestions.find(
-      (q) => q.text === "Do you enforce MFA?",
+      (question) => question.text === "Do you enforce MFA?",
     );
     const cloneConditional = cloneQuestions.find(
       (q) => q.text === "Which MFA method?",

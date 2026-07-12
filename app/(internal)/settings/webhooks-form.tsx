@@ -18,12 +18,11 @@ import {
 } from "@/components/ui/select";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
-import type { WebhookEvent, WebhookPlatform } from "@prisma/client";
+import type { WebhookPlatform } from "@prisma/client";
 import {
   createWebhookAction,
   deleteWebhookAction,
   toggleWebhookAction,
-  type WebhookActionState,
 } from "@/app/(internal)/settings/actions";
 
 const EVENT_LABELS: Record<string, string> = {

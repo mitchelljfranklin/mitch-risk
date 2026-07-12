@@ -115,9 +115,11 @@ describe("assessment lifecycle (integration)", () => {
     expect(portal.status).toBe("SENT");
     expect(portal.questions.length).toBe(2);
 
-    const snapshotMfa = portal.questions.find((q) => q.text === "Enforce MFA?");
+    const snapshotMfa = portal.questions.find(
+      (question) => question.text === "Enforce MFA?",
+    );
     const snapshotMethod = portal.questions.find(
-      (q) => q.text === "MFA method?",
+      (question) => question.text === "MFA method?",
     );
     if (!snapshotMfa || !snapshotMethod) {
       throw new Error("snapshot questions missing");
@@ -176,7 +178,9 @@ describe("assessment search (integration)", () => {
   it("filters by status", async () => {
     const drafts = await listAssessments({ status: "DRAFT" });
     if (drafts.assessments.length > 0) {
-      expect(drafts.assessments.every((a) => a.status === "DRAFT")).toBe(true);
+      expect(
+        drafts.assessments.every((assessment) => assessment.status === "DRAFT"),
+      ).toBe(true);
     }
   });
 

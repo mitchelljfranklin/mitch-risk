@@ -8,7 +8,6 @@
 import { prisma } from "../lib/prisma";
 import {
   createAssessment,
-  getAssessmentForToken,
   saveResponses,
   sendAssessment,
   submitAssessment,
@@ -137,13 +136,6 @@ const SERVICE_DESCRIPTIONS = [
   "Compliance automation tool",
 ];
 
-const TIER_WEIGHTS: Record<string, number> = {
-  CRITICAL: 5,
-  HIGH: 10,
-  MEDIUM: 20,
-  LOW: 10,
-};
-
 const SENSITIVITY_WEIGHTS: Record<string, number> = {
   PUBLIC: 10,
   INTERNAL: 15,
@@ -151,8 +143,7 @@ const SENSITIVITY_WEIGHTS: Record<string, number> = {
   RESTRICTED: 10,
 };
 
-const ASSESSMENT_PROFILES = ["good", "bad", "mixed", "partial"] as const;
-type AssessmentProfile = (typeof ASSESSMENT_PROFILES)[number];
+type AssessmentProfile = "good" | "bad" | "mixed" | "partial";
 
 const PROFILE_WEIGHTS: Record<AssessmentProfile, number> = {
   good: 35,
@@ -421,9 +412,9 @@ async function main() {
         value: string | number | boolean | string[] | null;
         isNotApplicable: boolean;
       }[] = [];
-      for (const aq of templateQuestions) {
-        const type = aq.type;
-        const expected = aq.expectedAnswer;
+      for (const templateQuestion of templateQuestions) {
+        const type = templateQuestion.type;
+        const expected = templateQuestion.expectedAnswer;
         let value: string | number | boolean | string[] | null;
 
         switch (type) {
@@ -432,14 +423,14 @@ async function main() {
             break;
           case "COMBOBOX":
             value = generateComboResponse(
-              aq.options as string[],
+              templateQuestion.options as string[],
               expected,
               profile,
             );
             break;
           case "MULTI_SELECT":
             value = generateMultiSelectResponse(
-              aq.options as string[],
+              templateQuestion.options as string[],
               expected,
               profile,
             );
@@ -470,7 +461,7 @@ async function main() {
         }
 
         answers.push({
-          assessmentQuestionId: aq.id,
+          assessmentQuestionId: templateQuestion.id,
           value,
           isNotApplicable: false,
         });

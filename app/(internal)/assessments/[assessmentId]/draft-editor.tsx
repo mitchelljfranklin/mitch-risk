@@ -19,7 +19,7 @@ export function DraftEditor({
   title,
   dueDate,
 }: DraftEditorProps) {
-  const [state, action, isPending] = useActionState(
+  const [, action, isPending] = useActionState(
     updateAssessmentAction,
     undefined,
   );

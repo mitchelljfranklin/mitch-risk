@@ -165,10 +165,14 @@ export default async function VendorDetailPage({
           orderBy: { createdAt: "asc" },
         })
       : [];
-  for (const a of certAttachments) {
-    const list = certAttachmentMap.get(a.entityId) ?? [];
-    list.push({ id: a.id, fileName: a.fileName, displayName: a.displayName });
-    certAttachmentMap.set(a.entityId, list);
+  for (const attachment of certAttachments) {
+    const list = certAttachmentMap.get(attachment.entityId) ?? [];
+    list.push({
+      id: attachment.id,
+      fileName: attachment.fileName,
+      displayName: attachment.displayName,
+    });
+    certAttachmentMap.set(attachment.entityId, list);
   }
 
   const vendorAttachments = await prisma.attachment.findMany({

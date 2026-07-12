@@ -125,11 +125,11 @@ describe("collaboration finalize and reopen (integration)", () => {
     const portal = await getAssessmentByToken(token);
     if (!portal) throw new Error("portal not found");
 
-    for (const q of portal.questions) {
+    for (const question of portal.questions) {
       await saveResponses(token, [
         {
-          assessmentQuestionId: q.id,
-          value: q.type === "YES_NO" ? "YES" : "text",
+          assessmentQuestionId: question.id,
+          value: question.type === "YES_NO" ? "YES" : "text",
           isNotApplicable: false,
         },
       ]);

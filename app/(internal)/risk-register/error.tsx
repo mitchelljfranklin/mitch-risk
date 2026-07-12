@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 
 export default function RiskRegisterErrorPage({
-  error,
+  error: _error,
   reset,
 }: {
   error: Error & { digest?: string };
