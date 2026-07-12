@@ -26,7 +26,7 @@ pages, server actions, and API auth.
 
 ## Design decisions (confirmed)
 
-- **Granularity:** `resource:action` permission catalog (code-defined constant, 21 keys).
+- **Granularity:** `resource:action` permission catalog (code-defined constant, 23 keys).
 - **Defaults:** Admin = all; Reviewer = write + review (no users/roles/settings);
   Viewer = read-only.
 - **System roles:** non-deletable; Admin's permission set locked to "all". Reviewer/Viewer

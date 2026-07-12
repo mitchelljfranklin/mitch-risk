@@ -35,9 +35,11 @@ Each endpoint subscribes to the events you select — you can configure differen
 
 1. Go to **Settings → Webhooks**
 2. Click **Add endpoint**
-3. Enter the **HTTPS URL** that will receive the webhook
-4. Select the **events** to subscribe to (all checked by default)
-5. Click **Create**
+3. Enter a **name** to identify the endpoint (e.g. "Slack alerts")  
+4. Choose a **platform** preset (Generic, Slack, Microsoft Teams, Discord)  
+5. Enter the **HTTPS URL** that will receive the webhook  
+6. Select the **events** to subscribe to (all checked by default)  
+7. Click **Create**
 
 A signing secret is generated automatically for each endpoint. The secret is displayed once when the endpoint is created and is used to verify that incoming payloads originated from Mitch‑Risk.
 

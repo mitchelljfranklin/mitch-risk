@@ -86,11 +86,11 @@ Authorization is **permission-based**, not role-based. Three system roles are se
 
 | Role | Description | Permissions |
 |------|-------------|-------------|
-| **Admin** | Full access (locked, cannot be deleted or edited) | All 21 permissions |
-| **Reviewer** | Write + review access | All vendor, assessment, and template CRUD, plus frameworks view/edit. Cannot manage users, roles, settings, API, or view audit |
-| **Viewer** | Read-only | `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view` |
+| **Admin** | Full access (locked, cannot be deleted or edited) | All 23 permissions |
+| **Reviewer** | Write + review access | All vendor, assessment, and template CRUD, plus frameworks view/edit and profile view. Cannot manage users, roles, settings, API, or view audit |
+| **Viewer** | Read-only | `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view`, `profile:view` |
 
-Admins can create custom roles with any subset of the 21 fine-grained `resource:action` permissions.
+Admins can create custom roles with any subset of the 23 fine-grained `resource:action` permissions.
 
 ### 3.2 Permission Catalog
 
@@ -115,7 +115,7 @@ Permission definitions, default role mappings, and helpers live in `lib/permissi
 ### 3.4 Strengths & Considerations
 
 **Strengths:**
-- Granular 21-key catalog — no blanket "is authenticated" gating
+- Granular 23-key catalog — no blanket "is authenticated" gating
 - UI controls hidden, not greyed-out — clean least-privilege experience
 - API key independence from creator account
 - Last-admin protection prevents admin lockout (cannot delete, demote, or disable the last remaining admin)

@@ -561,7 +561,7 @@ When SSO is enforced (`disableLocalAuth = true`), a break-glass token allows loc
 
 ### 5.4 Role-Based Access Control (RBAC)
 
-#### Permission Catalog (21 keys)
+#### Permission Catalog (23 keys)
 
 ```
 ┌─────────────────┬──────────────────────────────────────────────┐
@@ -583,7 +583,10 @@ When SSO is enforced (`disableLocalAuth = true`), a break-glass token allows loc
 │ Audit           │ audit:view                                  │
 ├─────────────────┼──────────────────────────────────────────────┤
 │ Administration  │ users:manage, roles:manage,                  │
-│                 │ settings:manage, api:manage                  │
+│                 │ settings:manage, api:manage,                 │
+│                 │ webhooks:manage                              │
+├─────────────────┼──────────────────────────────────────────────┤
+│ Profile         │ profile:view                                 │
 └─────────────────┴──────────────────────────────────────────────┘
 ```
 
@@ -591,9 +594,9 @@ When SSO is enforced (`disableLocalAuth = true`), a break-glass token allows loc
 
 | Role | Permissions Count | Description |
 |---|---|---|
-| **Admin** | 21 (all) | Full system control (locked, cannot be deleted) |
-| **Reviewer** | 16 | Vendor/Assessment/Template/Framework CRUD. Cannot manage users, roles, settings, API, or view audit |
-| **Viewer** | 4 | Read-only: `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view` |
+| **Admin** | 23 (all) | Full system control (locked, cannot be deleted) |
+| **Reviewer** | 17 | Vendor/Assessment/Template/Framework CRUD. Cannot manage users, roles, settings, API, or view audit |
+| **Viewer** | 5 | Read-only: `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view`, `profile:view` |
 
 #### Enforcement Layers
 

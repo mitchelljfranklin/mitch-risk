@@ -110,7 +110,7 @@ docker compose up -d
 - Outbound event notifications for assessments submitted, findings changed, certifications expiring
 - HMAC-SHA256 signed payloads with per-endpoint secrets
 - Configured in Settings → Webhooks (Admin only)
-- 5 event types: assessment.submitted, assessment.overdue, finding.created, finding.resolved, certification.expiring
+- 5 event types: ASSESSMENT_SUBMITTED, ASSESSMENT_OVERDUE, FINDING_CREATED, FINDING_RESOLVED, CERTIFICATION_EXPIRING
 
 ### Inherent Risk
 - Pre-assessment risk score based on vendor tier, data sensitivity, contract value, and geographic risk
@@ -119,7 +119,7 @@ docker compose up -d
 
 ### Access Control
 - 3 system roles (Admin, Reviewer, Viewer) + custom roles
-- 22 granular `resource:action` permissions
+- 23 granular `resource:action` permissions
 - UI controls hidden (not greyed) — Viewer sees a clean read-only screen
 - Sidebar navigation and settings tabs permission-filtered
 

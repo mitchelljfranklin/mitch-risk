@@ -142,7 +142,7 @@ Manage staff accounts. Create users with email, password (minimum 12 characters)
 
 ## Roles
 
-Manage custom roles. Three system roles are built in. Create custom roles with any combination of the 21 fine-grained `resource:action` permissions. Roles can be duplicated, edited, and deleted. Requires **Roles: manage** permission.
+Manage custom roles. Three system roles are built in. Create custom roles with any combination of the 23 fine-grained `resource:action` permissions. Roles can be duplicated, edited, and deleted. Requires **Roles: manage** permission.
 
 See [RBAC & Roles](user-guides/rbac.md) for the permission catalog and default role definitions.
 
