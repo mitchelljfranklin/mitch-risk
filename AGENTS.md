@@ -192,11 +192,13 @@ ones before declaring any phase complete.
   locally via `npm run precheck` (typecheck + lint + format:check). Run `npm run format` to auto-fix
   formatting issues before pushing — Prettier failures are the most common CI rejection.
 - **Server Actions that feed `useActionState`.** An action that returns a value for
-  `useActionState` must **not** call `revalidatePath` for its own current route — in production
-  that re-render drops the returned state (no success toast, modal won't auto-close). Return the
-  state and let the client refresh: use the `useActionFeedback` hook (toast + guarded
-  `router.refresh()`). Toasts render via Sonner's `<Toaster />` portal (`components/ui/sonner.tsx`),
-  which survives route refreshes.
+  `useActionState` should prefer to let the client handle the refresh via the
+  `useActionFeedback` hook (toast + `router.refresh()`) rather than calling `revalidatePath`
+  for its own current route from inside the action. Doing both causes a redundant
+  double-refresh but is harmless: Sonner toasts render via `<Toaster />` portal
+  (`components/ui/sonner.tsx`) and survive route refetches. When an action is also called
+  from non-`useActionState` contexts (e.g. API routes, cron), calling `revalidatePath` is
+  fine — the double-refresh only matters when the client also calls `router.refresh()`.
 
 ## Working agreement — stage gates
 

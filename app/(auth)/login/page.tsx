@@ -74,7 +74,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     if (rateLimit("break-glass", clientIp, breakGlassPerMin)) {
       const hash = await getBreakGlassHash();
       breakGlassValid = hash
-        ? verifyBreakGlassToken(breakGlassToken, hash)
+        ? await verifyBreakGlassToken(breakGlassToken, hash)
         : false;
       if (breakGlassValid) {
         await consumeBreakGlassHash();

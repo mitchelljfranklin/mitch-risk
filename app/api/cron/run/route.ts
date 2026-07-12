@@ -72,30 +72,32 @@ export async function GET(request: Request) {
         include: { vendor: { select: { name: true, contactEmail: true } } },
       });
 
-      for (const a of dueAssessments) {
+      for (const dueAssessment of dueAssessments) {
         const alreadySent = await prisma.notificationLog.findFirst({
           where: {
-            assessmentId: a.id,
+            assessmentId: dueAssessment.id,
             type: "REMINDER",
-            sentTo: a.vendor.contactEmail,
+            sentTo: dueAssessment.vendor.contactEmail,
             status: "SENT",
           },
         });
         if (alreadySent) continue;
 
-        const portalUrl = a.accessToken
-          ? `${appUrl}/portal/${a.accessToken}`
+        const portalUrl = dueAssessment.accessToken
+          ? `${appUrl}/portal/${dueAssessment.accessToken}`
           : appUrl;
         await sendEmail(
-          a.vendor.contactEmail,
+          dueAssessment.vendor.contactEmail,
           "reminder",
           {
-            vendorName: a.vendor.name,
-            assessmentTitle: a.title,
+            vendorName: dueAssessment.vendor.name,
+            assessmentTitle: dueAssessment.title,
             portalUrl,
-            dueDate: a.dueDate ? a.dueDate.toISOString().slice(0, 10) : "",
+            dueDate: dueAssessment.dueDate
+              ? dueAssessment.dueDate.toISOString().slice(0, 10)
+              : "",
           },
-          { assessmentId: a.id },
+          { assessmentId: dueAssessment.id },
         );
         result.reminders++;
       }
@@ -117,35 +119,37 @@ export async function GET(request: Request) {
       },
     });
 
-    for (const a of overdue) {
-      if (!a.reviewer?.email) continue;
+    for (const overdueAssessment of overdue) {
+      if (!overdueAssessment.reviewer?.email) continue;
       const alreadySent = await prisma.notificationLog.findFirst({
         where: {
-          assessmentId: a.id,
+          assessmentId: overdueAssessment.id,
           type: "ESCALATION",
-          sentTo: a.reviewer.email,
+          sentTo: overdueAssessment.reviewer.email,
           status: "SENT",
         },
       });
       if (alreadySent) continue;
 
       await sendEmail(
-        a.reviewer.email,
+        overdueAssessment.reviewer.email,
         "escalation",
         {
-          reviewerName: a.reviewer.name ?? "Reviewer",
-          vendorName: a.vendor.name,
-          assessmentTitle: a.title,
-          assessmentUrl: `${appUrl}/assessments/${a.id}`,
+          reviewerName: overdueAssessment.reviewer.name ?? "Reviewer",
+          vendorName: overdueAssessment.vendor.name,
+          assessmentTitle: overdueAssessment.title,
+          assessmentUrl: `${appUrl}/assessments/${overdueAssessment.id}`,
         },
-        { assessmentId: a.id },
+        { assessmentId: overdueAssessment.id },
       );
       result.escalations++;
       dispatchWebhook("ASSESSMENT_OVERDUE", {
-        assessmentId: a.id,
-        assessmentTitle: a.title,
-        vendorName: a.vendor.name,
-        dueDate: a.dueDate ? a.dueDate.toISOString() : null,
+        assessmentId: overdueAssessment.id,
+        assessmentTitle: overdueAssessment.title,
+        vendorName: overdueAssessment.vendor.name,
+        dueDate: overdueAssessment.dueDate
+          ? overdueAssessment.dueDate.toISOString()
+          : null,
       });
     }
 
@@ -266,33 +270,33 @@ export async function GET(request: Request) {
     },
   });
 
-  for (const a of recurring) {
-    const newAssessment = await createAssessment(a.vendorId, {
-      title: a.title,
-      templateId: a.templateId!,
+  for (const recurringAssessment of recurring) {
+    const newAssessment = await createAssessment(recurringAssessment.vendorId, {
+      title: recurringAssessment.title,
+      templateId: recurringAssessment.templateId!,
       dueDate: "",
-      reviewerId: a.reviewerId ?? "",
+      reviewerId: recurringAssessment.reviewerId ?? "",
     });
     await sendAssessment(newAssessment.id);
 
     const next = new Date(now);
-    if (a.recurrence === "QUARTERLY") {
+    if (recurringAssessment.recurrence === "QUARTERLY") {
       next.setMonth(next.getMonth() + 3);
-    } else if (a.recurrence === "ANNUAL") {
+    } else if (recurringAssessment.recurrence === "ANNUAL") {
       next.setFullYear(next.getFullYear() + 1);
     }
     await prisma.assessment.update({
       where: { id: newAssessment.id },
-      data: { recurrence: a.recurrence, nextRunAt: next },
+      data: { recurrence: recurringAssessment.recurrence, nextRunAt: next },
     });
     await prisma.assessment.update({
-      where: { id: a.id },
+      where: { id: recurringAssessment.id },
       data: { nextRunAt: null },
     });
 
     if (smtpConfigured) {
       const vendor = await prisma.vendor.findUnique({
-        where: { id: a.vendorId },
+        where: { id: recurringAssessment.vendorId },
         select: { name: true, contactEmail: true },
       });
       if (vendor?.contactEmail) {
@@ -302,7 +306,7 @@ export async function GET(request: Request) {
           "invite",
           {
             vendorName: vendor.name,
-            assessmentTitle: a.title,
+            assessmentTitle: recurringAssessment.title,
             portalUrl,
             dueDate: newAssessment.dueDate
               ? newAssessment.dueDate.toISOString().slice(0, 10)

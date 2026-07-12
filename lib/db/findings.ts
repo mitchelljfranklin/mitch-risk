@@ -224,3 +224,44 @@ export function updateFindingStatus(params: {
     },
   });
 }
+
+export type VendorFindingsSummary = {
+  openCount: number;
+  severityDots: string[];
+};
+
+export async function getOpenFindingsSummaryByVendor(
+  vendorIds: string[],
+): Promise<Record<string, VendorFindingsSummary>> {
+  const summary: Record<string, VendorFindingsSummary> = {};
+  for (const vendorId of vendorIds) {
+    summary[vendorId] = { openCount: 0, severityDots: [] };
+  }
+
+  if (vendorIds.length === 0) return summary;
+
+  const recentFindings = await prisma.finding.findMany({
+    where: {
+      status: "OPEN",
+      assessment: { vendorId: { in: vendorIds } },
+    },
+    select: {
+      severity: true,
+      assessment: { select: { vendorId: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  for (const finding of recentFindings) {
+    const vendorId = finding.assessment.vendorId;
+    const vendorSummary = summary[vendorId];
+    if (vendorSummary) {
+      vendorSummary.openCount++;
+      if (vendorSummary.severityDots.length < 3) {
+        vendorSummary.severityDots.push(finding.severity);
+      }
+    }
+  }
+
+  return summary;
+}

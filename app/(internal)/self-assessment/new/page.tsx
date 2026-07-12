@@ -5,7 +5,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { listPublishedTemplates } from "@/lib/db/templates";
-import { prisma } from "@/lib/prisma";
+import { findOrCreateInternalVendor } from "@/lib/db/vendors";
 
 import { NewSelfAssessmentForm } from "./new-self-assessment-form";
 
@@ -13,30 +13,10 @@ export const dynamic = "force-dynamic";
 
 export const metadata = { title: "New self-assessment" };
 
-const INTERNAL_VENDOR_NAME = "My Organization";
-
 export default async function NewSelfAssessmentPage() {
   const user = await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
 
-  let vendor = await prisma.vendor.findFirst({
-    where: { name: INTERNAL_VENDOR_NAME },
-  });
-
-  if (!vendor) {
-    vendor = await prisma.vendor.create({
-      data: {
-        name: INTERNAL_VENDOR_NAME,
-        contactEmail: "internal@local",
-        tier: null,
-        ownerId: user.id,
-      },
-    });
-  } else if (!vendor.ownerId) {
-    await prisma.vendor.update({
-      where: { id: vendor.id },
-      data: { ownerId: user.id },
-    });
-  }
+  const vendor = await findOrCreateInternalVendor(user.id, "My Organization");
 
   const templates = await listPublishedTemplates();
 

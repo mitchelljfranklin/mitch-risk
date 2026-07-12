@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 async function getDbStatus(): Promise<"ok" | "error"> {
   try {
-    await prisma.$queryRawUnsafe("SELECT 1");
+    await prisma.$queryRaw`SELECT 1`;
     return "ok";
   } catch {
     return "error";

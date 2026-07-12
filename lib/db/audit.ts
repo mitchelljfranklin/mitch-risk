@@ -147,57 +147,59 @@ async function resolveEntityNames(
             where: { id: { in: uniqueIds } },
             select: { id: true, name: true },
           });
-          for (const v of vendors) map.set(v.id, v.name);
+          for (const vendor of vendors) map.set(vendor.id, vendor.name);
         } else if (type === "Assessment") {
           const assessments = await prisma.assessment.findMany({
             where: { id: { in: uniqueIds } },
             select: { id: true, title: true },
           });
-          for (const a of assessments) map.set(a.id, a.title);
+          for (const assessment of assessments)
+            map.set(assessment.id, assessment.title);
         } else if (type === "Template") {
           const templates = await prisma.template.findMany({
             where: { id: { in: uniqueIds } },
             select: { id: true, name: true },
           });
-          for (const t of templates) map.set(t.id, t.name);
+          for (const template of templates) map.set(template.id, template.name);
         } else if (type === "VendorCertification") {
           const certs = await prisma.vendorCertification.findMany({
             where: { id: { in: uniqueIds } },
             select: { id: true, name: true },
           });
-          for (const c of certs) map.set(c.id, c.name);
+          for (const cert of certs) map.set(cert.id, cert.name);
         } else if (type === "Framework") {
           const frameworks = await prisma.framework.findMany({
             where: { id: { in: uniqueIds } },
             select: { id: true, name: true },
           });
-          for (const f of frameworks) map.set(f.id, f.name);
+          for (const framework of frameworks)
+            map.set(framework.id, framework.name);
         } else if (type === "User") {
           const users = await prisma.user.findMany({
             where: { id: { in: uniqueIds } },
             select: { id: true, name: true },
           });
-          for (const u of users) {
-            map.set(u.id, u.name ?? "Deleted user");
+          for (const user of users) {
+            map.set(user.id, user.name ?? "Deleted user");
           }
         } else if (type === "Role") {
           const roles = await prisma.role.findMany({
             where: { id: { in: uniqueIds } },
             select: { id: true, name: true },
           });
-          for (const r of roles) map.set(r.id, r.name);
+          for (const role of roles) map.set(role.id, role.name);
         } else if (type === "Finding") {
           const findings = await prisma.finding.findMany({
             where: { id: { in: uniqueIds } },
             select: { id: true, title: true },
           });
-          for (const f of findings) map.set(f.id, f.title);
+          for (const finding of findings) map.set(finding.id, finding.title);
         } else if (type === "ApiKey") {
           const keys = await prisma.apiKey.findMany({
             where: { id: { in: uniqueIds } },
             select: { id: true, name: true },
           });
-          for (const k of keys) map.set(k.id, k.name);
+          for (const apiKey of keys) map.set(apiKey.id, apiKey.name);
         }
       } catch (error) {
         console.error(

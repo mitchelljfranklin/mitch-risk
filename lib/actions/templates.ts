@@ -380,11 +380,14 @@ export async function importTemplateAction(
     if (!section.title || !Array.isArray(section.questions)) {
       return { ok: false, error: "Invalid section structure." };
     }
-    for (const q of section.questions) {
-      if (!validTypes.includes(q.type))
-        return { ok: false, error: `Unknown type: ${q.type}` };
-      if (!validWeights.includes(q.riskWeight))
-        return { ok: false, error: `Unknown risk weight: ${q.riskWeight}` };
+    for (const question of section.questions) {
+      if (!validTypes.includes(question.type))
+        return { ok: false, error: `Unknown type: ${question.type}` };
+      if (!validWeights.includes(question.riskWeight))
+        return {
+          ok: false,
+          error: `Unknown risk weight: ${question.riskWeight}`,
+        };
     }
   }
 

@@ -34,7 +34,7 @@ import {
   VENDOR_SORTS,
   type VendorSort,
 } from "@/lib/db/vendors";
-import { prisma } from "@/lib/prisma";
+import { getOpenFindingsSummaryByVendor } from "@/lib/db/findings";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 import { formatDate } from "@/lib/utils";
 import { parseListView, VENDOR_VIEW_COOKIE } from "@/lib/view-preference";
@@ -45,11 +45,6 @@ export const metadata = { title: "Vendors" };
 
 type VendorsPageProps = {
   searchParams: Promise<Record<string, string | undefined>>;
-};
-
-type VendorFindingsSummary = {
-  openCount: number;
-  severityDots: string[];
 };
 
 export default async function VendorsPage({ searchParams }: VendorsPageProps) {
@@ -76,32 +71,8 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
   const hasFilters = Boolean(sp.query) || Boolean(sp.tier);
 
   const vendorIds = vendors.map((vendor) => vendor.id);
-  const recentFindings = await prisma.finding.findMany({
-    where: {
-      status: "OPEN",
-      assessment: { vendorId: { in: vendorIds } },
-    },
-    select: {
-      severity: true,
-      assessment: { select: { vendorId: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  });
-
-  const findingsSummaryByVendor: Record<string, VendorFindingsSummary> = {};
-  for (const vendorId of vendorIds) {
-    findingsSummaryByVendor[vendorId] = { openCount: 0, severityDots: [] };
-  }
-  for (const finding of recentFindings) {
-    const vendorId = finding.assessment.vendorId;
-    const summary = findingsSummaryByVendor[vendorId];
-    if (summary) {
-      summary.openCount++;
-      if (summary.severityDots.length < 3) {
-        summary.severityDots.push(finding.severity);
-      }
-    }
-  }
+  const findingsSummaryByVendor =
+    await getOpenFindingsSummaryByVendor(vendorIds);
 
   const cookieStore = await cookies();
   const view = parseListView(cookieStore.get(VENDOR_VIEW_COOKIE)?.value);

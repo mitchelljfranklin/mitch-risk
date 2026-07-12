@@ -83,3 +83,44 @@ export function getControl(
 export function deleteFramework(id: string) {
   return prisma.framework.delete({ where: { id } });
 }
+
+export function listAllFrameworks() {
+  return prisma.framework.findMany({
+    select: { id: true, name: true, version: true },
+    orderBy: { name: "asc" },
+  });
+}
+
+export async function getAllMappedControlIds(): Promise<Set<string>> {
+  const mappings = await prisma.questionControl.findMany({
+    select: { controlId: true },
+    distinct: ["controlId"],
+  });
+  return new Set(mappings.map((mapping) => mapping.controlId));
+}
+
+export async function createFrameworkWithControls(input: {
+  name: string;
+  version: string;
+  description: string;
+  controls: Omit<Control, "id" | "createdAt" | "updatedAt" | "frameworkId">[];
+}): Promise<Framework> {
+  return prisma.$transaction(async (tx) => {
+    const framework = await tx.framework.create({
+      data: {
+        name: input.name,
+        version: input.version,
+        description: input.description,
+      },
+    });
+
+    await tx.control.createMany({
+      data: input.controls.map((control) => ({
+        ...control,
+        frameworkId: framework.id,
+      })),
+    });
+
+    return framework;
+  });
+}

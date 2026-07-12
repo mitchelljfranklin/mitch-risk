@@ -7,13 +7,16 @@ export function generateBreakGlassToken(): string {
   return randomBytes(BREAK_GLASS_BYTES).toString("hex");
 }
 
-export function hashBreakGlassToken(token: string): string {
-  return bcrypt.hashSync(token, 12);
+export async function hashBreakGlassToken(token: string): Promise<string> {
+  return bcrypt.hash(token, 12);
 }
 
-export function verifyBreakGlassToken(token: string, hash: string): boolean {
+export async function verifyBreakGlassToken(
+  token: string,
+  hash: string,
+): Promise<boolean> {
   if (!token || !hash) return false;
-  return bcrypt.compareSync(token, hash);
+  return bcrypt.compare(token, hash);
 }
 
 export function shouldShowLocalAuth(params: {

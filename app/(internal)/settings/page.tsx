@@ -26,6 +26,7 @@ import {
   getStorageSettings,
 } from "@/lib/settings";
 import { getBreakGlassHash, getSsoSecretConfigured } from "@/lib/settings";
+import { listWebhookEndpoints } from "@/lib/db/webhooks";
 import { UsersManager } from "./users-manager";
 import { RolesManager } from "./roles-manager";
 
@@ -134,18 +135,7 @@ export default async function SettingsPage({
     getStorageSettings(),
   ]);
 
-  const webhookEndpoints = await prisma.webhookEndpoint.findMany({
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      name: true,
-      url: true,
-      enabled: true,
-      events: true,
-      platform: true,
-      createdAt: true,
-    },
-  });
+  const webhookEndpoints = await listWebhookEndpoints();
 
   const breakGlassConfigured = (await getBreakGlassHash()) !== null;
 

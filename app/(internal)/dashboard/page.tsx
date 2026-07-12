@@ -8,7 +8,7 @@ import { StatCard, ScoreStatCard } from "@/components/stat-card";
 import { AttentionGroups } from "@/components/attention-groups";
 import { ScoreBadge } from "@/components/score-badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getDashboardData } from "@/lib/db/compliance";
 import { getFindingSummary } from "@/lib/db/findings";
@@ -65,7 +65,7 @@ function generateContributionDays(dates: Date[]) {
 }
 
 export default async function DashboardPage() {
-  const user = await requireUser();
+  const user = await requirePermission(PERMISSIONS.VENDORS_VIEW);
   const canCreateVendor = hasPermission(
     user.permissions,
     PERMISSIONS.VENDORS_CREATE,

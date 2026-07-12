@@ -34,11 +34,11 @@ function pick<T>(arr: readonly T[]): T {
 
 function pickWeighted<T extends string>(weights: Record<T, number>): T {
   const entries = Object.entries(weights) as [T, number][];
-  const total = entries.reduce((s, [, w]) => s + w, 0);
-  let r = Math.random() * total;
+  const total = entries.reduce((sum, [, weight]) => sum + weight, 0);
+  let randomValue = Math.random() * total;
   for (const [key, weight] of entries) {
-    r -= weight;
-    if (r <= 0) return key;
+    randomValue -= weight;
+    if (randomValue <= 0) return key;
   }
   return entries[0]![0];
 }
@@ -52,9 +52,9 @@ function randomDate(startMonthsBack: number, endMonthsBack: number): Date {
 }
 
 function daysFromNow(days: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() + days);
-  return d.toISOString().slice(0, 10);
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  return date.toISOString().slice(0, 10);
 }
 
 // ---------------------------------------------------------------------------
@@ -315,8 +315,8 @@ async function main() {
 
   // Verify starter templates exist.
   for (const tid of TEMPLATE_IDS) {
-    const t = await prisma.template.findUnique({ where: { id: tid } });
-    if (!t) {
+    const template = await prisma.template.findUnique({ where: { id: tid } });
+    if (!template) {
       console.error(`Template ${tid} not found. Run npm run db:seed first.`);
       process.exit(1);
     }
@@ -364,16 +364,27 @@ async function main() {
   const submitted: string[] = [];
   const inProgress: string[] = [];
 
+  const TEMPLATE_TITLE_MAP: Record<string, string> = {
+    "starter-iso-27001": "ISO 27001",
+    "starter-soc-2": "SOC 2",
+    "starter-nist-csf": "NIST CSF",
+    "starter-essential-eight": "Essential Eight",
+  };
+
   for (let i = 0; i < 50; i++) {
     const vendorId = vendorResults[i];
     const templateId = pick(TEMPLATE_IDS);
     const profile = pickWeighted(PROFILE_WEIGHTS);
     const assessmentCountForVendor = i < 15 ? 2 : 1; // 30% get 2 assessments
 
-    for (let a = 0; a < assessmentCountForVendor; a++) {
-      const date = a === 0 ? randomDate(6, 0) : randomDate(6, 3); // Second assessment is older
+    for (
+      let assessmentIndex = 0;
+      assessmentIndex < assessmentCountForVendor;
+      assessmentIndex++
+    ) {
+      const date = assessmentIndex === 0 ? randomDate(6, 0) : randomDate(6, 3); // Second assessment is older
       const assessment = await createAssessment(vendorId, {
-        title: `${templateId === "starter-iso-27001" ? "ISO 27001" : templateId === "starter-soc-2" ? "SOC 2" : templateId === "starter-nist-csf" ? "NIST CSF" : "Essential Eight"} assessment`,
+        title: `${TEMPLATE_TITLE_MAP[templateId] ?? "ISO 27001"} assessment`,
         templateId,
         dueDate: daysFromNow(21),
         reviewerId: admin.id,
@@ -390,7 +401,7 @@ async function main() {
         await sendAssessment(assessment.id);
         inProgress.push(assessment.id);
         assessmentCount++;
-        process.stdout.write(`  v${i + 1}/${a + 1}: PARTIAL `);
+        process.stdout.write(`  v${i + 1}/${assessmentIndex + 1}: PARTIAL `);
         continue;
       }
 
@@ -487,7 +498,9 @@ async function main() {
       }
 
       assessmentCount++;
-      process.stdout.write(`  v${i + 1}/${a + 1}: ${profile.toUpperCase()} `);
+      process.stdout.write(
+        `  v${i + 1}/${assessmentIndex + 1}: ${profile.toUpperCase()} `,
+      );
     }
   }
 
@@ -530,11 +543,11 @@ async function main() {
     where: { status: { in: ["SUBMITTED", "UNDER_REVIEW", "COMPLETED"] } },
     _avg: { score: true },
   });
-  for (const r of scoredVendors) {
-    if (r._avg.score !== null) {
+  for (const scoredVendor of scoredVendors) {
+    if (scoredVendor._avg.score !== null) {
       await prisma.vendor.update({
-        where: { id: r.vendorId },
-        data: { overallScore: r._avg.score },
+        where: { id: scoredVendor.vendorId },
+        data: { overallScore: scoredVendor._avg.score },
       });
     }
   }

@@ -1,6 +1,7 @@
 "use server";
 
 import bcrypt from "bcryptjs";
+import { type Prisma } from "@prisma/client";
 
 import { getCurrentUser, signOut } from "@/lib/auth";
 import {
@@ -92,7 +93,7 @@ export async function updateProfileAction(
   if (Object.keys(updates).length > 0) {
     await prisma.user.update({
       where: { id: user.id },
-      data: updates as never,
+      data: updates as Prisma.UserUpdateInput,
     });
   }
 

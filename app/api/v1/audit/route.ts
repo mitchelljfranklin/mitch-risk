@@ -22,10 +22,11 @@ export async function GET(request: Request) {
     const page = parseInt(searchParams.get("page") ?? "1", 10) || 1;
     const format = searchParams.get("format") ?? "json";
     const isCsv = format === "csv";
-    const pageSize = Math.min(
-      isCsv ? 100000 : parseInt(searchParams.get("pageSize") ?? "10", 10) || 10,
-      500,
-    );
+    const parsedPageSize =
+      parseInt(searchParams.get("pageSize") ?? "10", 10) || 10;
+    const pageSize = isCsv
+      ? Math.min(parsedPageSize, 100000)
+      : Math.min(parsedPageSize, 100);
 
     const result = await listAuditLogs({
       action,

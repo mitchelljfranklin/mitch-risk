@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
+import { listAllFrameworks, getAllMappedControlIds } from "@/lib/db/frameworks";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -14,23 +15,8 @@ export const metadata = { title: "Control coverage gaps" };
 export default async function FrameworkGapsPage() {
   await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
 
-  const frameworks = await prisma.framework.findMany({
-    select: {
-      id: true,
-      name: true,
-      version: true,
-    },
-    orderBy: { name: "asc" },
-  });
-
-  const allMappings = await prisma.questionControl.findMany({
-    select: { controlId: true },
-    distinct: ["controlId"],
-  });
-
-  const mappedControlIds = new Set(
-    allMappings.map((mapping) => mapping.controlId),
-  );
+  const frameworks = await listAllFrameworks();
+  const mappedControlIds = await getAllMappedControlIds();
 
   const frameworkGaps = await Promise.all(
     frameworks.map(async (framework) => {

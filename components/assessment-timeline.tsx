@@ -28,7 +28,7 @@ type Day = { date: string; count: number };
 const AREA_CONFIG = {
   assessments: {
     label: "Assessments",
-    color: "var(--primary, #3b82f6)",
+    color: "var(--primary)",
   },
 };
 

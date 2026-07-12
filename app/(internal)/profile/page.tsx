@@ -1,4 +1,5 @@
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import { getUserAuthInfo } from "@/lib/db/users";
 
 import { ProfileForm } from "./profile-form";
@@ -8,7 +9,7 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Profile" };
 
 export default async function ProfilePage() {
-  const user = await requireUser();
+  const user = await requirePermission(PERMISSIONS.PROFILE_VIEW);
   const authInfo = await getUserAuthInfo(user.id);
   const hasLocalPassword = authInfo?.hasLocalPassword ?? true;
   const isSsoUser = authInfo?.isSsoUser ?? false;

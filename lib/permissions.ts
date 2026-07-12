@@ -21,6 +21,7 @@ export const PERMISSIONS = {
   SETTINGS_MANAGE: "settings:manage",
   API_MANAGE: "api:manage",
   WEBHOOKS_MANAGE: "webhooks:manage",
+  PROFILE_VIEW: "profile:view",
 } as const;
 
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
@@ -96,6 +97,13 @@ export const PERMISSION_GROUPS: readonly PermissionGroup[] = [
       { key: PERMISSIONS.WEBHOOKS_MANAGE, label: "Manage webhooks" },
     ],
   },
+  {
+    resource: "profile",
+    label: "Profile",
+    permissions: [
+      { key: PERMISSIONS.PROFILE_VIEW, label: "View and edit own profile" },
+    ],
+  },
 ];
 
 export const SYSTEM_ROLE_NAMES = {
@@ -121,6 +129,7 @@ const REVIEWER_PERMISSIONS: readonly Permission[] = [
   PERMISSIONS.FRAMEWORKS_VIEW,
   PERMISSIONS.FRAMEWORKS_EDIT,
   PERMISSIONS.FRAMEWORKS_DELETE,
+  PERMISSIONS.PROFILE_VIEW,
 ];
 
 const VIEWER_PERMISSIONS: readonly Permission[] = [
@@ -128,6 +137,7 @@ const VIEWER_PERMISSIONS: readonly Permission[] = [
   PERMISSIONS.ASSESSMENTS_VIEW,
   PERMISSIONS.TEMPLATES_VIEW,
   PERMISSIONS.FRAMEWORKS_VIEW,
+  PERMISSIONS.PROFILE_VIEW,
 ];
 
 export type SystemRoleDefinition = {

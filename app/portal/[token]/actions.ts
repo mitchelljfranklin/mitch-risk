@@ -26,7 +26,7 @@ export async function validatePortalPassword(
     return { ok: false, message: "No password is set for this link." };
   }
 
-  const valid = bcrypt.compareSync(password, assessment.portalPasswordHash);
+  const valid = await bcrypt.compare(password, assessment.portalPasswordHash);
   if (!valid) {
     return { ok: false, message: "Incorrect password." };
   }

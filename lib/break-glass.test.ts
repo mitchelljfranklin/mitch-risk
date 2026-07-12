@@ -15,13 +15,13 @@ describe("break-glass token", () => {
     expect(first).not.toBe(second);
   });
 
-  it("verifies a token against its hash and rejects the wrong token", () => {
+  it("verifies a token against its hash and rejects the wrong token", async () => {
     const token = generateBreakGlassToken();
-    const hash = hashBreakGlassToken(token);
-    expect(verifyBreakGlassToken(token, hash)).toBe(true);
-    expect(verifyBreakGlassToken("wrong", hash)).toBe(false);
-    expect(verifyBreakGlassToken("", hash)).toBe(false);
-    expect(verifyBreakGlassToken(token, "")).toBe(false);
+    const hash = await hashBreakGlassToken(token);
+    expect(await verifyBreakGlassToken(token, hash)).toBe(true);
+    expect(await verifyBreakGlassToken("wrong", hash)).toBe(false);
+    expect(await verifyBreakGlassToken("", hash)).toBe(false);
+    expect(await verifyBreakGlassToken(token, "")).toBe(false);
   });
 });
 

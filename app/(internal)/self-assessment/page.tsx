@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/empty-state";
 import { ScoreBadge } from "@/components/score-badge";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
+import { findOrCreateInternalVendor } from "@/lib/db/vendors";
 import { prisma } from "@/lib/prisma";
 import { ASSESSMENT_STATUS_LABELS } from "@/lib/schemas/assessment";
 import { formatDate } from "@/lib/utils";
@@ -14,30 +15,10 @@ export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Self-assessment" };
 
-const INTERNAL_VENDOR_NAME = "My Organization";
-
 export default async function SelfAssessmentPage() {
   const user = await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
 
-  let vendor = await prisma.vendor.findFirst({
-    where: { name: INTERNAL_VENDOR_NAME },
-  });
-
-  if (!vendor) {
-    vendor = await prisma.vendor.create({
-      data: {
-        name: INTERNAL_VENDOR_NAME,
-        contactEmail: "internal@local",
-        tier: null,
-        ownerId: user.id,
-      },
-    });
-  } else if (!vendor.ownerId) {
-    await prisma.vendor.update({
-      where: { id: vendor.id },
-      data: { ownerId: user.id },
-    });
-  }
+  const vendor = await findOrCreateInternalVendor(user.id, "My Organization");
 
   const assessments = await prisma.assessment.findMany({
     where: { vendorId: vendor.id },

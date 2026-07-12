@@ -115,9 +115,9 @@ export async function deleteCertificationAction(formData: FormData) {
     "VendorCertification",
     certificationId,
   );
-  for (const a of attachments) {
+  for (const attachment of attachments) {
     try {
-      await storage.delete(a.storageKey);
+      await storage.delete(attachment.storageKey);
     } catch (error: unknown) {
       console.error(
         "Failed to delete certification attachment:",

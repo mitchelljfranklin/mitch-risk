@@ -150,10 +150,9 @@ export async function listEmailLogs(
         },
       })
       .then((logs) =>
-        logs.map((log) => ({
+        logs.map(({ assessment, ...log }) => ({
           ...log,
-          assessmentTitle: log.assessment?.title ?? null,
-          assessment: undefined as never,
+          assessmentTitle: assessment?.title ?? null,
         })),
       ),
     prisma.notificationLog.count({ where }),
@@ -181,11 +180,10 @@ export function getEmailLogById(id: string) {
     })
     .then((log) =>
       log
-        ? {
-            ...log,
-            assessmentTitle: log.assessment?.title ?? null,
-            assessment: undefined as never,
-          }
+        ? (({ assessment, ...rest }) => ({
+            ...rest,
+            assessmentTitle: assessment?.title ?? null,
+          }))(log)
         : null,
     );
 }

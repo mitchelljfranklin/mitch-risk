@@ -181,14 +181,14 @@ function getDuplicateStepValues<TValue extends StepperValue>(
   const seenValues = new Set<TValue>();
   const duplicateValues = new Set<TValue>();
 
-  steps.forEach((step) => {
+  for (const step of steps) {
     if (seenValues.has(step.value)) {
       duplicateValues.add(step.value);
-      return;
+      continue;
     }
 
     seenValues.add(step.value);
-  });
+  }
 
   return Array.from(duplicateValues);
 }
@@ -550,11 +550,11 @@ function useDuplicateStepWarning(steps: StepperStep[]) {
       return;
     }
 
-    duplicateStepValues.forEach((stepValue) => {
+    for (const stepValue of duplicateStepValues) {
       warnDev(
         `StepperItem value "${stepValue}" is duplicated. Step values must be unique within a Stepper.`,
       );
-    });
+    }
   }, [duplicateStepValues, duplicateStepValuesKey]);
 }
 

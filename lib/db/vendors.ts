@@ -227,3 +227,30 @@ export function getVendorForExport(id: string) {
     },
   });
 }
+
+export async function findOrCreateInternalVendor(
+  ownerId: string,
+  vendorName: string,
+): Promise<{ id: string }> {
+  let vendor = await prisma.vendor.findFirst({
+    where: { name: vendorName },
+  });
+
+  if (!vendor) {
+    vendor = await prisma.vendor.create({
+      data: {
+        name: vendorName,
+        contactEmail: "internal@local",
+        tier: null,
+        ownerId,
+      },
+    });
+  } else if (!vendor.ownerId) {
+    await prisma.vendor.update({
+      where: { id: vendor.id },
+      data: { ownerId },
+    });
+  }
+
+  return { id: vendor.id };
+}

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 
-import { getCurrentUser } from "@/lib/auth";
+import { requirePermission } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 
 export const metadata: Metadata = { title: "API Documentation" };
 
@@ -10,7 +10,6 @@ export default async function DocsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getCurrentUser();
-  if (!user) redirect("/login");
+  await requirePermission(PERMISSIONS.VENDORS_VIEW);
   return children;
 }

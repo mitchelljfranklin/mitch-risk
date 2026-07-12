@@ -29,7 +29,7 @@ const GREEN_FILL = "var(--rag-green, #16a34a)";
 const AMBER_FILL = "var(--rag-amber, #d97706)";
 const RED_FILL = "var(--rag-red, #dc2626)";
 const UNSCORED_FILL = "var(--rag-unscored, #9ca3af)";
-const PRIMARY_FILL = "var(--primary, #3b82f6)";
+const PRIMARY_FILL = "var(--primary)";
 
 const SEVERITY_CONFIG = {
   value: { label: "Open findings", color: RED_FILL },
@@ -41,19 +41,19 @@ const SEVERITY_FILLS: Record<string, string> = {
   Low: UNSCORED_FILL,
 };
 const STATUS_CONFIG = {
-  draft: { label: "Draft", color: "var(--muted-foreground, #9ca3af)" },
-  sent: { label: "Sent", color: "var(--primary, #3b82f6)" },
+  draft: { label: "Draft", color: "var(--muted-foreground)" },
+  sent: { label: "Sent", color: "var(--primary)" },
   inProgress: {
     label: "In progress",
-    color: "color-mix(in oklab, var(--primary), #60a5fa 40%)",
+    color: "color-mix(in oklab, var(--primary), transparent 40%)",
   },
-  submitted: { label: "Submitted", color: "var(--rag-amber, #d97706)" },
+  submitted: { label: "Submitted", color: "var(--primary)" },
   underReview: {
     label: "Under review",
-    color: "color-mix(in oklab, var(--rag-amber) 60%, var(--rag-red) 40%)",
+    color: "color-mix(in oklab, var(--primary) 60%, var(--destructive) 40%)",
   },
-  completed: { label: "Completed", color: "var(--rag-green, #16a34a)" },
-  overdue: { label: "Overdue", color: "var(--rag-red, #dc2626)" },
+  completed: { label: "Completed", color: "var(--success)" },
+  overdue: { label: "Overdue", color: "var(--destructive)" },
 };
 
 const TIER_CONFIG = {

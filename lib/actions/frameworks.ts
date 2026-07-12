@@ -4,11 +4,13 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { PERMISSIONS } from "@/lib/permissions";
 import { logAudit } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
-import { deleteFramework } from "@/lib/db/frameworks";
+import {
+  deleteFramework,
+  createFrameworkWithControls,
+} from "@/lib/db/frameworks";
 import { parseCsvRows } from "@/lib/csv-parser";
 import {
   frameworkCsvRowSchema,
@@ -57,7 +59,9 @@ export async function importFrameworkAction(
 
   const expectedHeaders = ["domain", "code", "title", "guidance"];
   const header = rows[0].map((cell) => cell.trim().toLowerCase());
-  const missing = expectedHeaders.filter((header) => !header.includes(header));
+  const missing = expectedHeaders.filter(
+    (expected) => !header.includes(expected),
+  );
   if (missing.length > 0) {
     return {
       ok: false,
@@ -113,27 +117,17 @@ export async function importFrameworkAction(
     });
   }
 
-  const framework = await prisma.$transaction(async (tx) => {
-    const created = await tx.framework.create({
-      data: {
-        name: meta.data.name,
-        version: meta.data.version,
-        description: meta.data.description,
-      },
-    });
-
-    await tx.control.createMany({
-      data: controls.map((control) => ({
-        frameworkId: created.id,
-        domain: control.domain,
-        code: control.code,
-        title: control.title,
-        guidance: control.guidance,
-        order: control.order,
-      })),
-    });
-
-    return created;
+  const framework = await createFrameworkWithControls({
+    name: meta.data.name,
+    version: meta.data.version,
+    description: meta.data.description,
+    controls: controls.map((control) => ({
+      domain: control.domain,
+      code: control.code,
+      title: control.title,
+      guidance: control.guidance,
+      order: control.order,
+    })),
   });
 
   await logAudit(user.id, "CREATE_FRAMEWORK", "Framework", framework.id);
@@ -151,7 +145,7 @@ export async function deleteFrameworkAction(formData: FormData) {
   await requirePermission(PERMISSIONS.FRAMEWORKS_DELETE);
   const frameworkId = getField(formData, "frameworkId");
   await logAudit(
-    (await getCurrentUser())?.id ?? "",
+    (await getCurrentUser())?.id ?? "unknown",
     "DELETE_FRAMEWORK",
     "Framework",
     frameworkId,

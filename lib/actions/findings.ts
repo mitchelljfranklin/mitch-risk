@@ -20,7 +20,7 @@ export async function updateFindingStatusAction(formData: FormData) {
   const status = getField(formData, "status");
   const resolutionNote = getField(formData, "resolutionNote") || undefined;
 
-  if (!findingId || !FINDING_STATUSES.includes(status as never)) {
+  if (!findingId || !FINDING_STATUSES.includes(status as FindingStatus)) {
     return;
   }
 
@@ -64,7 +64,7 @@ export async function bulkUpdateFindingStatusesAction(
   const status = getField(formData, "status");
   const resolutionNote = getField(formData, "resolutionNote") || undefined;
 
-  if (!FINDING_STATUSES.includes(status as never)) {
+  if (!FINDING_STATUSES.includes(status as FindingStatus)) {
     return { ok: false, message: "Invalid status." };
   }
 

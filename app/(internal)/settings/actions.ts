@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS, isValidPermission } from "@/lib/permissions";
 import { logAudit } from "@/lib/db/audit";
-import { prisma } from "@/lib/prisma";
 import { getField } from "@/lib/utils";
 import type { WebhookEvent, WebhookPlatform } from "@prisma/client";
 import {
@@ -33,6 +32,12 @@ import {
 import { randomBytes } from "node:crypto";
 import { z } from "zod";
 import { storage } from "@/lib/storage";
+import { isDangerousUploadMime } from "@/lib/upload-validation";
+import {
+  createWebhookEndpoint,
+  deleteWebhookEndpoint,
+  toggleWebhookEndpoint,
+} from "@/lib/db/webhooks";
 
 export type SettingsActionState = { ok: boolean; message: string } | undefined;
 
@@ -284,7 +289,7 @@ export async function generateBreakGlassUrlAction(
   const { env } = await import("@/lib/env");
 
   const token = generateBreakGlassToken();
-  await setBreakGlassHash(hashBreakGlassToken(token));
+  await setBreakGlassHash(await hashBreakGlassToken(token));
 
   const user = await getCurrentUser();
   if (user)
@@ -351,7 +356,10 @@ export async function saveAppearanceSettings(
     if (logoFile.size > 2 * 1024 * 1024) {
       return { ok: false, message: "Logo must be under 2 MB." };
     }
-    if (!logoFile.type.startsWith("image/")) {
+    if (
+      !logoFile.type.startsWith("image/") ||
+      isDangerousUploadMime(logoFile.type)
+    ) {
       return { ok: false, message: "Logo must be an image file." };
     }
 
@@ -834,9 +842,7 @@ export async function createWebhookAction(
 
   const secret = randomBytes(32).toString("hex");
 
-  await prisma.webhookEndpoint.create({
-    data: { url, name, secret, events, platform },
-  });
+  await createWebhookEndpoint({ url, name, secret, events, platform });
 
   if (user) {
     await logAudit(user.id, "CREATE_WEBHOOK", "Webhook", url);
@@ -852,7 +858,7 @@ export async function deleteWebhookAction(formData: FormData) {
 
   if (!webhookId) return;
 
-  await prisma.webhookEndpoint.delete({ where: { id: webhookId } });
+  await deleteWebhookEndpoint(webhookId);
 
   if (user) {
     await logAudit(user.id, "DELETE_WEBHOOK", "Webhook", webhookId);
@@ -868,10 +874,7 @@ export async function toggleWebhookAction(formData: FormData) {
 
   if (!webhookId) return;
 
-  await prisma.webhookEndpoint.update({
-    where: { id: webhookId },
-    data: { enabled },
-  });
+  await toggleWebhookEndpoint(webhookId, enabled);
 
   if (user) {
     await logAudit(

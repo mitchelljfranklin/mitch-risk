@@ -3,11 +3,7 @@ import { verifyApiKey, isIpAllowed, extractKeyPrefix } from "@/lib/api-keys";
 import { getClientIp } from "@/lib/client-ip";
 import { rateLimit } from "@/lib/rate-limit";
 import { auth as nextAuth } from "@/lib/auth";
-import {
-  ALL_PERMISSIONS,
-  type Permission,
-  hasPermission,
-} from "@/lib/permissions";
+import { type Permission, hasPermission } from "@/lib/permissions";
 
 async function isApiEnabled(): Promise<boolean> {
   const row = await prisma.appSetting.findUnique({
@@ -93,7 +89,7 @@ export async function authenticateRequest(
     const permissions =
       apiKey.permissions && apiKey.permissions.length > 0
         ? apiKey.permissions
-        : [...ALL_PERMISSIONS];
+        : [];
 
     return {
       userId: apiKey.createdBy,
