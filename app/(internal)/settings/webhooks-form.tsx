@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
-import type { WebhookPlatform } from "@prisma/client";
+import type { WebhookPlatform } from "../../../prisma/generated/prisma/client";
 import {
   createWebhookAction,
   deleteWebhookAction,

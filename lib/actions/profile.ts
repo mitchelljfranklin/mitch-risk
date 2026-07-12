@@ -1,7 +1,7 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import { type Prisma } from "@prisma/client";
+import { type Prisma } from "../../prisma/generated/prisma/client";
 
 import { getCurrentUser, signOut } from "@/lib/auth";
 import {

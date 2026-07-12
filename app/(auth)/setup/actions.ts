@@ -7,7 +7,7 @@ import { countUsers, createUser } from "@/lib/db/users";
 import { ensureSystemRoles, getRoleByName } from "@/lib/db/roles";
 import { SYSTEM_ROLE_NAMES } from "@/lib/permissions";
 import { setupAdminSchema } from "@/lib/schemas/auth";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../../../prisma/generated/prisma/client";
 
 export type SetupState = { error: string } | undefined;
 

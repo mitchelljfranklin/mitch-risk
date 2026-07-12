@@ -588,7 +588,7 @@ Each phase is independently shippable and gated (see `STAGE-GATES.md`).
   `Permissions-Policy`). No schema/migration.
 
 - **Phase 74 — Production Server-Action feedback fix + prod e2e.** Root-caused a production-only
-  bug (worked in `next dev`, failed in `next start`): when a Server Action calls `revalidatePath`
+  bug (worked in `next dev`, failed in `npm run start`): when a Server Action calls `revalidatePath`
   for its own current route and returns a value consumed by `useActionState`, the returned state
   is dropped on the client in production builds — so success toasts never showed and modal
   dialogs (e.g. the role editor) didn't auto-close. Data always persisted correctly; only the

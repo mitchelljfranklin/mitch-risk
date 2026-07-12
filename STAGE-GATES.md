@@ -171,7 +171,7 @@ EditorConfig + strict TypeScript; `/style-guide` component showcase.
 **Evidence** (recorded 2026-06-30):
 
 - **Quality gates** — `npm run build` ✓, `npm run lint` ✓ (0), `npm run typecheck` ✓ (0), `npm run format:check` ✓, `npm run test` ✓ (4 files, 10 tests). Routes built: `/`, `/dashboard`, `/login`, `/settings`, `/setup`, `/style-guide`, `/api/auth/[...nextauth]`.
-- **Auth guard + first-run (live, `next start`)** — `GET /dashboard` → 307 → `/login`; `GET /login` (0 users) → 307 → `/setup`; `GET /setup` → 200; `GET /style-guide` → 200.
+- **Auth guard + first-run (live, `npm run start`)** — `GET /dashboard` → 307 → `/login`; `GET /login` (0 users) → 307 → `/setup`; `GET /setup` → 200; `GET /style-guide` → 200.
 - **Login credentials (integration test)** — `createUser` hashes the password; `verifyUserCredentials` returns the user for the correct password and `null` for a wrong one.
 - **Database** — `prisma migrate dev` applied `init` on a clean DB; `db:seed` ran twice → exactly 10 `app_settings` rows (idempotent); `prisma migrate status` = "up to date".
 - **Settings (integration test)** — organization name persists and reads back; SMTP password is stored **encrypted at rest** (raw DB value ≠ plaintext, decrypts back, `isSecret = true`), **redacted** on read (`smtpPasswordConfigured` only), and **write-only** (a blank submission keeps the existing secret while other fields update). The app shell reads the org name, so changes take effect immediately.
@@ -180,7 +180,7 @@ EditorConfig + strict TypeScript; `/style-guide` component showcase.
 
 **Reviewer spot-checks (human, in a browser):** complete first-run admin at `/setup` → land on `/dashboard`; toggle light/dark; edit the Organization name in `/settings` and confirm the sidebar updates; confirm the SMTP password field never displays the stored value.
 
-**Notable decisions:** Prisma pinned to v6 (npm resolved v7, which mandates `prisma.config.ts` + ESM client relocation); the shadcn foundation was installed deterministically by hand after the current CLI changed its flags; the Docker image uses `npm install` (the Windows-generated lockfile omits Linux-only optional deps that strict `npm ci` requires).
+**Notable decisions:** Prisma upgraded to v7 with `prisma.config.ts`, ESM client relocation, and `@prisma/adapter-pg` driver adapter (originally pinned to v6 in Phase 0; this was the upgrade completed 2026-07); the shadcn foundation was installed deterministically by hand after the current CLI changed its flags; the Docker image uses `npm install` (the Windows-generated lockfile omits Linux-only optional deps that strict `npm ci` requires).
 
 **Sign-off:** Status: `Approved` · Reviewer: User · Date: 2026-06-30
 
@@ -273,7 +273,7 @@ comments; submit with validation; token revoke/extend.
 - **File storage** — disk storage behind an interface with a cross-platform path-traversal guard (`path.sep`); evidence is downloadable **only** via the authenticated `/api/files/[id]` route (401 without a session).
 - **Token blocking + validation + transitions** — bogus tokens return null, expired/revoked links are blocked, required-field validation (visible questions only) is enforced server-side, and status transitions SENT → IN_PROGRESS (first save) → SUBMITTED.
 - **Internal UI** — vendors CRUD, assessment create, assessment detail with the secure link (copy / extend / regenerate / revoke) and a read-only responses view with authed evidence download links; sidebar nav updated.
-- **Playwright e2e** — `e2e/portal.spec.ts`: a vendor opens the token, answers all types, uploads a file ("Uploaded: policy.pdf"), submits, and sees "Thank you"; an invalid token shows "Link not found". Both pass against `next start`.
+- **Playwright e2e** — `e2e/portal.spec.ts`: a vendor opens the token, answers all types, uploads a file ("Uploaded: policy.pdf"), submits, and sees "Thank you"; an invalid token shows "Link not found". Both pass against `npm run start`.
 - **Tests** — 9 Vitest files / 22 tests + 2 Playwright e2e tests, all passing. `format:check` ✓, `lint` ✓, `typecheck` ✓, `build` ✓.
 - **Note:** per-question comments and reviewer approve/reject are delivered in Phase 5 (Collaboration); the Gate 3 criteria do not include them.
 
@@ -1322,7 +1322,7 @@ lifecycle, a clear "send back to vendor" path with its own email, and review vis
 - [x] Quality gates: `lint` (0 errors), `typecheck`, `build`, `format:check` clean; migration
       applies.
 
-**Note:** the prod-`next start` first-server-action cold-start flake (seen in Phases 51–52)
+**Note:** the prod-`npm run start` first-server-action cold-start flake (seen in Phases 51–52)
 recurred for the roles-create e2e; verified green on the dev server (full suite 9/9). Not a
 code issue.
 
@@ -1962,7 +1962,7 @@ generic message; an uploaded `.html` (text/html) evidence file is rejected.
 **Scope:** investigate & fix the prod-only write/toast failure surfaced in Phase 73; make e2e run
 against the production build.
 
-**Root cause (minimal repro):** In a `next start` build, a Server Action that calls
+**Root cause (minimal repro):** In a `npm run start` build, a Server Action that calls
 `revalidatePath(currentRoute)` and returns a value for `useActionState` has its returned state
 dropped on the client — the concurrent route re-render clobbers it. `next dev` masks this. Effect:
 success toasts don't render and `state.ok` effects (modal auto-close) don't run. Verified via DB

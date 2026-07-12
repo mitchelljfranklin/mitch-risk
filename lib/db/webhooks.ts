@@ -2,7 +2,7 @@ import {
   type WebhookEndpoint,
   type WebhookEvent,
   type WebhookPlatform,
-} from "@prisma/client";
+} from "../../prisma/generated/prisma/client";
 
 import { prisma } from "@/lib/prisma";
 

@@ -1,4 +1,8 @@
-import { type Control, type Framework, type Prisma } from "@prisma/client";
+import {
+  type Control,
+  type Framework,
+  type Prisma,
+} from "../../prisma/generated/prisma/client";
 
 import { prisma } from "@/lib/prisma";
 

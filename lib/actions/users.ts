@@ -19,7 +19,7 @@ import { logAudit } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
 import { userCreateSchema } from "@/lib/schemas/auth";
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../../prisma/generated/prisma/client";
 
 function isUniqueConstraintError(error: unknown): boolean {
   return (

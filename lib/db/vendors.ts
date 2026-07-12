@@ -4,7 +4,7 @@ import {
   type GeographicRisk,
   type Prisma,
   type VendorTier,
-} from "@prisma/client";
+} from "../../prisma/generated/prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";

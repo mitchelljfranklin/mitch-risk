@@ -28,9 +28,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { AUDIT_ACTION_LABELS } from "@/lib/db/audit";
-import type { AuditLogResult } from "@/lib/db/audit";
-import type { Prisma } from "@prisma/client";
+import { AUDIT_ACTION_LABELS, type AuditLogResult } from "@/lib/db/audit-types";
+import type { Prisma } from "../../../prisma/generated/prisma/client";
 import { formatDate } from "@/lib/utils";
 
 function entityLink(entityType: string, entityId: string): string {

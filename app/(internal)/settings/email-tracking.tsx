@@ -22,8 +22,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { EMAIL_TYPE_LABELS, type EmailLogEntry } from "@/lib/db/notifications";
-import type { EmailLogResult } from "@/lib/db/notifications";
+import {
+  EMAIL_TYPE_LABELS,
+  type EmailLogEntry,
+} from "@/lib/db/notifications-types";
+import type { EmailLogResult } from "@/lib/db/notifications-types";
 import { formatDate } from "@/lib/utils";
 import { retryEmailSendAction } from "./actions";
 

@@ -1,6 +1,9 @@
 import { createHmac } from "node:crypto";
 
-import { type WebhookEvent, type WebhookPlatform } from "@prisma/client";
+import {
+  type WebhookEvent,
+  type WebhookPlatform,
+} from "../prisma/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
 type WebhookPayload = Record<string, unknown>;

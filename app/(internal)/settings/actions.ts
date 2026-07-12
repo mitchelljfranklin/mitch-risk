@@ -6,7 +6,10 @@ import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS, isValidPermission } from "@/lib/permissions";
 import { logAudit } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
-import type { WebhookEvent, WebhookPlatform } from "@prisma/client";
+import type {
+  WebhookEvent,
+  WebhookPlatform,
+} from "../../../prisma/generated/prisma/client";
 import {
   getAppearanceSettings,
   updateEmailSettings,

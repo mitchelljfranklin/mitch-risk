@@ -2,7 +2,7 @@ import {
   type FindingStatus,
   type RiskWeight,
   type Prisma,
-} from "@prisma/client";
+} from "../../prisma/generated/prisma/client";
 
 import { prisma } from "@/lib/prisma";
 

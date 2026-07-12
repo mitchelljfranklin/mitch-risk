@@ -1,4 +1,4 @@
-import { type Prisma } from "@prisma/client";
+import { type Prisma } from "../../prisma/generated/prisma/client";
 import { cache } from "react";
 
 import { decryptSecret, encryptSecret } from "@/lib/crypto";

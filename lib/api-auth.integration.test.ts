@@ -7,7 +7,11 @@ vi.mock("@/lib/auth", () => ({ auth: async () => null }));
 import { authenticateRequest } from "@/lib/api-auth";
 import { generateApiKey, hashApiKey } from "@/lib/api-keys";
 import { ensureSystemRoles, getRoleByName } from "@/lib/db/roles";
-import { PERMISSIONS, SYSTEM_ROLE_NAMES } from "@/lib/permissions";
+import {
+  ALL_PERMISSIONS,
+  PERMISSIONS,
+  SYSTEM_ROLE_NAMES,
+} from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 
 const VIEWER_EMAIL = "apikey-viewer@example.test";
@@ -51,6 +55,7 @@ beforeAll(async () => {
       keyPrefix: generated.keyPrefix,
       prefix: generated.displayPrefix,
       createdBy: viewer.id,
+      permissions: ALL_PERMISSIONS as string[],
     },
   });
   keyId = key.id;

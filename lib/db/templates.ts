@@ -1,4 +1,8 @@
-import { Prisma, type QuestionType, TemplateStatus } from "@prisma/client";
+import {
+  Prisma,
+  type QuestionType,
+  TemplateStatus,
+} from "../../prisma/generated/prisma/client";
 
 import { copyJson } from "@/lib/json";
 import { prisma } from "@/lib/prisma";

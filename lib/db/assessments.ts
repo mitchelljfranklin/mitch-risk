@@ -1,4 +1,7 @@
-import { Prisma, type AssessmentStatus } from "@prisma/client";
+import {
+  Prisma,
+  type AssessmentStatus,
+} from "../../prisma/generated/prisma/client";
 import bcrypt from "bcryptjs";
 
 import { getTemplateForBuilder } from "@/lib/db/templates";

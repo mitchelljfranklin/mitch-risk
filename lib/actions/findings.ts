@@ -1,6 +1,6 @@
 "use server";
 
-import { type FindingStatus } from "@prisma/client";
+import { type FindingStatus } from "../../prisma/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 
 import { requirePermission } from "@/lib/auth";

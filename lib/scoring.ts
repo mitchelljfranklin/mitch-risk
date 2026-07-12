@@ -1,4 +1,4 @@
-import { type RiskWeight } from "@prisma/client";
+import { type RiskWeight } from "../prisma/generated/prisma/client";
 
 export type RiskWeightValues = Record<RiskWeight, number>;
 

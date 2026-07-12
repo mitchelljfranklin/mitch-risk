@@ -5,7 +5,7 @@ Get Mitch‑Risk running in minutes with Docker Compose.
 ## Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) and Docker Compose installed
-- [Node.js](https://nodejs.org/) >= 20 (for local development only)
+- [Node.js](https://nodejs.org/) >= 22 (for local development only)
 - [Git](https://git-scm.com/) (to clone the repository)
 
 ## Docker Compose Quickstart

@@ -25,7 +25,11 @@ import {
   updateSection,
   updateTemplate,
 } from "@/lib/db/templates";
-import { Prisma, type QuestionType, type RiskWeight } from "@prisma/client";
+import {
+  Prisma,
+  type QuestionType,
+  type RiskWeight,
+} from "../../prisma/generated/prisma/client";
 import { copyJson } from "@/lib/json";
 import { prisma } from "@/lib/prisma";
 import {

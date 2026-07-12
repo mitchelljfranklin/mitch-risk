@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { type User } from "@prisma/client";
+import { type User } from "../../prisma/generated/prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { generateAccessToken, hashToken } from "@/lib/tokens";

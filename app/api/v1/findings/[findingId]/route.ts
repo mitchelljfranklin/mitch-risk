@@ -1,4 +1,4 @@
-import { type FindingStatus } from "@prisma/client";
+import { type FindingStatus } from "../../../../../prisma/generated/prisma/client";
 import { authenticateRequest, authResultHasPermission } from "@/lib/api-auth";
 import { apiError, runApiHandler } from "@/lib/api-response";
 import { PERMISSIONS } from "@/lib/permissions";

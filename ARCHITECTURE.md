@@ -208,9 +208,9 @@ The platform is designed around three principles:
 |---|---|---|---|
 | **Runtime** | Node.js | >= 22 | Application runtime |
 | **Framework** | Next.js | 16 (App Router) | Full-stack server + client |
-| **Language** | TypeScript | ^5 | Strict type safety |
+| **Language** | TypeScript | ^6 | Strict type safety |
 | **Database** | PostgreSQL | >= 17 | Relational persistence |
-| **ORM** | Prisma | ^6 | Typed DB access + migrations |
+| **ORM** | Prisma | ^7 | Typed DB access + migrations |
 | **Auth** | Auth.js (NextAuth v5) | ^5 | JWT session management |
 
 ### 3.2 Frontend

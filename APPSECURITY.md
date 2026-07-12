@@ -13,7 +13,7 @@ Mitch‑Risk is a lightweight third party vendor risk management solution built 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
 | Runtime | Next.js 16 (App Router) | Full-stack framework — Server Components for reads, Server Actions for writes, React Server Components |
-| Database | PostgreSQL 17 via Prisma ORM v6 | Relational data with typed queries, migrations, and idempotent seeding |
+| Database | PostgreSQL 17 via Prisma ORM v7 | Relational data with typed queries, migrations, and idempotent seeding |
 | Auth | Auth.js (NextAuth v5 beta) | JWT-based stateless sessions with credentials, SSO (Entra ID, Google, generic OIDC), and first-run admin setup |
 | File storage | Local disk (interface-abstracted) | Evidence file storage behind `FileStorage` interface (save/read/delete/list); swappable to AWS S3, Azure Blob |
 | Email | Nodemailer v9 over SMTP | Provider-agnostic email via React Email templates; supports any SMTP relay (SendGrid, Mailgun, etc.) |
@@ -669,7 +669,7 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 | `next` | 16.2.9 | Framework |
 | `next-auth` | ^5.0.0-beta.31 | Authentication (beta) |
 | `bcryptjs` | ^3.0.3 | Password/API key hashing |
-| `@prisma/client` | ^6.19.3 | Database ORM |
+| `@prisma/client` | ^7.8.0 | Database ORM |
 | `nodemailer` | ^9.0.3 | Email transport |
 | `zod` | ^4.4.3 | Input validation |
 | `@react-pdf/renderer` | ^4.5.1 | PDF generation |

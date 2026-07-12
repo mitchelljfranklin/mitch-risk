@@ -1,4 +1,10 @@
-import { Prisma, PrismaClient, QuestionType, RiskWeight } from "@prisma/client";
+import {
+  Prisma,
+  PrismaClient,
+  QuestionType,
+  RiskWeight,
+} from "./generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 import { SYSTEM_ROLE_DEFINITIONS } from "../lib/permissions";
 import { iso27001 } from "./seed-data/iso27001";
@@ -7,7 +13,11 @@ import { nistCsf } from "./seed-data/nist-csf";
 import { essentialEight } from "./seed-data/essential-eight";
 import { type FrameworkSeed } from "./seed-data/types";
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL!,
+});
+
+const prisma = new PrismaClient({ adapter });
 
 type DefaultSetting = {
   category: string;

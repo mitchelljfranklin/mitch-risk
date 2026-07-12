@@ -1,7 +1,21 @@
 import { cache } from "react";
 
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../../prisma/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+
+import {
+  type EmailLogFilters,
+  type EmailLogResult,
+  type EmailLogEntry,
+  EMAIL_TYPE_LABELS,
+} from "./notifications-types";
+
+export {
+  type EmailLogFilters,
+  type EmailLogResult,
+  type EmailLogEntry,
+  EMAIL_TYPE_LABELS,
+};
 
 export type NotificationCounts = {
   unreviewedSubmissions: number;
@@ -62,37 +76,6 @@ export const getNotificationCounts = cache(
     };
   },
 );
-
-export type EmailLogFilters = {
-  status?: string;
-  type?: string;
-  recipient?: string;
-  fromDate?: string;
-  toDate?: string;
-  limit?: number;
-  page?: number;
-  pageSize?: number;
-};
-
-export type EmailLogResult = {
-  entries: EmailLogEntry[];
-  totalCount: number;
-  page: number;
-  pageSize: number;
-};
-
-export type EmailLogEntry = {
-  id: string;
-  type: string;
-  sentTo: string;
-  subject: string;
-  status: string;
-  errorMessage: string | null;
-  sentAt: Date;
-  assessmentId: string | null;
-  assessmentTitle: string | null;
-  sentBy: { name: string } | null;
-};
 
 const DEFAULT_EMAIL_LOG_PAGE_SIZE = 10;
 
@@ -187,11 +170,3 @@ export function getEmailLogById(id: string) {
         : null,
     );
 }
-
-export const EMAIL_TYPE_LABELS: Record<string, string> = {
-  INVITE: "Invite",
-  REMINDER: "Reminder",
-  ESCALATION: "Escalation",
-  EXPIRY: "Expiry",
-  TEST: "Test",
-};

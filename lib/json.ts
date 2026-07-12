@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../prisma/generated/prisma/client";
 
 export function copyJson(
   value: Prisma.JsonValue | null,

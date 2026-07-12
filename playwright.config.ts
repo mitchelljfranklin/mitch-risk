@@ -11,7 +11,7 @@ export default defineConfig({
   },
   projects: [{ name: "chromium", use: { browserName: "chromium" } }],
   webServer: {
-    command: "npm run start",
+    command: "node .next/standalone/server.js",
     url: "http://localhost:3000",
     // Reuse a locally-running server for fast iteration, but always start a fresh
     // production server in CI so e2e truly exercises the prod build.
