@@ -32,6 +32,7 @@ COPY --from=build /app/tsconfig.json ./tsconfig.json
 COPY --from=build /app/lib ./lib
 COPY --from=deps /app/package.json ./package.json
 COPY --from=deps /app/package-lock.json ./package-lock.json
+RUN npm cache clean --force
 RUN npm install --production --no-audit --no-fund --legacy-peer-deps
 RUN mkdir -p /app/.storage/evidence /app/data/uploads && chown -R node:node /app/.storage /app/data
 EXPOSE 3000
