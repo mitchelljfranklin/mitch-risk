@@ -1,2 +1,0 @@
-- [GitHub](https://github.com/mitchelljfranklin/mitch-risk)
-- [API Reference](/api-reference/overview)

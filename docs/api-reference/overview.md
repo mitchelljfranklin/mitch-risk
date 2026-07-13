@@ -66,12 +66,12 @@ Unexpected errors always return a generic 500 — no stack traces or internal st
 
 | Group | Methods | Description |
 |-------|---------|-------------|
-| [Vendors](vendors.md) | GET, POST, PUT, DELETE | Vendor CRUD, score, export, sub-resources |
-| [Assessments](assessments.md) | GET | Assessment list and detail |
-| [Findings](findings.md) | GET, PATCH | Findings list and status updates |
-| [Frameworks](frameworks.md) | GET, DELETE | Framework list, detail with controls, and delete |
-| [Dashboard](dashboard.md) | GET | Portfolio metrics aggregation |
-| [Audit](audit.md) | GET | Audit log query with pagination and filters |
+| [Vendors](./vendors) | GET, POST, PUT, DELETE | Vendor CRUD, score, export, sub-resources |
+| [Assessments](./assessments) | GET | Assessment list and detail |
+| [Findings](./findings) | GET, PATCH | Findings list and status updates |
+| [Frameworks](./frameworks) | GET, DELETE | Framework list, detail with controls, and delete |
+| [Dashboard](./dashboard) | GET | Portfolio metrics aggregation |
+| [Audit](./audit) | GET | Audit log query with pagination and filters |
 
 ## Full Documentation
 

@@ -174,7 +174,7 @@ the connection string:
 DATABASE_URL="postgresql://user:pass@server.postgres.database.azure.com:5432/mitch_risk?schema=public&sslmode=require"
 ```
 
-See the full [Azure Container Apps deployment guide](azure-container-apps.md).
+See the full [Azure Container Apps deployment guide](./azure-container-apps).
 
 ## Upgrading
 

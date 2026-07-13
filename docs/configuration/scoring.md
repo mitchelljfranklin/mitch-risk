@@ -2,7 +2,7 @@
 
 Scoring weights and RAG thresholds are configurable under **Settings → Scoring** (requires **Settings: manage** permission).
 
-> For a complete walkthrough of the scoring methodology — including inherent risk, worked examples, findings reconciliation, and the relationship between inherent and residual risk — see the [Scoring Methodology](/user-guides/scoring) guide.
+> For a complete walkthrough of the scoring methodology — including inherent risk, worked examples, findings reconciliation, and the relationship between inherent and residual risk — see the [Scoring Methodology](../user-guides/scoring) guide.
 
 ## Risk weights
 

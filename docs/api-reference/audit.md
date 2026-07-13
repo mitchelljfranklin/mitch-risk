@@ -56,4 +56,4 @@ curl -H "Authorization: Bearer mrk_<prefix>.<secret>" \
   --output audit-log.csv
 ```
 
-> Full request/response schemas are available in the [Swagger UI](http://localhost:3000/docs).
+> Full request/response schemas are available in the Swagger UI at `/docs` on your running instance.

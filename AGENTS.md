@@ -148,10 +148,12 @@ prisma/              # schema.prisma, migrations, seed.ts
   seed-data/         # ISO 27001, SOC 2, NIST CSF, Essential Eight seed data + types
 scripts/             # backup.sh, backup.ps1
 e2e/                 # Playwright end-to-end tests
-docs/                # Docsify-powered user documentation site (GitHub Pages)
-                     #   docs/openapi.json must be kept in sync with lib/openapi.json
-                     #   (the live Swagger UI at /docs serves lib/openapi.json directly;
-                     #   docs/openapi.json is for the static Docsify site)
+docs/                # VitePress-powered user documentation site (GitHub Pages)
+                     #   docs/.vitepress/ — config, theme, custom CSS
+                     #   docs/public/openapi.json — served by the static docs site;
+                     #     keep in sync with lib/openapi.json (the canonical source)
+                     #   .github/workflows/docs.yml — auto-deploys on push to master
+                     #     when docs/** changes
 proxy.ts             # Next.js 16 proxy (CSP nonce + security headers)
 ```
 
@@ -172,6 +174,9 @@ ones before declaring any phase complete.
 - `npm run test:e2e` — end-to-end tests (Playwright)
 - `npm run db:migrate` — apply Prisma migrations
 - `npm run db:seed` — run seed script
+- `npm run docs:dev` — VitePress docs dev server with hot reload
+- `npm run docs:build` — build VitePress docs for production
+- `npm run docs:preview` — preview the built docs locally
 - `docker compose up` — app + Postgres for local/self-host
 
 > If a command above does not yet exist for the phase you are in, create it as part of
@@ -404,9 +409,10 @@ from the catalog and role defaults).
 - Prefer Server Components for reads and Server Actions for writes.
 - **Keep the OpenAPI spec current.** Whenever a new API endpoint is added, modified, or
   removed, update `lib/openapi.json` in the same phase. The spec lives at `/api/docs` and
-  powers the Swagger UI at `/docs`. Every endpoint must have a summary, description, full
-  parameter schemas, response schemas, and error codes. This ensures citizen developers and
-  SIEM integrations always have accurate API documentation.
+  powers the Swagger UI at `/docs`. Copy any updates to `docs/public/openapi.json` so the
+  static VitePress docs site stays in sync. Every endpoint must have a summary, description,
+  full parameter schemas, response schemas, and error codes. This ensures citizen developers
+  and SIEM integrations always have accurate API documentation.
 
 ## Security & deployment invariants
 

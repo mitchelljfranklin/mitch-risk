@@ -76,7 +76,7 @@ az containerapp env create \
 
 Then deploy the app. Replace `<db-password>` with the admin password from
 step 1. Replace `<auth-secret>`, `<encryption-key>`, and `<cron-secret>`
-with generated values (see [Docker Deployment](docker.md) for generation
+with generated values (see [Docker Deployment](./docker) for generation
 commands).
 
 ```bash
@@ -169,7 +169,7 @@ The default config limits the app to 1 replica — sufficient for most
 deployments. To scale beyond 1 replica, you must add a Redis-backed
 rate limiter and a shared session store. The current in-memory rate
 limiter and JWT sessions are not shared across instances. See
-[Docker Deployment](docker.md) for details.
+[Docker Deployment](./docker) for details.
 
 ## Cost estimate (Azure pay-as-you-go)
 

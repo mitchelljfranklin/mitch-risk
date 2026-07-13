@@ -68,4 +68,4 @@ curl -X PATCH \
   http://localhost:3000/api/v1/findings/{finding-id}
 ```
 
-> Full request/response schemas are available in the [Swagger UI](http://localhost:3000/docs).
+> Full request/response schemas are available in the Swagger UI at `/docs` on your running instance.

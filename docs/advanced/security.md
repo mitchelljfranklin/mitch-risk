@@ -15,7 +15,7 @@ Mitch‑Risk supports two authentication paths for internal staff:
 - **Microsoft Entra ID**, **Google Workspace**, **Custom OIDC** (Auth0, Keycloak, etc.)
 - Auto-provisioned users get no local password (prevents bypass)
 - Domain restriction optional
-- See [SSO Configuration](/configuration/sso.md) for setup
+- See [SSO Configuration](../configuration/sso) for setup
 
 ## Break-glass access
 

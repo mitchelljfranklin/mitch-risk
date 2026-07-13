@@ -33,7 +33,7 @@ Customise the platform's visual identity to match your brand.
 | **Border radius** | Controls the roundness of cards, buttons, and inputs (0–16px) |
 | **Page width** | `Constrained` (centred, max-width) or `Full` (stretches to browser width) |
 
-See [Appearance](configuration/appearance.md) for full details.
+See [Appearance](./appearance) for full details.
 
 ---
 
@@ -46,7 +46,7 @@ Configure SMTP delivery and customise all email templates.
 | **SMTP server** | Host, port, username, password, and sender details (from name and address) |
 | **Email templates** | 8 template types with customisable subject lines and body content. Body written in Markdown with a WYSIWYG editor — converted to styled HTML when sent. Supports `{{tokens}}` |
 
-See [Email Configuration](configuration/email.md) for template token reference and SMTP setup.
+See [Email Configuration](./email) for template token reference and SMTP setup.
 
 ---
 
@@ -66,7 +66,7 @@ Configure how vendor responses are scored and how findings are generated.
 | **RAG thresholds** | Score boundaries for amber (below green threshold) and green (at or above) |
 | **Exclude N/A** | When enabled, "Not Applicable" answers are excluded from score calculations |
 
-See [Scoring Configuration](configuration/scoring.md) for examples and formula details.
+See [Scoring Configuration](./scoring) for examples and formula details.
 
 ---
 
@@ -113,7 +113,7 @@ Configure where evidence files and attachments are stored.
 | **S3 settings** | Bucket name, region, access key ID, and secret access key |
 | **Azure settings** | Connection string and container name |
 
-See [Cloud Storage](deployment/cloud-storage.md) for detailed setup instructions per provider.
+See [Cloud Storage](../deployment/cloud-storage) for detailed setup instructions per provider.
 
 ---
 
@@ -130,7 +130,7 @@ Configure Single Sign-On for internal staff via Microsoft Entra ID, Google Works
 | **Disable local auth** | Hide the email/password login form when SSO is available |
 | **Break-glass URL** | Generate a 24-hour, single-use emergency login URL |
 
-See [SSO Configuration](configuration/sso.md) for per-provider setup guides.
+See [SSO Configuration](./sso) for per-provider setup guides.
 
 ---
 
@@ -144,7 +144,7 @@ Manage staff accounts. Create users with email, password (minimum 12 characters)
 
 Manage custom roles. Three system roles are built in. Create custom roles with any combination of the 23 fine-grained `resource:action` permissions. Roles can be duplicated, edited, and deleted. Requires **Roles: manage** permission.
 
-See [RBAC & Roles](user-guides/rbac.md) for the permission catalog and default role definitions.
+See [RBAC & Roles](../user-guides/rbac) for the permission catalog and default role definitions.
 
 ---
 

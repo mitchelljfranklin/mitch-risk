@@ -95,4 +95,4 @@ curl -H "Authorization: Bearer mrk_<prefix>.<secret>" \
   http://localhost:3000/api/v1/vendors/{vendor-id}/certifications
 ```
 
-> Full request/response schemas are available in the [Swagger UI](http://localhost:3000/docs).
+> Full request/response schemas are available in the Swagger UI at `/docs` on your running instance.

@@ -60,4 +60,4 @@ curl -H "Authorization: Bearer mrk_<prefix>.<secret>" \
 
 The detail response includes the full assessment object with questions, vendor responses, findings, comments, evidence, review decisions, and score breakdown.
 
-> Full request/response schemas are available in the [Swagger UI](http://localhost:3000/docs).
+> Full request/response schemas are available in the Swagger UI at `/docs` on your running instance.

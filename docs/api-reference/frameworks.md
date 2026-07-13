@@ -54,4 +54,4 @@ curl -X DELETE -H "Authorization: Bearer mrk_<prefix>.<secret>" \
 
 Deleting a framework permanently removes it and all its controls. Template questions mapped to these controls lose their assignments. Existing assessments and findings are not affected — the scoring engine handles missing control references gracefully. Returns `204 No Content` on success.
 
-> Full request/response schemas are available in the [Swagger UI](http://localhost:3000/docs).
+> Full request/response schemas are available in the Swagger UI at `/docs` on your running instance.

@@ -267,7 +267,7 @@ docker run --rm -v mitch-risk_evidence_data:/data -v "$PWD":/backup alpine \
 
 | Document | Description |
 |----------|-------------|
-| [User Documentation](https://mitchelljfranklin.github.io/mitch-risk/) | Docsify-powered site with guides, API reference, and deployment instructions |
+| [User Documentation](https://mitchelljfranklin.github.io/mitch-risk/) | VitePress-powered site with guides, API reference, and deployment instructions |
 | [Architecture](ARCHITECTURE.md) | Full platform architecture with diagrams |
 | [Security](APPSECURITY.md) | Security architecture, hardening, and risk register |
 | [Cloud Storage](STORAGE.md) | AWS S3 and Azure Blob configuration |

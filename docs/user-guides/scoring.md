@@ -278,7 +278,7 @@ The REST API exposes scores and findings:
 | `GET /api/v1/dashboard` | RAG distribution (green/amber/red counts + percentages), average portfolio score, open findings by severity |
 | `GET /api/v1/findings` | Filter by vendor, framework, severity, status |
 
-See the [API Reference](/api-reference/overview) for full request/response schemas. The interactive Swagger UI at `/docs` provides live API documentation.
+See the [API Reference](../api-reference/overview) for full request/response schemas. The interactive Swagger UI at `/docs` provides live API documentation.
 
 ## Summary
 

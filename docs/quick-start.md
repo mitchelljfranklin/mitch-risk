@@ -89,4 +89,4 @@ Open `http://localhost:3000`.
 | `CLIENT_IP_HEADER` | No | — | Optional dedicated header for client IP (e.g. `cf-connecting-ip`) |
 | `AUTH_URL` | No | Falls back to `APP_URL` | Override for auth callbacks if different from `APP_URL` |
 
-> **Important:** `CRON_SECRET` must be set in production. The app refuses to boot without it (except during `next build`). `TRUSTED_PROXY_COUNT` must match your actual proxy hop count — see [Reverse Proxy](deployment/reverse-proxy.md) for details.
+> **Important:** `CRON_SECRET` must be set in production. The app refuses to boot without it (except during `next build`). `TRUSTED_PROXY_COUNT` must match your actual proxy hop count — see [Reverse Proxy](./deployment/reverse-proxy) for details.
