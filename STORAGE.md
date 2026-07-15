@@ -1,5 +1,7 @@
 ﻿# Storage Configuration
 
+> See also: [Cloud Storage guide](./docs/deployment/cloud-storage.md) in the VitePress documentation site.
+
 Mitch‑Risk stores evidence files and attachments on disk by default. External cloud storage (AWS S3 and Azure Blob) can be configured in the Settings → Storage tab without changing any application code.
 
 ## Contents

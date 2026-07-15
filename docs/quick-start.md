@@ -10,6 +10,35 @@ Get Mitch‑Risk running in minutes with Docker Compose.
 
 ## Docker Compose Quickstart
 
+### Pre-built image (recommended)
+
+No build tools required — just Docker. Use the pre-built image from
+[GitHub Container Registry](https://github.com/mitchelljfranklin/mitch-risk/pkgs/container/mitch-risk):
+
+```bash
+curl -O https://raw.githubusercontent.com/mitchelljfranklin/mitch-risk/master/docker-compose.pull.yml
+```
+
+Create a `.env` file with your secrets:
+
+```env
+POSTGRES_PASSWORD=<a strong password>
+AUTH_SECRET=<generate a strong random string>
+APP_ENCRYPTION_KEY=<at least 32 random characters>
+CRON_SECRET=<another strong random string>
+APP_URL=http://localhost:3000
+```
+
+```bash
+docker compose -f docker-compose.pull.yml up -d
+```
+
+> **Portainer users:** A ready-to-customize template is available at
+> [`docker-compose.portainer.yml`](https://github.com/mitchelljfranklin/mitch-risk/blob/master/docker-compose.portainer.yml).
+> Paste it into Portainer's stack editor and replace the `CHANGE_ME` placeholders.
+
+### Build from source
+
 ```bash
 git clone https://github.com/mitchelljfranklin/mitch-risk.git
 cd mitch-risk

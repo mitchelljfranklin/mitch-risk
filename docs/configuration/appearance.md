@@ -14,7 +14,7 @@ Set under **Settings → General**. The organisation name appears in:
 
 - The **sidebar header** (next to the logo)
 - The **login screen**
-- **Email signatures** (via the `{{organizationName}}` template token)
+- **Email signatures** (via the `{{appName}}` template token)
 - **PDF reports**
 - The **browser tab title**
 

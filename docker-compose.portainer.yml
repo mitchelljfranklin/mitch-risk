@@ -6,6 +6,9 @@
 #   CHANGE_ME_GENERATE_A_RANDOM     — AUTH_SECRET (JWT signing key)
 #   CHANGE_ME_GENERATE_A_KEY       — APP_ENCRYPTION_KEY (AES-256-GCM, >= 32 chars)
 #   CHANGE_ME_GENERATE_CRON        — CRON_SECRET (cron endpoint)
+#
+# Security: Set TRUSTED_PROXY_COUNT to "1" if behind a reverse proxy
+# (Caddy/nginx/Traefik). Leave at "0" if exposing port 3000 directly.
 
 services:
   db:
@@ -48,7 +51,7 @@ services:
       APP_URL: https://risk.example.com
       CRON_SECRET: CHANGE_ME_GENERATE_CRON
       EVIDENCE_STORAGE_PATH: /app/.storage/evidence
-      TRUSTED_PROXY_COUNT: "1"
+      TRUSTED_PROXY_COUNT: "0"
     ports:
       - "3000:3000"
     volumes:

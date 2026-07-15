@@ -36,7 +36,7 @@ services:
       APP_URL: "${APP_URL:-http://localhost:3000}"
       CRON_SECRET: "${CRON_SECRET:-change-me-cron-secret}"
       EVIDENCE_STORAGE_PATH: "${EVIDENCE_STORAGE_PATH:-/app/.storage/evidence}"
-      TRUSTED_PROXY_COUNT: "${TRUSTED_PROXY_COUNT:-1}"
+      TRUSTED_PROXY_COUNT: "${TRUSTED_PROXY_COUNT:-0}"
     # For local development the app port is exposed to the host. For
     # production behind a reverse proxy (Caddy/nginx), either remove this
     # port mapping or switch to an internal-only network so the app port

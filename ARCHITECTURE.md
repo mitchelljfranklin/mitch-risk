@@ -1702,14 +1702,18 @@ Server Components CANNOT:
 2. PostgreSQL health check passes
 3. Next.js container starts
 4. On first boot:
-   a. Prisma migrations run (npm run db:migrate)
-   b. Seed script runs (npm run db:seed)
-      → Creates Admin user (prompts for password)
-      → Creates Reviewer + Viewer roles
+   a. Prisma migrations apply (prisma migrate deploy)
+   b. Seed script runs (prisma db seed)
+      → Seeds system roles (Admin, Reviewer, Viewer)
+      → Seeds default settings
       → Seeds ISO 27001, SOC 2, NIST CSF, Essential Eight frameworks
+      → Seeds starter questionnaire templates
 5. App listens on port 3000
 6. Reverse proxy starts, obtains TLS cert, proxies to :3000
 ```
+
+> The first Admin user is created via the `/setup` page on first browser visit,
+> not by the seed script. The `/setup` page is only available when zero users exist.
 
 ---
 

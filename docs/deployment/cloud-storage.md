@@ -1,5 +1,7 @@
 ﻿# Cloud Storage
 
+> See also: [STORAGE.md](../../STORAGE.md) in the repo root for more detailed step-by-step setup instructions.
+
 Mitch‑Risk supports three storage backends for evidence files and attachments: local disk (default), AWS S3, and Azure Blob Storage. Switching between them requires no code changes — configure in Settings → Storage and the change takes effect immediately.
 
 ## Architecture

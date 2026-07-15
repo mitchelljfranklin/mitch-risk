@@ -10,7 +10,7 @@ services:
       APP_URL: ${APP_URL:-http://localhost:3000}
       CRON_SECRET: ${CRON_SECRET}
       EVIDENCE_STORAGE_PATH: ${EVIDENCE_STORAGE_PATH:-/app/.storage/evidence}
-      TRUSTED_PROXY_COUNT: ${TRUSTED_PROXY_COUNT:-1}
+      TRUSTED_PROXY_COUNT: ${TRUSTED_PROXY_COUNT:-0}
     ports:
       - "${APP_PORT:-3000}:3000"
     volumes:

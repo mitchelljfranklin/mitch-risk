@@ -28,6 +28,16 @@ The stack includes two containers:
 - **app** — Next.js application server (port 3000)
 - **db** — PostgreSQL database (internal network, port 5432)
 
+### Portainer
+
+A ready-to-customize template is available for Portainer's stack deployment:
+
+```bash
+curl -O https://raw.githubusercontent.com/mitchelljfranklin/mitch-risk/master/docker-compose.portainer.yml
+```
+
+Paste the contents into Portainer's stack editor, replace the `CHANGE_ME` placeholders with your own secrets, and deploy.
+
 ## Quick Deploy (build from source)
 
 ```bash

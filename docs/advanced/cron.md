@@ -31,12 +31,12 @@ All notification jobs (reminders, escalations, expiry notices) check for existin
 
 | Log type | Default retention | Config location |
 |---|---|---|
-| Email logs | 14 days | Settings → Scheduling |
-| Audit logs | Configurable | Settings → Scheduling |
+| Email logs | 14 days | Settings → Limits |
+| Audit logs | Configurable | Settings → Limits |
 
 ## Rate limit configuration
 
-All abuse-protection limits are configurable under **Settings → Scheduling**:
+All abuse-protection limits are configurable under **Settings → Limits**:
 
 | Limit | Default | Purpose |
 |---|---|---|

@@ -1,5 +1,7 @@
 ﻿# SSO configuration guide
 
+> See also: [SSO Configuration](./docs/configuration/sso.md) in the VitePress documentation site.
+
 This guide explains how to connect **Mitch‑Risk** to a Single Sign-On (SSO) identity provider
 (IdP) so internal staff can sign in with their organisation account instead of a local
 email/password.

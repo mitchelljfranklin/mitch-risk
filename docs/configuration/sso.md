@@ -1,5 +1,7 @@
 ﻿# SSO Configuration
 
+> See also: [SSOConfig.md](../../SSOConfig.md) in the repo root for provider-specific setup guides (Auth0, Keycloak, Authentik, Authelia, VoidAuth, Okta).
+
 Mitch‑Risk supports Single Sign-On for internal staff via **Microsoft Entra ID**, **Google Workspace**, and any **generic OIDC** provider. All configuration is done in-app under **Settings → SSO** (requires the **Settings: manage** permission).
 
 All three providers can be enabled at once; each appears as its own button on the login screen.

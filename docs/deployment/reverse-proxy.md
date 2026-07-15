@@ -74,7 +74,7 @@ If your proxy or CDN sets a dedicated single-IP header, use `CLIENT_IP_HEADER` i
 CLIENT_IP_HEADER=cf-connecting-ip
 ```
 
-When `CLIENT_IP_HEADER` is set, it takes priority over `X-Forwarded-For` resolution. Set it to `false` to explicitly disable the dedicated header check.
+When `CLIENT_IP_HEADER` is set, it takes priority over `X-Forwarded-For` resolution. Leave it unset to use `X-Forwarded-For` (resolved via `TRUSTED_PROXY_COUNT`).
 
 ## Security Notes
 
