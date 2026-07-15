@@ -144,7 +144,7 @@ lib/                 # cross-cutting logic
                      #   local-disk, s3.ts (AWS S3), azure.ts (Azure Blob)
 hooks/              # React hooks (use-form-toast, use-action-feedback, use-mobile)
 emails/              # React Email templates (invite, reminder, escalation, dynamic)
-prisma/              # schema.prisma, migrations, seed.ts
+prisma/              # schema.prisma, migrations, seed.ts, seed-runner.cjs
   seed-data/         # ISO 27001, SOC 2, NIST CSF, Essential Eight seed data + types
 scripts/             # backup.sh, backup.ps1
 e2e/                 # Playwright end-to-end tests
@@ -420,7 +420,8 @@ from the catalog and role defaults).
   `strict-dynamic` policy applied **only to document GET requests** — never rewrite request
   headers on Server-Action POST/RSC requests (it drops the action result). Never add an inline
   `<script>` without threading the request nonce; new external origins (e.g. a CDN) must be added
-  to the relevant CSP directive; styles rely on `'unsafe-inline'`. **Do not add
+  to the relevant CSP directive; scripts allow `'unsafe-eval'` (required by Next.js RSC and
+  charting libraries); styles rely on `'unsafe-inline'`. **Do not add
   `upgrade-insecure-requests`** — it breaks HTTP-accessed self-hosted deployments and same-origin
   Server Actions.
 - **REST v1 handlers** go through `runApiHandler` + `apiError` (`lib/api-response.ts`): unexpected

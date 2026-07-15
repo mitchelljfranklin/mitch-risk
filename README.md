@@ -26,8 +26,9 @@ Mitch‑Risk bridges that gap. It strips third party vendor risk management down
 
 ```bash
 curl -O https://raw.githubusercontent.com/mitchelljfranklin/mitch-risk/master/docker-compose.pull.yml
-# Copy and edit .env.example, or create a minimal .env with your secrets:
+# Create a .env file with your secrets:
 cat > .env << 'EOF'
+POSTGRES_PASSWORD=<a-strong-db-password>
 AUTH_SECRET=<your-secret>
 APP_ENCRYPTION_KEY=<your-key-min-32-chars>
 CRON_SECRET=<your-secret>
@@ -193,7 +194,7 @@ The app is designed to run behind a TLS-terminating reverse proxy (Caddy, nginx,
 
 **Required configuration:**
 - Set `APP_URL` to your public HTTPS URL (e.g. `https://risk.example.com`)
-- Set `TRUSTED_PROXY_COUNT` to the number of trusted proxies (1 for a single proxy)
+- Set `TRUSTED_PROXY_COUNT` to the number of trusted proxies (defaults to `0`; set to `1` behind a single proxy like Caddy/nginx)
 - Do not expose port 3000 publicly — route only through the proxy
 - `AUTH_URL` defaults to `APP_URL`; set explicitly only if auth must use a different origin
 
