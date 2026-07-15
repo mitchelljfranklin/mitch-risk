@@ -32,7 +32,7 @@ COPY --from=build /app/tsconfig.json ./tsconfig.json
 COPY --from=build /app/lib ./lib
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/package.json ./package.json
-RUN npm prune --production
+RUN npm prune --production --legacy-peer-deps
 RUN mkdir -p /app/.storage/evidence /app/data/uploads && chown -R node:node /app/.storage /app/data
 EXPOSE 3000
 USER node
