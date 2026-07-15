@@ -11,7 +11,7 @@ function buildContentSecurityPolicy(
     `'nonce-${nonce}'`,
     "'strict-dynamic'",
     SWAGGER_CDN,
-    isDevelopment ? "'unsafe-eval'" : "",
+    "'unsafe-eval'",
   ]
     .filter(Boolean)
     .join(" ");
