@@ -1,0 +1,76 @@
+# Template for Portainer / Docker Compose v3.
+# Replace every CHANGE_ME value before deploying.
+#
+# Required secrets (generate with: openssl rand -hex 32):
+#   CHANGE_ME_DB_PASSWORD           — PostgreSQL password
+#   CHANGE_ME_GENERATE_A_RANDOM     — AUTH_SECRET (JWT signing key)
+#   CHANGE_ME_GENERATE_A_KEY       — APP_ENCRYPTION_KEY (AES-256-GCM, >= 32 chars)
+#   CHANGE_ME_GENERATE_CRON        — CRON_SECRET (cron endpoint)
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mitch
+      POSTGRES_PASSWORD: CHANGE_ME_DB_PASSWORD
+      POSTGRES_DB: mitch_risk
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U mitch -d mitch_risk",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "512m"
+
+  app:
+    image: ghcr.io/mitchelljfranklin/mitch-risk:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: "postgresql://mitch:CHANGE_ME_DB_PASSWORD@db:5432/mitch_risk?schema=public"
+      AUTH_SECRET: CHANGE_ME_GENERATE_A_RANDOM
+      APP_ENCRYPTION_KEY: CHANGE_ME_GENERATE_A_KEY
+      APP_URL: https://risk.example.com
+      CRON_SECRET: CHANGE_ME_GENERATE_CRON
+      EVIDENCE_STORAGE_PATH: /app/.storage/evidence
+      TRUSTED_PROXY_COUNT: "1"
+    ports:
+      - "3000:3000"
+    volumes:
+      - evidence_data:/app/.storage
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:3000/api/health').then(function(r){return r.ok?process.exit(0):process.exit(1)}).catch(function(){process.exit(1)})",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "1g"
+
+volumes:
+  db_data:
+  evidence_data:
