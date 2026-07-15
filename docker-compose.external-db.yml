@@ -1,6 +1,6 @@
 services:
   app:
-    image: mitchellfranklin/mitch-risk:latest
+    image: ghcr.io/mitchelljfranklin/mitch-risk:latest
     restart: unless-stopped
     environment:
       NODE_ENV: production

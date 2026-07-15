@@ -9,7 +9,7 @@ Prisma migrations, and optionally seeds the database on first start.
 - Azure subscription
 - [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
   installed and logged in (`az login`)
-- Docker Hub image: `mitchellfranklin/mitch-risk:latest`
+- Container image: `ghcr.io/mitchelljfranklin/mitch-risk:latest`
 - A resource group (create one if needed)
 
 ## 1. Create PostgreSQL Flexible Server
@@ -84,7 +84,7 @@ az containerapp create \
   --resource-group "$RESOURCE_GROUP" \
   --name "mitch-risk" \
   --environment "mitch-risk-env" \
-  --image "mitchellfranklin/mitch-risk:latest" \
+  --image "ghcr.io/mitchelljfranklin/mitch-risk:latest" \
   --target-port 3000 \
   --ingress external \
   --min-replicas 1 \

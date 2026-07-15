@@ -5,7 +5,7 @@ Deploy Mitch‑Risk with Docker Compose for a self-hosted, single-container setu
 ## Quick Deploy (pre-built image)
 
 No build tools required — just Docker. Pull the pre-built image from
-[Docker Hub](https://hub.docker.com/r/mitchellfranklin/mitch-risk):
+[GitHub Container Registry](https://github.com/mitchelljfranklin/mitch-risk/pkgs/container/mitch-risk):
 
 ```bash
 curl -O https://raw.githubusercontent.com/mitchelljfranklin/mitch-risk/master/docker-compose.pull.yml
