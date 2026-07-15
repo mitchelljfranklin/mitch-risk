@@ -30,10 +30,9 @@ COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/prisma.config.ts ./prisma.config.ts
 COPY --from=build /app/tsconfig.json ./tsconfig.json
 COPY --from=build /app/lib ./lib
+COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/package.json ./package.json
-COPY --from=deps /app/package-lock.json ./package-lock.json
-RUN npm cache clean --force
-RUN npm install --production --no-audit --no-fund --legacy-peer-deps
+RUN npm prune --production
 RUN mkdir -p /app/.storage/evidence /app/data/uploads && chown -R node:node /app/.storage /app/data
 EXPOSE 3000
 USER node
