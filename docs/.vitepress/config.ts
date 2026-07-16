@@ -83,7 +83,7 @@ export default defineConfig({
     "Lightweight third party vendor risk management — build questionnaires, assess vendors, track compliance",
   lang: "en-US",
   srcDir: ".",
-  base: "/mitch-risk/",
+  base: "/",
   cleanUrls: true,
   lastUpdated: true,
 

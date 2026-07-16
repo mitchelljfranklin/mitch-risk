@@ -4,5 +4,5 @@ contact_links:
     url: https://github.com/mitchelljfranklin/mitch-risk/blob/master/SECURITY.md
     about: Do not open a public issue — follow the process in SECURITY.md.
   - name: Documentation
-    url: https://mitchelljfranklin.github.io/mitch-risk/
+    url: https://risk.mitchforge.com
     about: Read the full documentation before opening an issue.
