@@ -17,18 +17,29 @@ const geistMono = Geist_Mono({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const orgName = await getOrganizationSettings()
-    .then((org) => org.name || "mitch-risk")
-    .catch((err) => {
-      console.error(
-        "Failed to load organization settings:",
-        err instanceof Error ? err.message : String(err),
-      );
-      return "mitch-risk";
-    });
+  const [org, appearance] = await Promise.all([
+    getOrganizationSettings(),
+    getAppearanceSettings(),
+  ]).catch((err) => {
+    console.error(
+      "Failed to load settings for metadata:",
+      err instanceof Error ? err.message : String(err),
+    );
+    return [
+      { name: "mitch-risk" },
+      { logoKey: "" },
+    ] as const;
+  });
+
+  const orgName = org.name || "mitch-risk";
+  const icons = appearance.logoKey
+    ? [{ url: `/api/brand/logo?v=${appearance.logoKey}` }]
+    : [{ url: "/favicon.ico" }];
+
   return {
     title: { template: `%s — ${orgName}`, default: orgName },
     description: "Lightweight third party vendor risk management solution",
+    icons,
   };
 }
 
@@ -37,25 +48,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const appearance = await getAppearanceSettings().catch((err) => {
-    console.error(
-      "Failed to load appearance settings:",
-      err instanceof Error ? err.message : String(err),
-    );
-    return {
-      primaryHex: "",
-      secondaryHex: "",
-      ragGreenHex: "",
-      ragAmberHex: "",
-      ragRedHex: "",
-      ragUnscoredHex: "",
-      borderRadius: 10,
-      logoKey: "",
-    };
-  });
-  const faviconUrl = appearance.logoKey
-    ? `/api/brand/logo?v=${appearance.logoKey}`
-    : "/favicon.ico";
   const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
@@ -64,9 +56,6 @@ export default async function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
-      <head>
-        <link rel="icon" href={faviconUrl} />
-      </head>
       <body className="min-h-svh antialiased">
         <a
           href="#main-content"
