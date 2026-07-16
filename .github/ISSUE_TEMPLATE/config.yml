@@ -6,3 +6,6 @@ contact_links:
   - name: Documentation
     url: https://risk.mitchforge.com
     about: Read the full documentation before opening an issue.
+  - name: Quick Start
+    url: https://github.com/mitchelljfranklin/mitch-risk#quick-start
+    about: Get started with Mitch‑Risk in minutes.
