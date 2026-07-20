@@ -16,8 +16,6 @@ jobs:
       AUTH_SECRET: "ci-build-auth-secret-00000000000000000000"
       APP_ENCRYPTION_KEY: "ci-build-encryption-key-0000000000000"
       NEXT_TELEMETRY_DISABLED: "1"
-      NODE_OPTIONS: "--no-experimental-strip-types"
-      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -30,6 +28,7 @@ jobs:
       - run: npm run lint
       - run: npm run format
       - uses: stefanzweifel/git-auto-commit-action@v5
+        if: github.event_name == 'push'
         with:
           commit_message: "style: auto-format [skip ci]"
           file_pattern: "*.ts *.tsx *.js *.mjs *.json *.yml *.md"
