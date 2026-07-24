@@ -250,5 +250,6 @@ export function listAuditActions() {
     "UPDATE_CERTIFICATION",
     "DELETE_CERTIFICATION",
     "CREATE_FRAMEWORK",
+    "UPDATE_RESPONSIBILITY_ACTION",
   ];
 }

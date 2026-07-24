@@ -141,3 +141,22 @@ export async function upsertActionsForCertification(
 
   return created;
 }
+
+export type UpdateActionInput = {
+  status?: string;
+  assignedToId?: string | null;
+  notes?: string | null;
+  completedAt?: Date | null;
+};
+
+export async function updateAction(
+  actionId: string,
+  data: UpdateActionInput,
+): Promise<void> {
+  await prisma.customerResponsibilityAction.update({
+    where: { id: actionId },
+    data: data as Parameters<
+      typeof prisma.customerResponsibilityAction.update
+    >[0]["data"],
+  });
+}

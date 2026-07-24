@@ -1,5 +1,6 @@
 import { CustomerResponsibilityChecklist } from "@/components/customer-responsibility-checklist";
 import { listActionsByVendor } from "@/lib/db/customer-responsibility";
+import { prisma } from "@/lib/prisma";
 
 export type ResponsibilityAction = {
   id: string;
@@ -20,8 +21,10 @@ export type ResponsibilityCertGroup = {
 
 export async function CustomerResponsibilityManager({
   vendorId,
+  canEdit,
 }: {
   vendorId: string;
+  canEdit: boolean;
 }) {
   const actions = await listActionsByVendor(vendorId);
 
@@ -57,5 +60,35 @@ export async function CustomerResponsibilityManager({
     });
   }
 
-  return <CustomerResponsibilityChecklist groups={groups} />;
+  const actionIds = actions.map((action) => action.id);
+  const responsibilityAttachments = await prisma.attachment.findMany({
+    where: {
+      entityType: "CustomerResponsibilityAction",
+      entityId: { in: actionIds },
+    },
+    orderBy: { createdAt: "asc" },
+  });
+
+  const attachmentMap = new Map<
+    string,
+    { id: string; fileName: string; displayName: string | null }[]
+  >();
+  for (const attachment of responsibilityAttachments) {
+    const list = attachmentMap.get(attachment.entityId) ?? [];
+    list.push({
+      id: attachment.id,
+      fileName: attachment.fileName,
+      displayName: attachment.displayName,
+    });
+    attachmentMap.set(attachment.entityId, list);
+  }
+
+  return (
+    <CustomerResponsibilityChecklist
+      groups={groups}
+      vendorId={vendorId}
+      canEdit={canEdit}
+      attachments={attachmentMap}
+    />
+  );
 }

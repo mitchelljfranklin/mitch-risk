@@ -76,4 +76,5 @@ export const AUDIT_ACTION_LABELS: Record<string, string> = {
   UPDATE_CERTIFICATION: "Updated certification",
   DELETE_CERTIFICATION: "Deleted certification",
   CREATE_FRAMEWORK: "Imported framework",
+  UPDATE_RESPONSIBILITY_ACTION: "Updated responsibility action",
 };
