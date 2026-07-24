@@ -169,13 +169,16 @@ The checkbox appears as a toggle in an existing or new column on the controls li
 **What it delivers:** Migration applied, seed data correct, database layer working. Nothing visible to users yet.
 
 | Task | Detail |
-|---|---|
+|---|---|---|
 | Add `CustomerResponsibilityAction` model + `CustomerResponsibilityStatus` enum to `prisma/schema.prisma` | |
 | Add `isSharedResponsibility` field to `Control` model | |
 | Create + apply migration | |
-| Add `isSharedResponsibility` flags to SOC 2 seed data (`prisma/seed-data/soc2.ts`) | 12 controls pre-marked |
-| Update `prisma/seed.ts` if default settings are needed | |
-| Create `lib/db/customer-responsibility.ts` | `listActionsByVendor(vendorId)`, `upsertActionsForCertification(vendorId, certificationId, frameworkName)`, `matchFrameworkForCertification(certName)` |
+| Add `isSharedResponsibility` flags to SOC 2 seed data (`prisma/seed-data/soc2.ts`) | 13 controls pre-marked |
+| Update `prisma/seed.ts` to write `isSharedResponsibility` on framework upsert | |
+| Create `lib/db/customer-responsibility.ts` | `listActionsByVendor(vendorId)`, `matchFrameworkForCertification(certName)`, `listSharedControlsForFramework(frameworkName)` |
+| Update `lib/schemas/framework.ts` — add optional `isSharedResponsibility` to CSV row schema | Accepts `true`/`false`/`1`/`0`/`yes` |
+| Update `lib/actions/frameworks.ts` — parse `is_shared_responsibility` column from CSV imports | Optional column, defaults to `false` when absent |
+| Update `app/(internal)/frameworks/import/import-form.tsx` — add column to template and help text | Downloadable CSV template includes the new column |
 
 **Gate:**
 - [ ] Migration applies cleanly on fresh database
@@ -183,6 +186,8 @@ The checkbox appears as a toggle in an existing or new column on the controls li
 - [ ] `listActionsByVendor()` returns empty array on a vendor with no certs
 - [ ] `matchFrameworkForCertification("SOC 2 Type II")` returns the SOC 2 framework
 - [ ] `matchFrameworkForCertification("Some custom audit")` returns null
+- [ ] CSV import with `is_shared_responsibility` column correctly marks controls
+- [ ] CSV import without `is_shared_responsibility` column defaults controls to `false`
 - [ ] `npm run typecheck`, `npm run lint`, `npm run build` clean
 
 **Effort:** ~0.5 day

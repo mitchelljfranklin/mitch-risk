@@ -73,6 +73,7 @@ export async function importFrameworkAction(
   const codeIndex = header.indexOf("code");
   const titleIndex = header.indexOf("title");
   const guidanceIndex = header.indexOf("guidance");
+  const sharedIndex = header.indexOf("is_shared_responsibility");
 
   const controls: {
     domain: string;
@@ -80,6 +81,7 @@ export async function importFrameworkAction(
     title: string;
     guidance: string;
     order: number;
+    isSharedResponsibility: boolean;
   }[] = [];
 
   const seenCodes = new Set<string>();
@@ -91,6 +93,8 @@ export async function importFrameworkAction(
       code: row[codeIndex]?.trim() ?? "",
       title: row[titleIndex]?.trim() ?? "",
       guidance: row[guidanceIndex]?.trim() ?? "",
+      isSharedResponsibility:
+        sharedIndex >= 0 ? row[sharedIndex]?.trim() : "false",
     });
 
     if (!parsed.success) {
@@ -114,6 +118,7 @@ export async function importFrameworkAction(
       title: parsed.data.title,
       guidance: parsed.data.guidance,
       order: i,
+      isSharedResponsibility: parsed.data.isSharedResponsibility,
     });
   }
 
@@ -127,7 +132,7 @@ export async function importFrameworkAction(
       title: control.title,
       guidance: control.guidance,
       order: control.order,
-      isSharedResponsibility: false,
+      isSharedResponsibility: control.isSharedResponsibility,
     })),
   });
 

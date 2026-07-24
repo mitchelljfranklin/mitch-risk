@@ -5,6 +5,20 @@ export const frameworkCsvRowSchema = z.object({
   code: z.string().min(1, "Control code is required"),
   title: z.string().min(1, "Control title is required"),
   guidance: z.string().optional().default(""),
+  isSharedResponsibility: z
+    .union([
+      z.boolean(),
+      z
+        .string()
+        .transform(
+          (value) =>
+            value.toLowerCase() === "true" ||
+            value === "1" ||
+            value.toLowerCase() === "yes",
+        ),
+    ])
+    .optional()
+    .default(false),
 });
 
 export type FrameworkCsvRow = z.infer<typeof frameworkCsvRowSchema>;
