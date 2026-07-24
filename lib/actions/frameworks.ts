@@ -166,6 +166,7 @@ export async function toggleSharedResponsibilityAction(formData: FormData) {
 
   const controlId = getField(formData, "controlId");
   const value = getField(formData, "isShared");
+  const frameworkId = getField(formData, "frameworkId");
 
   if (!controlId) {
     return;
@@ -181,4 +182,8 @@ export async function toggleSharedResponsibilityAction(formData: FormData) {
     controlId,
     { code: control.code, framework: control.frameworkId },
   );
+
+  if (frameworkId) {
+    revalidatePath(`/frameworks/${frameworkId}`);
+  }
 }

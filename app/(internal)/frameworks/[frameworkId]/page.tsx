@@ -131,6 +131,7 @@ export default async function FrameworkDetailPage({
                     {canEdit ? (
                       <SharedResponsibilityToggle
                         controlId={control.id}
+                        frameworkId={frameworkId}
                         defaultValue={control.isSharedResponsibility}
                       />
                     ) : null}

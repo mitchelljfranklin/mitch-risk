@@ -7,9 +7,11 @@ import { toggleSharedResponsibilityAction } from "@/lib/actions/frameworks";
 
 export function SharedResponsibilityToggle({
   controlId,
+  frameworkId,
   defaultValue,
 }: {
   controlId: string;
+  frameworkId: string;
   defaultValue: boolean;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -21,6 +23,7 @@ export function SharedResponsibilityToggle({
       className="flex items-center gap-1.5"
     >
       <input type="hidden" name="controlId" value={controlId} />
+      <input type="hidden" name="frameworkId" value={frameworkId} />
       <input
         type="hidden"
         name="isShared"

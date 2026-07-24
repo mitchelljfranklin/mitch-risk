@@ -96,6 +96,7 @@ export default async function ControlDetailPage({
           <div className="mt-2">
             <SharedResponsibilityToggle
               controlId={control.id}
+              frameworkId={frameworkId}
               defaultValue={control.isSharedResponsibility}
             />
           </div>
