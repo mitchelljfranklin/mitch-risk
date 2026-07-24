@@ -15,6 +15,7 @@ import { ConfirmDialog } from "@/components/confirm-dialog";
 import { EmptyState } from "@/components/empty-state";
 import { FlashToast } from "@/components/flash-toast";
 import { ProgressBar } from "@/components/progress-bar";
+import { ScoreStatCard } from "@/components/stat-card";
 import { deleteVendorAction } from "@/lib/actions/vendors";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
@@ -24,6 +25,7 @@ import { getVendorProfile } from "@/lib/db/compliance";
 import { listVendorFindings } from "@/lib/db/findings";
 import { listFrameworks } from "@/lib/db/frameworks";
 import { getVendor } from "@/lib/db/vendors";
+import { getCustomerResponsibilityCompliance } from "@/lib/db/customer-responsibility";
 import { buildVendorTimeline } from "@/lib/db/vendor-timeline";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -112,6 +114,9 @@ export default async function VendorDetailPage({
     listVendorCertifications(vendorId),
   ]);
   const openFindings = findings.filter((finding) => finding.status === "OPEN");
+
+  const responsibilityCompliance =
+    await getCustomerResponsibilityCompliance(vendorId);
 
   const timeline = buildVendorTimeline({
     vendorId,
@@ -519,6 +524,23 @@ export default async function VendorDetailPage({
         </TabsContent>
 
         <TabsContent value="compliance" className="mt-4 flex flex-col gap-6">
+          {responsibilityCompliance ? (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <ScoreStatCard
+                label="Vendor compliance"
+                score={vendor.overallScore}
+              />
+              <ScoreStatCard
+                label="Your compliance"
+                score={
+                  responsibilityCompliance.total > 0
+                    ? responsibilityCompliance.percent / 100
+                    : null
+                }
+              />
+            </div>
+          ) : null}
+
           <Card>
             <CardHeader>
               <CardTitle>Domain compliance</CardTitle>

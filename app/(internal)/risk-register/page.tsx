@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -27,6 +28,14 @@ import {
   FINDING_STATUS_LABELS,
 } from "@/lib/schemas/assessment";
 import { RISK_WEIGHTS } from "@/lib/schemas/template";
+import {
+  listAllResponsibilityActions,
+  type ResponsibilityActionWithVendor,
+} from "@/lib/db/customer-responsibility";
+import {
+  CUSTOMER_RESPONSIBILITY_STATUS_LABELS,
+  CUSTOMER_RESPONSIBILITY_STATUS_STYLES,
+} from "@/lib/schemas/certification";
 
 export const dynamic = "force-dynamic";
 
@@ -62,7 +71,17 @@ export default async function RiskRegisterPage({
       listVendorOptions(),
     ]);
 
-  const hasFilters = Boolean(sp.status || sp.severity || sp.vendorId);
+  const showResponsibility = sp.responsibility === "1";
+  const responsibilityActions = showResponsibility
+    ? await listAllResponsibilityActions(
+        sp.vendorId || undefined,
+        sp.responsibilityStatus || undefined,
+      )
+    : [];
+
+  const hasFilters = Boolean(
+    sp.status || sp.severity || sp.vendorId || showResponsibility,
+  );
 
   return (
     <div className="flex flex-col gap-6">
@@ -151,6 +170,23 @@ export default async function RiskRegisterPage({
             }))}
           />
         </div>
+        <div className="flex flex-col gap-1">
+          <label
+            className="text-muted-foreground text-xs"
+            htmlFor="responsibility"
+          >
+            Show
+          </label>
+          <Select name="responsibility" defaultValue={sp.responsibility ?? ""}>
+            <SelectTrigger id="responsibility" className="w-48">
+              <SelectValue placeholder="Findings only" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Findings only</SelectItem>
+              <SelectItem value="1">Customer responsibility</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <Button type="submit" variant="secondary" size="sm" className="mb-px">
           Filter
         </Button>
@@ -184,6 +220,61 @@ export default async function RiskRegisterPage({
           />
         </>
       )}
+
+      {showResponsibility ? (
+        responsibilityActions.length === 0 ? (
+          <p className="text-muted-foreground text-sm">
+            No customer responsibility items match the selected filters.
+          </p>
+        ) : (
+          <div className="flex flex-col gap-4">
+            <h2 className="text-lg font-semibold">Customer Responsibility</h2>
+            <div className="flex flex-col divide-y rounded-lg border">
+              {responsibilityActions.map((action) => (
+                <div
+                  key={action.id}
+                  className="flex items-center justify-between gap-3 p-3"
+                >
+                  <div className="flex min-w-0 flex-col">
+                    <div className="flex items-center gap-1.5">
+                      <Link
+                        href={`/vendors/${action.vendorId}`}
+                        className="text-xs font-medium hover:underline"
+                      >
+                        {action.vendorName ?? "Vendor"}
+                      </Link>
+                      <span className="text-muted-foreground text-xs font-mono">
+                        {action.controlCode}
+                      </span>
+                    </div>
+                    <span className="truncate text-sm">
+                      {action.controlTitle}
+                    </span>
+                    {action.assignedToName ? (
+                      <span className="text-muted-foreground text-xs">
+                        Assigned to {action.assignedToName}
+                      </span>
+                    ) : null}
+                  </div>
+                  <Badge
+                    className={
+                      CUSTOMER_RESPONSIBILITY_STATUS_STYLES[
+                        action.status as keyof typeof CUSTOMER_RESPONSIBILITY_STATUS_STYLES
+                      ] ?? ""
+                    }
+                  >
+                    {
+                      CUSTOMER_RESPONSIBILITY_STATUS_LABELS[
+                        action.status as keyof typeof CUSTOMER_RESPONSIBILITY_STATUS_LABELS
+                      ]
+                    }
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      ) : null}
     </div>
   );
 }

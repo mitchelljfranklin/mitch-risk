@@ -42,3 +42,29 @@ export const CERTIFICATION_STATUS_STYLES: Record<CertificationStatus, string> =
     expiring: "bg-[var(--rag-amber)] text-black",
     expired: "bg-[var(--rag-red)] text-white",
   };
+
+export type CustomerResponsibilityStatus =
+  | "PENDING"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "NOT_APPLICABLE";
+
+export const CUSTOMER_RESPONSIBILITY_STATUS_LABELS: Record<
+  CustomerResponsibilityStatus,
+  string
+> = {
+  PENDING: "Pending",
+  IN_PROGRESS: "In Progress",
+  COMPLETED: "Completed",
+  NOT_APPLICABLE: "N/A",
+};
+
+export const CUSTOMER_RESPONSIBILITY_STATUS_STYLES: Record<
+  CustomerResponsibilityStatus,
+  string
+> = {
+  PENDING: "bg-[var(--rag-amber)] text-black",
+  IN_PROGRESS: "bg-blue-600 text-white",
+  COMPLETED: "bg-[var(--rag-green)] text-white",
+  NOT_APPLICABLE: "bg-gray-400 text-white",
+};

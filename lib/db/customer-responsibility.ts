@@ -160,3 +160,128 @@ export async function updateAction(
     >[0]["data"],
   });
 }
+
+export type CustomerResponsibilityCompliance = {
+  total: number;
+  completed: number;
+  inProgress: number;
+  pending: number;
+  notApplicable: number;
+  percent: number;
+};
+
+export async function getCustomerResponsibilityCompliance(
+  vendorId: string,
+): Promise<CustomerResponsibilityCompliance | null> {
+  const actions = await prisma.customerResponsibilityAction.findMany({
+    where: { vendorId },
+    select: { status: true },
+  });
+
+  if (actions.length === 0) {
+    return null;
+  }
+
+  const counts = {
+    total: actions.length,
+    completed: 0,
+    inProgress: 0,
+    pending: 0,
+    notApplicable: 0,
+  };
+
+  for (const action of actions) {
+    switch (action.status) {
+      case "COMPLETED":
+        counts.completed++;
+        break;
+      case "IN_PROGRESS":
+        counts.inProgress++;
+        break;
+      case "PENDING":
+        counts.pending++;
+        break;
+      case "NOT_APPLICABLE":
+        counts.notApplicable++;
+        break;
+    }
+  }
+
+  const effectiveCompleted = counts.completed + counts.notApplicable;
+
+  return {
+    ...counts,
+    percent:
+      counts.total > 0
+        ? Math.round((effectiveCompleted / counts.total) * 100)
+        : 0,
+  };
+}
+
+export type PortfolioResponsibilitySummary = {
+  totalVendors: number;
+  totalActions: number;
+  completedActions: number;
+  percent: number;
+};
+
+export async function getPortfolioResponsibilitySummary(): Promise<PortfolioResponsibilitySummary | null> {
+  const actions = await prisma.customerResponsibilityAction.findMany({
+    select: { vendorId: true, status: true },
+  });
+
+  if (actions.length === 0) {
+    return null;
+  }
+
+  const vendorIds = new Set<string>();
+  let completed = 0;
+
+  for (const action of actions) {
+    vendorIds.add(action.vendorId);
+    if (action.status === "COMPLETED" || action.status === "NOT_APPLICABLE") {
+      completed++;
+    }
+  }
+
+  return {
+    totalVendors: vendorIds.size,
+    totalActions: actions.length,
+    completedActions: completed,
+    percent: Math.round((completed / actions.length) * 100),
+  };
+}
+
+export type ResponsibilityActionWithVendor = {
+  id: string;
+  vendorId: string;
+  vendorName: string;
+  controlCode: string;
+  controlTitle: string;
+  status: string;
+  assignedToName: string | null;
+  createdAt: Date;
+};
+
+export async function listAllResponsibilityActions(
+  vendorId?: string,
+  status?: string,
+): Promise<ResponsibilityActionWithVendor[]> {
+  return prisma.customerResponsibilityAction.findMany({
+    where: {
+      ...(vendorId ? { vendorId } : {}),
+      ...(status ? { status: status as "PENDING" | "IN_PROGRESS" | "COMPLETED" | "NOT_APPLICABLE" } : {}),
+    },
+    orderBy: { createdAt: "asc" },
+    select: {
+      id: true,
+      vendorId: true,
+      vendor: { select: { name: true } },
+      controlCode: true,
+      controlTitle: true,
+      status: true,
+      assignedTo: { select: { name: true } },
+      createdAt: true,
+    },
+  }) as unknown as Promise<ResponsibilityActionWithVendor[]>;
+}
