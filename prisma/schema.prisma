@@ -50,6 +50,8 @@ model User {
 
   sentNotificationLogs NotificationLog[] @relation("EmailSentBy")
 
+  assignedResponsibilityActions CustomerResponsibilityAction[]
+
   @@index([roleId])
   @@map("users")
 }
@@ -80,16 +82,17 @@ model Framework {
 }
 
 model Control {
-  id          String    @id @default(cuid())
-  frameworkId String
-  framework   Framework @relation(fields: [frameworkId], references: [id], onDelete: Cascade)
-  domain      String
-  code        String
-  title       String
-  guidance    String
-  order       Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id                      String    @id @default(cuid())
+  frameworkId             String
+  framework               Framework @relation(fields: [frameworkId], references: [id], onDelete: Cascade)
+  domain                  String
+  code                    String
+  title                   String
+  guidance                String
+  order                   Int       @default(0)
+  isSharedResponsibility  Boolean   @default(false)
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
 
   questionControls QuestionControl[]
 
@@ -240,6 +243,7 @@ model Vendor {
   lastAssessedAt      DateTime?
   assessments         Assessment[]
   certifications      VendorCertification[]
+  responsibilityActions CustomerResponsibilityAction[]
   createdAt           DateTime         @default(now())
   updatedAt           DateTime         @updatedAt
 
@@ -259,9 +263,35 @@ model VendorCertification {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
+  responsibilityActions CustomerResponsibilityAction[]
+
   @@index([vendorId])
   @@index([expiresDate])
   @@map("vendor_certifications")
+}
+
+model CustomerResponsibilityAction {
+  id                String                         @id @default(cuid())
+  vendorId          String
+  vendor            Vendor                         @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  certificationId   String?
+  certification     VendorCertification?           @relation(fields: [certificationId], references: [id], onDelete: SetNull)
+  controlCode       String
+  frameworkName     String
+  controlTitle      String
+  status            CustomerResponsibilityStatus   @default(PENDING)
+  assignedToId      String?
+  assignedTo        User?                          @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  notes             String?
+  completedAt       DateTime?
+  createdAt         DateTime                       @default(now())
+  updatedAt         DateTime                       @updatedAt
+
+  @@unique([vendorId, certificationId, controlCode])
+  @@index([vendorId])
+  @@index([vendorId, status])
+  @@index([assignedToId])
+  @@map("customer_responsibility_actions")
 }
 
 model Assessment {
@@ -370,6 +400,13 @@ enum FindingStatus {
   OPEN
   REMEDIATED
   RISK_ACCEPTED
+}
+
+enum CustomerResponsibilityStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  NOT_APPLICABLE
 }
 
 model Finding {

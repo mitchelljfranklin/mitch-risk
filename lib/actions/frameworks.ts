@@ -127,6 +127,7 @@ export async function importFrameworkAction(
       title: control.title,
       guidance: control.guidance,
       order: control.order,
+      isSharedResponsibility: false,
     })),
   });
 
