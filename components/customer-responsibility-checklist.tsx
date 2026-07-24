@@ -197,30 +197,27 @@ function ActionRow({
   canEdit: boolean;
   existingAttachments: AttachmentView[];
 }) {
-  const [isEditing, setIsEditing] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [state, formAction, isPending] = useActionState(
     updateResponsibilityAction,
     undefined,
   );
   useActionFeedback(state);
 
-  if (!isEditing) {
-    return (
-      <div
-        className="flex items-center justify-between gap-3 px-3 py-2.5"
-        onClick={canEdit ? () => setIsEditing(true) : undefined}
-        role={canEdit ? "button" : undefined}
-        tabIndex={canEdit ? 0 : undefined}
-        onKeyDown={
-          canEdit
-            ? (event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  setIsEditing(true);
-                }
-              }
-            : undefined
-        }
-      >
+  const metaParts: string[] = [];
+  if (action.assignedToName) {
+    metaParts.push(`Assigned to ${action.assignedToName}`);
+  }
+  if (existingAttachments.length > 0) {
+    metaParts.push(
+      `${existingAttachments.length} file${existingAttachments.length !== 1 ? "s" : ""}`,
+    );
+  }
+  const metaLine = metaParts.length > 0 ? metaParts.join(" · ") : null;
+
+  return (
+    <div className="px-3 py-2.5">
+      <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 flex-col">
           <div className="flex items-center gap-1.5">
             <span className="text-muted-foreground text-xs font-mono">
@@ -228,76 +225,75 @@ function ActionRow({
             </span>
             <span className="truncate text-sm">{action.controlTitle}</span>
           </div>
-          {action.assignedToName ? (
-            <span className="text-muted-foreground text-xs">
-              Assigned to {action.assignedToName}
-            </span>
-          ) : null}
-          {existingAttachments.length > 0 ? (
-            <span className="text-muted-foreground text-xs">
-              {existingAttachments.length} file
-              {existingAttachments.length !== 1 ? "s" : ""}
-            </span>
+          {metaLine ? (
+            <span className="text-muted-foreground text-xs">{metaLine}</span>
           ) : null}
         </div>
-        <Badge
-          className={cn(
-            "shrink-0",
-            STATUS_STYLES[action.status] ?? STATUS_STYLES.PENDING,
-          )}
-        >
-          {STATUS_OPTIONS.find((option) => option.value === action.status)
-            ?.label ?? action.status}
-        </Badge>
-      </div>
-    );
-  }
-
-  return (
-    <div className="px-3 py-2.5">
-      <form action={formAction} className="flex flex-col gap-3">
-        <input type="hidden" name="actionId" value={action.id} />
-        <input type="hidden" name="vendorId" value={vendorId} />
-
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex min-w-0 items-center gap-1.5">
-            <span className="text-muted-foreground text-xs font-mono">
-              {action.controlCode}
-            </span>
-            <span className="truncate text-sm font-medium">
-              {action.controlTitle}
-            </span>
-          </div>
-          <Select
-            name="status"
-            defaultValue={action.status}
-            onValueChange={() => {
-              // form submits via the Save button
-            }}
+        <div className="flex shrink-0 items-center gap-2">
+          <Badge
+            className={cn(
+              STATUS_STYLES[action.status] ?? STATUS_STYLES.PENDING,
+            )}
           >
-            <SelectTrigger className="h-7 w-36 text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {STATUS_OPTIONS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            {STATUS_OPTIONS.find((option) => option.value === action.status)
+              ?.label ?? action.status}
+          </Badge>
+          {canEdit ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-6 shrink-0 px-1.5 text-xs"
+              onClick={() => setExpanded((prev) => !prev)}
+            >
+              {expanded ? (
+                <>
+                  <ChevronUp className="size-3" />
+                  Collapse
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="size-3" />
+                  Expand
+                </>
+              )}
+            </Button>
+          ) : null}
         </div>
+      </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div className="flex flex-col gap-1">
-            <Label className="text-xs">Assigned to</Label>
-            <Input
-              name="assignedToId"
-              placeholder="User ID (optional)"
-              defaultValue={action.assignedToName ?? ""}
-              className="h-7 text-xs"
-            />
+      {expanded ? (
+        <form action={formAction} className="mt-3 flex flex-col gap-3">
+          <input type="hidden" name="actionId" value={action.id} />
+          <input type="hidden" name="vendorId" value={vendorId} />
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex flex-col gap-1">
+              <Label className="text-xs">Status</Label>
+              <Select name="status" defaultValue={action.status}>
+                <SelectTrigger className="h-7 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {STATUS_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <Label className="text-xs">Assigned to</Label>
+              <Input
+                name="assignedToId"
+                placeholder="User ID (optional)"
+                defaultValue={action.assignedToName ?? ""}
+                className="h-7 text-xs"
+              />
+            </div>
           </div>
+
           <div className="flex flex-col gap-1">
             <Label className="flex items-center gap-1 text-xs">
               <Paperclip className="size-3" />
@@ -310,70 +306,70 @@ function ActionRow({
               className="text-muted-foreground w-full min-w-0 cursor-pointer text-xs file:border-input file:bg-background file:text-foreground file:mr-2 file:cursor-pointer file:rounded-md file:border file:px-2 file:py-0.5 file:text-xs"
             />
           </div>
-        </div>
 
-        <div className="flex flex-col gap-1">
-          <Label className="text-xs">Notes</Label>
-          <Textarea
-            name="notes"
-            defaultValue={action.notes ?? ""}
-            rows={2}
-            className="text-xs"
-            placeholder="Add notes about implementation..."
-          />
-        </div>
-
-        {existingAttachments.length > 0 ? (
           <div className="flex flex-col gap-1">
-            <span className="text-muted-foreground text-xs">Files</span>
-            {existingAttachments.map((attachment) => (
-              <div
-                key={attachment.id}
-                className="flex items-center justify-between gap-2 rounded border px-2 py-1"
-              >
-                <a
-                  href={`/api/attachments/${attachment.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary truncate text-xs hover:underline"
-                >
-                  {attachment.displayName ?? attachment.fileName}
-                </a>
-                <form action={removeResponsibilityAttachment}>
-                  <input
-                    type="hidden"
-                    name="attachmentId"
-                    value={attachment.id}
-                  />
-                  <input type="hidden" name="vendorId" value={vendorId} />
-                  <Button
-                    type="submit"
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 w-6 p-0"
-                  >
-                    <Trash2 className="size-3" />
-                  </Button>
-                </form>
-              </div>
-            ))}
+            <Label className="text-xs">Notes</Label>
+            <Textarea
+              name="notes"
+              defaultValue={action.notes ?? ""}
+              rows={2}
+              className="text-xs"
+              placeholder="Add notes about implementation..."
+            />
           </div>
-        ) : null}
 
-        <div className="flex items-center gap-2">
-          <Button type="submit" disabled={isPending} size="sm">
-            {isPending ? "Saving..." : "Save"}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => setIsEditing(false)}
-          >
-            Cancel
-          </Button>
-        </div>
-      </form>
+          {existingAttachments.length > 0 ? (
+            <div className="flex flex-col gap-1">
+              <span className="text-muted-foreground text-xs">Files</span>
+              {existingAttachments.map((attachment) => (
+                <div
+                  key={attachment.id}
+                  className="flex items-center justify-between gap-2 rounded border px-2 py-1"
+                >
+                  <a
+                    href={`/api/attachments/${attachment.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary truncate text-xs hover:underline"
+                  >
+                    {attachment.displayName ?? attachment.fileName}
+                  </a>
+                  <form action={removeResponsibilityAttachment}>
+                    <input
+                      type="hidden"
+                      name="attachmentId"
+                      value={attachment.id}
+                    />
+                    <input type="hidden" name="vendorId" value={vendorId} />
+                    <Button
+                      type="submit"
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 w-6 p-0"
+                    >
+                      <Trash2 className="size-3" />
+                    </Button>
+                  </form>
+                </div>
+              ))}
+            </div>
+          ) : null}
+
+          <div className="flex items-center gap-2">
+            <Button type="submit" disabled={isPending} size="sm">
+              {isPending ? "Saving..." : "Save"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setExpanded(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
+      ) : null}
     </div>
   );
 }
