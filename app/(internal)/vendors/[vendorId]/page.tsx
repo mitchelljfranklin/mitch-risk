@@ -24,6 +24,7 @@ import { prisma } from "@/lib/prisma";
 import { getVendorProfile } from "@/lib/db/compliance";
 import { listVendorFindings } from "@/lib/db/findings";
 import { listFrameworks } from "@/lib/db/frameworks";
+import { listFrameworksWithSharedControls } from "@/lib/db/frameworks";
 import { getVendor } from "@/lib/db/vendors";
 import { getCustomerResponsibilityCompliance } from "@/lib/db/customer-responsibility";
 import { buildVendorTimeline } from "@/lib/db/vendor-timeline";
@@ -185,6 +186,8 @@ export default async function VendorDetailPage({
     where: { entityType: "Vendor", entityId: vendor.id },
     orderBy: { createdAt: "desc" },
   });
+
+  const frameworkOptions = await listFrameworksWithSharedControls();
 
   const defaultTab = sp.tab ?? "overview";
   const allowedTabs = [
@@ -516,6 +519,7 @@ export default async function VendorDetailPage({
                 certifications={certificationViews}
                 attachments={certAttachmentMap}
                 canEdit={canEditVendor}
+                frameworkOptions={frameworkOptions}
               />
             </CardContent>
           </Card>

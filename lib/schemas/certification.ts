@@ -6,6 +6,7 @@ export const certificationSchema = z.object({
   issuedDate: z.string().optional(),
   expiresDate: z.string().min(1, "Expiry date is required"),
   notes: z.string().optional(),
+  frameworkName: z.string().optional(),
 });
 
 export type CertificationInput = z.infer<typeof certificationSchema>;

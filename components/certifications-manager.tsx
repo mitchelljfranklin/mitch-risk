@@ -31,6 +31,14 @@ import {
 import { useActionFeedback } from "@/hooks/use-action-feedback";
 import { formatDate } from "@/lib/utils";
 import { Trash2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export type CertificationView = {
   id: string;
@@ -49,11 +57,13 @@ function CertificationEditor({
   vendorId,
   target,
   attachments,
+  frameworkOptions,
   onClose,
 }: {
   vendorId: string;
   target: EditorTarget;
   attachments?: { id: string; fileName: string; displayName: string | null }[];
+  frameworkOptions: { name: string }[];
   onClose: () => void;
 }) {
   const isNew = target === "new";
@@ -62,6 +72,8 @@ function CertificationEditor({
     saveCertificationAction,
     initialState,
   );
+  const [complianceActionsEnabled, setComplianceActionsEnabled] = useState(false);
+  const [selectedFramework, setSelectedFramework] = useState("");
   useActionFeedback(state);
 
   useEffect(() => {
@@ -136,6 +148,44 @@ function CertificationEditor({
             rows={3}
           />
         </div>
+
+        <div className="flex items-start gap-2">
+          <Checkbox
+            id="compliance-actions"
+            checked={complianceActionsEnabled}
+            onCheckedChange={(checked) =>
+              setComplianceActionsEnabled(Boolean(checked))
+            }
+            className="mt-0.5"
+          />
+          <div className="grid flex-1 gap-1.5">
+            <Label
+              htmlFor="compliance-actions"
+              className="cursor-pointer text-xs font-normal"
+            >
+              Compliance actions required
+            </Label>
+            {complianceActionsEnabled ? (
+              <Select
+                name="frameworkName"
+                value={selectedFramework || undefined}
+                onValueChange={setSelectedFramework}
+              >
+                <SelectTrigger className="h-7 text-xs">
+                  <SelectValue placeholder="Select a framework..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {frameworkOptions.map((option) => (
+                    <SelectItem key={option.name} value={option.name}>
+                      {option.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : null}
+          </div>
+        </div>
+
         <div className="grid gap-2">
           <Label htmlFor="cert-file">Attachment (optional)</Label>
           <Input
@@ -203,6 +253,7 @@ export function CertificationsManager({
   certifications,
   attachments,
   canEdit,
+  frameworkOptions,
 }: {
   vendorId: string;
   certifications: CertificationView[];
@@ -211,6 +262,7 @@ export function CertificationsManager({
     { id: string; fileName: string; displayName: string | null }[]
   >;
   canEdit: boolean;
+  frameworkOptions: { name: string }[];
 }) {
   const [editing, setEditing] = useState<EditorTarget | null>(null);
 
@@ -332,6 +384,7 @@ export function CertificationsManager({
                   ? (attachments.get(editingCert.id) ?? [])
                   : []
             }
+            frameworkOptions={frameworkOptions}
             onClose={() => setEditing(null)}
           />
         ) : null}
