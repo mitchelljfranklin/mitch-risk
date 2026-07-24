@@ -12,6 +12,7 @@ import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getFramework, listControls } from "@/lib/db/frameworks";
 import { deleteFrameworkAction } from "@/lib/actions/frameworks";
+import { SharedResponsibilityToggle } from "@/components/shared-responsibility-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -46,6 +47,10 @@ export default async function FrameworkDetailPage({
   const canDelete = hasPermission(
     user.permissions,
     PERMISSIONS.FRAMEWORKS_DELETE,
+  );
+  const canEdit = hasPermission(
+    user.permissions,
+    PERMISSIONS.FRAMEWORKS_EDIT,
   );
 
   const controlsByDomain = new Map<string, typeof controls>();
@@ -110,16 +115,26 @@ export default async function FrameworkDetailPage({
               </h2>
               <div className="flex flex-col divide-y rounded-lg border">
                 {domainControls.map((control) => (
-                  <Link
+                  <div
                     key={control.id}
-                    href={`/frameworks/${frameworkId}/controls/${control.id}`}
-                    className="hover:bg-accent/40 flex items-center gap-3 p-3 transition-colors"
+                    className="flex items-center gap-3 p-3"
                   >
-                    <Badge variant="outline" className="font-mono">
-                      {control.code}
-                    </Badge>
-                    <span className="text-sm">{control.title}</span>
-                  </Link>
+                    <Link
+                      href={`/frameworks/${frameworkId}/controls/${control.id}`}
+                      className="hover:bg-accent/40 -m-3 flex flex-1 items-center gap-3 p-3 transition-colors"
+                    >
+                      <Badge variant="outline" className="font-mono">
+                        {control.code}
+                      </Badge>
+                      <span className="text-sm">{control.title}</span>
+                    </Link>
+                    {canEdit ? (
+                      <SharedResponsibilityToggle
+                        controlId={control.id}
+                        defaultValue={control.isSharedResponsibility}
+                      />
+                    ) : null}
+                  </div>
                 ))}
               </div>
             </section>

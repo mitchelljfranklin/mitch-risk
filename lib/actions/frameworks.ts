@@ -10,6 +10,7 @@ import { getField } from "@/lib/utils";
 import {
   deleteFramework,
   createFrameworkWithControls,
+  updateControlSharedResponsibility,
 } from "@/lib/db/frameworks";
 import { parseCsvRows } from "@/lib/csv-parser";
 import {
@@ -158,4 +159,26 @@ export async function deleteFrameworkAction(formData: FormData) {
   );
   await deleteFramework(frameworkId);
   redirect("/frameworks");
+}
+
+export async function toggleSharedResponsibilityAction(formData: FormData) {
+  const user = await requirePermission(PERMISSIONS.FRAMEWORKS_EDIT);
+
+  const controlId = getField(formData, "controlId");
+  const value = getField(formData, "isShared");
+
+  if (!controlId) {
+    return;
+  }
+
+  const isShared = value === "true";
+  const control = await updateControlSharedResponsibility(controlId, isShared);
+
+  await logAudit(
+    user.id,
+    isShared ? "MARK_CONTROL_SHARED" : "UNMARK_CONTROL_SHARED",
+    "Control",
+    controlId,
+    { code: control.code, framework: control.frameworkId },
+  );
 }

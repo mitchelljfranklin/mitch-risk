@@ -7,8 +7,10 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { EmptyState } from "@/components/empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requirePermission } from "@/lib/auth";
-import { PERMISSIONS } from "@/lib/permissions";
+import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getControlWithMappings } from "@/lib/db/templates";
+import { getControl } from "@/lib/db/frameworks";
+import { SharedResponsibilityToggle } from "@/components/shared-responsibility-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -30,13 +32,18 @@ export async function generateMetadata({
 export default async function ControlDetailPage({
   params,
 }: ControlDetailPageProps) {
-  await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
+  const user = await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
   const { frameworkId, controlId } = await params;
 
   const control = await getControlWithMappings(controlId);
   if (!control || control.frameworkId !== frameworkId) {
     notFound();
   }
+
+  const canEdit = hasPermission(
+    user.permissions,
+    PERMISSIONS.FRAMEWORKS_EDIT,
+  );
 
   // Group mapped questions by template.
   const templateMap = new Map<
@@ -85,6 +92,14 @@ export default async function ControlDetailPage({
           </h1>
         </div>
         <p className="text-muted-foreground mt-1 text-sm">{control.domain}</p>
+        {canEdit ? (
+          <div className="mt-2">
+            <SharedResponsibilityToggle
+              controlId={control.id}
+              defaultValue={control.isSharedResponsibility}
+            />
+          </div>
+        ) : null}
       </div>
 
       <Card>

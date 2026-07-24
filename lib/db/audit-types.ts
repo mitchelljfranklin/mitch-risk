@@ -77,4 +77,6 @@ export const AUDIT_ACTION_LABELS: Record<string, string> = {
   DELETE_CERTIFICATION: "Deleted certification",
   CREATE_FRAMEWORK: "Imported framework",
   UPDATE_RESPONSIBILITY_ACTION: "Updated responsibility action",
+  MARK_CONTROL_SHARED: "Marked control as shared responsibility",
+  UNMARK_CONTROL_SHARED: "Unmarked control as shared responsibility",
 };

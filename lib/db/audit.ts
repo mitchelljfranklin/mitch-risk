@@ -251,5 +251,7 @@ export function listAuditActions() {
     "DELETE_CERTIFICATION",
     "CREATE_FRAMEWORK",
     "UPDATE_RESPONSIBILITY_ACTION",
+    "MARK_CONTROL_SHARED",
+    "UNMARK_CONTROL_SHARED",
   ];
 }
