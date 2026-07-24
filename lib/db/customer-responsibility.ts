@@ -41,13 +41,19 @@ export function listActionsByVendor(
 export function matchFrameworkForCertification(
   certName: string,
 ): Promise<{ id: string; name: string } | null> {
-  const lower = certName.toLowerCase();
+  const trimmed = certName.trim();
+  if (!trimmed) {
+    return Promise.resolve(null);
+  }
+
+  const lower = trimmed.toLowerCase();
+  const lowerNoSpace = lower.replace(/\s+/g, "");
 
   return prisma.framework
     .findFirst({
       where: {
         OR: [
-          { name: { contains: certName, mode: "insensitive" } },
+          { name: { contains: certName.trim(), mode: "insensitive" } },
           { name: { startsWith: lower.split(" ")[0] ?? "", mode: "insensitive" } },
         ],
       },
@@ -58,9 +64,12 @@ export function matchFrameworkForCertification(
       if (!framework) return null;
 
       const frameworkLower = framework.name.toLowerCase();
+      const frameworkLowerNoSpace = frameworkLower.replace(/\s+/g, "");
+
       if (
         lower.includes(frameworkLower) ||
-        frameworkLower.includes(lower)
+        frameworkLower.includes(lower) ||
+        lowerNoSpace.includes(frameworkLowerNoSpace)
       ) {
         return framework;
       }
