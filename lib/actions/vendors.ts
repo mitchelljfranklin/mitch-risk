@@ -17,6 +17,7 @@ import {
   validateMagicBytes,
 } from "@/lib/upload-validation";
 import { parseCsvWithHeaders } from "@/lib/csv-parser";
+import { generateResponsibilityActions } from "@/lib/actions/certifications";
 import {
   vendorSchema,
   vendorCsvRowSchema,
@@ -395,6 +396,8 @@ async function handleCertificationAttachment(
   const certification = await prisma.vendorCertification.create({
     data: { vendorId, name, issuer, expiresDate: new Date(expiresDate), notes },
   });
+
+  await generateResponsibilityActions(vendorId, certification.id, name);
 
   await prisma.attachment.create({
     data: {

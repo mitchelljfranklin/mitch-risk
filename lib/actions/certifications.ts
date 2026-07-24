@@ -244,7 +244,7 @@ export async function removeAttachmentAction(formData: FormData) {
   revalidatePath(`/vendors/${entityId}`);
 }
 
-async function generateResponsibilityActions(
+export async function generateResponsibilityActions(
   vendorId: string,
   certificationId: string,
   certName: string,
