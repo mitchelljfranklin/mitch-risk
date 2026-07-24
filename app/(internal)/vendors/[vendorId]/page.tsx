@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { ActionGroup } from "@/components/action-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CertificationsManager } from "@/components/certifications-manager";
+import { CustomerResponsibilityManager } from "@/components/customer-responsibility-manager";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { EmptyState } from "@/components/empty-state";
 import { FlashToast } from "@/components/flash-toast";
@@ -513,6 +514,8 @@ export default async function VendorDetailPage({
               />
             </CardContent>
           </Card>
+
+          <CustomerResponsibilityManager vendorId={vendor.id} />
         </TabsContent>
 
         <TabsContent value="compliance" className="mt-4 flex flex-col gap-6">
