@@ -27,6 +27,7 @@ export function SharedResponsibilityToggle({
         value={defaultValue ? "false" : "true"}
       />
       <Checkbox
+        key={String(defaultValue)}
         name="sharedCheckbox"
         defaultChecked={defaultValue}
         className="h-4 w-4 cursor-pointer"
