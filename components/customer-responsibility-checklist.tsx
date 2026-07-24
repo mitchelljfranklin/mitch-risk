@@ -198,6 +198,7 @@ function ActionRow({
   existingAttachments: AttachmentView[];
 }) {
   const [expanded, setExpanded] = useState(false);
+  const [statusValue, setStatusValue] = useState(action.status);
   const [state, formAction, isPending] = useActionState(
     updateResponsibilityAction,
     undefined,
@@ -270,7 +271,11 @@ function ActionRow({
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1">
               <Label className="text-xs">Status</Label>
-              <Select name="status" defaultValue={action.status}>
+              <Select
+                name="status"
+                value={statusValue}
+                onValueChange={setStatusValue}
+              >
                 <SelectTrigger className="h-7 text-xs">
                   <SelectValue />
                 </SelectTrigger>
