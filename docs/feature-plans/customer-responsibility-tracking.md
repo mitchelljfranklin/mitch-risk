@@ -54,7 +54,7 @@ The checklist feeds into:
 
 1. **Admin marks controls as shared responsibility** — via the Frameworks settings page, an admin can check a box on any control to designate it as a customer responsibility. SOC 2 ships with 12 controls pre-marked based on the published shared-responsibility matrix. You can mark controls in any framework you've imported (ISO 27001, NIST CSF, Essential Eight, or your own custom CSV import).
 
-2. **You add a certification to a vendor** — existing flow: cert name, issuer, dates, attachment. If the cert's name matches a known framework whose controls have `isSharedResponsibility` set, actions are auto-generated.
+2. **You add a certification to a vendor** — existing flow: cert name, issuer, dates, attachment. Check the "Compliance actions required" checkbox and select the framework from a dropdown showing only frameworks with shared-responsibility controls. Actions are auto-generated for the selected framework.
 
 3. **The checklist appears** on the vendor detail page below the certification. No new pages, no extra navigation.
 
@@ -66,11 +66,11 @@ The checklist feeds into:
 
 The mechanism is not hardcoded to SOC 2 or ISO 27001. It works against a single boolean on the `Control` model: `isSharedResponsibility`. Any control in any framework can be flagged — whether it ships pre-seeded (SOC 2), you add it manually (ISO 27001), or you import a custom framework via CSV.
 
-The auto-generation logic works like this:
+The certification form includes a "Compliance actions required" checkbox. When checked, a dropdown appears showing only frameworks that have at least one control marked `isSharedResponsibility = true`. The user selects the framework explicitly — no name guessing or substring matching. When the cert is saved with a selected framework, actions are auto-generated.
 
 ```
-Certification saved
-  → Match cert name to a Framework (e.g. "SOC 2 Type II" → Framework "SOC 2")
+Certification saved with frameworkName
+  → If no frameworkName: no-ops (user didn't enable compliance actions)
   → Fetch controls in that Framework where isSharedResponsibility = true
   → Upsert CustomerResponsibilityAction rows for those controls
 ```

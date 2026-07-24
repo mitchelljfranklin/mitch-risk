@@ -6,6 +6,7 @@ const sidebar = [
     collapsed: true,
     items: [
       { text: "Introduction", link: "/welcome/introduction" },
+      { text: "Features", link: "/welcome/features" },
       { text: "Screenshots", link: "/welcome/screenshots" },
       { text: "Quick Start", link: "/quick-start" },
     ],
@@ -21,6 +22,7 @@ const sidebar = [
       { text: "Scoring Methodology", link: "/user-guides/scoring" },
       { text: "Self-Assessment", link: "/user-guides/self-assessment" },
       { text: "Vendors", link: "/user-guides/vendors" },
+      { text: "Customer Responsibility", link: "/user-guides/customer-responsibility" },
       { text: "RBAC & Roles", link: "/user-guides/rbac" },
     ],
   },

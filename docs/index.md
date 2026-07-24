@@ -25,6 +25,8 @@ features:
     details: Configurable risk weights and thresholds. Auto-score every response, generate findings from gaps.
   - title: Compliance Mapping
     details: Map questions to ISO 27001:2022, SOC 2, NIST CSF 2.0, and Essential Eight controls. Track coverage across frameworks.
+  - title: Customer Responsibility Tracking
+    details: Auto-generated checklists of your obligations when vendors have SOC 2 or ISO 27001 certifications. Track status, assign owners, attach evidence.
   - title: Vendor Profiles
     details: Tier, data sensitivity, risk owner, certifications, evidence attachments. Track risk posture over time with trend charts.
   - title: REST API
