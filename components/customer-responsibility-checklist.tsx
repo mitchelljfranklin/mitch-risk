@@ -114,16 +114,7 @@ function ChecklistCard({
     <Card>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <button
-            type="button"
-            className="flex items-center gap-2 text-left hover:opacity-80"
-            onClick={() => setExpanded(!expanded)}
-          >
-            {expanded ? (
-              <ChevronUp className="text-muted-foreground size-4 shrink-0" />
-            ) : (
-              <ChevronDown className="text-muted-foreground size-4 shrink-0" />
-            )}
+          <div className="flex min-w-0 items-center gap-2">
             <CardTitle className="text-base">
               Customer Responsibility
               {group.certificationName ? (
@@ -133,7 +124,26 @@ function ChecklistCard({
                 </span>
               ) : null}
             </CardTitle>
-          </button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-6 shrink-0 px-1.5 text-xs"
+              onClick={() => setExpanded((prev) => !prev)}
+            >
+              {expanded ? (
+                <>
+                  <ChevronUp className="size-3" />
+                  Collapse
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="size-3" />
+                  Expand
+                </>
+              )}
+            </Button>
+          </div>
           <span className="text-muted-foreground shrink-0 text-xs">
             {completed} of {total} · {percent}%
           </span>
