@@ -112,25 +112,29 @@ function ChecklistCard({
 
   return (
     <Card>
-      <CardHeader
-        className="cursor-pointer pb-2"
-        onClick={() => setExpanded(!expanded)}
-      >
+      <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-base">
-            Customer Responsibility
-            {group.certificationName ? (
-              <span className="text-muted-foreground text-sm font-normal">
-                ({group.certificationName})
-              </span>
-            ) : null}
-            {!expanded ? (
-              <ChevronDown className="size-4 text-muted-foreground" />
+          <button
+            type="button"
+            className="flex items-center gap-2 text-left hover:opacity-80"
+            onClick={() => setExpanded(!expanded)}
+          >
+            {expanded ? (
+              <ChevronUp className="text-muted-foreground size-4 shrink-0" />
             ) : (
-              <ChevronUp className="size-4 text-muted-foreground" />
+              <ChevronDown className="text-muted-foreground size-4 shrink-0" />
             )}
-          </CardTitle>
-          <span className="text-muted-foreground text-xs">
+            <CardTitle className="text-base">
+              Customer Responsibility
+              {group.certificationName ? (
+                <span className="text-muted-foreground text-sm font-normal">
+                  {" "}
+                  ({group.certificationName})
+                </span>
+              ) : null}
+            </CardTitle>
+          </button>
+          <span className="text-muted-foreground shrink-0 text-xs">
             {completed} of {total} · {percent}%
           </span>
         </div>
@@ -289,11 +293,11 @@ function ActionRow({
               <Paperclip className="size-3" />
               Attachment
             </Label>
-            <Input
+            <input
               name="attachmentFile"
               type="file"
               accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx"
-              className="h-7 cursor-pointer text-xs"
+              className="text-muted-foreground w-full min-w-0 cursor-pointer text-xs file:border-input file:bg-background file:text-foreground file:mr-2 file:cursor-pointer file:rounded-md file:border file:px-2 file:py-0.5 file:text-xs"
             />
           </div>
         </div>
