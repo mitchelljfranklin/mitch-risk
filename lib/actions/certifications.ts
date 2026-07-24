@@ -15,6 +15,11 @@ import {
 import { logAudit } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
 import { certificationSchema } from "@/lib/schemas/certification";
+import {
+  matchFrameworkForCertification,
+  listSharedControlsForFramework,
+  upsertActionsForCertification,
+} from "@/lib/db/customer-responsibility";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
 import {
@@ -86,6 +91,8 @@ export async function saveCertificationAction(
       );
     }
   }
+
+  await generateResponsibilityActions(vendorId, savedId, parsed.data.name);
 
   const attachmentResult = await handleAttachmentUpload(
     formData,
@@ -235,4 +242,30 @@ export async function removeAttachmentAction(formData: FormData) {
       ? vendorId
       : attachment.entityId;
   revalidatePath(`/vendors/${entityId}`);
+}
+
+async function generateResponsibilityActions(
+  vendorId: string,
+  certificationId: string,
+  certName: string,
+): Promise<void> {
+  const framework = await matchFrameworkForCertification(certName);
+  if (!framework) {
+    return;
+  }
+
+  const sharedControls = await listSharedControlsForFramework(framework.name);
+  if (sharedControls.length === 0) {
+    return;
+  }
+
+  await upsertActionsForCertification(
+    vendorId,
+    certificationId,
+    sharedControls.map((control) => ({
+      controlCode: control.code,
+      frameworkName: framework.name,
+      controlTitle: control.title,
+    })),
+  );
 }

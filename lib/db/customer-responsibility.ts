@@ -100,3 +100,44 @@ export async function listCertificationsForVendor(
     orderBy: { expiresDate: "desc" },
   });
 }
+
+export type UpsertActionInput = {
+  controlCode: string;
+  frameworkName: string;
+  controlTitle: string;
+};
+
+export async function upsertActionsForCertification(
+  vendorId: string,
+  certificationId: string,
+  actions: UpsertActionInput[],
+): Promise<number> {
+  let created = 0;
+
+  for (const action of actions) {
+    await prisma.customerResponsibilityAction.upsert({
+      where: {
+        vendorId_certificationId_controlCode: {
+          vendorId,
+          certificationId,
+          controlCode: action.controlCode,
+        },
+      },
+      update: {
+        frameworkName: action.frameworkName,
+        controlTitle: action.controlTitle,
+      },
+      create: {
+        vendorId,
+        certificationId,
+        controlCode: action.controlCode,
+        frameworkName: action.frameworkName,
+        controlTitle: action.controlTitle,
+        status: "PENDING",
+      },
+    });
+    created++;
+  }
+
+  return created;
+}
