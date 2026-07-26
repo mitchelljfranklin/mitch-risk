@@ -142,15 +142,15 @@ model Control {
 
 ### How auto-generation works
 
-When a certification is saved via `saveCertificationAction()`:
+When a certification is saved via `saveCertificationAction()` or `handleCertificationAttachment()`:
 
-1. **Framework matching:** The certification name is matched against known frameworks. A `matchFrameworkForCertification(certName)` helper uses substring matching (e.g. `"SOC 2 Type II"` matches the framework named `"SOC 2"`, `"ISO 27001:2022"` matches `"ISO 27001"`).
+1. **Explicit framework selection:** The certification form includes a "Compliance actions required" checkbox. When checked, a dropdown appears showing only frameworks that have at least one control with `isSharedResponsibility = true`. The user selects the framework explicitly — no guessing or substring matching.
 
-2. **Control lookup:** All controls in the matched framework where `isSharedResponsibility = true` are fetched.
+2. **Control lookup:** All controls in the selected framework where `isSharedResponsibility = true` are fetched.
 
 3. **Upsert:** For each shared control, a `CustomerResponsibilityAction` is upserted on `(vendorId, certificationId, controlCode)`. If a row already exists (from a previous save or a prior certification), the existing status, notes, and assignment are preserved.
 
-4. **No match, no action:** If the certification name doesn't match any known framework, or the matched framework has zero shared-responsibility controls, nothing happens. The certification is saved as normal.
+4. **No framework, no action:** If the "Compliance actions required" checkbox is unchecked, or no framework is selected, nothing is generated. The certification is saved as normal.
 
 5. **Certification deletion:** Linked responsibility actions have `certificationId` set to `null` (SetNull), preserving the implementation record. The checklist remains visible but shows "Certification removed" instead of the cert name.
 
@@ -175,7 +175,7 @@ The checkbox appears as a toggle in an existing or new column on the controls li
 | Create + apply migration | |
 | Add `isSharedResponsibility` flags to SOC 2 seed data (`prisma/seed-data/soc2.ts`) | 13 controls pre-marked |
 | Update `prisma/seed.ts` to write `isSharedResponsibility` on framework upsert | |
-| Create `lib/db/customer-responsibility.ts` | `listActionsByVendor(vendorId)`, `matchFrameworkForCertification(certName)`, `listSharedControlsForFramework(frameworkName)` |
+| Create `lib/db/customer-responsibility.ts` | `listActionsByVendor(vendorId)`, `listSharedControlsForFramework(frameworkName)`, `listCertificationsForVendor(vendorId)` |
 | Update `lib/schemas/framework.ts` — add optional `isSharedResponsibility` to CSV row schema | Accepts `true`/`false`/`1`/`0`/`yes` |
 | Update `lib/actions/frameworks.ts` — parse `is_shared_responsibility` column from CSV imports | Optional column, defaults to `false` when absent |
 | Update `app/(internal)/frameworks/import/import-form.tsx` — add column to template and help text | Downloadable CSV template includes the new column |
@@ -184,8 +184,7 @@ The checkbox appears as a toggle in an existing or new column on the controls li
 - [ ] Migration applies cleanly on fresh database
 - [ ] Seed runs idempotently — re-running doesn't duplicate controls or flags
 - [ ] `listActionsByVendor()` returns empty array on a vendor with no certs
-- [ ] `matchFrameworkForCertification("SOC 2 Type II")` returns the SOC 2 framework
-- [ ] `matchFrameworkForCertification("Some custom audit")` returns null
+- [ ] `listFrameworksWithSharedControls()` returns only frameworks with at least one shared control
 - [ ] CSV import with `is_shared_responsibility` column correctly marks controls
 - [ ] CSV import without `is_shared_responsibility` column defaults controls to `false`
 - [ ] `npm run typecheck`, `npm run lint`, `npm run build` clean
@@ -326,7 +325,7 @@ The checkbox appears as a toggle in an existing or new column on the controls li
 
 | Task | Detail |
 |---|---|
-| Unit tests for `lib/db/customer-responsibility.ts` | `upsertActionsForCertification`, `updateAction`, `listActionsByVendor`, `getCompliance`, `matchFrameworkForCertification` |
+| Unit tests for `lib/db/customer-responsibility.ts` | `upsertActionsForCertification`, `updateAction`, `getCustomerResponsibilityCompliance`, framework matching logic |
 | Integration tests for server actions | Auto-generation on cert save, status transitions, evidence upload, cert deletion |
 | Unit tests for edge cases | Duplicate cert save, cert with no matching framework, framework with zero shared controls, vendor with no certs |
 | Playwright e2e | Full flow: admin marks a control as shared → add cert → checklist appears → complete an action → verify score updates |
