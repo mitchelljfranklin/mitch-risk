@@ -36,11 +36,11 @@ import {
 import { Download } from "lucide-react";
 
 const CSV_TEMPLATE = [
-  "domain,code,title,guidance",
-  '"Access Control","AC-01","Access Control Policy","Develop and maintain a formal access control policy that addresses purpose, scope, roles, responsibilities, and compliance."',
-  '"Access Control","AC-02","Account Management","Account creation, modification, disabling, and removal must follow a documented process with management approval."',
-  '"Awareness & Training","AT-01","Security Awareness Training","All personnel receive security awareness training within 30 days of hire and annually thereafter."',
-  '"Risk Management","RM-01","Risk Assessment","Conduct a formal risk assessment annually to identify threats, vulnerabilities, and impacts to organisational assets."',
+  "domain,code,title,guidance,is_shared_responsibility",
+  '"Access Control","AC-01","Access Control Policy","Develop and maintain a formal access control policy that addresses purpose, scope, roles, responsibilities, and compliance.","false"',
+  '"Access Control","AC-02","Account Management","Account creation, modification, disabling, and removal must follow a documented process with management approval.","false"',
+  '"Awareness & Training","AT-01","Security Awareness Training","All personnel receive security awareness training within 30 days of hire and annually thereafter.","false"',
+  '"Risk Management","RM-01","Risk Assessment","Conduct a formal risk assessment annually to identify threats, vulnerabilities, and impacts to organisational assets.","true"',
 ].join("\n");
 
 const initialState: FrameworkImportState = { ok: false, message: "" };
@@ -187,7 +187,9 @@ export function FrameworkImportForm() {
               <p className="text-muted-foreground text-xs">
                 CSV must have columns: <code>domain</code>, <code>code</code>,{" "}
                 <code>title</code>, <code>guidance</code> (guidance is
-                optional). Max 1 MB.
+                optional). Optional:{" "}
+                <code>is_shared_responsibility</code> (true/false, defaults to
+                false). Max 1 MB.
               </p>
             </div>
 

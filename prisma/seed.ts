@@ -139,6 +139,7 @@ async function seedFramework(framework: FrameworkSeed): Promise<number> {
         title: control.title,
         guidance: control.guidance,
         order: index,
+        isSharedResponsibility: control.isSharedResponsibility ?? false,
       },
       create: {
         frameworkId: record.id,
@@ -147,6 +148,7 @@ async function seedFramework(framework: FrameworkSeed): Promise<number> {
         title: control.title,
         guidance: control.guidance,
         order: index,
+        isSharedResponsibility: control.isSharedResponsibility ?? false,
       },
     });
   }

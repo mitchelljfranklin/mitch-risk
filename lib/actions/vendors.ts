@@ -17,6 +17,7 @@ import {
   validateMagicBytes,
 } from "@/lib/upload-validation";
 import { parseCsvWithHeaders } from "@/lib/csv-parser";
+import { generateResponsibilityActions } from "@/lib/actions/certifications";
 import {
   vendorSchema,
   vendorCsvRowSchema,
@@ -388,6 +389,7 @@ async function handleCertificationAttachment(
   const expiresDate = getField(formData, "expiresDate");
   const notes = getField(formData, "notes").trim() || undefined;
   const displayName = getField(formData, "displayName").trim();
+  const frameworkName = getField(formData, "frameworkName").trim() || undefined;
 
   if (!name) return { ok: false, message: "Certification name is required." };
   if (!expiresDate) return { ok: false, message: "Expiry date is required." };
@@ -395,6 +397,8 @@ async function handleCertificationAttachment(
   const certification = await prisma.vendorCertification.create({
     data: { vendorId, name, issuer, expiresDate: new Date(expiresDate), notes },
   });
+
+  await generateResponsibilityActions(vendorId, certification.id, frameworkName);
 
   await prisma.attachment.create({
     data: {

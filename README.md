@@ -118,6 +118,16 @@ docker compose up -d
 - Displayed alongside residual (post-assessment) score on vendor detail pages
 - Contract value and geographic risk fields on vendor create/edit forms
 
+### Customer Responsibility Tracking
+- Auto-generated checklists of your obligations when vendors hold SOC 2 or ISO 27001 certifications
+- Track status (Pending / In Progress / Completed / Not Applicable) per control
+- Assign items to team members, add notes, attach evidence files
+- Split compliance view — Vendor compliance + Your compliance side by side
+- Risk register integration — filter to see all responsibility actions across vendors
+- Admin-controlled shared responsibility markers on framework controls
+- CSV framework import supports `is_shared_responsibility` column
+- SOC 2 ships with 13 controls pre-marked as shared responsibility
+
 ### Access Control
 - 3 system roles (Admin, Reviewer, Viewer) + custom roles
 - 23 granular `resource:action` permissions

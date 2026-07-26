@@ -57,6 +57,27 @@ export function listControls(
   });
 }
 
+export function updateControlSharedResponsibility(
+  controlId: string,
+  isShared: boolean,
+): Promise<Control> {
+  return prisma.control.update({
+    where: { id: controlId },
+    data: { isSharedResponsibility: isShared },
+  });
+}
+
+export async function listFrameworksWithSharedControls(): Promise<
+  { name: string }[]
+> {
+  return prisma.framework.findMany({
+    where: { controls: { some: { isSharedResponsibility: true } } },
+    select: { name: true },
+    orderBy: { name: "asc" },
+    distinct: ["name"],
+  });
+}
+
 export async function listControlOptions(): Promise<
   { id: string; code: string; title: string; frameworkName: string }[]
 > {

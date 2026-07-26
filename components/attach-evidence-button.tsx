@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useActionState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -15,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { attachEvidenceToCertificationAction } from "@/lib/actions/vendors";
+import { getFrameworkOptionsAction } from "@/lib/actions/certifications";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
 import { Paperclip } from "lucide-react";
 
@@ -31,11 +33,22 @@ export function AttachEvidenceButton({
   const [attachType, setAttachType] = useState<"certification" | "general">(
     "certification",
   );
+  const [complianceEnabled, setComplianceEnabled] = useState(false);
+  const [selectedFramework, setSelectedFramework] = useState("");
+  const [frameworkOptions, setFrameworkOptions] = useState<{ name: string }[]>(
+    [],
+  );
   const [state, formAction, isPending] = useActionState(
     attachEvidenceToCertificationAction,
     initialState,
   );
   useActionFeedback(state);
+
+  useEffect(() => {
+    if (attachType === "certification") {
+      getFrameworkOptionsAction().then(setFrameworkOptions);
+    }
+  }, [attachType]);
 
   if (state?.ok && open) {
     return (
@@ -145,6 +158,45 @@ export function AttachEvidenceButton({
               placeholder="Additional context…"
             />
           </div>
+
+          {frameworkOptions.length > 0 ? (
+            <div className="flex items-start gap-2">
+              <Checkbox
+                id={`compliance-${evidenceId}`}
+                checked={complianceEnabled}
+                onCheckedChange={(checked) =>
+                  setComplianceEnabled(Boolean(checked))
+                }
+                className="mt-0.5"
+              />
+              <div className="grid flex-1 gap-1.5">
+                <Label
+                  htmlFor={`compliance-${evidenceId}`}
+                  className="cursor-pointer text-xs font-normal"
+                >
+                  Compliance actions required
+                </Label>
+                {complianceEnabled ? (
+                  <Select
+                    name="frameworkName"
+                    value={selectedFramework || undefined}
+                    onValueChange={setSelectedFramework}
+                  >
+                    <SelectTrigger className="h-7 text-xs">
+                      <SelectValue placeholder="Select a framework..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {frameworkOptions.map((option) => (
+                        <SelectItem key={option.name} value={option.name}>
+                          {option.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : null}
+              </div>
+            </div>
+          ) : null}
         </>
       ) : (
         <>

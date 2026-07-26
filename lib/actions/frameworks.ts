@@ -10,6 +10,7 @@ import { getField } from "@/lib/utils";
 import {
   deleteFramework,
   createFrameworkWithControls,
+  updateControlSharedResponsibility,
 } from "@/lib/db/frameworks";
 import { parseCsvRows } from "@/lib/csv-parser";
 import {
@@ -73,6 +74,7 @@ export async function importFrameworkAction(
   const codeIndex = header.indexOf("code");
   const titleIndex = header.indexOf("title");
   const guidanceIndex = header.indexOf("guidance");
+  const sharedIndex = header.indexOf("is_shared_responsibility");
 
   const controls: {
     domain: string;
@@ -80,6 +82,7 @@ export async function importFrameworkAction(
     title: string;
     guidance: string;
     order: number;
+    isSharedResponsibility: boolean;
   }[] = [];
 
   const seenCodes = new Set<string>();
@@ -91,6 +94,8 @@ export async function importFrameworkAction(
       code: row[codeIndex]?.trim() ?? "",
       title: row[titleIndex]?.trim() ?? "",
       guidance: row[guidanceIndex]?.trim() ?? "",
+      isSharedResponsibility:
+        sharedIndex >= 0 ? row[sharedIndex]?.trim() : "false",
     });
 
     if (!parsed.success) {
@@ -114,6 +119,7 @@ export async function importFrameworkAction(
       title: parsed.data.title,
       guidance: parsed.data.guidance,
       order: i,
+      isSharedResponsibility: parsed.data.isSharedResponsibility,
     });
   }
 
@@ -127,6 +133,7 @@ export async function importFrameworkAction(
       title: control.title,
       guidance: control.guidance,
       order: control.order,
+      isSharedResponsibility: control.isSharedResponsibility,
     })),
   });
 
@@ -152,4 +159,31 @@ export async function deleteFrameworkAction(formData: FormData) {
   );
   await deleteFramework(frameworkId);
   redirect("/frameworks");
+}
+
+export async function toggleSharedResponsibilityAction(formData: FormData) {
+  const user = await requirePermission(PERMISSIONS.FRAMEWORKS_EDIT);
+
+  const controlId = getField(formData, "controlId");
+  const value = getField(formData, "isShared");
+  const frameworkId = getField(formData, "frameworkId");
+
+  if (!controlId) {
+    return;
+  }
+
+  const isShared = value === "true";
+  const control = await updateControlSharedResponsibility(controlId, isShared);
+
+  await logAudit(
+    user.id,
+    isShared ? "MARK_CONTROL_SHARED" : "UNMARK_CONTROL_SHARED",
+    "Control",
+    controlId,
+    { code: control.code, framework: control.frameworkId },
+  );
+
+  if (frameworkId) {
+    revalidatePath(`/frameworks/${frameworkId}`);
+  }
 }

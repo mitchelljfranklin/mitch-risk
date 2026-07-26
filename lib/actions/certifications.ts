@@ -15,6 +15,11 @@ import {
 import { logAudit } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
 import { certificationSchema } from "@/lib/schemas/certification";
+import {
+  listSharedControlsForFramework,
+  upsertActionsForCertification,
+} from "@/lib/db/customer-responsibility";
+import { listFrameworksWithSharedControls } from "@/lib/db/frameworks";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
 import {
@@ -86,6 +91,12 @@ export async function saveCertificationAction(
       );
     }
   }
+
+  await generateResponsibilityActions(
+    vendorId,
+    savedId,
+    getField(formData, "frameworkName"),
+  );
 
   const attachmentResult = await handleAttachmentUpload(
     formData,
@@ -235,4 +246,35 @@ export async function removeAttachmentAction(formData: FormData) {
       ? vendorId
       : attachment.entityId;
   revalidatePath(`/vendors/${entityId}`);
+}
+
+export async function generateResponsibilityActions(
+  vendorId: string,
+  certificationId: string,
+  frameworkName: string | null | undefined,
+): Promise<void> {
+  if (!frameworkName) {
+    return;
+  }
+
+  const sharedControls = await listSharedControlsForFramework(frameworkName);
+  if (sharedControls.length === 0) {
+    return;
+  }
+
+  await upsertActionsForCertification(
+    vendorId,
+    certificationId,
+    sharedControls.map((control) => ({
+      controlCode: control.code,
+      frameworkName,
+      controlTitle: control.title,
+    })),
+  );
+}
+
+export async function getFrameworkOptionsAction(): Promise<
+  { name: string }[]
+> {
+  return listFrameworksWithSharedControls();
 }

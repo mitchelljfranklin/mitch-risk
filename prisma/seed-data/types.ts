@@ -3,6 +3,7 @@ export type ControlSeed = {
   code: string;
   title: string;
   guidance: string;
+  isSharedResponsibility?: boolean;
 };
 
 export type FrameworkSeed = {

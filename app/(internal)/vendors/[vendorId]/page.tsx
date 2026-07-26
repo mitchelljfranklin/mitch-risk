@@ -10,10 +10,12 @@ import { Button } from "@/components/ui/button";
 import { ActionGroup } from "@/components/action-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CertificationsManager } from "@/components/certifications-manager";
+import { CustomerResponsibilityManager } from "@/components/customer-responsibility-manager";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { EmptyState } from "@/components/empty-state";
 import { FlashToast } from "@/components/flash-toast";
 import { ProgressBar } from "@/components/progress-bar";
+import { ScoreStatCard } from "@/components/stat-card";
 import { deleteVendorAction } from "@/lib/actions/vendors";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
@@ -22,7 +24,9 @@ import { prisma } from "@/lib/prisma";
 import { getVendorProfile } from "@/lib/db/compliance";
 import { listVendorFindings } from "@/lib/db/findings";
 import { listFrameworks } from "@/lib/db/frameworks";
+import { listFrameworksWithSharedControls } from "@/lib/db/frameworks";
 import { getVendor } from "@/lib/db/vendors";
+import { getCustomerResponsibilityCompliance } from "@/lib/db/customer-responsibility";
 import { buildVendorTimeline } from "@/lib/db/vendor-timeline";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -112,6 +116,9 @@ export default async function VendorDetailPage({
   ]);
   const openFindings = findings.filter((finding) => finding.status === "OPEN");
 
+  const responsibilityCompliance =
+    await getCustomerResponsibilityCompliance(vendorId);
+
   const timeline = buildVendorTimeline({
     vendorId,
     assessments: vendor.assessments.map((assessment) => ({
@@ -179,6 +186,8 @@ export default async function VendorDetailPage({
     where: { entityType: "Vendor", entityId: vendor.id },
     orderBy: { createdAt: "desc" },
   });
+
+  const frameworkOptions = await listFrameworksWithSharedControls();
 
   const defaultTab = sp.tab ?? "overview";
   const allowedTabs = [
@@ -510,12 +519,32 @@ export default async function VendorDetailPage({
                 certifications={certificationViews}
                 attachments={certAttachmentMap}
                 canEdit={canEditVendor}
+                frameworkOptions={frameworkOptions}
               />
             </CardContent>
           </Card>
+
+          <CustomerResponsibilityManager vendorId={vendor.id} canEdit={canEditVendor} />
         </TabsContent>
 
         <TabsContent value="compliance" className="mt-4 flex flex-col gap-6">
+          {responsibilityCompliance ? (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <ScoreStatCard
+                label="Vendor compliance"
+                score={vendor.overallScore}
+              />
+              <ScoreStatCard
+                label="Your compliance"
+                score={
+                  responsibilityCompliance.total > 0
+                    ? responsibilityCompliance.percent / 100
+                    : null
+                }
+              />
+            </div>
+          ) : null}
+
           <Card>
             <CardHeader>
               <CardTitle>Domain compliance</CardTitle>
