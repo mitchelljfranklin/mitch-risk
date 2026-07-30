@@ -50,23 +50,16 @@ az postgres flexible-server db create \
 
 ## 3. Configure firewall and SSL
 
-Allow Azure services to reach the database:
-
-```bash
-az postgres flexible-server firewall-rule create \
-  --resource-group "$RESOURCE_GROUP" \
-  --name "$DB_SERVER" \
-  --rule-name "AllowAzureServices" \
-  --start-ip-address "0.0.0.0" \
-  --end-ip-address "0.0.0.0"
-```
-
 Azure PostgreSQL Flexible Server enforces SSL by default. When setting
 `DATABASE_URL` on the container app, append `sslmode=require`:
 
 ```
 postgresql://<user>:<password>@<server>.postgres.database.azure.com:5432/mitch_risk?schema=public&sslmode=require
 ```
+
+For initial setup, allow your client IP so you can test connectivity.
+After deploying the container app, lock the database down to your
+Container Apps environment using VNet integration (see step 8).
 
 ## 4. Deploy the Container App
 
@@ -168,7 +161,91 @@ properties:
 EOF
 ```
 
-## 8. Scaling
+## 8. Lock down PostgreSQL (VNet integration)
+
+Currently any Azure service can reach your database. To restrict access
+to only your container app, use a **Service Endpoint** (free). The alternative
+is a **Private Endpoint** (~$5 USD/month) which gives the database zero public
+exposure — see [Private Endpoint option](#private-endpoint-option) below.
+
+### Service Endpoint (free, recommended)
+
+**1. Create a Virtual Network**
+
+```bash
+az network vnet create \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "mitch-risk-vnet" \
+  --address-prefix "10.0.0.0/16"
+
+az network vnet subnet create \
+  --resource-group "$RESOURCE_GROUP" \
+  --vnet-name "mitch-risk-vnet" \
+  --name "app-subnet" \
+  --address-prefix "10.0.1.0/24" \
+  --service-endpoints "Microsoft.Sql"
+```
+
+**2. Integrate Container App with the VNet (outbound)**
+
+```bash
+az containerapp update \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "mitch-risk" \
+  --vnet "mitch-risk-vnet" \
+  --infrastructure-subnet "app-subnet"
+```
+
+> This routes all outbound traffic from the container app through the VNet.
+
+**3. Create a firewall rule for the VNet subnet**
+
+```bash
+az postgres flexible-server firewall-rule create \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "$DB_SERVER" \
+  --rule-name "AllowAppSubnet" \
+  --start-ip-address "10.0.1.0" \
+  --end-ip-address "10.0.1.255"
+```
+
+**4. Remove the blanket "Allow Azure services" rule**
+
+```bash
+az postgres flexible-server firewall-rule delete \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "$DB_SERVER" \
+  --rule-name "AllowAzureServices" --yes
+```
+
+> If you added your client IP earlier, remove that too:
+> ```bash
+> az postgres flexible-server firewall-rule delete \
+>   --resource-group "$RESOURCE_GROUP" \
+>   --name "$DB_SERVER" \
+>   --rule-name "AllowAll" --yes
+> ```
+
+Now only your Container App (routed through the `10.0.1.0/24` subnet) can reach the database.
+
+### Private Endpoint option
+
+For zero public exposure, use Private Link instead of a firewall rule.
+The cost is ~$5 USD/month for the private endpoint + $2 USD/month for
+Azure Private DNS. Steps:
+
+1. Create a private endpoint on your PostgreSQL server
+2. Attach it to the VNet subnet
+3. Disable public access entirely on the PostgreSQL server
+4. The container app resolves the database hostname to a private IP via Azure Private DNS
+
+The private endpoint approach means the database has no public IP at all —
+even Azure services outside your VNet can't reach it. Prefer this for
+production deployments handling sensitive vendor data.
+
+---
+
+## 9. Scaling
 
 The default config limits the app to 1 replica — sufficient for most
 deployments. To scale beyond 1 replica, you must add a Redis-backed
@@ -426,10 +503,56 @@ Container Apps don't run a system cron daemon. Use an Azure Function:
 
 ### 9. Post-Deployment Checklist
 
-- [ ] **Tighten PostgreSQL firewall:** Portal → `mitch-risk-pg` → Networking → remove "Add current client IP" if no longer needed (keep "Allow Azure services")
 - [ ] **Verify the app:** Open the Application URL in your browser — you should see the login page
 - [ ] **Check logs:** Container App → Logs or **Log stream** — verify the seed ran and the app is listening ("Ready in 0ms")
 - [ ] **Update APP_URL:** Create a new revision with the exact Container App URL if it doesn't match the generated hostname (all config changes go through **Revisions → + Create new revision**)
+
+### 10. Lock Down PostgreSQL (VNet Integration)
+
+Currently "Allow Azure services" lets any Azure resource reach your database. Lock it down to only your container app:
+
+**1. Create a Virtual Network**
+
+Portal → Virtual networks → Create:
+
+| Field | Value |
+|---|---|
+| Name | `mitch-risk-vnet` |
+| Address space | `10.0.0.0/16` |
+
+After creation, go to Subnets → + Subnet:
+
+| Field | Value |
+|---|---|
+| Name | `app-subnet` |
+| Address range | `10.0.1.0/24` |
+| Service endpoints | **Microsoft.Sql** ✅ |
+
+**2. Integrate Container App with the VNet**
+
+Portal → Container Apps → `mitch-risk` → Networking → Outbound → Configure:
+
+- Select **VNet integration**
+- Choose `mitch-risk-vnet` / `app-subnet`
+- Click **Save**
+
+> This routes all outbound traffic from the container app through the VNet.
+
+**3. Lock PostgreSQL to the subnet only**
+
+Portal → `mitch-risk-pg` → Networking → Public access:
+
+- Add a firewall rule:
+  - Name: `AllowAppSubnet`
+  - Start IP: `10.0.1.0`
+  - End IP: `10.0.1.255`
+- **Uncheck** "Allow public access from any Azure service"
+- Remove your client IP rule (no longer needed — use the Portal's query editor or a jump box for admin access)
+- Click **Save**
+
+Now only your container app (routed through the 10.0.1.0/24 subnet) can reach the database.
+
+> **Private Endpoint alternative:** For zero public exposure (~$5 USD/month), create a Private Endpoint on your PostgreSQL server attached to the VNet, then disable public access entirely. The database has no public IP — see the [CLI guide's Private Endpoint section](#private-endpoint-option) for details.
 
 ## Cost estimate (Azure pay-as-you-go)
 
