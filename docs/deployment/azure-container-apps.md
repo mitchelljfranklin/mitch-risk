@@ -280,17 +280,6 @@ az storage account network-rule add \
   --vnet-name "mitch-risk-vnet" \
   --subnet "app-subnet"
 ```
-  --resource-group "$RESOURCE_GROUP" \
-  --name "mitchriskstorage" \
-  --default-action Deny \
-  --bypass AzureServices
-
-az storage account network-rule add \
-  --resource-group "$RESOURCE_GROUP" \
-  --account-name "mitchriskstorage" \
-  --vnet-name "mitch-risk-vnet" \
-  --subnet "app-subnet"
-```
 
 The storage account is now only reachable from your container app's subnet.
 
