@@ -183,22 +183,52 @@ az network vnet subnet create \
   --vnet-name "mitch-risk-vnet" \
   --name "app-subnet" \
   --address-prefix "10.0.1.0/24" \
-  --service-endpoints "Microsoft.Sql"
+  --service-endpoints "Microsoft.Sql" "Microsoft.Storage"
 ```
 
-**2. Integrate Container App with the VNet (outbound)**
+**2. Delegate the subnet to Container Apps**
+
+Container Apps requires the subnet to be delegated to `Microsoft.App/environments`.
+This is separate from service endpoints — a subnet can have both.
 
 ```bash
-az containerapp update \
+az network vnet subnet update \
   --resource-group "$RESOURCE_GROUP" \
-  --name "mitch-risk" \
+  --vnet-name "mitch-risk-vnet" \
+  --name "app-subnet" \
+  --delegations "Microsoft.App/environments"
+```
+
+**3. Integrate the Container Apps Environment with the VNet**
+
+VNet integration is configured at the **environment** level, not the container.
+The container app inherits the environment's networking.
+
+> If your environment was created without VNet integration, recreate it:
+> ```bash
+> az containerapp env delete \
+>   --resource-group "$RESOURCE_GROUP" \
+>   --name "mitch-risk-env" --yes
+>
+> az containerapp env create \
+>   --resource-group "$RESOURCE_GROUP" \
+>   --name "mitch-risk-env" \
+>   --location "$LOCATION" \
+>   --infrastructure-subnet "/subscriptions/<sub-id>/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Network/virtualNetworks/mitch-risk-vnet/subnets/app-subnet"
+> ```
+> Then recreate your container app using the same command from step 4.
+
+```bash
+az containerapp env update \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "mitch-risk-env" \
   --vnet "mitch-risk-vnet" \
   --infrastructure-subnet "app-subnet"
 ```
 
-> This routes all outbound traffic from the container app through the VNet.
+> This routes all outbound traffic from every container in the environment through the VNet.
 
-**3. Create a firewall rule for the VNet subnet**
+**4. Create a firewall rule for the VNet subnet**
 
 ```bash
 az postgres flexible-server firewall-rule create \
@@ -209,7 +239,7 @@ az postgres flexible-server firewall-rule create \
   --end-ip-address "10.0.1.255"
 ```
 
-**4. Remove the blanket "Allow Azure services" rule**
+**5. Remove the blanket "Allow Azure services" rule**
 
 ```bash
 az postgres flexible-server firewall-rule delete \
@@ -232,22 +262,22 @@ Now only your Container App (routed through the `10.0.1.0/24` subnet) can reach 
 
 Your evidence files are in an Azure File share. By default the storage
 account is reachable from anywhere with the access key. Lock it to the VNet
-using the same subnet.
-
-First, add the Storage service endpoint to the subnet:
-
-```bash
-az network vnet subnet update \
-  --resource-group "$RESOURCE_GROUP" \
-  --vnet-name "mitch-risk-vnet" \
-  --name "app-subnet" \
-  --service-endpoints "Microsoft.Sql" "Microsoft.Storage"
-```
-
-Then restrict storage access to the VNet only:
+using the same subnet (the `Microsoft.Storage` service endpoint was already
+added when you created the subnet in step 1).
 
 ```bash
 az storage account update \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "mitchriskstorage" \
+  --default-action Deny \
+  --bypass AzureServices
+
+az storage account network-rule add \
+  --resource-group "$RESOURCE_GROUP" \
+  --account-name "mitchriskstorage" \
+  --vnet-name "mitch-risk-vnet" \
+  --subnet "app-subnet"
+```
   --resource-group "$RESOURCE_GROUP" \
   --name "mitchriskstorage" \
   --default-action Deny \
@@ -543,9 +573,21 @@ Container Apps don't run a system cron daemon. Use an Azure Function:
 
 ### 10. Lock Down PostgreSQL (VNet Integration)
 
-Currently "Allow Azure services" lets any Azure resource reach your database. Lock it down to only your container app:
+Currently "Allow Azure services" lets any Azure resource reach your database.
+Lock it down so only your container app can connect.
 
-**1. Create a Virtual Network**
+> **New deployments:** VNet integration must be configured at **environment creation
+> time** (step 5). The subnet needs to exist before the environment is created.
+> Create the VNet and subnet before step 5, then select it during environment
+> creation.
+>
+> **Existing deployments:** The environment cannot be updated to add VNet
+> integration through the Portal. The simplest path is to delete the environment
+> and container app (not the PostgreSQL server or storage account), then recreate
+> them with VNet integration from the start. Your data in PostgreSQL and the file
+> share is preserved.
+
+**1. Create a Virtual Network (do this before step 5 for new deployments)**
 
 Portal → Virtual networks → Create:
 
@@ -560,17 +602,39 @@ After creation, go to Subnets → + Subnet:
 |---|---|
 | Name | `app-subnet` |
 | Address range | `10.0.1.0/24` |
-| Service endpoints | **Microsoft.Sql** ✅ and **Microsoft.Storage** ✅ |
 
-**2. Integrate Container App with the VNet**
+Under **Service endpoints**, select:
+- **Microsoft.Sql** ✅
+- **Microsoft.Storage** ✅
 
-Portal → Container Apps → `mitch-risk` → Networking → Outbound → Configure:
+Under **Subnet delegation**, select:
+- **Microsoft.App/environments** ✅
 
-- Select **VNet integration**
-- Choose `mitch-risk-vnet` / `app-subnet`
-- Click **Save**
+> **Service endpoints** and **subnet delegation** are two separate sections on
+> the same Portal page. Service endpoints allow outbound traffic to Azure
+> services (SQL, Storage). Subnet delegation allows Container Apps to use
+> this subnet for VNet integration. A subnet can have both.
 
-> This routes all outbound traffic from the container app through the VNet.
+**2. Create Environment with VNet integration**
+
+During environment creation (step 5), select:
+
+| Field | Value |
+|---|---|
+| Networking | **Yes** (VNet integration) |
+| Virtual network | `mitch-risk-vnet` |
+| Infrastructure subnet | `app-subnet` |
+
+If your environment was created without VNet integration, delete it and
+recreate with the VNet subnet selected:
+
+```
+Portal → Container Apps → mitch-risk-env → Delete
+Portal → Container Apps → Environments → Create
+  → select mitch-risk-vnet / app-subnet
+```
+
+Then delete and recreate your container app.
 
 **3. Lock PostgreSQL to the subnet only**
 
