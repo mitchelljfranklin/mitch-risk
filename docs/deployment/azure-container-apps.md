@@ -228,6 +228,40 @@ az postgres flexible-server firewall-rule delete \
 
 Now only your Container App (routed through the `10.0.1.0/24` subnet) can reach the database.
 
+### Lock down the Storage Account
+
+Your evidence files are in an Azure File share. By default the storage
+account is reachable from anywhere with the access key. Lock it to the VNet
+using the same subnet.
+
+First, add the Storage service endpoint to the subnet:
+
+```bash
+az network vnet subnet update \
+  --resource-group "$RESOURCE_GROUP" \
+  --vnet-name "mitch-risk-vnet" \
+  --name "app-subnet" \
+  --service-endpoints "Microsoft.Sql" "Microsoft.Storage"
+```
+
+Then restrict storage access to the VNet only:
+
+```bash
+az storage account update \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "mitchriskstorage" \
+  --default-action Deny \
+  --bypass AzureServices
+
+az storage account network-rule add \
+  --resource-group "$RESOURCE_GROUP" \
+  --account-name "mitchriskstorage" \
+  --vnet-name "mitch-risk-vnet" \
+  --subnet "app-subnet"
+```
+
+The storage account is now only reachable from your container app's subnet.
+
 ### Private Endpoint option
 
 For zero public exposure, use Private Link instead of a firewall rule.
@@ -526,7 +560,7 @@ After creation, go to Subnets → + Subnet:
 |---|---|
 | Name | `app-subnet` |
 | Address range | `10.0.1.0/24` |
-| Service endpoints | **Microsoft.Sql** ✅ |
+| Service endpoints | **Microsoft.Sql** ✅ and **Microsoft.Storage** ✅ |
 
 **2. Integrate Container App with the VNet**
 
@@ -551,6 +585,20 @@ Portal → `mitch-risk-pg` → Networking → Public access:
 - Click **Save**
 
 Now only your container app (routed through the 10.0.1.0/24 subnet) can reach the database.
+
+**4. Lock Storage Account to the subnet**
+
+Portal → `mitchriskstorage` → Networking → Firewalls and virtual networks:
+
+- Select **Enabled from selected virtual networks and IP addresses**
+- Under **Virtual networks → + Add existing virtual network**:
+  - Select `mitch-risk-vnet` / `app-subnet`
+  - Click **Add**
+- Under **Firewall → Default action**, set to **Deny**
+- Uncheck any remaining public IP rules
+- Click **Save**
+
+The storage account is now only reachable from your container app's subnet.
 
 > **Private Endpoint alternative:** For zero public exposure (~$5 USD/month), create a Private Endpoint on your PostgreSQL server attached to the VNet, then disable public access entirely. The database has no public IP — see the [CLI guide's Private Endpoint section](#private-endpoint-option) for details.
 
