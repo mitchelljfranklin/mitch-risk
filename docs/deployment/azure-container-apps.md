@@ -241,6 +241,10 @@ az postgres flexible-server firewall-rule create \
   --end-ip-address "10.0.1.255"
 ```
 
+> IP-based firewall rules can take up to 10 minutes to propagate.
+> Restart the container after saving: create a new revision or use
+> `az containerapp revision restart`.
+
 **5. Remove the blanket "Allow Azure services" rule**
 
 ```bash
@@ -622,6 +626,11 @@ Portal → `mitch-risk-pg` → Networking → Public access:
 - Remove your client IP rule (no longer needed)
 - Click **Save**
 
+> IP-based firewall rules on PostgreSQL Flexible Server can take up to 10
+> minutes to propagate. Restart your container app after saving the rules to
+> force a fresh connection attempt: **Revisions → + Create new revision**
+> (no changes needed, just Create).
+
 **Lock Storage Account to the subnet:**
 
 Portal → `mitchriskstorage` → Networking → Firewalls and virtual networks:
@@ -636,10 +645,60 @@ Portal → `mitchriskstorage` → Networking → Firewalls and virtual networks:
 Both PostgreSQL and the evidence file share are now only reachable from your
 container app's subnet.
 
-> **Private Endpoint alternative:** For zero public exposure (~$5 USD/month per
-> endpoint), create Private Endpoints on PostgreSQL and the storage account
-> attached to the VNet, then disable public access entirely. See the
-> [CLI guide's Private Endpoint section](#private-endpoint-option) for details.
+> **If the container can't reach PostgreSQL after 10 minutes** despite correct
+> subnet and firewall configuration, the VNet service endpoint may not have
+> propagated yet. This is a known delay with Azure PostgreSQL Flexible Server.
+> The most reliable fix is a **Private Endpoint** (~$5 USD/month) which gives
+> the database a private IP inside your VNet and bypasses IP firewall rules
+> entirely. See [Troubleshooting](#troubleshooting) below for diagnostic steps.
+
+---
+
+## Troubleshooting
+
+### Container can't reach PostgreSQL (error P1001)
+
+`Error: P1001: Can't reach database server` means the container can't establish
+a TCP connection to PostgreSQL. Common causes, in order of likelihood:
+
+1. **Firewall propagation delay** — IP-based rules on PostgreSQL Flexible Server
+   take 2–10 minutes to take effect. Restart the container app after saving
+   rules. Check the environment Overview to confirm VNet integration is active
+   before troubleshooting further.
+
+2. **Subnet address mismatch** — the firewall rule IP range must match the
+   subnet's actual address range. Check **Portal → Virtual networks → subnet →
+   Address range**. If the subnet is `10.0.1.0/24`, the firewall rule must
+   be `10.0.1.0` → `10.0.1.255`.
+
+3. **Missing subnet delegation** — the subnet must be delegated to
+   `Microsoft.App/environments`. Without it, Container Apps cannot route
+   traffic through the VNet.
+
+4. **Missing service endpoint** — the subnet must have `Microsoft.Sql` under
+   **Service endpoints**. This enables the VNet-to-PostgreSQL traffic path.
+
+5. **SSL required** — PostgreSQL Flexible Server enforces SSL by default.
+   Verify `DATABASE_URL` includes `sslmode=require`.
+
+6. **Private Endpoint (reliable fallback)** — if IP firewall rules continue
+   to have propagation issues, create a Private Endpoint on the PostgreSQL
+   server attached to the VNet subnet. This gives the database a private IP
+   within your VNet and works immediately without propagation delays.
+   Additional cost: ~$5 USD/month.
+
+### Verifying VNet integration
+
+**Portal → Container Apps → `mitch-risk` → Overview** — look for the
+**Virtual network** field. If it says "None", the environment was created
+without VNet integration and must be recreated (see step 5).
+
+### Verifying subnet configuration
+
+**Portal → Virtual networks → subnet** — verify:
+- **Subnet delegation:** `Microsoft.App/environments` is listed
+- **Service endpoints:** `Microsoft.Sql` and `Microsoft.Storage` are listed
+- **Address range:** matches the firewall rule IP range
 
 ## Cost estimate (Azure pay-as-you-go)
 
