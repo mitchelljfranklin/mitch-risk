@@ -398,6 +398,38 @@ After creation:
 
 ---
 
+### 4b. Create Virtual Network (for VNet integration)
+
+The VNet must exist before the Container Apps environment is created.
+
+Portal → Virtual networks → Create:
+
+| Field | Value |
+|---|---|
+| Name | `mitch-risk-vnet` |
+| Address space | `10.0.0.0/16` |
+
+After creation, go to Subnets → + Subnet:
+
+| Field | Value |
+|---|---|
+| Name | `app-subnet` |
+| Address range | `10.0.1.0/24` |
+
+Under **Service endpoints**, select:
+- **Microsoft.Sql** ✅
+- **Microsoft.Storage** ✅
+
+Under **Subnet delegation**, select:
+- **Microsoft.App/environments** ✅
+
+> **Service endpoints** and **subnet delegation** are two separate sections on
+> the same Portal page. Service endpoints allow outbound traffic to Azure
+> services (SQL, Storage). Subnet delegation allows Container Apps to use
+> this subnet for VNet integration. A subnet can have both.
+
+---
+
 ### 5. Create Container Apps Environment
 
 **Portal → Container Apps → Environments → Create**
@@ -407,8 +439,15 @@ After creation:
 | Resource group | `mitch-risk-rg` |
 | Environment name | `mitch-risk-env` |
 | Region | Australia East |
+| Networking | **Yes** (VNet integration) |
+| Virtual network | `mitch-risk-vnet` |
+| Infrastructure subnet | `app-subnet` |
 
 Click **Create**. This is a one-time setup per resource group.
+
+> **Existing deployments without VNet:** Delete your environment and container
+> app (not PostgreSQL or storage), then recreate starting from this step.
+> Your database data and file share are preserved.
 
 ---
 
@@ -566,70 +605,12 @@ Container Apps don't run a system cron daemon. Use an Azure Function:
 - [ ] **Check logs:** Container App → Logs or **Log stream** — verify the seed ran and the app is listening ("Ready in 0ms")
 - [ ] **Update APP_URL:** Create a new revision with the exact Container App URL if it doesn't match the generated hostname (all config changes go through **Revisions → + Create new revision**)
 
-### 10. Lock Down PostgreSQL (VNet Integration)
+### 10. Lock Down PostgreSQL and Storage
 
-Currently "Allow Azure services" lets any Azure resource reach your database.
-Lock it down so only your container app can connect.
+Now that your container app runs inside the VNet (configured in step 5), restrict
+PostgreSQL and the storage account to only accept traffic from your subnet.
 
-> **New deployments:** VNet integration must be configured at **environment creation
-> time** (step 5). The subnet needs to exist before the environment is created.
-> Create the VNet and subnet before step 5, then select it during environment
-> creation.
->
-> **Existing deployments:** The environment cannot be updated to add VNet
-> integration through the Portal. The simplest path is to delete the environment
-> and container app (not the PostgreSQL server or storage account), then recreate
-> them with VNet integration from the start. Your data in PostgreSQL and the file
-> share is preserved.
-
-**1. Create a Virtual Network (do this before step 5 for new deployments)**
-
-Portal → Virtual networks → Create:
-
-| Field | Value |
-|---|---|
-| Name | `mitch-risk-vnet` |
-| Address space | `10.0.0.0/16` |
-
-After creation, go to Subnets → + Subnet:
-
-| Field | Value |
-|---|---|
-| Name | `app-subnet` |
-| Address range | `10.0.1.0/24` |
-
-Under **Service endpoints**, select:
-- **Microsoft.Sql** ✅
-- **Microsoft.Storage** ✅
-
-Under **Subnet delegation**, select:
-- **Microsoft.App/environments** ✅
-
-> **Service endpoints** and **subnet delegation** are two separate sections on
-> the same Portal page. Service endpoints allow outbound traffic to Azure
-> services (SQL, Storage). Subnet delegation allows Container Apps to use
-> this subnet for VNet integration. A subnet can have both.
-
-**2. Create Environment with VNet integration**
-
-During environment creation (step 5), select:
-
-| Field | Value |
-|---|---|
-| Networking | **Yes** (VNet integration) |
-| Virtual network | `mitch-risk-vnet` |
-| Infrastructure subnet | `app-subnet` |
-
-If your environment was created without VNet integration, delete it and
-recreate with the VNet subnet selected:
-
-- Portal → Container Apps → `mitch-risk-env` → **Delete**
-- Portal → Container Apps → **Environments → Create**
-- Select `mitch-risk-vnet` / `app-subnet` under Networking
-
-Then delete and recreate your container app.
-
-**3. Lock PostgreSQL to the subnet only**
+**Lock PostgreSQL to the subnet:**
 
 Portal → `mitch-risk-pg` → Networking → Public access:
 
@@ -638,12 +619,10 @@ Portal → `mitch-risk-pg` → Networking → Public access:
   - Start IP: `10.0.1.0`
   - End IP: `10.0.1.255`
 - **Uncheck** "Allow public access from any Azure service"
-- Remove your client IP rule (no longer needed — use the Portal's query editor or a jump box for admin access)
+- Remove your client IP rule (no longer needed)
 - Click **Save**
 
-Now only your container app (routed through the 10.0.1.0/24 subnet) can reach the database.
-
-**4. Lock Storage Account to the subnet**
+**Lock Storage Account to the subnet:**
 
 Portal → `mitchriskstorage` → Networking → Firewalls and virtual networks:
 
@@ -651,13 +630,16 @@ Portal → `mitchriskstorage` → Networking → Firewalls and virtual networks:
 - Under **Virtual networks → + Add existing virtual network**:
   - Select `mitch-risk-vnet` / `app-subnet`
   - Click **Add**
-- Under **Firewall → Default action**, set to **Deny**
-- Uncheck any remaining public IP rules
+- Set **Default action** to **Deny**
 - Click **Save**
 
-The storage account is now only reachable from your container app's subnet.
+Both PostgreSQL and the evidence file share are now only reachable from your
+container app's subnet.
 
-> **Private Endpoint alternative:** For zero public exposure (~$5 USD/month), create a Private Endpoint on your PostgreSQL server attached to the VNet, then disable public access entirely. The database has no public IP — see the [CLI guide's Private Endpoint section](#private-endpoint-option) for details.
+> **Private Endpoint alternative:** For zero public exposure (~$5 USD/month per
+> endpoint), create Private Endpoints on PostgreSQL and the storage account
+> attached to the VNet, then disable public access entirely. See the
+> [CLI guide's Private Endpoint section](#private-endpoint-option) for details.
 
 ## Cost estimate (Azure pay-as-you-go)
 
