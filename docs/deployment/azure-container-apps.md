@@ -416,7 +416,7 @@ Click **Create**. This is a one-time setup per resource group.
 
 Container Apps splits volume configuration into two steps: define the storage connection at the **environment** level, then mount it at the **container** level (after deployment — see step 6a).
 
-**Portal → Container Apps → `mitch-risk-env` → Services → Volume mounts → + Add**
+**Portal → Container Apps → `mitch-risk-env` → Settings → Volume mounts → + Add**
 
 | Field | Value |
 |---|---|
@@ -491,34 +491,38 @@ Click **Review + create → Create**.
 
 ### 6a. Mount the Volume to the Container
 
-After the container app is deployed, attach the environment-level volume you defined in step 4a.
+After the container app is deployed, attach the environment-level volume by creating
+a new revision.
 
-**Portal → Container Apps → `mitch-risk` → Revisions → + Create new revision**
+**Portal → Container Apps → `mitch-risk` → Revisions and replicas → + Create new revision**
 
-Under the container settings, scroll to **Volume mounts** → **+ Add volume mount**:
+**Step A — Add volume to the revision:**
+
+In the revision wizard, go to the **Volumes** tab → **+ Add**:
 
 | Field | Value |
 |---|---|
-| Volume name | `evidence` (selected from dropdown) |
+| Volume type | Azure file volume |
+| Name | `evidence` |
+| File share name | Select `mitch-risk-data` from the dropdown |
+
+Click **Add**.
+
+**Step B — Mount the volume in the container:**
+
+In the same revision wizard, go to the **Container** tab → select your container →
+**Volume mounts** → select the volume you just added:
+
+| Field | Value |
+|---|---|
+| Volume name | `evidence` |
 | Mount path | `/app/.storage` |
 
-Leave other fields as defaults and click **Save** to deploy the new revision.
+Click **Save** then **Create** to deploy the new revision.
 
-> If the `evidence` volume doesn't appear in the dropdown, refresh the page — the container app may need a reload to pick up new environment-level volumes.
-
-> **Alternative: YAML editor.** If the Portal revisions UI doesn't show volume mounts, go to **Container Apps → `mitch-risk` → Containers → YAML** and add under the container definition:
-> ```yaml
-> volumeMounts:
-> - volumeName: evidence
->   mountPath: /app/.storage
-> ```
-> And at the same level as `containers:`:
-> ```yaml
-> volumes:
-> - name: evidence
->   storageType: AzureFile
->   storageName: evidence
-> ```
+> The Portal requires two steps within the revision: first define the volume in the
+> **Volumes** tab, then mount it in the **Container → Volume mounts** tab. Both
+> steps are in the same "Create new revision" wizard.
 
 ---
 
