@@ -199,34 +199,36 @@ az network vnet subnet update \
   --delegations "Microsoft.App/environments"
 ```
 
-**3. Integrate the Container Apps Environment with the VNet**
+**3. Recreate the Environment with VNet integration**
 
-VNet integration is configured at the **environment** level, not the container.
-The container app inherits the environment's networking.
+VNet integration is configured at **environment creation time** only — it cannot
+be added after the fact via Portal or CLI.
 
-> If your environment was created without VNet integration, recreate it:
-> ```bash
-> az containerapp env delete \
->   --resource-group "$RESOURCE_GROUP" \
->   --name "mitch-risk-env" --yes
->
-> az containerapp env create \
->   --resource-group "$RESOURCE_GROUP" \
->   --name "mitch-risk-env" \
->   --location "$LOCATION" \
->   --infrastructure-subnet "/subscriptions/<sub-id>/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Network/virtualNetworks/mitch-risk-vnet/subnets/app-subnet"
-> ```
-> Then recreate your container app using the same command from step 4.
+If your environment was created without VNet integration, delete it and
+recreate:
 
 ```bash
-az containerapp env update \
+az containerapp env delete \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "mitch-risk-env" --yes
+
+SUBNET_ID=$(az network vnet subnet show \
+  --resource-group "$RESOURCE_GROUP" \
+  --vnet-name "mitch-risk-vnet" \
+  --name "app-subnet" \
+  --query id -o tsv)
+
+az containerapp env create \
   --resource-group "$RESOURCE_GROUP" \
   --name "mitch-risk-env" \
-  --vnet "mitch-risk-vnet" \
-  --infrastructure-subnet "app-subnet"
+  --location "$LOCATION" \
+  --infrastructure-subnet "$SUBNET_ID"
 ```
 
-> This routes all outbound traffic from every container in the environment through the VNet.
+Then recreate your container app using the same command from step 4.
+
+This routes all outbound traffic from every container in the environment
+through the VNet.
 
 **4. Create a firewall rule for the VNet subnet**
 
@@ -628,11 +630,9 @@ During environment creation (step 5), select:
 If your environment was created without VNet integration, delete it and
 recreate with the VNet subnet selected:
 
-```
-Portal → Container Apps → mitch-risk-env → Delete
-Portal → Container Apps → Environments → Create
-  → select mitch-risk-vnet / app-subnet
-```
+- Portal → Container Apps → `mitch-risk-env` → **Delete**
+- Portal → Container Apps → **Environments → Create**
+- Select `mitch-risk-vnet` / `app-subnet` under Networking
 
 Then delete and recreate your container app.
 
