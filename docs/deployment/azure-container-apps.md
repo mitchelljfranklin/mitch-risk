@@ -50,23 +50,16 @@ az postgres flexible-server db create \
 
 ## 3. Configure firewall and SSL
 
-Allow Azure services to reach the database:
-
-```bash
-az postgres flexible-server firewall-rule create \
-  --resource-group "$RESOURCE_GROUP" \
-  --name "$DB_SERVER" \
-  --rule-name "AllowAzureServices" \
-  --start-ip-address "0.0.0.0" \
-  --end-ip-address "0.0.0.0"
-```
-
 Azure PostgreSQL Flexible Server enforces SSL by default. When setting
 `DATABASE_URL` on the container app, append `sslmode=require`:
 
 ```
 postgresql://<user>:<password>@<server>.postgres.database.azure.com:5432/mitch_risk?schema=public&sslmode=require
 ```
+
+For initial setup, allow your client IP so you can test connectivity.
+After deploying the container app, lock the database down to your
+Container Apps environment using VNet integration (see step 8).
 
 ## 4. Deploy the Container App
 
@@ -168,7 +161,146 @@ properties:
 EOF
 ```
 
-## 8. Scaling
+## 8. Lock down PostgreSQL (VNet integration)
+
+Currently any Azure service can reach your database. To restrict access
+to only your container app, use a **Service Endpoint** (free). The alternative
+is a **Private Endpoint** (~$5 USD/month) which gives the database zero public
+exposure — see [Private Endpoint option](#private-endpoint-option) below.
+
+### Service Endpoint (free, recommended)
+
+**1. Create a Virtual Network**
+
+```bash
+az network vnet create \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "mitch-risk-vnet" \
+  --address-prefix "10.0.0.0/16"
+
+az network vnet subnet create \
+  --resource-group "$RESOURCE_GROUP" \
+  --vnet-name "mitch-risk-vnet" \
+  --name "app-subnet" \
+  --address-prefix "10.0.1.0/24" \
+  --service-endpoints "Microsoft.Sql" "Microsoft.Storage"
+```
+
+**2. Delegate the subnet to Container Apps**
+
+Container Apps requires the subnet to be delegated to `Microsoft.App/environments`.
+This is separate from service endpoints — a subnet can have both.
+
+```bash
+az network vnet subnet update \
+  --resource-group "$RESOURCE_GROUP" \
+  --vnet-name "mitch-risk-vnet" \
+  --name "app-subnet" \
+  --delegations "Microsoft.App/environments"
+```
+
+**3. Recreate the Environment with VNet integration**
+
+VNet integration is configured at **environment creation time** only — it cannot
+be added after the fact via Portal or CLI.
+
+If your environment was created without VNet integration, delete it and
+recreate:
+
+```bash
+az containerapp env delete \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "mitch-risk-env" --yes
+
+SUBNET_ID=$(az network vnet subnet show \
+  --resource-group "$RESOURCE_GROUP" \
+  --vnet-name "mitch-risk-vnet" \
+  --name "app-subnet" \
+  --query id -o tsv)
+
+az containerapp env create \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "mitch-risk-env" \
+  --location "$LOCATION" \
+  --infrastructure-subnet "$SUBNET_ID"
+```
+
+Then recreate your container app using the same command from step 4.
+
+This routes all outbound traffic from every container in the environment
+through the VNet.
+
+**4. Create a firewall rule for the VNet subnet**
+
+```bash
+az postgres flexible-server firewall-rule create \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "$DB_SERVER" \
+  --rule-name "AllowAppSubnet" \
+  --start-ip-address "10.0.1.0" \
+  --end-ip-address "10.0.1.255"
+```
+
+**5. Remove the blanket "Allow Azure services" rule**
+
+```bash
+az postgres flexible-server firewall-rule delete \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "$DB_SERVER" \
+  --rule-name "AllowAzureServices" --yes
+```
+
+> If you added your client IP earlier, remove that too:
+> ```bash
+> az postgres flexible-server firewall-rule delete \
+>   --resource-group "$RESOURCE_GROUP" \
+>   --name "$DB_SERVER" \
+>   --rule-name "AllowAll" --yes
+> ```
+
+Now only your Container App (routed through the `10.0.1.0/24` subnet) can reach the database.
+
+### Lock down the Storage Account
+
+Your evidence files are in an Azure File share. By default the storage
+account is reachable from anywhere with the access key. Lock it to the VNet
+using the same subnet (the `Microsoft.Storage` service endpoint was already
+added when you created the subnet in step 1).
+
+```bash
+az storage account update \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "mitchriskstorage" \
+  --default-action Deny \
+  --bypass AzureServices
+
+az storage account network-rule add \
+  --resource-group "$RESOURCE_GROUP" \
+  --account-name "mitchriskstorage" \
+  --vnet-name "mitch-risk-vnet" \
+  --subnet "app-subnet"
+```
+
+The storage account is now only reachable from your container app's subnet.
+
+### Private Endpoint option
+
+For zero public exposure, use Private Link instead of a firewall rule.
+The cost is ~$5 USD/month for the private endpoint + $2 USD/month for
+Azure Private DNS. Steps:
+
+1. Create a private endpoint on your PostgreSQL server
+2. Attach it to the VNet subnet
+3. Disable public access entirely on the PostgreSQL server
+4. The container app resolves the database hostname to a private IP via Azure Private DNS
+
+The private endpoint approach means the database has no public IP at all —
+even Azure services outside your VNet can't reach it. Prefer this for
+production deployments handling sensitive vendor data.
+
+---
+
+## 9. Scaling
 
 The default config limits the app to 1 replica — sufficient for most
 deployments. To scale beyond 1 replica, you must add a Redis-backed
@@ -251,14 +383,18 @@ Container Apps restarts wipe the container filesystem, so persistent storage is 
 | Performance | Standard |
 | Redundancy | LRS (lowest cost) |
 
-After creation, go to the storage account → **File shares → + File share**:
+After creation:
 
-| Field | Value |
-|---|---|
-| Name | `mitch-risk-data` |
-| Tier | Transaction optimized |
+1. Go to the storage account → **File shares → + File share**:
 
-Go to **Security + networking → Access keys** and copy **Key1** — you'll need it in step 6.
+   | Field | Value |
+   |---|---|
+   | Name | `mitch-risk-data` |
+   | Tier | Transaction optimized |
+
+2. Go to **Security + networking → Access keys** and copy **Key1** — you'll need it in step 4a.
+
+> Azure Container Apps volume mounts require a standard **File share** (Azure Files / SMB), not a Blob container.
 
 ---
 
@@ -273,6 +409,25 @@ Go to **Security + networking → Access keys** and copy **Key1** — you'll nee
 | Region | Australia East |
 
 Click **Create**. This is a one-time setup per resource group.
+
+---
+
+### 5a. Configure Volume Mount at Environment Level
+
+Container Apps splits volume configuration into two steps: define the storage connection at the **environment** level, then mount it at the **container** level (after deployment — see step 6a).
+
+**Portal → Container Apps → `mitch-risk-env` → Settings → Volume mounts → + Add**
+
+| Field | Value |
+|---|---|
+| Volume type | **SMB** |
+| Name | `evidence` |
+| Storage account name | `mitchriskstorage` |
+| Storage account key | *(paste Key1 from step 4)* |
+| File share name | `mitch-risk-data` |
+| Access mode | ReadWrite |
+
+Click **Save**. This tells the environment *how* to connect to your storage account.
 
 ---
 
@@ -317,17 +472,7 @@ Under **Environment variables → + Add**, set each variable:
 
 > Generate secrets with `openssl rand -hex 32` (or use the [Docker guide](./docker#generate-strong-secrets)).
 
-Under **Volume mounts → + Add volume mount:**
-
-| Field | Value |
-|---|---|
-| Volume type | Azure File |
-| Volume name | `evidence` |
-| Storage account name | `mitchriskstorage` |
-| Storage account key | *(paste Key1 from step 4)* |
-| File share | `mitch-risk-data` |
-| Mount path | `/app/.storage` |
-| Access mode | ReadWrite |
+> **Volume mounts are NOT added during creation.** The create wizard no longer exposes the storage mount fields. Add the mount after the container is deployed — see step 6a.
 
 **Ingress tab:**
 
@@ -344,14 +489,53 @@ Click **Review + create → Create**.
 
 ---
 
+### 6a. Mount the Volume to the Container
+
+After the container app is deployed, attach the environment-level volume by creating
+a new revision.
+
+**Portal → Container Apps → `mitch-risk` → Revisions and replicas → + Create new revision**
+
+**Step A — Add volume to the revision:**
+
+In the revision wizard, go to the **Volumes** tab → **+ Add**:
+
+| Field | Value |
+|---|---|
+| Volume type | Azure file volume |
+| Name | `evidence` |
+| File share name | Select `mitch-risk-data` from the dropdown |
+
+Click **Add**.
+
+**Step B — Mount the volume in the container:**
+
+In the same revision wizard, go to the **Container** tab → select your container →
+**Volume mounts** → select the volume you just added:
+
+| Field | Value |
+|---|---|
+| Volume name | `evidence` |
+| Mount path | `/app/.storage` |
+
+Click **Save** then **Create** to deploy the new revision.
+
+> The Portal requires two steps within the revision: first define the volume in the
+> **Volumes** tab, then mount it in the **Container → Volume mounts** tab. Both
+> steps are in the same "Create new revision" wizard.
+
+---
+
 ### 7. First-Run Setup
 
 1. Find the **Application URL** on the Container App overview page (e.g. `https://mitch-risk.somehash.australiaeast.azurecontainerapps.io`)
-2. Update the `APP_URL` environment variable to match the exact URL (Container App → Containers → Edit and deploy → Environment variables)
+2. Update the `APP_URL` environment variable to match the exact URL: **Container App → Revisions → + Create new revision** → update the env var → save
 3. Open the URL → you should be redirected to `/setup`
 4. Create your first admin account
 
 > The first startup takes 30–60 seconds while the seed runs (frameworks, controls, settings). If you see a blank page, wait and refresh.
+>
+> **Environment variables are also updated through Revisions.** Any change to env vars, CPU/memory, ingress, or volume mounts requires creating a new revision. The old "Edit and deploy" inline form is no longer available.
 
 ---
 
@@ -378,10 +562,102 @@ Container Apps don't run a system cron daemon. Use an Azure Function:
 
 ### 9. Post-Deployment Checklist
 
-- [ ] **Tighten PostgreSQL firewall:** Portal → `mitch-risk-pg` → Networking → remove "Add current client IP" if no longer needed (keep "Allow Azure services")
 - [ ] **Verify the app:** Open the Application URL in your browser — you should see the login page
-- [ ] **Check logs:** Container App → Logs or **Log stream** — verify the seed ran and the app is listening
-- [ ] **Update APP_URL:** Set to the exact Container App URL if it doesn't match the generated hostname
+- [ ] **Check logs:** Container App → Logs or **Log stream** — verify the seed ran and the app is listening ("Ready in 0ms")
+- [ ] **Update APP_URL:** Create a new revision with the exact Container App URL if it doesn't match the generated hostname (all config changes go through **Revisions → + Create new revision**)
+
+### 10. Lock Down PostgreSQL (VNet Integration)
+
+Currently "Allow Azure services" lets any Azure resource reach your database.
+Lock it down so only your container app can connect.
+
+> **New deployments:** VNet integration must be configured at **environment creation
+> time** (step 5). The subnet needs to exist before the environment is created.
+> Create the VNet and subnet before step 5, then select it during environment
+> creation.
+>
+> **Existing deployments:** The environment cannot be updated to add VNet
+> integration through the Portal. The simplest path is to delete the environment
+> and container app (not the PostgreSQL server or storage account), then recreate
+> them with VNet integration from the start. Your data in PostgreSQL and the file
+> share is preserved.
+
+**1. Create a Virtual Network (do this before step 5 for new deployments)**
+
+Portal → Virtual networks → Create:
+
+| Field | Value |
+|---|---|
+| Name | `mitch-risk-vnet` |
+| Address space | `10.0.0.0/16` |
+
+After creation, go to Subnets → + Subnet:
+
+| Field | Value |
+|---|---|
+| Name | `app-subnet` |
+| Address range | `10.0.1.0/24` |
+
+Under **Service endpoints**, select:
+- **Microsoft.Sql** ✅
+- **Microsoft.Storage** ✅
+
+Under **Subnet delegation**, select:
+- **Microsoft.App/environments** ✅
+
+> **Service endpoints** and **subnet delegation** are two separate sections on
+> the same Portal page. Service endpoints allow outbound traffic to Azure
+> services (SQL, Storage). Subnet delegation allows Container Apps to use
+> this subnet for VNet integration. A subnet can have both.
+
+**2. Create Environment with VNet integration**
+
+During environment creation (step 5), select:
+
+| Field | Value |
+|---|---|
+| Networking | **Yes** (VNet integration) |
+| Virtual network | `mitch-risk-vnet` |
+| Infrastructure subnet | `app-subnet` |
+
+If your environment was created without VNet integration, delete it and
+recreate with the VNet subnet selected:
+
+- Portal → Container Apps → `mitch-risk-env` → **Delete**
+- Portal → Container Apps → **Environments → Create**
+- Select `mitch-risk-vnet` / `app-subnet` under Networking
+
+Then delete and recreate your container app.
+
+**3. Lock PostgreSQL to the subnet only**
+
+Portal → `mitch-risk-pg` → Networking → Public access:
+
+- Add a firewall rule:
+  - Name: `AllowAppSubnet`
+  - Start IP: `10.0.1.0`
+  - End IP: `10.0.1.255`
+- **Uncheck** "Allow public access from any Azure service"
+- Remove your client IP rule (no longer needed — use the Portal's query editor or a jump box for admin access)
+- Click **Save**
+
+Now only your container app (routed through the 10.0.1.0/24 subnet) can reach the database.
+
+**4. Lock Storage Account to the subnet**
+
+Portal → `mitchriskstorage` → Networking → Firewalls and virtual networks:
+
+- Select **Enabled from selected virtual networks and IP addresses**
+- Under **Virtual networks → + Add existing virtual network**:
+  - Select `mitch-risk-vnet` / `app-subnet`
+  - Click **Add**
+- Under **Firewall → Default action**, set to **Deny**
+- Uncheck any remaining public IP rules
+- Click **Save**
+
+The storage account is now only reachable from your container app's subnet.
+
+> **Private Endpoint alternative:** For zero public exposure (~$5 USD/month), create a Private Endpoint on your PostgreSQL server attached to the VNet, then disable public access entirely. The database has no public IP — see the [CLI guide's Private Endpoint section](#private-endpoint-option) for details.
 
 ## Cost estimate (Azure pay-as-you-go)
 
