@@ -757,11 +757,38 @@ your VNet. No public endpoints, no firewall rules to maintain.
 > DNS. Both endpoints share the `db-subnet`.
 
 > **Alternative: IP-based firewall rules (free).** If you prefer to avoid the
-> Private Endpoint cost, use IP-based firewall rules instead. This requires
-> the PostgreSQL server to retain a public endpoint and relies on the
-> subnet's `Microsoft.Sql` service endpoint. Firewall rules take 2-10 minutes
-> to propagate and require the subnet address range to match exactly — see
-> the [Troubleshooting](#troubleshooting) section for common issues.
+> Private Endpoint cost, use IP-based firewall rules instead. Both PostgreSQL
+> and the storage account keep their public endpoints. Firewall rules take
+> 2-10 minutes to propagate and require the subnet address range to match
+> exactly.
+
+**Lock PostgreSQL with a firewall rule:**
+
+Portal → `mitch-risk-pg` → Networking → Public access:
+
+- Add a firewall rule:
+  - Name: `AllowAppSubnet`
+  - Start IP: `10.0.1.0`
+  - End IP: `10.0.1.255`
+- **Uncheck** "Allow public access from any Azure service"
+- Remove your client IP rule
+- Click **Save**
+- Wait 2-10 minutes for propagation, then restart the container app
+
+**Lock Storage Account with a VNet firewall rule:**
+
+Portal → `mitchriskstorage` → Networking → Firewalls and virtual networks:
+
+- Select **Enabled from selected virtual networks and IP addresses**
+- Under **Virtual networks → + Add existing virtual network**:
+  - Select `mitch-risk-vnet` / `app-subnet`
+  - Click **Add**
+- Set **Default action** to **Deny**
+- Click **Save**
+
+> Restart the container after saving: **Revisions → + Create new revision → Create**
+> (no changes needed). See the [Troubleshooting](#troubleshooting) section for
+> common IP firewall issues.
 
 ---
 
