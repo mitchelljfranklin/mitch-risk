@@ -376,8 +376,6 @@ az storage account network-rule add \
 
 ---
 
----
-
 ## 9. Scaling
 
 The default config limits the app to 1 replica — sufficient for most
@@ -777,15 +775,17 @@ Portal → `mitch-risk-pg` → Networking → Public access:
 
 **Lock Storage Account with a VNet firewall rule:**
 
-Portal → `mitchriskstorage` → Networking → Firewalls and virtual networks:
+Portal → `mitchriskstorage` → Networking:
 
-- Select **Enabled from selected virtual networks and IP addresses**
-- Under **Virtual networks → + Add existing virtual network**:
+- Under **Public network access**, select **Enabled from selected virtual networks and IP addresses**
+- Under **Virtual Networks → + Add existing virtual network**:
   - Select `mitch-risk-vnet` / `app-subnet`
   - Click **Add**
-- Set **Default action** to **Deny**
+- Leave **IPv4 Addresses**, **Resource instances**, and **Exceptions** empty
 - Click **Save**
 
+> Selecting "Enabled from selected virtual networks and IP addresses" implicitly
+> denies all other traffic — there is no separate "Default action" toggle.
 > Restart the container after saving: **Revisions → + Create new revision → Create**
 > (no changes needed). See the [Troubleshooting](#troubleshooting) section for
 > common IP firewall issues.
