@@ -9,8 +9,6 @@ on:
 jobs:
   quality:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     env:
       DATABASE_URL: "postgresql://ci:ci@localhost:5432/ci_build"
       AUTH_SECRET: "ci-build-auth-secret-00000000000000000000"
@@ -26,11 +24,5 @@ jobs:
       - run: npx prisma generate
       - run: npm run typecheck
       - run: npm run lint
-      - run: npm run format
-      - uses: stefanzweifel/git-auto-commit-action@v5
-        if: github.event_name == 'push'
-        with:
-          commit_message: "style: auto-format [skip ci]"
-          file_pattern: "*.ts *.tsx *.json *.yml *.md"
       - run: npm run format:check
       - run: npm run build
