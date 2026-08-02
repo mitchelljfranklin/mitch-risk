@@ -187,9 +187,8 @@ export function FrameworkImportForm() {
               <p className="text-muted-foreground text-xs">
                 CSV must have columns: <code>domain</code>, <code>code</code>,{" "}
                 <code>title</code>, <code>guidance</code> (guidance is
-                optional). Optional:{" "}
-                <code>is_shared_responsibility</code> (true/false, defaults to
-                false). Max 1 MB.
+                optional). Optional: <code>is_shared_responsibility</code>{" "}
+                (true/false, defaults to false). Max 1 MB.
               </p>
             </div>
 

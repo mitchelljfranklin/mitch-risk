@@ -524,7 +524,10 @@ export default async function VendorDetailPage({
             </CardContent>
           </Card>
 
-          <CustomerResponsibilityManager vendorId={vendor.id} canEdit={canEditVendor} />
+          <CustomerResponsibilityManager
+            vendorId={vendor.id}
+            canEdit={canEditVendor}
+          />
         </TabsContent>
 
         <TabsContent value="compliance" className="mt-4 flex flex-col gap-6">

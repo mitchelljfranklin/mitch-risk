@@ -25,10 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "Failed to load settings for metadata:",
       err instanceof Error ? err.message : String(err),
     );
-    return [
-      { name: "mitch-risk" },
-      { logoKey: "" },
-    ] as const;
+    return [{ name: "mitch-risk" }, { logoKey: "" }] as const;
   });
 
   const orgName = org.name || "mitch-risk";

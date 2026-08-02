@@ -4,12 +4,7 @@ import { useActionState, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ProgressBar } from "@/components/progress-bar";
@@ -173,9 +168,7 @@ function ChecklistCard({
                   action={action}
                   vendorId={vendorId}
                   canEdit={canEdit}
-                  existingAttachments={
-                    attachments?.get(action.id) ?? []
-                  }
+                  existingAttachments={attachments?.get(action.id) ?? []}
                 />
               ))}
             </div>
@@ -220,7 +213,7 @@ function ActionRow({
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 flex-col">
           <div className="flex items-center gap-1.5">
-            <span className="text-muted-foreground text-xs font-mono">
+            <span className="text-muted-foreground font-mono text-xs">
               {action.controlCode}
             </span>
             <span className="truncate text-sm">{action.controlTitle}</span>
@@ -307,7 +300,7 @@ function ActionRow({
               name="attachmentFile"
               type="file"
               accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx"
-              className="text-muted-foreground w-full min-w-0 cursor-pointer text-xs file:border-input file:bg-background file:text-foreground file:mr-2 file:cursor-pointer file:rounded-md file:border file:px-2 file:py-0.5 file:text-xs"
+              className="text-muted-foreground file:border-input file:bg-background file:text-foreground w-full min-w-0 cursor-pointer text-xs file:mr-2 file:cursor-pointer file:rounded-md file:border file:px-2 file:py-0.5 file:text-xs"
             />
           </div>
 

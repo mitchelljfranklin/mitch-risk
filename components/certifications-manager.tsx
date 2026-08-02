@@ -72,7 +72,8 @@ function CertificationEditor({
     saveCertificationAction,
     initialState,
   );
-  const [complianceActionsEnabled, setComplianceActionsEnabled] = useState(false);
+  const [complianceActionsEnabled, setComplianceActionsEnabled] =
+    useState(false);
   const [selectedFramework, setSelectedFramework] = useState("");
   useActionFeedback(state);
 

@@ -273,8 +273,6 @@ export async function generateResponsibilityActions(
   );
 }
 
-export async function getFrameworkOptionsAction(): Promise<
-  { name: string }[]
-> {
+export async function getFrameworkOptionsAction(): Promise<{ name: string }[]> {
   return listFrameworksWithSharedControls();
 }

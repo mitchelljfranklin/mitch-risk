@@ -45,10 +45,7 @@ export const CERTIFICATION_STATUS_STYLES: Record<CertificationStatus, string> =
   };
 
 export type CustomerResponsibilityStatus =
-  | "PENDING"
-  | "IN_PROGRESS"
-  | "COMPLETED"
-  | "NOT_APPLICABLE";
+  "PENDING" | "IN_PROGRESS" | "COMPLETED" | "NOT_APPLICABLE";
 
 export const CUSTOMER_RESPONSIBILITY_STATUS_LABELS: Record<
   CustomerResponsibilityStatus,

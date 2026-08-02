@@ -398,7 +398,11 @@ async function handleCertificationAttachment(
     data: { vendorId, name, issuer, expiresDate: new Date(expiresDate), notes },
   });
 
-  await generateResponsibilityActions(vendorId, certification.id, frameworkName);
+  await generateResponsibilityActions(
+    vendorId,
+    certification.id,
+    frameworkName,
+  );
 
   await prisma.attachment.create({
     data: {
