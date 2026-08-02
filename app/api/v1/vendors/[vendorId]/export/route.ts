@@ -5,6 +5,7 @@ import { getVendorForExport } from "@/lib/db/vendors";
 import {
   CERTIFICATION_STATUS_LABELS,
   certificationStatus,
+  CUSTOMER_RESPONSIBILITY_STATUS_LABELS,
 } from "@/lib/schemas/certification";
 import { DATA_SENSITIVITY_LABELS } from "@/lib/schemas/vendor";
 import { csvEscape } from "@/lib/utils";
@@ -59,6 +60,16 @@ function buildVendorCsvResponse(
     ].join(","),
   );
 
+  const responsibilityActions = vendor.responsibilityActions ?? [];
+  const completedResponsibility = responsibilityActions.filter(
+    (action) =>
+      action.status === "COMPLETED" || action.status === "NOT_APPLICABLE",
+  ).length;
+  const responsibilityPercent =
+    responsibilityActions.length > 0
+      ? `${Math.round((completedResponsibility / responsibilityActions.length) * 100)}%`
+      : "";
+
   const summary = [
     `Vendor:,${csvEscape(vendor.name)}`,
     `Contact:,${csvEscape(vendor.contactEmail ?? "")}`,
@@ -77,6 +88,7 @@ function buildVendorCsvResponse(
     `Geographic risk:,${csvEscape(vendor.geographicRisk ?? "")}`,
     `Tags:,${csvEscape(vendor.tags?.length ? vendor.tags.join(", ") : "")}`,
     `Overall Score:,${vendor.overallScore !== null ? Math.round(vendor.overallScore * 100) + "%" : ""}`,
+    `Responsibility Compliance:,${responsibilityPercent} (${completedResponsibility}/${responsibilityActions.length})`,
     "",
   ].join("\n");
 
@@ -99,6 +111,31 @@ function buildVendorCsvResponse(
     ].join(","),
   );
 
+  const respHeader = [
+    csvEscape("Control Code"),
+    csvEscape("Control Title"),
+    csvEscape("Framework"),
+    csvEscape("Status"),
+    csvEscape("Assigned To"),
+    csvEscape("Notes"),
+    csvEscape("Completed"),
+  ].join(",");
+  const respRows = responsibilityActions.map((action) =>
+    [
+      csvEscape(action.controlCode),
+      csvEscape(action.controlTitle),
+      csvEscape(action.frameworkName),
+      csvEscape(
+        CUSTOMER_RESPONSIBILITY_STATUS_LABELS[
+          action.status as keyof typeof CUSTOMER_RESPONSIBILITY_STATUS_LABELS
+        ] ?? action.status,
+      ),
+      csvEscape(action.assignedTo?.name ?? ""),
+      csvEscape(action.notes ?? ""),
+      csvEscape(action.completedAt?.toISOString().slice(0, 10) ?? ""),
+    ].join(","),
+  );
+
   const csv = [
     summary,
     "Assessments",
@@ -108,6 +145,10 @@ function buildVendorCsvResponse(
     "Certifications",
     certHeader,
     ...certRows,
+    "",
+    "Customer Responsibility",
+    respHeader,
+    ...respRows,
   ].join("\n");
 
   return new Response(csv, {

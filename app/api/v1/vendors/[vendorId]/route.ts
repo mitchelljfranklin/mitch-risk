@@ -3,6 +3,7 @@ import { apiError, runApiHandler } from "@/lib/api-response";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getVendor, updateVendor, deleteVendor } from "@/lib/db/vendors";
 import { getVendorProfile } from "@/lib/db/compliance";
+import { getCustomerResponsibilityCompliance } from "@/lib/db/customer-responsibility";
 import { vendorSchema } from "@/lib/schemas/vendor";
 
 export async function GET(
@@ -25,6 +26,8 @@ export async function GET(
     }
 
     const profile = await getVendorProfile(vendorId);
+    const responsibilityCompliance =
+      await getCustomerResponsibilityCompliance(vendorId);
 
     return Response.json({
       id: vendor.id,
@@ -49,6 +52,7 @@ export async function GET(
       })),
       domainBreakdown: profile?.domainBreakdown ?? [],
       history: profile?.history ?? [],
+      customerResponsibilityCompliance: responsibilityCompliance,
     });
   });
 }

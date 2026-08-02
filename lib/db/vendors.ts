@@ -224,6 +224,18 @@ export function getVendorForExport(id: string) {
           template: { select: { name: true, version: true } },
         },
       },
+      responsibilityActions: {
+        orderBy: { createdAt: "asc" },
+        select: {
+          controlCode: true,
+          controlTitle: true,
+          frameworkName: true,
+          status: true,
+          assignedTo: { select: { name: true } },
+          notes: true,
+          completedAt: true,
+        },
+      },
     },
   });
 }

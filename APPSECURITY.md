@@ -846,4 +846,4 @@ The platform provides mechanics (controls mapping, scoring, findings, audit trai
 This document is maintained as part of the Mitch‑Risk project. Security findings should be reported via the project's issue tracker.
 
 **Last reviewed:** July 2026 (all 3 new low-severity findings resolved: L-16 secret rotation docs, L-17 cron timestamp, L-18 API key request metrics)
-**App version:** 0.1.0
+**App version:** 1.1.0

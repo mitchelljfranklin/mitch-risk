@@ -1140,6 +1140,18 @@
                 "score": { "type": "number", "nullable": true }
               }
             }
+          },
+          "customerResponsibilityCompliance": {
+            "nullable": true,
+            "type": "object",
+            "properties": {
+              "total": { "type": "integer" },
+              "completed": { "type": "integer" },
+              "inProgress": { "type": "integer" },
+              "pending": { "type": "integer" },
+              "notApplicable": { "type": "integer" },
+              "percent": { "type": "integer" }
+            }
           }
         }
       },
@@ -1901,6 +1913,17 @@
               "MEDIUM": { "type": "integer" },
               "HIGH": { "type": "integer" },
               "CRITICAL": { "type": "integer" }
+            }
+          },
+          "customerResponsibilitySummary": {
+            "nullable": true,
+            "type": "object",
+            "description": "Aggregated customer responsibility compliance across all vendors",
+            "properties": {
+              "totalVendors": { "type": "integer" },
+              "totalActions": { "type": "integer" },
+              "completedActions": { "type": "integer" },
+              "percent": { "type": "integer" }
             }
           }
         }

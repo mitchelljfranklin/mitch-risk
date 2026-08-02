@@ -17,7 +17,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npx prisma generate
 RUN npm run build
-RUN node -e "const { execSync } = require('child_process'); const fs = require('fs'); const commit = (() => { try { return execSync('git rev-parse --short HEAD', { encoding: 'utf8', timeout: 3000 }).trim().slice(0, 7); } catch { return 'unknown'; } })(); fs.writeFileSync('.next/build-info.json', JSON.stringify({ version: '1.1.0', commit, buildTime: new Date().toISOString() }));"
+RUN node -e "const { execSync } = require('child_process'); const fs = require('fs'); const commit = (() => { try { return execSync('git rev-parse --short HEAD', { encoding: 'utf8', timeout: 3000 }).trim().slice(0, 7); } catch { return 'unknown'; } })(); fs.writeFileSync('.next/build-info.json', JSON.stringify({ version: '1.1.1', commit, buildTime: new Date().toISOString() }));"
 
 FROM base AS runner
 ENV NODE_ENV=production

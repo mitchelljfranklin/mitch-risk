@@ -8,6 +8,7 @@ import {
 } from "@react-pdf/renderer";
 
 import { formatDate, formatPercent } from "@/lib/utils";
+import { getCustomerResponsibilityCompliance } from "@/lib/db/customer-responsibility";
 
 type AssessmentPdfData = {
   title: string;
@@ -38,6 +39,11 @@ type AssessmentPdfData = {
     controls: string[];
     description: string;
   }[];
+  responsibilityCompliance: {
+    percent: number;
+    total: number;
+    completed: number;
+  } | null;
 };
 
 const styles = StyleSheet.create({
@@ -155,6 +161,11 @@ function AssessmentPdfDocument({ data }: { data: AssessmentPdfData }) {
               {data.completedAt
                 ? ` | Completed: ${formatDate(data.completedAt)}`
                 : ""}
+            </Text>
+          ) : null}
+          {data.responsibilityCompliance && data.responsibilityCompliance.total > 0 ? (
+            <Text style={{ fontSize: 9, color: "#6b7280", marginTop: 2 }}>
+              Customer Responsibility: {data.responsibilityCompliance.percent}% ({data.responsibilityCompliance.completed}/{data.responsibilityCompliance.total} completed)
             </Text>
           ) : null}
         </View>
@@ -339,6 +350,8 @@ export async function generateAssessmentPdf(
     templateVersion: assessment.template?.version ?? null,
     questions,
     findings,
+    responsibilityCompliance:
+      await getCustomerResponsibilityCompliance(assessment.vendorId),
   };
 
   const pdfBuffer = await renderToBuffer(<AssessmentPdfDocument data={data} />);
