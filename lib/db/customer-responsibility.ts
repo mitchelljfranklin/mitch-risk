@@ -54,7 +54,12 @@ export function matchFrameworkForCertification(
       where: {
         OR: [
           { name: { contains: certName.trim(), mode: "insensitive" } },
-          { name: { startsWith: lower.split(" ")[0] ?? "", mode: "insensitive" } },
+          {
+            name: {
+              startsWith: lower.split(" ")[0] ?? "",
+              mode: "insensitive",
+            },
+          },
         ],
       },
       select: { id: true, name: true },
@@ -279,7 +284,12 @@ export async function listAllResponsibilityActions(
   return prisma.customerResponsibilityAction.findMany({
     where: {
       ...(vendorId ? { vendorId } : {}),
-      ...(status ? { status: status as "PENDING" | "IN_PROGRESS" | "COMPLETED" | "NOT_APPLICABLE" } : {}),
+      ...(status
+        ? {
+            status: status as
+              "PENDING" | "IN_PROGRESS" | "COMPLETED" | "NOT_APPLICABLE",
+          }
+        : {}),
     },
     orderBy: { createdAt: "asc" },
     select: {

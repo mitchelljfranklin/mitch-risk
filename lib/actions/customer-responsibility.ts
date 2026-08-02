@@ -35,7 +35,11 @@ export async function updateResponsibilityAction(
   const data: Record<string, unknown> = {};
 
   if (status) {
-    if (!["PENDING", "IN_PROGRESS", "COMPLETED", "NOT_APPLICABLE"].includes(status)) {
+    if (
+      !["PENDING", "IN_PROGRESS", "COMPLETED", "NOT_APPLICABLE"].includes(
+        status,
+      )
+    ) {
       return { ok: false, message: "Invalid status." };
     }
     data.status = status;
@@ -68,7 +72,11 @@ export async function updateResponsibilityAction(
     }
   }
 
-  await handleAttachmentUpload(formData, "CustomerResponsibilityAction", actionId);
+  await handleAttachmentUpload(
+    formData,
+    "CustomerResponsibilityAction",
+    actionId,
+  );
 
   revalidatePath(`/vendors/${vendorId}`);
 

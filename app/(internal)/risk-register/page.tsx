@@ -243,7 +243,7 @@ export default async function RiskRegisterPage({
                       >
                         {action.vendorName ?? "Vendor"}
                       </Link>
-                      <span className="text-muted-foreground text-xs font-mono">
+                      <span className="text-muted-foreground font-mono text-xs">
                         {action.controlCode}
                       </span>
                     </div>

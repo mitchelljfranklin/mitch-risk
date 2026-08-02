@@ -40,10 +40,7 @@ export default async function ControlDetailPage({
     notFound();
   }
 
-  const canEdit = hasPermission(
-    user.permissions,
-    PERMISSIONS.FRAMEWORKS_EDIT,
-  );
+  const canEdit = hasPermission(user.permissions, PERMISSIONS.FRAMEWORKS_EDIT);
 
   // Group mapped questions by template.
   const templateMap = new Map<

@@ -163,9 +163,12 @@ function AssessmentPdfDocument({ data }: { data: AssessmentPdfData }) {
                 : ""}
             </Text>
           ) : null}
-          {data.responsibilityCompliance && data.responsibilityCompliance.total > 0 ? (
+          {data.responsibilityCompliance &&
+          data.responsibilityCompliance.total > 0 ? (
             <Text style={{ fontSize: 9, color: "#6b7280", marginTop: 2 }}>
-              Customer Responsibility: {data.responsibilityCompliance.percent}% ({data.responsibilityCompliance.completed}/{data.responsibilityCompliance.total} completed)
+              Customer Responsibility: {data.responsibilityCompliance.percent}%
+              ({data.responsibilityCompliance.completed}/
+              {data.responsibilityCompliance.total} completed)
             </Text>
           ) : null}
         </View>
@@ -350,8 +353,9 @@ export async function generateAssessmentPdf(
     templateVersion: assessment.template?.version ?? null,
     questions,
     findings,
-    responsibilityCompliance:
-      await getCustomerResponsibilityCompliance(assessment.vendorId),
+    responsibilityCompliance: await getCustomerResponsibilityCompliance(
+      assessment.vendorId,
+    ),
   };
 
   const pdfBuffer = await renderToBuffer(<AssessmentPdfDocument data={data} />);

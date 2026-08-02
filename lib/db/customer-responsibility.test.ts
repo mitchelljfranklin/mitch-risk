@@ -36,9 +36,7 @@ function matchFrameworkName(
   return candidate?.name ?? null;
 }
 
-function computeResponsibilityCompliance(
-  statuses: string[],
-): {
+function computeResponsibilityCompliance(statuses: string[]): {
   total: number;
   completed: number;
   inProgress: number;
@@ -115,7 +113,10 @@ describe("matchFrameworkForCertification", () => {
   });
 
   it("matches 'Essential Eight Maturity Model' to Essential Eight", () => {
-    const result = matchFrameworkName("Essential Eight Maturity Model", frameworks);
+    const result = matchFrameworkName(
+      "Essential Eight Maturity Model",
+      frameworks,
+    );
     expect(result).toBe("Essential Eight");
   });
 
@@ -124,9 +125,7 @@ describe("matchFrameworkForCertification", () => {
   });
 
   it("returns null for generic audit description", () => {
-    expect(
-      matchFrameworkName("Annual security audit", frameworks),
-    ).toBeNull();
+    expect(matchFrameworkName("Annual security audit", frameworks)).toBeNull();
   });
 
   it("returns null for empty string", () => {
@@ -207,17 +206,18 @@ describe("computeResponsibilityCompliance", () => {
   });
 
   it("handles unknown statuses gracefully", () => {
-    const result = computeResponsibilityCompliance(["COMPLETED", "UNKNOWN", "PENDING"]);
+    const result = computeResponsibilityCompliance([
+      "COMPLETED",
+      "UNKNOWN",
+      "PENDING",
+    ]);
     expect(result.completed).toBe(1);
     expect(result.pending).toBe(1);
     expect(result.total).toBe(3);
   });
 
   it("handles all COMPLETED", () => {
-    const result = computeResponsibilityCompliance([
-      "COMPLETED",
-      "COMPLETED",
-    ]);
+    const result = computeResponsibilityCompliance(["COMPLETED", "COMPLETED"]);
     expect(result.percent).toBe(100);
     expect(result.completed).toBe(2);
     expect(result.pending).toBe(0);

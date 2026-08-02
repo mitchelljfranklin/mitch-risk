@@ -48,10 +48,7 @@ export default async function FrameworkDetailPage({
     user.permissions,
     PERMISSIONS.FRAMEWORKS_DELETE,
   );
-  const canEdit = hasPermission(
-    user.permissions,
-    PERMISSIONS.FRAMEWORKS_EDIT,
-  );
+  const canEdit = hasPermission(user.permissions, PERMISSIONS.FRAMEWORKS_EDIT);
 
   const controlsByDomain = new Map<string, typeof controls>();
   for (const control of controls) {
@@ -115,10 +112,7 @@ export default async function FrameworkDetailPage({
               </h2>
               <div className="flex flex-col divide-y rounded-lg border">
                 {domainControls.map((control) => (
-                  <div
-                    key={control.id}
-                    className="flex items-center gap-3 p-3"
-                  >
+                  <div key={control.id} className="flex items-center gap-3 p-3">
                     <Link
                       href={`/frameworks/${frameworkId}/controls/${control.id}`}
                       className="hover:bg-accent/40 -m-3 flex flex-1 items-center gap-3 p-3 transition-colors"
