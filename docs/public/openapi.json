@@ -1914,6 +1914,17 @@
               "HIGH": { "type": "integer" },
               "CRITICAL": { "type": "integer" }
             }
+          },
+          "customerResponsibilitySummary": {
+            "nullable": true,
+            "type": "object",
+            "description": "Aggregated customer responsibility compliance across all vendors",
+            "properties": {
+              "totalVendors": { "type": "integer" },
+              "totalActions": { "type": "integer" },
+              "completedActions": { "type": "integer" },
+              "percent": { "type": "integer" }
+            }
           }
         }
       }
