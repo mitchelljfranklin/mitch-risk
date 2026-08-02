@@ -2,6 +2,7 @@ import { authenticateRequest, authResultHasPermission } from "@/lib/api-auth";
 import { apiError, runApiHandler } from "@/lib/api-response";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getAssessment } from "@/lib/db/assessments";
+import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: Request,
@@ -16,6 +17,25 @@ export async function GET(
     const { assessmentId } = await params;
     const assessment = await getAssessment(assessmentId);
     if (!assessment) return apiError("Not found", 404);
+
+    const allControlIds = [
+      ...new Set(
+        assessment.questions.flatMap((question) => question.controlIds),
+      ),
+    ];
+    const sharedControls =
+      allControlIds.length > 0
+        ? await prisma.control.findMany({
+            where: {
+              code: { in: allControlIds },
+              isSharedResponsibility: true,
+            },
+            select: { code: true },
+          })
+        : [];
+    const sharedControlCodes = new Set(
+      sharedControls.map((control) => control.code),
+    );
 
     return Response.json({
       id: assessment.id,
@@ -59,6 +79,9 @@ export async function GET(
         options: question.options,
         order: question.order,
         controlIds: question.controlIds,
+        sharedControlIds: question.controlIds.filter((code) =>
+          sharedControlCodes.has(code),
+        ),
         response: assessment.responses.find(
           (response) => response.assessmentQuestionId === question.id,
         )
