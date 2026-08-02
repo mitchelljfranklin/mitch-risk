@@ -31,6 +31,6 @@ jobs:
         if: github.event_name == 'push'
         with:
           commit_message: "style: auto-format [skip ci]"
-          file_pattern: "*.ts *.tsx *.js *.mjs *.json *.yml *.md"
+          file_pattern: "*.ts *.tsx *.json *.yml *.md"
       - run: npm run format:check
       - run: npm run build
