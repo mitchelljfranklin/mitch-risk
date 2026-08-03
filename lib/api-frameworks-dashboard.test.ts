@@ -19,6 +19,10 @@ vi.mock("@/lib/db/compliance", () => ({
   getDashboardData: vi.fn(),
 }));
 
+vi.mock("@/lib/db/customer-responsibility", () => ({
+  getPortfolioResponsibilitySummary: vi.fn().mockResolvedValue(null),
+}));
+
 import { type AuthResult, authenticateRequest } from "@/lib/api-auth";
 import { GET as frameworksListHandler } from "@/app/api/v1/frameworks/route";
 import { GET as frameworkDetailHandler } from "@/app/api/v1/frameworks/[frameworkId]/route";
@@ -118,16 +122,16 @@ describe("GET /v1/frameworks/{frameworkId}", () => {
   });
 });
 
-describe("GET /v1/dashboard/summary", () => {
+describe("GET /v1/dashboard", () => {
   it("returns 403 without assessments:view", async () => {
     mockedAuth.mockResolvedValueOnce(auth([PERMISSIONS.VENDORS_VIEW]));
     const response = await dashboardHandler(
-      new Request("http://localhost/api/v1/dashboard/summary"),
+      new Request("http://localhost/api/v1/dashboard"),
     );
     expect(response.status).toBe(403);
   });
 
-  it("returns dashboard data", async () => {
+  it("returns dashboard data with responsibility summary", async () => {
     mockedAuth.mockResolvedValueOnce(auth([PERMISSIONS.ASSESSMENTS_VIEW]));
     mockedDashboard.mockResolvedValueOnce({
       vendors: [],
@@ -148,11 +152,12 @@ describe("GET /v1/dashboard/summary", () => {
       },
     } as any);
     const response = await dashboardHandler(
-      new Request("http://localhost/api/v1/dashboard/summary"),
+      new Request("http://localhost/api/v1/dashboard"),
     );
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.vendorCount).toBe(0);
     expect(body.scoreDistribution).toBeDefined();
+    expect(body.customerResponsibilitySummary).toBeNull();
   });
 });
