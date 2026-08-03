@@ -118,6 +118,7 @@ lib/                 # cross-cutting logic
     profile.ts         # profile update
   db/                # typed data-access layer (assessments, audit, collaboration,
                      #   compliance, frameworks, notifications, roles, scoring, templates, users, vendors)
+    audit.ts           #   logAudit() + AUDIT_ACTIONS constant (single source of truth for audit event types)
     certifications.ts  # certification CRUD + attachments
     dashboard.ts       # dashboard metrics + upcoming dates
     customer-responsibility.ts # customer responsibility compliance
