@@ -258,8 +258,9 @@ export function SsoForm({
             <Label htmlFor="autoProvisionRoleId">
               Default role for new SSO users
             </Label>
-            <Select
-              name="autoProvisionRoleId"
+        <Select
+          key={autoProvisionRoleId}
+          name="autoProvisionRoleId"
               defaultValue={
                 autoProvisionRoleId ||
                 roles.find((role) => role.name === "Reviewer")?.id
