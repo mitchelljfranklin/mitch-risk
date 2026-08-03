@@ -6,7 +6,7 @@ Retrieve aggregated portfolio metrics for the dashboard.
 
 | Method | Path | Permission | Purpose |
 |--------|------|------------|---------|
-| `GET` | `/api/v1/dashboard/summary` | `assessments:view` | Portfolio metrics aggregation |
+| `GET` | `/api/v1/dashboard` | `assessments:view` | Portfolio metrics aggregation |
 
 ## Response
 
@@ -22,7 +22,7 @@ The summary endpoint returns aggregated data across all vendors and assessments:
 
 ```bash
 curl -H "Authorization: Bearer mrk_<prefix>.<secret>" \
-  http://localhost:3000/api/v1/dashboard/summary
+  http://localhost:3000/api/v1/dashboard
 ```
 
 > Full request/response schemas are available in the Swagger UI at `/docs` on your running instance.

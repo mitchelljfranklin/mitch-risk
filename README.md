@@ -93,6 +93,12 @@ docker compose up -d
 - Inline finding status updates (Open, Remediated, Risk Accepted)
 - Filter by severity, status, vendor, or framework
 
+### Self-Assessment
+- Assess your own organization using built-in questionnaires
+- One-click "My Organization" vendor record with quick assessment creation
+- Same question types and scoring engine — track your progress over time
+- Results appear alongside vendor scores on the dashboard
+
 ### Dashboard & Reporting
 - Portfolio metrics with animated count-up stat cards
 - Donut chart of vendor risk distribution, bar chart of findings by severity
@@ -136,7 +142,7 @@ docker compose up -d
 
 ### Security
 - bcryptjs at 12 rounds for passwords, API keys, and break-glass tokens
-- AES-256-GCM encryption for SMTP credentials and SSO secrets at rest
+- AES-256-GCM encryption at rest for SMTP credentials, SSO/OIDC client secrets, and cloud-storage access keys
 - Nonce-based strict-dynamic Content Security Policy
 - Server-enforced JWT session expiry with sliding-window refresh and configurable timeout
 - Non-root container (`USER node`) with resource limits (CPU/memory) in Docker Compose
@@ -162,8 +168,9 @@ docker compose up -d
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Next.js 16 (App Router) + TypeScript |
-| Database | PostgreSQL + Prisma ORM |
+| Runtime | Node.js >= 22 |
+| Framework | Next.js 16 (App Router) + TypeScript ^6 |
+| Database | PostgreSQL + Prisma ^7 |
 | UI | Tailwind CSS v4 + shadcn/ui (light/dark) |
 | Tables | @tanstack/react-table |
 | Auth | Auth.js v5 (credentials + SSO) |
@@ -185,7 +192,7 @@ Authenticated REST API under `/api/v1/`. Authenticate via session cookie (web lo
 | **Assessments** | `GET /api/v1/assessments` (list with filters), `GET /api/v1/assessments/{id}` (full detail) |
 | **Findings** | `GET /api/v1/findings` (filters: status, severity, vendor), `PATCH /api/v1/findings/{id}` (status update) |
 | **Frameworks** | `GET /api/v1/frameworks` (list), `GET /api/v1/frameworks/{id}` (detail with controls), `DELETE /api/v1/frameworks/{id}` (delete) |
-| **Dashboard** | `GET /api/v1/dashboard/summary` — portfolio metrics, RAG distribution, top deficient controls |
+| **Dashboard** | `GET /api/v1/dashboard` — portfolio metrics, RAG distribution, top deficient controls |
 | **Audit** | `GET /api/v1/audit` — paginated, filterable audit log (JSON or CSV) |
 
 Files served through authenticated `GET /api/attachments/{id}`. Full interactive docs: **http://localhost:3000/docs**.

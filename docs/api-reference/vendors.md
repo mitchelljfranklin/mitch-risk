@@ -12,7 +12,7 @@ Manage vendor records, scores, exports, and sub-resources.
 | `PUT` | `/api/v1/vendors/{id}` | `vendors:edit` | Update vendor profile |
 | `DELETE` | `/api/v1/vendors/{id}` | `vendors:delete` | Delete vendor (cascades to assessments and files) |
 | `GET` | `/api/v1/vendors/{id}/score` | `vendors:view` | Get vendor score summary |
-| `GET` | `/api/v1/vendors/{id}/export` | `vendors:view` | Export vendor as JSON |
+| `GET` | `/api/v1/vendors/{id}/export` | `vendors:view` | Export vendor as CSV |
 | `GET` | `/api/v1/vendors/{id}/assessments` | `vendors:view` | List vendor's assessments |
 | `GET` | `/api/v1/vendors/{id}/certifications` | `vendors:view` | List vendor's certifications |
 
@@ -74,7 +74,7 @@ curl -H "Authorization: Bearer mrk_<prefix>.<secret>" \
   http://localhost:3000/api/v1/vendors/{vendor-id}/score
 ```
 
-### Export Vendor as JSON
+### Export Vendor as CSV
 
 ```bash
 curl -H "Authorization: Bearer mrk_<prefix>.<secret>" \

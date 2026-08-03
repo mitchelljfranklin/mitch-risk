@@ -7,8 +7,9 @@ branch receives security patches. We do not backport fixes to older tags.
 
 | Version   | Supported          |
 | --------- | ------------------ |
+| 1.1.x     | :white_check_mark: |
 | `master`  | :white_check_mark: |
-| < master  | :x:                |
+| < 1.1     | :x:                |
 
 ## Reporting a vulnerability
 
@@ -95,8 +96,9 @@ subset of permissions.
 
 ### Encryption at rest
 
-Secrets stored in the database (SMTP password, OIDC client secrets, S3
-access keys) are encrypted with **AES‑256‑GCM**:
+Secrets stored in the database (SMTP password, SSO/OIDC client secrets,
+S3 secret access key, Azure Blob connection string) are encrypted with
+**AES‑256‑GCM**:
 - The key is derived from `APP_ENCRYPTION_KEY` via SHA‑256.
 - Each encryption uses a random 12‑byte IV.
 - The auth tag is verified on decryption — tampered ciphertext is
@@ -106,10 +108,11 @@ access keys) are encrypted with **AES‑256‑GCM**:
 ### Rate limiting
 
 An in‑memory fixed‑window rate limiter (`lib/rate-limit.ts`) protects:
-- Vendor portal autosave endpoints
-- Vendor portal token validation
+- Login and break‑glass emergency access
+- Password reset requests
+- Vendor portal: page loads, autosave, file uploads, and submission
+- API key authentication (per IP and per key)
 - Cron endpoint (requires `CRON_SECRET` header)
-- Login endpoint
 
 The limiter is per‑process and correct for the single‑container Docker
 Compose deployment. If scaled horizontally, a shared store (Redis) is
@@ -158,7 +161,7 @@ rendering pipeline. No inline `<script>` exists without the nonce.
 1. **Set `CRON_SECRET`** to a 64‑character random string.
 2. **Set `APP_ENCRYPTION_KEY`** to a 32‑character random string —
    this protects all secrets stored in the database.
-3. **Set `AUTH_SECRET`** to a 64‑character random string for JWT
+3. **Set `AUTH_SECRET`** to at least 32 characters (64+ recommended) for JWT
    signing.
 4. **Configure `TRUSTED_PROXY_COUNT`** to match your reverse‑proxy
    hop count (default `0` = X‑Forwarded‑For ignored). Incorrect

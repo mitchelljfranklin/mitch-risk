@@ -106,7 +106,7 @@ Pull aggregated metrics for Power BI, Metabase, or any BI tool.
 ```bash
 # Daily snapshot
 curl -sH "Authorization: Bearer $MRK_TOKEN" \
-  "$MRK_BASE/dashboard/summary" > dashboard-$(date +%Y-%m-%d).json
+  "$MRK_BASE/dashboard" > dashboard-$(date +%Y-%m-%d).json
 ```
 
 Example response fields:
@@ -184,8 +184,8 @@ done | jq '[.name, .overallScore, .lastAssessedAt]'
 Recommended crontab for a production deployment:
 
 ```bash
-# Every 15 minutes — trigger cron jobs (reminders, escalations, pruning)
-*/15 * * * * curl -sH "X-Cron-Secret: $CRON_SECRET" https://risk.example.com/api/cron/run
+# Every 5 minutes — trigger cron jobs (reminders, escalations, pruning)
+*/5 * * * * curl -sH "X-Cron-Secret: $CRON_SECRET" https://risk.example.com/api/cron/run
 
 # Every 5 minutes — SIEM audit log polling
 */5  * * * * /usr/local/bin/siem-poll.sh

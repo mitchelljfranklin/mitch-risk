@@ -5,8 +5,8 @@ Mitch‑Risk includes a cron endpoint that handles scheduled maintenance. An ext
 ## Setup
 
 ```bash
-# Every 15 minutes
-*/15 * * * * curl -H "X-Cron-Secret: $CRON_SECRET" https://risk.example.com/api/cron/run
+# Every 5 minutes
+*/5 * * * * curl -H "X-Cron-Secret: $CRON_SECRET" https://risk.example.com/api/cron/run
 ```
 
 **CRON_SECRET** is required in production — the app refuses to start without it. The endpoint returns 401 if the secret doesn't match (constant-time comparison).

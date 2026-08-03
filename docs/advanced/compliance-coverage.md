@@ -118,6 +118,6 @@ Frameworks can be deleted from the Frameworks list or via the API (`DELETE /api/
 ## Coverage Limitations
 
 - **Mapping is template-driven** — question-to-control links must be configured by the admin building templates. The platform doesn't auto-suggest or auto-map
+- **Framework gap analysis** — the Control Coverage Gaps page (Frameworks → Control coverage gaps) reports which controls have no questions mapped to them across all templates. Use this to identify blind spots in your questionnaire design before sending assessments.
 - **Assessment coverage depends on template quality** — if a template doesn't ask about a control, that control won't be assessed
 - **Manual review is the primary mechanism** — unscorable question types (Free Text, File Upload) require reviewer judgment; the platform auto-scores only structured types (Yes/No, Multiple Choice, Numeric, etc.)
-- **No framework gap analysis** — the platform doesn't report which controls have no questions mapped to them. This is left to the admin's template design process
