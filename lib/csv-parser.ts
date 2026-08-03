@@ -5,24 +5,24 @@
 export function parseCsvRows(text: string): string[][] {
   const rows: string[][] = [];
   let current = "";
-  let inQuotes = false;
+  let isInQuotes = false;
   let row: string[] = [];
 
   for (let i = 0; i < text.length; i++) {
     const char = text[i];
-    if (inQuotes) {
+    if (isInQuotes) {
       if (char === '"') {
         if (i + 1 < text.length && text[i + 1] === '"') {
           current += '"';
           i++;
         } else {
-          inQuotes = false;
+          isInQuotes = false;
         }
       } else {
         current += char;
       }
     } else if (char === '"') {
-      inQuotes = true;
+      isInQuotes = true;
     } else if (char === ",") {
       row.push(current);
       current = "";

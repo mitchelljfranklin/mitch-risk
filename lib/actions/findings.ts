@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { updateFindingStatus, getFinding } from "@/lib/db/findings";
-import { logAudit } from "@/lib/db/audit";
+import { logAudit, AUDIT_ACTIONS } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
 import { FINDING_STATUSES } from "@/lib/schemas/assessment";
 import { prisma } from "@/lib/prisma";
@@ -31,7 +31,9 @@ export async function updateFindingStatusAction(formData: FormData) {
     resolvedById: user.id,
   });
 
-  await logAudit(user.id, "UPDATE_FINDING", "Finding", findingId, { status });
+  await logAudit(user.id, AUDIT_ACTIONS.UPDATE_FINDING, "Finding", findingId, {
+    status,
+  });
 
   if (status !== "OPEN") {
     const finding = await getFinding(findingId);
@@ -91,7 +93,9 @@ export async function bulkUpdateFindingStatusesAction(
   );
 
   for (const id of findingIds) {
-    await logAudit(user.id, "UPDATE_FINDING", "Finding", id, { status });
+    await logAudit(user.id, AUDIT_ACTIONS.UPDATE_FINDING, "Finding", id, {
+      status,
+    });
   }
 
   if (status !== "OPEN") {

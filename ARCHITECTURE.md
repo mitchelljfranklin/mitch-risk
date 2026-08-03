@@ -1,9 +1,9 @@
 # Mitch‑Risk — Architecture Solution Design Document
 
-> **Version:** 1.0  
-> **Last Updated:** July 2026  
+> **Version:** 1.1.2  
+> **Last Updated:** August 2026  
 > **Audience:** Engineering, Security, Operations  
-> **Status:** Approved (Phases 0–109 deliverable)
+> **Status:** Approved
 
 ---
 
@@ -15,18 +15,19 @@
 4. [Data Model](#4-data-model)
 5. [Authentication & Authorization](#5-authentication--authorization)
 6. [Assessment Lifecycle & Scoring](#6-assessment-lifecycle--scoring)
-7. [Vendor Portal Flow](#7-vendor-portal-flow)
-8. [File Storage Architecture](#8-file-storage-architecture)
-9. [Email System](#9-email-system)
-10. [Settings & Configuration](#10-settings--configuration)
-11. [API Layer](#11-api-layer)
-12. [Security Architecture](#12-security-architecture)
-13. [Cron Jobs & Background Processing](#13-cron-jobs--background-processing)
-14. [UI Component Architecture](#14-ui-component-architecture)
-15. [Deployment Architecture](#15-deployment-architecture)
-16. [Data Lifecycle](#16-data-lifecycle)
-17. [Compliance Mapping](#17-compliance-mapping)
-18. [Key Design Decisions](#18-key-design-decisions)
+7. [Customer Responsibility Tracking](#7-customer-responsibility-tracking)
+8. [Vendor Portal Flow](#8-vendor-portal-flow)
+9. [File Storage Architecture](#9-file-storage-architecture)
+10. [Email System](#10-email-system)
+11. [Settings & Configuration](#11-settings--configuration)
+12. [API Layer](#12-api-layer)
+13. [Security Architecture](#13-security-architecture)
+14. [Cron Jobs & Background Processing](#14-cron-jobs--background-processing)
+15. [UI Component Architecture](#15-ui-component-architecture)
+16. [Deployment Architecture](#16-deployment-architecture)
+17. [Data Lifecycle](#17-data-lifecycle)
+18. [Compliance Mapping](#18-compliance-mapping)
+19. [Key Design Decisions](#19-key-design-decisions)
 
 ---
 
@@ -396,6 +397,7 @@ The platform is designed around three principles:
 | Assessment → Comment | 1:N | Cascade | Threaded comments (self-ref parentId) |
 | Vendor → VendorCertification | 1:N | Cascade | Expiry-tracked certifications |
 | Any entity → Attachment | Polymorphic | None | entityType + entityId pair |
+| Control → CustomerResponsibilityAction | 1:N (via controlCode) | Cascade | Customer obligations for shared-responsibility controls |
 
 ### 4.3 Enums
 
@@ -407,7 +409,7 @@ The platform is designed around three principles:
 | **VendorTier** | `LOW`, `MEDIUM`, `HIGH`, `CRITICAL` | — |
 | **DataSensitivity** | `PUBLIC`, `INTERNAL`, `CONFIDENTIAL`, `RESTRICTED` | — |
 | **AssessmentStatus** | `DRAFT`, `SENT`, `IN_PROGRESS`, `SUBMITTED`, `UNDER_REVIEW`, `COMPLETED`, `OVERDUE` | `DRAFT` |
-| **Recurrence** | `NONE`, `QUARTERLY`, `ANNUAL` | `NONE` |
+| **Recurrence** | `NONE`, `WEEKLY`, `MONTHLY`, `QUARTERLY`, `BIANNUALLY`, `ANNUALLY` | `NONE` |
 | **FindingStatus** | `OPEN`, `REMEDIATED`, `RISK_ACCEPTED` | `OPEN` |
 
 ### 4.4 Question Type Auto-Scoring Matrix
@@ -822,9 +824,77 @@ After scoring, the engine reconciles findings:
 
 ---
 
-## 7. Vendor Portal Flow
+## 7. Customer Responsibility Tracking
 
-### 7.1 Portal Architecture
+### 7.1 Overview
+
+When a vendor holds a certification (e.g., SOC 2, ISO 27001), certain compliance controls become **shared responsibility** — the customer (you) also has obligations to maintain. Mitch-Risk tracks these obligations alongside each vendor certification.
+
+### 7.2 Model
+
+```
+┌────────────────────────┐     ┌───────────────────────────────┐
+│       Control          │     │ CustomerResponsibilityAction   │
+│────────────────────────│     │───────────────────────────────│
+│ isSharedResponsibility ├────▶│ vendorId (FK → Vendor)        │
+│ (boolean)              │     │ certificationId (FK, optional) │
+└────────────────────────┘     │ controlCode                   │
+                               │ frameworkName                 │
+                               │ controlTitle                  │
+                               │ status (enum)                 │
+                               │   PENDING / IN_PROGRESS       │
+                               │   COMPLETED / NOT_APPLICABLE  │
+                               │ assignedToId (FK → User)      │
+                               │ notes                         │
+                               │ completedAt                   │
+                               └───────────────────────────────┘
+```
+
+### 7.3 Workflow
+
+```
+1. Admin marks controls as shared responsibility
+   └── Framework → Control → toggle isSharedResponsibility
+       (SharedResponsibilityToggle component)
+
+2. Vendor certification is saved
+   └── Certification saved → auto-generate
+       CustomerResponsibilityAction rows for each
+       shared control in the chosen framework
+
+3. Staff track obligations on vendor detail page
+   └── CustomerResponsibilityChecklist component
+       • Per-row expand/collapse (matches review-panel pattern)
+       • Status dropdown (Pending / In Progress / Completed / N/A)
+       • Assigned staff member
+       • Notes field
+       • Evidence attachments via Attachment model
+
+4. Compliance metrics surfaced
+   └── Vendor detail: split metrics (assessment score +
+       responsibility compliance %)
+   └── Risk Register: filter toggle for responsibility actions
+   └── Dashboard API: portfolio-level responsibility summary
+   └── Vendor CSV export: responsibility section
+   └── Assessment PDF report: responsibility compliance in score section
+```
+
+### 7.4 Key Files
+
+| Layer | Files |
+|---|---|
+| Schema | `prisma/schema.prisma` — `CustomerResponsibilityAction` model, `CustomerResponsibilityStatus` enum, `isSharedResponsibility` on Control |
+| DB | `lib/db/customer-responsibility.ts` — CRUD, compliance scoring, portfolio summary |
+| Actions | `lib/actions/customer-responsibility.ts` — status updates, evidence upload/remove |
+| Framework | `lib/actions/frameworks.ts` — toggle shared responsibility |
+| Certifications | `lib/actions/certifications.ts` — auto-generate on cert save |
+| Components | `components/customer-responsibility-checklist.tsx`, `components/customer-responsibility-manager.tsx`, `components/shared-responsibility-toggle.tsx` |
+
+---
+
+## 8. Vendor Portal Flow
+
+### 8.1 Portal Architecture
 
 The vendor portal is a **no-login**, token-based experience. No vendor account is created — the assessment token in the URL is the sole authentication mechanism.
 
@@ -844,7 +914,7 @@ The vendor portal is a **no-login**, token-based experience. No vendor account i
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-### 7.2 Portal Request Lifecycle
+### 8.2 Portal Request Lifecycle
 
 ```
                     GET /portal/<token>
@@ -907,7 +977,7 @@ The vendor portal is a **no-login**, token-based experience. No vendor account i
                                     └──────────────────────────────────┘
 ```
 
-### 7.3 Conditional Question Logic
+### 8.3 Conditional Question Logic
 
 Questions can be conditionally shown/hidden based on answers to previous questions:
 
@@ -932,7 +1002,7 @@ Supported operators:
   gt, lt, gte, lte, answered, notAnswered
 ```
 
-### 7.4 Portal Security
+### 8.4 Portal Security
 
 | Concern | Mechanism |
 |---|---|
@@ -947,9 +1017,9 @@ Supported operators:
 
 ---
 
-## 8. File Storage Architecture
+## 9. File Storage Architecture
 
-### 8.1 Storage Interface
+### 9.1 Storage Interface
 
 ```typescript
 interface FileStorage {
@@ -962,7 +1032,7 @@ interface FileStorage {
 type StoredFile = { key: string; modifiedAt: Date };
 ```
 
-### 8.2 Provider Architecture
+### 9.2 Provider Architecture
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -1000,7 +1070,7 @@ type StoredFile = { key: string; modifiedAt: Date };
                                       └────────────────────┘
 ```
 
-### 8.3 File Serving
+### 9.3 File Serving
 
 ```
                     GET /api/attachments/<attachmentId>
@@ -1034,7 +1104,7 @@ type StoredFile = { key: string; modifiedAt: Date };
   Always: go through the authenticated route.
 ```
 
-### 8.4 Upload Validation
+### 9.4 Upload Validation
 
 All file uploads pass through `lib/upload-validation.ts`:
 
@@ -1043,7 +1113,7 @@ All file uploads pass through `lib/upload-validation.ts`:
 - **Size limits:** Configurable `maxUploadMb` (default 20 MB)
 - **Extension allowlist:** Configurable (default: pdf, png, jpg, jpeg, docx, xlsx)
 
-### 8.5 Attachment Lifecycle
+### 9.5 Attachment Lifecycle
 
 ```
 ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
@@ -1062,9 +1132,9 @@ All file uploads pass through `lib/upload-validation.ts`:
 
 ---
 
-## 9. Email System
+## 10. Email System
 
-### 9.1 Architecture
+### 10.1 Architecture
 
 ```
 ┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
@@ -1097,7 +1167,7 @@ All file uploads pass through `lib/upload-validation.ts`:
                     └──────────────┘
 ```
 
-### 9.2 Email Template Types
+### 10.2 Email Template Types
 
 | Type | Trigger | Recipient | From |
 |---|---|---|---|
@@ -1110,7 +1180,7 @@ All file uploads pass through `lib/upload-validation.ts`:
 | **Reset** | Password reset requested | Staff user | System SMTP |
 | **Expiry** | Cron: cert/contract expiring | Risk owner (staff) | System SMTP |
 
-### 9.3 Template Customization
+### 10.3 Template Customization
 
 All email subjects and bodies are DB-backed via `email.template` AppSetting category:
 
@@ -1131,7 +1201,7 @@ All email subjects and bodies are DB-backed via `email.template` AppSetting cate
 
 Available token variables: `{{vendorName}}`, `{{assessmentTitle}}`, `{{portalUrl}}`, `{{dueDate}}`, `{{reviewerName}}`, `{{assessmentUrl}}`, `{{message}}`, `{{appName}}`, `{{resetUrl}}`, `{{expiresIn}}`, `{{itemName}}`, `{{vendorUrl}}`, `{{portalPassword}}`.
 
-### 9.4 Email Logging & Retention
+### 10.4 Email Logging & Retention
 
 - Every sent email creates a `NotificationLog` row (type, recipient, subject, status)
 - Failed sends record `errorMessage`
@@ -1140,9 +1210,9 @@ Available token variables: `{{vendorName}}`, `{{assessmentTitle}}`, `{{portalUrl
 
 ---
 
-## 10. Settings & Configuration
+## 11. Settings & Configuration
 
-### 10.1 Design Philosophy
+### 11.1 Design Philosophy
 
 All operational configuration lives in the `AppSetting` database table. No config files need editing after initial deployment bootstrap (DATABASE_URL, AUTH_SECRET, APP_ENCRYPTION_KEY, CRON_SECRET, APP_URL).
 
@@ -1188,7 +1258,7 @@ All operational configuration lives in the `AppSetting` database table. No confi
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 10.2 Secret Encryption
+### 11.2 Secret Encryption
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1218,7 +1288,7 @@ All operational configuration lives in the `AppSetting` database table. No confi
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 10.3 CSS Theme Tokens
+### 11.3 CSS Theme Tokens
 
 `lib/theme-tokens.tsx` injects a `<style>` tag into every page:
 
@@ -1229,9 +1299,9 @@ All operational configuration lives in the `AppSetting` database table. No confi
 
 ---
 
-## 11. API Layer
+## 12. API Layer
 
-### 11.1 API Architecture
+### 12.1 API Architecture
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -1264,7 +1334,7 @@ All operational configuration lives in the `AppSetting` database table. No confi
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-### 11.2 API Error Format
+### 12.2 API Error Format
 
 All API errors use a consistent JSON envelope:
 
@@ -1279,7 +1349,7 @@ All API errors use a consistent JSON envelope:
 
 Unexpected errors return a generic `{"error":{"message":"Internal error","status":500}}` — never exposing stack traces or internal state.
 
-### 11.3 Endpoint Catalog
+### 12.3 Endpoint Catalog
 
 | Method | Path | Auth | Purpose |
 |---|---|---|---|
@@ -1295,7 +1365,7 @@ Unexpected errors return a generic `{"error":{"message":"Internal error","status
 | PUT | `/api/v1/vendors/{id}` | Bearer token | Update vendor |
 | DELETE | `/api/v1/vendors/{id}` | Bearer token | Delete vendor |
 | GET | `/api/v1/vendors/{id}/score` | Bearer token | Score summary |
-| GET | `/api/v1/vendors/{id}/export` | Bearer token | Export vendor as JSON |
+| GET | `/api/v1/vendors/{id}/export` | Bearer token | Export vendor as CSV |
 | GET | `/api/v1/vendors/{id}/assessments` | Bearer token | List vendor's assessments |
 | GET | `/api/v1/vendors/{id}/certifications` | Bearer token | List vendor's certifications |
 | **Assessments** ||||
@@ -1309,11 +1379,12 @@ Unexpected errors return a generic `{"error":{"message":"Internal error","status
 | GET | `/api/v1/frameworks/{id}` | Bearer token | Framework detail + controls |
 | DELETE | `/api/v1/frameworks/{id}` | Bearer token | Delete framework |
 | **Dashboard** ||||
-| GET | `/api/v1/dashboard/summary` | Bearer token | Portfolio metrics aggregation |
+| GET | `/api/v1/dashboard` | Bearer token | Portfolio metrics aggregation |
+| GET | `/api/dashboard/report` | Bearer token | Download portfolio PDF report |
 | **Audit** ||||
 | GET | `/api/v1/audit` | Bearer token | Query audit log (JSON/CSV) |
 
-### 11.4 Swagger/OpenAPI
+### 12.4 Swagger/OpenAPI
 
 - Spec file: `lib/openapi.json` (OpenAPI 3.0)
 - Swagger UI: CDN-loaded at `/docs` page
@@ -1322,9 +1393,9 @@ Unexpected errors return a generic `{"error":{"message":"Internal error","status
 
 ---
 
-## 12. Security Architecture
+## 13. Security Architecture
 
-### 12.1 Defense-in-Depth Layers
+### 13.1 Defense-in-Depth Layers
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1387,7 +1458,7 @@ Unexpected errors return a generic `{"error":{"message":"Internal error","status
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 12.2 Content Security Policy
+### 13.2 Content Security Policy
 
 ```
 Default CSP (applied to document GETs only):
@@ -1429,7 +1500,7 @@ IMPORTANT: CSP is ONLY applied to document GET requests.
 This is enforced via isDocumentRequest() gate in proxy.ts.
 ```
 
-### 12.3 Rate Limiting Matrix
+### 13.3 Rate Limiting Matrix
 
 | Concern | Default Limit | Configuration Key |
 |---|---|---|
@@ -1444,7 +1515,7 @@ This is enforced via isDocumentRequest() gate in proxy.ts.
 | API key (per-key) | Configurable | `rateLimitPerMin` on ApiKey |
 | Session timeout | 30 min idle | `sessionTimeoutMinutes` |
 
-### 12.4 Additional Security Headers
+### 13.4 Additional Security Headers
 
 ```
 X-Frame-Options: DENY
@@ -1462,9 +1533,9 @@ Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()
 
 ---
 
-## 13. Cron Jobs & Background Processing
+## 14. Cron Jobs & Background Processing
 
-### 13.1 Trigger Mechanism
+### 14.1 Trigger Mechanism
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1549,9 +1620,9 @@ Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()
 
 ---
 
-## 14. UI Component Architecture
+## 15. UI Component Architecture
 
-### 14.1 Component Hierarchy
+### 15.1 Component Hierarchy
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1603,7 +1674,7 @@ Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 14.2 Client vs Server Component Split
+### 15.2 Client vs Server Component Split
 
 ```
 Server Components (reads, no interactivity):
@@ -1625,7 +1696,7 @@ Server Components CANNOT:
   → Extract into standalone client wrappers (e.g., DuplicateTemplateMenuItem)
 ```
 
-### 14.3 Toast Notification System
+### 15.3 Toast Notification System
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1653,9 +1724,9 @@ Server Components CANNOT:
 
 ---
 
-## 15. Deployment Architecture
+## 16. Deployment Architecture
 
-### 15.1 Docker Compose Deployment
+### 16.1 Docker Compose Deployment
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1681,7 +1752,7 @@ Server Components CANNOT:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 15.2 Environment Variables
+### 16.2 Environment Variables
 
 | Variable | Required | Purpose |
 |---|---|---|
@@ -1695,7 +1766,7 @@ Server Components CANNOT:
 | `EVIDENCE_STORAGE_PATH` | Optional | Local file storage root (default: `./.storage/evidence`) |
 | `TEST_DATABASE_URL` | Testing | Separate DB for test suite (name must contain "test") |
 
-### 15.3 Boot Sequence
+### 16.3 Boot Sequence
 
 ```
 1. Docker Compose starts PostgreSQL container
@@ -1717,9 +1788,9 @@ Server Components CANNOT:
 
 ---
 
-## 16. Data Lifecycle
+## 17. Data Lifecycle
 
-### 16.1 Create Flows
+### 17.1 Create Flows
 
 ```
 ┌──────────┐    ┌──────────┐    ┌──────────┐
@@ -1744,7 +1815,7 @@ Server Components CANNOT:
 └──────────┘    └──────────┘    └──────────┘
 ```
 
-### 16.2 Delete Cascades
+### 17.2 Delete Cascades
 
 ```
 Delete Vendor
@@ -1759,7 +1830,11 @@ Delete Vendor
   │     ├── Cascade: All Findings (assessmentId)
   │     └── Cascade: All NotificationLogs
   ├── Cascade: All VendorCertifications
-  └── (Attachment cleanup via cron orphan sweep)
+  ├── Cascade: All CustomerResponsibilityActions
+  ├── Explicit: All Attachment DB rows + storage files (Vendor +
+  │     VendorCertification scope) deleted before Prisma cascade
+  └── Explicit: All Evidence + Attachment storage files deleted
+       before Prisma cascade
 
 Delete User
   └── SetNull: Assessments (reviewerId)
@@ -1773,7 +1848,7 @@ Delete User
   └── Cascade: PasswordResetTokens
 ```
 
-### 16.3 Audit Trail
+### 17.3 Audit Trail
 
 Every significant action is recorded:
 
@@ -1800,9 +1875,9 @@ AuditLog
 
 ---
 
-## 17. Compliance Mapping
+## 18. Compliance Mapping
 
-### 17.1 Framework Architecture
+### 18.1 Framework Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1841,7 +1916,7 @@ AuditLog
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 17.2 Seeded Frameworks
+### 18.2 Seeded Frameworks
 
 | Framework | Version | Controls | Source |
 |---|---|---|---|
@@ -1850,7 +1925,7 @@ AuditLog
 | **NIST CSF** | 2.0 | Framework Core (Govern, Identify, Protect, Detect, Respond, Recover) | `prisma/seed-data/` |
 | **Essential Eight** | 2023 | Maturity Model (Levels 0-3) | `prisma/seed-data/` |
 
-### 17.3 Findings & Control Mapping
+### 18.3 Findings & Control Mapping
 
 When a vendor answer is non-compliant:
 
@@ -1860,69 +1935,69 @@ When a vendor answer is non-compliant:
 
 ---
 
-## 18. Key Design Decisions
+## 19. Key Design Decisions
 
-### 18.1 Why Next.js App Router (not Pages Router)?
+### 19.1 Why Next.js App Router (not Pages Router)?
 
 - **Server Components for reads:** Dashboard queries, vendor lists, framework catalogs — all run on server, zero JS shipped to browser
 - **Server Actions for writes:** Direct function calls from form submits, no API boilerplate, CSRF protection built-in
 - **Colocation:** Page, layout, loading, error files in same directory
 - **Streaming:** Suspense boundaries for progressive rendering
 
-### 18.2 Why PostgreSQL (not SQLite)?
+### 19.2 Why PostgreSQL (not SQLite)?
 
 - **Concurrent writes:** Multiple staff users + vendor portal submissions
 - **Transactions:** Scoring reconciliation, framework import, template duplication all wrapped in `prisma.$transaction()`
 - **JSON columns:** `AppSetting.value`, `Question.options`, `Question.conditionalLogic`, `Response.value`, `AuditLog.meta`
 - **Array columns:** `Role.permissions[]`, `AssessmentQuestion.controlIds[]`, `Finding.controlCodes[]`
 
-### 18.3 Why Prisma (not raw SQL)?
+### 19.3 Why Prisma (not raw SQL)?
 
 - **Type safety:** Full TypeScript types for all queries, migrations are typed
 - **ERD generation:** Schema-as-source-of-truth
 - **Migrations:** Versioned, repeatable, apply-on-deploy
 - **N+1 prevention:** `include` and `select` for eager loading
 
-### 18.4 Why Token-Based Portal (not Vendor Accounts)?
+### 19.4 Why Token-Based Portal (not Vendor Accounts)?
 
 - **No registration:** Vendors click a link and answer — no password to forget
 - **Security:** 43-char token = 2^256 search space, expiry enforced, optional password
 - **Simplicity:** One link = one assessment; no vendor-user management needed
 - **Flexibility:** Portal can be sent to any email, token can be revoked
 
-### 18.5 Why DB-Backed Settings (not .env files)?
+### 19.5 Why DB-Backed Settings (not .env files)?
 
 - **Operational agility:** Change SMTP, scoring weights, RAG thresholds without restart
 - **Multi-tenancy ready:** Per-org settings in interest
 - **Encrypted secrets:** SMTP password, SSO secrets, cloud storage credentials — encrypted at rest
 - **Versioned:** Settings changes are auditable (AuditLog)
 
-### 18.6 Why CSP Nonce with Strict-Dynamic (not hash-based)?
+### 19.6 Why CSP Nonce with Strict-Dynamic (not hash-based)?
 
 - **Inline scripts from React/Next.js:** Unpredictable, nonce is the only viable approach
 - **strict-dynamic:** Allows scripts loaded by allowed scripts (including Next.js bundles)
 - **No 'unsafe-inline' in script-src:** Defeats XSS
 - **Document-only application:** Prevents breaking Server Action POST body parsing
 
-### 18.7 Why Files Are Copied, Not Symlinked?
+### 19.7 Why Files Are Copied, Not Symlinked?
 
 - **Attachment independence:** Deleting the assessment that generated evidence does not orphan the vendor's attachment
 - **Provider portability:** Source and destination can be on different storage backends
 - **Immutability:** Each copy is an independent file with its own lifecycle
 
-### 18.8 Why bcryptjs (not bcrypt)?
+### 19.8 Why bcryptjs (not bcrypt)?
 
 - **Pure JavaScript:** No native compilation, works on all platforms
 - **12 rounds:** Appropriate for the threat model (small business, internal tool)
 - **Timing-safe:** Constant-time comparison built-in
 
-### 18.9 Why In-Memory Rate Limiting (not Redis)?
+### 19.9 Why In-Memory Rate Limiting (not Redis)?
 
 - **Single-container deployment:** No horizontal scaling in target architecture
 - **Simplicity:** No additional infrastructure dependency
 - **Configurable:** All limits adjustable via Settings UI
 
-### 18.10 Why Inline In-Process Storage Fingerprint (not Watchdog)?
+### 19.10 Why Inline In-Process Storage Fingerprint (not Watchdog)?
 
 - **Settings changes rare:** Storage provider changes maybe once in lifetime
 - **Lazy re-resolution:** Next request picks up new provider automatically
@@ -1989,13 +2064,13 @@ lib/                          Business logic
   utils.ts                    cn(), formatDate(), etc.
 
 prisma/                       Database
-  schema.prisma               Full data model (18 tables)
+  schema.prisma               Full data model (25 tables)
   migrations/                 Versioned migrations
   seed.ts                     Idempotent seed script
   seed-data/                  Framework seed data
 
 e2e/                          Playwright end-to-end tests
-docs/                         Docsify user documentation site (GitHub Pages)
+docs/                         VitePress user documentation site (GitHub Pages)
 PLAN.md                       Phase-by-phase plan
 STAGE-GATES.md                Gate checklists + sign-offs
 STORAGE.md                    Cloud storage setup guide

@@ -150,9 +150,9 @@ describe("template builder — reorder / duplicate / mappings", () => {
 
     const mapped = await getControlWithMappings(control.id);
     if (!mapped) throw new Error("control missing");
-    const templateIds = mapped.questionControls.map(
-      (link) => link.question.section.template.id,
-    );
+    const templateIds = mapped.questionControls
+      .filter((link) => link.question.section !== null)
+      .map((link) => link.question.section.template.id);
     expect(templateIds).toContain(template.id);
   });
 });

@@ -5,9 +5,9 @@ import { redirect } from "next/navigation";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
-import { sendEmail, sendTestEmail } from "@/lib/email/mailer";
+import { sendEmail } from "@/lib/email/mailer";
 import { env } from "@/lib/env";
-import { logAudit } from "@/lib/db/audit";
+import { logAudit, AUDIT_ACTIONS } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 import {
@@ -44,7 +44,12 @@ export async function createAssessmentAction(
   const assessment = await createAssessment(vendorId, parsed.data);
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "CREATE_ASSESSMENT", "Assessment", assessment.id);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.CREATE_ASSESSMENT,
+      "Assessment",
+      assessment.id,
+    );
   }
   redirect(`/assessments/${assessment.id}`);
 }
@@ -58,7 +63,12 @@ export async function sendAssessmentAction(formData: FormData) {
 
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "SEND_ASSESSMENT", "Assessment", assessmentId);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.SEND_ASSESSMENT,
+      "Assessment",
+      assessmentId,
+    );
   }
 
   const sent = await getAssessmentForEmail(assessmentId);
@@ -90,7 +100,12 @@ export async function generateLinkAction(formData: FormData) {
 
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "SEND_ASSESSMENT", "Assessment", assessmentId);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.SEND_ASSESSMENT,
+      "Assessment",
+      assessmentId,
+    );
   }
 }
 
@@ -107,7 +122,12 @@ export async function sendToCustomEmailAction(formData: FormData) {
 
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "SEND_ASSESSMENT", "Assessment", assessmentId);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.SEND_ASSESSMENT,
+      "Assessment",
+      assessmentId,
+    );
   }
 
   const sent = await getAssessmentForEmail(assessmentId);
@@ -138,15 +158,6 @@ export async function sendToCustomEmailAction(formData: FormData) {
   }
 }
 
-export async function sendTestEmailAction(
-  previousState: { ok: boolean; message: string } | undefined,
-  formData: FormData,
-): Promise<{ ok: boolean; message: string }> {
-  await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
-  const user = await getCurrentUser();
-  return sendTestEmail(getField(formData, "email"), user?.id);
-}
-
 export type UpdateAssessmentState =
   { ok: boolean; message: string } | undefined;
 
@@ -173,7 +184,12 @@ export async function revokeAssessmentAction(formData: FormData) {
   await revokeAssessmentToken(assessmentId);
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "REVOKE_ASSESSMENT", "Assessment", assessmentId);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.REVOKE_ASSESSMENT,
+      "Assessment",
+      assessmentId,
+    );
   }
   revalidatePath(`/assessments/${assessmentId}`);
 }
@@ -184,7 +200,12 @@ export async function extendAssessmentAction(formData: FormData) {
   await extendAssessmentToken(assessmentId);
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "EXTEND_ASSESSMENT", "Assessment", assessmentId);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.EXTEND_ASSESSMENT,
+      "Assessment",
+      assessmentId,
+    );
   }
   revalidatePath(`/assessments/${assessmentId}`);
 }
@@ -197,7 +218,7 @@ export async function regenerateAssessmentAction(formData: FormData) {
   if (user) {
     await logAudit(
       user.id,
-      "REGENERATE_ASSESSMENT",
+      AUDIT_ACTIONS.REGENERATE_ASSESSMENT,
       "Assessment",
       assessmentId,
     );
@@ -212,7 +233,12 @@ export async function deleteAssessmentAction(formData: FormData) {
   // erase the assessment without leaving a trace of who removed it.
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "DELETE_ASSESSMENT", "Assessment", assessmentId);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.DELETE_ASSESSMENT,
+      "Assessment",
+      assessmentId,
+    );
   }
   await deleteAssessment(assessmentId);
   redirect("/assessments");
@@ -266,13 +292,13 @@ async function processBulkVendorSend(params: {
   if (params.user) {
     await logAudit(
       params.user.id,
-      "SEND_ASSESSMENT",
+      AUDIT_ACTIONS.SEND_ASSESSMENT,
       "Assessment",
       assessment.id,
     );
   }
 
-  let emailFailed = false;
+  let hasEmailFailed = false;
   if (vendor.contactEmail) {
     try {
       const sent = await getAssessmentForEmail(assessment.id);
@@ -293,7 +319,7 @@ async function processBulkVendorSend(params: {
         await setAssessmentRecipients(assessment.id, [vendor.contactEmail]);
       }
     } catch (emailError) {
-      emailFailed = true;
+      hasEmailFailed = true;
       console.error(
         `[bulk-send] email failed for vendor ${params.vendorId} (assessment ${assessment.id}):`,
         emailError instanceof Error ? emailError.message : String(emailError),
@@ -301,7 +327,7 @@ async function processBulkVendorSend(params: {
     }
   }
 
-  return { status: "sent", emailFailed };
+  return { status: "sent", emailFailed: hasEmailFailed };
 }
 
 function buildBulkSendMessage(
@@ -364,7 +390,7 @@ export async function sendBulkAssessmentsAction(
       } else {
         skippedCount++;
       }
-    } catch (error) {
+    } catch (error: unknown) {
       skippedCount++;
       console.error(
         `[bulk-send] failed to send for vendor ${vendorId}:`,
@@ -406,7 +432,12 @@ export async function createAndStartSelfAssessmentAction(
 
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "SEND_ASSESSMENT", "Assessment", assessment.id);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.SEND_ASSESSMENT,
+      "Assessment",
+      assessment.id,
+    );
   }
 
   const sent = await getAssessmentForPortalToken(assessment.id);
@@ -429,39 +460,4 @@ async function getAssessmentForPortalToken(
     select: { accessToken: true },
   });
   return assessment?.accessToken ?? null;
-}
-
-export async function cloneAssessmentToVendorAction(formData: FormData) {
-  const user = await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
-  const assessmentId = getField(formData, "assessmentId");
-  const targetVendorId = getField(formData, "targetVendorId");
-
-  if (!assessmentId || !targetVendorId) {
-    return { error: "Missing assessment or vendor." };
-  }
-
-  const source = await prisma.assessment.findUnique({
-    where: { id: assessmentId },
-    select: { templateId: true, title: true },
-  });
-
-  if (!source?.templateId) {
-    return { error: "Source assessment has no template." };
-  }
-
-  const created = await prisma.assessment.create({
-    data: {
-      vendorId: targetVendorId,
-      templateId: source.templateId,
-      title: `${source.title} (copy)`,
-      status: "DRAFT",
-    },
-  });
-
-  if (user) {
-    await logAudit(user.id, "CREATE_ASSESSMENT", "Assessment", created.id);
-  }
-
-  revalidatePath("/assessments");
-  redirect(`/assessments/${created.id}`);
 }

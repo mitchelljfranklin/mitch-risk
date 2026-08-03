@@ -56,7 +56,7 @@ When a vendor completes a questionnaire and a reviewer finalizes it, the **scori
 
 ### Step 1: Exclude Unscorable Question Types
 
-Seven question types are **not auto-scored** because they lack a machine-evaluable "right answer":
+Five question types are **not auto-scored** because they lack a machine-evaluable "right answer":
 
 | Type | Reason |
 |---|---|

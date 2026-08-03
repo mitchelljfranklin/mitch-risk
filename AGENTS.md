@@ -99,18 +99,44 @@ components/          # shadcn ui primitives + domain composites
   user-menu.tsx      # user dropdown menu (profile, logout)
   vendor-export-button.tsx # CSV/JSON export button for vendor data
   data-table-column-header.tsx # sortable/hideable TanStack Table column header
+  customer-responsibility-checklist.tsx  # customer responsibility checklist
+  customer-responsibility-manager.tsx    # customer responsibility CRUD manager
+  shared-responsibility-toggle.tsx       # shared responsibility toggle
+  theme-provider.tsx                     # next-themes provider wrapper
+  question-form.tsx                      # template question editor
+  conditional-rules-editor.tsx           # conditional logic rule builder
+  control-multi-select.tsx               # multi-select for framework controls
+  auth/sso-buttons.tsx                   # SSO login buttons
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
     findings.ts      #   finding status updates
     frameworks.ts    #   framework CRUD + CSV import
+    certifications.ts  # vendor certification CRUD + responsibility generation
+    roles.ts           # role CRUD + duplicate
+    auth.ts            # sign-out, password reset, break-glass
+    customer-responsibility.ts # responsibility action updates
+    profile.ts         # profile update
   db/                # typed data-access layer (assessments, audit, collaboration,
                      #   compliance, frameworks, notifications, roles, scoring, templates, users, vendors)
+    audit.ts           #   logAudit() + AUDIT_ACTIONS constant (single source of truth for audit event types)
+    certifications.ts  # certification CRUD + attachments
+    dashboard.ts       # dashboard metrics + upcoming dates
+    customer-responsibility.ts # customer responsibility compliance
+    findings.ts        # finding list, get, update status
+    vendor-timeline.ts # chronological vendor activity feed
+    webhooks.ts        # webhook endpoint CRUD
+    audit-types.ts     # audit type definitions
+    notifications-types.ts # notification type definitions
   email/             # Nodemailer mailer + token replacer
   schemas/           # shared zod schemas + inferred types
     framework.ts     #   framework + CSV import schema
     certification.ts #   vendor certification schema
     auth.ts          #   credentials, password reset, profile update, user create, setup admin
     portal.ts        #   portal answer + progress save schemas
+    vendor.ts          # vendor schema
+    template.ts        # template schema
+    role.ts            # role schema
+    assessment.ts      # assessment schema
   settings/          # DB-backed operational config (schema, accessor, read/write)
   api-keys.ts        # API key generation, bcrypt hashing, CIDR IP matching
   api-auth.ts        # unified authenticateRequest() — session + Bearer token + permission check

@@ -42,10 +42,7 @@ export async function POST(request: Request) {
     });
 
     if (!parsed.success) {
-      return apiError(
-        parsed.error.issues[0]?.message ?? "Invalid vendor data.",
-        400,
-      );
+      return apiError("Invalid vendor data.", 400);
     }
 
     const vendor = await createVendor(parsed.data);

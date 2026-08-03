@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
-import { logAudit } from "@/lib/db/audit";
+import { logAudit, AUDIT_ACTIONS } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
 import {
   deleteFramework,
@@ -137,7 +137,12 @@ export async function importFrameworkAction(
     })),
   });
 
-  await logAudit(user.id, "CREATE_FRAMEWORK", "Framework", framework.id);
+  await logAudit(
+    user.id,
+    AUDIT_ACTIONS.CREATE_FRAMEWORK,
+    "Framework",
+    framework.id,
+  );
 
   revalidatePath("/frameworks");
 
@@ -153,7 +158,7 @@ export async function deleteFrameworkAction(formData: FormData) {
   const frameworkId = getField(formData, "frameworkId");
   await logAudit(
     (await getCurrentUser())?.id ?? "unknown",
-    "DELETE_FRAMEWORK",
+    AUDIT_ACTIONS.DELETE_FRAMEWORK,
     "Framework",
     frameworkId,
   );
@@ -177,7 +182,9 @@ export async function toggleSharedResponsibilityAction(formData: FormData) {
 
   await logAudit(
     user.id,
-    isShared ? "MARK_CONTROL_SHARED" : "UNMARK_CONTROL_SHARED",
+    isShared
+      ? AUDIT_ACTIONS.MARK_CONTROL_SHARED
+      : AUDIT_ACTIONS.UNMARK_CONTROL_SHARED,
     "Control",
     controlId,
     { code: control.code, framework: control.frameworkId },

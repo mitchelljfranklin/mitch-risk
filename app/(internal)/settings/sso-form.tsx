@@ -259,6 +259,7 @@ export function SsoForm({
               Default role for new SSO users
             </Label>
             <Select
+              key={autoProvisionRoleId}
               name="autoProvisionRoleId"
               defaultValue={
                 autoProvisionRoleId ||

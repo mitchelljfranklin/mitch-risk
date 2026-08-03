@@ -76,6 +76,13 @@
               "type": "string",
               "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
             }
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "required": false,
+            "description": "Filter vendors by tag",
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -240,8 +247,8 @@
     "/v1/vendors/{vendorId}/export": {
       "get": {
         "tags": ["Vendors"],
-        "summary": "Export vendor as JSON",
-        "description": "Downloads a JSON file containing the vendor's details and assessment summaries. Suitable for backup, migration, or sharing.",
+        "summary": "Export vendor as CSV",
+        "description": "Downloads a CSV file containing vendor details, assessment summaries, certifications, and customer responsibility actions. Suitable for spreadsheet import or backup.",
         "operationId": "exportVendor",
         "parameters": [
           {
@@ -253,16 +260,16 @@
         ],
         "responses": {
           "200": {
-            "description": "JSON download of vendor data",
+            "description": "CSV download of vendor data",
             "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/VendorExport" }
+              "text/csv": {
+                "schema": { "type": "string" }
               }
             },
             "headers": {
               "Content-Disposition": {
                 "schema": { "type": "string" },
-                "description": "attachment; filename=\"{name}.json\""
+                "description": "attachment; filename=\"{name}.csv\""
               }
             }
           },
@@ -321,7 +328,7 @@
       "get": {
         "tags": ["Audit"],
         "summary": "Query audit log",
-        "description": "Returns audit trail entries with optional filters for activity type, user, date range, and pagination. Supports both JSON and CSV output. Rate-limited to 60/min per API key. 20 results per page.",
+        "description": "Returns audit trail entries with optional filters for activity type, user, date range, and pagination. Supports both JSON and CSV output. Rate-limited to 60/min per API key. 10 results per page.",
         "operationId": "listAuditLogs",
         "parameters": [
           {
@@ -370,6 +377,13 @@
               "enum": ["json", "csv"],
               "default": "json"
             }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "description": "Number of results per page (default 10)",
+            "schema": { "type": "integer" }
           }
         ],
         "responses": {
@@ -564,6 +578,20 @@
             "schema": { "type": "integer", "minimum": 1, "default": 1 }
           },
           {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "description": "Search term to filter assessments by title",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "overdue",
+            "in": "query",
+            "required": false,
+            "description": "Set to 'true' to show only overdue assessments",
+            "schema": { "type": "string" }
+          },
+          {
             "name": "format",
             "in": "query",
             "description": "Response format",
@@ -637,6 +665,13 @@
             "in": "query",
             "description": "Page number (default 1)",
             "schema": { "type": "integer", "minimum": 1, "default": 1 }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Filter by assessment status",
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -861,7 +896,7 @@
         }
       }
     },
-    "/v1/dashboard/summary": {
+    "/v1/dashboard": {
       "get": {
         "tags": ["Dashboard"],
         "summary": "Get dashboard summary",
@@ -873,6 +908,26 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/DashboardSummary" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" }
+        }
+      }
+    },
+    "/dashboard/report": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Download portfolio PDF report",
+        "description": "Generates a PDF report covering all vendors in the portfolio. Includes overall risk summary, vendor score distribution, top findings, and responsibility tracking overview.",
+        "operationId": "downloadPortfolioReport",
+        "responses": {
+          "200": {
+            "description": "Portfolio PDF report",
+            "content": {
+              "application/pdf": {
+                "schema": { "type": "string", "format": "binary" }
               }
             }
           },
@@ -975,6 +1030,16 @@
             "nullable": true,
             "description": "ID of the entity acted upon (first 8 chars)",
             "example": "cmr182ra3"
+          },
+          "entityName": {
+            "type": "string",
+            "nullable": true,
+            "description": "Human-readable name of the entity"
+          },
+          "meta": {
+            "type": "object",
+            "nullable": true,
+            "description": "Additional free-form metadata about the event"
           },
           "createdAt": {
             "type": "string",
@@ -1186,47 +1251,6 @@
                 "domain": { "type": "string" },
                 "complianceRatio": { "type": "number" },
                 "controlCount": { "type": "integer" }
-              }
-            }
-          }
-        }
-      },
-      "VendorExport": {
-        "type": "object",
-        "description": "Full vendor data export — suitable for backup, migration, or sharing",
-        "properties": {
-          "name": { "type": "string" },
-          "contactName": { "type": "string", "nullable": true },
-          "contactEmail": { "type": "string" },
-          "tier": { "type": "string", "nullable": true },
-          "website": { "type": "string", "nullable": true },
-          "notes": { "type": "string", "nullable": true },
-          "overallScore": { "type": "number", "nullable": true },
-          "lastAssessedAt": {
-            "type": "string",
-            "nullable": true,
-            "format": "date-time"
-          },
-          "assessments": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "title": { "type": "string" },
-                "status": { "type": "string" },
-                "score": { "type": "number", "nullable": true },
-                "submittedAt": {
-                  "type": "string",
-                  "nullable": true,
-                  "format": "date-time"
-                },
-                "dueDate": {
-                  "type": "string",
-                  "nullable": true,
-                  "format": "date-time"
-                },
-                "templateName": { "type": "string", "nullable": true },
-                "templateVersion": { "type": "integer", "nullable": true }
               }
             }
           }
@@ -1588,7 +1612,7 @@
       },
       "AssessmentDetail": {
         "type": "object",
-        "description": "Full assessment detail including vendor, template, questions with responses, review decisions, findings, and threaded comments",
+        "description": "Full assessment detail including vendor, template, flat question list with responses, review decisions, findings, and threaded comments",
         "properties": {
           "id": { "type": "string" },
           "title": { "type": "string" },
@@ -1609,58 +1633,88 @@
             "nullable": true,
             "format": "date-time"
           },
-          "completedAt": {
+          "createdAt": { "type": "string", "format": "date-time" },
+          "recurrence": {
             "type": "string",
             "nullable": true,
-            "format": "date-time"
+            "enum": [
+              "NONE",
+              "WEEKLY",
+              "MONTHLY",
+              "QUARTERLY",
+              "BIANNUALLY",
+              "ANNUALLY"
+            ]
           },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "vendor": { "$ref": "#/components/schemas/VendorDetail" },
-          "template": {
+          "vendor": {
             "type": "object",
             "properties": {
               "id": { "type": "string" },
               "name": { "type": "string" },
+              "contactName": { "type": "string", "nullable": true },
+              "contactEmail": { "type": "string" },
+              "tier": { "type": "string", "nullable": true }
+            }
+          },
+          "template": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "name": { "type": "string" },
               "version": { "type": "integer" }
             }
           },
-          "sections": {
+          "reviewer": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "email": { "type": "string" }
+            }
+          },
+          "questions": {
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
-                "title": { "type": "string" },
-                "questions": {
+                "id": { "type": "string" },
+                "sectionTitle": { "type": "string" },
+                "text": { "type": "string" },
+                "helpText": { "type": "string", "nullable": true },
+                "type": { "type": "string" },
+                "riskWeight": { "type": "string" },
+                "required": { "type": "boolean" },
+                "expectedAnswer": { "type": "string", "nullable": true },
+                "options": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": { "type": "string" },
-                      "text": { "type": "string" },
-                      "type": { "type": "string" },
-                      "riskWeight": { "type": "string" },
-                      "required": { "type": "boolean" },
-                      "response": {
-                        "type": "object",
-                        "nullable": true,
-                        "properties": {
-                          "answer": {},
-                          "compliance": { "type": "string" },
-                          "reviewDecision": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "reviewNote": { "type": "string", "nullable": true },
-                          "evidenceFiles": {
-                            "type": "array",
-                            "items": { "type": "string" }
-                          }
-                        }
-                      },
-                      "controlCodes": {
-                        "type": "array",
-                        "items": { "type": "string" }
+                  "items": { "type": "string" },
+                  "nullable": true
+                },
+                "order": { "type": "integer" },
+                "controlIds": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "sharedControlIds": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "response": {
+                  "type": "object",
+                  "nullable": true,
+                  "properties": {
+                    "value": {},
+                    "isNotApplicable": { "type": "boolean" },
+                    "isCompliant": { "type": "boolean" },
+                    "weightedScore": { "type": "number", "nullable": true },
+                    "maxScore": { "type": "number", "nullable": true },
+                    "review": {
+                      "type": "object",
+                      "nullable": true,
+                      "properties": {
+                        "decision": { "type": "string" },
+                        "note": { "type": "string", "nullable": true }
                       }
                     }
                   }
@@ -1670,7 +1724,34 @@
           },
           "findings": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/FindingSummary" }
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "title": { "type": "string" },
+                "description": { "type": "string", "nullable": true },
+                "severity": {
+                  "type": "string",
+                  "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["OPEN", "REMEDIATED", "RISK_ACCEPTED"]
+                },
+                "controlCodes": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "resolutionNote": { "type": "string", "nullable": true },
+                "resolvedAt": {
+                  "type": "string",
+                  "nullable": true,
+                  "format": "date-time"
+                },
+                "resolvedByName": { "type": "string", "nullable": true },
+                "createdAt": { "type": "string", "format": "date-time" }
+              }
+            }
           },
           "comments": {
             "type": "array",
@@ -1678,9 +1759,31 @@
               "type": "object",
               "properties": {
                 "id": { "type": "string" },
-                "userName": { "type": "string" },
+                "authorType": { "type": "string" },
+                "authorName": { "type": "string" },
                 "body": { "type": "string" },
-                "createdAt": { "type": "string", "format": "date-time" }
+                "visibility": {
+                  "type": "string",
+                  "enum": ["INTERNAL", "SHARED", "VENDOR_ONLY"]
+                },
+                "createdAt": { "type": "string", "format": "date-time" },
+                "replies": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string" },
+                      "authorType": { "type": "string" },
+                      "authorName": { "type": "string" },
+                      "body": { "type": "string" },
+                      "visibility": {
+                        "type": "string",
+                        "enum": ["INTERNAL", "SHARED", "VENDOR_ONLY"]
+                      },
+                      "createdAt": { "type": "string", "format": "date-time" }
+                    }
+                  }
+                }
               }
             }
           }
@@ -1718,7 +1821,19 @@
             "format": "date"
           },
           "notes": { "type": "string", "nullable": true },
-          "attachmentCount": { "type": "integer" }
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "fileName": { "type": "string" },
+                "displayName": { "type": "string", "nullable": true },
+                "mimeType": { "type": "string" },
+                "sizeBytes": { "type": "integer" }
+              }
+            }
+          }
         }
       },
       "CertificationList": {

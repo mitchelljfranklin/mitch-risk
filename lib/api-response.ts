@@ -7,7 +7,7 @@ export async function runApiHandler(
 ): Promise<Response> {
   try {
     return await handler();
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(
       "[api] unhandled error",
       error instanceof Error ? error.message : String(error),

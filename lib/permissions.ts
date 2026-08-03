@@ -217,8 +217,10 @@ export function summarizeRolePermissions(
     const granted = group.permissions.filter((permission) =>
       userPermissions.includes(permission.key),
     ).length;
-    const coverage: PermissionCoverage =
-      granted === 0 ? "none" : granted === total ? "full" : "partial";
+    let coverage: PermissionCoverage;
+    if (granted === 0) coverage = "none";
+    else if (granted === total) coverage = "full";
+    else coverage = "partial";
     return {
       resource: group.resource,
       label: group.label,

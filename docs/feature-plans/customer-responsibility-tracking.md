@@ -52,7 +52,7 @@ The checklist feeds into:
 
 ### How it works (user perspective)
 
-1. **Admin marks controls as shared responsibility** — via the Frameworks settings page, an admin can check a box on any control to designate it as a customer responsibility. SOC 2 ships with 12 controls pre-marked based on the published shared-responsibility matrix. You can mark controls in any framework you've imported (ISO 27001, NIST CSF, Essential Eight, or your own custom CSV import).
+1. **Admin marks controls as shared responsibility** — via the Frameworks settings page, an admin can check a box on any control to designate it as a customer responsibility. SOC 2 ships with 13 controls pre-marked based on the published shared-responsibility matrix. You can mark controls in any framework you've imported (ISO 27001, NIST CSF, Essential Eight, or your own custom CSV import).
 
 2. **You add a certification to a vendor** — existing flow: cert name, issuer, dates, attachment. Check the "Compliance actions required" checkbox and select the framework from a dropdown showing only frameworks with shared-responsibility controls. Actions are auto-generated for the selected framework.
 

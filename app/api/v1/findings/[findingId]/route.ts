@@ -19,10 +19,7 @@ export async function PATCH(
     if (!finding) return apiError("Not found", 404);
 
     if (finding.status !== "OPEN")
-      return apiError(
-        `Cannot transition from status "${finding.status}".`,
-        400,
-      );
+      return apiError("Invalid status transition.", 400);
 
     let data: unknown;
     try {

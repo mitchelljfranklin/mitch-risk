@@ -71,6 +71,84 @@ describe("delete lifecycle (integration)", () => {
     await expect(storage.read(storageKey)).rejects.toThrow();
   });
 
+  it("deleteVendor removes vendor attachments (DB rows + files)", async () => {
+    const vendor = await prisma.vendor.create({
+      data: {
+        name: `${PREFIX} Vendor Att`,
+        contactEmail: "p48att@example.test",
+      },
+    });
+
+    const attachmentKey = `${vendor.id}/attachment-test.txt`;
+    await storage.save(attachmentKey, Buffer.from("test", "utf8"));
+    await prisma.attachment.create({
+      data: {
+        entityType: "Vendor",
+        entityId: vendor.id,
+        fileName: "attachment-test.txt",
+        storageKey: attachmentKey,
+        mimeType: "text/plain",
+        sizeBytes: 4,
+      },
+    });
+
+    await deleteVendor(vendor.id);
+
+    expect(
+      await prisma.vendor.findUnique({ where: { id: vendor.id } }),
+    ).toBeNull();
+    expect(
+      await prisma.attachment.count({
+        where: { entityType: "Vendor", entityId: vendor.id },
+      }),
+    ).toBe(0);
+    await expect(storage.read(attachmentKey)).rejects.toThrow();
+  });
+
+  it("deleteVendor removes certification attachments (DB rows + files)", async () => {
+    const vendor = await prisma.vendor.create({
+      data: {
+        name: `${PREFIX} Vendor Cert`,
+        contactEmail: "p48cert@example.test",
+      },
+    });
+    const certification = await prisma.vendorCertification.create({
+      data: {
+        vendorId: vendor.id,
+        name: "SOC 2",
+        expiresDate: new Date("2027-01-01"),
+      },
+    });
+
+    const certKey = `${certification.id}/cert-attachment.txt`;
+    await storage.save(certKey, Buffer.from("cert", "utf8"));
+    await prisma.attachment.create({
+      data: {
+        entityType: "VendorCertification",
+        entityId: certification.id,
+        fileName: "cert-attachment.txt",
+        storageKey: certKey,
+        mimeType: "text/plain",
+        sizeBytes: 4,
+      },
+    });
+
+    await deleteVendor(vendor.id);
+
+    expect(
+      await prisma.vendor.findUnique({ where: { id: vendor.id } }),
+    ).toBeNull();
+    expect(
+      await prisma.attachment.count({
+        where: {
+          entityType: "VendorCertification",
+          entityId: certification.id,
+        },
+      }),
+    ).toBe(0);
+    await expect(storage.read(certKey)).rejects.toThrow();
+  });
+
   it("deleteEvidenceForQuestion replaces prior evidence (rows + files)", async () => {
     const vendor = await prisma.vendor.create({
       data: { name: `${PREFIX} Vendor Q`, contactEmail: "p48q@example.test" },

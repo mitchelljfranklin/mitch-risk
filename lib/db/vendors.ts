@@ -195,6 +195,52 @@ export async function deleteVendor(id: string): Promise<void> {
       // Best-effort; orphan-sweep cron cleans any leftovers.
     }
   }
+
+  const vendorAttachments = await prisma.attachment.findMany({
+    where: { entityType: "Vendor", entityId: id },
+    select: { storageKey: true },
+  });
+  for (const attachment of vendorAttachments) {
+    try {
+      await storage.delete(attachment.storageKey);
+    } catch {
+      // Best-effort.
+    }
+  }
+  await prisma.attachment.deleteMany({
+    where: { entityType: "Vendor", entityId: id },
+  });
+
+  const vendorCertifications = await prisma.vendorCertification.findMany({
+    where: { vendorId: id },
+    select: { id: true },
+  });
+  const certificationIds = vendorCertifications.map(
+    (certification) => certification.id,
+  );
+  if (certificationIds.length > 0) {
+    const certificationAttachments = await prisma.attachment.findMany({
+      where: {
+        entityType: "VendorCertification",
+        entityId: { in: certificationIds },
+      },
+      select: { storageKey: true },
+    });
+    for (const attachment of certificationAttachments) {
+      try {
+        await storage.delete(attachment.storageKey);
+      } catch {
+        // Best-effort.
+      }
+    }
+    await prisma.attachment.deleteMany({
+      where: {
+        entityType: "VendorCertification",
+        entityId: { in: certificationIds },
+      },
+    });
+  }
+
   await prisma.vendor.delete({ where: { id } });
 }
 

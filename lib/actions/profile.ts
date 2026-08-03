@@ -3,13 +3,14 @@
 import bcrypt from "bcryptjs";
 import { type Prisma } from "../../prisma/generated/prisma/client";
 
-import { getCurrentUser, signOut } from "@/lib/auth";
+import { getCurrentUser, requirePermission, signOut } from "@/lib/auth";
+import { PERMISSIONS } from "@/lib/permissions";
 import {
   findUserByEmail,
   hasLocalPassword,
   resetUserPassword,
 } from "@/lib/db/users";
-import { logAudit } from "@/lib/db/audit";
+import { logAudit, AUDIT_ACTIONS } from "@/lib/db/audit";
 import { prisma } from "@/lib/prisma";
 import { profileNameSchema, profileUpdateSchema } from "@/lib/schemas/auth";
 
@@ -19,6 +20,7 @@ export async function updateProfileAction(
   previousState: ProfileState,
   formData: FormData,
 ): Promise<ProfileState> {
+  await requirePermission(PERMISSIONS.PROFILE_VIEW);
   const user = await getCurrentUser();
   if (!user) {
     return { ok: false, message: "Not authenticated." };
@@ -50,7 +52,7 @@ export async function updateProfileAction(
         where: { id: user.id },
         data: { name: parsedName.data.name },
       });
-      await logAudit(user.id, "UPDATE_PROFILE");
+      await logAudit(user.id, AUDIT_ACTIONS.UPDATE_PROFILE);
     }
 
     // Result feeds useActionState; the client refreshes (useActionFeedback)
@@ -102,7 +104,7 @@ export async function updateProfileAction(
     await resetUserPassword(user.id, newPassword);
   }
 
-  await logAudit(user.id, "UPDATE_PROFILE");
+  await logAudit(user.id, AUDIT_ACTIONS.UPDATE_PROFILE);
 
   // If email changed, sign out so the session picks up the new email.
   if (updates.email) {
