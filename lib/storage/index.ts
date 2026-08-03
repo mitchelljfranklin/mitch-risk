@@ -97,7 +97,7 @@ async function resolveStorage(settings: StorageSettings): Promise<FileStorage> {
         accessKeyId: settings.s3AccessKeyId,
         secretAccessKey: settings.s3SecretAccessKey,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(
         "Failed to initialise S3 storage client:",
         error instanceof Error ? error.message : String(error),
@@ -115,7 +115,7 @@ async function resolveStorage(settings: StorageSettings): Promise<FileStorage> {
         connectionString: settings.azureConnectionString,
         containerName: settings.azureContainerName,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(
         "Failed to initialise Azure Blob storage client:",
         error instanceof Error ? error.message : String(error),

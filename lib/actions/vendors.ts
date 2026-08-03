@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { createVendor, deleteVendor, updateVendor } from "@/lib/db/vendors";
-import { logAudit } from "@/lib/db/audit";
+import { logAudit, AUDIT_ACTIONS } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
@@ -56,7 +56,7 @@ export async function createVendorAction(
   const vendor = await createVendor(parsed.data);
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "CREATE_VENDOR", "Vendor", vendor.id);
+    await logAudit(user.id, AUDIT_ACTIONS.CREATE_VENDOR, "Vendor", vendor.id);
   }
   redirect(`/vendors/${vendor.id}?created=1`);
 }
@@ -91,7 +91,7 @@ export async function updateVendorAction(
   await updateVendor(vendorId, parsed.data);
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "UPDATE_VENDOR", "Vendor", vendorId);
+    await logAudit(user.id, AUDIT_ACTIONS.UPDATE_VENDOR, "Vendor", vendorId);
   }
   revalidatePath(`/vendors/${vendorId}`);
   return { ok: true, message: "Vendor updated." };
@@ -102,7 +102,7 @@ export async function deleteVendorAction(formData: FormData) {
   const vendorId = getField(formData, "vendorId");
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "DELETE_VENDOR", "Vendor", vendorId);
+    await logAudit(user.id, AUDIT_ACTIONS.DELETE_VENDOR, "Vendor", vendorId);
   }
   await deleteVendor(vendorId);
   redirect("/vendors");
@@ -212,7 +212,7 @@ export async function importVendorsAction(
         if (existing) {
           await updateVendor(id, input);
           if (user) {
-            await logAudit(user.id, "UPDATE_VENDOR", "Vendor", id);
+            await logAudit(user.id, AUDIT_ACTIONS.UPDATE_VENDOR, "Vendor", id);
           }
           updatedCount++;
           continue;
@@ -220,10 +220,15 @@ export async function importVendorsAction(
       }
       const vendor = await createVendor(input);
       if (user) {
-        await logAudit(user.id, "IMPORT_VENDOR", "Vendor", vendor.id);
+        await logAudit(
+          user.id,
+          AUDIT_ACTIONS.IMPORT_VENDOR,
+          "Vendor",
+          vendor.id,
+        );
       }
       createdCount++;
-    } catch (error) {
+    } catch (error: unknown) {
       rowErrors.push(
         `${input.name}: ${error instanceof Error ? error.message : "failed"}`,
       );
@@ -296,7 +301,7 @@ export async function addVendorAttachmentAction(
   });
 
   if (user) {
-    await logAudit(user.id, "UPDATE_VENDOR", "Vendor", vendorId);
+    await logAudit(user.id, AUDIT_ACTIONS.UPDATE_VENDOR, "Vendor", vendorId);
   }
 
   revalidatePath(`/vendors/${vendorId}`);
@@ -360,7 +365,7 @@ async function handleGeneralAttachment(
   });
 
   if (user) {
-    await logAudit(user.id, "UPDATE_VENDOR", "Vendor", vendorId, {
+    await logAudit(user.id, AUDIT_ACTIONS.UPDATE_VENDOR, "Vendor", vendorId, {
       note: "Attached evidence to vendor",
       evidenceId,
     });
@@ -417,7 +422,7 @@ async function handleCertificationAttachment(
   });
 
   if (user) {
-    await logAudit(user.id, "UPDATE_VENDOR", "Vendor", vendorId, {
+    await logAudit(user.id, AUDIT_ACTIONS.UPDATE_VENDOR, "Vendor", vendorId, {
       note: "Created certification with attached evidence",
       certificationId: certification.id,
     });

@@ -99,11 +99,7 @@ export async function PUT(
       ownerId: record.ownerId ?? existing.ownerId ?? "",
     });
 
-    if (!parsed.success)
-      return apiError(
-        parsed.error.issues[0]?.message ?? "Invalid vendor data.",
-        400,
-      );
+    if (!parsed.success) return apiError("Invalid vendor data.", 400);
 
     const updated = await updateVendor(vendorId, parsed.data);
     return Response.json(updated);

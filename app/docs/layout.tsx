@@ -10,6 +10,6 @@ export default async function DocsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await requirePermission(PERMISSIONS.VENDORS_VIEW);
+  await requirePermission(PERMISSIONS.API_MANAGE);
   return children;
 }

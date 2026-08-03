@@ -9,10 +9,11 @@ import {
   createCertification,
   deleteCertification,
   getCertification,
+  deleteAttachmentsForEntity,
   listAttachments,
   updateCertification,
 } from "@/lib/db/certifications";
-import { logAudit } from "@/lib/db/audit";
+import { logAudit, AUDIT_ACTIONS } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
 import { certificationSchema } from "@/lib/schemas/certification";
 import {
@@ -74,7 +75,7 @@ export async function saveCertificationAction(
     if (user) {
       await logAudit(
         user.id,
-        "UPDATE_CERTIFICATION",
+        AUDIT_ACTIONS.UPDATE_CERTIFICATION,
         "VendorCertification",
         certificationId,
       );
@@ -85,7 +86,7 @@ export async function saveCertificationAction(
     if (user) {
       await logAudit(
         user.id,
-        "CREATE_CERTIFICATION",
+        AUDIT_ACTIONS.CREATE_CERTIFICATION,
         "VendorCertification",
         created.id,
       );
@@ -138,12 +139,13 @@ export async function deleteCertificationAction(formData: FormData) {
     }
   }
 
+  await deleteAttachmentsForEntity("VendorCertification", certificationId);
   await deleteCertification(certificationId);
   const user = await getCurrentUser();
   if (user) {
     await logAudit(
       user.id,
-      "DELETE_CERTIFICATION",
+      AUDIT_ACTIONS.DELETE_CERTIFICATION,
       "VendorCertification",
       certificationId,
     );

@@ -11,7 +11,7 @@ import {
   duplicateRole,
   updateRole,
 } from "@/lib/db/roles";
-import { logAudit } from "@/lib/db/audit";
+import { logAudit, AUDIT_ACTIONS } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
 import { roleSchema } from "@/lib/schemas/role";
 
@@ -43,9 +43,9 @@ export async function createRoleAction(
     const role = await createRole(parsed.data);
     const actor = await getCurrentUser();
     if (actor) {
-      await logAudit(actor.id, "CREATE_ROLE", "Role", role.id);
+      await logAudit(actor.id, AUDIT_ACTIONS.CREATE_ROLE, "Role", role.id);
     }
-  } catch (error) {
+  } catch (error: unknown) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
@@ -87,9 +87,9 @@ export async function updateRoleAction(
     await updateRole(roleId, parsed.data);
     const actor = await getCurrentUser();
     if (actor) {
-      await logAudit(actor.id, "UPDATE_ROLE", "Role", roleId);
+      await logAudit(actor.id, AUDIT_ACTIONS.UPDATE_ROLE, "Role", roleId);
     }
-  } catch (error) {
+  } catch (error: unknown) {
     return {
       ok: false,
       message:
@@ -113,12 +113,12 @@ export async function duplicateRoleAction(formData: FormData): Promise<void> {
     const role = await duplicateRole(roleId);
     const actor = await getCurrentUser();
     if (actor) {
-      await logAudit(actor.id, "DUPLICATE_ROLE", "Role", role.id, {
+      await logAudit(actor.id, AUDIT_ACTIONS.DUPLICATE_ROLE, "Role", role.id, {
         sourceRoleId: roleId,
       });
     }
     revalidatePath("/settings");
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(
       `[roles] failed to duplicate role ${roleId}:`,
       error instanceof Error ? error.message : String(error),
@@ -138,10 +138,10 @@ export async function deleteRoleAction(formData: FormData): Promise<void> {
     await deleteRole(roleId);
     const actor = await getCurrentUser();
     if (actor) {
-      await logAudit(actor.id, "DELETE_ROLE", "Role", roleId);
+      await logAudit(actor.id, AUDIT_ACTIONS.DELETE_ROLE, "Role", roleId);
     }
     revalidatePath("/settings");
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(
       `[roles] failed to delete role ${roleId}:`,
       error instanceof Error ? error.message : String(error),

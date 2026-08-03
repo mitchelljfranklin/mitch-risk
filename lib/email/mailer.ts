@@ -66,7 +66,7 @@ async function createNotificationLog(
   try {
     const created = await prisma.notificationLog.create({ data });
     return created.id;
-  } catch (logError) {
+  } catch (logError: unknown) {
     console.error(
       "Failed to create notification log:",
       logError instanceof Error ? logError.message : String(logError),
@@ -182,7 +182,7 @@ export async function sendEmail(
 
     await updateNotificationLogStatus(notificationLogId, "SENT", null);
     return { ok: true, subject: resolvedSubject, notificationLogId };
-  } catch (sendError) {
+  } catch (sendError: unknown) {
     const errorMessage =
       sendError instanceof Error ? sendError.message : "unknown error";
     console.error("Failed to send email:", errorMessage);
@@ -232,7 +232,7 @@ export async function sendTestEmail(
 
     await updateNotificationLogStatus(notificationLogId, "SENT", null);
     return { ok: true, message: "Test email sent." };
-  } catch (sendError) {
+  } catch (sendError: unknown) {
     const errorMessage = `Failed: ${sendError instanceof Error ? sendError.message : "unknown error"}`;
     await updateNotificationLogStatus(
       notificationLogId,

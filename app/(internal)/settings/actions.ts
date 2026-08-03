@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS, isValidPermission } from "@/lib/permissions";
-import { logAudit } from "@/lib/db/audit";
+import { logAudit, AUDIT_ACTIONS } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
 import type {
   WebhookEvent,
@@ -66,7 +66,12 @@ export async function saveOrganizationSettings(
   await updateOrganizationSettings(parsed.data);
   const user = await getCurrentUser();
   if (user)
-    await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "organization");
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_SETTINGS,
+      "Setting",
+      "organization",
+    );
   return { ok: true, message: "Organization settings saved." };
 }
 
@@ -93,7 +98,8 @@ export async function saveEmailSettings(
 
   await updateEmailSettings(parsed.data);
   const user = await getCurrentUser();
-  if (user) await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "email");
+  if (user)
+    await logAudit(user.id, AUDIT_ACTIONS.UPDATE_SETTINGS, "Setting", "email");
   return { ok: true, message: "Email settings saved." };
 }
 
@@ -128,7 +134,12 @@ export async function sendSmtpTestAction(
 
   if (result.ok) {
     if (user)
-      await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "email.test");
+      await logAudit(
+        user.id,
+        AUDIT_ACTIONS.UPDATE_SETTINGS,
+        "Setting",
+        "email.test",
+      );
     return { ok: true, message: `Test email sent to ${parsed.data}.` };
   }
 
@@ -171,7 +182,7 @@ export async function saveEmailTemplateAction(
   if (user)
     await logAudit(
       user.id,
-      "UPDATE_SETTINGS",
+      AUDIT_ACTIONS.UPDATE_SETTINGS,
       "Setting",
       `email.template.${type}`,
     );
@@ -199,7 +210,7 @@ export async function resetEmailTemplateAction(
   if (user)
     await logAudit(
       user.id,
-      "UPDATE_SETTINGS",
+      AUDIT_ACTIONS.UPDATE_SETTINGS,
       "Setting",
       `email.template.${type}`,
     );
@@ -234,7 +245,13 @@ export async function saveScoringSettings(
 
   await updateScoringSettings(parsed.data);
   const user = await getCurrentUser();
-  if (user) await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "scoring");
+  if (user)
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_SETTINGS,
+      "Setting",
+      "scoring",
+    );
   return { ok: true, message: "Scoring settings saved." };
 }
 
@@ -275,7 +292,8 @@ export async function saveSsoSettings(
   });
 
   const user = await getCurrentUser();
-  if (user) await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "sso");
+  if (user)
+    await logAudit(user.id, AUDIT_ACTIONS.UPDATE_SETTINGS, "Setting", "sso");
   return { ok: true, message: "SSO settings saved." };
 }
 
@@ -296,7 +314,12 @@ export async function generateBreakGlassUrlAction(
 
   const user = await getCurrentUser();
   if (user)
-    await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "sso.breakGlass");
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_SETTINGS,
+      "Setting",
+      "sso.breakGlass",
+    );
   return {
     ok: true,
     message:
@@ -400,7 +423,13 @@ export async function saveAppearanceSettings(
   }
 
   const user = await getCurrentUser();
-  if (user) await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "appearance");
+  if (user)
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_SETTINGS,
+      "Setting",
+      "appearance",
+    );
   return { ok: true, message: "Appearance settings saved." };
 }
 
@@ -462,7 +491,12 @@ export async function createApiKeyAction(
   });
 
   if (user) {
-    await logAudit(user.id, "API_KEY_CREATED", "ApiKey", created.id);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.API_KEY_CREATED,
+      "ApiKey",
+      created.id,
+    );
   }
 
   // Result (incl. the one-time key) is consumed by useActionState; the client
@@ -490,7 +524,7 @@ export async function toggleApiKeyAction(formData: FormData): Promise<void> {
   if (user) {
     await logAudit(
       user.id,
-      disabled ? "API_KEY_REVOKED" : "API_KEY_ENABLED",
+      disabled ? AUDIT_ACTIONS.API_KEY_REVOKED : AUDIT_ACTIONS.API_KEY_ENABLED,
       "ApiKey",
       keyId,
     );
@@ -510,7 +544,7 @@ export async function deleteApiKeyAction(formData: FormData): Promise<void> {
 
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "API_KEY_DELETED", "ApiKey", keyId);
+    await logAudit(user.id, AUDIT_ACTIONS.API_KEY_DELETED, "ApiKey", keyId);
   }
 
   revalidatePath("/settings");
@@ -676,7 +710,13 @@ export async function saveSchedulingSettings(
   ]);
 
   const user = await getCurrentUser();
-  if (user) await logAudit(user.id, "UPDATE_SETTINGS", "Setting", "scheduling");
+  if (user)
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_SETTINGS,
+      "Setting",
+      "scheduling",
+    );
 
   return { ok: true, message: "Configuration saved." };
 }
@@ -707,7 +747,12 @@ export async function retryEmailSendAction(
     if (result.ok) {
       const user = await getCurrentUser();
       if (user)
-        await logAudit(user.id, "RETRY_EMAIL_SEND", "NotificationLog", logId);
+        await logAudit(
+          user.id,
+          AUDIT_ACTIONS.RETRY_EMAIL_SEND,
+          "NotificationLog",
+          logId,
+        );
       revalidatePath("/settings");
       return { ok: true, message: "Test email resent." };
     }
@@ -765,7 +810,12 @@ export async function retryEmailSendAction(
   if (result.ok) {
     const user = await getCurrentUser();
     if (user)
-      await logAudit(user.id, "RETRY_EMAIL_SEND", "NotificationLog", logId);
+      await logAudit(
+        user.id,
+        AUDIT_ACTIONS.RETRY_EMAIL_SEND,
+        "NotificationLog",
+        logId,
+      );
     revalidatePath("/settings");
     return { ok: true, message: `Email resent successfully.` };
   }
@@ -815,7 +865,12 @@ export async function saveStorageSettings(
 
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "UPDATE_SETTINGS", "Settings", "storage");
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_SETTINGS,
+      "Settings",
+      "storage",
+    );
   }
 
   return { ok: true, message: "Storage settings saved." };
@@ -848,7 +903,7 @@ export async function createWebhookAction(
   await createWebhookEndpoint({ url, name, secret, events, platform });
 
   if (user) {
-    await logAudit(user.id, "CREATE_WEBHOOK", "Webhook", url);
+    await logAudit(user.id, AUDIT_ACTIONS.CREATE_WEBHOOK, "Webhook", url);
   }
 
   revalidatePath("/settings");
@@ -864,7 +919,7 @@ export async function deleteWebhookAction(formData: FormData) {
   await deleteWebhookEndpoint(webhookId);
 
   if (user) {
-    await logAudit(user.id, "DELETE_WEBHOOK", "Webhook", webhookId);
+    await logAudit(user.id, AUDIT_ACTIONS.DELETE_WEBHOOK, "Webhook", webhookId);
   }
 
   revalidatePath("/settings");
@@ -882,7 +937,7 @@ export async function toggleWebhookAction(formData: FormData) {
   if (user) {
     await logAudit(
       user.id,
-      enabled ? "ENABLE_WEBHOOK" : "DISABLE_WEBHOOK",
+      enabled ? AUDIT_ACTIONS.ENABLE_WEBHOOK : AUDIT_ACTIONS.DISABLE_WEBHOOK,
       "Webhook",
       webhookId,
     );

@@ -76,6 +76,15 @@ function PermissionSummary({ permissions }: { permissions: string[] }) {
   );
 }
 
+function checkboxState(
+  allChecked: boolean,
+  someChecked: boolean,
+): boolean | "indeterminate" {
+  if (allChecked) return true;
+  if (someChecked) return "indeterminate";
+  return false;
+}
+
 function PermissionMatrix({
   selected,
   onToggle,
@@ -94,7 +103,7 @@ function PermissionMatrix({
     <div className="grid gap-4">
       <label className="flex items-center gap-2 text-sm font-medium">
         <Checkbox
-          checked={allChecked ? true : someChecked ? "indeterminate" : false}
+          checked={checkboxState(allChecked, someChecked)}
           onCheckedChange={(value) => onToggleAll(value === true)}
         />
         Select all permissions
@@ -112,9 +121,7 @@ function PermissionMatrix({
             >
               <label className="flex items-center gap-2 text-sm font-medium">
                 <Checkbox
-                  checked={
-                    groupChecked ? true : groupSome ? "indeterminate" : false
-                  }
+                  checked={checkboxState(groupChecked, groupSome)}
                   onCheckedChange={(value) =>
                     onToggleGroup(keys, value === true)
                   }
@@ -159,6 +166,11 @@ function RoleEditorSheet({
 
   const action = isNew ? createRoleAction : updateRoleAction;
   const [state, formAction, isPending] = useActionState(action, initialState);
+
+  let submitLabel: string;
+  if (isPending) submitLabel = "Saving...";
+  else if (isNew) submitLabel = "Create role";
+  else submitLabel = "Save changes";
   useActionFeedback(state);
 
   const [selected, setSelected] = useState<Set<string>>(
@@ -249,7 +261,7 @@ function RoleEditorSheet({
 
           <SheetFooter className="px-0">
             <Button type="submit" disabled={isPending}>
-              {isPending ? "Saving..." : isNew ? "Create role" : "Save changes"}
+              {submitLabel}
             </Button>
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel

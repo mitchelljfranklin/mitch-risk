@@ -13,7 +13,7 @@ import {
   setReviewDecision,
 } from "@/lib/db/collaboration";
 import { getAssessmentRecipients } from "@/lib/db/assessments";
-import { logAudit } from "@/lib/db/audit";
+import { logAudit, AUDIT_ACTIONS } from "@/lib/db/audit";
 import { sendEmail } from "@/lib/email/mailer";
 import { env } from "@/lib/env";
 import { getField } from "@/lib/utils";
@@ -47,7 +47,12 @@ export async function addCommentAction(formData: FormData) {
     body,
     visibility,
   });
-  await logAudit(user.id, "ADD_COMMENT", "Assessment", assessmentId);
+  await logAudit(
+    user.id,
+    AUDIT_ACTIONS.ADD_COMMENT,
+    "Assessment",
+    assessmentId,
+  );
   revalidatePath(`/assessments/${assessmentId}`);
 }
 
@@ -106,10 +111,16 @@ export async function reviewAction(formData: FormData) {
   // First review decision moves a submitted assessment into review.
   await markUnderReview(assessmentId);
 
-  await logAudit(user.id, "REVIEW_DECISION", "Response", responseId, {
-    decision,
-    note,
-  });
+  await logAudit(
+    user.id,
+    AUDIT_ACTIONS.REVIEW_DECISION,
+    "Response",
+    responseId,
+    {
+      decision,
+      note,
+    },
+  );
 
   revalidatePath(`/assessments/${assessmentId}`);
 }
@@ -153,7 +164,12 @@ export async function sendBackToVendorAction(formData: FormData) {
 
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "SEND_BACK_TO_VENDOR", "Assessment", assessmentId);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.SEND_BACK_TO_VENDOR,
+      "Assessment",
+      assessmentId,
+    );
   }
   revalidatePath(`/assessments/${assessmentId}`);
 }
@@ -164,7 +180,12 @@ export async function reopenReviewAction(formData: FormData) {
   await reopenReview(assessmentId);
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "REOPEN_REVIEW", "Assessment", assessmentId);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.REOPEN_REVIEW,
+      "Assessment",
+      assessmentId,
+    );
   }
   revalidatePath(`/assessments/${assessmentId}`);
 }
@@ -186,7 +207,12 @@ export async function finalizeWithStateAction(
   }
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "FINALIZE_ASSESSMENT", "Assessment", assessmentId);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.FINALIZE_ASSESSMENT,
+      "Assessment",
+      assessmentId,
+    );
   }
   revalidatePath(`/assessments/${assessmentId}`);
   return { ok: true, message: "" };

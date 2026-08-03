@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
-import { logAudit, logAuditSafe } from "@/lib/db/audit";
+import { logAudit, logAuditSafe, AUDIT_ACTIONS } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
 import {
   addQuestion,
@@ -63,7 +63,12 @@ export async function createTemplateAction(
   const template = await createTemplate(parsed.data);
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "CREATE_TEMPLATE", "Template", template.id);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.CREATE_TEMPLATE,
+      "Template",
+      template.id,
+    );
   }
   redirect(`/templates/${template.id}`);
 }
@@ -80,7 +85,12 @@ export async function updateTemplateAction(formData: FormData) {
     await updateTemplate(templateId, parsed.data);
     const user = await getCurrentUser();
     if (user) {
-      await logAudit(user.id, "UPDATE_TEMPLATE", "Template", templateId);
+      await logAudit(
+        user.id,
+        AUDIT_ACTIONS.UPDATE_TEMPLATE,
+        "Template",
+        templateId,
+      );
     }
   }
   revalidatePath(`/templates/${templateId}`);
@@ -92,7 +102,12 @@ export async function deleteTemplateAction(formData: FormData) {
   await deleteTemplate(templateId);
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "DELETE_TEMPLATE", "Template", templateId);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.DELETE_TEMPLATE,
+      "Template",
+      templateId,
+    );
   }
   redirect("/templates");
 }
@@ -106,11 +121,17 @@ export async function addSectionAction(formData: FormData) {
   });
   if (parsed.success) {
     const section = await addSection(templateId, parsed.data.title);
-    logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
-      change: "add_section",
-      sectionId: section.id,
-      title: parsed.data.title,
-    });
+    logAuditSafe(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_TEMPLATE,
+      "Template",
+      templateId,
+      {
+        change: "add_section",
+        sectionId: section.id,
+        title: parsed.data.title,
+      },
+    );
   }
   revalidatePath(`/templates/${templateId}`);
 }
@@ -125,11 +146,17 @@ export async function updateSectionAction(formData: FormData) {
   });
   if (parsed.success) {
     await updateSection(sectionId, parsed.data.title);
-    logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
-      change: "rename_section",
-      sectionId,
-      title: parsed.data.title,
-    });
+    logAuditSafe(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_TEMPLATE,
+      "Template",
+      templateId,
+      {
+        change: "rename_section",
+        sectionId,
+        title: parsed.data.title,
+      },
+    );
   }
   revalidatePath(`/templates/${templateId}`);
 }
@@ -140,7 +167,7 @@ export async function deleteSectionAction(formData: FormData) {
   await assertEditable(templateId);
   const sectionId = getField(formData, "sectionId");
   await deleteSection(sectionId);
-  logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
+  logAuditSafe(user.id, AUDIT_ACTIONS.UPDATE_TEMPLATE, "Template", templateId, {
     change: "delete_section",
     sectionId,
   });
@@ -208,17 +235,29 @@ export async function saveQuestionAction(
 
   if (questionId) {
     await updateQuestion(questionId, parsed.data);
-    logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
-      change: "update_question",
-      questionId,
-    });
+    logAuditSafe(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_TEMPLATE,
+      "Template",
+      templateId,
+      {
+        change: "update_question",
+        questionId,
+      },
+    );
   } else {
     const question = await addQuestion(sectionId, parsed.data);
-    logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
-      change: "add_question",
-      sectionId,
-      questionId: question.id,
-    });
+    logAuditSafe(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_TEMPLATE,
+      "Template",
+      templateId,
+      {
+        change: "add_question",
+        sectionId,
+        questionId: question.id,
+      },
+    );
   }
   revalidatePath(`/templates/${templateId}`);
   redirect(`/templates/${templateId}`);
@@ -230,7 +269,7 @@ export async function deleteQuestionAction(formData: FormData) {
   await assertEditable(templateId);
   const questionId = getField(formData, "questionId");
   await deleteQuestion(questionId);
-  logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
+  logAuditSafe(user.id, AUDIT_ACTIONS.UPDATE_TEMPLATE, "Template", templateId, {
     change: "delete_question",
     questionId,
   });
@@ -244,7 +283,7 @@ export async function moveSectionAction(formData: FormData) {
   const sectionId = getField(formData, "sectionId");
   const direction = getField(formData, "direction") === "up" ? "up" : "down";
   await moveSection(sectionId, direction);
-  logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
+  logAuditSafe(user.id, AUDIT_ACTIONS.UPDATE_TEMPLATE, "Template", templateId, {
     change: "move_section",
     sectionId,
     direction,
@@ -259,7 +298,7 @@ export async function moveQuestionAction(formData: FormData) {
   const questionId = getField(formData, "questionId");
   const direction = getField(formData, "direction") === "up" ? "up" : "down";
   await moveQuestion(questionId, direction);
-  logAuditSafe(user.id, "UPDATE_TEMPLATE", "Template", templateId, {
+  logAuditSafe(user.id, AUDIT_ACTIONS.UPDATE_TEMPLATE, "Template", templateId, {
     change: "move_question",
     questionId,
     direction,
@@ -273,9 +312,15 @@ export async function duplicateTemplateAction(formData: FormData) {
   const newId = await duplicateTemplate(templateId);
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "DUPLICATE_TEMPLATE", "Template", newId, {
-      sourceTemplateId: templateId,
-    });
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.DUPLICATE_TEMPLATE,
+      "Template",
+      newId,
+      {
+        sourceTemplateId: templateId,
+      },
+    );
   }
   redirect(`/templates/${newId}`);
 }
@@ -286,7 +331,12 @@ export async function publishTemplateAction(formData: FormData) {
   await publishTemplate(templateId);
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "PUBLISH_TEMPLATE", "Template", templateId);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.PUBLISH_TEMPLATE,
+      "Template",
+      templateId,
+    );
   }
   revalidatePath(`/templates/${templateId}`);
 }
@@ -297,7 +347,12 @@ export async function unpublishTemplateAction(formData: FormData) {
   await unpublishTemplate(templateId);
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "UNPUBLISH_TEMPLATE", "Template", templateId);
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.UNPUBLISH_TEMPLATE,
+      "Template",
+      templateId,
+    );
   }
   revalidatePath(`/templates/${templateId}`);
 }
@@ -311,7 +366,7 @@ export async function createNewVersionAction(formData: FormData) {
   if (user) {
     await logAudit(
       user.id,
-      "CREATE_TEMPLATE_VERSION",
+      AUDIT_ACTIONS.CREATE_TEMPLATE_VERSION,
       "Template",
       newTemplateId,
     );
@@ -466,7 +521,7 @@ export async function importTemplateAction(
 
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, "IMPORT_TEMPLATE", "Template");
+    await logAudit(user.id, AUDIT_ACTIONS.IMPORT_TEMPLATE, "Template");
   }
   return { ok: true, message: `Imported "${data.name}" as a new DRAFT.` };
 }

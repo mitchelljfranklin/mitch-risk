@@ -15,7 +15,7 @@ import {
   toggleUserDisabled,
 } from "@/lib/db/users";
 import { getRole } from "@/lib/db/roles";
-import { logAudit } from "@/lib/db/audit";
+import { logAudit, AUDIT_ACTIONS } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
 import { userCreateSchema } from "@/lib/schemas/auth";
 import { prisma } from "@/lib/prisma";
@@ -56,7 +56,7 @@ export async function addUserAction(
 
   try {
     await createUser(parsed.data);
-  } catch (error) {
+  } catch (error: unknown) {
     if (isUniqueConstraintError(error)) {
       return { ok: false, message: "A user with this email already exists." };
     }
@@ -72,7 +72,12 @@ export async function addUserAction(
 
   const actor = await getCurrentUser();
   if (actor) {
-    await logAudit(actor.id, "CREATE_USER", "User", parsed.data.email);
+    await logAudit(
+      actor.id,
+      AUDIT_ACTIONS.CREATE_USER,
+      "User",
+      parsed.data.email,
+    );
   }
 
   // Result is consumed by useActionState in a modal; the client refreshes after
@@ -110,7 +115,7 @@ export async function toggleUserAction(formData: FormData) {
   if (actor) {
     await logAudit(
       actor.id,
-      disabled ? "DISABLE_USER" : "ENABLE_USER",
+      disabled ? AUDIT_ACTIONS.DISABLE_USER : AUDIT_ACTIONS.ENABLE_USER,
       "User",
       userId,
     );
@@ -138,7 +143,7 @@ export async function changeRoleAction(formData: FormData) {
   await changeUserRole(userId, roleId);
   const actor = await getCurrentUser();
   if (actor) {
-    await logAudit(actor.id, "CHANGE_ROLE", "User", userId, {
+    await logAudit(actor.id, AUDIT_ACTIONS.CHANGE_ROLE, "User", userId, {
       newRoleId: roleId,
       newRole: role.name,
     });
@@ -177,7 +182,7 @@ export async function deleteUserAction(formData: FormData) {
   }
 
   if (actor) {
-    await logAudit(actor.id, "DELETE_USER", "User", userId, {
+    await logAudit(actor.id, AUDIT_ACTIONS.DELETE_USER, "User", userId, {
       email: target.email,
     });
   }
@@ -202,7 +207,7 @@ export async function resetPasswordAction(formData: FormData) {
   await resetUserPassword(userId, password);
   const actor = await getCurrentUser();
   if (actor) {
-    await logAudit(actor.id, "RESET_PASSWORD", "User", userId);
+    await logAudit(actor.id, AUDIT_ACTIONS.RESET_PASSWORD, "User", userId);
   }
   revalidatePath("/settings");
 }

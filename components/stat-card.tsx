@@ -5,6 +5,11 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SparklineSvg } from "@/components/sparkline";
 
+const TREND_CONFIG: Record<string, { icon: string; color: string }> = {
+  up: { icon: "↑", color: "text-[var(--rag-green)]" },
+  down: { icon: "↓", color: "text-[var(--rag-red)]" },
+};
+
 function useCountUp(end: number, durationMs = 800) {
   const [value, setValue] = useState(0);
 
@@ -53,13 +58,8 @@ export function StatCard({
   sparklineData,
 }: StatCardProps) {
   const animated = useCountUp(value);
-  const trendIcon = trend === "up" ? "↑" : trend === "down" ? "↓" : null;
-  const trendColor =
-    trend === "up"
-      ? "text-[var(--rag-green)]"
-      : trend === "down"
-        ? "text-[var(--rag-red)]"
-        : "";
+  const trendIcon = TREND_CONFIG[trend ?? ""]?.icon ?? null;
+  const trendColor = TREND_CONFIG[trend ?? ""]?.color ?? "";
 
   const display =
     format === "percent"
@@ -120,13 +120,8 @@ export function ScoreStatCard({
           : "text-[var(--rag-red)]"
       : "text-muted-foreground";
 
-  const trendIcon = trend === "up" ? "↑" : trend === "down" ? "↓" : null;
-  const trendColor =
-    trend === "up"
-      ? "text-[var(--rag-green)]"
-      : trend === "down"
-        ? "text-[var(--rag-red)]"
-        : "";
+  const trendIcon = TREND_CONFIG[trend ?? ""]?.icon ?? null;
+  const trendColor = TREND_CONFIG[trend ?? ""]?.color ?? "";
 
   return (
     <Card>

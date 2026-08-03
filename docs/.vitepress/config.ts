@@ -77,6 +77,16 @@ const sidebar = [
     text: "FAQ",
     link: "/faq",
   },
+  {
+    text: "Feature Plans",
+    collapsed: true,
+    items: [
+      {
+        text: "Customer Responsibility Tracking",
+        link: "/feature-plans/customer-responsibility-tracking",
+      },
+    ],
+  },
 ];
 
 export default defineConfig({

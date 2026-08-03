@@ -5,7 +5,7 @@ import { randomBytes } from "crypto";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
-import { logAudit } from "@/lib/db/audit";
+import { logAudit, AUDIT_ACTIONS } from "@/lib/db/audit";
 import { updateAction } from "@/lib/db/customer-responsibility";
 import { getField } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
@@ -64,7 +64,7 @@ export async function updateResponsibilityAction(
     if (user) {
       await logAudit(
         user.id,
-        "UPDATE_RESPONSIBILITY_ACTION",
+        AUDIT_ACTIONS.UPDATE_RESPONSIBILITY_ACTION,
         "CustomerResponsibilityAction",
         actionId,
         status ? { status } : undefined,
