@@ -292,3 +292,13 @@ docker run --rm -v mitch-risk_evidence_data:/data -v "$PWD":/backup alpine \
 | [SSO](SSOConfig.md) | Entra ID, Google, and generic OIDC setup |
 | [Security Policy](SECURITY.md) | Vulnerability reporting, supported versions, security model |
 | [Privacy Policy](PRIVACY.md) | Data processing, retention, vendor portal privacy, cookies |
+
+---
+
+## Contributing
+
+While I believe AI can be a powerful tool for development — and I personally use AI assistants to help manage documentation and reviews — it must remain a tool in the hands of a capable developer. In this project, **you are the pilot**; you are responsible for coding, confirming, and refining your contributions.
+
+To help those using AI tools, I've created an [AGENTS.md](AGENTS.md) file specifically for your assistants to follow. Please ensure your agent adheres to these guidelines, as non-compliant code will be rejected regardless of how well it functions.
+
+Most importantly, please ensure you **fully understand the code you are submitting**. A "black box" approach where AI generates code that the human contributor doesn't understand is not permitted here.
