@@ -83,6 +83,13 @@
             "required": false,
             "description": "Filter vendors by tag",
             "schema": { "type": "string" }
+          },
+          {
+            "name": "externalId",
+            "in": "query",
+            "required": false,
+            "description": "Filter by exact external ID reference",
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -1089,6 +1096,11 @@
         "properties": {
           "id": { "type": "string", "description": "Unique vendor ID" },
           "name": { "type": "string", "description": "Vendor name" },
+          "externalId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional reference ID from an external system"
+          },
           "contactName": {
             "type": "string",
             "nullable": true,
@@ -1139,6 +1151,7 @@
         "properties": {
           "id": { "type": "string" },
           "name": { "type": "string" },
+          "externalId": { "type": "string", "nullable": true },
           "contactName": { "type": "string", "nullable": true },
           "contactEmail": { "type": "string" },
           "tier": {
@@ -1304,6 +1317,10 @@
             "type": "string",
             "minLength": 1,
             "description": "Vendor name (required)"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "Optional reference ID from an external system"
           },
           "contactName": {
             "type": "string",

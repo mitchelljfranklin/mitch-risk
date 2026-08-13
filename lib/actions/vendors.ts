@@ -34,6 +34,7 @@ export async function createVendorAction(
   await requirePermission(PERMISSIONS.VENDORS_CREATE);
   const parsed = vendorSchema.safeParse({
     name: getField(formData, "name"),
+    externalId: getField(formData, "externalId"),
     contactName: getField(formData, "contactName"),
     contactEmail: getField(formData, "contactEmail"),
     tier: getField(formData, "tier"),
@@ -69,6 +70,7 @@ export async function updateVendorAction(
   const vendorId = getField(formData, "vendorId");
   const parsed = vendorSchema.safeParse({
     name: getField(formData, "name"),
+    externalId: getField(formData, "externalId"),
     contactName: getField(formData, "contactName"),
     contactEmail: getField(formData, "contactEmail"),
     tier: getField(formData, "tier"),
@@ -145,6 +147,7 @@ export async function importVendorsAction(
     const parsed = vendorCsvRowSchema.safeParse({
       id: raw.id ?? raw.ID ?? "",
       name: raw.name ?? "",
+      externalId: raw.externalid ?? raw.externalId ?? "",
       contactName: raw.contactname ?? raw.contactName ?? "",
       contactEmail: raw.contactemail ?? raw.contactEmail ?? "",
       tier: raw.tier ?? "",
@@ -165,6 +168,7 @@ export async function importVendorsAction(
         id: parsed.data.id,
         input: {
           name: parsed.data.name,
+          externalId: parsed.data.externalId || undefined,
           contactName: parsed.data.contactName,
           contactEmail: parsed.data.contactEmail,
           tier: parsed.data.tier as VendorInput["tier"],
@@ -213,6 +217,25 @@ export async function importVendorsAction(
           await updateVendor(id, input);
           if (user) {
             await logAudit(user.id, AUDIT_ACTIONS.UPDATE_VENDOR, "Vendor", id);
+          }
+          updatedCount++;
+          continue;
+        }
+      }
+      if (input.externalId) {
+        const existingByExternalId = await prisma.vendor.findUnique({
+          where: { externalId: input.externalId },
+          select: { id: true },
+        });
+        if (existingByExternalId) {
+          await updateVendor(existingByExternalId.id, input);
+          if (user) {
+            await logAudit(
+              user.id,
+              AUDIT_ACTIONS.UPDATE_VENDOR,
+              "Vendor",
+              existingByExternalId.id,
+            );
           }
           updatedCount++;
           continue;

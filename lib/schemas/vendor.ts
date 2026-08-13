@@ -29,6 +29,7 @@ export const DATA_SENSITIVITY_LABELS: Record<
 
 export const vendorSchema = z.object({
   name: z.string().min(1, "Vendor name is required"),
+  externalId: z.string().trim().optional(),
   contactName: z.string().optional().default(""),
   contactEmail: z.email("Enter a valid contact email"),
   tier: z
@@ -53,6 +54,7 @@ export type VendorInput = z.infer<typeof vendorSchema>;
 export const vendorCsvRowSchema = z.object({
   id: z.string().optional().default(""),
   name: z.string().min(1, "Vendor name is required"),
+  externalId: z.string().optional().default(""),
   contactName: z.string().optional().default(""),
   contactEmail: z.string().min(1, "Contact email is required"),
   tier: z

@@ -32,6 +32,7 @@ export async function GET(
     return Response.json({
       id: vendor.id,
       name: vendor.name,
+      externalId: vendor.externalId,
       contactName: vendor.contactName,
       contactEmail: vendor.contactEmail,
       tier: vendor.tier,
@@ -83,6 +84,7 @@ export async function PUT(
     const record = data as Record<string, unknown>;
     const parsed = vendorSchema.safeParse({
       name: record.name ?? existing.name,
+      externalId: record.externalId ?? existing.externalId ?? undefined,
       contactName: record.contactName ?? existing.contactName ?? "",
       contactEmail: record.contactEmail ?? existing.contactEmail,
       tier: record.tier ?? existing.tier ?? "",

@@ -201,6 +201,7 @@ export default async function VendorDetailPage({
   const hasOverviewFields =
     vendor.serviceDescription ||
     vendor.owner ||
+    vendor.externalId ||
     vendor.dataSensitivity ||
     vendor.contractRenewalDate ||
     vendor.website ||
@@ -317,6 +318,16 @@ export default async function VendorDetailPage({
                       {vendor.owner?.name ?? "Unassigned"}
                     </span>
                   </div>
+                  {vendor.externalId ? (
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-muted-foreground text-xs">
+                        External ID
+                      </span>
+                      <span className="font-mono text-sm">
+                        {vendor.externalId}
+                      </span>
+                    </div>
+                  ) : null}
                   <div className="flex flex-col gap-0.5">
                     <span className="text-muted-foreground text-xs">
                       Data sensitivity

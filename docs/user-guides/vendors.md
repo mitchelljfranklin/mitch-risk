@@ -74,9 +74,9 @@ Bulk-import or bulk-update vendors via CSV using a step-by-step wizard.
 2. **Upload** — Select a CSV file, or download the CSV template from the link provided on the page. The app parses the file and shows a preview of the first 10 rows.
 3. **Review** — Confirm the import. The summary shows how many rows will be processed. Click **Import vendors** to execute.
 
-**CSV columns:** `id` (optional — include to update an existing vendor), `name`, `contactemail` (both required), plus optional: `contactname`, `tier`, `website`, `notes`, `servicedescription`, `datasensitivity`, `contractrenewaldate`, `contractvalue`, `geographicrisk`. Max file size: 1 MB.
+**CSV columns:** `id` (optional — include to update an existing vendor), `externalid` (optional — your reference ID from another system), `name`, `contactemail` (both required), plus optional: `contactname`, `tier`, `website`, `notes`, `servicedescription`, `datasensitivity`, `contractrenewaldate`, `contractvalue`, `geographicrisk`. Max file size: 1 MB.
 
-Rows with an `id` matching an existing vendor record will **update** that vendor instead of creating a new one. Rows without an `id` (or with an `id` not found) will create new vendor records. Invalid rows are skipped and reported in the result summary.
+Rows with an `id` or `externalid` matching an existing vendor record will **update** that vendor instead of creating a new one. Rows without either (or with neither found) will create new vendor records. Invalid rows are skipped and reported in the result summary.
 
 ## Vendor Export (CSV)
 
@@ -85,7 +85,7 @@ Download vendor data as a CSV file from the Vendors page using the **Export CSV*
 - **All vendors** — exports every vendor in the database (unfiltered, regardless of current search/tier filters).
 - **Current page** — exports only the vendors matching the current search, tier filter, sort, and page.
 
-The CSV includes columns: `id`, `name`, `contactname`, `contactemail`, `tier`, `website`, `notes`, `servicedescription`, `datasensitivity`, `contractrenewaldate`, `contractvalue`, `geographicrisk`. The `id` column can be used to update vendors via import (see [Vendor Import](#vendor-import-csv)).
+The CSV includes columns: `id`, `name`, `externalid`, `contactname`, `contactemail`, `tier`, `website`, `notes`, `servicedescription`, `datasensitivity`, `contractrenewaldate`, `contractvalue`, `geographicrisk`. The `id` or `externalid` column can be used to update vendors via import (see [Vendor Import](#vendor-import-csv)).
 
 ## Vendor Comparison
 

@@ -6,7 +6,7 @@ Manage vendor records, scores, exports, and sub-resources.
 
 | Method | Path | Permission | Purpose |
 |--------|------|------------|---------|
-| `GET` | `/api/v1/vendors` | `vendors:view` | List vendors, with optional `?query=` and `?tier=` filters |
+| `GET` | `/api/v1/vendors` | `vendors:view` | List vendors, with optional `?query=`, `?tier=`, `?tag=`, and `?externalId=` filters |
 | `POST` | `/api/v1/vendors/import` | `vendors:create` | Create a vendor from a JSON body |
 | `GET` | `/api/v1/vendors/{id}` | `vendors:view` | Get vendor detail |
 | `PUT` | `/api/v1/vendors/{id}` | `vendors:edit` | Update vendor profile |
@@ -32,6 +32,15 @@ curl -H "Authorization: Bearer mrk_<prefix>.<secret>" \
   "http://localhost:3000/api/v1/vendors?query=aws&tier=HIGH"
 ```
 
+### Look up by external ID
+
+```bash
+curl -H "Authorization: Bearer mrk_<prefix>.<secret>" \
+  "http://localhost:3000/api/v1/vendors?externalId=ERP-V-001"
+```
+
+The `externalId` filter is an exact match — it returns the single vendor (if any) carrying that reference.
+
 ### Get Vendor Detail
 
 ```bash
@@ -45,7 +54,7 @@ curl -H "Authorization: Bearer mrk_<prefix>.<secret>" \
 curl -X POST \
   -H "Authorization: Bearer mrk_<prefix>.<secret>" \
   -H "Content-Type: application/json" \
-  -d '{"name":"Acme Corp","contactName":"Jane Smith","contactEmail":"jane@acme.com","tier":"MEDIUM"}' \
+  -d '{"name":"Acme Corp","externalId":"ERP-V-001","contactName":"Jane Smith","contactEmail":"jane@acme.com","tier":"MEDIUM"}' \
   http://localhost:3000/api/v1/vendors/import
 ```
 

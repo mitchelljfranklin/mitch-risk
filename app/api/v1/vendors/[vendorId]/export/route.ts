@@ -72,6 +72,7 @@ function buildVendorCsvResponse(
 
   const summary = [
     `Vendor:,${csvEscape(vendor.name)}`,
+    `External ID:,${csvEscape(vendor.externalId ?? "")}`,
     `Contact:,${csvEscape(vendor.contactEmail ?? "")}`,
     `Tier:,${csvEscape(vendor.tier ?? "")}`,
     `Owner:,${csvEscape(vendor.owner?.name ?? "")}`,

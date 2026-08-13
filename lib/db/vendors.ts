@@ -52,6 +52,7 @@ export type VendorListFilters = {
   query?: string;
   tier?: string;
   tag?: string;
+  externalId?: string;
   sort?: VendorSort;
   page?: number;
   pageSize?: number;
@@ -65,6 +66,7 @@ export async function listVendors(filters?: VendorListFilters) {
     where.OR = [
       { name: { contains: term, mode: "insensitive" } },
       { contactEmail: { contains: term, mode: "insensitive" } },
+      { externalId: { contains: term, mode: "insensitive" } },
       { tags: { hasSome: [term] } },
     ];
   }
@@ -75,6 +77,10 @@ export async function listVendors(filters?: VendorListFilters) {
 
   if (filters?.tag) {
     where.tags = { has: filters.tag };
+  }
+
+  if (filters?.externalId) {
+    where.externalId = filters.externalId;
   }
 
   const page = Math.max(1, filters?.page ?? 1);
@@ -114,6 +120,7 @@ export function exportAllVendors() {
     select: {
       id: true,
       name: true,
+      externalId: true,
       contactName: true,
       contactEmail: true,
       tier: true,
@@ -142,6 +149,19 @@ export function getVendor(id: string) {
   });
 }
 
+export function getVendorByExternalId(externalId: string) {
+  return prisma.vendor.findUnique({
+    where: { externalId },
+    include: {
+      owner: { select: { id: true, name: true } },
+      assessments: {
+        orderBy: { createdAt: "desc" },
+        include: { template: { select: { name: true, version: true } } },
+      },
+    },
+  });
+}
+
 function toTier(value: VendorInput["tier"]): VendorTier | null {
   return value === "" ? null : value;
 }
@@ -149,6 +169,7 @@ function toTier(value: VendorInput["tier"]): VendorTier | null {
 function toVendorData(input: VendorInput): Prisma.VendorUncheckedCreateInput {
   return {
     name: input.name,
+    externalId: input.externalId?.trim() || null,
     contactName: input.contactName || null,
     contactEmail: input.contactEmail,
     tier: toTier(input.tier),

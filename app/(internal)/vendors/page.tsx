@@ -94,6 +94,7 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
             currentVendors={vendors.map((vendor) => ({
               id: vendor.id,
               name: vendor.name,
+              externalId: vendor.externalId ?? "",
               contactName: vendor.contactName ?? "",
               contactEmail: vendor.contactEmail,
               tier: vendor.tier,
@@ -110,6 +111,7 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
             allVendors={exportVendors.map((vendor) => ({
               id: vendor.id,
               name: vendor.name,
+              externalId: vendor.externalId ?? "",
               contactName: vendor.contactName ?? "",
               contactEmail: vendor.contactEmail,
               tier: vendor.tier,
