@@ -1,3 +1,5 @@
+import { type RiskWeight } from "../../prisma/generated/prisma/client";
+
 import { prisma } from "@/lib/prisma";
 import { getScoringSettings } from "@/lib/settings";
 import {
@@ -21,6 +23,28 @@ export type FrameworkCompliance = {
   mappedControlCount: number;
   domains: { domain: string; complianceRatio: number; controlCount: number }[];
 };
+
+type QuestionWithResponse = {
+  controlIds: string[];
+  riskWeight: RiskWeight;
+  response: { isNotApplicable: boolean; isCompliant: boolean | null } | null;
+};
+
+function toDomainQuestionInputs(
+  questions: QuestionWithResponse[],
+  controlDomainMap: Map<string, string>,
+) {
+  return questions
+    .filter((question) =>
+      question.controlIds.some((controlId) => controlDomainMap.has(controlId)),
+    )
+    .map((question) => ({
+      controlIds: question.controlIds,
+      riskWeight: question.riskWeight,
+      isNotApplicable: question.response?.isNotApplicable ?? false,
+      isCompliant: question.response?.isCompliant ?? null,
+    }));
+}
 
 async function getFrameworkCompliance(
   assessmentId: string,
@@ -63,28 +87,19 @@ async function getFrameworkCompliance(
   const { riskWeights } = await getScoringSettings();
 
   const result: FrameworkCompliance[] = [];
-  for (const [frameworkId, info] of byFramework.entries()) {
-    const relevantQuestions = questions.filter((question) =>
-      question.controlIds.some((controlId) => info.domainMap.has(controlId)),
-    );
-
+  for (const [frameworkId, frameworkInfo] of byFramework.entries()) {
     const mappedControlIds = new Set<string>();
-    for (const question of relevantQuestions) {
+    for (const question of questions) {
       for (const controlId of question.controlIds) {
-        if (info.domainMap.has(controlId)) {
+        if (frameworkInfo.domainMap.has(controlId)) {
           mappedControlIds.add(controlId);
         }
       }
     }
 
     const domains = computeDomainCompliance(
-      relevantQuestions.map((question) => ({
-        controlIds: question.controlIds,
-        riskWeight: question.riskWeight,
-        isNotApplicable: question.response?.isNotApplicable ?? false,
-        isCompliant: question.response?.isCompliant ?? null,
-      })),
-      info.domainMap,
+      toDomainQuestionInputs(questions, frameworkInfo.domainMap),
+      frameworkInfo.domainMap,
       riskWeights,
     ).map((domain) => ({
       domain: domain.domain,
@@ -94,8 +109,8 @@ async function getFrameworkCompliance(
 
     result.push({
       frameworkId,
-      frameworkName: info.name,
-      frameworkVersion: info.version,
+      frameworkName: frameworkInfo.name,
+      frameworkVersion: frameworkInfo.version,
       mappedControlCount: mappedControlIds.size,
       domains,
     });
@@ -311,16 +326,8 @@ export async function getVendorDomainRadar(
       where: { assessmentId },
       include: { response: true },
     });
-    const relevant = questions.filter((question) =>
-      question.controlIds.some((controlId) => controlDomainMap.has(controlId)),
-    );
     return computeDomainCompliance(
-      relevant.map((question) => ({
-        controlIds: question.controlIds,
-        riskWeight: question.riskWeight,
-        isNotApplicable: question.response?.isNotApplicable ?? false,
-        isCompliant: question.response?.isCompliant ?? null,
-      })),
+      toDomainQuestionInputs(questions, controlDomainMap),
       controlDomainMap,
       riskWeights,
     );

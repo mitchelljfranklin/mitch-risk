@@ -18,6 +18,9 @@ export async function GET(
 
   try {
     const pdfBuffer = await generateFrameworkReportPdf(vendorId, frameworkId);
+    if (pdfBuffer === null) {
+      return new Response("Not found", { status: 404 });
+    }
     const filename = `compliance-report-${vendorId}-${frameworkId}.pdf`;
     return new Response(new Uint8Array(pdfBuffer), {
       headers: {
@@ -25,10 +28,11 @@ export async function GET(
         "Content-Disposition": `attachment; filename="${filename}"`,
       },
     });
-  } catch (error) {
-    if ((error as Error).message === "Vendor or framework not found") {
-      return new Response("Not found", { status: 404 });
-    }
-    throw error;
+  } catch (error: unknown) {
+    console.error(
+      "Framework report generation failed:",
+      error instanceof Error ? error.message : String(error),
+    );
+    return new Response("Failed to generate report", { status: 500 });
   }
 }

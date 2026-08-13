@@ -67,6 +67,7 @@ export default async function AssessmentsPage({
   const backParam = buildBackParam("/assessments", sp, [
     "query",
     "status",
+    "vendorId",
     "from",
     "to",
     "overdue",

@@ -23,8 +23,10 @@ import { listVendorCertifications } from "@/lib/db/certifications";
 import { prisma } from "@/lib/prisma";
 import { getVendorProfile } from "@/lib/db/compliance";
 import { listFindings } from "@/lib/db/findings";
-import { listFrameworks } from "@/lib/db/frameworks";
-import { listFrameworksWithSharedControls } from "@/lib/db/frameworks";
+import {
+  listFrameworks,
+  listFrameworksWithSharedControls,
+} from "@/lib/db/frameworks";
 import { getVendor } from "@/lib/db/vendors";
 import { getCustomerResponsibilityCompliance } from "@/lib/db/customer-responsibility";
 import { buildVendorTimeline } from "@/lib/db/vendor-timeline";
@@ -42,6 +44,8 @@ import {
   VENDOR_TIER_LABELS,
 } from "@/lib/schemas/vendor";
 import { cn, formatDate, formatPercent } from "@/lib/utils";
+
+const MAX_VENDOR_ASSESSMENTS = 10;
 
 function computeInherentRisk(vendor: {
   tier: string | null;
@@ -213,6 +217,9 @@ export default async function VendorDetailPage({
     "assessments",
   ];
   const safeTab = allowedTabs.includes(defaultTab) ? defaultTab : "overview";
+  const frameworkBackParam = sp.back
+    ? `&back=${encodeURIComponent(sp.back)}`
+    : "";
 
   const hasOverviewFields =
     vendor.serviceDescription ||
@@ -649,7 +656,7 @@ export default async function VendorDetailPage({
                       className="flex items-center justify-between"
                     >
                       <Link
-                        href={`/vendors/${vendor.id}/frameworks/${framework.id}?tab=${safeTab}`}
+                        href={`/vendors/${vendor.id}/frameworks/${framework.id}?tab=${safeTab}${frameworkBackParam}`}
                         className="hover:bg-accent/40 text-sm"
                       >
                         {framework.name}{" "}
@@ -776,31 +783,33 @@ export default async function VendorDetailPage({
                 />
               ) : (
                 <div className="flex flex-col gap-2">
-                  {vendor.assessments.slice(0, 10).map((assessment) => (
-                    <Link
-                      key={assessment.id}
-                      href={`/assessments/${assessment.id}`}
-                      className="hover:bg-accent/40 flex items-center justify-between gap-3 rounded-md border p-3"
-                    >
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium">
-                          {assessment.title}
-                        </span>
-                        <span className="text-muted-foreground text-xs">
-                          {assessment.template
-                            ? `${assessment.template.name} v${assessment.template.version}`
-                            : "No template"}
-                          {assessment.dueDate
-                            ? ` · due ${formatDate(assessment.dueDate)}`
-                            : ""}
-                        </span>
-                      </div>
-                      <Badge variant="secondary">
-                        {ASSESSMENT_STATUS_LABELS[assessment.status]}
-                      </Badge>
-                    </Link>
-                  ))}
-                  {vendor.assessments.length > 10 ? (
+                  {vendor.assessments
+                    .slice(0, MAX_VENDOR_ASSESSMENTS)
+                    .map((assessment) => (
+                      <Link
+                        key={assessment.id}
+                        href={`/assessments/${assessment.id}`}
+                        className="hover:bg-accent/40 flex items-center justify-between gap-3 rounded-md border p-3"
+                      >
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">
+                            {assessment.title}
+                          </span>
+                          <span className="text-muted-foreground text-xs">
+                            {assessment.template
+                              ? `${assessment.template.name} v${assessment.template.version}`
+                              : "No template"}
+                            {assessment.dueDate
+                              ? ` · due ${formatDate(assessment.dueDate)}`
+                              : ""}
+                          </span>
+                        </div>
+                        <Badge variant="secondary">
+                          {ASSESSMENT_STATUS_LABELS[assessment.status]}
+                        </Badge>
+                      </Link>
+                    ))}
+                  {vendor.assessments.length > MAX_VENDOR_ASSESSMENTS ? (
                     <Link
                       href={`/assessments?vendorId=${vendor.id}`}
                       className="text-muted-foreground text-xs hover:underline"

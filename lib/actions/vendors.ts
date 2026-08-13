@@ -4,6 +4,8 @@ import { randomBytes } from "crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { Prisma } from "../../prisma/generated/prisma/client";
+
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { createVendor, deleteVendor, updateVendor } from "@/lib/db/vendors";
@@ -26,6 +28,13 @@ import {
 
 export type VendorFormState =
   { error: string } | { ok: true; message: string } | undefined;
+
+function isDuplicateExternalId(error: unknown): boolean {
+  return (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    error.code === "P2002"
+  );
+}
 
 export async function createVendorAction(
   previousState: VendorFormState,
@@ -54,7 +63,19 @@ export async function createVendorAction(
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
   }
-  const vendor = await createVendor(parsed.data);
+
+  let vendor;
+  try {
+    vendor = await createVendor(parsed.data);
+  } catch (error: unknown) {
+    if (isDuplicateExternalId(error)) {
+      return {
+        error: "A vendor with this external ID already exists.",
+      };
+    }
+    throw error;
+  }
+
   const user = await getCurrentUser();
   if (user) {
     await logAudit(user.id, AUDIT_ACTIONS.CREATE_VENDOR, "Vendor", vendor.id);
@@ -90,7 +111,16 @@ export async function updateVendorAction(
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
   }
-  await updateVendor(vendorId, parsed.data);
+  try {
+    await updateVendor(vendorId, parsed.data);
+  } catch (error: unknown) {
+    if (isDuplicateExternalId(error)) {
+      return {
+        error: "A vendor with this external ID already exists.",
+      };
+    }
+    throw error;
+  }
   const user = await getCurrentUser();
   if (user) {
     await logAudit(user.id, AUDIT_ACTIONS.UPDATE_VENDOR, "Vendor", vendorId);
@@ -252,9 +282,13 @@ export async function importVendorsAction(
       }
       createdCount++;
     } catch (error: unknown) {
-      rowErrors.push(
-        `${input.name}: ${error instanceof Error ? error.message : "failed"}`,
-      );
+      if (isDuplicateExternalId(error)) {
+        rowErrors.push(`${input.name}: duplicate external ID`);
+      } else {
+        rowErrors.push(
+          `${input.name}: ${error instanceof Error ? error.message : "failed"}`,
+        );
+      }
     }
   }
 

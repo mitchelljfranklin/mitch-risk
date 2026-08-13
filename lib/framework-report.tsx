@@ -9,6 +9,8 @@ import {
 
 import { formatPercent } from "@/lib/utils";
 
+type RagThresholds = { green: number; amber: number };
+
 type FrameworkReportData = {
   organizationName: string;
   vendorName: string;
@@ -18,6 +20,7 @@ type FrameworkReportData = {
   frameworkVersion: string;
   generatedDate: string;
   overallScore: number | null;
+  ragThresholds: RagThresholds;
   domains: {
     domain: string;
     current: number;
@@ -98,16 +101,17 @@ const styles = StyleSheet.create({
   },
 });
 
-function scoreColor(score: number | null): string {
+function scoreColor(score: number | null, thresholds: RagThresholds): string {
   if (score === null) return "#6b7280";
-  if (score >= 0.85) return "#16a34a";
-  if (score >= 0.6) return "#d97706";
+  if (score >= thresholds.green) return "#16a34a";
+  if (score >= thresholds.amber) return "#d97706";
   return "#dc2626";
 }
 
-function domainColor(value: number): string {
-  if (value >= 85) return "#16a34a";
-  if (value >= 60) return "#d97706";
+function domainColor(value: number, thresholds: RagThresholds): string {
+  const ratio = value / 100;
+  if (ratio >= thresholds.green) return "#16a34a";
+  if (ratio >= thresholds.amber) return "#d97706";
   return "#dc2626";
 }
 
@@ -182,7 +186,7 @@ function FrameworkReportDocument({ data }: { data: FrameworkReportData }) {
               <Text
                 style={[
                   styles.summaryValue,
-                  { color: scoreColor(data.overallScore) },
+                  { color: scoreColor(data.overallScore, data.ragThresholds) },
                 ]}
               >
                 {data.overallScore !== null
@@ -229,7 +233,9 @@ function FrameworkReportDocument({ data }: { data: FrameworkReportData }) {
                   <Text
                     style={[
                       styles.valueCol,
-                      { color: domainColor(domain.current) },
+                      {
+                        color: domainColor(domain.current, data.ragThresholds),
+                      },
                     ]}
                   >
                     {domain.current}%
@@ -312,23 +318,25 @@ function FrameworkReportDocument({ data }: { data: FrameworkReportData }) {
 export async function generateFrameworkReportPdf(
   vendorId: string,
   frameworkId: string,
-): Promise<Buffer> {
+): Promise<Buffer | null> {
   const { getVendor } = await import("@/lib/db/vendors");
   const { getFramework } = await import("@/lib/db/frameworks");
   const { getVendorHeatmap, getVendorDomainRadar } =
     await import("@/lib/db/compliance");
-  const { getOrganizationSettings } = await import("@/lib/settings");
+  const { getOrganizationSettings, getScoringSettings } =
+    await import("@/lib/settings");
 
-  const [vendor, framework, controls, radar, org] = await Promise.all([
+  const [vendor, framework, controls, radar, org, scoring] = await Promise.all([
     getVendor(vendorId),
     getFramework(frameworkId),
     getVendorHeatmap(vendorId, frameworkId),
     getVendorDomainRadar(vendorId, frameworkId),
     getOrganizationSettings(),
+    getScoringSettings(),
   ]);
 
   if (!vendor || !framework) {
-    throw new Error("Vendor or framework not found");
+    return null;
   }
 
   const data: FrameworkReportData = {
@@ -340,6 +348,7 @@ export async function generateFrameworkReportPdf(
     frameworkVersion: framework.version,
     generatedDate: new Date().toISOString().slice(0, 10),
     overallScore: vendor.overallScore,
+    ragThresholds: scoring.ragThresholds,
     domains: radar.domains,
     controls: controls.map((control) => ({
       domain: control.domain,

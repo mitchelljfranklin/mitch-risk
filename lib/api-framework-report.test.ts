@@ -57,10 +57,15 @@ describe("GET /api/vendors/{vendorId}/frameworks/{frameworkId}/report", () => {
 
   it("returns 404 when the vendor or framework is not found", async () => {
     mockedAuth.mockResolvedValueOnce(auth([PERMISSIONS.VENDORS_VIEW]));
-    mockedGenerate.mockRejectedValueOnce(
-      new Error("Vendor or framework not found"),
-    );
+    mockedGenerate.mockResolvedValueOnce(null);
     const response = await frameworkReportHandler(request(), params());
     expect(response.status).toBe(404);
+  });
+
+  it("returns 500 when generation fails", async () => {
+    mockedAuth.mockResolvedValueOnce(auth([PERMISSIONS.VENDORS_VIEW]));
+    mockedGenerate.mockRejectedValueOnce(new Error("render failed"));
+    const response = await frameworkReportHandler(request(), params());
+    expect(response.status).toBe(500);
   });
 });

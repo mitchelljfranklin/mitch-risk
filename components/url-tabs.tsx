@@ -4,6 +4,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 
 import { Tabs } from "@/components/ui/tabs";
+import { resolveTab } from "@/lib/nav";
 
 type UrlTabsProps = React.ComponentProps<typeof Tabs> & {
   defaultTab: string;
@@ -21,9 +22,11 @@ export function UrlTabs({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const rawTab = searchParams.get(paramName);
-  const currentTab =
-    rawTab && allowedTabs.includes(rawTab) ? rawTab : defaultTab;
+  const currentTab = resolveTab(
+    searchParams.get(paramName),
+    allowedTabs,
+    defaultTab,
+  );
 
   const handleValueChange = useCallback(
     (value: string) => {

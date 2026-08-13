@@ -105,6 +105,7 @@
                   {
                     "id": "cmr182ra30001iuo4z6iqcdfs",
                     "name": "Acme Corp",
+                    "externalId": "ERP-V-001",
                     "contactName": "Jane Doe",
                     "contactEmail": "jane@acme.example",
                     "tier": "HIGH",
@@ -213,6 +214,36 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/DeletedResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/vendors/external/{externalId}": {
+      "get": {
+        "tags": ["Vendors"],
+        "summary": "Get vendor by external ID",
+        "description": "Returns full vendor detail looked up by its external ID reference (the vendor's ID in another system). Returns 404 if no vendor carries that external ID.",
+        "operationId": "getVendorByExternalId",
+        "parameters": [
+          {
+            "name": "externalId",
+            "in": "path",
+            "required": true,
+            "description": "The vendor's external ID reference",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full vendor detail",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VendorDetail" }
               }
             }
           },

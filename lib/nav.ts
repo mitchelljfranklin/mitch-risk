@@ -18,5 +18,14 @@ export function resolveBackHref(
   prefix: string,
   fallback: string,
 ): string {
-  return back && back.startsWith(prefix) ? back : fallback;
+  const matchesPrefix = back === prefix || back?.startsWith(`${prefix}?`);
+  return back && matchesPrefix ? back : fallback;
+}
+
+export function resolveTab(
+  rawTab: string | null,
+  allowedTabs: string[],
+  defaultTab: string,
+): string {
+  return rawTab && allowedTabs.includes(rawTab) ? rawTab : defaultTab;
 }

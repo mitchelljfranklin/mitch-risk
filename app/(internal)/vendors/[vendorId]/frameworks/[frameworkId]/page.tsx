@@ -37,6 +37,7 @@ export default async function VendorHeatmapPage({
   const { vendorId, frameworkId } = await params;
   const sp = await searchParams;
   const returnTab = sp.tab ?? "";
+  const vendorBackParam = sp.back ? `&back=${encodeURIComponent(sp.back)}` : "";
 
   const [vendor, framework] = await Promise.all([
     getVendor(vendorId),
@@ -64,7 +65,7 @@ export default async function VendorHeatmapPage({
           {
             label: vendor.name,
             href: returnTab
-              ? `/vendors/${vendorId}?tab=${returnTab}`
+              ? `/vendors/${vendorId}?tab=${returnTab}${vendorBackParam}`
               : `/vendors/${vendorId}`,
           },
           { label: `${framework.name} ${framework.version}` },
