@@ -45,6 +45,7 @@ app/                 # Next.js App Router
     attachments/[attachmentId]/ # authenticated file serving
     v1/                 #   REST v1 endpoints
       vendors/          #     vendor CRUD + import
+        external/[externalId]/ # vendor lookup by external ID
       assessments/      #     assessment list + detail
       findings/         #     finding list + status update
       frameworks/       #     framework list + detail
@@ -107,6 +108,7 @@ components/          # shadcn ui primitives + domain composites
   conditional-rules-editor.tsx           # conditional logic rule builder
   control-multi-select.tsx               # multi-select for framework controls
   compliance-radar.tsx                   # recharts radar of framework domain compliance
+  url-tabs.tsx                           # ?tab= URL-synced tabs
   auth/sso-buttons.tsx                   # SSO login buttons
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
@@ -142,6 +144,9 @@ lib/                 # cross-cutting logic
   api-keys.ts        # API key generation, bcrypt hashing, CIDR IP matching
   api-auth.ts        # unified authenticateRequest() — session + Bearer token + permission check
   api-response.ts    # shared API error wrapper (runApiHandler + apiError)
+  nav.ts             # buildBackParam / resolveBackHref / resolveTab navigation-state helpers
+  api/               # shared API response builders
+    vendor-detail.ts #   buildVendorDetailResponse (used by vendor + external-ID lookup routes)
   auth.ts            # Auth.js config + permission guards (requirePermission/hasPermission)
   break-glass.ts     # SSO-only login bypass: token gen/hash/verify + show-local-auth rule
   client-ip.ts       # proxy-aware client IP (trusted-hop X-Forwarded-For / CLIENT_IP_HEADER)

@@ -38,7 +38,7 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 ## Scoring & Compliance
 
 - **Weighted RAG scoring** with configurable thresholds
-- **12 risk weights** per question (Critical, High, Medium, Low)
+- **4 risk weights** per question (Critical, High, Medium, Low)
 - **Maps answers to** ISO 27001:2022 (93 controls), SOC 2 (51 TSC), NIST CSF 2.0 (129 subcategories), and Essential Eight (55 controls)
 - **Auto-generates findings** from non-compliant answers
 - **Domain-level compliance heatmaps** per vendor per framework

@@ -7,6 +7,7 @@ Vendors are the third-party organisations you assess. The vendor record stores p
 | Field | Description |
 |-------|-------------|
 | **Name** | Vendor organisation name (required) |
+| **External ID** | Optional reference ID from another system (e.g. an ERP or procurement code) |
 | **Contact Name** | Primary contact person at the vendor |
 | **Contact Email** | Email for assessment invites and reminders |
 | **Website** | Vendor's public website URL |
@@ -26,6 +27,8 @@ The overall score is automatically updated whenever an assessment for this vendo
 ## Vendor List
 
 The vendors list view shows all vendors in a table with columns for name, tier, and score. **Click any column header** to sort the table — click again to reverse the order. A sort dropdown is also available in the filter bar with options to sort by name, tier, or score. Use the **View toggle** to switch between table rows and card layout.
+
+Your search, tier, and sort filters are preserved when you navigate into a vendor and back — the breadcrumb and back links remember your previous view. The same applies to the active tab on a vendor's detail page and the framework compliance view.
 
 ## Certifications
 

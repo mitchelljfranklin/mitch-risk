@@ -7,6 +7,7 @@ Manage vendor records, scores, exports, and sub-resources.
 | Method | Path | Permission | Purpose |
 |--------|------|------------|---------|
 | `GET` | `/api/v1/vendors` | `vendors:view` | List vendors, with optional `?query=`, `?tier=`, `?tag=`, and `?externalId=` filters |
+| `GET` | `/api/v1/vendors/external/{externalId}` | `vendors:view` | Look up a vendor by its external ID (404 if not found) |
 | `POST` | `/api/v1/vendors/import` | `vendors:create` | Create a vendor from a JSON body |
 | `GET` | `/api/v1/vendors/{id}` | `vendors:view` | Get vendor detail |
 | `PUT` | `/api/v1/vendors/{id}` | `vendors:edit` | Update vendor profile |
@@ -36,10 +37,10 @@ curl -H "Authorization: Bearer mrk_<prefix>.<secret>" \
 
 ```bash
 curl -H "Authorization: Bearer mrk_<prefix>.<secret>" \
-  "http://localhost:3000/api/v1/vendors?externalId=ERP-V-001"
+  http://localhost:3000/api/v1/vendors/external/ERP-V-001
 ```
 
-The `externalId` filter is an exact match — it returns the single vendor (if any) carrying that reference.
+The `externalId` filter is an exact match — it returns the single vendor (if any) carrying that reference. You can also query `?externalId=` on the list endpoint, which returns a one-element array instead of full detail.
 
 ### Get Vendor Detail
 

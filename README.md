@@ -16,7 +16,7 @@ But that value comes at a cost — the subscription, the onboarding overhead, th
 
 Mitch‑Risk bridges that gap. It strips third party vendor risk management down to its essentials: build a questionnaire, send it, score the answers, track compliance over time. No AI risk scoring, no vendor universe crawling, no board reporting module. Just the core workflow, done well, running in Docker Compose.
 
-> **Security-hardened.** Mitch‑Risk has undergone a comprehensive security audit — 55 findings across 4 severity levels. 52 items resolved (fixed or dismissed), 3 deferred or monitored. [Read the full report](APPSECURITY.md).
+> **Security-hardened.** Mitch‑Risk has undergone a comprehensive security audit — 61 findings across 4 severity levels. 56 resolved (fixed or dismissed), 3 deferred or monitored, 2 open. [Read the full report](APPSECURITY.md).
 
 ---
 
@@ -191,7 +191,7 @@ Authenticated REST API under `/api/v1/`. Authenticate via session cookie (web lo
 
 | Resource | Endpoints |
 |----------|-----------|
-| **Vendors** | `GET/PUT/DELETE /api/v1/vendors/{id}`, list, import, export, score, assessments, certifications |
+| **Vendors** | `GET/PUT/DELETE /api/v1/vendors/{id}`, `GET /api/v1/vendors/external/{externalId}` (lookup by external ID), list, import, export, score, assessments, certifications |
 | **Assessments** | `GET /api/v1/assessments` (list with filters), `GET /api/v1/assessments/{id}` (full detail) |
 | **Findings** | `GET /api/v1/findings` (filters: status, severity, vendor), `PATCH /api/v1/findings/{id}` (status update) |
 | **Frameworks** | `GET /api/v1/frameworks` (list), `GET /api/v1/frameworks/{id}` (detail with controls), `DELETE /api/v1/frameworks/{id}` (delete) |
