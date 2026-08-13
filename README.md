@@ -70,7 +70,8 @@ docker compose up -d
 - Expiry and revocation — revoke a link and it stops working immediately
 
 ### Vendors
-- CSV bulk import/export with upsert support (include `id` column to update existing vendors)
+- CSV bulk import/export with upsert support (include `id` or `externalid` to update existing vendors)
+- Optional **external ID** field to cross-reference vendors in other systems
 - Drag-and-drop file upload for attachments and certifications
 - Vendor detail pages with certifications, attachments, assessments, and framework compliance views
 - Side-by-side vendor comparison
@@ -81,6 +82,8 @@ docker compose up -d
 - Maps answers to ISO 27001:2022 (93 controls), SOC 2 (51 TSC), NIST CSF 2.0 (129 subcategories), and Essential Eight (55 controls)
 - Auto-generates findings from non-compliant answers
 - Domain-level compliance heatmaps per vendor per framework
+- Compliance radar chart per framework — risk-weighted domain compliance, current vs previous
+- Framework compliance PDF reports for auditors (radar values + per-control heatmap)
 
 ### Review & Collaboration
 - Approve, reject, or request clarification on each vendor answer
@@ -104,7 +107,7 @@ docker compose up -d
 - Donut chart of vendor risk distribution, bar chart of findings by severity
 - Assessment activity timeline with time-range selector
 - Sortable, filterable data tables across vendors, assessments, findings, and audit log
-- PDF assessment reports and CSV exports
+- PDF assessment reports, framework compliance PDF reports, and CSV exports
 
 ### API
 - REST v1 under `/api/v1/` — vendors, assessments, findings, frameworks, dashboard, audit

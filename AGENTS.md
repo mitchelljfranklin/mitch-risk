@@ -106,6 +106,7 @@ components/          # shadcn ui primitives + domain composites
   question-form.tsx                      # template question editor
   conditional-rules-editor.tsx           # conditional logic rule builder
   control-multi-select.tsx               # multi-select for framework controls
+  compliance-radar.tsx                   # recharts radar of framework domain compliance
   auth/sso-buttons.tsx                   # SSO login buttons
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
@@ -152,6 +153,8 @@ lib/                 # cross-cutting logic
   json.ts            # deep-clone helper for JSON-safe values
   openapi.json       # OpenAPI 3.0 spec powering Swagger UI at /docs
   pdf-report.tsx     # @react-pdf/renderer assessment report generator
+  framework-report.tsx # @react-pdf/renderer framework compliance report generator
+  portfolio-report.tsx # @react-pdf/renderer portfolio PDF report generator
   permissions.ts     # RBAC permission catalog, default system roles, permission helpers
   portal.ts          # portal state machine (visibility, required questions)
   prisma.ts          # shared Prisma client instance
@@ -170,7 +173,7 @@ lib/                 # cross-cutting logic
                      #   local-disk, s3.ts (AWS S3), azure.ts (Azure Blob)
 hooks/              # React hooks (use-form-toast, use-action-feedback, use-mobile)
 emails/              # React Email templates (invite, reminder, escalation, dynamic)
-prisma/              # schema.prisma, migrations, seed.ts, seed-runner.cjs
+prisma/              # schema.prisma, migrations, seed.ts, seed-runner.cjs, seed-demo.ts, seed-radar-demo.ts
   seed-data/         # ISO 27001, SOC 2, NIST CSF, Essential Eight seed data + types
 scripts/             # backup.sh, backup.ps1
 e2e/                 # Playwright end-to-end tests

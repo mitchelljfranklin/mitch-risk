@@ -26,6 +26,7 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 ## Vendors
 
 - **CSV bulk import/export** with upsert support
+- **External ID** field to cross-reference vendors in other systems
 - **Drag-and-drop file upload** for attachments and certifications
 - **Vendor detail pages** with tabs: Overview, Compliance, Findings, Assessments
 - **Risk owner, data sensitivity, service description, contract renewal date**
