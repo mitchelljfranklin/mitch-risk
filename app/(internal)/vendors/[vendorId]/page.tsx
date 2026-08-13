@@ -28,7 +28,9 @@ import { listFrameworksWithSharedControls } from "@/lib/db/frameworks";
 import { getVendor } from "@/lib/db/vendors";
 import { getCustomerResponsibilityCompliance } from "@/lib/db/customer-responsibility";
 import { buildVendorTimeline } from "@/lib/db/vendor-timeline";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UrlTabs } from "@/components/url-tabs";
+import { resolveBackHref } from "@/lib/nav";
 import {
   ASSESSMENT_STATUS_LABELS,
   FINDING_STATUS_LABELS,
@@ -211,10 +213,20 @@ export default async function VendorDetailPage({
     <div className="flex max-w-5xl flex-col gap-6">
       {sp.created ? <FlashToast message="Vendor created." /> : null}
       <Breadcrumbs
-        segments={[
-          { label: "Vendors", href: "/vendors" },
-          { label: vendor.name },
-        ]}
+        segments={
+          sp.back?.startsWith("/risk-register")
+            ? [
+                { label: "Risk register", href: sp.back },
+                { label: vendor.name },
+              ]
+            : [
+                {
+                  label: "Vendors",
+                  href: resolveBackHref(sp.back, "/vendors", "/vendors"),
+                },
+                { label: vendor.name },
+              ]
+        }
       />
 
       <div>
@@ -275,7 +287,7 @@ export default async function VendorDetailPage({
         ) : null}
       </div>
 
-      <Tabs defaultValue={safeTab}>
+      <UrlTabs defaultTab={safeTab} allowedTabs={allowedTabs}>
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="compliance">Compliance</TabsTrigger>
@@ -636,7 +648,7 @@ export default async function VendorDetailPage({
                       className="flex items-center justify-between"
                     >
                       <Link
-                        href={`/vendors/${vendor.id}/frameworks/${framework.id}`}
+                        href={`/vendors/${vendor.id}/frameworks/${framework.id}?tab=${safeTab}`}
                         className="hover:bg-accent/40 text-sm"
                       >
                         {framework.name}{" "}
@@ -793,7 +805,7 @@ export default async function VendorDetailPage({
             </CardContent>
           </Card>
         </TabsContent>
-      </Tabs>
+      </UrlTabs>
     </div>
   );
 }

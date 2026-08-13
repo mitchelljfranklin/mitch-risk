@@ -21,6 +21,7 @@ import {
   type AssessmentSort,
 } from "@/lib/db/assessments";
 import { ASSESSMENT_STATUS_LABELS } from "@/lib/schemas/assessment";
+import { buildBackParam } from "@/lib/nav";
 
 export const dynamic = "force-dynamic";
 
@@ -55,6 +56,16 @@ export default async function AssessmentsPage({
     Boolean(sp.from) ||
     Boolean(sp.to) ||
     overdue;
+
+  const backParam = buildBackParam("/assessments", sp, [
+    "query",
+    "status",
+    "from",
+    "to",
+    "overdue",
+    "sort",
+    "page",
+  ]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -175,6 +186,7 @@ export default async function AssessmentsPage({
             templateName: assessment.template?.name ?? null,
             templateVersion: assessment.template?.version ?? null,
           }))}
+          backParam={backParam}
           initialSort={sort}
           page={page}
           pageSize={pageSize}

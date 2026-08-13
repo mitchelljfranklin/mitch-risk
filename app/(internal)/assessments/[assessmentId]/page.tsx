@@ -198,14 +198,21 @@ export default async function AssessmentDetailPage({
   return (
     <div className="flex max-w-5xl flex-col gap-6">
       <Breadcrumbs
-        segments={[
-          { label: "Vendors", href: "/vendors" },
-          {
-            label: assessment.vendor.name,
-            href: `/vendors/${assessment.vendorId}`,
-          },
-          { label: assessment.title },
-        ]}
+        segments={
+          sp.back?.startsWith("/assessments")
+            ? [
+                { label: "Assessments", href: sp.back },
+                { label: assessment.title },
+              ]
+            : [
+                { label: "Vendors", href: "/vendors" },
+                {
+                  label: assessment.vendor.name,
+                  href: `/vendors/${assessment.vendorId}`,
+                },
+                { label: assessment.title },
+              ]
+        }
       />
       <div>
         <div className="mt-2 flex flex-col gap-2">

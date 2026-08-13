@@ -17,6 +17,7 @@ export const dynamic = "force-dynamic";
 
 type HeatmapPageProps = {
   params: Promise<{ vendorId: string; frameworkId: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
 };
 
 export async function generateMetadata({
@@ -28,9 +29,14 @@ export async function generateMetadata({
   return { title: `Heatmap — ${vendor.name}` };
 }
 
-export default async function VendorHeatmapPage({ params }: HeatmapPageProps) {
+export default async function VendorHeatmapPage({
+  params,
+  searchParams,
+}: HeatmapPageProps) {
   await requirePermission(PERMISSIONS.VENDORS_VIEW);
   const { vendorId, frameworkId } = await params;
+  const sp = await searchParams;
+  const returnTab = sp.tab ?? "";
 
   const [vendor, framework] = await Promise.all([
     getVendor(vendorId),
@@ -55,7 +61,12 @@ export default async function VendorHeatmapPage({ params }: HeatmapPageProps) {
       <Breadcrumbs
         segments={[
           { label: "Vendors", href: "/vendors" },
-          { label: vendor.name, href: `/vendors/${vendorId}` },
+          {
+            label: vendor.name,
+            href: returnTab
+              ? `/vendors/${vendorId}?tab=${returnTab}`
+              : `/vendors/${vendorId}`,
+          },
           { label: `${framework.name} ${framework.version}` },
         ]}
       />

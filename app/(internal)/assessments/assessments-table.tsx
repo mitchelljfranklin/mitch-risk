@@ -76,6 +76,7 @@ const STATUS_ACCENT: Record<string, string> = {
 
 type AssessmentsTableProps = {
   assessments: AssessmentRow[];
+  backParam: string;
   initialSort: AssessmentSort | undefined;
   page: number;
   pageSize: number;
@@ -84,6 +85,7 @@ type AssessmentsTableProps = {
 
 export function AssessmentsTable({
   assessments,
+  backParam,
   initialSort,
   page,
   pageSize,
@@ -122,7 +124,10 @@ export function AssessmentsTable({
           assessment.status,
         );
         return (
-          <Link href={`/assessments/${assessment.id}`} className="block">
+          <Link
+            href={`/assessments/${assessment.id}${backParam}`}
+            className="block"
+          >
             <span className="truncate text-sm font-medium">
               {assessment.title}
             </span>
