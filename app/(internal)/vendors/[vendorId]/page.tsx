@@ -22,7 +22,7 @@ import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { listVendorCertifications } from "@/lib/db/certifications";
 import { prisma } from "@/lib/prisma";
 import { getVendorProfile } from "@/lib/db/compliance";
-import { listVendorFindings } from "@/lib/db/findings";
+import { listFindings } from "@/lib/db/findings";
 import { listFrameworks } from "@/lib/db/frameworks";
 import { listFrameworksWithSharedControls } from "@/lib/db/frameworks";
 import { getVendor } from "@/lib/db/vendors";
@@ -110,13 +110,27 @@ export default async function VendorDetailPage({
     notFound();
   }
 
-  const [profile, frameworks, findings, certifications] = await Promise.all([
-    getVendorProfile(vendorId),
-    listFrameworks(),
-    canViewFindings ? listVendorFindings(vendorId) : Promise.resolve([]),
-    listVendorCertifications(vendorId),
-  ]);
-  const openFindings = findings.filter((finding) => finding.status === "OPEN");
+  const [profile, frameworks, findingsResult, certifications] =
+    await Promise.all([
+      getVendorProfile(vendorId),
+      listFrameworks(),
+      canViewFindings
+        ? listFindings({ vendorId })
+        : Promise.resolve({
+            findings: [],
+            totalCount: 0,
+            page: 1,
+            pageSize: 20,
+          }),
+      listVendorCertifications(vendorId),
+    ]);
+  const findings = findingsResult.findings;
+  const totalFindings = findingsResult.totalCount;
+  const openFindingsCount = canViewFindings
+    ? await prisma.finding.count({
+        where: { status: "OPEN", assessment: { vendorId } },
+      })
+    : 0;
 
   const responsibilityCompliance =
     await getCustomerResponsibilityCompliance(vendorId);
@@ -294,9 +308,9 @@ export default async function VendorDetailPage({
           {canViewFindings ? (
             <TabsTrigger value="findings">
               Findings
-              {openFindings.length > 0 ? (
+              {openFindingsCount > 0 ? (
                 <Badge variant="secondary" className="ml-1 text-[10px]">
-                  {openFindings.length}
+                  {openFindingsCount}
                 </Badge>
               ) : null}
             </TabsTrigger>
@@ -427,57 +441,44 @@ export default async function VendorDetailPage({
                 <CardTitle>Risk profile</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
-                {(() => {
-                  const inherent = computeInherentRisk(vendor);
-                  return inherent !== null ? (
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground text-xs">
-                          Inherent (pre-assessment)
-                        </span>
-                        <Badge variant="secondary" className="text-[11px]">
-                          {formatPercent(inherent)}
-                        </Badge>
-                      </div>
-                      {vendor.overallScore !== null ? (
-                        <div className="flex items-center gap-2">
-                          <span className="text-muted-foreground text-xs">
-                            Residual (assessed)
-                          </span>
-                          <ScoreBadge score={vendor.overallScore} size="sm" />
-                        </div>
-                      ) : null}
-                    </div>
-                  ) : null;
-                })()}
-                {profile != null && profile.overallScore != null ? (
+                <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2">
-                    <ScoreBadge score={profile.overallScore} size="lg" />
                     <span className="text-muted-foreground text-xs">
-                      overall
+                      Inherent (pre-assessment)
                     </span>
-                    {profile.trend !== "stable" ? (
-                      <Badge
-                        variant={
-                          profile.trend === "up" ? "default" : "destructive"
-                        }
-                        className="text-[11px]"
-                      >
-                        {profile.trend === "up"
-                          ? "Trending up ↑"
-                          : "Trending down ↓"}
-                      </Badge>
-                    ) : (
-                      <Badge variant="secondary" className="text-[11px]">
-                        Stable →
-                      </Badge>
-                    )}
+                    <Badge variant="secondary" className="text-[11px]">
+                      {formatPercent(computeInherentRisk(vendor) ?? 0)}
+                    </Badge>
                   </div>
-                ) : (
-                  <p className="text-muted-foreground text-sm">
-                    No score yet — submit an assessment.
-                  </p>
-                )}
+                  {profile != null && profile.overallScore != null ? (
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground text-xs">
+                        Residual (assessed)
+                      </span>
+                      <ScoreBadge score={profile.overallScore} size="sm" />
+                      {profile.trend !== "stable" ? (
+                        <Badge
+                          variant={
+                            profile.trend === "up" ? "default" : "destructive"
+                          }
+                          className="text-[11px]"
+                        >
+                          {profile.trend === "up"
+                            ? "Trending up ↑"
+                            : "Trending down ↓"}
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary" className="text-[11px]">
+                          Stable →
+                        </Badge>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-muted-foreground text-xs">
+                      No score yet — submit an assessment
+                    </span>
+                  )}
+                </div>
                 {profile && profile.history.length > 0 ? (
                   <div className="flex flex-col gap-2">
                     <span className="text-muted-foreground text-xs font-medium">
@@ -687,9 +688,9 @@ export default async function VendorDetailPage({
               <CardHeader>
                 <CardTitle>
                   Findings
-                  {openFindings.length > 0 ? (
+                  {openFindingsCount > 0 ? (
                     <span className="text-muted-foreground ml-2 text-sm font-normal">
-                      {openFindings.length} open
+                      {openFindingsCount} open
                     </span>
                   ) : null}
                 </CardTitle>
@@ -729,6 +730,14 @@ export default async function VendorDetailPage({
                         </div>
                       </Link>
                     ))}
+                    {totalFindings > findings.length ? (
+                      <Link
+                        href={`/risk-register?vendorId=${vendor.id}`}
+                        className="text-muted-foreground text-xs hover:underline"
+                      >
+                        View all {totalFindings} findings in the risk register →
+                      </Link>
+                    ) : null}
                   </div>
                 ) : (
                   <EmptyState
@@ -767,7 +776,7 @@ export default async function VendorDetailPage({
                 />
               ) : (
                 <div className="flex flex-col gap-2">
-                  {vendor.assessments.map((assessment) => (
+                  {vendor.assessments.slice(0, 10).map((assessment) => (
                     <Link
                       key={assessment.id}
                       href={`/assessments/${assessment.id}`}
@@ -791,6 +800,14 @@ export default async function VendorDetailPage({
                       </Badge>
                     </Link>
                   ))}
+                  {vendor.assessments.length > 10 ? (
+                    <Link
+                      href={`/assessments?vendorId=${vendor.id}`}
+                      className="text-muted-foreground text-xs hover:underline"
+                    >
+                      View all {vendor.assessments.length} assessments →
+                    </Link>
+                  ) : null}
                 </div>
               )}
             </CardContent>
