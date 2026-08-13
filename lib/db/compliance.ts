@@ -6,15 +6,25 @@ import {
   ragBand,
 } from "@/lib/dashboard-insights";
 
-type DomainScore = {
+export type DomainScore = {
   domain: string;
+  frameworkId: string;
+  frameworkName: string;
   complianceRatio: number;
   controlCount: number;
 };
 
-async function getDomainBreakdown(
+export type FrameworkCompliance = {
+  frameworkId: string;
+  frameworkName: string;
+  frameworkVersion: string;
+  mappedControlCount: number;
+  domains: { domain: string; complianceRatio: number; controlCount: number }[];
+};
+
+async function getFrameworkCompliance(
   assessmentId: string,
-): Promise<DomainScore[]> {
+): Promise<FrameworkCompliance[]> {
   const questions = await prisma.assessmentQuestion.findMany({
     where: { assessmentId },
     include: { response: true },
@@ -29,40 +39,77 @@ async function getDomainBreakdown(
 
   const controls = await prisma.control.findMany({
     where: { id: { in: controlIds } },
-    select: { id: true, domain: true },
+    select: {
+      id: true,
+      domain: true,
+      framework: { select: { id: true, name: true, version: true } },
+    },
   });
-  const controlDomainMap = new Map(
-    controls.map((control) => [control.id, control.domain]),
-  );
 
-  const byDomain = new Map<string, { compliant: number; total: number }>();
-
-  for (const question of questions) {
-    if (
-      !question.response ||
-      question.response.isNotApplicable ||
-      question.response.isCompliant === null
-    ) {
-      continue;
-    }
-    for (const controlId of question.controlIds) {
-      const domain = controlDomainMap.get(controlId) ?? "Unmapped";
-      const entry = byDomain.get(domain) ?? { compliant: 0, total: 0 };
-      entry.total += 1;
-      if (question.response.isCompliant) {
-        entry.compliant += 1;
-      }
-      byDomain.set(domain, entry);
-    }
+  const byFramework = new Map<
+    string,
+    { name: string; version: string; domainMap: Map<string, string> }
+  >();
+  for (const control of controls) {
+    const entry = byFramework.get(control.framework.id) ?? {
+      name: control.framework.name,
+      version: control.framework.version,
+      domainMap: new Map<string, string>(),
+    };
+    entry.domainMap.set(control.id, control.domain);
+    byFramework.set(control.framework.id, entry);
   }
 
-  return [...byDomain.entries()]
-    .map(([domain, entry]) => ({
-      domain,
-      complianceRatio: entry.total > 0 ? entry.compliant / entry.total : 0,
-      controlCount: entry.total,
-    }))
-    .sort((a, b) => a.domain.localeCompare(b.domain));
+  const result: FrameworkCompliance[] = [];
+  for (const [frameworkId, info] of byFramework.entries()) {
+    const mappedControlIds = new Set<string>();
+    const compliantByDomain = new Map<
+      string,
+      { compliant: number; total: number }
+    >();
+
+    for (const question of questions) {
+      for (const controlId of question.controlIds) {
+        if (!info.domainMap.has(controlId)) {
+          continue;
+        }
+        mappedControlIds.add(controlId);
+        if (
+          !question.response ||
+          question.response.isNotApplicable ||
+          question.response.isCompliant === null
+        ) {
+          continue;
+        }
+        const domain = info.domainMap.get(controlId)!;
+        const entry = compliantByDomain.get(domain) ?? {
+          compliant: 0,
+          total: 0,
+        };
+        entry.total += 1;
+        if (question.response.isCompliant) {
+          entry.compliant += 1;
+        }
+        compliantByDomain.set(domain, entry);
+      }
+    }
+
+    result.push({
+      frameworkId,
+      frameworkName: info.name,
+      frameworkVersion: info.version,
+      mappedControlCount: mappedControlIds.size,
+      domains: [...compliantByDomain.entries()]
+        .map(([domain, entry]) => ({
+          domain,
+          complianceRatio: entry.total > 0 ? entry.compliant / entry.total : 0,
+          controlCount: entry.total,
+        }))
+        .sort((a, b) => a.domain.localeCompare(b.domain)),
+    });
+  }
+
+  return result.sort((a, b) => a.frameworkName.localeCompare(b.frameworkName));
 }
 
 export async function getVendorProfile(vendorId: string) {
@@ -81,10 +128,21 @@ export async function getVendorProfile(vendorId: string) {
   }
 
   const latest = vendor.assessments[0];
-  let domainBreakdown: DomainScore[] = [];
+  let frameworkCompliance: FrameworkCompliance[] = [];
   if (latest) {
-    domainBreakdown = await getDomainBreakdown(latest.id);
+    frameworkCompliance = await getFrameworkCompliance(latest.id);
   }
+
+  const domainBreakdown: DomainScore[] = frameworkCompliance.flatMap(
+    (framework) =>
+      framework.domains.map((domain) => ({
+        domain: domain.domain,
+        frameworkId: framework.frameworkId,
+        frameworkName: framework.frameworkName,
+        complianceRatio: domain.complianceRatio,
+        controlCount: domain.controlCount,
+      })),
+  );
 
   return {
     overallScore: vendor.overallScore,
@@ -99,6 +157,7 @@ export async function getVendorProfile(vendorId: string) {
       vendor.assessments.map((assessment) => assessment.score),
     ),
     domainBreakdown,
+    frameworkCompliance,
   };
 }
 

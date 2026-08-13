@@ -128,6 +128,20 @@ describe("compliance domain and heatmap (integration)", () => {
 
     expect(profile.domainBreakdown.length).toBeGreaterThanOrEqual(1);
     expect(profile.history.length).toBeGreaterThanOrEqual(1);
+
+    expect(profile.frameworkCompliance.length).toBeGreaterThanOrEqual(1);
+    const isoCompliance = profile.frameworkCompliance.find(
+      (framework) => framework.frameworkName === "ISO 27001",
+    );
+    expect(isoCompliance).toBeDefined();
+    if (!isoCompliance) throw new Error("ISO framework compliance missing");
+    expect(isoCompliance.mappedControlCount).toBeGreaterThanOrEqual(2);
+    expect(isoCompliance.domains.length).toBeGreaterThanOrEqual(1);
+
+    for (const entry of profile.domainBreakdown) {
+      expect(entry.frameworkId).toBeTruthy();
+      expect(entry.frameworkName).toBeTruthy();
+    }
   });
 
   it("heatmap returns rag=none for controls with no mapped questions", async () => {

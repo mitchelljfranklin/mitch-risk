@@ -553,31 +553,49 @@ export default async function VendorDetailPage({
               <CardTitle>Domain compliance</CardTitle>
             </CardHeader>
             <CardContent>
-              {profile && profile.domainBreakdown.length > 0 ? (
-                <div className="flex flex-col gap-3">
-                  {profile.domainBreakdown.map((item) => {
-                    const ratioPercent = Math.round(item.complianceRatio * 100);
-                    return (
-                      <div key={item.domain} className="flex flex-col gap-1">
-                        <div className="flex items-center justify-between text-sm">
-                          <span>{item.domain}</span>
-                          <span className="text-muted-foreground">
-                            {ratioPercent}%
-                          </span>
-                        </div>
-                        <ProgressBar
-                          value={ratioPercent}
-                          className={cn(
-                            ratioPercent >= 85
-                              ? "bg-[var(--rag-green)]"
-                              : ratioPercent >= 60
-                                ? "bg-[var(--rag-amber)]"
-                                : "bg-[var(--rag-red)]",
-                          )}
-                        />
-                      </div>
-                    );
-                  })}
+              {profile && profile.frameworkCompliance.length > 0 ? (
+                <div className="flex flex-col gap-5">
+                  {profile.frameworkCompliance.map((framework) => (
+                    <div
+                      key={framework.frameworkId}
+                      className="flex flex-col gap-2"
+                    >
+                      <h3 className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                        {framework.frameworkName}
+                        {framework.frameworkVersion
+                          ? ` ${framework.frameworkVersion}`
+                          : ""}
+                      </h3>
+                      {framework.domains.map((item) => {
+                        const ratioPercent = Math.round(
+                          item.complianceRatio * 100,
+                        );
+                        return (
+                          <div
+                            key={item.domain}
+                            className="flex flex-col gap-1"
+                          >
+                            <div className="flex items-center justify-between text-sm">
+                              <span>{item.domain}</span>
+                              <span className="text-muted-foreground">
+                                {ratioPercent}%
+                              </span>
+                            </div>
+                            <ProgressBar
+                              value={ratioPercent}
+                              className={cn(
+                                ratioPercent >= 85
+                                  ? "bg-[var(--rag-green)]"
+                                  : ratioPercent >= 60
+                                    ? "bg-[var(--rag-amber)]"
+                                    : "bg-[var(--rag-red)]",
+                              )}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <EmptyState
@@ -596,16 +614,31 @@ export default async function VendorDetailPage({
                 <CardTitle>Framework heatmaps</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-2">
-                {frameworks.map((framework) => (
-                  <Link
-                    key={framework.id}
-                    href={`/vendors/${vendor.id}/frameworks/${framework.id}`}
-                    className="hover:bg-accent/40 text-sm"
-                  >
-                    {framework.name}{" "}
-                    {framework.version === "2022" ? "(ISO 27001)" : ""}
-                  </Link>
-                ))}
+                {frameworks.map((framework) => {
+                  const compliance = profile?.frameworkCompliance.find(
+                    (item) => item.frameworkId === framework.id,
+                  );
+                  const hasData = (compliance?.mappedControlCount ?? 0) > 0;
+                  return (
+                    <div
+                      key={framework.id}
+                      className="flex items-center justify-between"
+                    >
+                      <Link
+                        href={`/vendors/${vendor.id}/frameworks/${framework.id}`}
+                        className="hover:bg-accent/40 text-sm"
+                      >
+                        {framework.name}{" "}
+                        {framework.version === "2022" ? "(ISO 27001)" : ""}
+                      </Link>
+                      {!hasData ? (
+                        <span className="text-muted-foreground text-xs">
+                          No assessment data
+                        </span>
+                      ) : null}
+                    </div>
+                  );
+                })}
               </CardContent>
             </Card>
           ) : (

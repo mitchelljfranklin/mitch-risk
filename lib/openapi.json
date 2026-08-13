@@ -1185,6 +1185,8 @@
               "type": "object",
               "properties": {
                 "domain": { "type": "string" },
+                "frameworkId": { "type": "string" },
+                "frameworkName": { "type": "string" },
                 "complianceRatio": { "type": "number", "format": "float" },
                 "controlCount": { "type": "integer" }
               }
@@ -1249,6 +1251,8 @@
               "type": "object",
               "properties": {
                 "domain": { "type": "string" },
+                "frameworkId": { "type": "string" },
+                "frameworkName": { "type": "string" },
                 "complianceRatio": { "type": "number" },
                 "controlCount": { "type": "integer" }
               }
