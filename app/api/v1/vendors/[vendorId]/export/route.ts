@@ -73,8 +73,10 @@ function buildVendorCsvResponse(
   const summary = [
     `Vendor:,${csvEscape(vendor.name)}`,
     `External ID:,${csvEscape(vendor.externalId ?? "")}`,
+    `Contact name:,${csvEscape(vendor.contactName ?? "")}`,
     `Contact:,${csvEscape(vendor.contactEmail ?? "")}`,
     `Tier:,${csvEscape(vendor.tier ?? "")}`,
+    `Website:,${csvEscape(vendor.website ?? "")}`,
     `Owner:,${csvEscape(vendor.owner?.name ?? "")}`,
     `Service provided:,${csvEscape(vendor.serviceDescription ?? "")}`,
     `Data sensitivity:,${csvEscape(
@@ -88,7 +90,11 @@ function buildVendorCsvResponse(
     `Contract value:,${csvEscape(vendor.contractValue ?? "")}`,
     `Geographic risk:,${csvEscape(vendor.geographicRisk ?? "")}`,
     `Tags:,${csvEscape(vendor.tags?.length ? vendor.tags.join(", ") : "")}`,
+    `Notes:,${csvEscape(vendor.notes ?? "")}`,
     `Overall Score:,${vendor.overallScore !== null ? Math.round(vendor.overallScore * 100) + "%" : ""}`,
+    `Last assessed:,${csvEscape(
+      vendor.lastAssessedAt?.toISOString().slice(0, 10) ?? "",
+    )}`,
     `Responsibility Compliance:,${responsibilityPercent} (${completedResponsibility}/${responsibilityActions.length})`,
     "",
   ].join("\n");

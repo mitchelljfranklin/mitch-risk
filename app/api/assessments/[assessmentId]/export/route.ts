@@ -38,6 +38,25 @@ export async function GET(
   }
 
   const rows: string[] = [];
+
+  const scorePercent =
+    assessment.score !== null ? Math.round(assessment.score * 100) + "%" : "";
+  rows.push(
+    [
+      `Assessment:,${csvEscape(assessment.title)}`,
+      `Vendor:,${csvEscape(assessment.vendor.name)}`,
+      `Status:,${csvEscape(assessment.status)}`,
+      `Score:,${csvEscape(scorePercent)}`,
+      `Due date:,${csvEscape(
+        assessment.dueDate?.toISOString().slice(0, 10) ?? "",
+      )}`,
+      `Submitted:,${csvEscape(
+        assessment.submittedAt?.toISOString().slice(0, 10) ?? "",
+      )}`,
+      "",
+    ].join("\n"),
+  );
+
   rows.push(
     [
       "Section",
