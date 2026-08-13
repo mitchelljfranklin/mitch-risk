@@ -63,7 +63,8 @@ export default async function VendorHeatmapPage({ params }: HeatmapPageProps) {
           {framework.name} {framework.version}
         </h1>
         <p className="text-muted-foreground text-sm">
-          Control compliance heatmap from the latest assessment.
+          Domain compliance radar and control-level heatmap from recent
+          assessments.
         </p>
       </div>
 

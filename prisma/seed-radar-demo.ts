@@ -46,7 +46,7 @@ async function resetIfRequested() {
 async function createFullFrameworkTemplate(
   frameworkName: string,
   label: string,
-): Promise<{ templateId: string; frameworkId: string }> {
+): Promise<{ templateId: string }> {
   const framework = await prisma.framework.findFirst({
     where: { name: frameworkName },
   });
@@ -100,7 +100,7 @@ async function createFullFrameworkTemplate(
   console.log(
     `  Template "${template.name}": ${controls.length} questions across ${byDomain.size} domains.`,
   );
-  return { templateId: template.id, frameworkId: framework.id };
+  return { templateId: template.id };
 }
 
 function yesNoAnswer(
@@ -183,14 +183,13 @@ async function createDemoVendor(name: string, note: string): Promise<string> {
 async function addFrameworkAssessments(
   vendorId: string,
   frameworkName: string,
-  label: string,
   templateId: string,
   profile: Profile,
 ): Promise<void> {
   await createCompletedAssessment(
     vendorId,
     templateId,
-    `${label} assessment (current)`,
+    `${frameworkName} assessment (current)`,
     profile,
     false,
     new Date(),
@@ -198,7 +197,7 @@ async function addFrameworkAssessments(
   await createCompletedAssessment(
     vendorId,
     templateId,
-    `${label} assessment (previous)`,
+    `${frameworkName} assessment (previous)`,
     profile,
     true,
     monthsAgo(6),
@@ -236,7 +235,6 @@ async function main() {
   await addFrameworkAssessments(
     isoVendorId,
     "ISO 27001",
-    "ISO 27001",
     iso.templateId,
     "predictable",
   );
@@ -248,7 +246,6 @@ async function main() {
   console.log(`  Vendor "${PREFIX} — NIST CSF":`);
   await addFrameworkAssessments(
     nistVendorId,
-    "NIST CSF",
     "NIST CSF",
     nist.templateId,
     "random",
@@ -262,13 +259,11 @@ async function main() {
   await addFrameworkAssessments(
     multiVendorId,
     "ISO 27001",
-    "ISO 27001",
     iso.templateId,
     "predictable",
   );
   await addFrameworkAssessments(
     multiVendorId,
-    "NIST CSF",
     "NIST CSF",
     nist.templateId,
     "random",
