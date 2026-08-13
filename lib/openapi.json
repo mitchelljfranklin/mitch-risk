@@ -935,6 +935,41 @@
           "403": { "$ref": "#/components/responses/Forbidden" }
         }
       }
+    },
+    "/vendors/{vendorId}/frameworks/{frameworkId}/report": {
+      "get": {
+        "tags": ["Vendors"],
+        "summary": "Download framework compliance report",
+        "description": "Generates a PDF compliance report for a vendor against a specific framework. Includes a domain compliance summary (current vs previous assessment) and a per-control compliance heatmap.",
+        "operationId": "downloadFrameworkReport",
+        "parameters": [
+          {
+            "name": "vendorId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "frameworkId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Framework compliance PDF report",
+            "content": {
+              "application/pdf": {
+                "schema": { "type": "string", "format": "binary" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
     }
   },
   "components": {

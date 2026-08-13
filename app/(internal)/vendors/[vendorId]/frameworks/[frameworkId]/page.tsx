@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ComplianceRadar } from "@/components/compliance-radar";
 import { EmptyState } from "@/components/empty-state";
@@ -58,14 +59,27 @@ export default async function VendorHeatmapPage({ params }: HeatmapPageProps) {
           { label: `${framework.name} ${framework.version}` },
         ]}
       />
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {framework.name} {framework.version}
-        </h1>
-        <p className="text-muted-foreground text-sm">
-          Domain compliance radar and control-level heatmap from recent
-          assessments.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {framework.name} {framework.version}
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            Domain compliance radar and control-level heatmap from recent
+            assessments.
+          </p>
+        </div>
+        {controls.length > 0 ? (
+          <Button asChild variant="outline" size="sm">
+            <a
+              href={`/api/vendors/${vendorId}/frameworks/${frameworkId}/report`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Download PDF report
+            </a>
+          </Button>
+        ) : null}
       </div>
 
       {controls.length === 0 ? (

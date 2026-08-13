@@ -231,6 +231,10 @@ The radius axis is a fixed **0–100%** scale. A "50%" always occupies the same 
 
 A shrinking polygon over time means a vendor is deteriorating; a growing one means their controls are improving.
 
+### PDF report
+
+The framework page has a **Download PDF report** action. Since a radar polygon cannot be navigated in print, the PDF renders the radar as a **domain compliance table** — `Domain | Current | Previous | Change` — alongside the per-control heatmap. The `Change` column (current minus previous) captures the improvement/regression the polygon implies, coloured green for gains and red for losses. A `—` marks domains that were not assessed in the previous round.
+
 ## Findings Reconciliation
 
 After scoring, the engine reconciles findings — the non-compliant answers that need attention:

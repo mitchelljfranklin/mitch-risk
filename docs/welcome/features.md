@@ -43,6 +43,7 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 - **Domain-level compliance heatmaps** per vendor per framework
 - **Per-framework control compliance view** with red/amber/green per control
 - **Compliance radar chart** per framework — risk-weighted domain compliance with current vs previous assessment overlay
+- **PDF compliance reports** per vendor/framework — domain compliance table (radar values) plus per-control heatmap, ready for auditors
 - **Framework gap report** — which controls have no question coverage across all templates
 
 ## Customer Responsibility Tracking
