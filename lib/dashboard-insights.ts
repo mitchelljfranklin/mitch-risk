@@ -85,6 +85,7 @@ export type DomainQuestionInput = {
 export type DomainCompliance = {
   domain: string;
   ratio: number;
+  controlCount: number;
 };
 
 export function computeDomainCompliance(
@@ -92,7 +93,10 @@ export function computeDomainCompliance(
   controlDomainMap: Map<string, string>,
   riskWeights: Record<RiskWeight, number>,
 ): DomainCompliance[] {
-  const byDomain = new Map<string, { weighted: number; max: number }>();
+  const byDomain = new Map<
+    string,
+    { weighted: number; max: number; count: number }
+  >();
 
   for (const question of questions) {
     if (question.isNotApplicable || question.isCompliant === null) {
@@ -104,8 +108,9 @@ export function computeDomainCompliance(
       if (!domain) {
         continue;
       }
-      const entry = byDomain.get(domain) ?? { weighted: 0, max: 0 };
+      const entry = byDomain.get(domain) ?? { weighted: 0, max: 0, count: 0 };
       entry.max += weight;
+      entry.count += 1;
       if (question.isCompliant) {
         entry.weighted += weight;
       }
@@ -118,6 +123,7 @@ export function computeDomainCompliance(
     .map(([domain, entry]) => ({
       domain,
       ratio: entry.weighted / entry.max,
+      controlCount: entry.count,
     }))
     .sort((a, b) => a.domain.localeCompare(b.domain));
 }

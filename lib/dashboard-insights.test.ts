@@ -217,7 +217,33 @@ describe("computeDomainCompliance", () => {
     expect(domains).toHaveLength(2);
     for (const domain of domains) {
       expect(domain.ratio).toBe(1);
+      expect(domain.controlCount).toBe(1);
     }
+  });
+
+  it("counts every mapped control in the controlCount", () => {
+    const controlDomainMap = new Map([
+      ["c1", "Organizational"],
+      ["c2", "Organizational"],
+    ]);
+
+    const domains = computeDomainCompliance(
+      [
+        {
+          controlIds: ["c1", "c2"],
+          riskWeight: "MEDIUM",
+          isNotApplicable: false,
+          isCompliant: true,
+        },
+      ],
+      controlDomainMap,
+      riskWeights,
+    );
+
+    expect(domains).toHaveLength(1);
+    expect(domains[0].domain).toBe("Organizational");
+    expect(domains[0].ratio).toBe(1);
+    expect(domains[0].controlCount).toBe(2);
   });
 
   it("omits domains with zero weighted total and sorts alphabetically", () => {

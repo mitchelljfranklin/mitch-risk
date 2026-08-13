@@ -60,52 +60,44 @@ async function getFrameworkCompliance(
     byFramework.set(control.framework.id, entry);
   }
 
+  const { riskWeights } = await getScoringSettings();
+
   const result: FrameworkCompliance[] = [];
   for (const [frameworkId, info] of byFramework.entries()) {
-    const mappedControlIds = new Set<string>();
-    const compliantByDomain = new Map<
-      string,
-      { compliant: number; total: number }
-    >();
+    const relevantQuestions = questions.filter((question) =>
+      question.controlIds.some((controlId) => info.domainMap.has(controlId)),
+    );
 
-    for (const question of questions) {
+    const mappedControlIds = new Set<string>();
+    for (const question of relevantQuestions) {
       for (const controlId of question.controlIds) {
-        if (!info.domainMap.has(controlId)) {
-          continue;
+        if (info.domainMap.has(controlId)) {
+          mappedControlIds.add(controlId);
         }
-        mappedControlIds.add(controlId);
-        if (
-          !question.response ||
-          question.response.isNotApplicable ||
-          question.response.isCompliant === null
-        ) {
-          continue;
-        }
-        const domain = info.domainMap.get(controlId)!;
-        const entry = compliantByDomain.get(domain) ?? {
-          compliant: 0,
-          total: 0,
-        };
-        entry.total += 1;
-        if (question.response.isCompliant) {
-          entry.compliant += 1;
-        }
-        compliantByDomain.set(domain, entry);
       }
     }
+
+    const domains = computeDomainCompliance(
+      relevantQuestions.map((question) => ({
+        controlIds: question.controlIds,
+        riskWeight: question.riskWeight,
+        isNotApplicable: question.response?.isNotApplicable ?? false,
+        isCompliant: question.response?.isCompliant ?? null,
+      })),
+      info.domainMap,
+      riskWeights,
+    ).map((domain) => ({
+      domain: domain.domain,
+      complianceRatio: domain.ratio,
+      controlCount: domain.controlCount,
+    }));
 
     result.push({
       frameworkId,
       frameworkName: info.name,
       frameworkVersion: info.version,
       mappedControlCount: mappedControlIds.size,
-      domains: [...compliantByDomain.entries()]
-        .map(([domain, entry]) => ({
-          domain,
-          complianceRatio: entry.total > 0 ? entry.compliant / entry.total : 0,
-          controlCount: entry.total,
-        }))
-        .sort((a, b) => a.domain.localeCompare(b.domain)),
+      domains,
     });
   }
 
