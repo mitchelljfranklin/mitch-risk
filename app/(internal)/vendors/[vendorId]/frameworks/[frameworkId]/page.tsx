@@ -3,10 +3,11 @@ import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { ComplianceRadar } from "@/components/compliance-radar";
 import { EmptyState } from "@/components/empty-state";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
-import { getVendorHeatmap } from "@/lib/db/compliance";
+import { getVendorDomainRadar, getVendorHeatmap } from "@/lib/db/compliance";
 import { getFramework } from "@/lib/db/frameworks";
 import { getVendor } from "@/lib/db/vendors";
 import { formatPercent } from "@/lib/utils";
@@ -39,6 +40,7 @@ export default async function VendorHeatmapPage({ params }: HeatmapPageProps) {
   }
 
   const controls = await getVendorHeatmap(vendorId, frameworkId);
+  const radar = await getVendorDomainRadar(vendorId, frameworkId);
 
   const grouped = new Map<string, typeof controls>();
   for (const control of controls) {
@@ -74,6 +76,10 @@ export default async function VendorHeatmapPage({ params }: HeatmapPageProps) {
         />
       ) : (
         <div className="flex flex-col gap-6">
+          <ComplianceRadar
+            data={radar.domains}
+            hasPrevious={radar.hasPrevious}
+          />
           {[...grouped.entries()].map(([domain, domainControls]) => (
             <section key={domain} className="flex flex-col gap-2">
               <h2 className="text-muted-foreground text-sm font-medium">

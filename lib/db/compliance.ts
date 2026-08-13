@@ -1,6 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { getScoringSettings } from "@/lib/settings";
-import { computeRiskByTier, ragBand } from "@/lib/dashboard-insights";
+import {
+  computeDomainCompliance,
+  computeRiskByTier,
+  ragBand,
+} from "@/lib/dashboard-insights";
 
 type DomainScore = {
   domain: string;
@@ -219,6 +223,81 @@ export async function getVendorHeatmap(
       rag,
     };
   });
+}
+
+export type DomainRadarPoint = {
+  domain: string;
+  current: number;
+  previous: number | null;
+};
+
+export async function getVendorDomainRadar(
+  vendorId: string,
+  frameworkId: string,
+): Promise<{ domains: DomainRadarPoint[]; hasPrevious: boolean }> {
+  const controls = await prisma.control.findMany({
+    where: { frameworkId },
+    select: { id: true, domain: true },
+  });
+  const controlDomainMap = new Map(
+    controls.map((control) => [control.id, control.domain]),
+  );
+
+  const assessments = await prisma.assessment.findMany({
+    where: {
+      vendorId,
+      status: { notIn: ["DRAFT", "SENT", "IN_PROGRESS"] },
+    },
+    orderBy: { submittedAt: "desc" },
+    take: 2,
+    select: { id: true },
+  });
+
+  const { riskWeights } = await getScoringSettings();
+
+  const computeForAssessment = async (assessmentId: string) => {
+    const questions = await prisma.assessmentQuestion.findMany({
+      where: { assessmentId },
+      include: { response: true },
+    });
+    const relevant = questions.filter((question) =>
+      question.controlIds.some((controlId) => controlDomainMap.has(controlId)),
+    );
+    return computeDomainCompliance(
+      relevant.map((question) => ({
+        controlIds: question.controlIds,
+        riskWeight: question.riskWeight,
+        isNotApplicable: question.response?.isNotApplicable ?? false,
+        isCompliant: question.response?.isCompliant ?? null,
+      })),
+      controlDomainMap,
+      riskWeights,
+    );
+  };
+
+  const [currentAssessment, previousAssessment] = assessments;
+  if (!currentAssessment) {
+    return { domains: [], hasPrevious: false };
+  }
+
+  const current = await computeForAssessment(currentAssessment.id);
+  const previous = previousAssessment
+    ? await computeForAssessment(previousAssessment.id)
+    : [];
+
+  const previousMap = new Map(
+    previous.map((entry) => [entry.domain, entry.ratio]),
+  );
+
+  const domains = current.map((entry) => ({
+    domain: entry.domain,
+    current: Math.round(entry.ratio * 100),
+    previous: previousMap.has(entry.domain)
+      ? Math.round(previousMap.get(entry.domain)! * 100)
+      : null,
+  }));
+
+  return { domains, hasPrevious: previous.length > 0 };
 }
 
 function computeScoreDistribution(

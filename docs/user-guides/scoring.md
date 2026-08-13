@@ -240,6 +240,7 @@ The scoring system feeds multiple dashboard views:
 | **Risk by Tier** | Stacked RAG bars per vendor tier — see which tiers concentrate your risk |
 | **Vendor Detail** | Inherent vs residual side-by-side, score history timeline, trend direction |
 | **Framework Heatmap** | Per-control compliance ratio with RAG-coloured indicators |
+| **Compliance Radar** | Risk-weighted domain compliance (0–100%) per framework, overlaying the current vs previous assessment |
 | **Domain Breakdown** | Compliance percentage per domain (grouped from control→domain mappings) |
 
 ### Trend Direction

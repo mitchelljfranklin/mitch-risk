@@ -7,7 +7,11 @@ import {
   sendAssessment,
   submitAssessment,
 } from "@/lib/db/assessments";
-import { getVendorHeatmap, getVendorProfile } from "@/lib/db/compliance";
+import {
+  getVendorDomainRadar,
+  getVendorHeatmap,
+  getVendorProfile,
+} from "@/lib/db/compliance";
 import {
   addQuestion,
   addSection,
@@ -281,6 +285,196 @@ describe("compliance domain and heatmap (integration)", () => {
     await prisma.vendor.deleteMany({ where: { name: VENDOR_NAME + " 3" } });
     await prisma.template.deleteMany({
       where: { name: TEMPLATE_NAME + " 3" },
+    });
+  });
+});
+
+describe("domain compliance radar (integration)", () => {
+  async function submitMappedAssessment(
+    vendorId: string,
+    templateId: string,
+    answer: string,
+  ) {
+    const assessment = await createAssessment(vendorId, {
+      title: "Radar test",
+      templateId,
+      dueDate: "",
+      reviewerId: "",
+    });
+    await sendAssessment(assessment.id);
+
+    const sent = await prisma.assessment.findUniqueOrThrow({
+      where: { id: assessment.id },
+      select: { accessToken: true },
+    });
+    const token = sent.accessToken;
+    if (!token) throw new Error("no token");
+
+    const portal = await getAssessmentByToken(token);
+    if (!portal) throw new Error("portal not found");
+
+    const question = portal.questions[0];
+    if (!question) throw new Error("no questions");
+
+    await saveResponses(token, [
+      {
+        assessmentQuestionId: question.id,
+        value: answer,
+        isNotApplicable: false,
+      },
+    ]);
+    await submitAssessment(token);
+  }
+
+  it("returns a single series when only one assessment exists", async () => {
+    const control = await prisma.control.findFirst({
+      where: { framework: { name: "ISO 27001" } },
+    });
+    if (!control) throw new Error("no control seeded");
+
+    const template = await createTemplate({
+      name: TEMPLATE_NAME + " Radar 1",
+      description: "",
+    });
+    const section = await addSection(template.id, "Section");
+    await addQuestion(
+      section.id,
+      buildQuestion({
+        text: "Q1?",
+        type: "YES_NO",
+        expectedAnswer: "YES",
+        controlIds: [control.id],
+      }),
+    );
+    await publishTemplate(template.id);
+
+    const vendor = await createVendor({
+      name: VENDOR_NAME + " Radar 1",
+      contactName: "",
+      contactEmail: "radar1@example.test",
+      tier: "",
+      website: "",
+      notes: "",
+    });
+
+    await submitMappedAssessment(vendor.id, template.id, "YES");
+
+    const radar = await getVendorDomainRadar(vendor.id, control.frameworkId);
+
+    expect(radar.hasPrevious).toBe(false);
+    expect(radar.domains.length).toBeGreaterThan(0);
+    for (const domain of radar.domains) {
+      expect(domain.previous).toBeNull();
+      expect(domain.current).toBe(100);
+    }
+
+    await prisma.vendor.deleteMany({
+      where: { name: VENDOR_NAME + " Radar 1" },
+    });
+    await prisma.template.deleteMany({
+      where: { name: TEMPLATE_NAME + " Radar 1" },
+    });
+  });
+
+  it("returns current vs previous when two assessments exist", async () => {
+    const control = await prisma.control.findFirst({
+      where: { framework: { name: "ISO 27001" } },
+    });
+    if (!control) throw new Error("no control seeded");
+
+    const template = await createTemplate({
+      name: TEMPLATE_NAME + " Radar 2",
+      description: "",
+    });
+    const section = await addSection(template.id, "Section");
+    await addQuestion(
+      section.id,
+      buildQuestion({
+        text: "Q1?",
+        type: "YES_NO",
+        expectedAnswer: "YES",
+        controlIds: [control.id],
+      }),
+    );
+    await publishTemplate(template.id);
+
+    const vendor = await createVendor({
+      name: VENDOR_NAME + " Radar 2",
+      contactName: "",
+      contactEmail: "radar2@example.test",
+      tier: "",
+      website: "",
+      notes: "",
+    });
+
+    await submitMappedAssessment(vendor.id, template.id, "NO");
+    await submitMappedAssessment(vendor.id, template.id, "YES");
+
+    const radar = await getVendorDomainRadar(vendor.id, control.frameworkId);
+
+    expect(radar.hasPrevious).toBe(true);
+    expect(radar.domains.length).toBeGreaterThan(0);
+    for (const domain of radar.domains) {
+      expect(domain.current).toBe(100);
+      expect(domain.previous).toBe(0);
+    }
+
+    await prisma.vendor.deleteMany({
+      where: { name: VENDOR_NAME + " Radar 2" },
+    });
+    await prisma.template.deleteMany({
+      where: { name: TEMPLATE_NAME + " Radar 2" },
+    });
+  });
+
+  it("returns empty domains when no questions map to the framework", async () => {
+    const framework = await prisma.framework.findFirst({
+      where: { name: "Essential Eight" },
+    });
+    if (!framework) throw new Error("no framework seeded");
+
+    const control = await prisma.control.findFirst({
+      where: { framework: { name: "ISO 27001" } },
+    });
+    if (!control) throw new Error("no control seeded");
+
+    const template = await createTemplate({
+      name: TEMPLATE_NAME + " Radar 3",
+      description: "",
+    });
+    const section = await addSection(template.id, "Section");
+    await addQuestion(
+      section.id,
+      buildQuestion({
+        text: "Q1?",
+        type: "YES_NO",
+        expectedAnswer: "YES",
+        controlIds: [control.id],
+      }),
+    );
+    await publishTemplate(template.id);
+
+    const vendor = await createVendor({
+      name: VENDOR_NAME + " Radar 3",
+      contactName: "",
+      contactEmail: "radar3@example.test",
+      tier: "",
+      website: "",
+      notes: "",
+    });
+
+    await submitMappedAssessment(vendor.id, template.id, "YES");
+
+    const radar = await getVendorDomainRadar(vendor.id, framework.id);
+
+    expect(radar.domains).toEqual([]);
+    expect(radar.hasPrevious).toBe(false);
+
+    await prisma.vendor.deleteMany({
+      where: { name: VENDOR_NAME + " Radar 3" },
+    });
+    await prisma.template.deleteMany({
+      where: { name: TEMPLATE_NAME + " Radar 3" },
     });
   });
 });

@@ -1656,6 +1656,7 @@ Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()
 │  │  AttachEvidenceButton  AutoSubmitSelect   Breadcrumbs    │ │
 │  │  CertificationsMngr    ConfirmDialog      ControlPills   │ │
 │  │  ControlMultiSelect    CopyLink           DashboardCharts│ │
+│  │  ComplianceRadar                                         │ │
 │  │  EmptyState            FlashToast         Pagination     │ │
 │  │  ProgressBar           QuestionForm       ReviewPanel    │ │
 │  │  ScoreBadge            SearchInput        StatCard       │ │
