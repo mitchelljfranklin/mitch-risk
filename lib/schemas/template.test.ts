@@ -76,9 +76,23 @@ describe("validateExpectedAnswer", () => {
     expect(validateExpectedAnswer("FREE_TEXT", undefined)).toBeNull();
   });
 
-  it("applies no constraint for other types", () => {
+  it("accepts a string for YES_NO and CHECKBOX", () => {
     expect(validateExpectedAnswer("YES_NO", "YES")).toBeNull();
-    expect(validateExpectedAnswer("MULTIPLE_CHOICE", "Quarterly")).toBeNull();
+    expect(validateExpectedAnswer("YES_NO", "NO")).toBeNull();
     expect(validateExpectedAnswer("CHECKBOX", "true")).toBeNull();
+    expect(validateExpectedAnswer("CHECKBOX", "false")).toBeNull();
+  });
+
+  it("rejects a non-string for YES_NO and CHECKBOX", () => {
+    expect(validateExpectedAnswer("YES_NO", true)).toMatch(/string/);
+    expect(validateExpectedAnswer("YES_NO", 1)).toMatch(/string/);
+    expect(validateExpectedAnswer("CHECKBOX", true)).toMatch(/string/);
+    expect(validateExpectedAnswer("CHECKBOX", 1)).toMatch(/string/);
+  });
+
+  it("applies no constraint to non-scored types", () => {
+    expect(validateExpectedAnswer("FREE_TEXT", "anything")).toBeNull();
+    expect(validateExpectedAnswer("DATE", "2024-01-01")).toBeNull();
+    expect(validateExpectedAnswer("FILE_UPLOAD", "file.pdf")).toBeNull();
   });
 });

@@ -24,11 +24,11 @@ import {
   QUESTION_TYPES,
   RISK_WEIGHT_LABELS,
   RISK_WEIGHTS,
+  type QuestionType,
 } from "@/lib/schemas/template";
 import { type ConditionOperator } from "@/lib/portal";
 import { useFormToast } from "@/hooks/use-form-toast";
 
-type QuestionType = (typeof QUESTION_TYPES)[number];
 type RiskWeight = (typeof RISK_WEIGHTS)[number];
 
 type ConditionRule = {
@@ -184,7 +184,11 @@ export function QuestionForm({
           <Select
             name="type"
             value={type}
-            onValueChange={(value) => setType(value as QuestionType)}
+            onValueChange={(value) => {
+              setType(value as QuestionType);
+              setAcceptedAnswers([]);
+              setExpectedSelections([]);
+            }}
           >
             <SelectTrigger id="type">
               <SelectValue />

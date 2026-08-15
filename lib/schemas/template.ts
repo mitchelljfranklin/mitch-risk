@@ -120,6 +120,12 @@ export function validateExpectedAnswer(
     }
     return null;
   }
+  if (type === "YES_NO" || type === "CHECKBOX") {
+    if (typeof value !== "string") {
+      return `${type} expectedAnswer must be a string.`;
+    }
+    return null;
+  }
   return null;
 }
 
