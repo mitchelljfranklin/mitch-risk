@@ -17,6 +17,7 @@ import {
   deleteTemplate,
   duplicateTemplate,
   getTemplateStatus,
+  importTemplateFromJson,
   moveQuestion,
   moveSection,
   publishTemplate,
@@ -24,16 +25,9 @@ import {
   updateQuestion,
   updateSection,
   updateTemplate,
+  type TemplateImportJson,
 } from "@/lib/db/templates";
 import {
-  Prisma,
-  type QuestionType,
-  type RiskWeight,
-} from "../../prisma/generated/prisma/client";
-import { copyJson } from "@/lib/json";
-import { prisma } from "@/lib/prisma";
-import {
-  QUESTION_TYPES,
   questionSchema,
   sectionSchema,
   templateSchema,
@@ -195,11 +189,20 @@ export async function saveQuestionAction(
     formData,
     "expectedAnswer",
   );
-  if (type === "MULTI_SELECT") {
-    expectedAnswer = expectedAnswer
+  if (
+    type === "MULTI_SELECT" ||
+    type === "MULTIPLE_CHOICE" ||
+    type === "COMBOBOX"
+  ) {
+    const selected = expectedAnswer
       .split("\n")
       .map((line) => line.trim())
       .filter((line) => line.length > 0);
+    if (type === "MULTI_SELECT" || selected.length !== 1) {
+      expectedAnswer = selected;
+    } else {
+      expectedAnswer = selected[0];
+    }
   } else if (type === "NUMERIC" || type === "RATING") {
     expectedAnswer = Number(expectedAnswer);
   }
@@ -374,25 +377,6 @@ export async function createNewVersionAction(formData: FormData) {
   redirect(`/templates/${newTemplateId}`);
 }
 
-type ImportJson = {
-  name: string;
-  description?: string;
-  sections: {
-    title: string;
-    questions: {
-      text: string;
-      helpText?: string;
-      type: string;
-      riskWeight: string;
-      required: boolean;
-      options?: unknown;
-      expectedAnswer?: unknown;
-      conditionalLogic?: unknown;
-      controlCodes?: string[];
-    }[];
-  }[];
-};
-
 export type TemplateImportState =
   | { ok: true; message: string; error?: undefined }
   | { ok: false; error: string; message?: undefined }
@@ -413,7 +397,7 @@ export async function importTemplateAction(
     return { ok: false, error: "File is too large (max 1 MB)." };
   }
 
-  let data: ImportJson;
+  let data: TemplateImportJson;
   try {
     data = JSON.parse(await file.text());
   } catch (error: unknown) {
@@ -424,104 +408,19 @@ export async function importTemplateAction(
     return { ok: false, error: "Invalid JSON file." };
   }
 
-  if (
-    !data.name ||
-    typeof data.name !== "string" ||
-    !Array.isArray(data.sections)
-  ) {
-    return { ok: false, error: "Invalid template structure." };
+  const result = await importTemplateFromJson(data);
+  if (!result.ok) {
+    return { ok: false, error: result.error };
   }
-
-  const validTypes: string[] = [...QUESTION_TYPES];
-  const validWeights = ["CRITICAL", "HIGH", "MEDIUM", "LOW"];
-
-  for (const section of data.sections) {
-    if (!section.title || !Array.isArray(section.questions)) {
-      return { ok: false, error: "Invalid section structure." };
-    }
-    for (const question of section.questions) {
-      if (!validTypes.includes(question.type))
-        return { ok: false, error: `Unknown type: ${question.type}` };
-      if (!validWeights.includes(question.riskWeight))
-        return {
-          ok: false,
-          error: `Unknown risk weight: ${question.riskWeight}`,
-        };
-    }
-  }
-
-  const allCodes = data.sections.flatMap((section) =>
-    section.questions.flatMap((question) => question.controlCodes ?? []),
-  );
-  const uniqueCodes = [...new Set(allCodes)];
-
-  const controls =
-    uniqueCodes.length > 0
-      ? await prisma.control.findMany({
-          where: { code: { in: uniqueCodes } },
-          select: { id: true, code: true },
-        })
-      : [];
-  const controlByCode = new Map(
-    controls.map((control) => [control.code, control.id]),
-  );
-
-  for (const code of uniqueCodes) {
-    if (!controlByCode.has(code)) {
-      return { ok: false, error: `Control code not found: ${code}` };
-    }
-  }
-
-  await prisma.$transaction(async (tx) => {
-    const template = await tx.template.create({
-      data: {
-        name: data.name,
-        description: data.description ?? null,
-        status: "DRAFT",
-        version: 1,
-      },
-    });
-
-    for (const section of data.sections) {
-      const created = await tx.section.create({
-        data: { templateId: template.id, title: section.title },
-      });
-
-      for (const question of section.questions) {
-        const controlIds = (question.controlCodes ?? [])
-          .map((code) => controlByCode.get(code))
-          .filter((id): id is string => !!id);
-
-        await tx.question.create({
-          data: {
-            sectionId: created.id,
-            text: question.text,
-            helpText: question.helpText ?? null,
-            // Validated against QUESTION_TYPES / risk weights above.
-            type: question.type as QuestionType,
-            riskWeight: question.riskWeight as RiskWeight,
-            required: question.required,
-            expectedAnswer: copyJson(
-              question.expectedAnswer ?? null,
-            ) as Prisma.InputJsonValue,
-            options: copyJson(
-              question.options ?? null,
-            ) as Prisma.InputJsonValue,
-            conditionalLogic: copyJson(
-              question.conditionalLogic ?? null,
-            ) as Prisma.InputJsonValue,
-            controls: {
-              create: controlIds.map((controlId) => ({ controlId })),
-            },
-          },
-        });
-      }
-    }
-  });
 
   const user = await getCurrentUser();
   if (user) {
-    await logAudit(user.id, AUDIT_ACTIONS.IMPORT_TEMPLATE, "Template");
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.IMPORT_TEMPLATE,
+      "Template",
+      result.templateId,
+    );
   }
-  return { ok: true, message: `Imported "${data.name}" as a new DRAFT.` };
+  return { ok: true, message: `Imported "${result.name}" as a new DRAFT.` };
 }

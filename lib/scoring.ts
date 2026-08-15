@@ -86,7 +86,11 @@ export function isCompliant(
     );
   }
 
-  if (type === "COMBOBOX") {
+  if (type === "MULTIPLE_CHOICE" || type === "COMBOBOX") {
+    if (Array.isArray(expectedAnswer)) {
+      const acceptedAnswers = expectedAnswer.map(String);
+      return acceptedAnswers.includes(String(value));
+    }
     return String(value) === String(expectedAnswer);
   }
 
