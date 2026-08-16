@@ -1,16 +1,54 @@
+import { type RiskWeight } from "../../prisma/generated/prisma/client";
+
 import { prisma } from "@/lib/prisma";
 import { getScoringSettings } from "@/lib/settings";
-import { computeRiskByTier, ragBand } from "@/lib/dashboard-insights";
+import {
+  computeDomainCompliance,
+  computeRiskByTier,
+  ragBand,
+} from "@/lib/dashboard-insights";
 
-type DomainScore = {
+export type DomainScore = {
   domain: string;
+  frameworkId: string;
+  frameworkName: string;
   complianceRatio: number;
   controlCount: number;
 };
 
-async function getDomainBreakdown(
+export type FrameworkCompliance = {
+  frameworkId: string;
+  frameworkName: string;
+  frameworkVersion: string;
+  mappedControlCount: number;
+  domains: { domain: string; complianceRatio: number; controlCount: number }[];
+};
+
+type QuestionWithResponse = {
+  controlIds: string[];
+  riskWeight: RiskWeight;
+  response: { isNotApplicable: boolean; isCompliant: boolean | null } | null;
+};
+
+function toDomainQuestionInputs(
+  questions: QuestionWithResponse[],
+  controlDomainMap: Map<string, string>,
+) {
+  return questions
+    .filter((question) =>
+      question.controlIds.some((controlId) => controlDomainMap.has(controlId)),
+    )
+    .map((question) => ({
+      controlIds: question.controlIds,
+      riskWeight: question.riskWeight,
+      isNotApplicable: question.response?.isNotApplicable ?? false,
+      isCompliant: question.response?.isCompliant ?? null,
+    }));
+}
+
+async function getFrameworkCompliance(
   assessmentId: string,
-): Promise<DomainScore[]> {
+): Promise<FrameworkCompliance[]> {
   const questions = await prisma.assessmentQuestion.findMany({
     where: { assessmentId },
     include: { response: true },
@@ -25,40 +63,60 @@ async function getDomainBreakdown(
 
   const controls = await prisma.control.findMany({
     where: { id: { in: controlIds } },
-    select: { id: true, domain: true },
+    select: {
+      id: true,
+      domain: true,
+      framework: { select: { id: true, name: true, version: true } },
+    },
   });
-  const controlDomainMap = new Map(
-    controls.map((control) => [control.id, control.domain]),
-  );
 
-  const byDomain = new Map<string, { compliant: number; total: number }>();
-
-  for (const question of questions) {
-    if (
-      !question.response ||
-      question.response.isNotApplicable ||
-      question.response.isCompliant === null
-    ) {
-      continue;
-    }
-    for (const controlId of question.controlIds) {
-      const domain = controlDomainMap.get(controlId) ?? "Unmapped";
-      const entry = byDomain.get(domain) ?? { compliant: 0, total: 0 };
-      entry.total += 1;
-      if (question.response.isCompliant) {
-        entry.compliant += 1;
-      }
-      byDomain.set(domain, entry);
-    }
+  const byFramework = new Map<
+    string,
+    { name: string; version: string; domainMap: Map<string, string> }
+  >();
+  for (const control of controls) {
+    const entry = byFramework.get(control.framework.id) ?? {
+      name: control.framework.name,
+      version: control.framework.version,
+      domainMap: new Map<string, string>(),
+    };
+    entry.domainMap.set(control.id, control.domain);
+    byFramework.set(control.framework.id, entry);
   }
 
-  return [...byDomain.entries()]
-    .map(([domain, entry]) => ({
-      domain,
-      complianceRatio: entry.total > 0 ? entry.compliant / entry.total : 0,
-      controlCount: entry.total,
-    }))
-    .sort((a, b) => a.domain.localeCompare(b.domain));
+  const { riskWeights } = await getScoringSettings();
+
+  const result: FrameworkCompliance[] = [];
+  for (const [frameworkId, frameworkInfo] of byFramework.entries()) {
+    const mappedControlIds = new Set<string>();
+    for (const question of questions) {
+      for (const controlId of question.controlIds) {
+        if (frameworkInfo.domainMap.has(controlId)) {
+          mappedControlIds.add(controlId);
+        }
+      }
+    }
+
+    const domains = computeDomainCompliance(
+      toDomainQuestionInputs(questions, frameworkInfo.domainMap),
+      frameworkInfo.domainMap,
+      riskWeights,
+    ).map((domain) => ({
+      domain: domain.domain,
+      complianceRatio: domain.ratio,
+      controlCount: domain.controlCount,
+    }));
+
+    result.push({
+      frameworkId,
+      frameworkName: frameworkInfo.name,
+      frameworkVersion: frameworkInfo.version,
+      mappedControlCount: mappedControlIds.size,
+      domains,
+    });
+  }
+
+  return result.sort((a, b) => a.frameworkName.localeCompare(b.frameworkName));
 }
 
 export async function getVendorProfile(vendorId: string) {
@@ -77,10 +135,21 @@ export async function getVendorProfile(vendorId: string) {
   }
 
   const latest = vendor.assessments[0];
-  let domainBreakdown: DomainScore[] = [];
+  let frameworkCompliance: FrameworkCompliance[] = [];
   if (latest) {
-    domainBreakdown = await getDomainBreakdown(latest.id);
+    frameworkCompliance = await getFrameworkCompliance(latest.id);
   }
+
+  const domainBreakdown: DomainScore[] = frameworkCompliance.flatMap(
+    (framework) =>
+      framework.domains.map((domain) => ({
+        domain: domain.domain,
+        frameworkId: framework.frameworkId,
+        frameworkName: framework.frameworkName,
+        complianceRatio: domain.complianceRatio,
+        controlCount: domain.controlCount,
+      })),
+  );
 
   return {
     overallScore: vendor.overallScore,
@@ -95,6 +164,7 @@ export async function getVendorProfile(vendorId: string) {
       vendor.assessments.map((assessment) => assessment.score),
     ),
     domainBreakdown,
+    frameworkCompliance,
   };
 }
 
@@ -219,6 +289,73 @@ export async function getVendorHeatmap(
       rag,
     };
   });
+}
+
+export type DomainRadarPoint = {
+  domain: string;
+  current: number;
+  previous: number | null;
+};
+
+export async function getVendorDomainRadar(
+  vendorId: string,
+  frameworkId: string,
+): Promise<{ domains: DomainRadarPoint[]; hasPrevious: boolean }> {
+  const controls = await prisma.control.findMany({
+    where: { frameworkId },
+    select: { id: true, domain: true },
+  });
+  const controlDomainMap = new Map(
+    controls.map((control) => [control.id, control.domain]),
+  );
+
+  const assessments = await prisma.assessment.findMany({
+    where: {
+      vendorId,
+      status: { notIn: ["DRAFT", "SENT", "IN_PROGRESS"] },
+    },
+    orderBy: { submittedAt: "desc" },
+    take: 2,
+    select: { id: true },
+  });
+
+  const { riskWeights } = await getScoringSettings();
+
+  const computeForAssessment = async (assessmentId: string) => {
+    const questions = await prisma.assessmentQuestion.findMany({
+      where: { assessmentId },
+      include: { response: true },
+    });
+    return computeDomainCompliance(
+      toDomainQuestionInputs(questions, controlDomainMap),
+      controlDomainMap,
+      riskWeights,
+    );
+  };
+
+  const [currentAssessment, previousAssessment] = assessments;
+  if (!currentAssessment) {
+    return { domains: [], hasPrevious: false };
+  }
+
+  const current = await computeForAssessment(currentAssessment.id);
+  const previous = previousAssessment
+    ? await computeForAssessment(previousAssessment.id)
+    : [];
+
+  const previousMap = new Map(
+    previous.map((entry) => [entry.domain, entry.ratio]),
+  );
+
+  const domains = current.map((entry) => ({
+    domain: entry.domain,
+    current: Math.round(entry.ratio * 100),
+    previous: previousMap.has(entry.domain)
+      ? Math.round(previousMap.get(entry.domain)! * 100)
+      : null,
+  }));
+
+  return { domains, hasPrevious: previous.length > 0 };
 }
 
 function computeScoreDistribution(

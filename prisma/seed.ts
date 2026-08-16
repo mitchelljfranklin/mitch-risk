@@ -11,7 +11,11 @@ import { iso27001 } from "./seed-data/iso27001";
 import { soc2 } from "./seed-data/soc2";
 import { nistCsf } from "./seed-data/nist-csf";
 import { essentialEight } from "./seed-data/essential-eight";
-import { type FrameworkSeed } from "./seed-data/types";
+import { nistCsfFullTemplate } from "./seed-data/templates/nist-csf";
+import { iso27001FullTemplate } from "./seed-data/templates/iso27001";
+import { soc2FullTemplate } from "./seed-data/templates/soc2";
+import { essentialEightFullTemplate } from "./seed-data/templates/essential-eight";
+import { type FrameworkSeed, type TemplateSeed } from "./seed-data/types";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
@@ -727,6 +731,96 @@ async function seedStarterTemplates() {
   }
 }
 
+const fullTemplates: TemplateSeed[] = [
+  nistCsfFullTemplate,
+  iso27001FullTemplate,
+  soc2FullTemplate,
+  essentialEightFullTemplate,
+];
+
+async function seedFullTemplates() {
+  for (const templateSeed of fullTemplates) {
+    const template = await prisma.template.upsert({
+      where: { id: templateSeed.id },
+      update: { description: templateSeed.description, status: "PUBLISHED" },
+      create: {
+        id: templateSeed.id,
+        name: templateSeed.name,
+        description: templateSeed.description,
+        status: "PUBLISHED",
+        version: 1,
+      },
+    });
+
+    const existingQuestions = await prisma.question.count({
+      where: { section: { templateId: template.id } },
+    });
+    if (existingQuestions > 0) continue;
+
+    const framework = await prisma.framework.findFirst({
+      where: { name: templateSeed.frameworkName },
+      select: { id: true },
+    });
+    if (!framework) {
+      console.warn(
+        `Framework "${templateSeed.frameworkName}" not found, skipping full template "${templateSeed.name}".`,
+      );
+      continue;
+    }
+
+    const controlCodes = templateSeed.sections.flatMap((section) =>
+      section.questions.map((question) => question.controlCode),
+    );
+    const controls = await prisma.control.findMany({
+      where: { frameworkId: framework.id, code: { in: controlCodes } },
+      select: { id: true, code: true },
+    });
+    const controlByCode = new Map(
+      controls.map((control) => [control.code, control.id]),
+    );
+
+    let questionCount = 0;
+    for (const [sectionIndex, sectionSeed] of templateSeed.sections.entries()) {
+      const section = await prisma.section.create({
+        data: {
+          templateId: template.id,
+          title: sectionSeed.title,
+          order: sectionIndex,
+        },
+      });
+
+      for (const [questionIndex, question] of sectionSeed.questions.entries()) {
+        const controlId = controlByCode.get(question.controlCode);
+        if (!controlId) {
+          console.warn(
+            `Control "${question.controlCode}" not found for full template "${templateSeed.name}", skipping question.`,
+          );
+          continue;
+        }
+
+        await prisma.question.create({
+          data: {
+            sectionId: section.id,
+            text: question.text,
+            type: question.type as QuestionType,
+            riskWeight: question.riskWeight as RiskWeight,
+            required: true,
+            expectedAnswer: question.expectedAnswer as Prisma.InputJsonValue,
+            options: (question.options ?? []) as Prisma.InputJsonValue,
+            order: questionIndex,
+            controls: { create: [{ controlId }] },
+          },
+        });
+        questionCount += 1;
+      }
+    }
+
+    console.log(
+      `Seeded full template "${templateSeed.name}" (${questionCount} questions).`,
+    );
+  }
+}
+
 async function main() {
   await seedSystemRoles();
   await seedDefaultSettings();
@@ -735,6 +829,7 @@ async function main() {
   const nistControls = await seedFramework(nistCsf);
   const e8Controls = await seedFramework(essentialEight);
   await seedStarterTemplates();
+  await seedFullTemplates();
   console.log(
     `Seeded ${iso27001.name} (${isoControls} controls), ${soc2.name} (${soc2Controls} controls), ${nistCsf.name} (${nistControls} controls), ${essentialEight.name} (${e8Controls} controls).`,
   );

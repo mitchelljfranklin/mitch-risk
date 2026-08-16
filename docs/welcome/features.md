@@ -11,6 +11,7 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 - **Conditional logic** with match-all (AND) and match-any (OR) rule groups and 10 operators (equals, not equals, contains, not contains, >, <, ≥, ≤, answered, not answered)
 - **Template versioning** — publish, unpublish, version, and duplicate templates
 - **JSON import/export** via step-by-step wizard for template portability
+- **Full out-of-the-box questionnaires** for NIST CSF 2.0, ISO 27001, SOC 2, and Essential Eight — one auto-scored question per control
 - **Reorder** sections and questions with ↑/↓ buttons
 - **Template preview** — see the questionnaire as the vendor will see it
 
@@ -26,6 +27,7 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 ## Vendors
 
 - **CSV bulk import/export** with upsert support
+- **External ID** field to cross-reference vendors in other systems
 - **Drag-and-drop file upload** for attachments and certifications
 - **Vendor detail pages** with tabs: Overview, Compliance, Findings, Assessments
 - **Risk owner, data sensitivity, service description, contract renewal date**
@@ -37,11 +39,13 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 ## Scoring & Compliance
 
 - **Weighted RAG scoring** with configurable thresholds
-- **12 risk weights** per question (Critical, High, Medium, Low)
+- **4 risk weights** per question (Critical, High, Medium, Low)
 - **Maps answers to** ISO 27001:2022 (93 controls), SOC 2 (51 TSC), NIST CSF 2.0 (129 subcategories), and Essential Eight (55 controls)
 - **Auto-generates findings** from non-compliant answers
 - **Domain-level compliance heatmaps** per vendor per framework
 - **Per-framework control compliance view** with red/amber/green per control
+- **Compliance radar chart** per framework — risk-weighted domain compliance with current vs previous assessment overlay
+- **PDF compliance reports** per vendor/framework — domain compliance table (radar values) plus per-control heatmap, ready for auditors
 - **Framework gap report** — which controls have no question coverage across all templates
 
 ## Customer Responsibility Tracking
@@ -174,7 +178,7 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 - **Reverse proxy** support — Caddy, nginx, Zoraxy, Azure Application Gateway
 - **Azure Container Apps** deployment guide
 - **Auto-applied Prisma migrations** on container start
-- **Idempotent seed** — frameworks, controls, starter templates, and settings
+- **Idempotent seed** — frameworks, controls, starter + full questionnaires, and settings
 
 ## Self-Assessment
 

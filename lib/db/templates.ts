@@ -1,13 +1,19 @@
 import {
   Prisma,
   type QuestionType,
+  type RiskWeight,
   TemplateStatus,
 } from "../../prisma/generated/prisma/client";
 
 import { copyJson } from "@/lib/json";
 import { prisma } from "@/lib/prisma";
 import { remapConditionalLogic } from "@/lib/portal";
-import { type QuestionInput, type TemplateInput } from "@/lib/schemas/template";
+import {
+  QUESTION_TYPES,
+  type QuestionInput,
+  type TemplateInput,
+  validateExpectedAnswer,
+} from "@/lib/schemas/template";
 
 export function listTemplates() {
   return prisma.template.findMany({
@@ -486,25 +492,29 @@ export async function moveQuestion(
 }
 
 export function getControlWithMappings(controlId: string) {
-  return prisma.control.findUnique({
-    where: { id: controlId },
-    include: {
-      framework: true,
-      questionControls: {
+  return prisma.$transaction(
+    (tx) =>
+      tx.control.findUnique({
+        where: { id: controlId },
         include: {
-          question: {
-            select: {
-              id: true,
-              text: true,
-              section: {
+          framework: true,
+          questionControls: {
+            include: {
+              question: {
                 select: {
-                  templateId: true,
-                  template: {
+                  id: true,
+                  text: true,
+                  section: {
                     select: {
-                      id: true,
-                      name: true,
-                      version: true,
-                      status: true,
+                      templateId: true,
+                      template: {
+                        select: {
+                          id: true,
+                          name: true,
+                          version: true,
+                          status: true,
+                        },
+                      },
                     },
                   },
                 },
@@ -512,7 +522,140 @@ export function getControlWithMappings(controlId: string) {
             },
           },
         },
+      }),
+    { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead },
+  );
+}
+
+export type TemplateImportJson = {
+  name: string;
+  description?: string;
+  sections: {
+    title: string;
+    questions: {
+      text: string;
+      helpText?: string;
+      type: string;
+      riskWeight: string;
+      required: boolean;
+      options?: unknown;
+      expectedAnswer?: unknown;
+      conditionalLogic?: unknown;
+      controlCodes?: string[];
+    }[];
+  }[];
+};
+
+export type TemplateImportResult =
+  { ok: true; templateId: string; name: string } | { ok: false; error: string };
+
+export async function importTemplateFromJson(
+  data: TemplateImportJson,
+): Promise<TemplateImportResult> {
+  if (
+    !data.name ||
+    typeof data.name !== "string" ||
+    !Array.isArray(data.sections)
+  ) {
+    return { ok: false, error: "Invalid template structure." };
+  }
+
+  const validTypes: string[] = [...QUESTION_TYPES];
+  const validWeights = ["CRITICAL", "HIGH", "MEDIUM", "LOW"];
+
+  for (const section of data.sections) {
+    if (!section.title || !Array.isArray(section.questions)) {
+      return { ok: false, error: "Invalid section structure." };
+    }
+    for (const question of section.questions) {
+      if (!validTypes.includes(question.type)) {
+        return { ok: false, error: `Unknown type: ${question.type}` };
+      }
+      if (!validWeights.includes(question.riskWeight)) {
+        return {
+          ok: false,
+          error: `Unknown risk weight: ${question.riskWeight}`,
+        };
+      }
+      const expectedAnswerError = validateExpectedAnswer(
+        question.type as QuestionType,
+        question.expectedAnswer,
+      );
+      if (expectedAnswerError) {
+        return { ok: false, error: expectedAnswerError };
+      }
+    }
+  }
+
+  const allCodes = data.sections.flatMap((section) =>
+    section.questions.flatMap((question) => question.controlCodes ?? []),
+  );
+  const uniqueCodes = [...new Set(allCodes)];
+
+  const controls =
+    uniqueCodes.length > 0
+      ? await prisma.control.findMany({
+          where: { code: { in: uniqueCodes } },
+          select: { id: true, code: true },
+        })
+      : [];
+  const controlByCode = new Map(
+    controls.map((control) => [control.code, control.id]),
+  );
+
+  for (const code of uniqueCodes) {
+    if (!controlByCode.has(code)) {
+      return { ok: false, error: `Control code not found: ${code}` };
+    }
+  }
+
+  const template = await prisma.$transaction(async (tx) => {
+    const createdTemplate = await tx.template.create({
+      data: {
+        name: data.name,
+        description: data.description ?? null,
+        status: TemplateStatus.DRAFT,
+        version: 1,
       },
-    },
+    });
+
+    for (const section of data.sections) {
+      const createdSection = await tx.section.create({
+        data: { templateId: createdTemplate.id, title: section.title },
+      });
+
+      for (const question of section.questions) {
+        const controlIds = (question.controlCodes ?? [])
+          .map((code) => controlByCode.get(code))
+          .filter((id): id is string => !!id);
+
+        await tx.question.create({
+          data: {
+            sectionId: createdSection.id,
+            text: question.text,
+            helpText: question.helpText ?? null,
+            type: question.type as QuestionType,
+            riskWeight: question.riskWeight as RiskWeight,
+            required: question.required,
+            expectedAnswer: copyJson(
+              (question.expectedAnswer ?? null) as Prisma.JsonValue | null,
+            ),
+            options: copyJson(
+              (question.options ?? null) as Prisma.JsonValue | null,
+            ),
+            conditionalLogic: copyJson(
+              (question.conditionalLogic ?? null) as Prisma.JsonValue | null,
+            ),
+            controls: {
+              create: controlIds.map((controlId) => ({ controlId })),
+            },
+          },
+        });
+      }
+    }
+
+    return createdTemplate;
   });
+
+  return { ok: true, templateId: template.id, name: template.name };
 }

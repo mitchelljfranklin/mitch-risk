@@ -5,6 +5,7 @@ import { getVendor, updateVendor, deleteVendor } from "@/lib/db/vendors";
 import { getVendorProfile } from "@/lib/db/compliance";
 import { getCustomerResponsibilityCompliance } from "@/lib/db/customer-responsibility";
 import { vendorSchema } from "@/lib/schemas/vendor";
+import { buildVendorDetailResponse } from "@/lib/api/vendor-detail";
 
 export async function GET(
   request: Request,
@@ -25,35 +26,14 @@ export async function GET(
       return apiError("Not found", 404);
     }
 
-    const profile = await getVendorProfile(vendorId);
-    const responsibilityCompliance =
-      await getCustomerResponsibilityCompliance(vendorId);
+    const [profile, responsibilityCompliance] = await Promise.all([
+      getVendorProfile(vendorId),
+      getCustomerResponsibilityCompliance(vendorId),
+    ]);
 
-    return Response.json({
-      id: vendor.id,
-      name: vendor.name,
-      contactName: vendor.contactName,
-      contactEmail: vendor.contactEmail,
-      tier: vendor.tier,
-      website: vendor.website,
-      notes: vendor.notes,
-      overallScore: vendor.overallScore,
-      lastAssessedAt: vendor.lastAssessedAt,
-      contractValue: vendor.contractValue,
-      geographicRisk: vendor.geographicRisk,
-      tags: vendor.tags ?? [],
-      assessments: vendor.assessments.map((assessment) => ({
-        id: assessment.id,
-        title: assessment.title,
-        status: assessment.status,
-        score: assessment.score,
-        templateName: assessment.template?.name ?? null,
-        templateVersion: assessment.template?.version ?? null,
-      })),
-      domainBreakdown: profile?.domainBreakdown ?? [],
-      history: profile?.history ?? [],
-      customerResponsibilityCompliance: responsibilityCompliance,
-    });
+    return Response.json(
+      buildVendorDetailResponse(vendor, profile, responsibilityCompliance),
+    );
   });
 }
 
@@ -83,6 +63,7 @@ export async function PUT(
     const record = data as Record<string, unknown>;
     const parsed = vendorSchema.safeParse({
       name: record.name ?? existing.name,
+      externalId: record.externalId ?? existing.externalId ?? undefined,
       contactName: record.contactName ?? existing.contactName ?? "",
       contactEmail: record.contactEmail ?? existing.contactEmail,
       tier: record.tier ?? existing.tier ?? "",

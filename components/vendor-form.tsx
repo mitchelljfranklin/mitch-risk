@@ -44,6 +44,7 @@ type VendorFormProps = {
   }[];
   defaults?: {
     name: string;
+    externalId: string;
     contactName: string;
     contactEmail: string;
     tier: string;
@@ -83,6 +84,18 @@ export function VendorForm({
         <div className="grid gap-2">
           <Label htmlFor="name">Vendor name</Label>
           <Input id="name" name="name" defaultValue={defaults?.name} required />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="externalId">External ID</Label>
+          <Input
+            id="externalId"
+            name="externalId"
+            placeholder="e.g. ERP-V-001"
+            defaultValue={defaults?.externalId}
+          />
+          <span className="text-muted-foreground text-[11px]">
+            Optional reference to this vendor in another system
+          </span>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-2">

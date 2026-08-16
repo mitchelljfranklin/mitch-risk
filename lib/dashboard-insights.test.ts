@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { computeRiskByTier, ragBand } from "@/lib/dashboard-insights";
+import {
+  computeDomainCompliance,
+  computeRiskByTier,
+  ragBand,
+} from "@/lib/dashboard-insights";
 
 describe("ragBand", () => {
   it("bands scores into RAG buckets with default thresholds", () => {
@@ -62,5 +66,215 @@ describe("computeRiskByTier", () => {
     expect(high.amber).toBe(1);
     expect(high.red).toBe(1);
     expect(high.green).toBe(0);
+  });
+});
+
+describe("computeDomainCompliance", () => {
+  const riskWeights = { CRITICAL: 10, HIGH: 6, MEDIUM: 3, LOW: 1 };
+
+  it("computes a per-domain compliance ratio", () => {
+    const controlDomainMap = new Map([
+      ["c1", "Organizational"],
+      ["c2", "People"],
+    ]);
+
+    const domains = computeDomainCompliance(
+      [
+        {
+          controlIds: ["c1"],
+          riskWeight: "CRITICAL",
+          isNotApplicable: false,
+          isCompliant: false,
+        },
+        {
+          controlIds: ["c2"],
+          riskWeight: "LOW",
+          isNotApplicable: false,
+          isCompliant: true,
+        },
+      ],
+      controlDomainMap,
+      riskWeights,
+    );
+
+    const byDomain = Object.fromEntries(
+      domains.map((domain) => [domain.domain, domain.ratio]),
+    );
+    expect(byDomain.Organizational).toBe(0);
+    expect(byDomain.People).toBe(1);
+  });
+
+  it("CRITICAL non-compliance penalises more than LOW non-compliance", () => {
+    const controlDomainMap = new Map([["c1", "Organizational"]]);
+
+    const compliant = computeDomainCompliance(
+      [
+        {
+          controlIds: ["c1"],
+          riskWeight: "CRITICAL",
+          isNotApplicable: false,
+          isCompliant: true,
+        },
+        {
+          controlIds: ["c1"],
+          riskWeight: "LOW",
+          isNotApplicable: false,
+          isCompliant: true,
+        },
+      ],
+      controlDomainMap,
+      riskWeights,
+    );
+    expect(compliant[0].ratio).toBe(1);
+
+    const criticalWrong = computeDomainCompliance(
+      [
+        {
+          controlIds: ["c1"],
+          riskWeight: "CRITICAL",
+          isNotApplicable: false,
+          isCompliant: false,
+        },
+        {
+          controlIds: ["c1"],
+          riskWeight: "LOW",
+          isNotApplicable: false,
+          isCompliant: true,
+        },
+      ],
+      controlDomainMap,
+      riskWeights,
+    );
+    expect(criticalWrong[0].ratio).toBeCloseTo(1 / 11);
+
+    const lowWrong = computeDomainCompliance(
+      [
+        {
+          controlIds: ["c1"],
+          riskWeight: "CRITICAL",
+          isNotApplicable: false,
+          isCompliant: true,
+        },
+        {
+          controlIds: ["c1"],
+          riskWeight: "LOW",
+          isNotApplicable: false,
+          isCompliant: false,
+        },
+      ],
+      controlDomainMap,
+      riskWeights,
+    );
+    expect(lowWrong[0].ratio).toBeCloseTo(10 / 11);
+
+    expect(criticalWrong[0].ratio).toBeLessThan(lowWrong[0].ratio);
+  });
+
+  it("excludes N/A and unscorable responses from both sides", () => {
+    const controlDomainMap = new Map([["c1", "Organizational"]]);
+
+    const domains = computeDomainCompliance(
+      [
+        {
+          controlIds: ["c1"],
+          riskWeight: "HIGH",
+          isNotApplicable: true,
+          isCompliant: null,
+        },
+        {
+          controlIds: ["c1"],
+          riskWeight: "HIGH",
+          isNotApplicable: false,
+          isCompliant: null,
+        },
+      ],
+      controlDomainMap,
+      riskWeights,
+    );
+
+    expect(domains).toEqual([]);
+  });
+
+  it("counts a question against every mapped domain", () => {
+    const controlDomainMap = new Map([
+      ["c1", "Organizational"],
+      ["c2", "People"],
+    ]);
+
+    const domains = computeDomainCompliance(
+      [
+        {
+          controlIds: ["c1", "c2"],
+          riskWeight: "MEDIUM",
+          isNotApplicable: false,
+          isCompliant: true,
+        },
+      ],
+      controlDomainMap,
+      riskWeights,
+    );
+
+    expect(domains).toHaveLength(2);
+    for (const domain of domains) {
+      expect(domain.ratio).toBe(1);
+      expect(domain.controlCount).toBe(1);
+    }
+  });
+
+  it("counts every mapped control in the controlCount", () => {
+    const controlDomainMap = new Map([
+      ["c1", "Organizational"],
+      ["c2", "Organizational"],
+    ]);
+
+    const domains = computeDomainCompliance(
+      [
+        {
+          controlIds: ["c1", "c2"],
+          riskWeight: "MEDIUM",
+          isNotApplicable: false,
+          isCompliant: true,
+        },
+      ],
+      controlDomainMap,
+      riskWeights,
+    );
+
+    expect(domains).toHaveLength(1);
+    expect(domains[0].domain).toBe("Organizational");
+    expect(domains[0].ratio).toBe(1);
+    expect(domains[0].controlCount).toBe(2);
+  });
+
+  it("omits domains with zero weighted total and sorts alphabetically", () => {
+    const controlDomainMap = new Map([
+      ["c1", "People"],
+      ["c2", "Organizational"],
+      ["c3", "Unmapped"],
+    ]);
+
+    const domains = computeDomainCompliance(
+      [
+        {
+          controlIds: ["c2"],
+          riskWeight: "HIGH",
+          isNotApplicable: false,
+          isCompliant: true,
+        },
+        {
+          controlIds: ["c1"],
+          riskWeight: "MEDIUM",
+          isNotApplicable: false,
+          isCompliant: false,
+        },
+      ],
+      controlDomainMap,
+      riskWeights,
+    );
+
+    expect(domains.map((domain) => domain.domain)).toEqual([
+      "Organizational",
+      "People",
+    ]);
   });
 });

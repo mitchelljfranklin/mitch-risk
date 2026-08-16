@@ -28,6 +28,7 @@ export async function POST(request: Request) {
     const record = data as Record<string, unknown>;
     const parsed = vendorSchema.safeParse({
       name: record.name ?? "",
+      externalId: record.externalId ?? "",
       contactName: record.contactName ?? "",
       contactEmail: record.contactEmail ?? "",
       tier: record.tier ?? "",

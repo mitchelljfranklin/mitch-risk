@@ -70,6 +70,7 @@ export default async function EditVendorPage({ params }: EditVendorPageProps) {
             attachments={attachments}
             defaults={{
               name: vendor.name,
+              externalId: vendor.externalId ?? "",
               contactName: vendor.contactName ?? "",
               contactEmail: vendor.contactEmail,
               tier: vendor.tier ?? "",

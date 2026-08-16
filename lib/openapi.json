@@ -83,6 +83,13 @@
             "required": false,
             "description": "Filter vendors by tag",
             "schema": { "type": "string" }
+          },
+          {
+            "name": "externalId",
+            "in": "query",
+            "required": false,
+            "description": "Filter by exact external ID reference",
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -98,6 +105,7 @@
                   {
                     "id": "cmr182ra30001iuo4z6iqcdfs",
                     "name": "Acme Corp",
+                    "externalId": "ERP-V-001",
                     "contactName": "Jane Doe",
                     "contactEmail": "jane@acme.example",
                     "tier": "HIGH",
@@ -206,6 +214,36 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/DeletedResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/vendors/external/{externalId}": {
+      "get": {
+        "tags": ["Vendors"],
+        "summary": "Get vendor by external ID",
+        "description": "Returns full vendor detail looked up by its external ID reference (the vendor's ID in another system). Returns 404 if no vendor carries that external ID.",
+        "operationId": "getVendorByExternalId",
+        "parameters": [
+          {
+            "name": "externalId",
+            "in": "path",
+            "required": true,
+            "description": "The vendor's external ID reference",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full vendor detail",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VendorDetail" }
               }
             }
           },
@@ -935,6 +973,41 @@
           "403": { "$ref": "#/components/responses/Forbidden" }
         }
       }
+    },
+    "/vendors/{vendorId}/frameworks/{frameworkId}/report": {
+      "get": {
+        "tags": ["Vendors"],
+        "summary": "Download framework compliance report",
+        "description": "Generates a PDF compliance report for a vendor against a specific framework. Includes a domain compliance summary (current vs previous assessment) and a per-control compliance heatmap.",
+        "operationId": "downloadFrameworkReport",
+        "parameters": [
+          {
+            "name": "vendorId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "frameworkId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Framework compliance PDF report",
+            "content": {
+              "application/pdf": {
+                "schema": { "type": "string", "format": "binary" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
     }
   },
   "components": {
@@ -1054,6 +1127,11 @@
         "properties": {
           "id": { "type": "string", "description": "Unique vendor ID" },
           "name": { "type": "string", "description": "Vendor name" },
+          "externalId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional reference ID from an external system"
+          },
           "contactName": {
             "type": "string",
             "nullable": true,
@@ -1104,6 +1182,7 @@
         "properties": {
           "id": { "type": "string" },
           "name": { "type": "string" },
+          "externalId": { "type": "string", "nullable": true },
           "contactName": { "type": "string", "nullable": true },
           "contactEmail": { "type": "string" },
           "tier": {
@@ -1185,6 +1264,8 @@
               "type": "object",
               "properties": {
                 "domain": { "type": "string" },
+                "frameworkId": { "type": "string" },
+                "frameworkName": { "type": "string" },
                 "complianceRatio": { "type": "number", "format": "float" },
                 "controlCount": { "type": "integer" }
               }
@@ -1249,6 +1330,8 @@
               "type": "object",
               "properties": {
                 "domain": { "type": "string" },
+                "frameworkId": { "type": "string" },
+                "frameworkName": { "type": "string" },
                 "complianceRatio": { "type": "number" },
                 "controlCount": { "type": "integer" }
               }
@@ -1265,6 +1348,10 @@
             "type": "string",
             "minLength": 1,
             "description": "Vendor name (required)"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "Optional reference ID from an external system"
           },
           "contactName": {
             "type": "string",

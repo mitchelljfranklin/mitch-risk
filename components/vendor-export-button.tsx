@@ -13,6 +13,7 @@ import { Download } from "lucide-react";
 type VendorExportRow = {
   id: string;
   name: string;
+  externalId: string | null;
   contactName: string | null;
   contactEmail: string;
   tier: string | null;
@@ -29,6 +30,7 @@ type VendorExportRow = {
 const CSV_HEADER = [
   "id",
   "name",
+  "externalid",
   "contactname",
   "contactemail",
   "tier",
@@ -47,6 +49,7 @@ function buildCsv(vendors: VendorExportRow[]): string {
     [
       csvEscape(vendor.id),
       csvEscape(vendor.name),
+      csvEscape(vendor.externalId ?? ""),
       csvEscape(vendor.contactName ?? ""),
       csvEscape(vendor.contactEmail),
       csvEscape(vendor.tier ?? ""),

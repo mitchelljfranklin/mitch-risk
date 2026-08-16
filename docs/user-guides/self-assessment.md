@@ -8,11 +8,15 @@ Self-assessment uses a built-in internal vendor record called **"My Organization
 
 1. Go to **Self-Assessment** from the sidebar
 2. Click **Start new assessment**
-3. Choose a published template — e.g. an ISO 27001 self-assessment
+3. Choose a published template — e.g. the seeded **ISO 27001 Full** questionnaire
 4. Give it a title and optional due date
 5. Click **Start assessment**
 
 The platform creates an assessment for "My Organization" and redirects you to the vendor portal. You answer the questions just like any external vendor would — auto-save, conditional logic, Markdown help text, and all.
+
+### Out-of-the-box questionnaires
+
+Four complete questionnaires ship pre-built and published — **NIST CSF 2.0** (129 questions), **ISO 27001** (93), **SOC 2** (51), and **Essential Eight** (55) — one question per framework control, auto-scored and risk-weighted. Start a self-assessment against any of them immediately with no template building required. The shorter "Starter" questionnaires remain available too.
 
 ## Submitting and Reviewing
 

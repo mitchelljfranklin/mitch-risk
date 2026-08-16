@@ -3,6 +3,9 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/mitchelljfranklin/mitch-risk/ci.yml?branch=master)](https://github.com/mitchelljfranklin/mitch-risk/actions)
 [![License: AGPL v3](https://img.shields.io/badge/license-AGPL--3.0-brightgreen)](LICENSE)
 [![Security Audited](https://img.shields.io/badge/security-audited-2563eb)](APPSECURITY.md)
+[![GitHub stars](https://img.shields.io/github/stars/mitchelljfranklin/mitch-risk)](https://github.com/mitchelljfranklin/mitch-risk/stargazers)
+[![Release](https://img.shields.io/github/v/release/mitchelljfranklin/mitch-risk)](https://github.com/mitchelljfranklin/mitch-risk/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/mitchelljfranklin/mitch-risk/total)](https://github.com/mitchelljfranklin/mitch-risk/releases)
 
 > A self-hosted third party vendor risk management solution. Free, open-source, deploy anywhere.
 
@@ -16,7 +19,7 @@ But that value comes at a cost — the subscription, the onboarding overhead, th
 
 Mitch‑Risk bridges that gap. It strips third party vendor risk management down to its essentials: build a questionnaire, send it, score the answers, track compliance over time. No AI risk scoring, no vendor universe crawling, no board reporting module. Just the core workflow, done well, running in Docker Compose.
 
-> **Security-hardened.** Mitch‑Risk has undergone a comprehensive security audit — 55 findings across 4 severity levels. 52 items resolved (fixed or dismissed), 3 deferred or monitored. [Read the full report](APPSECURITY.md).
+> **Security-hardened.** Mitch‑Risk has undergone a comprehensive security audit — 61 findings across 4 severity levels. 56 resolved (fixed or dismissed), 3 deferred or monitored, 2 open. [Read the full report](APPSECURITY.md).
 
 ---
 
@@ -61,6 +64,7 @@ docker compose up -d
 - Conditional logic with match-all/match-any rule groups
 - Publish, unpublish, version, and duplicate templates
 - JSON import/export via step-by-step wizard for template portability
+- Full out-of-the-box questionnaires for ISO 27001, SOC 2, NIST CSF, and Essential Eight — one auto-scored question per control
 
 ### Vendor Portal
 - No-login secure links with 256-bit opaque tokens (SHA-256 hashed)
@@ -70,7 +74,8 @@ docker compose up -d
 - Expiry and revocation — revoke a link and it stops working immediately
 
 ### Vendors
-- CSV bulk import/export with upsert support (include `id` column to update existing vendors)
+- CSV bulk import/export with upsert support (include `id` or `externalid` to update existing vendors)
+- Optional **external ID** field to cross-reference vendors in other systems
 - Drag-and-drop file upload for attachments and certifications
 - Vendor detail pages with certifications, attachments, assessments, and framework compliance views
 - Side-by-side vendor comparison
@@ -81,6 +86,8 @@ docker compose up -d
 - Maps answers to ISO 27001:2022 (93 controls), SOC 2 (51 TSC), NIST CSF 2.0 (129 subcategories), and Essential Eight (55 controls)
 - Auto-generates findings from non-compliant answers
 - Domain-level compliance heatmaps per vendor per framework
+- Compliance radar chart per framework — risk-weighted domain compliance, current vs previous
+- Framework compliance PDF reports for auditors (radar values + per-control heatmap)
 
 ### Review & Collaboration
 - Approve, reject, or request clarification on each vendor answer
@@ -104,7 +111,7 @@ docker compose up -d
 - Donut chart of vendor risk distribution, bar chart of findings by severity
 - Assessment activity timeline with time-range selector
 - Sortable, filterable data tables across vendors, assessments, findings, and audit log
-- PDF assessment reports and CSV exports
+- PDF assessment reports, framework compliance PDF reports, and CSV exports
 
 ### API
 - REST v1 under `/api/v1/` — vendors, assessments, findings, frameworks, dashboard, audit
@@ -188,7 +195,7 @@ Authenticated REST API under `/api/v1/`. Authenticate via session cookie (web lo
 
 | Resource | Endpoints |
 |----------|-----------|
-| **Vendors** | `GET/PUT/DELETE /api/v1/vendors/{id}`, list, import, export, score, assessments, certifications |
+| **Vendors** | `GET/PUT/DELETE /api/v1/vendors/{id}`, `GET /api/v1/vendors/external/{externalId}` (lookup by external ID), list, import, export, score, assessments, certifications |
 | **Assessments** | `GET /api/v1/assessments` (list with filters), `GET /api/v1/assessments/{id}` (full detail) |
 | **Findings** | `GET /api/v1/findings` (filters: status, severity, vendor), `PATCH /api/v1/findings/{id}` (status update) |
 | **Frameworks** | `GET /api/v1/frameworks` (list), `GET /api/v1/frameworks/{id}` (detail with controls), `DELETE /api/v1/frameworks/{id}` (delete) |

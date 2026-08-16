@@ -72,7 +72,7 @@ docker compose up -d
 After logging in, configure the platform:
 
 1. **Configure email** — go to Settings → Email, enter your SMTP server details.
-2. **Create a template** — go to Templates, build a questionnaire with sections and questions.
+2. **Create a template** — go to Templates, build a questionnaire with sections and questions (four complete questionnaires for ISO 27001, SOC 2, NIST CSF, and Essential Eight are already seeded and ready to use).
 3. **Add a vendor** — go to Vendors, create a vendor profile with contact info.
 4. **Send an assessment** — create an assessment for the vendor from your template and send it.
 5. **Review responses** — when the vendor submits, review their answers and generate findings.

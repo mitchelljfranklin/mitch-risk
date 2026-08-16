@@ -7,6 +7,7 @@ import {
   createTemplate,
   getTemplateForBuilder,
   getTemplateVersionChain,
+  importTemplateFromJson,
   publishTemplate,
 } from "@/lib/db/templates";
 import { prisma } from "@/lib/prisma";
@@ -302,5 +303,174 @@ describe("template version chain", () => {
     await prisma.template.deleteMany({
       where: { name: TEST_TEMPLATE_NAME + " Chain" },
     });
+  });
+});
+
+describe("template import (integration)", () => {
+  const IMPORT_TEMPLATE_NAME = TEST_TEMPLATE_NAME + " Import";
+
+  beforeAll(async () => {
+    await prisma.template.deleteMany({ where: { name: IMPORT_TEMPLATE_NAME } });
+  });
+
+  it("persists MULTI_SELECT expectedAnswer as an array and NUMERIC as a number", async () => {
+    const result = await importTemplateFromJson({
+      name: IMPORT_TEMPLATE_NAME,
+      sections: [
+        {
+          title: "Section",
+          questions: [
+            {
+              text: "Compliance frameworks?",
+              type: "MULTI_SELECT",
+              riskWeight: "MEDIUM",
+              required: true,
+              options: ["SOC2", "ISO27001", "PCI"],
+              expectedAnswer: ["SOC2", "ISO27001"],
+            },
+            {
+              text: "Minimum key length?",
+              type: "NUMERIC",
+              riskWeight: "HIGH",
+              required: true,
+              expectedAnswer: 256,
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+
+    const saved = await getTemplateForBuilder(result.templateId);
+    if (!saved) throw new Error("template not found");
+
+    const questions = saved.sections.flatMap((section) => section.questions);
+    const multi = questions.find(
+      (question) => question.text === "Compliance frameworks?",
+    );
+    const numeric = questions.find(
+      (question) => question.text === "Minimum key length?",
+    );
+    if (!multi || !numeric) throw new Error("questions missing");
+
+    expect(multi.options).toEqual(["SOC2", "ISO27001", "PCI"]);
+    expect(multi.expectedAnswer).toEqual(["SOC2", "ISO27001"]);
+    expect(numeric.expectedAnswer).toBe(256);
+
+    await prisma.template.deleteMany({ where: { name: IMPORT_TEMPLATE_NAME } });
+  });
+
+  it("rejects a MULTI_SELECT expectedAnswer that is not an array", async () => {
+    const result = await importTemplateFromJson({
+      name: IMPORT_TEMPLATE_NAME,
+      sections: [
+        {
+          title: "Section",
+          questions: [
+            {
+              text: "Compliance frameworks?",
+              type: "MULTI_SELECT",
+              riskWeight: "MEDIUM",
+              required: true,
+              options: ["SOC2", "ISO27001"],
+              expectedAnswer: "SOC2",
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("expected import to fail");
+    expect(result.error).toMatch(/array of strings/);
+  });
+
+  it("rejects a NUMERIC expectedAnswer that is not a number", async () => {
+    const result = await importTemplateFromJson({
+      name: IMPORT_TEMPLATE_NAME,
+      sections: [
+        {
+          title: "Section",
+          questions: [
+            {
+              text: "Minimum key length?",
+              type: "NUMERIC",
+              riskWeight: "HIGH",
+              required: true,
+              expectedAnswer: "256",
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("expected import to fail");
+    expect(result.error).toMatch(/number/);
+  });
+
+  it("persists MULTIPLE_CHOICE expectedAnswer as an array of accepted answers", async () => {
+    const result = await importTemplateFromJson({
+      name: IMPORT_TEMPLATE_NAME,
+      sections: [
+        {
+          title: "Section",
+          questions: [
+            {
+              text: "Implementation maturity?",
+              type: "MULTIPLE_CHOICE",
+              riskWeight: "HIGH",
+              required: true,
+              options: ["Not Done", "Implemented", "Optimized", "Perfect"],
+              expectedAnswer: ["Optimized", "Perfect"],
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+
+    const saved = await getTemplateForBuilder(result.templateId);
+    if (!saved) throw new Error("template not found");
+
+    const question = saved.sections[0].questions[0];
+    expect(question.options).toEqual([
+      "Not Done",
+      "Implemented",
+      "Optimized",
+      "Perfect",
+    ]);
+    expect(question.expectedAnswer).toEqual(["Optimized", "Perfect"]);
+
+    await prisma.template.deleteMany({ where: { name: IMPORT_TEMPLATE_NAME } });
+  });
+
+  it("rejects a MULTIPLE_CHOICE expectedAnswer that is a number", async () => {
+    const result = await importTemplateFromJson({
+      name: IMPORT_TEMPLATE_NAME,
+      sections: [
+        {
+          title: "Section",
+          questions: [
+            {
+              text: "Implementation maturity?",
+              type: "MULTIPLE_CHOICE",
+              riskWeight: "HIGH",
+              required: true,
+              options: ["Not Done", "Implemented"],
+              expectedAnswer: 1,
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("expected import to fail");
+    expect(result.error).toMatch(/string/);
   });
 });

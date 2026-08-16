@@ -2,7 +2,7 @@
 
 ## What compliance frameworks are supported?
 
-ISO 27001:2022 (93 Annex A controls), SOC 2 (51 Trust Services Criteria), NIST CSF 2.0 (129 subcategories), and Essential Eight (55 controls with maturity levels). All four ship as seed data and can be mapped to assessment questions.
+ISO 27001:2022 (93 Annex A controls), SOC 2 (51 Trust Services Criteria), NIST CSF 2.0 (129 subcategories), and Essential Eight (55 controls with maturity levels). All four ship as seed data with a complete, pre-built questionnaire each, and can be mapped to your own assessment questions.
 
 ## How do vendors access their questionnaire?
 
@@ -57,7 +57,7 @@ A database-only backup leaves files orphaned; a files-only backup loses the link
 
 ## Can I load demo data?
 
-Yes. Run the seed script: `npm run db:seed`. This creates starter templates, framework libraries, and default settings. For full demo data with sample vendors, assessments, and findings, run:
+Yes. Run the seed script: `npm run db:seed`. This creates the framework libraries, complete questionnaires (plus starter templates), and default settings. For full demo data with sample vendors, assessments, and findings, run:
 
 ```bash
 npx tsx prisma/seed-demo.ts

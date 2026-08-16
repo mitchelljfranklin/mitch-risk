@@ -83,3 +83,63 @@ export const questionSchema = z.object({
   controlIds: z.array(z.string()).default([]),
 });
 export type QuestionInput = z.infer<typeof questionSchema>;
+
+export type QuestionType = (typeof QUESTION_TYPES)[number];
+
+export function validateExpectedAnswer(
+  type: QuestionType,
+  value: unknown,
+): string | null {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  if (type === "MULTI_SELECT") {
+    if (
+      !Array.isArray(value) ||
+      value.some((entry) => typeof entry !== "string")
+    ) {
+      return "MULTI_SELECT expectedAnswer must be an array of strings.";
+    }
+    return null;
+  }
+  if (type === "MULTIPLE_CHOICE" || type === "COMBOBOX") {
+    if (typeof value === "string") {
+      return null;
+    }
+    if (
+      Array.isArray(value) &&
+      value.every((entry) => typeof entry === "string")
+    ) {
+      return null;
+    }
+    return `${type} expectedAnswer must be a string or an array of strings.`;
+  }
+  if (type === "NUMERIC" || type === "RATING") {
+    if (typeof value !== "number") {
+      return "NUMERIC/RATING expectedAnswer must be a number.";
+    }
+    return null;
+  }
+  if (type === "YES_NO" || type === "CHECKBOX") {
+    if (typeof value !== "string") {
+      return `${type} expectedAnswer must be a string.`;
+    }
+    return null;
+  }
+  return null;
+}
+
+export function normalizeExpectedAnswerForEditor(
+  value: unknown,
+): string | number | string[] {
+  if (value === null || value === undefined) {
+    return "";
+  }
+  if (Array.isArray(value)) {
+    return value.map((entry) => String(entry));
+  }
+  if (typeof value === "number" || typeof value === "string") {
+    return value;
+  }
+  return String(value);
+}

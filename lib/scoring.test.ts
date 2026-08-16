@@ -150,6 +150,20 @@ describe("scoring engine", () => {
     ).toBe(false);
   });
 
+  it("MULTIPLE_CHOICE and COMBOBOX accept any of a list of accepted answers", () => {
+    expect(
+      isCompliant("MULTIPLE_CHOICE", "Optimized", ["Implemented", "Optimized"]),
+    ).toBe(true);
+    expect(
+      isCompliant("MULTIPLE_CHOICE", "Not Done", ["Implemented", "Optimized"]),
+    ).toBe(false);
+    expect(isCompliant("MULTIPLE_CHOICE", "Optimized", "Optimized")).toBe(true);
+    expect(isCompliant("MULTIPLE_CHOICE", "Optimized", [])).toBe(false);
+    expect(isCompliant("COMBOBOX", "AWS", ["AWS", "GCP"])).toBe(true);
+    expect(isCompliant("COMBOBOX", "Azure", ["AWS", "GCP"])).toBe(false);
+    expect(isCompliant("COMBOBOX", "AWS", "AWS")).toBe(true);
+  });
+
   it("RATING matches by numeric equality with coercion", () => {
     expect(isCompliant("RATING", 4, 4)).toBe(true);
     expect(isCompliant("RATING", "4", 4)).toBe(true);

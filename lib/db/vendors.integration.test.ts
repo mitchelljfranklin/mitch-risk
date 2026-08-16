@@ -3,6 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   createVendor,
   getVendor,
+  getVendorByExternalId,
   getVendorForExport,
   listVendors,
   updateVendor,
@@ -96,6 +97,45 @@ describe("vendor search and export (integration)", () => {
     expect(vendor.name).toBe(VENDOR_A);
     expect(vendor.contactEmail).toContain("alpha@example");
     expect(Array.isArray(vendor.assessments)).toBe(true);
+  });
+
+  it("stores and looks up a vendor by external ID", async () => {
+    const created = await createVendor({
+      name: VENDOR_A,
+      externalId: "EXT-ALPHA-001",
+      contactName: "",
+      contactEmail: "alpha-ext@example.test",
+      tier: "LOW",
+      website: "",
+      notes: "",
+    });
+
+    const byExternalId = await getVendorByExternalId("EXT-ALPHA-001");
+    expect(byExternalId?.id).toBe(created.id);
+    expect(byExternalId?.externalId).toBe("EXT-ALPHA-001");
+
+    const filtered = await listVendors({ externalId: "EXT-ALPHA-001" });
+    expect(filtered.vendors.length).toBe(1);
+    expect(filtered.vendors[0].id).toBe(created.id);
+  });
+
+  it("clears external ID when updated to empty", async () => {
+    const { vendors } = await listVendors({ externalId: "EXT-ALPHA-001" });
+    const vendor = vendors[0];
+    if (!vendor) throw new Error("vendor not found");
+
+    await updateVendor(vendor.id, {
+      name: VENDOR_A,
+      externalId: "",
+      contactName: "",
+      contactEmail: "alpha-ext@example.test",
+      tier: "LOW",
+      website: "",
+      notes: "",
+    });
+
+    const updated = await getVendor(vendor.id);
+    expect(updated?.externalId).toBeNull();
   });
 });
 

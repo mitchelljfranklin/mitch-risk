@@ -18,6 +18,7 @@ export async function GET(request: Request) {
       query: searchParams.get("query") ?? undefined,
       tier: searchParams.get("tier") ?? undefined,
       tag: searchParams.get("tag") ?? undefined,
+      externalId: searchParams.get("externalId") ?? undefined,
       pageSize: 1000,
     });
 
@@ -25,6 +26,7 @@ export async function GET(request: Request) {
       vendors.map((vendor) => ({
         id: vendor.id,
         name: vendor.name,
+        externalId: vendor.externalId,
         contactName: vendor.contactName,
         contactEmail: vendor.contactEmail,
         tier: vendor.tier,

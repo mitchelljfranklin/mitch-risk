@@ -36,10 +36,10 @@ import {
 import { Download } from "lucide-react";
 
 const CSV_TEMPLATE = [
-  "id,name,contactname,contactemail,tier,website,notes,servicedescription,datasensitivity,contractrenewaldate,contractvalue,geographicrisk,tags",
-  ",Acme Corp,John Doe,john@acme.com,CRITICAL,https://acme.com,Our payment processor,Handles all payment processing,CONFIDENTIAL,2026-12-31,HIGH,MEDIUM",
-  ",Beta Ltd,Jane Smith,jane@beta.com,HIGH,https://beta.com,Cloud hosting provider,Infrastructure as a Service,INTERNAL,,MEDIUM,LOW",
-  ",Gamma Inc,,admin@gamma.com,MEDIUM,,,Marketing analytics tool,PUBLIC,2026-06-15,LOW,NONE",
+  "id,name,externalid,contactname,contactemail,tier,website,notes,servicedescription,datasensitivity,contractrenewaldate,contractvalue,geographicrisk,tags",
+  ",Acme Corp,ERP-V-001,John Doe,john@acme.com,CRITICAL,https://acme.com,Our payment processor,Handles all payment processing,CONFIDENTIAL,2026-12-31,HIGH,MEDIUM",
+  ",Beta Ltd,ERP-V-002,Jane Smith,jane@beta.com,HIGH,https://beta.com,Cloud hosting provider,Infrastructure as a Service,INTERNAL,,MEDIUM,LOW",
+  ",Gamma Inc,,,admin@gamma.com,MEDIUM,,,Marketing analytics tool,PUBLIC,2026-06-15,LOW,NONE",
 ].join("\n");
 
 export function ImportVendorsForm() {
@@ -149,14 +149,15 @@ export function ImportVendorsForm() {
               <p className="text-muted-foreground text-xs">
                 CSV must have columns: <code>id</code> (optional),{" "}
                 <code>name</code>, <code>contactemail</code>, plus optional:{" "}
-                <code>contactname</code>, <code>tier</code>,{" "}
-                <code>website</code>, <code>notes</code>,{" "}
+                <code>externalid</code>, <code>contactname</code>,{" "}
+                <code>tier</code>, <code>website</code>, <code>notes</code>,{" "}
                 <code>servicedescription</code>, <code>datasensitivity</code>,{" "}
                 <code>contractrenewaldate</code>, <code>contractvalue</code>,{" "}
                 <code>geographicrisk</code>, <code>tags</code>. Only{" "}
                 <code>name</code> and <code>contactemail</code> are required.
-                Max 1 MB. Include a vendor <code>id</code> to update an existing
-                vendor instead of creating a new one.
+                Max 1 MB. Include a vendor <code>id</code> or{" "}
+                <code>externalid</code> to update an existing vendor instead of
+                creating a new one.
               </p>
             </div>
 

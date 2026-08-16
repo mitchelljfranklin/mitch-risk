@@ -24,11 +24,11 @@ import {
   QUESTION_TYPES,
   RISK_WEIGHT_LABELS,
   RISK_WEIGHTS,
+  type QuestionType,
 } from "@/lib/schemas/template";
 import { type ConditionOperator } from "@/lib/portal";
 import { useFormToast } from "@/hooks/use-form-toast";
 
-type QuestionType = (typeof QUESTION_TYPES)[number];
 type RiskWeight = (typeof RISK_WEIGHTS)[number];
 
 type ConditionRule = {
@@ -44,7 +44,7 @@ type QuestionDefaults = {
   riskWeight: RiskWeight;
   required: boolean;
   options: string[];
-  expectedAnswer: string;
+  expectedAnswer: string | number | string[];
   conditionMatch: "all" | "any";
   conditionRules: ConditionRule[];
 };
@@ -66,6 +66,43 @@ type QuestionFormProps = {
 
 const initialState: FormState = undefined;
 
+function toggleListEntry(list: string[], option: string): string[] {
+  return list.includes(option)
+    ? list.filter((entry) => entry !== option)
+    : [...list, option];
+}
+
+type OptionChecklistProps = {
+  options: string[];
+  selected: string[];
+  onToggle: (option: string) => void;
+  emptyMessage: string;
+};
+
+function OptionChecklist({
+  options,
+  selected,
+  onToggle,
+  emptyMessage,
+}: OptionChecklistProps) {
+  if (options.length === 0) {
+    return <p className="text-muted-foreground text-sm">{emptyMessage}</p>;
+  }
+  return (
+    <div className="grid gap-2 rounded-md border p-3">
+      {options.map((option) => (
+        <label key={option} className="flex items-center gap-2 text-sm">
+          <Checkbox
+            checked={selected.includes(option)}
+            onCheckedChange={() => onToggle(option)}
+          />
+          {option}
+        </label>
+      ))}
+    </div>
+  );
+}
+
 export function QuestionForm({
   templateId,
   sectionId,
@@ -82,6 +119,24 @@ export function QuestionForm({
   useFormToast(state);
   const [type, setType] = useState<QuestionType>(defaults?.type ?? "YES_NO");
   const [liveHelpText, setLiveHelpText] = useState(defaults?.helpText ?? "");
+  const [optionsText, setOptionsText] = useState(
+    defaults?.options.join("\n") ?? "",
+  );
+  const [acceptedAnswers, setAcceptedAnswers] = useState<string[]>(() => {
+    const expected = defaults?.expectedAnswer;
+    if (Array.isArray(expected)) return expected;
+    if (typeof expected === "string" && expected.length > 0) return [expected];
+    return [];
+  });
+  const [expectedSelections, setExpectedSelections] = useState<string[]>(() => {
+    const expected = defaults?.expectedAnswer;
+    return Array.isArray(expected) ? expected : [];
+  });
+
+  const parsedOptions = optionsText
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
 
   return (
     <form action={formAction} className="grid gap-5">
@@ -129,7 +184,11 @@ export function QuestionForm({
           <Select
             name="type"
             value={type}
-            onValueChange={(value) => setType(value as QuestionType)}
+            onValueChange={(value) => {
+              setType(value as QuestionType);
+              setAcceptedAnswers([]);
+              setExpectedSelections([]);
+            }}
           >
             <SelectTrigger id="type">
               <SelectValue />
@@ -176,7 +235,8 @@ export function QuestionForm({
           <Textarea
             id="options"
             name="options"
-            defaultValue={defaults?.options.join("\n")}
+            value={optionsText}
+            onChange={(event) => setOptionsText(event.target.value)}
             rows={4}
           />
         </div>
@@ -187,7 +247,11 @@ export function QuestionForm({
           <Label htmlFor="expectedAnswer">Expected answer</Label>
           <Select
             name="expectedAnswer"
-            defaultValue={defaults?.expectedAnswer ?? ""}
+            defaultValue={
+              typeof defaults?.expectedAnswer === "string"
+                ? defaults.expectedAnswer
+                : ""
+            }
           >
             <SelectTrigger id="expectedAnswer">
               <SelectValue placeholder="No expected answer" />
@@ -201,21 +265,33 @@ export function QuestionForm({
         </div>
       ) : null}
 
-      {type === "MULTIPLE_CHOICE" ||
-      type === "COMBOBOX" ||
-      type === "NUMERIC" ||
-      type === "RATING" ? (
+      {type === "MULTIPLE_CHOICE" || type === "COMBOBOX" ? (
+        <div className="grid gap-2">
+          <Label>Accepted answers</Label>
+          <input
+            type="hidden"
+            name="expectedAnswer"
+            value={acceptedAnswers.join("\n")}
+          />
+          <OptionChecklist
+            options={parsedOptions}
+            selected={acceptedAnswers}
+            onToggle={(option) =>
+              setAcceptedAnswers((current) => toggleListEntry(current, option))
+            }
+            emptyMessage="Add options above to choose which answers are acceptable."
+          />
+        </div>
+      ) : null}
+
+      {type === "NUMERIC" || type === "RATING" ? (
         <div className="grid gap-2">
           <Label htmlFor="expectedAnswer">Expected answer</Label>
           <Input
             id="expectedAnswer"
             name="expectedAnswer"
-            type={type === "NUMERIC" || type === "RATING" ? "number" : "text"}
-            placeholder={
-              type === "NUMERIC" || type === "RATING"
-                ? "Expected number"
-                : "Exact option text"
-            }
+            type="number"
+            placeholder="Expected number"
             defaultValue={
               typeof defaults?.expectedAnswer === "string" ||
               typeof defaults?.expectedAnswer === "number"
@@ -228,18 +304,21 @@ export function QuestionForm({
 
       {type === "MULTI_SELECT" ? (
         <div className="grid gap-2">
-          <Label htmlFor="expectedAnswer">
-            Expected selections (one per line)
-          </Label>
-          <Textarea
-            id="expectedAnswer"
+          <Label>Expected selections</Label>
+          <input
+            type="hidden"
             name="expectedAnswer"
-            rows={4}
-            defaultValue={
-              Array.isArray(defaults?.expectedAnswer)
-                ? defaults.expectedAnswer.join("\n")
-                : ""
+            value={expectedSelections.join("\n")}
+          />
+          <OptionChecklist
+            options={parsedOptions}
+            selected={expectedSelections}
+            onToggle={(option) =>
+              setExpectedSelections((current) =>
+                toggleListEntry(current, option),
+              )
             }
+            emptyMessage="Add options above to choose the required selections."
           />
         </div>
       ) : null}
@@ -259,7 +338,9 @@ export function QuestionForm({
           <Label htmlFor="expectedAnswer">Expected answer</Label>
           <Select
             name="expectedAnswer"
-            defaultValue={defaults?.expectedAnswer ? "true" : "false"}
+            defaultValue={
+              defaults?.expectedAnswer === "false" ? "false" : "true"
+            }
           >
             <SelectTrigger id="expectedAnswer">
               <SelectValue placeholder="Should be checked?" />

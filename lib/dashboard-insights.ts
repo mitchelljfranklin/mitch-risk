@@ -1,3 +1,5 @@
+import { type RiskWeight } from "../prisma/generated/prisma/client";
+
 export type RagBand = "green" | "amber" | "red" | "unscored";
 
 export type RagThresholds = { green: number; amber: number };
@@ -71,4 +73,57 @@ export function computeRiskByTier(
   return RISK_TIER_ORDER.map((tier) => rows.get(tier)!).filter(
     (row) => row.total > 0,
   );
+}
+
+export type DomainQuestionInput = {
+  controlIds: string[];
+  riskWeight: RiskWeight;
+  isNotApplicable: boolean;
+  isCompliant: boolean | null;
+};
+
+export type DomainCompliance = {
+  domain: string;
+  ratio: number;
+  controlCount: number;
+};
+
+export function computeDomainCompliance(
+  questions: DomainQuestionInput[],
+  controlDomainMap: Map<string, string>,
+  riskWeights: Record<RiskWeight, number>,
+): DomainCompliance[] {
+  const byDomain = new Map<
+    string,
+    { weighted: number; max: number; count: number }
+  >();
+
+  for (const question of questions) {
+    if (question.isNotApplicable || question.isCompliant === null) {
+      continue;
+    }
+    const weight = riskWeights[question.riskWeight] ?? 0;
+    for (const controlId of question.controlIds) {
+      const domain = controlDomainMap.get(controlId);
+      if (!domain) {
+        continue;
+      }
+      const entry = byDomain.get(domain) ?? { weighted: 0, max: 0, count: 0 };
+      entry.max += weight;
+      entry.count += 1;
+      if (question.isCompliant) {
+        entry.weighted += weight;
+      }
+      byDomain.set(domain, entry);
+    }
+  }
+
+  return [...byDomain.entries()]
+    .filter(([, entry]) => entry.max > 0)
+    .map(([domain, entry]) => ({
+      domain,
+      ratio: entry.weighted / entry.max,
+      controlCount: entry.count,
+    }))
+    .sort((a, b) => a.domain.localeCompare(b.domain));
 }

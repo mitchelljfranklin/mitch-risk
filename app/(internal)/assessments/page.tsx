@@ -21,6 +21,8 @@ import {
   type AssessmentSort,
 } from "@/lib/db/assessments";
 import { ASSESSMENT_STATUS_LABELS } from "@/lib/schemas/assessment";
+import { getVendor } from "@/lib/db/vendors";
+import { buildBackParam } from "@/lib/nav";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +44,7 @@ export default async function AssessmentsPage({
   const { assessments, totalCount, pageSize } = await listAssessments({
     query: sp.query,
     status: sp.status,
+    vendorId: sp.vendorId,
     fromDate: sp.from,
     toDate: sp.to,
     overdue,
@@ -52,16 +55,34 @@ export default async function AssessmentsPage({
   const hasFilters =
     Boolean(sp.query) ||
     Boolean(sp.status) ||
+    Boolean(sp.vendorId) ||
     Boolean(sp.from) ||
     Boolean(sp.to) ||
     overdue;
+
+  const filteredVendorName = sp.vendorId
+    ? ((await getVendor(sp.vendorId))?.name ?? null)
+    : null;
+
+  const backParam = buildBackParam("/assessments", sp, [
+    "query",
+    "status",
+    "vendorId",
+    "from",
+    "to",
+    "overdue",
+    "sort",
+    "page",
+  ]);
 
   return (
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Assessments</h1>
         <p className="text-muted-foreground text-sm">
-          Questionnaires sent to vendors.
+          {filteredVendorName
+            ? `Questionnaires for ${filteredVendorName}.`
+            : "Questionnaires sent to vendors."}
         </p>
       </div>
 
@@ -175,6 +196,7 @@ export default async function AssessmentsPage({
             templateName: assessment.template?.name ?? null,
             templateVersion: assessment.template?.version ?? null,
           }))}
+          backParam={backParam}
           initialSort={sort}
           page={page}
           pageSize={pageSize}

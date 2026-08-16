@@ -83,6 +83,13 @@
             "required": false,
             "description": "Filter vendors by tag",
             "schema": { "type": "string" }
+          },
+          {
+            "name": "externalId",
+            "in": "query",
+            "required": false,
+            "description": "Filter by exact external ID reference",
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -98,6 +105,7 @@
                   {
                     "id": "cmr182ra30001iuo4z6iqcdfs",
                     "name": "Acme Corp",
+                    "externalId": "ERP-V-001",
                     "contactName": "Jane Doe",
                     "contactEmail": "jane@acme.example",
                     "tier": "HIGH",
@@ -215,6 +223,36 @@
         }
       }
     },
+    "/v1/vendors/external/{externalId}": {
+      "get": {
+        "tags": ["Vendors"],
+        "summary": "Get vendor by external ID",
+        "description": "Returns full vendor detail looked up by its external ID reference (the vendor's ID in another system). Returns 404 if no vendor carries that external ID.",
+        "operationId": "getVendorByExternalId",
+        "parameters": [
+          {
+            "name": "externalId",
+            "in": "path",
+            "required": true,
+            "description": "The vendor's external ID reference",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full vendor detail",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VendorDetail" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
     "/v1/vendors/{vendorId}/score": {
       "get": {
         "tags": ["Vendors"],
@@ -247,8 +285,8 @@
     "/v1/vendors/{vendorId}/export": {
       "get": {
         "tags": ["Vendors"],
-        "summary": "Export vendor as JSON",
-        "description": "Downloads a JSON file containing the vendor's details and assessment summaries. Suitable for backup, migration, or sharing.",
+        "summary": "Export vendor as CSV",
+        "description": "Downloads a CSV file containing vendor details, assessment summaries, certifications, and customer responsibility actions. Suitable for spreadsheet import or backup.",
         "operationId": "exportVendor",
         "parameters": [
           {
@@ -260,16 +298,16 @@
         ],
         "responses": {
           "200": {
-            "description": "JSON download of vendor data",
+            "description": "CSV download of vendor data",
             "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/VendorExport" }
+              "text/csv": {
+                "schema": { "type": "string" }
               }
             },
             "headers": {
               "Content-Disposition": {
                 "schema": { "type": "string" },
-                "description": "attachment; filename=\"{name}.json\""
+                "description": "attachment; filename=\"{name}.csv\""
               }
             }
           },
@@ -935,6 +973,41 @@
           "403": { "$ref": "#/components/responses/Forbidden" }
         }
       }
+    },
+    "/vendors/{vendorId}/frameworks/{frameworkId}/report": {
+      "get": {
+        "tags": ["Vendors"],
+        "summary": "Download framework compliance report",
+        "description": "Generates a PDF compliance report for a vendor against a specific framework. Includes a domain compliance summary (current vs previous assessment) and a per-control compliance heatmap.",
+        "operationId": "downloadFrameworkReport",
+        "parameters": [
+          {
+            "name": "vendorId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "frameworkId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Framework compliance PDF report",
+            "content": {
+              "application/pdf": {
+                "schema": { "type": "string", "format": "binary" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
     }
   },
   "components": {
@@ -1054,6 +1127,11 @@
         "properties": {
           "id": { "type": "string", "description": "Unique vendor ID" },
           "name": { "type": "string", "description": "Vendor name" },
+          "externalId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional reference ID from an external system"
+          },
           "contactName": {
             "type": "string",
             "nullable": true,
@@ -1104,6 +1182,7 @@
         "properties": {
           "id": { "type": "string" },
           "name": { "type": "string" },
+          "externalId": { "type": "string", "nullable": true },
           "contactName": { "type": "string", "nullable": true },
           "contactEmail": { "type": "string" },
           "tier": {
@@ -1185,6 +1264,8 @@
               "type": "object",
               "properties": {
                 "domain": { "type": "string" },
+                "frameworkId": { "type": "string" },
+                "frameworkName": { "type": "string" },
                 "complianceRatio": { "type": "number", "format": "float" },
                 "controlCount": { "type": "integer" }
               }
@@ -1249,49 +1330,10 @@
               "type": "object",
               "properties": {
                 "domain": { "type": "string" },
+                "frameworkId": { "type": "string" },
+                "frameworkName": { "type": "string" },
                 "complianceRatio": { "type": "number" },
                 "controlCount": { "type": "integer" }
-              }
-            }
-          }
-        }
-      },
-      "VendorExport": {
-        "type": "object",
-        "description": "Full vendor data export — suitable for backup, migration, or sharing",
-        "properties": {
-          "name": { "type": "string" },
-          "contactName": { "type": "string", "nullable": true },
-          "contactEmail": { "type": "string" },
-          "tier": { "type": "string", "nullable": true },
-          "website": { "type": "string", "nullable": true },
-          "notes": { "type": "string", "nullable": true },
-          "overallScore": { "type": "number", "nullable": true },
-          "lastAssessedAt": {
-            "type": "string",
-            "nullable": true,
-            "format": "date-time"
-          },
-          "assessments": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "title": { "type": "string" },
-                "status": { "type": "string" },
-                "score": { "type": "number", "nullable": true },
-                "submittedAt": {
-                  "type": "string",
-                  "nullable": true,
-                  "format": "date-time"
-                },
-                "dueDate": {
-                  "type": "string",
-                  "nullable": true,
-                  "format": "date-time"
-                },
-                "templateName": { "type": "string", "nullable": true },
-                "templateVersion": { "type": "integer", "nullable": true }
               }
             }
           }
@@ -1306,6 +1348,10 @@
             "type": "string",
             "minLength": 1,
             "description": "Vendor name (required)"
+          },
+          "externalId": {
+            "type": "string",
+            "description": "Optional reference ID from an external system"
           },
           "contactName": {
             "type": "string",
@@ -1653,7 +1699,7 @@
       },
       "AssessmentDetail": {
         "type": "object",
-        "description": "Full assessment detail including vendor, template, questions with responses, review decisions, findings, and threaded comments",
+        "description": "Full assessment detail including vendor, template, flat question list with responses, review decisions, findings, and threaded comments",
         "properties": {
           "id": { "type": "string" },
           "title": { "type": "string" },
@@ -1674,58 +1720,88 @@
             "nullable": true,
             "format": "date-time"
           },
-          "completedAt": {
+          "createdAt": { "type": "string", "format": "date-time" },
+          "recurrence": {
             "type": "string",
             "nullable": true,
-            "format": "date-time"
+            "enum": [
+              "NONE",
+              "WEEKLY",
+              "MONTHLY",
+              "QUARTERLY",
+              "BIANNUALLY",
+              "ANNUALLY"
+            ]
           },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "vendor": { "$ref": "#/components/schemas/VendorDetail" },
-          "template": {
+          "vendor": {
             "type": "object",
             "properties": {
               "id": { "type": "string" },
               "name": { "type": "string" },
+              "contactName": { "type": "string", "nullable": true },
+              "contactEmail": { "type": "string" },
+              "tier": { "type": "string", "nullable": true }
+            }
+          },
+          "template": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "name": { "type": "string" },
               "version": { "type": "integer" }
             }
           },
-          "sections": {
+          "reviewer": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "email": { "type": "string" }
+            }
+          },
+          "questions": {
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
-                "title": { "type": "string" },
-                "questions": {
+                "id": { "type": "string" },
+                "sectionTitle": { "type": "string" },
+                "text": { "type": "string" },
+                "helpText": { "type": "string", "nullable": true },
+                "type": { "type": "string" },
+                "riskWeight": { "type": "string" },
+                "required": { "type": "boolean" },
+                "expectedAnswer": { "type": "string", "nullable": true },
+                "options": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": { "type": "string" },
-                      "text": { "type": "string" },
-                      "type": { "type": "string" },
-                      "riskWeight": { "type": "string" },
-                      "required": { "type": "boolean" },
-                      "response": {
-                        "type": "object",
-                        "nullable": true,
-                        "properties": {
-                          "answer": {},
-                          "compliance": { "type": "string" },
-                          "reviewDecision": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "reviewNote": { "type": "string", "nullable": true },
-                          "evidenceFiles": {
-                            "type": "array",
-                            "items": { "type": "string" }
-                          }
-                        }
-                      },
-                      "controlCodes": {
-                        "type": "array",
-                        "items": { "type": "string" }
+                  "items": { "type": "string" },
+                  "nullable": true
+                },
+                "order": { "type": "integer" },
+                "controlIds": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "sharedControlIds": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "response": {
+                  "type": "object",
+                  "nullable": true,
+                  "properties": {
+                    "value": {},
+                    "isNotApplicable": { "type": "boolean" },
+                    "isCompliant": { "type": "boolean" },
+                    "weightedScore": { "type": "number", "nullable": true },
+                    "maxScore": { "type": "number", "nullable": true },
+                    "review": {
+                      "type": "object",
+                      "nullable": true,
+                      "properties": {
+                        "decision": { "type": "string" },
+                        "note": { "type": "string", "nullable": true }
                       }
                     }
                   }
@@ -1735,7 +1811,34 @@
           },
           "findings": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/FindingSummary" }
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "title": { "type": "string" },
+                "description": { "type": "string", "nullable": true },
+                "severity": {
+                  "type": "string",
+                  "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["OPEN", "REMEDIATED", "RISK_ACCEPTED"]
+                },
+                "controlCodes": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "resolutionNote": { "type": "string", "nullable": true },
+                "resolvedAt": {
+                  "type": "string",
+                  "nullable": true,
+                  "format": "date-time"
+                },
+                "resolvedByName": { "type": "string", "nullable": true },
+                "createdAt": { "type": "string", "format": "date-time" }
+              }
+            }
           },
           "comments": {
             "type": "array",
@@ -1743,9 +1846,31 @@
               "type": "object",
               "properties": {
                 "id": { "type": "string" },
-                "userName": { "type": "string" },
+                "authorType": { "type": "string" },
+                "authorName": { "type": "string" },
                 "body": { "type": "string" },
-                "createdAt": { "type": "string", "format": "date-time" }
+                "visibility": {
+                  "type": "string",
+                  "enum": ["INTERNAL", "SHARED", "VENDOR_ONLY"]
+                },
+                "createdAt": { "type": "string", "format": "date-time" },
+                "replies": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string" },
+                      "authorType": { "type": "string" },
+                      "authorName": { "type": "string" },
+                      "body": { "type": "string" },
+                      "visibility": {
+                        "type": "string",
+                        "enum": ["INTERNAL", "SHARED", "VENDOR_ONLY"]
+                      },
+                      "createdAt": { "type": "string", "format": "date-time" }
+                    }
+                  }
+                }
               }
             }
           }

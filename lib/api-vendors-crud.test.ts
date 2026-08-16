@@ -31,6 +31,7 @@ function auth(permissions: string[]): AuthResult {
 const mockVendor = {
   id: "v1",
   name: "TestCo",
+  externalId: null as string | null,
   contactName: "Jane",
   contactEmail: "jane@testco.example",
   tier: "MEDIUM",
@@ -114,6 +115,27 @@ describe("PUT /v1/vendors/{vendorId}", () => {
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.name).toBe("UpdatedCo");
+  });
+
+  it("passes the externalId through on update", async () => {
+    mockedAuth.mockResolvedValueOnce(auth([PERMISSIONS.VENDORS_EDIT]));
+    mockedGetVendor.mockResolvedValueOnce(mockVendor as any);
+    mockedUpdateVendor.mockResolvedValueOnce({
+      ...mockVendor,
+      externalId: "ERP-V-001",
+    } as any);
+    const response = await PUT(
+      new Request("http://localhost/api/v1/vendors/v1", {
+        method: "PUT",
+        body: JSON.stringify({ externalId: "ERP-V-001" }),
+      }),
+      { params: Promise.resolve({ vendorId: "v1" }) },
+    );
+    expect(response.status).toBe(200);
+    expect(mockedUpdateVendor).toHaveBeenCalledWith(
+      "v1",
+      expect.objectContaining({ externalId: "ERP-V-001" }),
+    );
   });
 });
 

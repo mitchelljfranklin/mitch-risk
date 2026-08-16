@@ -22,13 +22,17 @@ import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { listVendorCertifications } from "@/lib/db/certifications";
 import { prisma } from "@/lib/prisma";
 import { getVendorProfile } from "@/lib/db/compliance";
-import { listVendorFindings } from "@/lib/db/findings";
-import { listFrameworks } from "@/lib/db/frameworks";
-import { listFrameworksWithSharedControls } from "@/lib/db/frameworks";
+import { listFindings } from "@/lib/db/findings";
+import {
+  listFrameworks,
+  listFrameworksWithSharedControls,
+} from "@/lib/db/frameworks";
 import { getVendor } from "@/lib/db/vendors";
 import { getCustomerResponsibilityCompliance } from "@/lib/db/customer-responsibility";
 import { buildVendorTimeline } from "@/lib/db/vendor-timeline";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UrlTabs } from "@/components/url-tabs";
+import { resolveBackHref } from "@/lib/nav";
 import {
   ASSESSMENT_STATUS_LABELS,
   FINDING_STATUS_LABELS,
@@ -40,6 +44,8 @@ import {
   VENDOR_TIER_LABELS,
 } from "@/lib/schemas/vendor";
 import { cn, formatDate, formatPercent } from "@/lib/utils";
+
+const MAX_VENDOR_ASSESSMENTS = 10;
 
 function computeInherentRisk(vendor: {
   tier: string | null;
@@ -108,13 +114,27 @@ export default async function VendorDetailPage({
     notFound();
   }
 
-  const [profile, frameworks, findings, certifications] = await Promise.all([
-    getVendorProfile(vendorId),
-    listFrameworks(),
-    canViewFindings ? listVendorFindings(vendorId) : Promise.resolve([]),
-    listVendorCertifications(vendorId),
-  ]);
-  const openFindings = findings.filter((finding) => finding.status === "OPEN");
+  const [profile, frameworks, findingsResult, certifications] =
+    await Promise.all([
+      getVendorProfile(vendorId),
+      listFrameworks(),
+      canViewFindings
+        ? listFindings({ vendorId })
+        : Promise.resolve({
+            findings: [],
+            totalCount: 0,
+            page: 1,
+            pageSize: 20,
+          }),
+      listVendorCertifications(vendorId),
+    ]);
+  const findings = findingsResult.findings;
+  const totalFindings = findingsResult.totalCount;
+  const openFindingsCount = canViewFindings
+    ? await prisma.finding.count({
+        where: { status: "OPEN", assessment: { vendorId } },
+      })
+    : 0;
 
   const responsibilityCompliance =
     await getCustomerResponsibilityCompliance(vendorId);
@@ -197,10 +217,14 @@ export default async function VendorDetailPage({
     "assessments",
   ];
   const safeTab = allowedTabs.includes(defaultTab) ? defaultTab : "overview";
+  const frameworkBackParam = sp.back
+    ? `&back=${encodeURIComponent(sp.back)}`
+    : "";
 
   const hasOverviewFields =
     vendor.serviceDescription ||
     vendor.owner ||
+    vendor.externalId ||
     vendor.dataSensitivity ||
     vendor.contractRenewalDate ||
     vendor.website ||
@@ -210,10 +234,20 @@ export default async function VendorDetailPage({
     <div className="flex max-w-5xl flex-col gap-6">
       {sp.created ? <FlashToast message="Vendor created." /> : null}
       <Breadcrumbs
-        segments={[
-          { label: "Vendors", href: "/vendors" },
-          { label: vendor.name },
-        ]}
+        segments={
+          sp.back?.startsWith("/risk-register")
+            ? [
+                { label: "Risk register", href: sp.back },
+                { label: vendor.name },
+              ]
+            : [
+                {
+                  label: "Vendors",
+                  href: resolveBackHref(sp.back, "/vendors", "/vendors"),
+                },
+                { label: vendor.name },
+              ]
+        }
       />
 
       <div>
@@ -274,16 +308,16 @@ export default async function VendorDetailPage({
         ) : null}
       </div>
 
-      <Tabs defaultValue={safeTab}>
+      <UrlTabs defaultTab={safeTab} allowedTabs={allowedTabs}>
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="compliance">Compliance</TabsTrigger>
           {canViewFindings ? (
             <TabsTrigger value="findings">
               Findings
-              {openFindings.length > 0 ? (
+              {openFindingsCount > 0 ? (
                 <Badge variant="secondary" className="ml-1 text-[10px]">
-                  {openFindings.length}
+                  {openFindingsCount}
                 </Badge>
               ) : null}
             </TabsTrigger>
@@ -317,6 +351,16 @@ export default async function VendorDetailPage({
                       {vendor.owner?.name ?? "Unassigned"}
                     </span>
                   </div>
+                  {vendor.externalId ? (
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-muted-foreground text-xs">
+                        External ID
+                      </span>
+                      <span className="font-mono text-sm">
+                        {vendor.externalId}
+                      </span>
+                    </div>
+                  ) : null}
                   <div className="flex flex-col gap-0.5">
                     <span className="text-muted-foreground text-xs">
                       Data sensitivity
@@ -404,57 +448,44 @@ export default async function VendorDetailPage({
                 <CardTitle>Risk profile</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
-                {(() => {
-                  const inherent = computeInherentRisk(vendor);
-                  return inherent !== null ? (
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground text-xs">
-                          Inherent (pre-assessment)
-                        </span>
-                        <Badge variant="secondary" className="text-[11px]">
-                          {formatPercent(inherent)}
-                        </Badge>
-                      </div>
-                      {vendor.overallScore !== null ? (
-                        <div className="flex items-center gap-2">
-                          <span className="text-muted-foreground text-xs">
-                            Residual (assessed)
-                          </span>
-                          <ScoreBadge score={vendor.overallScore} size="sm" />
-                        </div>
-                      ) : null}
-                    </div>
-                  ) : null;
-                })()}
-                {profile != null && profile.overallScore != null ? (
+                <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2">
-                    <ScoreBadge score={profile.overallScore} size="lg" />
                     <span className="text-muted-foreground text-xs">
-                      overall
+                      Inherent (pre-assessment)
                     </span>
-                    {profile.trend !== "stable" ? (
-                      <Badge
-                        variant={
-                          profile.trend === "up" ? "default" : "destructive"
-                        }
-                        className="text-[11px]"
-                      >
-                        {profile.trend === "up"
-                          ? "Trending up ↑"
-                          : "Trending down ↓"}
-                      </Badge>
-                    ) : (
-                      <Badge variant="secondary" className="text-[11px]">
-                        Stable →
-                      </Badge>
-                    )}
+                    <Badge variant="secondary" className="text-[11px]">
+                      {formatPercent(computeInherentRisk(vendor) ?? 0)}
+                    </Badge>
                   </div>
-                ) : (
-                  <p className="text-muted-foreground text-sm">
-                    No score yet — submit an assessment.
-                  </p>
-                )}
+                  {profile != null && profile.overallScore != null ? (
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground text-xs">
+                        Residual (assessed)
+                      </span>
+                      <ScoreBadge score={profile.overallScore} size="sm" />
+                      {profile.trend !== "stable" ? (
+                        <Badge
+                          variant={
+                            profile.trend === "up" ? "default" : "destructive"
+                          }
+                          className="text-[11px]"
+                        >
+                          {profile.trend === "up"
+                            ? "Trending up ↑"
+                            : "Trending down ↓"}
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary" className="text-[11px]">
+                          Stable →
+                        </Badge>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-muted-foreground text-xs">
+                      No score yet — submit an assessment
+                    </span>
+                  )}
+                </div>
                 {profile && profile.history.length > 0 ? (
                   <div className="flex flex-col gap-2">
                     <span className="text-muted-foreground text-xs font-medium">
@@ -553,31 +584,49 @@ export default async function VendorDetailPage({
               <CardTitle>Domain compliance</CardTitle>
             </CardHeader>
             <CardContent>
-              {profile && profile.domainBreakdown.length > 0 ? (
-                <div className="flex flex-col gap-3">
-                  {profile.domainBreakdown.map((item) => {
-                    const ratioPercent = Math.round(item.complianceRatio * 100);
-                    return (
-                      <div key={item.domain} className="flex flex-col gap-1">
-                        <div className="flex items-center justify-between text-sm">
-                          <span>{item.domain}</span>
-                          <span className="text-muted-foreground">
-                            {ratioPercent}%
-                          </span>
-                        </div>
-                        <ProgressBar
-                          value={ratioPercent}
-                          className={cn(
-                            ratioPercent >= 85
-                              ? "bg-[var(--rag-green)]"
-                              : ratioPercent >= 60
-                                ? "bg-[var(--rag-amber)]"
-                                : "bg-[var(--rag-red)]",
-                          )}
-                        />
-                      </div>
-                    );
-                  })}
+              {profile && profile.frameworkCompliance.length > 0 ? (
+                <div className="flex flex-col gap-5">
+                  {profile.frameworkCompliance.map((framework) => (
+                    <div
+                      key={framework.frameworkId}
+                      className="flex flex-col gap-2"
+                    >
+                      <h3 className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                        {framework.frameworkName}
+                        {framework.frameworkVersion
+                          ? ` ${framework.frameworkVersion}`
+                          : ""}
+                      </h3>
+                      {framework.domains.map((item) => {
+                        const ratioPercent = Math.round(
+                          item.complianceRatio * 100,
+                        );
+                        return (
+                          <div
+                            key={item.domain}
+                            className="flex flex-col gap-1"
+                          >
+                            <div className="flex items-center justify-between text-sm">
+                              <span>{item.domain}</span>
+                              <span className="text-muted-foreground">
+                                {ratioPercent}%
+                              </span>
+                            </div>
+                            <ProgressBar
+                              value={ratioPercent}
+                              className={cn(
+                                ratioPercent >= 85
+                                  ? "bg-[var(--rag-green)]"
+                                  : ratioPercent >= 60
+                                    ? "bg-[var(--rag-amber)]"
+                                    : "bg-[var(--rag-red)]",
+                              )}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <EmptyState
@@ -596,16 +645,31 @@ export default async function VendorDetailPage({
                 <CardTitle>Framework heatmaps</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-2">
-                {frameworks.map((framework) => (
-                  <Link
-                    key={framework.id}
-                    href={`/vendors/${vendor.id}/frameworks/${framework.id}`}
-                    className="hover:bg-accent/40 text-sm"
-                  >
-                    {framework.name}{" "}
-                    {framework.version === "2022" ? "(ISO 27001)" : ""}
-                  </Link>
-                ))}
+                {frameworks.map((framework) => {
+                  const compliance = profile?.frameworkCompliance.find(
+                    (item) => item.frameworkId === framework.id,
+                  );
+                  const hasData = (compliance?.mappedControlCount ?? 0) > 0;
+                  return (
+                    <div
+                      key={framework.id}
+                      className="flex items-center justify-between"
+                    >
+                      <Link
+                        href={`/vendors/${vendor.id}/frameworks/${framework.id}?tab=${safeTab}${frameworkBackParam}`}
+                        className="hover:bg-accent/40 text-sm"
+                      >
+                        {framework.name}{" "}
+                        {framework.version === "2022" ? "(ISO 27001)" : ""}
+                      </Link>
+                      {!hasData ? (
+                        <span className="text-muted-foreground text-xs">
+                          No assessment data
+                        </span>
+                      ) : null}
+                    </div>
+                  );
+                })}
               </CardContent>
             </Card>
           ) : (
@@ -631,9 +695,9 @@ export default async function VendorDetailPage({
               <CardHeader>
                 <CardTitle>
                   Findings
-                  {openFindings.length > 0 ? (
+                  {openFindingsCount > 0 ? (
                     <span className="text-muted-foreground ml-2 text-sm font-normal">
-                      {openFindings.length} open
+                      {openFindingsCount} open
                     </span>
                   ) : null}
                 </CardTitle>
@@ -673,6 +737,14 @@ export default async function VendorDetailPage({
                         </div>
                       </Link>
                     ))}
+                    {totalFindings > findings.length ? (
+                      <Link
+                        href={`/risk-register?vendorId=${vendor.id}`}
+                        className="text-muted-foreground text-xs hover:underline"
+                      >
+                        View all {totalFindings} findings in the risk register →
+                      </Link>
+                    ) : null}
                   </div>
                 ) : (
                   <EmptyState
@@ -711,30 +783,40 @@ export default async function VendorDetailPage({
                 />
               ) : (
                 <div className="flex flex-col gap-2">
-                  {vendor.assessments.map((assessment) => (
+                  {vendor.assessments
+                    .slice(0, MAX_VENDOR_ASSESSMENTS)
+                    .map((assessment) => (
+                      <Link
+                        key={assessment.id}
+                        href={`/assessments/${assessment.id}`}
+                        className="hover:bg-accent/40 flex items-center justify-between gap-3 rounded-md border p-3"
+                      >
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">
+                            {assessment.title}
+                          </span>
+                          <span className="text-muted-foreground text-xs">
+                            {assessment.template
+                              ? `${assessment.template.name} v${assessment.template.version}`
+                              : "No template"}
+                            {assessment.dueDate
+                              ? ` · due ${formatDate(assessment.dueDate)}`
+                              : ""}
+                          </span>
+                        </div>
+                        <Badge variant="secondary">
+                          {ASSESSMENT_STATUS_LABELS[assessment.status]}
+                        </Badge>
+                      </Link>
+                    ))}
+                  {vendor.assessments.length > MAX_VENDOR_ASSESSMENTS ? (
                     <Link
-                      key={assessment.id}
-                      href={`/assessments/${assessment.id}`}
-                      className="hover:bg-accent/40 flex items-center justify-between gap-3 rounded-md border p-3"
+                      href={`/assessments?vendorId=${vendor.id}`}
+                      className="text-muted-foreground text-xs hover:underline"
                     >
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium">
-                          {assessment.title}
-                        </span>
-                        <span className="text-muted-foreground text-xs">
-                          {assessment.template
-                            ? `${assessment.template.name} v${assessment.template.version}`
-                            : "No template"}
-                          {assessment.dueDate
-                            ? ` · due ${formatDate(assessment.dueDate)}`
-                            : ""}
-                        </span>
-                      </div>
-                      <Badge variant="secondary">
-                        {ASSESSMENT_STATUS_LABELS[assessment.status]}
-                      </Badge>
+                      View all {vendor.assessments.length} assessments →
                     </Link>
-                  ))}
+                  ) : null}
                 </div>
               )}
             </CardContent>
@@ -749,7 +831,7 @@ export default async function VendorDetailPage({
             </CardContent>
           </Card>
         </TabsContent>
-      </Tabs>
+      </UrlTabs>
     </div>
   );
 }

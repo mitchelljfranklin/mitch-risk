@@ -179,6 +179,62 @@ The two scores appear together on every vendor detail page, telling a complete s
 
 The residual score is only available after at least one assessment is **completed** (reviewer-finalized). Until then, the inherent risk is the primary risk indicator.
 
+## Compliance Radar
+
+The **compliance radar** (on the vendor's framework page, above the control heatmap) plots the same weighted score — but broken down **per domain** of a single framework. Where the heatmap shows each control individually, the radar gives you an at-a-glance shape of which *areas* of the framework are strong or weak.
+
+### Axes
+
+Each axis is one **domain** of the selected framework:
+
+- **ISO 27001** — A.5 Organizational, A.6 People, A.7 Physical, A.8 Technological
+- **NIST CSF** — Govern, Identify, Protect, Detect, Respond, Recover
+- **SOC 2** — the Trust Services Criteria (CC1–CC9, Availability, Confidentiality, etc.)
+- **Essential Eight** — the eight mitigation strategies
+- **Your own frameworks** — whatever `domain` value you assign to each control on import
+
+### Data source
+
+The radar reads the two most recent **completed** assessments (status *not* in Draft / Sent / In Progress) whose questions map to that framework's controls:
+
+- **Current** — the latest such assessment
+- **Previous** — the one before it (only if it also mapped questions to this framework)
+
+If there is only one completed assessment, the radar renders a single series with a note — no fabricated "previous" data.
+
+### Weighting
+
+The radar applies the exact same risk-weight formula as the overall score (see [Step 4](#step-4-apply-the-risk-weight)), but computed **within each domain**:
+
+```
+domainScore = sum(compliant weights in that domain) / sum(all weights in that domain)
+```
+
+Where each question's weight is `CRITICAL` = 10, `HIGH` = 6, `MEDIUM` = 3, `LOW` = 1 (configurable in Settings → Scoring). A CRITICAL control you fail pulls its domain's axis down far harder than a LOW control you fail — so the radar reads as a **residual risk rating**, not a flat compliance %.
+
+The same exclusions apply as the overall score:
+
+- **N/A responses** — excluded from numerator and denominator
+- **Unscorable types** (`FREE_TEXT`, `FILE_UPLOAD`, `DATE`, `URL`, `EMAIL`) — excluded, since they have no machine-evaluable "right answer"
+- **A question mapped to multiple controls** counts against each control's domain
+- **Domains with no scorable questions** are omitted from the radar (so "not assessed" is never misread as 0%)
+
+### Scale
+
+The radius axis is a fixed **0–100%** scale. A "50%" always occupies the same position, so radars are directly comparable across frameworks and vendors.
+
+### Current vs previous overlay
+
+- **Solid polygon** = the current assessment
+- **Dashed polygon** = the previous assessment
+- A domain that was not assessed in the previous round appears as a gap in the dashed polygon
+
+A shrinking polygon over time means a vendor is deteriorating; a growing one means their controls are improving.
+
+### PDF report
+
+The framework page has a **Download PDF report** action. Since a radar polygon cannot be navigated in print, the PDF renders the radar as a **domain compliance table** — `Domain | Current | Previous | Change` — alongside the per-control heatmap. The `Change` column (current minus previous) captures the improvement/regression the polygon implies, coloured green for gains and red for losses. A `—` marks domains that were not assessed in the previous round.
+
 ## Findings Reconciliation
 
 After scoring, the engine reconciles findings — the non-compliant answers that need attention:
@@ -240,7 +296,8 @@ The scoring system feeds multiple dashboard views:
 | **Risk by Tier** | Stacked RAG bars per vendor tier — see which tiers concentrate your risk |
 | **Vendor Detail** | Inherent vs residual side-by-side, score history timeline, trend direction |
 | **Framework Heatmap** | Per-control compliance ratio with RAG-coloured indicators |
-| **Domain Breakdown** | Compliance percentage per domain (grouped from control→domain mappings) |
+| **Compliance Radar** | Risk-weighted domain compliance (0–100%) per framework, overlaying the current vs previous assessment |
+| **Domain Breakdown** | Risk-weighted compliance percentage per domain, grouped by framework |
 
 ### Trend Direction
 

@@ -45,6 +45,7 @@ app/                 # Next.js App Router
     attachments/[attachmentId]/ # authenticated file serving
     v1/                 #   REST v1 endpoints
       vendors/          #     vendor CRUD + import
+        external/[externalId]/ # vendor lookup by external ID
       assessments/      #     assessment list + detail
       findings/         #     finding list + status update
       frameworks/       #     framework list + detail
@@ -106,6 +107,8 @@ components/          # shadcn ui primitives + domain composites
   question-form.tsx                      # template question editor
   conditional-rules-editor.tsx           # conditional logic rule builder
   control-multi-select.tsx               # multi-select for framework controls
+  compliance-radar.tsx                   # recharts radar of framework domain compliance
+  url-tabs.tsx                           # ?tab= URL-synced tabs
   auth/sso-buttons.tsx                   # SSO login buttons
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
@@ -141,6 +144,9 @@ lib/                 # cross-cutting logic
   api-keys.ts        # API key generation, bcrypt hashing, CIDR IP matching
   api-auth.ts        # unified authenticateRequest() — session + Bearer token + permission check
   api-response.ts    # shared API error wrapper (runApiHandler + apiError)
+  nav.ts             # buildBackParam / resolveBackHref / resolveTab navigation-state helpers
+  api/               # shared API response builders
+    vendor-detail.ts #   buildVendorDetailResponse (used by vendor + external-ID lookup routes)
   auth.ts            # Auth.js config + permission guards (requirePermission/hasPermission)
   break-glass.ts     # SSO-only login bypass: token gen/hash/verify + show-local-auth rule
   client-ip.ts       # proxy-aware client IP (trusted-hop X-Forwarded-For / CLIENT_IP_HEADER)
@@ -152,6 +158,8 @@ lib/                 # cross-cutting logic
   json.ts            # deep-clone helper for JSON-safe values
   openapi.json       # OpenAPI 3.0 spec powering Swagger UI at /docs
   pdf-report.tsx     # @react-pdf/renderer assessment report generator
+  framework-report.tsx # @react-pdf/renderer framework compliance report generator
+  portfolio-report.tsx # @react-pdf/renderer portfolio PDF report generator
   permissions.ts     # RBAC permission catalog, default system roles, permission helpers
   portal.ts          # portal state machine (visibility, required questions)
   prisma.ts          # shared Prisma client instance
@@ -170,8 +178,9 @@ lib/                 # cross-cutting logic
                      #   local-disk, s3.ts (AWS S3), azure.ts (Azure Blob)
 hooks/              # React hooks (use-form-toast, use-action-feedback, use-mobile)
 emails/              # React Email templates (invite, reminder, escalation, dynamic)
-prisma/              # schema.prisma, migrations, seed.ts, seed-runner.cjs
+prisma/              # schema.prisma, migrations, seed.ts, seed-runner.cjs, seed-demo.ts, seed-radar-demo.ts
   seed-data/         # ISO 27001, SOC 2, NIST CSF, Essential Eight seed data + types
+    templates/       #   full out-of-the-box questionnaire templates (one per framework)
 scripts/             # backup.sh, backup.ps1
 e2e/                 # Playwright end-to-end tests
 docs/                # VitePress-powered user documentation site (GitHub Pages)

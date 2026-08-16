@@ -226,6 +226,7 @@ enum Recurrence {
 model Vendor {
   id                  String           @id @default(cuid())
   name                String
+  externalId          String?          @unique
   contactName         String?
   contactEmail        String
   tier                VendorTier?

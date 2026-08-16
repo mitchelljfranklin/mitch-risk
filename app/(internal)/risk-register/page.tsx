@@ -36,6 +36,7 @@ import {
   CUSTOMER_RESPONSIBILITY_STATUS_LABELS,
   CUSTOMER_RESPONSIBILITY_STATUS_STYLES,
 } from "@/lib/schemas/certification";
+import { buildBackParam } from "@/lib/nav";
 
 export const dynamic = "force-dynamic";
 
@@ -82,6 +83,15 @@ export default async function RiskRegisterPage({
   const hasFilters = Boolean(
     sp.status || sp.severity || sp.vendorId || showResponsibility,
   );
+
+  const backParam = buildBackParam("/risk-register", sp, [
+    "status",
+    "severity",
+    "vendorId",
+    "responsibility",
+    "sort",
+    "page",
+  ]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -238,7 +248,7 @@ export default async function RiskRegisterPage({
                   <div className="flex min-w-0 flex-col">
                     <div className="flex items-center gap-1.5">
                       <Link
-                        href={`/vendors/${action.vendorId}`}
+                        href={`/vendors/${action.vendorId}${backParam}`}
                         className="text-xs font-medium hover:underline"
                       >
                         {action.vendorName ?? "Vendor"}

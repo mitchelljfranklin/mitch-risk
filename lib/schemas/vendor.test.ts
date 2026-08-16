@@ -53,4 +53,23 @@ describe("vendorCsvRowSchema new columns", () => {
       }).serviceDescription,
     ).toBe("Cloud email hosting");
   });
+
+  it("passes the external ID through", () => {
+    expect(
+      parseRow({
+        name: "Acme",
+        contactEmail: "a@example.test",
+        externalId: "ERP-V-001",
+      }).externalId,
+    ).toBe("ERP-V-001");
+  });
+
+  it("defaults the external ID to empty when absent", () => {
+    expect(
+      parseRow({
+        name: "Acme",
+        contactEmail: "a@example.test",
+      }).externalId,
+    ).toBe("");
+  });
 });

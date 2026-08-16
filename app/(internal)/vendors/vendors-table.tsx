@@ -61,6 +61,7 @@ function stateToSortParam(state: SortingState): VendorSort {
 
 type VendorsTableProps = {
   vendors: VendorRow[];
+  backParam: string;
   initialSort: VendorSort | undefined;
   page: number;
   pageSize: number;
@@ -69,6 +70,7 @@ type VendorsTableProps = {
 
 export function VendorsTable({
   vendors,
+  backParam,
   initialSort,
   page,
   pageSize,
@@ -103,7 +105,7 @@ export function VendorsTable({
       cell: ({ row }) => {
         const vendor = row.original;
         return (
-          <Link href={`/vendors/${vendor.id}`} className="block">
+          <Link href={`/vendors/${vendor.id}${backParam}`} className="block">
             <span className="truncate text-sm font-medium">{vendor.name}</span>
             <span className="text-muted-foreground block truncate text-xs">
               {vendor.contactEmail}

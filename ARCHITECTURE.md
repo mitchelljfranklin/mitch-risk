@@ -1,6 +1,6 @@
 # Mitch‑Risk — Architecture Solution Design Document
 
-> **Version:** 1.1.2  
+> **Version:** 1.2.0  
 > **Last Updated:** August 2026  
 > **Audience:** Engineering, Security, Operations  
 > **Status:** Approved
@@ -785,6 +785,17 @@ null → UNSCORED
 | AMBER threshold | >= 0.60 | `scoring.ragThresholds` |
 | Exclude N/A | true | `scoring.excludeNotApplicable` |
 
+#### Domain Compliance Radar
+
+Per-vendor, per-framework **domain compliance** is visualised as a radar chart
+(`getVendorDomainRadar` → `components/compliance-radar.tsx`) on the framework
+page. Each axis is a framework domain; the radius is a fixed 0–100% scale; and
+the chart overlays the **current vs previous** completed assessment using the
+same risk-weighted formula as the overall score (weighted compliant ÷ weighted
+total, N/A and unscorable excluded). A "Download PDF report" action renders the
+radar as a `Domain | Current | Previous | Change` table plus a per-control
+heatmap (`lib/framework-report.tsx`) for auditors.
+
 #### Findings Reconciliation
 
 After scoring, the engine reconciles findings:
@@ -1362,6 +1373,7 @@ Unexpected errors return a generic `{"error":{"message":"Internal error","status
 | GET | `/api/v1/vendors` | Bearer token | List vendors (`?query=`, `?tier=`) |
 | POST | `/api/v1/vendors/import` | Bearer token | Create vendor from JSON |
 | GET | `/api/v1/vendors/{id}` | Bearer token | Get vendor detail |
+| GET | `/api/v1/vendors/external/{externalId}` | Bearer token | Get vendor by external ID reference |
 | PUT | `/api/v1/vendors/{id}` | Bearer token | Update vendor |
 | DELETE | `/api/v1/vendors/{id}` | Bearer token | Delete vendor |
 | GET | `/api/v1/vendors/{id}/score` | Bearer token | Score summary |
@@ -1656,6 +1668,7 @@ Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()
 │  │  AttachEvidenceButton  AutoSubmitSelect   Breadcrumbs    │ │
 │  │  CertificationsMngr    ConfirmDialog      ControlPills   │ │
 │  │  ControlMultiSelect    CopyLink           DashboardCharts│ │
+│  │  ComplianceRadar                                         │ │
 │  │  EmptyState            FlashToast         Pagination     │ │
 │  │  ProgressBar           QuestionForm       ReviewPanel    │ │
 │  │  ScoreBadge            SearchInput        StatCard       │ │
@@ -1778,7 +1791,7 @@ Server Components CANNOT:
       → Seeds system roles (Admin, Reviewer, Viewer)
       → Seeds default settings
       → Seeds ISO 27001, SOC 2, NIST CSF, Essential Eight frameworks
-      → Seeds starter questionnaire templates
+      → Seeds starter + full out-of-the-box questionnaire templates (one per framework)
 5. App listens on port 3000
 6. Reverse proxy starts, obtains TLS cert, proxies to :3000
 ```
@@ -1925,6 +1938,8 @@ AuditLog
 | **NIST CSF** | 2.0 | Framework Core (Govern, Identify, Protect, Detect, Respond, Recover) | `prisma/seed-data/` |
 | **Essential Eight** | 2023 | Maturity Model (Levels 0-3) | `prisma/seed-data/` |
 
+Each framework also ships a complete, published questionnaire template — one auto-scored question per control — in `prisma/seed-data/templates/`, alongside the shorter starter templates.
+
 ### 18.3 Findings & Control Mapping
 
 When a vendor answer is non-compliant:
@@ -2059,6 +2074,9 @@ lib/                          Business logic
   break-glass.ts              SSO bypass tokens
   dashboard-insights.ts       Risk aggregation helpers
   pdf-report.tsx              @react-pdf/renderer report
+  framework-report.tsx        @react-pdf/renderer framework compliance report
+  portfolio-report.tsx        @react-pdf/renderer portfolio report
+  nav.ts                      ?back= / ?tab= navigation-state helpers
   openapi.json                OpenAPI 3.0 specification
   theme-tokens.tsx            CSS variable injection
   utils.ts                    cn(), formatDate(), etc.
@@ -2067,7 +2085,7 @@ prisma/                       Database
   schema.prisma               Full data model (25 tables)
   migrations/                 Versioned migrations
   seed.ts                     Idempotent seed script
-  seed-data/                  Framework seed data
+  seed-data/                  Framework seed data + full questionnaire templates
 
 e2e/                          Playwright end-to-end tests
 docs/                         VitePress user documentation site (GitHub Pages)

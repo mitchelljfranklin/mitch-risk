@@ -4,7 +4,7 @@ Mitch‑Risk maps assessment questions to compliance framework controls, enablin
 
 ## Frameworks Included
 
-Four frameworks are seeded at installation — no manual setup required.
+Four frameworks are seeded at installation, each with a complete out-of-the-box questionnaire — no manual setup required.
 
 | Framework | Version | Controls | Category |
 |---|---|---|---|
@@ -117,7 +117,7 @@ Frameworks can be deleted from the Frameworks list or via the API (`DELETE /api/
 
 ## Coverage Limitations
 
-- **Mapping is template-driven** — question-to-control links must be configured by the admin building templates. The platform doesn't auto-suggest or auto-map
+- **Mapping is template-driven** — the seeded questionnaires already map one question to every control, but for custom templates, question-to-control links must be configured by the admin building them. The platform doesn't auto-suggest or auto-map
 - **Framework gap analysis** — the Control Coverage Gaps page (Frameworks → Control coverage gaps) reports which controls have no questions mapped to them across all templates. Use this to identify blind spots in your questionnaire design before sending assessments.
 - **Assessment coverage depends on template quality** — if a template doesn't ask about a control, that control won't be assessed
 - **Manual review is the primary mechanism** — unscorable question types (Free Text, File Upload) require reviewer judgment; the platform auto-scores only structured types (Yes/No, Multiple Choice, Numeric, etc.)

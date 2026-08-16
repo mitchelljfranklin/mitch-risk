@@ -11,6 +11,7 @@ import {
   listTemplateQuestions,
 } from "@/lib/db/templates";
 import { parseConditionalLogic } from "@/lib/portal";
+import { normalizeExpectedAnswerForEditor } from "@/lib/schemas/template";
 
 export const dynamic = "force-dynamic";
 
@@ -48,10 +49,9 @@ export default async function EditQuestionPage({
   const options = Array.isArray(question.options)
     ? question.options.map(String)
     : [];
-  const expectedAnswer =
-    question.expectedAnswer === null || question.expectedAnswer === undefined
-      ? ""
-      : String(question.expectedAnswer);
+  const expectedAnswer = normalizeExpectedAnswerForEditor(
+    question.expectedAnswer,
+  );
 
   const parsedLogic = parseConditionalLogic(question.conditionalLogic);
 

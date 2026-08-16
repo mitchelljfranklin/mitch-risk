@@ -101,7 +101,7 @@ Admins can create custom roles with any subset of the 23 fine-grained `resource:
 | `templates` | `view`, `create`, `edit`, `delete` |
 | `frameworks` | `view`, `edit`, `delete` |
 | `audit` | `view` |
-| `administration` | `users:manage`, `roles:manage`, `settings:manage`, `api:manage` |
+| `administration` | `users:manage`, `roles:manage`, `settings:manage`, `api:manage`, `webhooks:manage` |
 
 Permission definitions, default role mappings, and helpers live in `lib/permissions.ts`. Guards (`requirePermission`, `hasPermission`) live in `lib/auth.ts`.
 
@@ -179,7 +179,7 @@ All REST v1 endpoints go through `runApiHandler()` (`lib/api-response.ts`):
 
 ### 4.6 API Auditing
 
-- All API action labels are defined in `lib/db/audit.ts` (44 distinct events)
+- All API action labels are defined in `lib/db/audit.ts` (56 distinct events)
 - API key operations (create, revoke, enable, delete) write audit entries
 - API endpoints that modify data write audit entries via the same server actions
 
@@ -516,7 +516,7 @@ All state-changing operations are recorded in the `AuditLog` table:
 | Field | Description |
 |-------|-------------|
 | `userId` | The user who performed the action (nullable via SetNull — "Deleted user" on user deletion) |
-| `action` | One of 47 distinct action codes (e.g., `LOGIN`, `CREATE_VENDOR`, `REVIEW_DECISION`) |
+| `action` | One of 56 distinct action codes (e.g., `LOGIN`, `CREATE_VENDOR`, `REVIEW_DECISION`) |
 | `entityType` | The target entity type (e.g., `Assessment`, `Vendor`, `Template`) |
 | `entityId` | The target entity ID |
 | `meta` | JSON field for additional context (e.g., review decision, note, changed fields) |
@@ -524,7 +524,7 @@ All state-changing operations are recorded in the `AuditLog` table:
 
 ### 10.2 Audited Events
 
-The audit covers 47 distinct actions across the following domains:
+The audit covers 56 distinct actions across the following domains:
 
 - **Authentication:** LOGIN
 - **Assessments:** create, delete, send, revoke, extend, regenerate, submit, reopen, finalize, review decision, send back to vendor
@@ -559,7 +559,7 @@ All email sends (invite, reminder, escalation, clarification, expiry notices, te
 ### 10.5 Strengths & Considerations
 
 **Strengths:**
-- Comprehensive event catalog (44 distinct actions)
+- Comprehensive event catalog (56 distinct actions)
 - User-preserving deletion (SetNull)
 - Fire-and-forget logging doesn't block operations
 - Configurable retention with cron pruning
@@ -666,7 +666,7 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 
 | Dependency | Version | Security Role |
 |-----------|---------|---------------|
-| `next` | 16.2.9 | Framework |
+| `next` | 16.2.10 | Framework |
 | `next-auth` | ^5.0.0-beta.31 | Authentication (beta) |
 | `bcryptjs` | ^3.0.3 | Password/API key hashing |
 | `@prisma/client` | ^7.8.0 | Database ORM |
@@ -846,4 +846,4 @@ The platform provides mechanics (controls mapping, scoring, findings, audit trai
 This document is maintained as part of the Mitch‑Risk project. Security findings should be reported via the project's issue tracker.
 
 **Last reviewed:** August 2026
-**App version:** 1.1.2
+**App version:** 1.2.0

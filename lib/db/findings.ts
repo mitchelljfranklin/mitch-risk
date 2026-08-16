@@ -43,6 +43,7 @@ export type RegisterFinding = {
   controlCodes: string[];
   resolutionNote: string | null;
   createdAt: Date;
+  resolvedAt: Date | null;
   assessmentId: string;
   assessmentTitle: string;
   vendorId: string;
@@ -92,6 +93,7 @@ export async function listFindings(filters: FindingFilters = {}): Promise<{
         controlCodes: true,
         resolutionNote: true,
         createdAt: true,
+        resolvedAt: true,
         assessmentId: true,
         assessment: {
           select: {
@@ -114,6 +116,7 @@ export async function listFindings(filters: FindingFilters = {}): Promise<{
     controlCodes: row.controlCodes,
     resolutionNote: row.resolutionNote,
     createdAt: row.createdAt,
+    resolvedAt: row.resolvedAt,
     assessmentId: row.assessmentId,
     assessmentTitle: row.assessment.title,
     vendorId: row.assessment.vendorId,

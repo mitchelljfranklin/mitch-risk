@@ -38,6 +38,7 @@ import { getOpenFindingsSummaryByVendor } from "@/lib/db/findings";
 import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 import { formatDate } from "@/lib/utils";
 import { parseListView, VENDOR_VIEW_COOKIE } from "@/lib/view-preference";
+import { buildBackParam } from "@/lib/nav";
 
 export const dynamic = "force-dynamic";
 
@@ -69,6 +70,12 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
   });
   const exportVendors = await exportAllVendors();
   const hasFilters = Boolean(sp.query) || Boolean(sp.tier);
+  const backParam = buildBackParam("/vendors", sp, [
+    "query",
+    "tier",
+    "sort",
+    "page",
+  ]);
 
   const vendorIds = vendors.map((vendor) => vendor.id);
   const findingsSummaryByVendor =
@@ -94,6 +101,7 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
             currentVendors={vendors.map((vendor) => ({
               id: vendor.id,
               name: vendor.name,
+              externalId: vendor.externalId ?? "",
               contactName: vendor.contactName ?? "",
               contactEmail: vendor.contactEmail,
               tier: vendor.tier,
@@ -110,6 +118,7 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
             allVendors={exportVendors.map((vendor) => ({
               id: vendor.id,
               name: vendor.name,
+              externalId: vendor.externalId ?? "",
               contactName: vendor.contactName ?? "",
               contactEmail: vendor.contactEmail,
               tier: vendor.tier,
@@ -222,7 +231,10 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
           {view === "cards" ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {vendors.map((vendor) => (
-                <Link key={vendor.id} href={`/vendors/${vendor.id}`}>
+                <Link
+                  key={vendor.id}
+                  href={`/vendors/${vendor.id}${backParam}`}
+                >
                   <Card className="hover:bg-accent/40 h-full transition-colors">
                     <CardHeader>
                       <div className="flex items-start justify-between gap-2">
@@ -311,6 +323,7 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
                 tier: vendor.tier,
                 overallScore: vendor.overallScore,
               }))}
+              backParam={backParam}
               initialSort={sort}
               page={page}
               pageSize={pageSize}

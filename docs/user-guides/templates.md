@@ -2,6 +2,8 @@
 
 Templates are reusable questionnaire blueprints. They define the structure (sections, questions, risk weights, control mappings) that assessments are built from.
 
+Four complete templates ship out of the box — **NIST CSF 2.0**, **ISO 27001**, **SOC 2**, and **Essential Eight** — each covering every control in its framework (one auto-scored question per control), alongside shorter "Starter" templates.
+
 ## Template Structure
 
 ```
@@ -60,11 +62,13 @@ Weights are configurable in Settings → Scoring. The default values above can b
 
 Expected answers define the compliant response for auto-scored questions. The scoring engine compares the vendor's answer against this value:
 
-- For `YES_NO` and `MULTIPLE_CHOICE`: string equality
+- For `YES_NO`: string equality
+- For `MULTIPLE_CHOICE` and `COMBOBOX`: string equality, or **any-of** — a list of accepted answers (the vendor's single selection is compliant if it matches any entry)
 - For `NUMERIC` and `RATING`: numeric equality
-- For `COMBOBOX`: string equality
 - For `MULTI_SELECT`: sorted array comparison (same length, all values match)
 - For `CHECKBOX`: boolean comparison
+
+Single-choice questions (`MULTIPLE_CHOICE`, `COMBOBOX`) can define multiple accepted answers. For example, a maturity-scale question with options `Not Done`, `Implemented`, `Optimized`, `Perfect` could accept `Optimized` and `Perfect` — either answer is compliant. In the question editor this is a checkbox list over the defined options.
 
 Questions without an expected answer (or with unscorable types) are excluded from the score.
 
@@ -120,4 +124,15 @@ Import a complete template definition from a JSON file using a step-by-step wiza
 2. **Upload** — Select a JSON file, or download the JSON template from the link provided on the page. The app parses the file and shows a preview with section and question counts.
 3. **Review** — Confirm the import. Click **Import template** to create the template.
 
-The JSON structure must match the template schema (`name`, optional `description`, `sections` array with `questions`). Each question requires `text`, `type`, and `riskWeight` at minimum. Control codes in questions must reference existing controls from a seeded framework. Max file size: 1 MB.
+The JSON structure must match the template schema (`name`, optional `description`, `sections` array with `questions`). Each question requires `text`, `type`, and `riskWeight` at minimum. Optional per-question fields are `helpText`, `required`, `options`, `expectedAnswer`, `conditionalLogic`, and `controlCodes`. Control codes in questions must reference existing controls from a seeded framework. Max file size: 1 MB.
+
+The `expectedAnswer` value must match the question type:
+
+| Type | `expectedAnswer` JSON type |
+|------|---------------------------|
+| `YES_NO`, `CHECKBOX` | string |
+| `MULTIPLE_CHOICE`, `COMBOBOX` | string, or array of strings (any-of accepted answers) |
+| `NUMERIC`, `RATING` | number |
+| `MULTI_SELECT` | array of strings |
+
+Imports with a mismatched `expectedAnswer` shape are rejected with an error.
