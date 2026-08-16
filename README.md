@@ -3,6 +3,9 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/mitchelljfranklin/mitch-risk/ci.yml?branch=master)](https://github.com/mitchelljfranklin/mitch-risk/actions)
 [![License: AGPL v3](https://img.shields.io/badge/license-AGPL--3.0-brightgreen)](LICENSE)
 [![Security Audited](https://img.shields.io/badge/security-audited-2563eb)](APPSECURITY.md)
+[![GitHub stars](https://img.shields.io/github/stars/mitchelljfranklin/mitch-risk)](https://github.com/mitchelljfranklin/mitch-risk/stargazers)
+[![Release](https://img.shields.io/github/v/release/mitchelljfranklin/mitch-risk)](https://github.com/mitchelljfranklin/mitch-risk/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/mitchelljfranklin/mitch-risk/total)](https://github.com/mitchelljfranklin/mitch-risk/releases)
 
 > A self-hosted third party vendor risk management solution. Free, open-source, deploy anywhere.
 

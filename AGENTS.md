@@ -180,6 +180,7 @@ hooks/              # React hooks (use-form-toast, use-action-feedback, use-mobi
 emails/              # React Email templates (invite, reminder, escalation, dynamic)
 prisma/              # schema.prisma, migrations, seed.ts, seed-runner.cjs, seed-demo.ts, seed-radar-demo.ts
   seed-data/         # ISO 27001, SOC 2, NIST CSF, Essential Eight seed data + types
+    templates/       #   full out-of-the-box questionnaire templates (one per framework)
 scripts/             # backup.sh, backup.ps1
 e2e/                 # Playwright end-to-end tests
 docs/                # VitePress-powered user documentation site (GitHub Pages)

@@ -11,7 +11,7 @@ export const nistCsf: FrameworkSeed = {
   name: "NIST CSF",
   version: "2.0",
   description:
-    "NIST Cybersecurity Framework 2.0 (2024) — 106 outcome-based subcategories across 6 functions: Govern, Identify, Protect, Detect, Respond, Recover.",
+    "NIST Cybersecurity Framework 2.0 (2024) — 129 outcome-based subcategories across 6 functions: Govern, Identify, Protect, Detect, Respond, Recover.",
   controls: [
     // Govern (GV)
     {
