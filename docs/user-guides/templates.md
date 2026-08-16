@@ -2,6 +2,8 @@
 
 Templates are reusable questionnaire blueprints. They define the structure (sections, questions, risk weights, control mappings) that assessments are built from.
 
+Four complete templates ship out of the box — **NIST CSF 2.0**, **ISO 27001**, **SOC 2**, and **Essential Eight** — each covering every control in its framework (one auto-scored question per control), alongside shorter "Starter" templates.
+
 ## Template Structure
 
 ```

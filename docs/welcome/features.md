@@ -11,6 +11,7 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 - **Conditional logic** with match-all (AND) and match-any (OR) rule groups and 10 operators (equals, not equals, contains, not contains, >, <, ≥, ≤, answered, not answered)
 - **Template versioning** — publish, unpublish, version, and duplicate templates
 - **JSON import/export** via step-by-step wizard for template portability
+- **Full out-of-the-box questionnaires** for NIST CSF 2.0, ISO 27001, SOC 2, and Essential Eight — one auto-scored question per control
 - **Reorder** sections and questions with ↑/↓ buttons
 - **Template preview** — see the questionnaire as the vendor will see it
 
@@ -177,7 +178,7 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 - **Reverse proxy** support — Caddy, nginx, Zoraxy, Azure Application Gateway
 - **Azure Container Apps** deployment guide
 - **Auto-applied Prisma migrations** on container start
-- **Idempotent seed** — frameworks, controls, starter templates, and settings
+- **Idempotent seed** — frameworks, controls, starter + full questionnaires, and settings
 
 ## Self-Assessment
 

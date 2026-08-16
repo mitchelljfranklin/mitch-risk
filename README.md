@@ -64,6 +64,7 @@ docker compose up -d
 - Conditional logic with match-all/match-any rule groups
 - Publish, unpublish, version, and duplicate templates
 - JSON import/export via step-by-step wizard for template portability
+- Full out-of-the-box questionnaires for ISO 27001, SOC 2, NIST CSF, and Essential Eight — one auto-scored question per control
 
 ### Vendor Portal
 - No-login secure links with 256-bit opaque tokens (SHA-256 hashed)

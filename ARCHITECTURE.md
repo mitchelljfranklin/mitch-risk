@@ -1791,7 +1791,7 @@ Server Components CANNOT:
       → Seeds system roles (Admin, Reviewer, Viewer)
       → Seeds default settings
       → Seeds ISO 27001, SOC 2, NIST CSF, Essential Eight frameworks
-      → Seeds starter questionnaire templates
+      → Seeds starter + full out-of-the-box questionnaire templates (one per framework)
 5. App listens on port 3000
 6. Reverse proxy starts, obtains TLS cert, proxies to :3000
 ```
@@ -1938,6 +1938,8 @@ AuditLog
 | **NIST CSF** | 2.0 | Framework Core (Govern, Identify, Protect, Detect, Respond, Recover) | `prisma/seed-data/` |
 | **Essential Eight** | 2023 | Maturity Model (Levels 0-3) | `prisma/seed-data/` |
 
+Each framework also ships a complete, published questionnaire template — one auto-scored question per control — in `prisma/seed-data/templates/`, alongside the shorter starter templates.
+
 ### 18.3 Findings & Control Mapping
 
 When a vendor answer is non-compliant:
@@ -2083,7 +2085,7 @@ prisma/                       Database
   schema.prisma               Full data model (25 tables)
   migrations/                 Versioned migrations
   seed.ts                     Idempotent seed script
-  seed-data/                  Framework seed data
+  seed-data/                  Framework seed data + full questionnaire templates
 
 e2e/                          Playwright end-to-end tests
 docs/                         VitePress user documentation site (GitHub Pages)
