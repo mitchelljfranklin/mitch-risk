@@ -2,6 +2,7 @@ import {
   createCipheriv,
   createDecipheriv,
   createHash,
+  createHmac,
   randomBytes,
 } from "node:crypto";
 
@@ -52,4 +53,8 @@ export function decryptSecret(payload: string): string {
   ]);
 
   return plaintext.toString("utf8");
+}
+
+export function hashWithSecret(value: string): string {
+  return createHmac("sha256", env.AUTH_SECRET).update(value).digest("hex");
 }

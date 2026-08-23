@@ -1,6 +1,8 @@
 import { cookies, headers } from "next/headers";
 import { getAssessmentByToken, isTokenExpired } from "@/lib/db/assessments";
 import { getClientIp } from "@/lib/client-ip";
+import { hashWithSecret } from "@/lib/crypto";
+import { timingSafeEqualString } from "@/lib/timing-safe";
 import { rateLimit } from "@/lib/rate-limit";
 import { formatDate } from "@/lib/utils";
 import {
@@ -251,7 +253,14 @@ export default async function PortalPage({ params }: PortalPageProps) {
   if (assessment.portalPasswordHash) {
     const cookieStore = await cookies();
     const portalAuthCookie = cookieStore.get("portal-auth");
-    if (!portalAuthCookie || portalAuthCookie.value !== token) {
+    // Compare against the keyed HMAC of the token (what the gate action
+    // stores), in constant time. The raw token must NOT satisfy this check —
+    // it is public, so echoing it would let link-holders skip the password.
+    const expectedCookieValue = hashWithSecret(token);
+    if (
+      !portalAuthCookie ||
+      !timingSafeEqualString(portalAuthCookie.value, expectedCookieValue)
+    ) {
       return (
         <PortalShell logoUrl={logoUrl}>
           <PasswordGate token={token} />

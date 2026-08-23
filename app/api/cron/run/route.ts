@@ -12,6 +12,7 @@ import {
   getEmailLogRetention,
 } from "@/lib/settings";
 import { storage } from "@/lib/storage";
+import { findOrphanFileKeys } from "@/lib/storage/orphan-sweep";
 import { dispatchWebhook } from "@/lib/webhooks";
 
 export async function GET(request: Request) {
@@ -38,6 +39,7 @@ export async function GET(request: Request) {
     pruned?: number;
     prunedEmails?: number;
     prunedFiles?: number;
+    prunedFileKeys?: string[];
   } = { reminders: 0, escalations: 0, recurrences: 0, expiryNotices: 0 };
 
   // Windows (days before expiry) for certification & contract renewal notices.
@@ -347,33 +349,40 @@ export async function GET(request: Request) {
   }
 
   // --- orphaned file sweep ---
-  const ORPHAN_MIN_AGE_MS = 60 * 60 * 1000; // ignore recent files (in-flight uploads)
-  const [storedFiles, evidenceRows, appearance] = await Promise.all([
-    storage.list(),
-    prisma.evidence.findMany({ select: { storageKey: true } }),
-    getAppearanceSettings(),
+  // Every storage writer must be reflected here: evidence, attachments
+  // (vendor + certification + responsibility actions), and the brand logo.
+  const [storedFiles, evidenceRows, attachmentRows, appearance] =
+    await Promise.all([
+      storage.list(),
+      prisma.evidence.findMany({ select: { storageKey: true } }),
+      prisma.attachment.findMany({ select: { storageKey: true } }),
+      getAppearanceSettings(),
+    ]);
+  const referencedKeys = new Set([
+    ...evidenceRows.map((row) => row.storageKey),
+    ...attachmentRows.map((row) => row.storageKey),
   ]);
-  const referencedKeys = new Set(evidenceRows.map((row) => row.storageKey));
   if (appearance.logoKey) {
     referencedKeys.add(appearance.logoKey);
   }
-  let prunedFiles = 0;
-  for (const file of storedFiles) {
-    if (referencedKeys.has(file.key)) {
-      continue;
-    }
-    if (now.getTime() - file.modifiedAt.getTime() < ORPHAN_MIN_AGE_MS) {
-      continue;
-    }
+  const orphanKeys = findOrphanFileKeys({ storedFiles, referencedKeys, now });
+  const deletedFileKeys: string[] = [];
+  for (const key of orphanKeys) {
     try {
-      await storage.delete(file.key);
-      prunedFiles += 1;
+      await storage.delete(key);
+      deletedFileKeys.push(key);
     } catch {
       // Best-effort; will be retried on the next run.
     }
   }
-  if (prunedFiles > 0) {
-    result.prunedFiles = prunedFiles;
+  if (deletedFileKeys.length > 0) {
+    result.prunedFiles = deletedFileKeys.length;
+    result.prunedFileKeys = deletedFileKeys;
+    // Attributability: log every removal with its key so incidents can be
+    // reconstructed from server logs alone.
+    console.log(
+      `[cron] orphan sweep removed ${deletedFileKeys.length} file(s): ${deletedFileKeys.join(", ")}`,
+    );
   }
 
   await prisma.appSetting.upsert({

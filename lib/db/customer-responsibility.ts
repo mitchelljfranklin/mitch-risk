@@ -121,6 +121,31 @@ export type UpsertActionInput = {
   controlTitle: string;
 };
 
+export async function applySharedResponsibilityActions(
+  vendorId: string,
+  certificationId: string,
+  frameworkName: string | null | undefined,
+): Promise<void> {
+  if (!frameworkName) {
+    return;
+  }
+
+  const sharedControls = await listSharedControlsForFramework(frameworkName);
+  if (sharedControls.length === 0) {
+    return;
+  }
+
+  await upsertActionsForCertification(
+    vendorId,
+    certificationId,
+    sharedControls.map((control) => ({
+      controlCode: control.code,
+      frameworkName,
+      controlTitle: control.title,
+    })),
+  );
+}
+
 export async function upsertActionsForCertification(
   vendorId: string,
   certificationId: string,

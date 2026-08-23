@@ -35,7 +35,12 @@ import {
 import { randomBytes } from "node:crypto";
 import { z } from "zod";
 import { storage } from "@/lib/storage";
-import { isDangerousUploadMime } from "@/lib/upload-validation";
+import {
+  isDangerousUploadMime,
+  validateMagicBytes,
+} from "@/lib/upload-validation";
+
+const ALLOWED_LOGO_EXTENSIONS = new Set(["png", "jpg", "jpeg", "gif", "webp"]);
 import {
   createWebhookEndpoint,
   deleteWebhookEndpoint,
@@ -389,9 +394,25 @@ export async function saveAppearanceSettings(
       return { ok: false, message: "Logo must be an image file." };
     }
 
-    const ext = logoFile.name.split(".").pop()?.toLowerCase() ?? "png";
-    const fileName = `logo-${randomBytes(8).toString("hex")}.${ext}`;
+    // The declared MIME type is client-controlled, so the extension
+    // allowlist and magic bytes are the real gate. SVG is excluded outright:
+    // it is scriptable and is served inline from this origin.
+    const ext = logoFile.name.split(".").pop()?.toLowerCase() ?? "";
+    if (!ALLOWED_LOGO_EXTENSIONS.has(ext)) {
+      return {
+        ok: false,
+        message: "Logo must be a PNG, JPG, GIF, or WEBP image.",
+      };
+    }
     const buffer = Buffer.from(await logoFile.arrayBuffer());
+    if (!validateMagicBytes(ext, buffer)) {
+      return {
+        ok: false,
+        message: "Logo file content does not match its extension.",
+      };
+    }
+
+    const fileName = `logo-${randomBytes(8).toString("hex")}.${ext}`;
     await storage.save(fileName, buffer);
     logoKey = fileName;
   }
