@@ -719,7 +719,7 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 
 ## 15. Risk Register
 
-> Updated July 2026 — deep code audit. Items marked ~~strikethrough~~ were dismissed by AGENTS.md design decisions or resolved since the previous review. Previous register items H-3 (CRON_SECRET already in compose) and M-6 (HSTS left to reverse proxy per AGENTS.md) are removed.
+> Updated July 2026 — deep code audit. Items marked ~~strikethrough~~ were dismissed by AGENTS.md design decisions or resolved since the previous review. Previous register items H-3 (CRON_SECRET already in compose) and M-6 (HSTS left to reverse proxy per AGENTS.md) are removed. Updated August 2026 with an external review pass — see the AR-x entries below.
 
 ### Critical Severity
 
@@ -801,6 +801,17 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 | L-16 | ~~No secret rotation mechanism for `APP_ENCRYPTION_KEY`~~ | Changing the encryption key permanently destroys all encrypted secrets (SMTP password, SSO client secrets, cloud storage credentials). Recovery requires restoring the old key or manually re-entering every encrypted secret. There is no warning UI before a key change, no key versioning, and no re-encryption tool | **FIXED** — warnings added to `docker-compose.yml` and deployment docs (`docs/deployment/docker.md`) with safe rotation and recovery procedures. Appropriate for Low severity — the key is an environment variable, not a DB setting that can be toggled in-app |
 | L-17 | ~~No cron execution timestamp tracking~~ | Cannot detect missed cron runs. If the system scheduler fails silently (cron daemon stops, network issues, Docker restart), there is no application-level record of when the cron last succeeded. Missed runs mean reminders, escalations, recurring assessments, and orphan sweeps go unexecuted | **FIXED** — cron endpoint now upserts `cron.lastRun` AppSetting with `new Date().toISOString()` after completing all tasks. Settings → Scheduling tab displays "Last cron run: X minutes ago" (or "Never" if the job has never run) |
 | L-18 | ~~No API key usage metrics beyond `lastUsedAt`~~ | Cannot detect API key abuse patterns. No request count per key, no failure rate tracking, no per-IP breakdown. A compromised key used for data exfiltration would only show an updated `lastUsedAt` timestamp — indistinguishable from legitimate use | **FIXED** — added `requestCount Int @default(0)` column to `ApiKey` model via Prisma migration; `authenticateRequest()` increments the counter on every successful auth; Settings → API tab displays request count alongside last-used timestamp |
+
+### August 2026 External Review Remediations
+
+Findings from a full-solution audit (security, backend, and UX) conducted August 2026. All four were fixed in the same change.
+
+| ID | Finding | Impact | Mitigation |
+|----|---------|--------|------------|
+| AR-1 | ~~Portal password gate accepted a cookie echoing the public URL token (`app/portal/[token]/page.tsx`)~~ | Anyone holding the questionnaire link — the exact threat the gate exists for — could set `portal-auth=<token>` manually and bypass bcrypt entirely | **FIXED** — gate now stores `HMAC-SHA256(token, AUTH_SECRET)` (`hashWithSecret` in `lib/crypto.ts`) and compares in constant time via `timingSafeEqualString`; the raw token can never satisfy the check |
+| AR-2 | ~~Exported Server Action `generateResponsibilityActions` had no permission check (`lib/actions/certifications.ts`)~~ | Every exported function in a `"use server"` module is an RPC endpoint; any authenticated user (including Viewer) could write customer-responsibility actions against arbitrary vendor/certification IDs | **FIXED** — orchestration moved to the db layer as `applySharedResponsibilityActions()` (`lib/db/customer-responsibility.ts`); the unguarded action was deleted; companion read `getFrameworkOptionsAction` now requires `vendors:view` |
+| AR-3 | ~~Brand-logo upload trusted the client-declared MIME type only; SVG was storable and served inline on origin~~ | A scriptable `.svg` renamed to `.png` passed validation, then `/api/brand/logo` served it as `image/svg+xml` inline without `nosniff` — stored XSS executed in the app origin (requires settings-admin, i.e. insider/compromised-admin vector) | **FIXED** — upload enforces an extension allowlist (png/jpg/jpeg/gif/webp, SVG banned) plus server-side magic-byte validation; serving route uses a strict MIME map, returns 404 for unknown/legacy types, and sets `X-Content-Type-Options: nosniff` |
+| AR-4 | ~~Cron orphan-file sweep omitted `Attachment.storageKey` from its referenced-key set (`app/api/cron/run/route.ts`)~~ | Live vendor/certification attachments were deleted from storage once older than the 60-minute grace window while their database rows persisted — silent permanent data loss on the first cron run after any upload | **FIXED** — attachment keys are now collected alongside evidence and logo keys; sweep classification extracted into a unit-tested pure helper (`lib/storage/orphan-sweep.ts`); every removed key is logged and returned in the cron response for attributability |
 
 ### Penetration Test False Positives (ZAP 2.17.0 — 8 July 2026)
 

@@ -295,17 +295,17 @@ ones before declaring any phase complete.
 
 
 
-This project is delivered in **gated phases**. The authoritative plan is
-[`PLAN.md`](PLAN.md); the gate checklists and sign-off log are in
-[`STAGE-GATES.md`](STAGE-GATES.md).
+Work proceeds in **review-gated batches** (e.g. audit remediation batches). There is no
+external plan document; each batch's scope and sign-off are agreed in conversation, and this
+file stays accurate as reality changes.
 
 Rules:
 
-1. Work one phase at a time, in order. Do not start a phase until the previous phase is
-   **Approved** in the sign-off log.
-2. When a phase's work is done, run the verification commands, fill in its gate checklist
-   with evidence, and set the phase to **Ready for review**. Then stop and ask for sign-off.
-3. Keep `PLAN.md`, `STAGE-GATES.md`, and this file accurate as reality changes.
+1. Work one batch at a time, in order. Do not start a new batch until the previous one has
+   been reviewed.
+2. When a batch's work is done, run the verification commands and present the changes for
+   review. Then stop and ask for sign-off.
+3. Keep this file accurate as reality changes.
 
 ## Definition of Done — no placeholders
 
@@ -345,7 +345,6 @@ Every delivered item, in every phase, must meet this bar:
   Prisma query is reused, put it in the data-access layer (`lib/db/`).
 - **Reuse before create.** Before adding a token, component, helper, or schema, search for an
   existing one and reuse/extend it. If a thing is needed in two or more places, extract it.
-- See `PLAN.md` section 9 for the reusable-asset map.
 
 ## Code readability & best practices
 
@@ -426,7 +425,8 @@ Authorization is permission-based, not "is authenticated". Roles are DB-backed
 by default — **Admin** (all permissions, locked), **Reviewer** (write + review), and
 **Viewer** (read-only) — and admins can create custom roles with any subset of permissions.
 The permission catalog, default role mappings, and helpers live in `lib/permissions.ts`; the
-guards (`requirePermission`, `hasPermission`) live in `lib/auth.ts`. See `authstage.md` for
+guards (`requirePermission`, `hasPermission`) live in `lib/auth.ts`. See `ARCHITECTURE.md`
+§5 for
 the design of record.
 
 Every feature — new or changed — must be wired into RBAC in the same change. This is not a
@@ -492,7 +492,10 @@ from the catalog and role defaults).
 - Never expose evidence files via public URLs — only through the authenticated route.
 - **Data lifecycle.** Deleting a record must also remove its associated storage files
   (evidence, logos); a replaced upload deletes the old file. The cron orphaned-file sweep is
-  the backstop, not the primary cleanup. Deleting a user preserves audit and review history via
+  the backstop, not the primary cleanup. **Every storage writer must be reflected in the
+  sweep's referenced-key set** (`app/api/cron/run` collects evidence, attachment, and logo
+  keys) — adding a new key format without registering it there means the cron will delete
+  those files within an hour. Deleting a user preserves audit and review history via
   nullable `SetNull` relations (surfaced as "Deleted user") — never cascade-delete audit trails.
 - Prefer Server Components for reads and Server Actions for writes.
 - **Keep the OpenAPI spec current.** Whenever a new API endpoint is added, modified, or
@@ -527,6 +530,10 @@ from the catalog and role defaults).
 
 - **Quote bracketed dynamic-route paths** for Prettier/Node (e.g. `"app/portal/[token]/page.tsx"`);
   unquoted globs silently skip them.
+- **`Select-String -Path` treats `[...]` as a wildcard character class** — searching a file
+  under `app\portal\[token]\` with `-Path "app\portal\[token]\page.tsx"` matches nothing,
+  silently. Use `-LiteralPath` (and `Get-Content -LiteralPath`) for any path containing
+  brackets; this has caused false "file doesn't contain X" conclusions during audits.
 - If `tsc` reports parse errors inside `.next/dev/types/routes.d.ts`, delete `.next` and rebuild —
   a killed dev server can leave the generated route types corrupted.
 - `npm install` rewrites `package.json`; if that leaves it flagged by `format:check`, it's a

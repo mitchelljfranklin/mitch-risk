@@ -2089,8 +2089,6 @@ prisma/                       Database
 
 e2e/                          Playwright end-to-end tests
 docs/                         VitePress user documentation site (GitHub Pages)
-PLAN.md                       Phase-by-phase plan
-STAGE-GATES.md                Gate checklists + sign-offs
 STORAGE.md                    Cloud storage setup guide
 APPSECURITY.md                Security hardening
 ARCHITECTURE.md               This document
