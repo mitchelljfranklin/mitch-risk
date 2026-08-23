@@ -70,6 +70,39 @@ describe("isQuestionVisible", () => {
     expect(isQuestionVisible({ match: "all", rules }, answers)).toBe(false);
     expect(isQuestionVisible({ match: "any", rules }, answers)).toBe(true);
   });
+
+  it("matches equals/notEquals case-insensitively (authored 'Yes' vs portal 'YES')", () => {
+    const answers: PortalAnswers = {
+      gate: { value: "YES", isNotApplicable: false },
+    };
+    expect(
+      isQuestionVisible(
+        {
+          match: "all",
+          rules: [{ questionId: "gate", operator: "equals", value: "Yes" }],
+        },
+        answers,
+      ),
+    ).toBe(true);
+    expect(
+      isQuestionVisible(
+        {
+          match: "all",
+          rules: [{ questionId: "gate", operator: "equals", value: "yes" }],
+        },
+        answers,
+      ),
+    ).toBe(true);
+    expect(
+      isQuestionVisible(
+        {
+          match: "all",
+          rules: [{ questionId: "gate", operator: "notEquals", value: "no" }],
+        },
+        answers,
+      ),
+    ).toBe(true);
+  });
 });
 
 describe("parseConditionalLogic / remapConditionalLogic", () => {

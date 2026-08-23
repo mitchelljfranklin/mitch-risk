@@ -117,9 +117,16 @@ function evaluateRule(rule: ConditionRule, answers: PortalAnswers): boolean {
 
   switch (rule.operator) {
     case "equals":
-      return String(rawValue ?? "") === rule.value;
-    case "notEquals":
-      return String(rawValue ?? "") !== rule.value;
+    case "notEquals": {
+      // Case-insensitive by design: authors type condition values as free
+      // text ("Yes") while the portal emits canonical tokens ("YES") — the
+      // intent is unmistakably the same answer.
+      const left = String(rawValue ?? "")
+        .trim()
+        .toLowerCase();
+      const right = rule.value.trim().toLowerCase();
+      return rule.operator === "equals" ? left === right : left !== right;
+    }
     case "contains":
       if (Array.isArray(rawValue)) {
         return rawValue.map(String).includes(rule.value);

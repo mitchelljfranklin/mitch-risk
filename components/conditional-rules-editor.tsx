@@ -21,8 +21,52 @@ import {
 
 type Rule = { questionId: string; operator: ConditionOperator; value: string };
 
+type ControllingQuestion = {
+  id: string;
+  text: string;
+  type?: string;
+  options?: string[] | null;
+};
+
+type ValueChoice = { value: string; label: string };
+
+const YES_NO_CHOICES: ValueChoice[] = [
+  { value: "YES", label: "Yes" },
+  { value: "NO", label: "No" },
+];
+
+const CHECKBOX_CHOICES: ValueChoice[] = [
+  { value: "true", label: "Checked" },
+  { value: "false", label: "Unchecked" },
+];
+
+// For choice-type controlling questions the answer tokens are fixed by the
+// portal (YES/NO, the declared options, …), so offer them instead of letting
+// authors type a value that can never match.
+function valueChoicesFor(
+  question: ControllingQuestion | undefined,
+  operator: ConditionOperator,
+): ValueChoice[] | null {
+  if (!question?.type) return null;
+  if (operator !== "equals" && operator !== "notEquals") return null;
+  switch (question.type) {
+    case "YES_NO":
+      return YES_NO_CHOICES;
+    case "CHECKBOX":
+      return CHECKBOX_CHOICES;
+    case "MULTIPLE_CHOICE":
+    case "COMBOBOX":
+      return (question.options ?? []).map((option) => ({
+        value: option,
+        label: option,
+      }));
+    default:
+      return null;
+  }
+}
+
 type ConditionalRulesEditorProps = {
-  questions: { id: string; text: string }[];
+  questions: ControllingQuestion[];
   defaultMatch: "all" | "any";
   defaultRules: Rule[];
 };
@@ -94,12 +138,19 @@ export function ConditionalRulesEditor({
         <div className="grid gap-2">
           {rules.map((rule, index) => {
             const needsValue = !VALUELESS_OPERATORS.includes(rule.operator);
+            const controllingQuestion = questions.find(
+              (question) => question.id === rule.questionId,
+            );
+            const valueChoices =
+              needsValue && controllingQuestion
+                ? valueChoicesFor(controllingQuestion, rule.operator)
+                : null;
             return (
               <div key={index} className="flex flex-wrap items-center gap-2">
                 <Select
                   value={rule.questionId}
                   onValueChange={(value) =>
-                    updateRule(index, { questionId: value })
+                    updateRule(index, { questionId: value, value: "" })
                   }
                 >
                   <SelectTrigger className="h-8 w-full text-xs sm:w-56">
@@ -131,14 +182,32 @@ export function ConditionalRulesEditor({
                   </SelectContent>
                 </Select>
                 {needsValue ? (
-                  <Input
-                    value={rule.value}
-                    onChange={(event) =>
-                      updateRule(index, { value: event.target.value })
-                    }
-                    placeholder="Value"
-                    className="h-8 w-full text-xs sm:w-32"
-                  />
+                  valueChoices ? (
+                    <Select
+                      value={rule.value}
+                      onValueChange={(value) => updateRule(index, { value })}
+                    >
+                      <SelectTrigger className="h-8 w-full text-xs sm:w-36">
+                        <SelectValue placeholder="Value" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {valueChoices.map((choice) => (
+                          <SelectItem key={choice.value} value={choice.value}>
+                            {choice.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      value={rule.value}
+                      onChange={(event) =>
+                        updateRule(index, { value: event.target.value })
+                      }
+                      placeholder="Value"
+                      className="h-8 w-full text-xs sm:w-32"
+                    />
+                  )
                 ) : null}
                 <Button
                   type="button"

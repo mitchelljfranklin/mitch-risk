@@ -15,6 +15,66 @@ import { storage } from "@/lib/storage";
 import { findOrphanFileKeys } from "@/lib/storage/orphan-sweep";
 import { dispatchWebhook } from "@/lib/webhooks";
 
+type NotificationDedupeKey = {
+  assessmentId?: string;
+  type: string;
+  sentTo?: string;
+  subject?: string;
+  status?: string;
+};
+
+function notificationKeyOf(key: NotificationDedupeKey): string {
+  return JSON.stringify([
+    key.assessmentId ?? null,
+    key.type,
+    key.sentTo ?? null,
+    key.subject ?? null,
+    key.status ?? null,
+  ]);
+}
+
+// One batched lookup replaces a per-item findFirst across the reminder,
+// escalation, and expiry loops.
+async function findSentNotificationKeys(
+  keys: NotificationDedupeKey[],
+): Promise<Set<string>> {
+  if (keys.length === 0) return new Set();
+  const rows = await prisma.notificationLog.findMany({
+    where: {
+      OR: keys.map((key) => ({
+        assessmentId: key.assessmentId,
+        type: key.type,
+        sentTo: key.sentTo,
+        subject: key.subject,
+        ...(key.status ? { status: key.status } : {}),
+      })),
+    },
+    select: {
+      assessmentId: true,
+      type: true,
+      sentTo: true,
+      subject: true,
+      status: true,
+    },
+  });
+  const presentRows = new Set(
+    rows.map((row) =>
+      notificationKeyOf({
+        assessmentId: row.assessmentId ?? undefined,
+        type: row.type,
+        sentTo: row.sentTo ?? undefined,
+        subject: row.subject ?? undefined,
+        status: row.status ?? undefined,
+      }),
+    ),
+  );
+  return new Set(
+    keys
+      .map(notificationKeyOf)
+      .filter((serialized) => presentRows.has(serialized)),
+  );
+}
+
 export async function GET(request: Request) {
   const providedSecret = request.headers.get("x-cron-secret");
   if (!timingSafeEqualString(providedSecret, env.CRON_SECRET)) {
@@ -74,16 +134,18 @@ export async function GET(request: Request) {
         include: { vendor: { select: { name: true, contactEmail: true } } },
       });
 
-      for (const dueAssessment of dueAssessments) {
-        const alreadySent = await prisma.notificationLog.findFirst({
-          where: {
-            assessmentId: dueAssessment.id,
-            type: "REMINDER",
-            sentTo: dueAssessment.vendor.contactEmail,
-            status: "SENT",
-          },
-        });
-        if (alreadySent) continue;
+      const reminderKeys = dueAssessments.map((dueAssessment) => ({
+        assessmentId: dueAssessment.id,
+        type: "REMINDER",
+        sentTo: dueAssessment.vendor.contactEmail,
+        status: "SENT",
+      }));
+      const sentReminderKeys = await findSentNotificationKeys(reminderKeys);
+
+      for (const [index, dueAssessment] of dueAssessments.entries()) {
+        if (sentReminderKeys.has(notificationKeyOf(reminderKeys[index]!))) {
+          continue;
+        }
 
         const portalUrl = dueAssessment.accessToken
           ? `${appUrl}/portal/${dueAssessment.accessToken}`
@@ -121,37 +183,46 @@ export async function GET(request: Request) {
       },
     });
 
-    for (const overdueAssessment of overdue) {
-      if (!overdueAssessment.reviewer?.email) continue;
-      const alreadySent = await prisma.notificationLog.findFirst({
-        where: {
-          assessmentId: overdueAssessment.id,
-          type: "ESCALATION",
-          sentTo: overdueAssessment.reviewer.email,
-          status: "SENT",
-        },
-      });
-      if (alreadySent) continue;
+    const escalatable = overdue.flatMap((overdueAssessment) =>
+      overdueAssessment.reviewer?.email
+        ? [
+            {
+              assessment: overdueAssessment,
+              reviewer: overdueAssessment.reviewer,
+            },
+          ]
+        : [],
+    );
+    const escalationKeys = escalatable.map(({ assessment, reviewer }) => ({
+      assessmentId: assessment.id,
+      type: "ESCALATION",
+      sentTo: reviewer.email,
+      status: "SENT",
+    }));
+    const sentEscalationKeys = await findSentNotificationKeys(escalationKeys);
+
+    for (const [index, { assessment, reviewer }] of escalatable.entries()) {
+      if (sentEscalationKeys.has(notificationKeyOf(escalationKeys[index]!))) {
+        continue;
+      }
 
       await sendEmail(
-        overdueAssessment.reviewer.email,
+        reviewer.email,
         "escalation",
         {
-          reviewerName: overdueAssessment.reviewer.name ?? "Reviewer",
-          vendorName: overdueAssessment.vendor.name,
-          assessmentTitle: overdueAssessment.title,
-          assessmentUrl: `${appUrl}/assessments/${overdueAssessment.id}`,
+          reviewerName: reviewer.name ?? "Reviewer",
+          vendorName: assessment.vendor.name,
+          assessmentTitle: assessment.title,
+          assessmentUrl: `${appUrl}/assessments/${assessment.id}`,
         },
-        { assessmentId: overdueAssessment.id },
+        { assessmentId: assessment.id },
       );
       result.escalations++;
       dispatchWebhook("ASSESSMENT_OVERDUE", {
-        assessmentId: overdueAssessment.id,
-        assessmentTitle: overdueAssessment.title,
-        vendorName: overdueAssessment.vendor.name,
-        dueDate: overdueAssessment.dueDate
-          ? overdueAssessment.dueDate.toISOString()
-          : null,
+        assessmentId: assessment.id,
+        assessmentTitle: assessment.title,
+        vendorName: assessment.vendor.name,
+        dueDate: assessment.dueDate ? assessment.dueDate.toISOString() : null,
       });
     }
 
@@ -177,16 +248,20 @@ export async function GET(request: Request) {
         dayStart,
         dayEnd,
       );
-      for (const cert of expiringCerts) {
-        if (!cert.ownerEmail) continue;
-        const logKey = `cert:${cert.id}:${cert.expiresDate
-          .toISOString()
-          .slice(0, 10)}:${offsetDays}d`;
-        const alreadySent = await prisma.notificationLog.findFirst({
-          where: { type: "EXPIRY", sentTo: cert.ownerEmail, subject: logKey },
-        });
-        if (alreadySent) continue;
-        const sent = await sendEmail(cert.ownerEmail, "expiry", {
+      const certCandidates = expiringCerts.filter((cert) => cert.ownerEmail);
+      const certKeys = certCandidates.map((cert) => ({
+        type: "EXPIRY",
+        sentTo: cert.ownerEmail!,
+        subject: `cert:${cert.id}:${cert.expiresDate.toISOString().slice(0, 10)}:${offsetDays}d`,
+      }));
+      const sentCertKeys = await findSentNotificationKeys(certKeys);
+
+      for (const [index, cert] of certCandidates.entries()) {
+        const logKey = certKeys[index]!.subject;
+        if (sentCertKeys.has(notificationKeyOf(certKeys[index]!))) {
+          continue;
+        }
+        const sent = await sendEmail(cert.ownerEmail!, "expiry", {
           vendorName: cert.vendorName,
           itemName: cert.name,
           expiresDate: cert.expiresDate.toISOString().slice(0, 10),
@@ -226,20 +301,40 @@ export async function GET(request: Request) {
           owner: { select: { email: true } },
         },
       });
-      for (const vendor of expiringContracts) {
-        const ownerEmail = vendor.owner?.email;
-        if (!ownerEmail || !vendor.contractRenewalDate) continue;
-        const logKey = `contract:${vendor.id}:${vendor.contractRenewalDate
-          .toISOString()
-          .slice(0, 10)}:${offsetDays}d`;
-        const alreadySent = await prisma.notificationLog.findFirst({
-          where: { type: "EXPIRY", sentTo: ownerEmail, subject: logKey },
-        });
-        if (alreadySent) continue;
+      const contractCandidates = expiringContracts.flatMap((vendor) =>
+        vendor.owner?.email && vendor.contractRenewalDate
+          ? [
+              {
+                vendor,
+                ownerEmail: vendor.owner.email,
+                renewalDate: vendor.contractRenewalDate,
+              },
+            ]
+          : [],
+      );
+      const contractKeys = contractCandidates.map(
+        ({ vendor, ownerEmail, renewalDate }) => ({
+          type: "EXPIRY",
+          sentTo: ownerEmail,
+          subject: `contract:${vendor.id}:${renewalDate
+            .toISOString()
+            .slice(0, 10)}:${offsetDays}d`,
+        }),
+      );
+      const sentContractKeys = await findSentNotificationKeys(contractKeys);
+
+      for (const [
+        index,
+        { vendor, ownerEmail, renewalDate },
+      ] of contractCandidates.entries()) {
+        const logKey = contractKeys[index]!.subject;
+        if (sentContractKeys.has(notificationKeyOf(contractKeys[index]!))) {
+          continue;
+        }
         const sent = await sendEmail(ownerEmail, "expiry", {
           vendorName: vendor.name,
           itemName: "Contract renewal",
-          expiresDate: vendor.contractRenewalDate.toISOString().slice(0, 10),
+          expiresDate: renewalDate.toISOString().slice(0, 10),
           vendorUrl: `${appUrl}/vendors/${vendor.id}`,
         });
         if (sent.ok) {

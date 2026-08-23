@@ -202,10 +202,12 @@ export async function getSsoSecretConfigured(): Promise<{
   return result;
 }
 
-export async function getScoringSettings(): Promise<ScoringSettings> {
+// Request-scoped cache: scoring settings are read on every score/compliance
+// path (often several times per request), so dedupe like the sibling getters.
+export const getScoringSettings = cache(async (): Promise<ScoringSettings> => {
   const record = await readCategoryRecord("scoring");
   return scoringSettingsSchema.parse(record);
-}
+});
 
 export async function updateScoringSettings(
   input: ScoringSettings,

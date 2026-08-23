@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { cache } from "react";
 
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -9,10 +10,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getControlWithMappings } from "@/lib/db/templates";
-import { getControl } from "@/lib/db/frameworks";
 import { SharedResponsibilityToggle } from "@/components/shared-responsibility-toggle";
 
 export const dynamic = "force-dynamic";
+
+// generateMetadata and the page body each need the control — cache() dedupes
+// the query to one call per request.
+const getControlForRequest = cache(getControlWithMappings);
 
 type ControlDetailPageProps = {
   params: Promise<{ frameworkId: string; controlId: string }>;
@@ -22,7 +26,7 @@ export async function generateMetadata({
   params,
 }: ControlDetailPageProps): Promise<Metadata> {
   const { frameworkId, controlId } = await params;
-  const control = await getControlWithMappings(controlId);
+  const control = await getControlForRequest(controlId);
   if (!control || control.frameworkId !== frameworkId) {
     return { title: "Control not found" };
   }
@@ -35,7 +39,7 @@ export default async function ControlDetailPage({
   const user = await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
   const { frameworkId, controlId } = await params;
 
-  const control = await getControlWithMappings(controlId);
+  const control = await getControlForRequest(controlId);
   if (!control || control.frameworkId !== frameworkId) {
     notFound();
   }

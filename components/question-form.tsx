@@ -60,7 +60,12 @@ type QuestionFormProps = {
     frameworkName: string;
   }[];
   selectedControlIds: string[];
-  otherQuestions: { id: string; text: string }[];
+  otherQuestions: {
+    id: string;
+    text: string;
+    type?: string;
+    options?: string[];
+  }[];
   defaults?: QuestionDefaults;
 };
 

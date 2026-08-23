@@ -1,3 +1,5 @@
+import { randomUUID } from "node:crypto";
+
 import {
   Prisma,
   type AssessmentStatus,
@@ -255,31 +257,36 @@ export async function sendAssessment(
   await prisma.$transaction(async (tx) => {
     await tx.assessmentQuestion.deleteMany({ where: { assessmentId: id } });
 
+    // Snapshot ids are generated client-side and passed explicitly, so the
+    // template→snapshot map is exact without relying on INSERT ... RETURNING
+    // row order (which Postgres does not guarantee). Conditional-logic rules
+    // are remapped through this map — a scrambled mapping would silently gate
+    // questions on the wrong answers.
+    const flattened = template.sections.flatMap((section) =>
+      section.questions.map((question) => ({ section, question })),
+    );
     const questionIdMap = new Map<string, string>();
-    let order = 0;
+    const snapshotRows = flattened.map(({ section, question }, index) => {
+      const snapshotId = randomUUID();
+      questionIdMap.set(question.id, snapshotId);
+      return {
+        id: snapshotId,
+        assessmentId: id,
+        sectionTitle: section.title,
+        text: question.text,
+        helpText: question.helpText,
+        type: question.type,
+        riskWeight: question.riskWeight,
+        required: question.required,
+        expectedAnswer: copyJson(question.expectedAnswer),
+        options: copyJson(question.options),
+        conditionalLogic: copyJson(question.conditionalLogic),
+        controlIds: question.controls.map((link) => link.controlId),
+        order: index,
+      };
+    });
 
-    for (const section of template.sections) {
-      for (const question of section.questions) {
-        const snapshot = await tx.assessmentQuestion.create({
-          data: {
-            assessmentId: id,
-            sectionTitle: section.title,
-            text: question.text,
-            helpText: question.helpText,
-            type: question.type,
-            riskWeight: question.riskWeight,
-            required: question.required,
-            expectedAnswer: copyJson(question.expectedAnswer),
-            options: copyJson(question.options),
-            conditionalLogic: copyJson(question.conditionalLogic),
-            controlIds: question.controls.map((link) => link.controlId),
-            order,
-          },
-        });
-        questionIdMap.set(question.id, snapshot.id);
-        order += 1;
-      }
-    }
+    await tx.assessmentQuestion.createMany({ data: snapshotRows });
 
     for (const section of template.sections) {
       for (const question of section.questions) {

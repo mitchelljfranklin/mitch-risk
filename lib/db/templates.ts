@@ -47,21 +47,35 @@ export function getQuestion(id: string) {
   });
 }
 
-export async function listTemplateQuestions(
-  templateId: string,
-): Promise<{ id: string; text: string }[]> {
+export async function listTemplateQuestions(templateId: string): Promise<
+  {
+    id: string;
+    text: string;
+    type: QuestionType;
+    options: string[];
+  }[]
+> {
   const sections = await prisma.section.findMany({
     where: { templateId },
     orderBy: { order: "asc" },
     include: {
       questions: {
         orderBy: { order: "asc" },
-        select: { id: true, text: true },
+        select: { id: true, text: true, type: true, options: true },
       },
     },
   });
 
-  return sections.flatMap((section) => section.questions);
+  return sections.flatMap((section) =>
+    section.questions.map((question) => ({
+      id: question.id,
+      text: question.text,
+      type: question.type,
+      options: Array.isArray(question.options)
+        ? question.options.map(String)
+        : [],
+    })),
+  );
 }
 
 export function getTemplateForBuilder(templateId: string) {
@@ -492,29 +506,25 @@ export async function moveQuestion(
 }
 
 export function getControlWithMappings(controlId: string) {
-  return prisma.$transaction(
-    (tx) =>
-      tx.control.findUnique({
-        where: { id: controlId },
+  return prisma.control.findUnique({
+    where: { id: controlId },
+    include: {
+      framework: true,
+      questionControls: {
         include: {
-          framework: true,
-          questionControls: {
-            include: {
-              question: {
+          question: {
+            select: {
+              id: true,
+              text: true,
+              section: {
                 select: {
-                  id: true,
-                  text: true,
-                  section: {
+                  templateId: true,
+                  template: {
                     select: {
-                      templateId: true,
-                      template: {
-                        select: {
-                          id: true,
-                          name: true,
-                          version: true,
-                          status: true,
-                        },
-                      },
+                      id: true,
+                      name: true,
+                      version: true,
+                      status: true,
                     },
                   },
                 },
@@ -522,9 +532,9 @@ export function getControlWithMappings(controlId: string) {
             },
           },
         },
-      }),
-    { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead },
-  );
+      },
+    },
+  });
 }
 
 export type TemplateImportJson = {

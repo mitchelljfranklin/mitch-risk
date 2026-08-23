@@ -1,4 +1,4 @@
-import { type RiskWeight } from "../../prisma/generated/prisma/client";
+import { Prisma, type RiskWeight } from "../../prisma/generated/prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { getScoringSettings } from "@/lib/settings";
@@ -384,9 +384,14 @@ type VendorWithAssessments = {
   assessments: Array<{ id: string }>;
 };
 
+const TOP_DEFICIENT_CONTROL_LIMIT = 10;
+
+// Aggregated in SQL (controlIds is a scalar array, so counts run through
+// unnest) — pulling every non-compliant response into Node does not scale
+// with portfolio size.
 async function computeTopDeficientControls(
   allVendors: VendorWithAssessments[],
-) {
+): Promise<{ code: string; title: string; vendorCount: number }[]> {
   const latestPerVendor = new Map<string, string>();
   for (const vendor of allVendors) {
     const latest = vendor.assessments[0];
@@ -396,47 +401,40 @@ async function computeTopDeficientControls(
   }
 
   const latestIds = [...latestPerVendor.values()];
-  const deficientResponses =
-    latestIds.length > 0
-      ? await prisma.response.findMany({
-          where: { assessmentId: { in: latestIds }, isCompliant: false },
-          select: {
-            assessmentQuestion: { select: { controlIds: true } },
-            assessment: { select: { vendorId: true } },
-          },
-        })
-      : [];
-
-  const controlVendorMap = new Map<string, Set<string>>();
-  for (const response of deficientResponses) {
-    for (const controlId of response.assessmentQuestion.controlIds) {
-      const vendorSet = controlVendorMap.get(controlId) ?? new Set();
-      vendorSet.add(response.assessment.vendorId);
-      controlVendorMap.set(controlId, vendorSet);
-    }
+  if (latestIds.length === 0) {
+    return [];
   }
 
-  const topEntries = [...controlVendorMap.entries()]
-    .sort(([, setA], [, setB]) => setB.size - setA.size)
-    .slice(0, 10);
+  const rows = await prisma.$queryRaw<{ code: string; vendor_count: bigint }[]>`
+    SELECT u.ctrl AS code, COUNT(DISTINCT a."vendorId") AS vendor_count
+    FROM responses r
+    JOIN assessment_questions aq ON aq.id = r."assessmentQuestionId"
+    JOIN assessments a ON a.id = r."assessmentId"
+    CROSS JOIN LATERAL unnest(aq."controlIds") AS u(ctrl)
+    WHERE r."isCompliant" = false
+      AND a."status" NOT IN ('DRAFT', 'SENT', 'IN_PROGRESS')
+      AND a."id" IN (${Prisma.join(latestIds)})
+    GROUP BY u.ctrl
+    ORDER BY vendor_count DESC
+    LIMIT ${TOP_DEFICIENT_CONTROL_LIMIT}
+  `;
 
-  const topControlIds = topEntries.map(([id]) => id);
-  const topControls =
-    topControlIds.length > 0
-      ? await prisma.control.findMany({
-          where: { id: { in: topControlIds } },
-          select: { id: true, code: true, title: true },
-        })
-      : [];
-
+  if (rows.length === 0) {
+    return [];
+  }
+  const codes = rows.map((row) => row.code);
+  const topControls = await prisma.control.findMany({
+    where: { code: { in: codes } },
+    select: { id: true, code: true, title: true },
+  });
   const controlMap = new Map(
-    topControls.map((control) => [control.id, control]),
+    topControls.map((control) => [control.code, control]),
   );
 
-  return topEntries.map(([id, vendorSet]) => ({
-    code: controlMap.get(id)?.code ?? "?",
-    title: controlMap.get(id)?.title ?? "Unknown",
-    vendorCount: vendorSet.size,
+  return rows.map((row) => ({
+    code: row.code,
+    title: controlMap.get(row.code)?.title ?? "Unknown",
+    vendorCount: Number(row.vendor_count),
   }));
 }
 
