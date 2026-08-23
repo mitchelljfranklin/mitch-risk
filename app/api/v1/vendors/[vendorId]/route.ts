@@ -1,6 +1,7 @@
 import { authenticateRequest, authResultHasPermission } from "@/lib/api-auth";
 import { apiError, runApiHandler } from "@/lib/api-response";
 import { PERMISSIONS } from "@/lib/permissions";
+import { Prisma } from "../../../../../prisma/generated/prisma/client";
 import { getVendor, updateVendor, deleteVendor } from "@/lib/db/vendors";
 import { getVendorProfile } from "@/lib/db/compliance";
 import { getCustomerResponsibilityCompliance } from "@/lib/db/customer-responsibility";
@@ -82,8 +83,18 @@ export async function PUT(
 
     if (!parsed.success) return apiError("Invalid vendor data.", 400);
 
-    const updated = await updateVendor(vendorId, parsed.data);
-    return Response.json(updated);
+    try {
+      const updated = await updateVendor(vendorId, parsed.data);
+      return Response.json(updated);
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+        return apiError("A vendor with this external ID already exists.", 409);
+      }
+      throw error;
+    }
   });
 }
 

@@ -408,19 +408,33 @@ export async function importTemplateAction(
     return { ok: false, error: "Invalid JSON file." };
   }
 
-  const result = await importTemplateFromJson(data);
-  if (!result.ok) {
-    return { ok: false, error: result.error };
-  }
+  try {
+    const result = await importTemplateFromJson(data);
+    if (!result.ok) {
+      return { ok: false, error: result.error };
+    }
 
-  const user = await getCurrentUser();
-  if (user) {
-    await logAudit(
-      user.id,
-      AUDIT_ACTIONS.IMPORT_TEMPLATE,
-      "Template",
-      result.templateId,
+    const user = await getCurrentUser();
+    if (user) {
+      await logAudit(
+        user.id,
+        AUDIT_ACTIONS.IMPORT_TEMPLATE,
+        "Template",
+        result.templateId,
+      );
+    }
+    return { ok: true, message: `Imported "${result.name}" as a new DRAFT.` };
+  } catch (error: unknown) {
+    // Validation above catches known shapes; anything reaching here is a
+    // malformed payload our checks missed or an unexpected persistence error.
+    console.error(
+      "Template import failed:",
+      error instanceof Error ? error.message : String(error),
     );
+    return {
+      ok: false,
+      error:
+        "Import failed — the file structure could not be processed. Check it against the downloadable template and try again.",
+    };
   }
-  return { ok: true, message: `Imported "${result.name}" as a new DRAFT.` };
 }

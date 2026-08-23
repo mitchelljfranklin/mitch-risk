@@ -473,4 +473,108 @@ describe("template import (integration)", () => {
     if (result.ok) throw new Error("expected import to fail");
     expect(result.error).toMatch(/string/);
   });
+
+  it("rejects a question with missing or blank text", async () => {
+    const result = await importTemplateFromJson({
+      name: IMPORT_TEMPLATE_NAME,
+      sections: [
+        {
+          title: "Section",
+          questions: [
+            {
+              text: "",
+              type: "YES_NO",
+              riskWeight: "HIGH",
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("expected import to fail");
+    expect(result.error).toMatch(/text is required/);
+  });
+
+  it("rejects malformed options and controlCodes shapes", async () => {
+    const badOptions = await importTemplateFromJson({
+      name: IMPORT_TEMPLATE_NAME,
+      sections: [
+        {
+          title: "Section",
+          questions: [
+            {
+              text: "Pick one?",
+              type: "MULTIPLE_CHOICE",
+              riskWeight: "HIGH",
+              options: "Not Done, Implemented",
+            },
+          ],
+        },
+      ],
+    });
+    expect(badOptions.ok).toBe(false);
+    if (badOptions.ok) throw new Error("expected import to fail");
+    expect(badOptions.error).toMatch(/options must be an array of strings/);
+
+    const badCodes = await importTemplateFromJson({
+      name: IMPORT_TEMPLATE_NAME,
+      sections: [
+        {
+          title: "Section",
+          questions: [
+            {
+              text: "Covered?",
+              type: "YES_NO",
+              riskWeight: "MEDIUM",
+              controlCodes: "A.5.1",
+            },
+          ],
+        },
+      ],
+    });
+    expect(badCodes.ok).toBe(false);
+    if (badCodes.ok) throw new Error("expected import to fail");
+    expect(badCodes.error).toMatch(/controlCodes must be an array of strings/);
+  });
+
+  it("persists explicit section and question order", async () => {
+    const result = await importTemplateFromJson({
+      name: IMPORT_TEMPLATE_NAME,
+      sections: [
+        {
+          title: "Second Section",
+          questions: [{ text: "Q2?", type: "YES_NO", riskWeight: "LOW" }],
+        },
+        {
+          title: "First Section",
+          questions: [
+            { text: "Q1?", type: "YES_NO", riskWeight: "LOW" },
+            {
+              text: "Q3?",
+              type: "COMBOBOX",
+              riskWeight: "LOW",
+              options: ["A", "B"],
+              expectedAnswer: ["A"],
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+
+    const saved = await getTemplateForBuilder(result.templateId);
+    if (!saved) throw new Error("template not found");
+
+    expect(saved.sections.map((section) => section.title)).toEqual([
+      "Second Section",
+      "First Section",
+    ]);
+    const first = saved.sections[1].questions;
+    expect(first.map((question) => question.order)).toEqual([0, 1]);
+
+    await prisma.template.deleteMany({ where: { name: IMPORT_TEMPLATE_NAME } });
+  });
 });

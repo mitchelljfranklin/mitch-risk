@@ -675,9 +675,11 @@ async function seedStarterTemplates() {
   ];
 
   for (const setup of starterSetups) {
+    // Create-only metadata: an admin may have edited the description or
+    // archived/unpublished the template — re-seeding must not revert that.
     const template = await prisma.template.upsert({
       where: { id: setup.id },
-      update: { description: setup.description, status: "PUBLISHED" },
+      update: {},
       create: {
         id: setup.id,
         name: setup.name,
@@ -696,6 +698,7 @@ async function seedStarterTemplates() {
       data: { templateId: template.id, title: "Core controls", order: 0 },
     });
 
+    let questionOrder = 0;
     for (const question of setup.questions) {
       const control = setup.controls[question.controlIndex];
       if (!control) continue;
@@ -721,7 +724,7 @@ async function seedStarterTemplates() {
               ? (expectedAnswer as Prisma.InputJsonValue)
               : Prisma.DbNull,
           options: options as Prisma.InputJsonValue,
-          order: 0,
+          order: questionOrder++,
           controls: { create: [{ controlId: control.id }] },
         },
       });
@@ -740,9 +743,11 @@ const fullTemplates: TemplateSeed[] = [
 
 async function seedFullTemplates() {
   for (const templateSeed of fullTemplates) {
+    // Create-only metadata — never resurrect an archived/unpublished template
+    // or clobber an admin-edited description on re-seed.
     const template = await prisma.template.upsert({
       where: { id: templateSeed.id },
-      update: { description: templateSeed.description, status: "PUBLISHED" },
+      update: {},
       create: {
         id: templateSeed.id,
         name: templateSeed.name,
@@ -752,10 +757,34 @@ async function seedFullTemplates() {
       },
     });
 
-    const existingQuestions = await prisma.question.count({
-      where: { section: { templateId: template.id } },
-    });
-    if (existingQuestions > 0) continue;
+    // Repair-not-skip: a partial earlier seed (crash mid-transaction, a
+    // control that was missing at the time) must be completed rather than
+    // permanently skipped. Frozen assessment copies are unaffected.
+    const expectedQuestionCount = templateSeed.sections.reduce(
+      (sum, section) => sum + section.questions.length,
+      0,
+    );
+    const [existingSections, existingQuestions] = await Promise.all([
+      prisma.section.count({ where: { templateId: template.id } }),
+      prisma.question.count({
+        where: { section: { templateId: template.id } },
+      }),
+    ]);
+    if (existingQuestions > 0 || existingSections > 0) {
+      if (
+        existingQuestions === expectedQuestionCount &&
+        existingSections === templateSeed.sections.length
+      ) {
+        continue;
+      }
+      console.warn(
+        `Full template "${templateSeed.name}" is incomplete (${existingQuestions}/${expectedQuestionCount} questions) — reseeding.`,
+      );
+      await prisma.question.deleteMany({
+        where: { section: { templateId: template.id } },
+      });
+      await prisma.section.deleteMany({ where: { templateId: template.id } });
+    }
 
     const framework = await prisma.framework.findFirst({
       where: { name: templateSeed.frameworkName },

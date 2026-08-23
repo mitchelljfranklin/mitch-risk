@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { Prisma } from "../../prisma/generated/prisma/client";
+import { prisma } from "@/lib/prisma";
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { logAudit, AUDIT_ACTIONS } from "@/lib/db/audit";
@@ -11,6 +13,7 @@ import {
   deleteFramework,
   createFrameworkWithControls,
   updateControlSharedResponsibility,
+  getAllMappedControlIds,
 } from "@/lib/db/frameworks";
 import { parseCsvRows } from "@/lib/csv-parser";
 import {
@@ -123,19 +126,33 @@ export async function importFrameworkAction(
     });
   }
 
-  const framework = await createFrameworkWithControls({
-    name: meta.data.name,
-    version: meta.data.version,
-    description: meta.data.description,
-    controls: controls.map((control) => ({
-      domain: control.domain,
-      code: control.code,
-      title: control.title,
-      guidance: control.guidance,
-      order: control.order,
-      isSharedResponsibility: control.isSharedResponsibility,
-    })),
-  });
+  let framework;
+  try {
+    framework = await createFrameworkWithControls({
+      name: meta.data.name,
+      version: meta.data.version,
+      description: meta.data.description,
+      controls: controls.map((control) => ({
+        domain: control.domain,
+        code: control.code,
+        title: control.title,
+        guidance: control.guidance,
+        order: control.order,
+        isSharedResponsibility: control.isSharedResponsibility,
+      })),
+    });
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return {
+        ok: false,
+        message: `A framework named "${meta.data.name}" version "${meta.data.version}" already exists.`,
+      };
+    }
+    throw error;
+  }
 
   await logAudit(
     user.id,
@@ -156,6 +173,26 @@ export async function importFrameworkAction(
 export async function deleteFrameworkAction(formData: FormData) {
   await requirePermission(PERMISSIONS.FRAMEWORKS_DELETE);
   const frameworkId = getField(formData, "frameworkId");
+
+  // Deleting a framework cascades its controls away and silently strips every
+  // question→control mapping that references them, corrupting coverage and
+  // radar data for all templates. Block while any of its controls are mapped;
+  // the caller must unmap them first.
+  const controls = await prisma.control.findMany({
+    where: { frameworkId },
+    select: { id: true },
+  });
+  const mappedIds = await getAllMappedControlIds();
+  const mappedCount = controls.filter((control) =>
+    mappedIds.has(control.id),
+  ).length;
+  if (mappedCount > 0) {
+    // Surface the block on the list page rather than failing silently.
+    redirect(
+      `/frameworks?deleteBlocked=${encodeURIComponent(String(mappedCount))}`,
+    );
+  }
+
   await logAudit(
     (await getCurrentUser())?.id ?? "unknown",
     AUDIT_ACTIONS.DELETE_FRAMEWORK,

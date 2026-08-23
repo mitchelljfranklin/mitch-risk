@@ -537,11 +537,11 @@ export type TemplateImportJson = {
       helpText?: string;
       type: string;
       riskWeight: string;
-      required: boolean;
+      required?: boolean;
       options?: unknown;
       expectedAnswer?: unknown;
       conditionalLogic?: unknown;
-      controlCodes?: string[];
+      controlCodes?: unknown;
     }[];
   }[];
 };
@@ -549,65 +549,164 @@ export type TemplateImportJson = {
 export type TemplateImportResult =
   { ok: true; templateId: string; name: string } | { ok: false; error: string };
 
-export async function importTemplateFromJson(
-  data: TemplateImportJson,
-): Promise<TemplateImportResult> {
-  if (
-    !data.name ||
-    typeof data.name !== "string" ||
-    !Array.isArray(data.sections)
-  ) {
-    return { ok: false, error: "Invalid template structure." };
+const CHOICE_QUESTION_TYPES = new Set([
+  "MULTIPLE_CHOICE",
+  "COMBOBOX",
+  "MULTI_SELECT",
+]);
+
+function isStringArray(value: unknown): value is string[] {
+  return (
+    Array.isArray(value) && value.every((entry) => typeof entry === "string")
+  );
+}
+
+function isSupportedExpectedAnswerShape(value: unknown): boolean {
+  return (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    isStringArray(value)
+  );
+}
+
+/**
+ * Control codes are unique per framework ([frameworkId, code]), so a code
+ * matching more than one control row necessarily spans frameworks and cannot
+ * be resolved from a template JSON that has no framework concept.
+ */
+export function findAmbiguousControlCodes(
+  controls: { code: string }[],
+): string[] {
+  const countByCode = new Map<string, number>();
+  for (const control of controls) {
+    countByCode.set(control.code, (countByCode.get(control.code) ?? 0) + 1);
+  }
+  return [...countByCode.entries()]
+    .filter(([, count]) => count > 1)
+    .map(([code]) => code)
+    .sort();
+}
+
+function validateTemplateQuestions(data: TemplateImportJson): string | null {
+  if (!data.name || typeof data.name !== "string") {
+    return "Template name is required.";
+  }
+  if (!Array.isArray(data.sections) || data.sections.length === 0) {
+    return "Template must contain at least one section.";
   }
 
   const validTypes: string[] = [...QUESTION_TYPES];
   const validWeights = ["CRITICAL", "HIGH", "MEDIUM", "LOW"];
 
-  for (const section of data.sections) {
-    if (!section.title || !Array.isArray(section.questions)) {
-      return { ok: false, error: "Invalid section structure." };
+  for (const [sectionIndex, section] of data.sections.entries()) {
+    if (!section.title || typeof section.title !== "string") {
+      return `Section ${sectionIndex + 1}: title is required.`;
     }
-    for (const question of section.questions) {
+    if (!Array.isArray(section.questions)) {
+      return `Section "${section.title}": questions must be an array.`;
+    }
+    for (const [questionIndex, question] of section.questions.entries()) {
+      const where = `Section "${section.title}", question ${questionIndex + 1}`;
+      if (typeof question.text !== "string" || question.text.trim() === "") {
+        return `${where}: text is required.`;
+      }
+      if (
+        question.helpText !== undefined &&
+        typeof question.helpText !== "string"
+      ) {
+        return `${where}: helpText must be a string when provided.`;
+      }
       if (!validTypes.includes(question.type)) {
-        return { ok: false, error: `Unknown type: ${question.type}` };
+        return `${where}: unknown type "${question.type}".`;
       }
       if (!validWeights.includes(question.riskWeight)) {
-        return {
-          ok: false,
-          error: `Unknown risk weight: ${question.riskWeight}`,
-        };
+        return `${where}: unknown risk weight "${question.riskWeight}".`;
+      }
+      if (
+        question.required !== undefined &&
+        typeof question.required !== "boolean"
+      ) {
+        return `${where}: required must be a boolean when provided.`;
+      }
+      if (question.options !== undefined && !isStringArray(question.options)) {
+        return `${where}: options must be an array of strings.`;
+      }
+      if (
+        question.expectedAnswer !== undefined &&
+        !isSupportedExpectedAnswerShape(question.expectedAnswer)
+      ) {
+        return `${where}: expectedAnswer must be a string, number, or array of strings.`;
       }
       const expectedAnswerError = validateExpectedAnswer(
         question.type as QuestionType,
         question.expectedAnswer,
       );
       if (expectedAnswerError) {
-        return { ok: false, error: expectedAnswerError };
+        return `${where}: ${expectedAnswerError}`;
+      }
+      if (
+        question.controlCodes !== undefined &&
+        !isStringArray(question.controlCodes)
+      ) {
+        return `${where}: controlCodes must be an array of strings.`;
       }
     }
   }
 
+  return null;
+}
+
+export async function importTemplateFromJson(
+  data: TemplateImportJson,
+): Promise<TemplateImportResult> {
+  const validationError = validateTemplateQuestions(data);
+  if (validationError) {
+    return { ok: false, error: validationError };
+  }
+
   const allCodes = data.sections.flatMap((section) =>
-    section.questions.flatMap((question) => question.controlCodes ?? []),
+    section.questions.flatMap((question) =>
+      isStringArray(question.controlCodes) ? question.controlCodes : [],
+    ),
   );
   const uniqueCodes = [...new Set(allCodes)];
 
+  // Control codes are unique per framework, not globally. A code that exists
+  // in more than one framework cannot be resolved without ambiguity, so fail
+  // loudly rather than silently binding to the wrong framework's control.
   const controls =
     uniqueCodes.length > 0
       ? await prisma.control.findMany({
           where: { code: { in: uniqueCodes } },
-          select: { id: true, code: true },
+          select: {
+            id: true,
+            code: true,
+            framework: { select: { name: true } },
+          },
         })
       : [];
-  const controlByCode = new Map(
-    controls.map((control) => [control.code, control.id]),
-  );
-
+  const frameworksByCode = new Map<string, string[]>();
+  for (const control of controls) {
+    const names = frameworksByCode.get(control.code) ?? [];
+    names.push(control.framework.name);
+    frameworksByCode.set(control.code, names);
+  }
+  const ambiguous = findAmbiguousControlCodes(controls);
+  if (ambiguous.length > 0) {
+    return {
+      ok: false,
+      error: `Control code${ambiguous.length !== 1 ? "s" : ""} ${ambiguous.map((code) => `"${code}"`).join(", ")} ${ambiguous.length !== 1 ? "are" : "is"} ambiguous — ${ambiguous.length !== 1 ? "they exist" : "it exists"} in multiple frameworks. Remove the duplicate or rename one of the controls.`,
+    };
+  }
   for (const code of uniqueCodes) {
-    if (!controlByCode.has(code)) {
+    if (!frameworksByCode.has(code)) {
       return { ok: false, error: `Control code not found: ${code}` };
     }
   }
+  // Ambiguity was rejected above, so every remaining code maps to one control.
+  const controlIdByCode = new Map(
+    controls.map((control) => [control.code, control.id]),
+  );
 
   const template = await prisma.$transaction(async (tx) => {
     const createdTemplate = await tx.template.create({
@@ -619,35 +718,50 @@ export async function importTemplateFromJson(
       },
     });
 
-    for (const section of data.sections) {
+    for (const [sectionIndex, section] of data.sections.entries()) {
       const createdSection = await tx.section.create({
-        data: { templateId: createdTemplate.id, title: section.title },
+        data: {
+          templateId: createdTemplate.id,
+          title: section.title,
+          order: sectionIndex,
+        },
       });
 
-      for (const question of section.questions) {
-        const controlIds = (question.controlCodes ?? [])
-          .map((code) => controlByCode.get(code))
+      for (const [questionIndex, question] of section.questions.entries()) {
+        const controlIds = (
+          isStringArray(question.controlCodes) ? question.controlCodes : []
+        )
+          .map((code) => controlIdByCode.get(code))
           .filter((id): id is string => !!id);
 
         await tx.question.create({
           data: {
             sectionId: createdSection.id,
-            text: question.text,
-            helpText: question.helpText ?? null,
+            order: questionIndex,
+            text: question.text.trim(),
+            helpText:
+              typeof question.helpText === "string" &&
+              question.helpText.trim() !== ""
+                ? question.helpText
+                : null,
             type: question.type as QuestionType,
             riskWeight: question.riskWeight as RiskWeight,
-            required: question.required,
+            required: question.required ?? true,
             expectedAnswer: copyJson(
               (question.expectedAnswer ?? null) as Prisma.JsonValue | null,
             ),
             options: copyJson(
-              (question.options ?? null) as Prisma.JsonValue | null,
+              (CHOICE_QUESTION_TYPES.has(question.type)
+                ? (question.options ?? [])
+                : []) as unknown[] as Prisma.JsonValue | null,
             ),
             conditionalLogic: copyJson(
               (question.conditionalLogic ?? null) as Prisma.JsonValue | null,
             ),
             controls: {
-              create: controlIds.map((controlId) => ({ controlId })),
+              create: [...new Set(controlIds)].map((controlId) => ({
+                controlId,
+              })),
             },
           },
         });

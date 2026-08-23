@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { EmptyState } from "@/components/empty-state";
+import { FlashToast } from "@/components/flash-toast";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { listFrameworks } from "@/lib/db/frameworks";
@@ -20,17 +21,30 @@ export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Frameworks" };
 
-export default async function FrameworksPage() {
+type FrameworksPageProps = {
+  searchParams: Promise<{ deleteBlocked?: string }>;
+};
+
+export default async function FrameworksPage({
+  searchParams,
+}: FrameworksPageProps) {
   const user = await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
-  const [frameworks] = await Promise.all([listFrameworks()]);
+  const [frameworks, sp] = await Promise.all([listFrameworks(), searchParams]);
   const canEdit = hasPermission(user.permissions, PERMISSIONS.FRAMEWORKS_EDIT);
   const canDelete = hasPermission(
     user.permissions,
     PERMISSIONS.FRAMEWORKS_DELETE,
   );
+  const deleteBlockedCount = sp.deleteBlocked ? Number(sp.deleteBlocked) : 0;
 
   return (
     <div className="flex flex-col gap-6">
+      {deleteBlockedCount > 0 ? (
+        <FlashToast
+          variant="error"
+          message={`Cannot delete: ${deleteBlockedCount} control${deleteBlockedCount !== 1 ? "s are" : " is"} still mapped to questionnaire questions. Unmap them first.`}
+        />
+      ) : null}
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Frameworks</h1>
