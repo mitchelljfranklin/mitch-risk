@@ -632,6 +632,7 @@ export async function saveSchedulingSettings(
     portalPageLoadsPerMin: { label: "Portal page loads", default: 30 },
     portalUploadsPerMin: { label: "Portal uploads", default: 10 },
     portalSubmitPerMin: { label: "Portal submissions", default: 5 },
+    portalCommentPerMin: { label: "Portal comments", default: 10 },
     portalPasswordAttemptsPerMin: {
       label: "Portal password attempts",
       default: 5,
@@ -719,6 +720,7 @@ export async function saveSchedulingSettings(
       portalPageLoadsPerMin: rateLimits.portalPageLoadsPerMin,
       portalUploadsPerMin: rateLimits.portalUploadsPerMin,
       portalSubmitPerMin: rateLimits.portalSubmitPerMin,
+      portalCommentPerMin: rateLimits.portalCommentPerMin,
       portalPasswordAttemptsPerMin: rateLimits.portalPasswordAttemptsPerMin,
       passwordResetPerMin: rateLimits.passwordResetPerMin,
       breakGlassPerMin: rateLimits.breakGlassPerMin,

@@ -1,6 +1,9 @@
 import { authenticateRequest, authResultHasPermission } from "@/lib/api-auth";
 import { PERMISSIONS } from "@/lib/permissions";
+import { rateLimit } from "@/lib/rate-limit";
 import { generateAssessmentPdf } from "@/lib/pdf-report";
+
+const PDF_REPORTS_PER_MIN = 10;
 
 export async function GET(
   request: Request,
@@ -12,6 +15,13 @@ export async function GET(
   }
   if (!authResultHasPermission(auth, PERMISSIONS.ASSESSMENTS_VIEW)) {
     return new Response("Forbidden", { status: 403 });
+  }
+  if (
+    !rateLimit("pdf-report", auth.userId ?? "anonymous", PDF_REPORTS_PER_MIN)
+  ) {
+    return new Response("Too many requests â€” try again shortly.", {
+      status: 429,
+    });
   }
 
   const { assessmentId } = await params;

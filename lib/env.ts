@@ -20,15 +20,25 @@ const environmentSchema = z
   })
   .superRefine((values, context) => {
     const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
-    if (
-      values.NODE_ENV === "production" &&
-      !isBuildPhase &&
-      !values.CRON_SECRET
-    ) {
+    const isProduction = values.NODE_ENV === "production" && !isBuildPhase;
+    if (isProduction && !values.CRON_SECRET) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["CRON_SECRET"],
         message: "CRON_SECRET is required in production",
+      });
+    }
+    // A short cron secret is brute-forceable online despite timing-safe
+    // comparison, so enforce real entropy where the endpoint is exposed.
+    if (
+      isProduction &&
+      values.CRON_SECRET !== undefined &&
+      values.CRON_SECRET.length < 32
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["CRON_SECRET"],
+        message: "CRON_SECRET must be at least 32 characters in production",
       });
     }
   });

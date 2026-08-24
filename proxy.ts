@@ -60,6 +60,16 @@ function isDocumentRequest(request: NextRequest): boolean {
 }
 
 export function proxy(request: NextRequest) {
+  // Baseline security headers on API responses: nosniff prevents MIME-type
+  // confusion on file-serving routes; frame-options / referrer-policy /
+  // permissions-policy round out the set. CSP is intentionally absent here
+  // (PT-FP4): JSON/PDF responses don't execute scripts.
+  if (request.nextUrl.pathname.startsWith("/api/")) {
+    const apiResponse = NextResponse.next();
+    applySecurityHeaders(apiResponse.headers);
+    return apiResponse;
+  }
+
   // Only full HTML document loads get the nonce-based CSP: the nonce is injected
   // into the server-rendered scripts, so it only applies to a fresh document.
   // Server Actions / RSC / data requests get the baseline headers only, leaving
@@ -94,7 +104,7 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     {
-      source: "/((?!api|_next/static|_next/image|favicon.ico).*)",
+      source: "/((?!_next/static|_next/image|favicon.ico).*)",
       missing: [
         { type: "header", key: "next-router-prefetch" },
         { type: "header", key: "purpose", value: "prefetch" },

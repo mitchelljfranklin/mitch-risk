@@ -1,6 +1,8 @@
 import { sendEmail } from "@/lib/email/mailer";
 import { env } from "@/lib/env";
 import { timingSafeEqualString } from "@/lib/timing-safe";
+import { getClientIp } from "@/lib/client-ip";
+import { rateLimit } from "@/lib/rate-limit";
 import { prisma } from "@/lib/prisma";
 import { createAssessment, sendAssessment } from "@/lib/db/assessments";
 import { listCertificationsExpiringOn } from "@/lib/db/certifications";
@@ -77,6 +79,12 @@ async function findSentNotificationKeys(
 
 export async function GET(request: Request) {
   const providedSecret = request.headers.get("x-cron-secret");
+  // Throttle attempts so a short/guessable secret can't be brute-forced
+  // online even though the comparison itself is constant-time.
+  const clientIp = getClientIp(request.headers);
+  if (!rateLimit("cron-secret", clientIp, 10)) {
+    return new Response("Too many requests", { status: 429 });
+  }
   if (!timingSafeEqualString(providedSecret, env.CRON_SECRET)) {
     return new Response("Unauthorized", { status: 401 });
   }

@@ -405,8 +405,10 @@ async function computeTopDeficientControls(
     return [];
   }
 
-  const rows = await prisma.$queryRaw<{ code: string; vendor_count: bigint }[]>`
-    SELECT u.ctrl AS code, COUNT(DISTINCT a."vendorId") AS vendor_count
+  const rows = await prisma.$queryRaw<
+    { control_id: string; vendor_count: bigint }[]
+  >`
+    SELECT u.ctrl AS control_id, COUNT(DISTINCT a."vendorId") AS vendor_count
     FROM responses r
     JOIN assessment_questions aq ON aq.id = r."assessmentQuestionId"
     JOIN assessments a ON a.id = r."assessmentId"
@@ -422,20 +424,23 @@ async function computeTopDeficientControls(
   if (rows.length === 0) {
     return [];
   }
-  const codes = rows.map((row) => row.code);
+  const controlIds = rows.map((row) => row.control_id);
   const topControls = await prisma.control.findMany({
-    where: { code: { in: codes } },
+    where: { id: { in: controlIds } },
     select: { id: true, code: true, title: true },
   });
   const controlMap = new Map(
-    topControls.map((control) => [control.code, control]),
+    topControls.map((control) => [control.id, control]),
   );
 
-  return rows.map((row) => ({
-    code: row.code,
-    title: controlMap.get(row.code)?.title ?? "Unknown",
-    vendorCount: Number(row.vendor_count),
-  }));
+  return rows.map((row) => {
+    const control = controlMap.get(row.control_id);
+    return {
+      code: control?.code ?? "?",
+      title: control?.title ?? "Unknown",
+      vendorCount: Number(row.vendor_count),
+    };
+  });
 }
 
 export async function getDashboardData() {

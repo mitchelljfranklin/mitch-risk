@@ -19,7 +19,7 @@ But that value comes at a cost — the subscription, the onboarding overhead, th
 
 Mitch‑Risk bridges that gap. It strips third party vendor risk management down to its essentials: build a questionnaire, send it, score the answers, track compliance over time. No AI risk scoring, no vendor universe crawling, no board reporting module. Just the core workflow, done well, running in Docker Compose.
 
-> **Security-hardened.** Mitch‑Risk has undergone a comprehensive security audit — 65 findings across 4 severity levels. 60 resolved (fixed or dismissed), 3 deferred or monitored, 2 open. [Read the full report](APPSECURITY.md).
+> **Security-hardened.** Mitch‑Risk has undergone a comprehensive security audit — 69 findings across 4 severity levels. 66 resolved (fixed or dismissed), 3 deferred or monitored, 0 open. [Read the full report](APPSECURITY.md).
 
 ---
 
