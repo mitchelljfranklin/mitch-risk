@@ -1368,7 +1368,7 @@ Unexpected errors return a generic `{"error":{"message":"Internal error","status
 | GET | `/api/cron/run` | CRON_SECRET header | Trigger all cron jobs |
 | GET | `/api/brand/logo` | None | Serve org logo (cache-busted) |
 | GET | `/api/attachments/[id]` | Session / API key | Serve attachment file |
-| GET | `/api/docs` | None | Serve OpenAPI spec JSON |
+| GET | `/api/docs` | Session or API key (`api:manage`) | Serve OpenAPI spec JSON |
 | **Vendors** ||||
 | GET | `/api/v1/vendors` | Bearer token | List vendors (`?query=`, `?tier=`) |
 | POST | `/api/v1/vendors/import` | Bearer token | Create vendor from JSON |

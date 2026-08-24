@@ -80,11 +80,11 @@ For each remaining (auto-scorable, not-N/A) response, the engine compares the ve
 
 | Question Type | Comparison |
 |---|---|
-| `YES_NO` | `"YES" === "YES"` → compliant |
-| `MULTIPLE_CHOICE` | `"Option A" === "Option A"` → compliant |
+| `YES_NO` | `"YES" === "YES"` → compliant (case-insensitive) |
+| `MULTIPLE_CHOICE` | `"Option A" === "Option A"` → compliant, **or any-of**: the vendor's answer matches any entry in the accepted-answers list |
 | `NUMERIC` | `256 === 256` → compliant (uses numeric coercion — `"256"` works) |
 | `RATING` | Same as Numeric |
-| `COMBOBOX` | `"ISO 27001" === "ISO 27001"` → compliant |
+| `COMBOBOX` | `"ISO 27001" === "ISO 27001"` → compliant, **or any-of** (same as Multiple Choice) |
 | `MULTI_SELECT` | `["A","B"] === ["A","B"]` → compliant (sorted, exact match, same length) |
 | `CHECKBOX` | `true === true` → compliant (boolean parsing: `"yes"`, `"on"`, `"1"`, `"checked"` all parse to `true`) |
 

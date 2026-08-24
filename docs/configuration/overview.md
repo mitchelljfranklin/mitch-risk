@@ -25,7 +25,7 @@ Customise the platform's visual identity to match your brand.
 |---------|-------------|
 | **Primary colour** | Used for buttons, links, active navigation, and focus rings |
 | **Secondary colour** | Used for hover states, accents, and secondary UI elements |
-| **Logo** | Upload a custom logo (PNG, SVG, or JPEG). Displayed in the sidebar and on the login screen |
+| **Logo** | Upload a custom logo (PNG, JPG, GIF, or WEBP). Displayed in the sidebar and on the login screen. SVG is not accepted for security reasons |
 | **RAG green** | Colour for green (compliant) scores and indicators |
 | **RAG amber** | Colour for amber (needs attention) scores and indicators |
 | **RAG red** | Colour for red (non-compliant) scores and indicators |
@@ -189,4 +189,4 @@ Requires **Webhooks: manage** permission (Admin by default).
 
 ## Health
 
-System diagnostics for operators. Shows current application status (running), version, commit hash, build time, uptime, and memory usage. The **Database** section shows whether the connection is healthy. Requires **Settings: manage** permission.
+System diagnostics for operators. Shows the current application status. The **Database** section shows whether the connection is healthy. Requires **Settings: manage** permission.

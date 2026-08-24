@@ -4,7 +4,7 @@ The full OpenAPI 3.0 specification is maintained in
 [`lib/openapi.json`](https://github.com/mitchelljfranklin/mitch-risk/blob/master/lib/openapi.json)
 (the canonical source) and mirrored to
 [`docs/public/openapi.json`](https://github.com/mitchelljfranklin/mitch-risk/blob/master/docs/public/openapi.json)
-for this documentation site. It is also available at `/api/docs` on any running Mitch‑Risk instance.
+for this documentation site. It is also available at `/api/docs` on any running Mitch‑Risk instance (requires authentication with `api:manage` permission).
 
 ## Interactive documentation
 

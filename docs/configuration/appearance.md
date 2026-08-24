@@ -20,7 +20,7 @@ Set under **Settings → General**. The organisation name appears in:
 
 ### Logo
 
-Upload under **Settings → Appearance**. Supported formats: **PNG, SVG, JPEG**.
+Upload under **Settings → Appearance**. Supported formats: **PNG, JPG, GIF, or WEBP** (SVG is not accepted for security reasons).
 
 The logo appears in:
 

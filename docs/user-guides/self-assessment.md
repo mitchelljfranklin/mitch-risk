@@ -12,7 +12,7 @@ Self-assessment uses a built-in internal vendor record called **"My Organization
 4. Give it a title and optional due date
 5. Click **Start assessment**
 
-The platform creates an assessment for "My Organization" and redirects you to the vendor portal. You answer the questions just like any external vendor would — auto-save, conditional logic, Markdown help text, and all.
+The platform creates an assessment for "My Organization" and redirects you to the vendor portal. You answer the questions just like any external vendor would — auto-save, conditional logic, section-by-section navigation, Markdown help text, and all.
 
 ### Out-of-the-box questionnaires
 
