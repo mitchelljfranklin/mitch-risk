@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
@@ -13,13 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { AutoSubmitSelect } from "@/components/auto-submit-select";
 import {
   Table,
   TableBody,
@@ -84,7 +77,7 @@ function formatMeta(meta: Prisma.JsonValue): string {
   if (typeof record.message === "string" && record.message) {
     parts.push(record.message);
   }
-  return parts.join(" · ") || JSON.stringify(record);
+  return parts.join(" Â· ") || JSON.stringify(record);
 }
 
 type AuditFormProps = {
@@ -115,7 +108,6 @@ const ACTION_VARIANT: Record<
 export function AuditForm({ result, actions, users }: AuditFormProps) {
   const { entries, totalCount, page, pageSize } = result;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
-  const formRef = useRef<HTMLFormElement>(null);
   const searchParams = useSearchParams();
   const hasFilters =
     Boolean(searchParams.get("action")) ||
@@ -125,41 +117,43 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <form ref={formRef} className="flex flex-wrap items-end gap-2">
+      <form className="flex flex-wrap items-end gap-2">
         <input type="hidden" name="tab" value="audit" />
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="action">
             Action
           </label>
-          <Select name="action">
-            <SelectTrigger id="action" className="w-44">
-              <SelectValue placeholder="All actions" />
-            </SelectTrigger>
-            <SelectContent>
-              {actions.map((action) => (
-                <SelectItem key={action} value={action}>
-                  {AUDIT_ACTION_LABELS[action] ?? action}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <AutoSubmitSelect
+            name="action"
+            defaultValue={searchParams.get("action") ?? ""}
+            key={`action-${searchParams.get("action") ?? ""}`}
+            emptyOptionLabel="All actions"
+            id="action"
+            className="w-44"
+            ariaLabel="Filter audit log by action"
+            options={actions.map((action) => ({
+              value: action,
+              label: AUDIT_ACTION_LABELS[action] ?? action,
+            }))}
+          />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="userId">
             User
           </label>
-          <Select name="userId">
-            <SelectTrigger id="userId" className="w-44">
-              <SelectValue placeholder="All users" />
-            </SelectTrigger>
-            <SelectContent>
-              {users.map((user) => (
-                <SelectItem key={user.id} value={user.id}>
-                  {user.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <AutoSubmitSelect
+            name="userId"
+            defaultValue={searchParams.get("userId") ?? ""}
+            key={`userId-${searchParams.get("userId") ?? ""}`}
+            emptyOptionLabel="All users"
+            id="userId"
+            className="w-44"
+            ariaLabel="Filter audit log by user"
+            options={users.map((user) => ({
+              value: user.id,
+              label: user.name,
+            }))}
+          />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="fromDate">
@@ -180,23 +174,19 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
           >
             Rows
           </label>
-          <Select
+          <AutoSubmitSelect
             name="auditPageSize"
             defaultValue={String(pageSize)}
-            onValueChange={() => {
-              setTimeout(() => formRef.current?.requestSubmit(), 0);
-            }}
-          >
-            <SelectTrigger id="auditPageSize" className="w-24">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="25">25</SelectItem>
-              <SelectItem value="50">50</SelectItem>
-              <SelectItem value="100">100</SelectItem>
-            </SelectContent>
-          </Select>
+            id="auditPageSize"
+            className="w-24"
+            ariaLabel="Audit log page size"
+            options={[
+              { value: "10", label: "10" },
+              { value: "25", label: "25" },
+              { value: "50", label: "50" },
+              { value: "100", label: "100" },
+            ]}
+          />
         </div>
         <Button type="submit" size="sm">
           Filter
@@ -302,7 +292,7 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
                             {log.entityName ?? "Deleted"}
                           </Link>
                         ) : (
-                          <span>{log.entityType ?? "—"}</span>
+                          <span>{log.entityType ?? "â€”"}</span>
                         )}
                         {log.meta ? (
                           <span className="text-muted-foreground/60">

@@ -32,10 +32,10 @@ const STATUS_OPTIONS = [
 ] as const;
 
 const STATUS_STYLES: Record<string, string> = {
-  PENDING: "bg-[var(--rag-amber)] text-black",
+  PENDING: "bg-warning text-warning-foreground",
   IN_PROGRESS: "bg-blue-600 text-white",
   COMPLETED: "bg-[var(--rag-green)] text-white",
-  NOT_APPLICABLE: "bg-gray-400 text-white",
+  NOT_APPLICABLE: "bg-muted text-muted-foreground",
 };
 
 type ActionView = {
@@ -140,7 +140,7 @@ function ChecklistCard({
             </Button>
           </div>
           <span className="text-muted-foreground shrink-0 text-xs">
-            {completed} of {total} · {percent}%
+            {completed} of {total} Â· {percent}%
           </span>
         </div>
         <ProgressBar
@@ -206,7 +206,7 @@ function ActionRow({
       `${existingAttachments.length} file${existingAttachments.length !== 1 ? "s" : ""}`,
     );
   }
-  const metaLine = metaParts.length > 0 ? metaParts.join(" · ") : null;
+  const metaLine = metaParts.length > 0 ? metaParts.join(" Â· ") : null;
 
   return (
     <div className="px-3 py-2.5">

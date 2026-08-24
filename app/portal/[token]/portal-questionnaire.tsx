@@ -718,7 +718,7 @@ export function PortalQuestionnaire({
             return null;
           }
           return (
-            <div className="bg-muted/50 rounded-md border-l-2 border-[var(--rag-amber)] p-2 text-sm">
+            <div className="bg-muted/50 border-l-warning rounded-md border-l-2 p-2 text-sm">
               <p className="text-xs font-medium">
                 The reviewer requested clarification on this answer.
               </p>
@@ -900,7 +900,7 @@ export function PortalQuestionnaire({
           </div>
         ) : null}
         {expiryLabel ? (
-          <div className="rounded-md border border-[var(--rag-amber)] bg-[var(--rag-amber)]/10 px-4 py-2">
+          <div className="border-warning/50 bg-warning/10 rounded-md border px-4 py-2">
             <p className="text-muted-foreground text-xs font-medium">
               {expiryLabel}
             </p>

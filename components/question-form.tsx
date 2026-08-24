@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useEffect, useRef, useState, useActionState } from "react";
 import MDEditor, { commands } from "@uiw/react-md-editor";
 
 import { ConditionalRulesEditor } from "@/components/conditional-rules-editor";
@@ -138,6 +138,27 @@ export function QuestionForm({
     return Array.isArray(expected) ? expected : [];
   });
 
+  // Switching answer type clears the scoring key (different semantics per
+  // type), but stashes the previous selections so toggling back restores them
+  // instead of silently losing the author's work.
+  const selectionSnapshot = useRef<{
+    accepted?: string[];
+    selections?: string[];
+  }>({});
+
+  const isDirty =
+    liveHelpText !== (defaults?.helpText ?? "") ||
+    optionsText !== (defaults?.options.join("\n") ?? "");
+
+  useEffect(() => {
+    if (!isDirty) return;
+    function handleBeforeUnload(event: BeforeUnloadEvent) {
+      event.preventDefault();
+    }
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isDirty]);
+
   const parsedOptions = optionsText
     .split("\n")
     .map((line) => line.trim())
@@ -190,9 +211,29 @@ export function QuestionForm({
             name="type"
             value={type}
             onValueChange={(value) => {
-              setType(value as QuestionType);
-              setAcceptedAnswers([]);
-              setExpectedSelections([]);
+              const nextType = value as QuestionType;
+              // Stash the outgoing key, restore any stashed key for the
+              // incoming type.
+              selectionSnapshot.current = {
+                accepted: acceptedAnswers,
+                selections: expectedSelections,
+              };
+              if (nextType === "MULTI_SELECT") {
+                setExpectedSelections(
+                  selectionSnapshot.current.selections ?? [],
+                );
+                setAcceptedAnswers([]);
+              } else if (
+                nextType === "MULTIPLE_CHOICE" ||
+                nextType === "COMBOBOX"
+              ) {
+                setAcceptedAnswers(selectionSnapshot.current.accepted ?? []);
+                setExpectedSelections([]);
+              } else {
+                setAcceptedAnswers([]);
+                setExpectedSelections([]);
+              }
+              setType(nextType);
             }}
           >
             <SelectTrigger id="type">
@@ -273,6 +314,9 @@ export function QuestionForm({
       {type === "MULTIPLE_CHOICE" || type === "COMBOBOX" ? (
         <div className="grid gap-2">
           <Label>Accepted answers</Label>
+          <p className="text-muted-foreground text-xs">
+            Tick every answer that should score as compliant.
+          </p>
           <input
             type="hidden"
             name="expectedAnswer"
@@ -310,6 +354,9 @@ export function QuestionForm({
       {type === "MULTI_SELECT" ? (
         <div className="grid gap-2">
           <Label>Expected selections</Label>
+          <p className="text-muted-foreground text-xs">
+            Tick the exact set the vendor must select to score compliant.
+          </p>
           <input
             type="hidden"
             name="expectedAnswer"

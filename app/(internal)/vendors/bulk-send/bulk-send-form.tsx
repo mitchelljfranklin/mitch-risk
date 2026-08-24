@@ -190,7 +190,7 @@ export function BulkSendForm({
 
         <StepperNext asChild>
           <Button size="sm" className="w-fit" disabled={!templateId}>
-            Next →
+            Next â†’
           </Button>
         </StepperNext>
       </StepperContent>
@@ -260,12 +260,12 @@ export function BulkSendForm({
         <div className="flex items-center gap-3">
           <StepperPrevious asChild>
             <Button variant="outline" size="sm">
-              ← Back
+              â† Back
             </Button>
           </StepperPrevious>
           <StepperNext asChild>
             <Button size="sm" disabled={selectedIds.size === 0}>
-              Next →
+              Next â†’
             </Button>
           </StepperNext>
         </div>
@@ -286,9 +286,9 @@ export function BulkSendForm({
             <p className="text-muted-foreground mt-1 text-xs">
               Due: {dueDate}
               {reviewerId
-                ? ` · Reviewer: ${reviewers.find((reviewer) => reviewer.id === reviewerId)?.label ?? reviewerId}`
+                ? ` Â· Reviewer: ${reviewers.find((reviewer) => reviewer.id === reviewerId)?.label ?? reviewerId}`
                 : ""}
-              {portalPassword ? " · Portal password set" : ""}
+              {portalPassword ? " Â· Portal password set" : ""}
             </p>
           ) : null}
           <div className="mt-3 flex flex-wrap gap-1">
@@ -308,7 +308,7 @@ export function BulkSendForm({
         <div className="flex items-center gap-3">
           <StepperPrevious asChild>
             <Button variant="outline" size="sm">
-              ← Back
+              â† Back
             </Button>
           </StepperPrevious>
           <Button
@@ -324,7 +324,7 @@ export function BulkSendForm({
 
         {state?.message ? (
           <p
-            className={`text-sm ${state.ok ? "text-[var(--rag-green)]" : "text-destructive"}`}
+            className={`text-sm ${state.ok ? "text-success" : "text-destructive"}`}
             role="alert"
           >
             {state.message}

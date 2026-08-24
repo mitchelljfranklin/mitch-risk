@@ -277,8 +277,25 @@ export default async function TemplateBuilderPage({
         </p>
       ) : null}
 
+      {template.sections.length > 0 ? (
+        <nav aria-label="Jump to section" className="flex flex-wrap gap-2">
+          {template.sections.map((section) => (
+            <a
+              key={section.id}
+              href={`#section-${section.id}`}
+              className="bg-muted hover:bg-accent rounded-md border px-2.5 py-1 text-xs font-medium transition-colors"
+            >
+              {section.title}
+              <span className="text-muted-foreground ml-1.5">
+                ({section.questions.length})
+              </span>
+            </a>
+          ))}
+        </nav>
+      ) : null}
+
       {template.sections.map((section, sectionIndex) => (
-        <Card key={section.id}>
+        <Card key={section.id} id={`section-${section.id}`}>
           <CardHeader>
             <div className="flex items-center justify-between gap-3">
               {canEditDraft ? (
@@ -370,128 +387,150 @@ export default async function TemplateBuilderPage({
                 description="Add a question to get started with this section."
               />
             ) : (
-              section.questions.map((question, questionIndex) => {
-                const conditionSummary = summarizeConditionalLogic(
-                  question.conditionalLogic,
-                  questionText,
-                );
-                return (
-                  <div
-                    key={question.id}
-                    className="flex items-start justify-between gap-3 rounded-md border p-3"
-                  >
-                    <div className="flex flex-col gap-1">
-                      <span className="text-sm font-medium">
-                        {question.text}
-                      </span>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Badge variant="secondary">
-                          {QUESTION_TYPE_LABELS[question.type]}
-                        </Badge>
-                        <Badge variant="outline">
-                          {RISK_WEIGHT_LABELS[question.riskWeight]}
-                        </Badge>
-                        {question.required ? (
-                          <Badge variant="outline">Required</Badge>
-                        ) : null}
-                        {question.controls.length > 0 ? (
-                          <span className="text-muted-foreground font-mono text-xs">
-                            {question.controls
-                              .map((link) => link.control.code)
-                              .join(", ")}
+              <details open className="group/questions">
+                <summary className="text-muted-foreground cursor-pointer list-none text-xs font-medium select-none">
+                  <span className="inline-flex items-center gap-1 group-open/questions:hidden">
+                    <ChevronDown size={12} /> Show {section.questions.length}{" "}
+                    question{section.questions.length !== 1 ? "s" : ""}
+                  </span>
+                  <span className="hidden items-center gap-1 group-open/questions:inline-flex">
+                    <ChevronUp size={12} /> Hide {section.questions.length}{" "}
+                    question{section.questions.length !== 1 ? "s" : ""}
+                  </span>
+                </summary>
+                <div className="mt-3 flex flex-col gap-3">
+                  {section.questions.map((question, questionIndex) => {
+                    const conditionSummary = summarizeConditionalLogic(
+                      question.conditionalLogic,
+                      questionText,
+                    );
+                    return (
+                      <div
+                        key={question.id}
+                        className="flex items-start justify-between gap-3 rounded-md border p-3"
+                      >
+                        <div className="flex flex-col gap-1">
+                          <span className="text-sm font-medium">
+                            {question.text}
                           </span>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <Badge variant="secondary">
+                              {QUESTION_TYPE_LABELS[question.type]}
+                            </Badge>
+                            <Badge variant="outline">
+                              {RISK_WEIGHT_LABELS[question.riskWeight]}
+                            </Badge>
+                            {question.required ? (
+                              <Badge variant="outline">Required</Badge>
+                            ) : null}
+                            {question.controls.length > 0 ? (
+                              <span className="text-muted-foreground font-mono text-xs">
+                                {question.controls
+                                  .map((link) => link.control.code)
+                                  .join(", ")}
+                              </span>
+                            ) : null}
+                          </div>
+                          {conditionSummary ? (
+                            <p className="text-muted-foreground text-xs italic">
+                              {conditionSummary}
+                            </p>
+                          ) : null}
+                        </div>
+                        {canEditDraft ? (
+                          <div className="flex shrink-0 flex-wrap items-center gap-1">
+                            <form action={moveQuestionAction}>
+                              <input
+                                type="hidden"
+                                name="templateId"
+                                value={template.id}
+                              />
+                              <input
+                                type="hidden"
+                                name="questionId"
+                                value={question.id}
+                              />
+                              <input
+                                type="hidden"
+                                name="direction"
+                                value="up"
+                              />
+                              <Button
+                                type="submit"
+                                variant="ghost"
+                                size="icon-sm"
+                                disabled={questionIndex === 0}
+                                aria-label="Move question up"
+                              >
+                                <ChevronUp size={14} />
+                              </Button>
+                            </form>
+                            <form action={moveQuestionAction}>
+                              <input
+                                type="hidden"
+                                name="templateId"
+                                value={template.id}
+                              />
+                              <input
+                                type="hidden"
+                                name="questionId"
+                                value={question.id}
+                              />
+                              <input
+                                type="hidden"
+                                name="direction"
+                                value="down"
+                              />
+                              <Button
+                                type="submit"
+                                variant="ghost"
+                                size="icon-sm"
+                                disabled={
+                                  questionIndex === section.questions.length - 1
+                                }
+                                aria-label="Move question down"
+                              >
+                                <ChevronDown size={14} />
+                              </Button>
+                            </form>
+                            <Button asChild variant="ghost" size="sm">
+                              <Link
+                                href={`/templates/${template.id}/questions/${question.id}/edit`}
+                              >
+                                Edit
+                              </Link>
+                            </Button>
+                            <form
+                              id={`delete-question-${question.id}`}
+                              action={deleteQuestionAction}
+                            >
+                              <input
+                                type="hidden"
+                                name="templateId"
+                                value={template.id}
+                              />
+                              <input
+                                type="hidden"
+                                name="questionId"
+                                value={question.id}
+                              />
+                              <ConfirmDialog
+                                title="Delete question?"
+                                description={`This will permanently delete "${question.text.slice(0, 60)}".`}
+                                formId={`delete-question-${question.id}`}
+                              >
+                                <Button type="button" variant="ghost" size="sm">
+                                  Delete
+                                </Button>
+                              </ConfirmDialog>
+                            </form>
+                          </div>
                         ) : null}
                       </div>
-                      {conditionSummary ? (
-                        <p className="text-muted-foreground text-xs italic">
-                          {conditionSummary}
-                        </p>
-                      ) : null}
-                    </div>
-                    {canEditDraft ? (
-                      <div className="flex shrink-0 flex-wrap items-center gap-1">
-                        <form action={moveQuestionAction}>
-                          <input
-                            type="hidden"
-                            name="templateId"
-                            value={template.id}
-                          />
-                          <input
-                            type="hidden"
-                            name="questionId"
-                            value={question.id}
-                          />
-                          <input type="hidden" name="direction" value="up" />
-                          <Button
-                            type="submit"
-                            variant="ghost"
-                            size="icon-sm"
-                            disabled={questionIndex === 0}
-                            aria-label="Move question up"
-                          >
-                            <ChevronUp size={14} />
-                          </Button>
-                        </form>
-                        <form action={moveQuestionAction}>
-                          <input
-                            type="hidden"
-                            name="templateId"
-                            value={template.id}
-                          />
-                          <input
-                            type="hidden"
-                            name="questionId"
-                            value={question.id}
-                          />
-                          <input type="hidden" name="direction" value="down" />
-                          <Button
-                            type="submit"
-                            variant="ghost"
-                            size="icon-sm"
-                            disabled={
-                              questionIndex === section.questions.length - 1
-                            }
-                            aria-label="Move question down"
-                          >
-                            <ChevronDown size={14} />
-                          </Button>
-                        </form>
-                        <Button asChild variant="ghost" size="sm">
-                          <Link
-                            href={`/templates/${template.id}/questions/${question.id}/edit`}
-                          >
-                            Edit
-                          </Link>
-                        </Button>
-                        <form
-                          id={`delete-question-${question.id}`}
-                          action={deleteQuestionAction}
-                        >
-                          <input
-                            type="hidden"
-                            name="templateId"
-                            value={template.id}
-                          />
-                          <input
-                            type="hidden"
-                            name="questionId"
-                            value={question.id}
-                          />
-                          <ConfirmDialog
-                            title="Delete question?"
-                            description={`This will permanently delete "${question.text.slice(0, 60)}".`}
-                            formId={`delete-question-${question.id}`}
-                          >
-                            <Button type="button" variant="ghost" size="sm">
-                              Delete
-                            </Button>
-                          </ConfirmDialog>
-                        </form>
-                      </div>
-                    ) : null}
-                  </div>
-                );
-              })
+                    );
+                  })}
+                </div>
+              </details>
             )}
             {canEditDraft ? (
               <Button asChild variant="outline" size="sm" className="w-fit">

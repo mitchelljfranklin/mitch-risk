@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/chart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { type DomainRadarPoint } from "@/lib/db/compliance";
+import { buildShortDomainLabels } from "@/lib/radar-labels";
 
 const CURRENT_COLOR = "var(--primary)";
 const PREVIOUS_COLOR = "var(--muted-foreground)";
@@ -34,55 +35,97 @@ export function ComplianceRadar({ data, hasPrevious }: ComplianceRadarProps) {
     return null;
   }
 
+  const shortLabelByDomain = new Map(
+    buildShortDomainLabels(data.map((point) => point.domain)).map((label) => [
+      label.domain,
+      label.shortLabel,
+    ]),
+  );
+  const chartData = data.map((point) => ({
+    ...point,
+    shortLabel: shortLabelByDomain.get(point.domain)!,
+  }));
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Domain compliance radar</CardTitle>
       </CardHeader>
       <CardContent>
-        <ChartContainer
-          config={RADAR_CONFIG}
-          className="mx-auto aspect-square max-h-[360px]"
+        <div
+          role="img"
+          aria-label={`Domain compliance radar: ${data
+            .map((point) => `${point.domain} ${point.current}%`)
+            .join(", ")}`}
         >
-          <RadarChart data={data} outerRadius="70%">
-            <PolarGrid />
-            <PolarAngleAxis dataKey="domain" tick={{ fontSize: 11 }} />
-            <PolarRadiusAxis
-              domain={[0, 100]}
-              tickCount={5}
-              axisLine={false}
-              tick={{ fontSize: 10 }}
-            />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  indicator="line"
-                  formatter={(value) =>
-                    value === null || value === undefined
-                      ? "—"
-                      : `${String(value)}%`
-                  }
-                />
-              }
-            />
-            <Radar
-              name="current"
-              dataKey="current"
-              stroke={CURRENT_COLOR}
-              fill={CURRENT_COLOR}
-              fillOpacity={0.3}
-            />
-            {hasPrevious ? (
-              <Radar
-                name="previous"
-                dataKey="previous"
-                stroke={PREVIOUS_COLOR}
-                fill={PREVIOUS_COLOR}
-                fillOpacity={0.2}
+          <ChartContainer
+            config={RADAR_CONFIG}
+            className="mx-auto aspect-square max-h-[360px]"
+          >
+            <RadarChart data={chartData} outerRadius="70%">
+              <PolarGrid />
+              <PolarAngleAxis dataKey="shortLabel" tick={{ fontSize: 11 }} />
+              <PolarRadiusAxis
+                domain={[0, 100]}
+                tickCount={5}
+                axisLine={false}
+                tick={{ fontSize: 10 }}
               />
-            ) : null}
-          </RadarChart>
-        </ChartContainer>
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    indicator="line"
+                    formatter={(value) =>
+                      value === null || value === undefined
+                        ? "—"
+                        : `${String(value)}%`
+                    }
+                  />
+                }
+              />
+              <Radar
+                name="current"
+                dataKey="current"
+                stroke={CURRENT_COLOR}
+                fill={CURRENT_COLOR}
+                fillOpacity={0.3}
+              />
+              {hasPrevious ? (
+                <Radar
+                  name="previous"
+                  dataKey="previous"
+                  stroke={PREVIOUS_COLOR}
+                  fill={PREVIOUS_COLOR}
+                  fillOpacity={0.2}
+                />
+              ) : null}
+            </RadarChart>
+          </ChartContainer>
+        </div>
+        {/* Screen-reader table mirroring the chart values */}
+        <table className="sr-only">
+          <caption>Domain compliance by percentage</caption>
+          <thead>
+            <tr>
+              <th scope="col">Domain</th>
+              <th scope="col">Current</th>
+              {hasPrevious ? <th scope="col">Previous</th> : null}
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((point) => (
+              <tr key={point.domain}>
+                <th scope="row">{point.domain}</th>
+                <td>{point.current}%</td>
+                {hasPrevious ? (
+                  <td>
+                    {point.previous === null ? "—" : `${point.previous}%`}
+                  </td>
+                ) : null}
+              </tr>
+            ))}
+          </tbody>
+        </table>
         <div className="mt-3 flex flex-wrap justify-center gap-4 text-xs">
           {(["current", "previous"] as const)
             .filter((key) => key === "current" || hasPrevious)

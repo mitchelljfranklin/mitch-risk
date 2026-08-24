@@ -69,7 +69,7 @@ function stateToSortParam(state: SortingState): AssessmentSort {
 }
 
 const STATUS_ACCENT: Record<string, string> = {
-  SUBMITTED: "border-l-[var(--rag-amber)] bg-[var(--rag-amber)]/5",
+  SUBMITTED: "border-l-warning bg-warning/5",
   UNDER_REVIEW: "border-l-blue-500 bg-blue-50 dark:bg-blue-950/20",
   COMPLETED: "border-l-[var(--rag-green)] bg-[var(--rag-green)]/5",
 };
@@ -115,7 +115,7 @@ export function AssessmentsTable({
       accessorKey: "title",
       enableSorting: true,
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Assessment · Vendor" />
+        <DataTableColumnHeader column={column} title="Assessment Â· Vendor" />
       ),
       cell: ({ row }) => {
         const assessment = row.original;
@@ -134,11 +134,11 @@ export function AssessmentsTable({
             <span className="text-muted-foreground block truncate text-xs">
               {assessment.vendorName}
               {assessment.templateName
-                ? ` · ${assessment.templateName} v${assessment.templateVersion}`
+                ? ` Â· ${assessment.templateName} v${assessment.templateVersion}`
                 : ""}
               {assessment.dueDate ? (
                 <span className={overdue ? "text-[var(--rag-red)]" : ""}>
-                  {` · due ${formatDate(assessment.dueDate)}`}
+                  {` Â· due ${formatDate(assessment.dueDate)}`}
                 </span>
               ) : (
                 ""
@@ -194,7 +194,7 @@ export function AssessmentsTable({
       ),
       cell: ({ row }) => (
         <span className="text-muted-foreground text-xs">
-          {row.original.dueDate ? formatDate(row.original.dueDate) : "—"}
+          {row.original.dueDate ? formatDate(row.original.dueDate) : "â€”"}
         </span>
       ),
     },

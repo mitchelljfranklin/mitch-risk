@@ -3,13 +3,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { AutoSubmitSelect } from "@/components/auto-submit-select";
 import { AssessmentsTable } from "./assessments-table";
 import { EmptyState } from "@/components/empty-state";
@@ -103,20 +96,18 @@ export default async function AssessmentsPage({
           <label className="text-muted-foreground text-xs" htmlFor="status">
             Status
           </label>
-          <Select name="status" defaultValue={sp.status ?? ""}>
-            <SelectTrigger id="status" className="w-40">
-              <SelectValue placeholder="All" />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(ASSESSMENT_STATUS_LABELS).map(
-                ([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ),
-              )}
-            </SelectContent>
-          </Select>
+          <AutoSubmitSelect
+            name="status"
+            defaultValue={sp.status ?? ""}
+            key={`status-${sp.status ?? ""}`}
+            emptyOptionLabel="All statuses"
+            id="status"
+            className="w-40"
+            ariaLabel="Filter assessments by status"
+            options={Object.entries(ASSESSMENT_STATUS_LABELS).map(
+              ([value, label]) => ({ value, label }),
+            )}
+          />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="from">
