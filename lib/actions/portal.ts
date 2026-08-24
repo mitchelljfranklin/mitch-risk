@@ -146,12 +146,14 @@ export async function uploadEvidenceAction(
   };
 }
 
-export async function submitPortalAction(
-  token: string,
-): Promise<{ ok: boolean; missing: number }> {
+export async function submitPortalAction(token: string): Promise<{
+  ok: boolean;
+  missing: number;
+  missingQuestionIds: string[];
+}> {
   const { portalSubmitPerMin } = await getAssessmentSettings();
   if (!rateLimit("submit", token, portalSubmitPerMin)) {
-    return { ok: false, missing: -1 };
+    return { ok: false, missing: -1, missingQuestionIds: [] };
   }
 
   const result = await submitAssessment(token);

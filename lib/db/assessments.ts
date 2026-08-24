@@ -480,9 +480,11 @@ export async function saveResponses(
   return { ok: true };
 }
 
-export async function submitAssessment(
-  token: string,
-): Promise<{ ok: boolean; missing: number }> {
+export async function submitAssessment(token: string): Promise<{
+  ok: boolean;
+  missing: number;
+  missingQuestionIds: string[];
+}> {
   const assessment = await prisma.assessment.findUnique({
     where: { tokenHash: hashToken(token) },
     include: {
@@ -503,7 +505,7 @@ export async function submitAssessment(
     !assessment ||
     !isPortalEditable(assessment.status, assessment.tokenExpiresAt)
   ) {
-    return { ok: false, missing: -1 };
+    return { ok: false, missing: -1, missingQuestionIds: [] };
   }
 
   const answers: PortalAnswers = {};
@@ -524,7 +526,11 @@ export async function submitAssessment(
   );
 
   if (missing.length > 0) {
-    return { ok: false, missing: missing.length };
+    return {
+      ok: false,
+      missing: missing.length,
+      missingQuestionIds: missing.map((question) => question.id),
+    };
   }
 
   const previousStatus = assessment.status;
@@ -549,7 +555,7 @@ export async function submitAssessment(
     throw new Error("Assessment scoring failed, please try submitting again.");
   }
 
-  return { ok: true, missing: 0 };
+  return { ok: true, missing: 0, missingQuestionIds: [] };
 }
 
 export function createEvidence(params: {
