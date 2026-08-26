@@ -69,6 +69,7 @@ const sidebar = [
       { text: "Cron & Automation", link: "/advanced/cron" },
       { text: "Security", link: "/advanced/security" },
       { text: "Threat Model", link: "/advanced/threat-model" },
+      { text: "SBOM", link: "/advanced/sbom" },
       { text: "Compliance Coverage", link: "/advanced/compliance-coverage" },
       { text: "Integration Examples", link: "/advanced/integration-examples" },
     ],
