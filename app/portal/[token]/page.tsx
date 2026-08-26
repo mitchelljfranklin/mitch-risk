@@ -1,6 +1,8 @@
 import { cookies, headers } from "next/headers";
 import { getAssessmentByToken, isTokenExpired } from "@/lib/db/assessments";
 import { getClientIp } from "@/lib/client-ip";
+import { hashWithSecret } from "@/lib/crypto";
+import { timingSafeEqualString } from "@/lib/timing-safe";
 import { rateLimit } from "@/lib/rate-limit";
 import { formatDate } from "@/lib/utils";
 import {
@@ -50,7 +52,7 @@ function PortalShell({
   return (
     <div className="mx-auto flex min-h-svh w-full max-w-2xl flex-col gap-6 p-6">
       <noscript>
-        <p className="rounded-md border border-amber-500 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
+        <p className="border-warning/50 bg-warning/10 rounded-md border p-3 text-sm">
           JavaScript is required to complete this questionnaire. Please enable
           JavaScript in your browser settings.
         </p>
@@ -251,7 +253,14 @@ export default async function PortalPage({ params }: PortalPageProps) {
   if (assessment.portalPasswordHash) {
     const cookieStore = await cookies();
     const portalAuthCookie = cookieStore.get("portal-auth");
-    if (!portalAuthCookie || portalAuthCookie.value !== token) {
+    // Compare against the keyed HMAC of the token (what the gate action
+    // stores), in constant time. The raw token must NOT satisfy this check —
+    // it is public, so echoing it would let link-holders skip the password.
+    const expectedCookieValue = hashWithSecret(token);
+    if (
+      !portalAuthCookie ||
+      !timingSafeEqualString(portalAuthCookie.value, expectedCookieValue)
+    ) {
       return (
         <PortalShell logoUrl={logoUrl}>
           <PasswordGate token={token} />
@@ -295,7 +304,7 @@ export default async function PortalPage({ params }: PortalPageProps) {
   return (
     <PortalShell logoUrl={logoUrl}>
       {assessment.status === "IN_PROGRESS" ? (
-        <div className="rounded-md border border-[var(--rag-amber)] bg-[var(--rag-amber)]/10 px-4 py-3">
+        <div className="border-warning/50 bg-warning/10 rounded-md border px-4 py-3">
           <p className="text-sm font-medium">
             Additional information has been requested.
           </p>

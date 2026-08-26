@@ -29,3 +29,18 @@ export function resolveTab(
 ): string {
   return rawTab && allowedTabs.includes(rawTab) ? rawTab : defaultTab;
 }
+
+// Serialises active filter values into a query-string fragment so paginated
+// tables can carry their filters through page links. Empty/undefined values
+// are skipped; returns "" when nothing is set.
+export function buildFilterQueryString(
+  filters: Record<string, string | undefined>,
+): string {
+  const params = new URLSearchParams();
+  for (const [name, value] of Object.entries(filters)) {
+    if (value !== undefined && value !== "") {
+      params.set(name, value);
+    }
+  }
+  return params.toString();
+}

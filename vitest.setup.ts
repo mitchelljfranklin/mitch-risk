@@ -36,3 +36,24 @@ if (databaseUrl && !looksLikeTestDatabase && !explicitlyAllowed) {
     ].join("\n"),
   );
 }
+
+// The escape hatch is dangerous enough to deserve its own banner: some suites
+// reset whole tables (the settings-isolation suite restores app_settings, but
+// others mutate rows in place), so an overridden run can still leave the
+// target database changed. Make sure nobody trips this by accident. Raw
+// stderr write because vitest intercepts console.* from setup files.
+if (databaseUrl && explicitlyAllowed) {
+  process.stderr.write(
+    [
+      "",
+      "====================================================================",
+      "  WARNING: ALLOW_TESTS_ON_THIS_DB=1 against a NON-test database:",
+      `      ${redactDatabaseUrl(databaseUrl)}`,
+      "  Integration tests will MUTATE this database - settings, email",
+      "  logs, vendors and assessments may be modified or replaced.",
+      "  Prefer a dedicated *_test database via TEST_DATABASE_URL.",
+      "====================================================================",
+      "",
+    ].join("\n") + "\n",
+  );
+}

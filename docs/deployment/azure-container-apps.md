@@ -154,11 +154,11 @@ az containerapp create \
 2. Create your first admin account at `/setup`.
 3. The `/setup` page disappears after the first user is created.
 
-## 6. Set up cron
+## 6. Scheduled tasks
 
-Container Apps does not run a system cron daemon. Use an
-Azure Function (timer trigger) or a separate lightweight service to call
-the cron endpoint every 5 minutes:
+Scheduled jobs run inside the app by default — no Azure Function or external scheduler is required. Verify under Settings → Scheduling ("Last scheduled run").
+
+If you prefer external scheduling, disable the built-in scheduler in Settings → Scheduling and call the cron endpoint every 5 minutes from an Azure Function (timer trigger) or a separate lightweight service:
 
 ```bash
 curl -H "x-cron-secret: <cron-secret>" https://<app-url>/api/cron/run
@@ -671,9 +671,9 @@ Click **Save** then **Create** to deploy the new revision.
 
 ---
 
-### 8. Set Up Cron
+### 8. Scheduled Tasks (Optional External Cron)
 
-Container Apps don't run a system cron daemon. Use an Azure Function:
+Scheduled jobs run inside the app by default — this section is only needed if you disabled the built-in scheduler under Settings → Scheduling and prefer external scheduling. Use an Azure Function:
 
 1. **Portal → Function App → Create**
    - Runtime stack: **PowerShell Core** or **Node.js**

@@ -35,7 +35,12 @@ import {
 import { randomBytes } from "node:crypto";
 import { z } from "zod";
 import { storage } from "@/lib/storage";
-import { isDangerousUploadMime } from "@/lib/upload-validation";
+import {
+  isDangerousUploadMime,
+  validateMagicBytes,
+} from "@/lib/upload-validation";
+
+const ALLOWED_LOGO_EXTENSIONS = new Set(["png", "jpg", "jpeg", "gif", "webp"]);
 import {
   createWebhookEndpoint,
   deleteWebhookEndpoint,
@@ -389,9 +394,25 @@ export async function saveAppearanceSettings(
       return { ok: false, message: "Logo must be an image file." };
     }
 
-    const ext = logoFile.name.split(".").pop()?.toLowerCase() ?? "png";
-    const fileName = `logo-${randomBytes(8).toString("hex")}.${ext}`;
+    // The declared MIME type is client-controlled, so the extension
+    // allowlist and magic bytes are the real gate. SVG is excluded outright:
+    // it is scriptable and is served inline from this origin.
+    const ext = logoFile.name.split(".").pop()?.toLowerCase() ?? "";
+    if (!ALLOWED_LOGO_EXTENSIONS.has(ext)) {
+      return {
+        ok: false,
+        message: "Logo must be a PNG, JPG, GIF, or WEBP image.",
+      };
+    }
     const buffer = Buffer.from(await logoFile.arrayBuffer());
+    if (!validateMagicBytes(ext, buffer)) {
+      return {
+        ok: false,
+        message: "Logo file content does not match its extension.",
+      };
+    }
+
+    const fileName = `logo-${randomBytes(8).toString("hex")}.${ext}`;
     await storage.save(fileName, buffer);
     logoKey = fileName;
   }
@@ -577,20 +598,70 @@ export async function saveSchedulingSettings(
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
 
-  const auditRetention = parseInt(
-    (formData.get("auditRetention") as string) || "0",
-    10,
-  );
-  const emailLogRetention = parseInt(
-    (formData.get("emailLogRetention") as string) || "14",
-    10,
-  );
   const escalationDays = parseInt(
     (formData.get("escalationDays") as string) || "3",
     10,
   );
   const defaultDueDays = parseInt(
     (formData.get("defaultDueDays") as string) || "21",
+    10,
+  );
+  const reminderStr = (formData.get("reminderDays") as string) || "";
+
+  if (isNaN(escalationDays) || escalationDays < 1) {
+    return { ok: false, message: "Escalation days must be at least 1." };
+  }
+  if (isNaN(defaultDueDays) || defaultDueDays < 1) {
+    return { ok: false, message: "Default due days must be at least 1." };
+  }
+
+  const reminders = reminderStr
+    .split(",")
+    .map((day) => parseInt(day.trim(), 10))
+    .filter((day) => !isNaN(day) && day >= 0);
+
+  const { updateAssessmentSettings, updateCronSettings } =
+    await import("@/lib/settings");
+
+  // Persist only what this tab's form submits. Absent form fields must never
+  // fall back to defaults here — each settings tab owns its own save action,
+  // so defaults for other tabs' fields would silently reset their values.
+  await Promise.all([
+    updateCronSettings({
+      internalSchedulerEnabled:
+        formData.get("internalSchedulerEnabled") === "on",
+    }),
+    updateAssessmentSettings({
+      reminderOffsetDays: reminders.length > 0 ? reminders : [7, 1],
+      escalationAfterDays: escalationDays,
+      defaultDueInDays: defaultDueDays,
+    }),
+  ]);
+
+  const user = await getCurrentUser();
+  if (user)
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_SETTINGS,
+      "Setting",
+      "scheduling",
+    );
+
+  return { ok: true, message: "Configuration saved." };
+}
+
+export async function saveLimitsSettings(
+  previousState: SettingsActionState,
+  formData: FormData,
+): Promise<SettingsActionState> {
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+
+  const auditRetention = parseInt(
+    (formData.get("auditRetention") as string) || "0",
+    10,
+  );
+  const emailLogRetention = parseInt(
+    (formData.get("emailLogRetention") as string) || "14",
     10,
   );
   const maxUploadMb = parseInt(
@@ -605,12 +676,12 @@ export async function saveSchedulingSettings(
     (formData.get("sessionTimeoutMinutes") as string) || "30",
     10,
   );
-  const reminderStr = (formData.get("reminderDays") as string) || "";
 
   const rateLimitFields = {
     portalPageLoadsPerMin: { label: "Portal page loads", default: 30 },
     portalUploadsPerMin: { label: "Portal uploads", default: 10 },
     portalSubmitPerMin: { label: "Portal submissions", default: 5 },
+    portalCommentPerMin: { label: "Portal comments", default: 10 },
     portalPasswordAttemptsPerMin: {
       label: "Portal password attempts",
       default: 5,
@@ -645,12 +716,6 @@ export async function saveSchedulingSettings(
       message: "Email log retention must be 0 or a positive number.",
     };
   }
-  if (isNaN(escalationDays) || escalationDays < 1) {
-    return { ok: false, message: "Escalation days must be at least 1." };
-  }
-  if (isNaN(defaultDueDays) || defaultDueDays < 1) {
-    return { ok: false, message: "Default due days must be at least 1." };
-  }
   if (isNaN(maxUploadMb) || maxUploadMb < 1) {
     return { ok: false, message: "Maximum upload size must be at least 1 MB." };
   }
@@ -671,11 +736,6 @@ export async function saveSchedulingSettings(
     };
   }
 
-  const reminders = reminderStr
-    .split(",")
-    .map((day) => parseInt(day.trim(), 10))
-    .filter((day) => !isNaN(day) && day >= 0);
-
   const allowedExtensions = formData.getAll("allowedExtensions").map(String);
 
   const {
@@ -689,15 +749,13 @@ export async function saveSchedulingSettings(
     updateAuditRetention(auditRetention),
     updateEmailLogRetention(emailLogRetention),
     updateAssessmentSettings({
-      reminderOffsetDays: reminders.length > 0 ? reminders : [7, 1],
-      escalationAfterDays: escalationDays,
-      defaultDueInDays: defaultDueDays,
       loginRateLimitPerMin: loginRateLimit,
       emailLogRetentionDays: emailLogRetention,
       sessionTimeoutMinutes,
       portalPageLoadsPerMin: rateLimits.portalPageLoadsPerMin,
       portalUploadsPerMin: rateLimits.portalUploadsPerMin,
       portalSubmitPerMin: rateLimits.portalSubmitPerMin,
+      portalCommentPerMin: rateLimits.portalCommentPerMin,
       portalPasswordAttemptsPerMin: rateLimits.portalPasswordAttemptsPerMin,
       passwordResetPerMin: rateLimits.passwordResetPerMin,
       breakGlassPerMin: rateLimits.breakGlassPerMin,
@@ -711,12 +769,7 @@ export async function saveSchedulingSettings(
 
   const user = await getCurrentUser();
   if (user)
-    await logAudit(
-      user.id,
-      AUDIT_ACTIONS.UPDATE_SETTINGS,
-      "Setting",
-      "scheduling",
-    );
+    await logAudit(user.id, AUDIT_ACTIONS.UPDATE_SETTINGS, "Setting", "limits");
 
   return { ok: true, message: "Configuration saved." };
 }

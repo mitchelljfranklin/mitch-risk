@@ -19,7 +19,7 @@ import {
   validateMagicBytes,
 } from "@/lib/upload-validation";
 import { parseCsvWithHeaders } from "@/lib/csv-parser";
-import { generateResponsibilityActions } from "@/lib/actions/certifications";
+import { applySharedResponsibilityActions } from "@/lib/db/customer-responsibility";
 import {
   vendorSchema,
   vendorCsvRowSchema,
@@ -460,7 +460,7 @@ async function handleCertificationAttachment(
     data: { vendorId, name, issuer, expiresDate: new Date(expiresDate), notes },
   });
 
-  await generateResponsibilityActions(
+  await applySharedResponsibilityActions(
     vendorId,
     certification.id,
     frameworkName,

@@ -14,6 +14,7 @@ import {
   type SsoSettings,
   type AppearanceSettings,
   type StorageSettings,
+  type CronSettings,
   assessmentSettingsSchema,
   emailSettingsSchema,
   emailTemplateSchema,
@@ -23,6 +24,7 @@ import {
   ssoSettingsSchema,
   appearanceSettingsSchema,
   storageSettingsSchema,
+  cronSettingsSchema,
 } from "./schema";
 
 function makeKey(category: string, field: string): string {
@@ -202,10 +204,12 @@ export async function getSsoSecretConfigured(): Promise<{
   return result;
 }
 
-export async function getScoringSettings(): Promise<ScoringSettings> {
+// Request-scoped cache: scoring settings are read on every score/compliance
+// path (often several times per request), so dedupe like the sibling getters.
+export const getScoringSettings = cache(async (): Promise<ScoringSettings> => {
   const record = await readCategoryRecord("scoring");
   return scoringSettingsSchema.parse(record);
-}
+});
 
 export async function updateScoringSettings(
   input: ScoringSettings,
@@ -348,12 +352,16 @@ export async function updateStorageSettings(
   );
 }
 
+// Accepts a partial update: stored values are merged over so callers can
+// change only the fields their form owns without resetting the rest.
 export async function updateAssessmentSettings(
-  input: AssessmentSettings,
+  input: Partial<AssessmentSettings>,
 ): Promise<void> {
+  const record = await readCategoryRecord("assessments");
+  const merged = assessmentSettingsSchema.parse(record);
   await persistCategory(
     "assessments",
-    input as unknown as Record<string, unknown>,
+    { ...merged, ...input } as unknown as Record<string, unknown>,
     NO_SECRETS,
   );
 }
@@ -364,6 +372,18 @@ export async function updateFileSettings(input: FileSettings): Promise<void> {
     input as unknown as Record<string, unknown>,
     NO_SECRETS,
   );
+}
+
+// Not cache(): the scheduler tick must re-read the toggle each run so
+// disabling it in Settings takes effect without a restart. The "cron"
+// category also holds cron.lastRun; zod strips that unknown key.
+export async function getCronSettings(): Promise<CronSettings> {
+  const record = await readCategoryRecord("cron");
+  return cronSettingsSchema.parse(record);
+}
+
+export async function updateCronSettings(input: CronSettings): Promise<void> {
+  await persistCategory("cron", input, NO_SECRETS);
 }
 
 export async function getAuditRetention(): Promise<number> {

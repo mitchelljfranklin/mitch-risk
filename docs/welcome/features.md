@@ -20,9 +20,10 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 - **No-login secure links** with 256-bit opaque tokens (SHA-256 hashed)
 - **Rich Markdown help text** rendered for each question
 - **Optional password gate** (bcrypt at 12 rounds)
-- **Auto-save** with progress persistence and resume capability
+- **Auto-save** with progress persistence, resume capability, and visible error/retry feedback
 - **Expiry and revocation** — revoke a link and it stops working immediately
-- **Conditional question visibility** — questions show/hide based on previous answers with smooth CSS transitions
+- **Conditional question visibility** — questions show/hide based on previous answers with smooth CSS transitions; `equals`/`notEquals` comparisons are case-insensitive
+- **Section stepping** — multi-section questionnaires show one section per page with Back/Continue navigation and a review page before submission
 
 ## Vendors
 
@@ -139,9 +140,9 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 - **Email tracking** tab with filterable sent/failed log and retry button
 - **Test SMTP** button to verify configuration
 
-## Automation (Cron)
+## Automation
 
-- **Secured endpoint** — `POST /api/cron/run` with `CRON_SECRET` header
+- **Built-in scheduler** — runs every five minutes inside the app; no external cron required (optional external triggering via the secured `POST /api/cron/run` with `CRON_SECRET` header)
 - **Vendor reminders** at configurable offsets before due date
 - **Overdue escalation** with configurable threshold
 - **Recurring assessments** — quarterly, annually

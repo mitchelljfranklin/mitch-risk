@@ -32,10 +32,10 @@ const STATUS_OPTIONS = [
 ] as const;
 
 const STATUS_STYLES: Record<string, string> = {
-  PENDING: "bg-[var(--rag-amber)] text-black",
+  PENDING: "bg-warning text-warning-foreground",
   IN_PROGRESS: "bg-blue-600 text-white",
   COMPLETED: "bg-[var(--rag-green)] text-white",
-  NOT_APPLICABLE: "bg-gray-400 text-white",
+  NOT_APPLICABLE: "bg-muted text-muted-foreground",
 };
 
 type ActionView = {

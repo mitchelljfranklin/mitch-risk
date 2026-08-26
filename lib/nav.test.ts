@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { buildBackParam, resolveBackHref, resolveTab } from "@/lib/nav";
+import {
+  buildBackParam,
+  buildFilterQueryString,
+  resolveBackHref,
+  resolveTab,
+} from "@/lib/nav";
 
 describe("buildBackParam", () => {
   it("encodes a full return path with only the given keys", () => {
@@ -76,5 +81,30 @@ describe("resolveTab", () => {
 
   it("falls back for a null tab", () => {
     expect(resolveTab(null, allowed, "overview")).toBe("overview");
+  });
+});
+
+describe("buildFilterQueryString", () => {
+  it("keeps only set values and joins them", () => {
+    expect(
+      buildFilterQueryString({
+        action: "LOGIN",
+        userId: undefined,
+        fromDate: "",
+        toDate: "2026-08-01",
+      }),
+    ).toBe("action=LOGIN&toDate=2026-08-01");
+  });
+
+  it("returns an empty string when nothing is set", () => {
+    expect(buildFilterQueryString({ status: undefined, recipient: "" })).toBe(
+      "",
+    );
+  });
+
+  it("encodes values that need it", () => {
+    expect(buildFilterQueryString({ recipient: "a@b.com" })).toBe(
+      `recipient=${encodeURIComponent("a@b.com")}`,
+    );
   });
 });

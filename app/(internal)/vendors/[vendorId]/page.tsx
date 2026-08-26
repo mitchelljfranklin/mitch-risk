@@ -308,7 +308,12 @@ export default async function VendorDetailPage({
         ) : null}
       </div>
 
-      <UrlTabs defaultTab={safeTab} allowedTabs={allowedTabs}>
+      <UrlTabs
+        defaultTab={safeTab}
+        allowedTabs={allowedTabs}
+        scrollable
+        className="max-w-full"
+      >
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="compliance">Compliance</TabsTrigger>

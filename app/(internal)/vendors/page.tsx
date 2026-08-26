@@ -12,13 +12,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { AutoSubmitSelect } from "@/components/auto-submit-select";
 import { EmptyState } from "@/components/empty-state";
 import { Pagination } from "@/components/pagination";
@@ -169,18 +162,21 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
             <label className="text-muted-foreground text-xs" htmlFor="tier">
               Tier
             </label>
-            <Select name="tier" defaultValue={sp.tier ?? ""}>
-              <SelectTrigger id="tier" className="w-40">
-                <SelectValue placeholder="All" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(VENDOR_TIER_LABELS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <AutoSubmitSelect
+              name="tier"
+              defaultValue={sp.tier ?? ""}
+              key={`tier-${sp.tier ?? ""}`}
+              emptyOptionLabel="Any tier"
+              id="tier"
+              className="w-40"
+              ariaLabel="Filter vendors by tier"
+              options={Object.entries(VENDOR_TIER_LABELS).map(
+                ([value, label]) => ({
+                  value,
+                  label,
+                }),
+              )}
+            />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-muted-foreground text-xs" htmlFor="sort">

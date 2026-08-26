@@ -74,8 +74,9 @@ The vendor portal is a no-login experience:
 - **Token in URL** provides access — 43-character base64url string
 - **Optional password gate** — bcrypt-hashed, rate-limited (5 attempts/min default)
 - **Rich help text** — questions display formatted Markdown guidance (bold, italic, lists, links) to help vendors understand requirements
-- **Auto-save** — progress is persisted as the vendor answers
-- **Conditional logic** — only relevant questions are shown
+- **Auto-save** — progress is persisted as the vendor answers, with a visible save indicator and retry banner if saving fails
+- **Conditional logic** — only relevant questions are shown; `equals`/`notEquals` comparisons are case-insensitive
+- **Section stepping** — multi-section questionnaires show one section per page with Back/Continue navigation and a review page before submission
 - **Read-only after submission** — vendor can view their answers but not edit
 - **Send-back-to-vendor** — reviewer can reopen the portal for clarification
 

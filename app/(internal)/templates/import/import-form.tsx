@@ -165,6 +165,9 @@ export function ImportTemplateForm() {
   let totalControls = 0;
   if (parsed) {
     for (const section of parsed.sections) {
+      // Malformed-but-parseable files must reach the server validation step
+      // for a precise error, not crash the preview render here.
+      if (!Array.isArray(section.questions)) continue;
       totalQuestions += section.questions.length;
       for (const question of section.questions) {
         totalControls += question.controlCodes?.length ?? 0;
@@ -283,7 +286,9 @@ export function ImportTemplateForm() {
                             {section.title}
                           </TableCell>
                           <TableCell className="text-muted-foreground text-xs">
-                            {section.questions.length}
+                            {Array.isArray(section.questions)
+                              ? section.questions.length
+                              : "—"}
                           </TableCell>
                         </TableRow>
                       ))}

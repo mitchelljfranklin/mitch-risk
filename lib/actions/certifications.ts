@@ -16,10 +16,7 @@ import {
 import { logAudit, AUDIT_ACTIONS } from "@/lib/db/audit";
 import { getField } from "@/lib/utils";
 import { certificationSchema } from "@/lib/schemas/certification";
-import {
-  listSharedControlsForFramework,
-  upsertActionsForCertification,
-} from "@/lib/db/customer-responsibility";
+import { applySharedResponsibilityActions } from "@/lib/db/customer-responsibility";
 import { listFrameworksWithSharedControls } from "@/lib/db/frameworks";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
@@ -93,7 +90,7 @@ export async function saveCertificationAction(
     }
   }
 
-  await generateResponsibilityActions(
+  await applySharedResponsibilityActions(
     vendorId,
     savedId,
     getField(formData, "frameworkName"),
@@ -250,31 +247,7 @@ export async function removeAttachmentAction(formData: FormData) {
   revalidatePath(`/vendors/${entityId}`);
 }
 
-export async function generateResponsibilityActions(
-  vendorId: string,
-  certificationId: string,
-  frameworkName: string | null | undefined,
-): Promise<void> {
-  if (!frameworkName) {
-    return;
-  }
-
-  const sharedControls = await listSharedControlsForFramework(frameworkName);
-  if (sharedControls.length === 0) {
-    return;
-  }
-
-  await upsertActionsForCertification(
-    vendorId,
-    certificationId,
-    sharedControls.map((control) => ({
-      controlCode: control.code,
-      frameworkName,
-      controlTitle: control.title,
-    })),
-  );
-}
-
 export async function getFrameworkOptionsAction(): Promise<{ name: string }[]> {
+  await requirePermission(PERMISSIONS.VENDORS_VIEW);
   return listFrameworksWithSharedControls();
 }

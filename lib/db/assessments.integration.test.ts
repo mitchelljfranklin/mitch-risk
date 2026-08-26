@@ -214,3 +214,121 @@ describe("assessment search (integration)", () => {
     }
   });
 });
+
+describe("assessment freeze determinism (integration)", () => {
+  const FREEZE_VENDOR_NAME = "P3 Freeze Vendor";
+  const FREEZE_TEMPLATE_NAME = "P3 Freeze Template";
+
+  function buildFreezeQuestion(text: string): QuestionInput {
+    return {
+      helpText: "",
+      riskWeight: "LOW",
+      required: false,
+      options: [],
+      expectedAnswer: "",
+      conditionalLogic: { match: "all", rules: [] },
+      controlIds: [],
+      text,
+      type: "YES_NO",
+    };
+  }
+
+  async function freezeCleanup() {
+    await prisma.vendor.deleteMany({ where: { name: FREEZE_VENDOR_NAME } });
+    await prisma.template.deleteMany({
+      where: { name: FREEZE_TEMPLATE_NAME },
+    });
+  }
+
+  beforeAll(freezeCleanup);
+
+  afterAll(async () => {
+    await freezeCleanup();
+    await prisma.$disconnect();
+  });
+
+  it("maps conditional logic to exact snapshot ids on a multi-section template", async () => {
+    const template = await createTemplate({
+      name: FREEZE_TEMPLATE_NAME,
+      description: "",
+    });
+    const sectionA = await addSection(template.id, "Section A");
+    const sectionB = await addSection(template.id, "Section B");
+    const sectionC = await addSection(template.id, "Section C");
+
+    const gate = await addQuestion(
+      sectionA.id,
+      buildFreezeQuestion("GATE question"),
+    );
+    const fillers = [
+      { sectionId: sectionA.id, text: "Filler A2" },
+      { sectionId: sectionB.id, text: "Filler B1" },
+      { sectionId: sectionB.id, text: "Filler B2" },
+      { sectionId: sectionB.id, text: "Filler B3" },
+      { sectionId: sectionC.id, text: "Filler C1" },
+      { sectionId: sectionC.id, text: "Filler C2" },
+    ];
+    for (const filler of fillers) {
+      await addQuestion(filler.sectionId, buildFreezeQuestion(filler.text));
+    }
+    await addQuestion(
+      sectionC.id,
+      buildQuestion({
+        text: "GATED TARGET",
+        type: "YES_NO",
+        conditionalLogic: {
+          match: "all",
+          rules: [{ questionId: gate.id, operator: "equals", value: "YES" }],
+        },
+      }),
+    );
+
+    await publishTemplate(template.id);
+    const vendor = await createVendor({
+      name: FREEZE_VENDOR_NAME,
+      contactName: "",
+      contactEmail: "freeze@example.test",
+      tier: "",
+      website: "",
+      notes: "",
+    });
+    const assessment = await createAssessment(vendor.id, {
+      title: "Freeze determinism",
+      templateId: template.id,
+      dueDate: "",
+      reviewerId: "",
+    });
+
+    await sendAssessment(assessment.id);
+
+    const frozen = await prisma.assessmentQuestion.findMany({
+      where: { assessmentId: assessment.id },
+      orderBy: { order: "asc" },
+    });
+
+    expect(frozen.length).toBe(8);
+    expect(frozen.map((question) => question.order)).toEqual([
+      0, 1, 2, 3, 4, 5, 6, 7,
+    ]);
+    expect(new Set(frozen.map((question) => question.id)).size).toBe(8);
+
+    const frozenGate = frozen.find(
+      (question) => question.text === "GATE question",
+    );
+    const frozenTarget = frozen.find(
+      (question) => question.text === "GATED TARGET",
+    );
+    if (!frozenGate || !frozenTarget) {
+      throw new Error("frozen questions missing");
+    }
+
+    expect(frozenGate.id).not.toBe(gate.id);
+    const rule = (
+      frozenTarget.conditionalLogic as {
+        rules: { questionId: string }[];
+      }
+    ).rules[0];
+    expect(rule.questionId).toBe(frozenGate.id);
+    expect(rule.questionId).not.toBe(gate.id);
+  });
+});

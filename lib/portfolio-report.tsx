@@ -392,24 +392,41 @@ function PortfolioPdfDocument({ data }: { data: PortfolioPdfData }) {
   );
 }
 
-export async function generatePortfolioPdf(): Promise<Buffer> {
-  const { getDashboardData } = await import("@/lib/db/compliance");
-  const { getOrganizationSettings } = await import("@/lib/settings");
+type PortfolioDashboardInput = {
+  vendorCount: number;
+  averageScore: number | null;
+  openFindings: number;
+  needsAttention: number;
+  scoreDistribution: {
+    green: number;
+    amber: number;
+    red: number;
+    unscored: number;
+  };
+  vendorsByTier: Record<string, number>;
+  assessmentStatusCounts: Record<string, number>;
+  vendors: {
+    name: string;
+    tier: string | null;
+    overallScore: number | null;
+    latestAssessmentDate: Date | null;
+    assessmentCount: number;
+  }[];
+  topDeficientControls: {
+    code: string;
+    title: string;
+    vendorCount: number;
+  }[];
+};
 
-  const [dashboard, org] = await Promise.all([
-    getDashboardData(),
-    getOrganizationSettings(),
-  ]);
-
-  const today = new Date().toISOString().slice(0, 10);
-  const vendorAssessmentCounts = dashboard.vendors.reduce((acc, vendor) => {
-    acc.set(vendor.id, vendor.overdueCount);
-    return acc;
-  }, new Map<string, number>());
-
-  const data: PortfolioPdfData = {
-    organizationName: org.name,
-    generatedDate: today,
+export function buildPortfolioPdfData(
+  dashboard: PortfolioDashboardInput,
+  organizationName: string,
+  generatedDate: string,
+): PortfolioPdfData {
+  return {
+    organizationName,
+    generatedDate,
     vendorCount: dashboard.vendorCount,
     averageScore: dashboard.averageScore,
     openFindings: dashboard.openFindings,
@@ -422,7 +439,7 @@ export async function generatePortfolioPdf(): Promise<Buffer> {
       tier: vendor.tier,
       overallScore: vendor.overallScore,
       latestAssessmentDate: vendor.latestAssessmentDate,
-      assessmentCount: vendorAssessmentCounts.get(vendor.id) ?? 0,
+      assessmentCount: vendor.assessmentCount,
     })),
     topControls: dashboard.topDeficientControls.map((control) => ({
       code: control.code,
@@ -430,6 +447,19 @@ export async function generatePortfolioPdf(): Promise<Buffer> {
       vendorCount: control.vendorCount,
     })),
   };
+}
+
+export async function generatePortfolioPdf(): Promise<Buffer> {
+  const { getDashboardData } = await import("@/lib/db/compliance");
+  const { getOrganizationSettings } = await import("@/lib/settings");
+
+  const [dashboard, org] = await Promise.all([
+    getDashboardData(),
+    getOrganizationSettings(),
+  ]);
+
+  const today = new Date().toISOString().slice(0, 10);
+  const data = buildPortfolioPdfData(dashboard, org.name, today);
 
   return renderToBuffer(<PortfolioPdfDocument data={data} />);
 }

@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { saveSchedulingSettings } from "./actions";
@@ -13,6 +14,7 @@ type SchedulingFormProps = {
   escalationAfterDays: number;
   defaultDueInDays: number;
   cronLastRun: string | null;
+  internalSchedulerEnabled: boolean;
 };
 
 export function SchedulingForm({
@@ -20,6 +22,7 @@ export function SchedulingForm({
   escalationAfterDays,
   defaultDueInDays,
   cronLastRun,
+  internalSchedulerEnabled,
 }: SchedulingFormProps) {
   const [state, action, isPending] = useActionState(
     saveSchedulingSettings,
@@ -105,6 +108,30 @@ export function SchedulingForm({
         />
       </div>
 
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-3">
+          <Checkbox
+            key={String(internalSchedulerEnabled)}
+            id="internalSchedulerEnabled"
+            name="internalSchedulerEnabled"
+            defaultChecked={internalSchedulerEnabled}
+          />
+          <Label htmlFor="internalSchedulerEnabled">
+            Run scheduled jobs inside the app
+          </Label>
+        </div>
+        <p className="text-muted-foreground text-xs">
+          When enabled, the application checks every five minutes for due
+          reminders, escalations, expiry notices, recurring assessments, log
+          pruning, and orphaned file cleanup — no external cron job or scheduler
+          is needed. Disable this only if you trigger
+          <code className="bg-muted mx-1 rounded px-1 py-0.5 text-[11px]">
+            /api/cron/run
+          </code>
+          yourself (for example from a system crontab or Azure Function).
+        </p>
+      </div>
+
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending} size="sm">
           {isPending ? "Saving..." : "Save scheduling"}
@@ -112,7 +139,7 @@ export function SchedulingForm({
       </div>
 
       <p className="text-muted-foreground text-xs">
-        Last cron run: {cronLabel}
+        Last scheduled run: {cronLabel}
       </p>
     </form>
   );

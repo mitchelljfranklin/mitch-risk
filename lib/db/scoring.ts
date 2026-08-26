@@ -2,6 +2,7 @@ import { computeTotalScore, scoreResponses } from "@/lib/scoring";
 import { prisma } from "@/lib/prisma";
 import { getScoringSettings } from "@/lib/settings";
 import { dispatchWebhook } from "@/lib/webhooks";
+import { type RiskWeight } from "../../prisma/generated/prisma/client";
 
 export async function scoreAssessment(assessmentId: string): Promise<void> {
   const assessment = await prisma.assessment.findUnique({
@@ -58,14 +59,37 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
   const newFindingIds: string[] = [];
 
   await prisma.$transaction(async (tx) => {
+    // Group responses by their identical result tuple so a whole assessment
+    // is reconciled in a handful of updateMany statements instead of one
+    // round-trip per answer (129+ on the full NIST questionnaire).
+    const responseGroups = new Map<
+      string,
+      {
+        ids: string[];
+        data: {
+          isCompliant: boolean | null;
+          weightedScore: number;
+          maxScore: number;
+        };
+      }
+    >();
     for (const result of scored) {
-      await tx.response.update({
-        where: { id: result.id },
+      const key = `${result.isCompliant}|${result.weightedScore}|${result.maxScore}`;
+      const group = responseGroups.get(key) ?? {
+        ids: [],
         data: {
           isCompliant: result.isCompliant,
           weightedScore: result.weightedScore,
           maxScore: result.maxScore,
         },
+      };
+      group.ids.push(result.id);
+      responseGroups.set(key, group);
+    }
+    for (const group of responseGroups.values()) {
+      await tx.response.updateMany({
+        where: { id: { in: group.ids } },
+        data: group.data,
       });
     }
 
@@ -97,18 +121,23 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
       assessment.questions.map((question) => [question.id, question]),
     );
 
-    const nonCompliantIds = scored
-      .filter((result) => result.isCompliant === false)
-      .map((result) => result.id);
-
     const existingFindings = await tx.finding.findMany({
-      where: { assessmentId, responseId: { in: nonCompliantIds } },
+      where: { assessmentId, responseId: { in: nonCompliantResponseIds } },
       select: { id: true, responseId: true },
     });
     const findingByResponseId = new Map(
       existingFindings.map((finding) => [finding.responseId, finding.id]),
     );
 
+    const preparedFindings: {
+      responseId: string;
+      existingId: string | null;
+      data: {
+        controlCodes: string[];
+        severity: RiskWeight;
+        title: string;
+      };
+    }[] = [];
     for (const result of scored) {
       if (result.isCompliant !== false) {
         continue;
@@ -122,42 +151,50 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
         continue;
       }
 
-      const controlCodes = question.controlIds
-        .map((controlId) => controlCodeById.get(controlId))
-        .filter((code): code is string => Boolean(code));
-
-      const existingId = findingByResponseId.get(result.id);
-
-      const shared = {
-        controlCodes,
-        severity: question.riskWeight,
-        title: question.text.slice(0, 100),
-      };
-
-      if (existingId) {
-        await tx.finding.update({ where: { id: existingId }, data: shared });
-      } else {
-        const created = await tx.finding.create({
-          data: {
-            assessmentId,
-            responseId: result.id,
-            ...shared,
-            description:
-              "The vendor's answer did not meet the expected response.",
-          },
-        });
-        newFindingIds.push(created.id);
-      }
+      preparedFindings.push({
+        responseId: result.id,
+        existingId: findingByResponseId.get(result.id) ?? null,
+        data: {
+          controlCodes: question.controlIds
+            .map((controlId) => controlCodeById.get(controlId))
+            .filter((code): code is string => Boolean(code)),
+          severity: question.riskWeight,
+          title: question.text.slice(0, 100),
+        },
+      });
     }
 
-    const vendorRecord = await tx.assessment.findUnique({
-      where: { id: assessmentId },
-      select: { vendorId: true },
-    });
-    if (vendorRecord?.vendorId) {
+    for (const finding of preparedFindings) {
+      if (!finding.existingId) {
+        continue;
+      }
+      await tx.finding.update({
+        where: { id: finding.existingId },
+        data: finding.data,
+      });
+    }
+
+    const toCreate = preparedFindings.filter((finding) => !finding.existingId);
+    if (toCreate.length > 0) {
+      // Single statement instead of one create per non-compliant answer;
+      // returned ids feed the FINDING_CREATED webhooks below.
+      const created = await tx.finding.createManyAndReturn({
+        data: toCreate.map((finding) => ({
+          assessmentId,
+          responseId: finding.responseId,
+          ...finding.data,
+          description:
+            "The vendor's answer did not meet the expected response.",
+        })),
+        select: { id: true },
+      });
+      newFindingIds.push(...created.map((finding) => finding.id));
+    }
+
+    if (assessment.vendorId) {
       const aggregate = await tx.assessment.aggregate({
         where: {
-          vendorId: vendorRecord.vendorId,
+          vendorId: assessment.vendorId,
           status: { notIn: ["DRAFT", "SENT", "IN_PROGRESS"] },
           score: { not: null },
         },
@@ -165,7 +202,7 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
         _max: { submittedAt: true },
       });
       await tx.vendor.update({
-        where: { id: vendorRecord.vendorId },
+        where: { id: assessment.vendorId },
         data: {
           overallScore: aggregate._avg.score ?? null,
           lastAssessedAt: aggregate._max.submittedAt ?? null,

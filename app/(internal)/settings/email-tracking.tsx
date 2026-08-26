@@ -1,19 +1,13 @@
 "use client";
 
-import { useActionState, useRef } from "react";
+import { useActionState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { AutoSubmitSelect } from "@/components/auto-submit-select";
 import {
   Table,
   TableBody,
@@ -34,6 +28,7 @@ type EmailTrackingFormProps = {
   result: EmailLogResult;
   statuses: string[];
   types: string[];
+  filterQuery: string;
 };
 
 const TYPE_VARIANT: Record<
@@ -50,10 +45,10 @@ export function EmailTrackingForm({
   result,
   statuses,
   types,
+  filterQuery,
 }: EmailTrackingFormProps) {
   const { entries, totalCount, page, pageSize } = result;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
-  const formRef = useRef<HTMLFormElement>(null);
   const searchParams = useSearchParams();
   const hasFilters =
     Boolean(searchParams.get("status")) ||
@@ -61,6 +56,8 @@ export function EmailTrackingForm({
     Boolean(searchParams.get("recipient")) ||
     Boolean(searchParams.get("fromDate")) ||
     Boolean(searchParams.get("toDate"));
+  const pageHref = (targetPage: number) =>
+    `/settings?tab=email-tracking&${filterQuery ? `${filterQuery}&` : ""}emailLogPage=${targetPage}&emailLogPageSize=${pageSize}`;
 
   return (
     <div className="flex flex-col gap-6">
@@ -73,45 +70,48 @@ export function EmailTrackingForm({
         </p>
       </div>
 
-      <form ref={formRef} className="flex flex-wrap items-end gap-2">
+      <form className="flex flex-wrap items-end gap-2">
         <input type="hidden" name="tab" value="email-tracking" />
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="status">
             Status
           </label>
-          <Select name="status">
-            <SelectTrigger id="status" className="w-32">
-              <SelectValue placeholder="All" />
-            </SelectTrigger>
-            <SelectContent>
-              {statuses.map((status) => (
-                <SelectItem key={status} value={status}>
-                  {status === "SENT"
-                    ? "Sent"
-                    : status === "FAILED"
-                      ? "Failed"
-                      : status}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <AutoSubmitSelect
+            name="status"
+            defaultValue={searchParams.get("status") ?? ""}
+            key={`status-${searchParams.get("status") ?? ""}`}
+            emptyOptionLabel="All statuses"
+            id="status"
+            className="w-32"
+            ariaLabel="Filter emails by status"
+            options={statuses.map((status) => ({
+              value: status,
+              label:
+                status === "SENT"
+                  ? "Sent"
+                  : status === "FAILED"
+                    ? "Failed"
+                    : status,
+            }))}
+          />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="type">
             Type
           </label>
-          <Select name="type">
-            <SelectTrigger id="type" className="w-40">
-              <SelectValue placeholder="All types" />
-            </SelectTrigger>
-            <SelectContent>
-              {types.map((type) => (
-                <SelectItem key={type} value={type}>
-                  {EMAIL_TYPE_LABELS[type] ?? type}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <AutoSubmitSelect
+            name="type"
+            defaultValue={searchParams.get("type") ?? ""}
+            key={`type-${searchParams.get("type") ?? ""}`}
+            emptyOptionLabel="All types"
+            id="type"
+            className="w-40"
+            ariaLabel="Filter emails by type"
+            options={types.map((type) => ({
+              value: type,
+              label: EMAIL_TYPE_LABELS[type] ?? type,
+            }))}
+          />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="recipient">
@@ -144,23 +144,19 @@ export function EmailTrackingForm({
           >
             Rows
           </label>
-          <Select
+          <AutoSubmitSelect
             name="emailLogPageSize"
             defaultValue={String(pageSize)}
-            onValueChange={() => {
-              setTimeout(() => formRef.current?.requestSubmit(), 0);
-            }}
-          >
-            <SelectTrigger id="emailLogPageSize" className="w-24">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="25">25</SelectItem>
-              <SelectItem value="50">50</SelectItem>
-              <SelectItem value="100">100</SelectItem>
-            </SelectContent>
-          </Select>
+            id="emailLogPageSize"
+            className="w-24"
+            ariaLabel="Email log page size"
+            options={[
+              { value: "10", label: "10" },
+              { value: "25", label: "25" },
+              { value: "50", label: "50" },
+              { value: "100", label: "100" },
+            ]}
+          />
         </div>
         <Button type="submit" size="sm">
           Filter
@@ -205,7 +201,7 @@ export function EmailTrackingForm({
             <div className="flex items-center gap-2">
               <Button asChild variant="outline" size="sm" disabled={page <= 1}>
                 <a
-                  href={`/settings?tab=email-tracking&emailLogPage=${page - 1}&emailLogPageSize=${pageSize}`}
+                  href={pageHref(page - 1)}
                   onClick={(event) => {
                     if (page <= 1) event.preventDefault();
                   }}
@@ -220,7 +216,7 @@ export function EmailTrackingForm({
                 disabled={page >= totalPages}
               >
                 <a
-                  href={`/settings?tab=email-tracking&emailLogPage=${page + 1}&emailLogPageSize=${pageSize}`}
+                  href={pageHref(page + 1)}
                   onClick={(event) => {
                     if (page >= totalPages) event.preventDefault();
                   }}

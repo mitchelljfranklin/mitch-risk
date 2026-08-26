@@ -19,7 +19,7 @@ But that value comes at a cost — the subscription, the onboarding overhead, th
 
 Mitch‑Risk bridges that gap. It strips third party vendor risk management down to its essentials: build a questionnaire, send it, score the answers, track compliance over time. No AI risk scoring, no vendor universe crawling, no board reporting module. Just the core workflow, done well, running in Docker Compose.
 
-> **Security-hardened.** Mitch‑Risk has undergone a comprehensive security audit — 61 findings across 4 severity levels. 56 resolved (fixed or dismissed), 3 deferred or monitored, 2 open. [Read the full report](APPSECURITY.md).
+> **Security-hardened.** Mitch‑Risk has undergone a comprehensive security audit — 69 findings across 4 severity levels. 66 resolved (fixed or dismissed), 3 deferred or monitored, 0 open. [Read the full report](APPSECURITY.md).
 
 ---
 
@@ -250,7 +250,9 @@ server {
 
 ## Operations
 
-### Cron
+### Scheduled jobs
+
+Jobs run inside the app by default — every five minutes, no external scheduler needed. Check **Settings → Scheduling** for the last run time; disable the built-in scheduler there if you'd rather trigger externally:
 
 ```bash
 curl -H "x-cron-secret: $CRON_SECRET" http://localhost:3000/api/cron/run

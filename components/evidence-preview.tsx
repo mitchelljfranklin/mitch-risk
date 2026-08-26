@@ -68,6 +68,7 @@ export function EvidencePreview({
         variant="ghost"
         size="sm"
         className="ml-1 h-auto px-1.5 py-0.5"
+        aria-label={`Preview ${fileName}`}
         onClick={() => setOpen(true)}
       >
         <ExternalLink className="size-3" />

@@ -26,7 +26,7 @@ over sprawling configuration. Do not add features that are not in the plan witho
 - **Swagger UI (CDN)** — interactive API documentation at `/docs` (Phase 29)
 - **bcryptjs** — user password hashing and API key hashing
 - **Local-disk volume** — evidence file storage behind a storage interface (save/read/delete/list; S3 and Azure Blob swappable via in-app Settings); files served only via an authenticated route
-- **System cron -> secured `/api/cron/run`** — reminders, escalations, recurring assessments, audit-log & email-log pruning, orphaned-file sweep
+- **Built-in scheduler (default) -> `lib/scheduler.ts` via `instrumentation.ts`** — every 5 minutes: reminders, escalations, recurring assessments, audit-log & email-log pruning, orphaned-file sweep. Toggle in Settings → Scheduling; optional external triggering via secured `/api/cron/run`
 - **Docker Compose** (app + Postgres), reverse proxy (Caddy/nginx) for TLS — self-hosted
 
 ## Repository layout (created during Phase 0)
@@ -79,6 +79,7 @@ components/          # shadcn ui primitives + domain composites
   view-toggle.tsx    # cookie-backed rows/cards view switcher
   vendor-form.tsx    # vendor create/edit form
   auto-submit-select.tsx # select that auto-submits form on change
+  pending-link.tsx   # link with spinner feedback for slow server-side generation
   page-main.tsx      # client wrapper for full-width dashboard
   assessment-timeline.tsx # interactive activity area chart
   permission-selector.tsx # grouped permission checkboxes (API key scoping, role editing)
@@ -165,6 +166,7 @@ lib/                 # cross-cutting logic
   prisma.ts          # shared Prisma client instance
   rate-limit.ts      # in-memory fixed-window rate limiter
   scoring.ts         # weighted scoring engine + compliance checker
+  scheduler.ts       # built-in cron: interval tick + overlap lock + runScheduledJobsOnce()
   session.ts         # computeSessionExpiry() — JWT `exp` sliding-window helper
   theme-tokens.tsx   # server-rendered CSS variable injection (brand colours)
   timing-safe.ts     # constant-time string comparison
@@ -174,8 +176,10 @@ lib/                 # cross-cutting logic
   view-preference.ts # cookie-backed view preference (rows/cards)
   webhooks.ts        # HMAC-signed webhook dispatch to configured endpoints
   compare.ts         # assessment comparison helper (ResponseDiff, compliance change detection)
+  radar-labels.ts    # short axis label generation for compliance radar (dedup, collision-safe)
   storage/           # file storage interface (save/read/delete/list)
                      #   local-disk, s3.ts (AWS S3), azure.ts (Azure Blob)
+                     #   orphan-sweep.ts (cron orphan classification — pure, unit-tested)
 hooks/              # React hooks (use-form-toast, use-action-feedback, use-mobile)
 emails/              # React Email templates (invite, reminder, escalation, dynamic)
 prisma/              # schema.prisma, migrations, seed.ts, seed-runner.cjs, seed-demo.ts, seed-radar-demo.ts
@@ -228,6 +232,16 @@ ones before declaring any phase complete.
 - **Apply new Prisma migrations to _both_ the dev DB and the test DB** (`prisma migrate deploy`
   against each; the test DB is `TEST_DATABASE_URL`) before running `npm run test`, or integration
   tests fail on missing columns.
+- **Never point `TEST_DATABASE_URL` at the dev/prod database — even with
+  `ALLOW_TESTS_ON_THIS_DB=1`.** Integration suites reset whole tables: the settings-isolation
+  suite snapshots-and-restores all of `app_settings`, but a wipe mid-run still takes the target
+  database down briefly, and other suites mutate rows in place. This bit us for real: runs
+  against dev erased live SMTP/branding/scoring settings. Standard setup:
+  `CREATE DATABASE mitch_risk_test;` then `$env:DATABASE_URL="postgresql://mitch:mitch@localhost:5432/mitch_risk_test?schema=public"; npx prisma migrate deploy`,
+  then run tests with `TEST_DATABASE_URL` pointing there and **no** override flag. The override
+  prints a loud banner when used — treat it as a last resort only. Any new integration test that
+  writes to `app_settings` (or another shared table) must snapshot before and restore after,
+  following `save-settings.integration.test.ts`.
 - **CI runs typecheck + lint + format:check + build on every push.** The same checks are available
   locally via `npm run precheck` (typecheck + lint + format:check). Run `npm run format` to auto-fix
   formatting issues before pushing — Prettier failures are the most common CI rejection.
@@ -295,17 +309,17 @@ ones before declaring any phase complete.
 
 
 
-This project is delivered in **gated phases**. The authoritative plan is
-[`PLAN.md`](PLAN.md); the gate checklists and sign-off log are in
-[`STAGE-GATES.md`](STAGE-GATES.md).
+Work proceeds in **review-gated batches** (e.g. audit remediation batches). There is no
+external plan document; each batch's scope and sign-off are agreed in conversation, and this
+file stays accurate as reality changes.
 
 Rules:
 
-1. Work one phase at a time, in order. Do not start a phase until the previous phase is
-   **Approved** in the sign-off log.
-2. When a phase's work is done, run the verification commands, fill in its gate checklist
-   with evidence, and set the phase to **Ready for review**. Then stop and ask for sign-off.
-3. Keep `PLAN.md`, `STAGE-GATES.md`, and this file accurate as reality changes.
+1. Work one batch at a time, in order. Do not start a new batch until the previous one has
+   been reviewed.
+2. When a batch's work is done, run the verification commands and present the changes for
+   review. Then stop and ask for sign-off.
+3. Keep this file accurate as reality changes.
 
 ## Definition of Done — no placeholders
 
@@ -345,7 +359,6 @@ Every delivered item, in every phase, must meet this bar:
   Prisma query is reused, put it in the data-access layer (`lib/db/`).
 - **Reuse before create.** Before adding a token, component, helper, or schema, search for an
   existing one and reuse/extend it. If a thing is needed in two or more places, extract it.
-- See `PLAN.md` section 9 for the reusable-asset map.
 
 ## Code readability & best practices
 
@@ -426,7 +439,8 @@ Authorization is permission-based, not "is authenticated". Roles are DB-backed
 by default — **Admin** (all permissions, locked), **Reviewer** (write + review), and
 **Viewer** (read-only) — and admins can create custom roles with any subset of permissions.
 The permission catalog, default role mappings, and helpers live in `lib/permissions.ts`; the
-guards (`requirePermission`, `hasPermission`) live in `lib/auth.ts`. See `authstage.md` for
+guards (`requirePermission`, `hasPermission`) live in `lib/auth.ts`. See `ARCHITECTURE.md`
+§5 for
 the design of record.
 
 Every feature — new or changed — must be wired into RBAC in the same change. This is not a
@@ -492,7 +506,10 @@ from the catalog and role defaults).
 - Never expose evidence files via public URLs — only through the authenticated route.
 - **Data lifecycle.** Deleting a record must also remove its associated storage files
   (evidence, logos); a replaced upload deletes the old file. The cron orphaned-file sweep is
-  the backstop, not the primary cleanup. Deleting a user preserves audit and review history via
+  the backstop, not the primary cleanup. **Every storage writer must be reflected in the
+  sweep's referenced-key set** (`app/api/cron/run` collects evidence, attachment, and logo
+  keys) — adding a new key format without registering it there means the cron will delete
+  those files within an hour. Deleting a user preserves audit and review history via
   nullable `SetNull` relations (surfaced as "Deleted user") — never cascade-delete audit trails.
 - Prefer Server Components for reads and Server Actions for writes.
 - **Keep the OpenAPI spec current.** Whenever a new API endpoint is added, modified, or
@@ -527,6 +544,24 @@ from the catalog and role defaults).
 
 - **Quote bracketed dynamic-route paths** for Prettier/Node (e.g. `"app/portal/[token]/page.tsx"`);
   unquoted globs silently skip them.
+- **`Select-String -Path` treats `[...]` as a wildcard character class** — searching a file
+  under `app\portal\[token]\` with `-Path "app\portal\[token]\page.tsx"` matches nothing,
+  silently. Use `-LiteralPath` (and `Get-Content -LiteralPath`) for any path containing
+  brackets; this has caused false "file doesn't contain X" conclusions during audits.
+- **PowerShell string pipelines corrupt non-ASCII characters in source files.**
+  `Get-Content` / `-replace` / `Set-Content` decode UTF-8 as Windows-1252, turning
+  `·`, `—`, `→`, `←` into `Â·`/`â€"`-style mojibake; several shipped source lines were
+  damaged this way (an assessments-table due-date placeholder rendered garbled in the UI).
+  Rules: never round-trip file text through PowerShell string ops — if a scripted edit is
+  unavoidable, use `[IO.File]::ReadAllText`/`WriteAllText` with explicit UTF-8 and
+  `[Text.UTF8Encoding]::new($false)`; commit-message/pr-body files likewise. `lib/no-mojibake.test.ts`
+  now scans `app/ components/ emails/ hooks/ lib/` on every test run and fails on any
+  cp1252-mojibake sequence — extend its patterns rather than bypassing it. Note the Grep
+  search tool cannot detect these sequences (it decodes differently); verify encoding with
+  byte/codepoint inspection (`[int][char]`) when corruption is suspected. Two extra traps:
+  JS replacement strings like `"\\u2014"` insert the LITERAL escape text (JSX attributes
+  render it verbatim) — always write real characters; and JSX attribute values never
+  process `\uXXXX` escapes, unlike JS string literals.
 - If `tsc` reports parse errors inside `.next/dev/types/routes.d.ts`, delete `.next` and rebuild —
   a killed dev server can leave the generated route types corrupted.
 - `npm install` rewrites `package.json`; if that leaves it flagged by `format:check`, it's a

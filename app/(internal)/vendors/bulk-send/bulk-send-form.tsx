@@ -324,7 +324,7 @@ export function BulkSendForm({
 
         {state?.message ? (
           <p
-            className={`text-sm ${state.ok ? "text-[var(--rag-green)]" : "text-destructive"}`}
+            className={`text-sm ${state.ok ? "text-success" : "text-destructive"}`}
             role="alert"
           >
             {state.message}

@@ -65,7 +65,9 @@
             "name": "query",
             "in": "query",
             "description": "Case-insensitive search across vendor name and contact email",
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "example": "acme"
           },
           {
@@ -82,14 +84,18 @@
             "in": "query",
             "required": false,
             "description": "Filter vendors by tag",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "externalId",
             "in": "query",
             "required": false,
             "description": "Filter by exact external ID reference",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -99,7 +105,9 @@
               "application/json": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/VendorSummary" }
+                  "items": {
+                    "$ref": "#/components/schemas/VendorSummary"
+                  }
                 },
                 "example": [
                   {
@@ -118,8 +126,12 @@
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
         }
       }
     },
@@ -135,7 +147,9 @@
             "in": "path",
             "required": true,
             "description": "The vendor's unique ID",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -143,19 +157,27 @@
             "description": "Full vendor detail",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/VendorDetail" }
+                "schema": {
+                  "$ref": "#/components/schemas/VendorDetail"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       },
       "put": {
         "tags": ["Vendors"],
         "summary": "Update vendor",
-        "description": "Updates a vendor's details. All fields are optional — fields omitted from the request body retain their existing values.",
+        "description": "Updates a vendor's details. All fields are optional — fields omitted from the request body retain their existing values. Returns 409 if the provided externalId is already assigned to a different vendor.",
         "operationId": "updateVendor",
         "parameters": [
           {
@@ -163,14 +185,18 @@
             "in": "path",
             "required": true,
             "description": "The vendor's unique ID",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/VendorUpdate" },
+              "schema": {
+                "$ref": "#/components/schemas/VendorUpdate"
+              },
               "example": {
                 "name": "Acme Corp (Updated)",
                 "tier": "HIGH",
@@ -184,14 +210,42 @@
             "description": "Vendor updated successfully",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/VendorUpdated" }
+                "schema": {
+                  "$ref": "#/components/schemas/VendorUpdated"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "Conflict — another vendor already uses this externalId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "error": "A vendor with this external ID already exists."
+                  }
+                }
+              }
+            }
+          }
         }
       },
       "delete": {
@@ -205,7 +259,9 @@
             "in": "path",
             "required": true,
             "description": "The vendor's unique ID",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -213,13 +269,21 @@
             "description": "Vendor deleted successfully",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/DeletedResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedResponse"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       }
     },
@@ -235,7 +299,9 @@
             "in": "path",
             "required": true,
             "description": "The vendor's external ID reference",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -243,13 +309,21 @@
             "description": "Full vendor detail",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/VendorDetail" }
+                "schema": {
+                  "$ref": "#/components/schemas/VendorDetail"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       }
     },
@@ -264,7 +338,9 @@
             "name": "vendorId",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -272,13 +348,21 @@
             "description": "Vendor score summary",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/VendorScore" }
+                "schema": {
+                  "$ref": "#/components/schemas/VendorScore"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       }
     },
@@ -293,7 +377,9 @@
             "name": "vendorId",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -301,19 +387,29 @@
             "description": "CSV download of vendor data",
             "content": {
               "text/csv": {
-                "schema": { "type": "string" }
+                "schema": {
+                  "type": "string"
+                }
               }
             },
             "headers": {
               "Content-Disposition": {
-                "schema": { "type": "string" },
+                "schema": {
+                  "type": "string"
+                },
                 "description": "attachment; filename=\"{name}.csv\""
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       }
     },
@@ -327,7 +423,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/VendorImport" },
+              "schema": {
+                "$ref": "#/components/schemas/VendorImport"
+              },
               "example": {
                 "name": "NewCo Ltd",
                 "contactName": "John Smith",
@@ -344,7 +442,9 @@
             "description": "Vendor created successfully",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/VendorCreated" }
+                "schema": {
+                  "$ref": "#/components/schemas/VendorCreated"
+                }
               }
             }
           },
@@ -352,13 +452,21 @@
             "description": "Invalid input — missing fields or bad data",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/Error" },
-                "example": { "error": "Vendor name is required" }
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Vendor name is required"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
         }
       }
     },
@@ -373,27 +481,37 @@
             "name": "action",
             "in": "query",
             "description": "Filter by audit action type (e.g. LOGIN, CREATE_VENDOR, PUBLISH_TEMPLATE)",
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "example": "LOGIN"
           },
           {
             "name": "userId",
             "in": "query",
             "description": "Filter by user ID",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "fromDate",
             "in": "query",
             "description": "Start of date range (ISO 8601 date)",
-            "schema": { "type": "string", "format": "date" },
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
             "example": "2026-06-01"
           },
           {
             "name": "toDate",
             "in": "query",
             "description": "End of date range (ISO 8601 date)",
-            "schema": { "type": "string", "format": "date" },
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
             "example": "2026-07-01"
           },
           {
@@ -421,7 +539,9 @@
             "in": "query",
             "required": false,
             "description": "Number of results per page (default 10)",
-            "schema": { "type": "integer" }
+            "schema": {
+              "type": "integer"
+            }
           }
         ],
         "responses": {
@@ -434,11 +554,19 @@
                   "properties": {
                     "entries": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/AuditEntry" }
+                      "items": {
+                        "$ref": "#/components/schemas/AuditEntry"
+                      }
                     },
-                    "page": { "type": "integer" },
-                    "pageSize": { "type": "integer" },
-                    "totalCount": { "type": "integer" }
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "totalCount": {
+                      "type": "integer"
+                    }
                   }
                 },
                 "example": [
@@ -464,8 +592,12 @@
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
         }
       }
     },
@@ -480,7 +612,9 @@
             "name": "assessmentId",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -488,19 +622,30 @@
             "description": "CSV download",
             "content": {
               "text/csv": {
-                "schema": { "type": "string", "format": "binary" }
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
               }
             },
             "headers": {
               "Content-Disposition": {
-                "schema": { "type": "string" },
+                "schema": {
+                  "type": "string"
+                },
                 "description": "attachment; filename=\"{vendor}-assessment.csv\""
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       }
     },
@@ -515,7 +660,9 @@
             "name": "assessmentId",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -523,13 +670,22 @@
             "description": "PDF download",
             "content": {
               "application/pdf": {
-                "schema": { "type": "string", "format": "binary" }
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       }
     },
@@ -544,7 +700,9 @@
             "name": "templateId",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -552,19 +710,29 @@
             "description": "JSON download of the template",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/TemplateExport" }
+                "schema": {
+                  "$ref": "#/components/schemas/TemplateExport"
+                }
               }
             },
             "headers": {
               "Content-Disposition": {
-                "schema": { "type": "string" },
+                "schema": {
+                  "type": "string"
+                },
                 "description": "attachment; filename=\"{name}.json\""
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       }
     },
@@ -579,7 +747,9 @@
             "name": "vendorId",
             "in": "query",
             "description": "Filter by vendor ID",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "status",
@@ -601,33 +771,47 @@
             "name": "fromDate",
             "in": "query",
             "description": "Start of date range (ISO 8601)",
-            "schema": { "type": "string", "format": "date" }
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
           },
           {
             "name": "toDate",
             "in": "query",
             "description": "End of date range (ISO 8601)",
-            "schema": { "type": "string", "format": "date" }
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
           },
           {
             "name": "page",
             "in": "query",
             "description": "Page number (default 1)",
-            "schema": { "type": "integer", "minimum": 1, "default": 1 }
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
           },
           {
             "name": "query",
             "in": "query",
             "required": false,
             "description": "Search term to filter assessments by title",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "overdue",
             "in": "query",
             "required": false,
             "description": "Set to 'true' to show only overdue assessments",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "format",
@@ -645,12 +829,18 @@
             "description": "Paginated list of assessments (JSON) or CSV download",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/AssessmentList" }
+                "schema": {
+                  "$ref": "#/components/schemas/AssessmentList"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
         }
       }
     },
@@ -666,7 +856,9 @@
             "in": "path",
             "required": true,
             "description": "The assessment's unique ID",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -674,13 +866,21 @@
             "description": "Full assessment detail",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/AssessmentDetail" }
+                "schema": {
+                  "$ref": "#/components/schemas/AssessmentDetail"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       }
     },
@@ -696,20 +896,28 @@
             "in": "path",
             "required": true,
             "description": "The vendor's unique ID",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "page",
             "in": "query",
             "description": "Page number (default 1)",
-            "schema": { "type": "integer", "minimum": 1, "default": 1 }
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
           },
           {
             "name": "status",
             "in": "query",
             "required": false,
             "description": "Filter by assessment status",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -723,9 +931,15 @@
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       }
     },
@@ -741,7 +955,9 @@
             "in": "path",
             "required": true,
             "description": "The vendor's unique ID",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -749,13 +965,21 @@
             "description": "List of vendor certifications",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/CertificationList" }
+                "schema": {
+                  "$ref": "#/components/schemas/CertificationList"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       }
     },
@@ -788,13 +1012,19 @@
             "name": "vendorId",
             "in": "query",
             "description": "Filter by vendor ID",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "page",
             "in": "query",
             "description": "Page number (default 1)",
-            "schema": { "type": "integer", "minimum": 1, "default": 1 }
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
           }
         ],
         "responses": {
@@ -802,12 +1032,18 @@
             "description": "Paginated findings list",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/FindingList" }
+                "schema": {
+                  "$ref": "#/components/schemas/FindingList"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
         }
       }
     },
@@ -823,14 +1059,18 @@
             "in": "path",
             "required": true,
             "description": "The finding's unique ID",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/FindingStatusUpdate" },
+              "schema": {
+                "$ref": "#/components/schemas/FindingStatusUpdate"
+              },
               "example": {
                 "status": "REMEDIATED",
                 "resolutionNote": "Vendor has implemented the required control."
@@ -843,14 +1083,24 @@
             "description": "Finding status updated",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/FindingUpdated" }
+                "schema": {
+                  "$ref": "#/components/schemas/FindingUpdated"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       }
     },
@@ -867,13 +1117,19 @@
               "application/json": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/FrameworkSummary" }
+                  "items": {
+                    "$ref": "#/components/schemas/FrameworkSummary"
+                  }
                 }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
         }
       }
     },
@@ -889,13 +1145,17 @@
             "in": "path",
             "required": true,
             "description": "The framework's unique ID",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "search",
             "in": "query",
             "description": "Search controls by text (code, title, domain, guidance)",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -903,13 +1163,21 @@
             "description": "Framework detail with controls",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/FrameworkDetail" }
+                "schema": {
+                  "$ref": "#/components/schemas/FrameworkDetail"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       },
       "delete": {
@@ -923,14 +1191,24 @@
             "in": "path",
             "required": true,
             "description": "The framework's unique ID",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
-          "204": { "description": "Framework deleted successfully" },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "204": {
+            "description": "Framework deleted successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       }
     },
@@ -938,19 +1216,25 @@
       "get": {
         "tags": ["Dashboard"],
         "summary": "Get dashboard summary",
-        "description": "Returns aggregated portfolio metrics: vendor counts, average score, RAG score distribution, vendor-by-tier counts, top 10 deficient controls, open findings count, and assessment status breakdown. No per-vendor PII \u2014 aggregation only.",
+        "description": "Returns aggregated portfolio metrics: vendor counts, average score, RAG score distribution, vendor-by-tier counts, top 10 deficient controls, open findings count, and assessment status breakdown. No per-vendor PII — aggregation only.",
         "operationId": "getDashboardSummary",
         "responses": {
           "200": {
             "description": "Dashboard metrics",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/DashboardSummary" }
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardSummary"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
         }
       }
     },
@@ -965,12 +1249,19 @@
             "description": "Portfolio PDF report",
             "content": {
               "application/pdf": {
-                "schema": { "type": "string", "format": "binary" }
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
         }
       }
     },
@@ -985,13 +1276,17 @@
             "name": "vendorId",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "frameworkId",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -999,13 +1294,22 @@
             "description": "Framework compliance PDF report",
             "content": {
               "application/pdf": {
-                "schema": { "type": "string", "format": "binary" }
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
               }
             }
           },
-          "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" }
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         }
       }
     }
@@ -1029,8 +1333,12 @@
         "description": "The request is missing valid authentication. Log in via the web app for a session cookie, or provide a valid API key via `Authorization: Bearer mrk_xxx`. API keys must be enabled by an admin (Settings → API).",
         "content": {
           "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" },
-            "example": { "error": "Unauthorized" }
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "error": "Unauthorized"
+            }
           }
         }
       },
@@ -1038,8 +1346,12 @@
         "description": "The caller is authenticated but lacks the permission required for this endpoint. API keys can be scoped to specific permissions at creation (Settings → API); browser sessions inherit permissions from the user's assigned role. Ask an admin to grant the relevant permission (Settings → Roles).",
         "content": {
           "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" },
-            "example": { "error": "Forbidden" }
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "error": "Forbidden"
+            }
           }
         }
       },
@@ -1047,8 +1359,12 @@
         "description": "The requested resource was not found. Verify the ID is correct.",
         "content": {
           "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" },
-            "example": { "error": "Not found" }
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "error": "Not found"
+            }
           }
         }
       },
@@ -1056,8 +1372,12 @@
         "description": "The request body or parameters are invalid.",
         "content": {
           "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" },
-            "example": { "error": "Invalid vendor data." }
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "error": "Invalid vendor data."
+            }
           }
         }
       }
@@ -1077,7 +1397,10 @@
         "type": "object",
         "description": "A single audit log entry — use with SIEM tools or compliance reporting",
         "properties": {
-          "id": { "type": "string", "description": "Unique audit entry ID" },
+          "id": {
+            "type": "string",
+            "description": "Unique audit entry ID"
+          },
           "action": {
             "type": "string",
             "description": "Machine-readable action name (e.g. LOGIN, CREATE_VENDOR)",
@@ -1125,8 +1448,14 @@
         "type": "object",
         "description": "Lightweight vendor entry for list views",
         "properties": {
-          "id": { "type": "string", "description": "Unique vendor ID" },
-          "name": { "type": "string", "description": "Vendor name" },
+          "id": {
+            "type": "string",
+            "description": "Unique vendor ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Vendor name"
+          },
           "externalId": {
             "type": "string",
             "nullable": true,
@@ -1171,7 +1500,9 @@
           },
           "tags": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "description": "User-defined labels for grouping and filtering"
           }
         }
@@ -1180,18 +1511,36 @@
         "type": "object",
         "description": "Full vendor profile including contact info, assessment history, and domain compliance",
         "properties": {
-          "id": { "type": "string" },
-          "name": { "type": "string" },
-          "externalId": { "type": "string", "nullable": true },
-          "contactName": { "type": "string", "nullable": true },
-          "contactEmail": { "type": "string" },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactEmail": {
+            "type": "string"
+          },
           "tier": {
             "type": "string",
             "nullable": true,
             "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
           },
-          "website": { "type": "string", "nullable": true },
-          "notes": { "type": "string", "nullable": true },
+          "website": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
           "overallScore": {
             "type": "number",
             "nullable": true,
@@ -1205,13 +1554,7 @@
           "contractValue": {
             "type": "string",
             "nullable": true,
-            "enum": [
-              "$0\u2013$50K",
-              "$50K\u2013$250K",
-              "$250K\u2013$1M",
-              "$1M\u2013$5M",
-              "$5M+"
-            ],
+            "enum": ["$0–$50K", "$50K–$250K", "$250K–$1M", "$1M–$5M", "$5M+"],
             "description": "Approximate annual contract value"
           },
           "geographicRisk": {
@@ -1227,7 +1570,9 @@
           },
           "tags": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "description": "User-defined labels for grouping and filtering"
           },
           "assessments": {
@@ -1235,8 +1580,12 @@
             "items": {
               "type": "object",
               "properties": {
-                "id": { "type": "string" },
-                "title": { "type": "string" },
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
                 "status": {
                   "type": "string",
                   "enum": [
@@ -1253,8 +1602,14 @@
                   "nullable": true,
                   "format": "float"
                 },
-                "templateName": { "type": "string", "nullable": true },
-                "templateVersion": { "type": "integer", "nullable": true }
+                "templateName": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "templateVersion": {
+                  "type": "integer",
+                  "nullable": true
+                }
               }
             }
           },
@@ -1263,11 +1618,22 @@
             "items": {
               "type": "object",
               "properties": {
-                "domain": { "type": "string" },
-                "frameworkId": { "type": "string" },
-                "frameworkName": { "type": "string" },
-                "complianceRatio": { "type": "number", "format": "float" },
-                "controlCount": { "type": "integer" }
+                "domain": {
+                  "type": "string"
+                },
+                "frameworkId": {
+                  "type": "string"
+                },
+                "frameworkName": {
+                  "type": "string"
+                },
+                "complianceRatio": {
+                  "type": "number",
+                  "format": "float"
+                },
+                "controlCount": {
+                  "type": "integer"
+                }
               }
             }
           },
@@ -1276,14 +1642,21 @@
             "items": {
               "type": "object",
               "properties": {
-                "id": { "type": "string" },
-                "title": { "type": "string" },
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
                 "submittedAt": {
                   "type": "string",
                   "nullable": true,
                   "format": "date-time"
                 },
-                "score": { "type": "number", "nullable": true }
+                "score": {
+                  "type": "number",
+                  "nullable": true
+                }
               }
             }
           },
@@ -1291,12 +1664,24 @@
             "nullable": true,
             "type": "object",
             "properties": {
-              "total": { "type": "integer" },
-              "completed": { "type": "integer" },
-              "inProgress": { "type": "integer" },
-              "pending": { "type": "integer" },
-              "notApplicable": { "type": "integer" },
-              "percent": { "type": "integer" }
+              "total": {
+                "type": "integer"
+              },
+              "completed": {
+                "type": "integer"
+              },
+              "inProgress": {
+                "type": "integer"
+              },
+              "pending": {
+                "type": "integer"
+              },
+              "notApplicable": {
+                "type": "integer"
+              },
+              "percent": {
+                "type": "integer"
+              }
             }
           }
         }
@@ -1305,9 +1690,16 @@
         "type": "object",
         "description": "Lightweight score summary for dashboards and integrations",
         "properties": {
-          "id": { "type": "string" },
-          "name": { "type": "string" },
-          "tier": { "type": "string", "nullable": true },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tier": {
+            "type": "string",
+            "nullable": true
+          },
           "overallScore": {
             "type": "number",
             "nullable": true,
@@ -1318,7 +1710,9 @@
             "nullable": true,
             "format": "date-time"
           },
-          "assessmentCount": { "type": "integer" },
+          "assessmentCount": {
+            "type": "integer"
+          },
           "latestScore": {
             "type": "number",
             "nullable": true,
@@ -1329,11 +1723,21 @@
             "items": {
               "type": "object",
               "properties": {
-                "domain": { "type": "string" },
-                "frameworkId": { "type": "string" },
-                "frameworkName": { "type": "string" },
-                "complianceRatio": { "type": "number" },
-                "controlCount": { "type": "integer" }
+                "domain": {
+                  "type": "string"
+                },
+                "frameworkId": {
+                  "type": "string"
+                },
+                "frameworkName": {
+                  "type": "string"
+                },
+                "complianceRatio": {
+                  "type": "number"
+                },
+                "controlCount": {
+                  "type": "integer"
+                }
               }
             }
           }
@@ -1367,7 +1771,10 @@
             "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
             "description": "Risk tier classification"
           },
-          "website": { "type": "string", "description": "Vendor website URL" },
+          "website": {
+            "type": "string",
+            "description": "Vendor website URL"
+          },
           "notes": {
             "type": "string",
             "description": "Free-text notes about the vendor"
@@ -1388,13 +1795,7 @@
           },
           "contractValue": {
             "type": "string",
-            "enum": [
-              "$0\u2013$50K",
-              "$50K\u2013$250K",
-              "$250K\u2013$1M",
-              "$1M\u2013$5M",
-              "$5M+"
-            ],
+            "enum": ["$0–$50K", "$50K–$250K", "$250K–$1M", "$1M–$5M", "$5M+"],
             "description": "Approximate annual contract value"
           },
           "geographicRisk": {
@@ -1409,7 +1810,9 @@
           },
           "tags": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "description": "User-defined labels for grouping and filtering"
           }
         }
@@ -1418,14 +1821,35 @@
         "type": "object",
         "description": "The newly created vendor record",
         "properties": {
-          "id": { "type": "string" },
-          "name": { "type": "string" },
-          "contactName": { "type": "string", "nullable": true },
-          "contactEmail": { "type": "string" },
-          "tier": { "type": "string", "nullable": true },
-          "website": { "type": "string", "nullable": true },
-          "notes": { "type": "string", "nullable": true },
-          "serviceDescription": { "type": "string", "nullable": true },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "contactName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactEmail": {
+            "type": "string"
+          },
+          "tier": {
+            "type": "string",
+            "nullable": true
+          },
+          "website": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "serviceDescription": {
+            "type": "string",
+            "nullable": true
+          },
           "dataSensitivity": {
             "type": "string",
             "nullable": true,
@@ -1439,13 +1863,7 @@
           "contractValue": {
             "type": "string",
             "nullable": true,
-            "enum": [
-              "$0\u2013$50K",
-              "$50K\u2013$250K",
-              "$250K\u2013$1M",
-              "$1M\u2013$5M",
-              "$5M+"
-            ]
+            "enum": ["$0–$50K", "$50K–$250K", "$250K–$1M", "$1M–$5M", "$5M+"]
           },
           "geographicRisk": {
             "type": "string",
@@ -1454,25 +1872,42 @@
           },
           "tags": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "description": "User-defined labels"
           },
-          "ownerId": { "type": "string", "nullable": true },
-          "overallScore": { "type": "number", "nullable": true },
+          "ownerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "overallScore": {
+            "type": "number",
+            "nullable": true
+          },
           "lastAssessedAt": {
             "type": "string",
             "nullable": true,
             "format": "date-time"
           },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" }
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "TemplateExport": {
         "type": "object",
         "description": "Full template structure exported as JSON — suitable for sharing or re-importing",
         "properties": {
-          "name": { "type": "string", "description": "Template name" },
+          "name": {
+            "type": "string",
+            "description": "Template name"
+          },
           "description": {
             "type": "string",
             "nullable": true,
@@ -1483,7 +1918,9 @@
             "items": {
               "type": "object",
               "properties": {
-                "title": { "type": "string" },
+                "title": {
+                  "type": "string"
+                },
                 "questions": {
                   "type": "array",
                   "items": {
@@ -1493,7 +1930,10 @@
                         "type": "string",
                         "description": "Question text"
                       },
-                      "helpText": { "type": "string", "nullable": true },
+                      "helpText": {
+                        "type": "string",
+                        "nullable": true
+                      },
                       "type": {
                         "type": "string",
                         "enum": [
@@ -1514,10 +1954,14 @@
                         "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"],
                         "description": "Risk weight for scoring"
                       },
-                      "required": { "type": "boolean" },
+                      "required": {
+                        "type": "boolean"
+                      },
                       "options": {
                         "type": "array",
-                        "items": { "type": "string" },
+                        "items": {
+                          "type": "string"
+                        },
                         "description": "Available options for COMBOBOX/MULTIPLE_CHOICE/MULTI_SELECT"
                       },
                       "expectedAnswer": {
@@ -1530,7 +1974,9 @@
                       },
                       "controlCodes": {
                         "type": "array",
-                        "items": { "type": "string" },
+                        "items": {
+                          "type": "string"
+                        },
                         "description": "Framework control codes this question maps to"
                       }
                     }
@@ -1544,37 +1990,50 @@
       "DeletedResponse": {
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" }
+          "deleted": {
+            "type": "boolean"
+          }
         }
       },
       "VendorUpdate": {
         "type": "object",
-        "description": "Vendor fields for update. All fields are optional \u2014 omitted fields retain their existing values.",
+        "description": "Vendor fields for update. All fields are optional — omitted fields retain their existing values.",
         "properties": {
-          "name": { "type": "string", "minLength": 1 },
-          "contactName": { "type": "string" },
-          "contactEmail": { "type": "string", "format": "email" },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactEmail": {
+            "type": "string",
+            "format": "email"
+          },
           "tier": {
             "type": "string",
             "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
           },
-          "website": { "type": "string" },
-          "notes": { "type": "string" },
-          "serviceDescription": { "type": "string" },
+          "website": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "serviceDescription": {
+            "type": "string"
+          },
           "dataSensitivity": {
             "type": "string",
             "enum": ["PUBLIC", "INTERNAL", "CONFIDENTIAL", "RESTRICTED"]
           },
-          "contractRenewalDate": { "type": "string", "format": "date" },
+          "contractRenewalDate": {
+            "type": "string",
+            "format": "date"
+          },
           "contractValue": {
             "type": "string",
-            "enum": [
-              "$0\u2013$50K",
-              "$50K\u2013$250K",
-              "$250K\u2013$1M",
-              "$1M\u2013$5M",
-              "$5M+"
-            ]
+            "enum": ["$0–$50K", "$50K–$250K", "$250K–$1M", "$1M–$5M", "$5M+"]
           },
           "geographicRisk": {
             "type": "string",
@@ -1582,28 +2041,50 @@
           },
           "tags": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "description": "User-defined labels"
           },
-          "ownerId": { "type": "string" }
+          "ownerId": {
+            "type": "string"
+          }
         }
       },
       "VendorUpdated": {
         "type": "object",
         "description": "The vendor record after a successful update",
         "properties": {
-          "id": { "type": "string" },
-          "name": { "type": "string" },
-          "contactName": { "type": "string", "nullable": true },
-          "contactEmail": { "type": "string" },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "contactName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactEmail": {
+            "type": "string"
+          },
           "tier": {
             "type": "string",
             "nullable": true,
             "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
           },
-          "website": { "type": "string", "nullable": true },
-          "notes": { "type": "string", "nullable": true },
-          "serviceDescription": { "type": "string", "nullable": true },
+          "website": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "serviceDescription": {
+            "type": "string",
+            "nullable": true
+          },
           "dataSensitivity": {
             "type": "string",
             "nullable": true,
@@ -1617,13 +2098,7 @@
           "contractValue": {
             "type": "string",
             "nullable": true,
-            "enum": [
-              "$0\u2013$50K",
-              "$50K\u2013$250K",
-              "$250K\u2013$1M",
-              "$1M\u2013$5M",
-              "$5M+"
-            ]
+            "enum": ["$0–$50K", "$50K–$250K", "$250K–$1M", "$1M–$5M", "$5M+"]
           },
           "geographicRisk": {
             "type": "string",
@@ -1632,27 +2107,46 @@
           },
           "tags": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "description": "User-defined labels"
           },
-          "ownerId": { "type": "string", "nullable": true },
+          "ownerId": {
+            "type": "string",
+            "nullable": true
+          },
           "overallScore": {
             "type": "number",
             "nullable": true,
             "format": "float"
           },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" }
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "AssessmentSummary": {
         "type": "object",
         "description": "Lightweight assessment entry for list views",
         "properties": {
-          "id": { "type": "string" },
-          "title": { "type": "string" },
-          "vendorId": { "type": "string" },
-          "vendorName": { "type": "string" },
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "vendorId": {
+            "type": "string"
+          },
+          "vendorName": {
+            "type": "string"
+          },
           "status": {
             "type": "string",
             "enum": [
@@ -1664,7 +2158,11 @@
               "COMPLETED"
             ]
           },
-          "score": { "type": "number", "nullable": true, "format": "float" },
+          "score": {
+            "type": "number",
+            "nullable": true,
+            "format": "float"
+          },
           "dueDate": {
             "type": "string",
             "nullable": true,
@@ -1680,9 +2178,18 @@
             "nullable": true,
             "format": "date-time"
           },
-          "templateName": { "type": "string", "nullable": true },
-          "templateVersion": { "type": "integer", "nullable": true },
-          "reviewerName": { "type": "string", "nullable": true }
+          "templateName": {
+            "type": "string",
+            "nullable": true
+          },
+          "templateVersion": {
+            "type": "integer",
+            "nullable": true
+          },
+          "reviewerName": {
+            "type": "string",
+            "nullable": true
+          }
         }
       },
       "AssessmentList": {
@@ -1690,21 +2197,39 @@
         "properties": {
           "entries": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/AssessmentSummary" }
+            "items": {
+              "$ref": "#/components/schemas/AssessmentSummary"
+            }
           },
-          "page": { "type": "integer" },
-          "pageSize": { "type": "integer" },
-          "totalCount": { "type": "integer" }
+          "page": {
+            "type": "integer"
+          },
+          "pageSize": {
+            "type": "integer"
+          },
+          "totalCount": {
+            "type": "integer"
+          }
         }
       },
       "AssessmentDetail": {
         "type": "object",
         "description": "Full assessment detail including vendor, template, flat question list with responses, review decisions, findings, and threaded comments",
         "properties": {
-          "id": { "type": "string" },
-          "title": { "type": "string" },
-          "status": { "type": "string" },
-          "score": { "type": "number", "nullable": true, "format": "float" },
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number",
+            "nullable": true,
+            "format": "float"
+          },
           "dueDate": {
             "type": "string",
             "nullable": true,
@@ -1720,7 +2245,10 @@
             "nullable": true,
             "format": "date-time"
           },
-          "createdAt": { "type": "string", "format": "date-time" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
           "recurrence": {
             "type": "string",
             "nullable": true,
@@ -1736,28 +2264,50 @@
           "vendor": {
             "type": "object",
             "properties": {
-              "id": { "type": "string" },
-              "name": { "type": "string" },
-              "contactName": { "type": "string", "nullable": true },
-              "contactEmail": { "type": "string" },
-              "tier": { "type": "string", "nullable": true }
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "contactName": {
+                "type": "string",
+                "nullable": true
+              },
+              "contactEmail": {
+                "type": "string"
+              },
+              "tier": {
+                "type": "string",
+                "nullable": true
+              }
             }
           },
           "template": {
             "type": "object",
             "nullable": true,
             "properties": {
-              "name": { "type": "string" },
-              "version": { "type": "integer" }
+              "name": {
+                "type": "string"
+              },
+              "version": {
+                "type": "integer"
+              }
             }
           },
           "reviewer": {
             "type": "object",
             "nullable": true,
             "properties": {
-              "id": { "type": "string" },
-              "name": { "type": "string" },
-              "email": { "type": "string" }
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              }
             }
           },
           "questions": {
@@ -1765,43 +2315,84 @@
             "items": {
               "type": "object",
               "properties": {
-                "id": { "type": "string" },
-                "sectionTitle": { "type": "string" },
-                "text": { "type": "string" },
-                "helpText": { "type": "string", "nullable": true },
-                "type": { "type": "string" },
-                "riskWeight": { "type": "string" },
-                "required": { "type": "boolean" },
-                "expectedAnswer": { "type": "string", "nullable": true },
-                "options": {
-                  "type": "array",
-                  "items": { "type": "string" },
+                "id": {
+                  "type": "string"
+                },
+                "sectionTitle": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "helpText": {
+                  "type": "string",
                   "nullable": true
                 },
-                "order": { "type": "integer" },
+                "type": {
+                  "type": "string"
+                },
+                "riskWeight": {
+                  "type": "string"
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "expectedAnswer": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "options": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true
+                },
+                "order": {
+                  "type": "integer"
+                },
                 "controlIds": {
                   "type": "array",
-                  "items": { "type": "string" }
+                  "items": {
+                    "type": "string"
+                  }
                 },
                 "sharedControlIds": {
                   "type": "array",
-                  "items": { "type": "string" }
+                  "items": {
+                    "type": "string"
+                  }
                 },
                 "response": {
                   "type": "object",
                   "nullable": true,
                   "properties": {
                     "value": {},
-                    "isNotApplicable": { "type": "boolean" },
-                    "isCompliant": { "type": "boolean" },
-                    "weightedScore": { "type": "number", "nullable": true },
-                    "maxScore": { "type": "number", "nullable": true },
+                    "isNotApplicable": {
+                      "type": "boolean"
+                    },
+                    "isCompliant": {
+                      "type": "boolean"
+                    },
+                    "weightedScore": {
+                      "type": "number",
+                      "nullable": true
+                    },
+                    "maxScore": {
+                      "type": "number",
+                      "nullable": true
+                    },
                     "review": {
                       "type": "object",
                       "nullable": true,
                       "properties": {
-                        "decision": { "type": "string" },
-                        "note": { "type": "string", "nullable": true }
+                        "decision": {
+                          "type": "string"
+                        },
+                        "note": {
+                          "type": "string",
+                          "nullable": true
+                        }
                       }
                     }
                   }
@@ -1814,9 +2405,16 @@
             "items": {
               "type": "object",
               "properties": {
-                "id": { "type": "string" },
-                "title": { "type": "string" },
-                "description": { "type": "string", "nullable": true },
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true
+                },
                 "severity": {
                   "type": "string",
                   "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
@@ -1827,16 +2425,27 @@
                 },
                 "controlCodes": {
                   "type": "array",
-                  "items": { "type": "string" }
+                  "items": {
+                    "type": "string"
+                  }
                 },
-                "resolutionNote": { "type": "string", "nullable": true },
+                "resolutionNote": {
+                  "type": "string",
+                  "nullable": true
+                },
                 "resolvedAt": {
                   "type": "string",
                   "nullable": true,
                   "format": "date-time"
                 },
-                "resolvedByName": { "type": "string", "nullable": true },
-                "createdAt": { "type": "string", "format": "date-time" }
+                "resolvedByName": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
               }
             }
           },
@@ -1845,29 +2454,51 @@
             "items": {
               "type": "object",
               "properties": {
-                "id": { "type": "string" },
-                "authorType": { "type": "string" },
-                "authorName": { "type": "string" },
-                "body": { "type": "string" },
+                "id": {
+                  "type": "string"
+                },
+                "authorType": {
+                  "type": "string"
+                },
+                "authorName": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                },
                 "visibility": {
                   "type": "string",
                   "enum": ["INTERNAL", "SHARED", "VENDOR_ONLY"]
                 },
-                "createdAt": { "type": "string", "format": "date-time" },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
                 "replies": {
                   "type": "array",
                   "items": {
                     "type": "object",
                     "properties": {
-                      "id": { "type": "string" },
-                      "authorType": { "type": "string" },
-                      "authorName": { "type": "string" },
-                      "body": { "type": "string" },
+                      "id": {
+                        "type": "string"
+                      },
+                      "authorType": {
+                        "type": "string"
+                      },
+                      "authorName": {
+                        "type": "string"
+                      },
+                      "body": {
+                        "type": "string"
+                      },
                       "visibility": {
                         "type": "string",
                         "enum": ["INTERNAL", "SHARED", "VENDOR_ONLY"]
                       },
-                      "createdAt": { "type": "string", "format": "date-time" }
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
                     }
                   }
                 }
@@ -1879,24 +2510,43 @@
       "VendorAssessmentList": {
         "type": "object",
         "properties": {
-          "vendorId": { "type": "string" },
-          "vendorName": { "type": "string" },
+          "vendorId": {
+            "type": "string"
+          },
+          "vendorName": {
+            "type": "string"
+          },
           "entries": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/AssessmentSummary" }
+            "items": {
+              "$ref": "#/components/schemas/AssessmentSummary"
+            }
           },
-          "page": { "type": "integer" },
-          "pageSize": { "type": "integer" },
-          "totalCount": { "type": "integer" }
+          "page": {
+            "type": "integer"
+          },
+          "pageSize": {
+            "type": "integer"
+          },
+          "totalCount": {
+            "type": "integer"
+          }
         }
       },
       "CertificationSummary": {
         "type": "object",
         "description": "A vendor certification record",
         "properties": {
-          "id": { "type": "string" },
-          "name": { "type": "string" },
-          "issuer": { "type": "string", "nullable": true },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "issuer": {
+            "type": "string",
+            "nullable": true
+          },
           "issuedDate": {
             "type": "string",
             "nullable": true,
@@ -1907,17 +2557,31 @@
             "nullable": true,
             "format": "date"
           },
-          "notes": { "type": "string", "nullable": true },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
           "attachments": {
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
-                "id": { "type": "string" },
-                "fileName": { "type": "string" },
-                "displayName": { "type": "string", "nullable": true },
-                "mimeType": { "type": "string" },
-                "sizeBytes": { "type": "integer" }
+                "id": {
+                  "type": "string"
+                },
+                "fileName": {
+                  "type": "string"
+                },
+                "displayName": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "mimeType": {
+                  "type": "string"
+                },
+                "sizeBytes": {
+                  "type": "integer"
+                }
               }
             }
           }
@@ -1926,11 +2590,17 @@
       "CertificationList": {
         "type": "object",
         "properties": {
-          "vendorId": { "type": "string" },
-          "vendorName": { "type": "string" },
+          "vendorId": {
+            "type": "string"
+          },
+          "vendorName": {
+            "type": "string"
+          },
           "entries": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/CertificationSummary" }
+            "items": {
+              "$ref": "#/components/schemas/CertificationSummary"
+            }
           }
         }
       },
@@ -1938,9 +2608,16 @@
         "type": "object",
         "description": "A finding raised from an assessment response",
         "properties": {
-          "id": { "type": "string" },
-          "title": { "type": "string" },
-          "description": { "type": "string", "nullable": true },
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
           "severity": {
             "type": "string",
             "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
@@ -1949,13 +2626,32 @@
             "type": "string",
             "enum": ["OPEN", "REMEDIATED", "RISK_ACCEPTED"]
           },
-          "controlCodes": { "type": "array", "items": { "type": "string" } },
-          "resolutionNote": { "type": "string", "nullable": true },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "assessmentId": { "type": "string" },
-          "assessmentTitle": { "type": "string" },
-          "vendorId": { "type": "string" },
-          "vendorName": { "type": "string" }
+          "controlCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "resolutionNote": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "assessmentId": {
+            "type": "string"
+          },
+          "assessmentTitle": {
+            "type": "string"
+          },
+          "vendorId": {
+            "type": "string"
+          },
+          "vendorName": {
+            "type": "string"
+          }
         }
       },
       "FindingList": {
@@ -1963,11 +2659,19 @@
         "properties": {
           "entries": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/FindingSummary" }
+            "items": {
+              "$ref": "#/components/schemas/FindingSummary"
+            }
           },
-          "page": { "type": "integer" },
-          "pageSize": { "type": "integer" },
-          "totalCount": { "type": "integer" }
+          "page": {
+            "type": "integer"
+          },
+          "pageSize": {
+            "type": "integer"
+          },
+          "totalCount": {
+            "type": "integer"
+          }
         }
       },
       "FindingStatusUpdate": {
@@ -1990,11 +2694,22 @@
         "type": "object",
         "description": "The finding record after a status update",
         "properties": {
-          "id": { "type": "string" },
-          "title": { "type": "string" },
-          "status": { "type": "string" },
-          "severity": { "type": "string" },
-          "resolutionNote": { "type": "string", "nullable": true },
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string"
+          },
+          "resolutionNote": {
+            "type": "string",
+            "nullable": true
+          },
           "resolvedAt": {
             "type": "string",
             "nullable": true,
@@ -2006,23 +2721,47 @@
         "type": "object",
         "description": "Lightweight framework entry for list views",
         "properties": {
-          "id": { "type": "string" },
-          "name": { "type": "string" },
-          "version": { "type": "string", "nullable": true },
-          "description": { "type": "string", "nullable": true },
-          "controlCount": { "type": "integer" }
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "controlCount": {
+            "type": "integer"
+          }
         }
       },
       "FrameworkDetail": {
         "type": "object",
         "properties": {
-          "id": { "type": "string" },
-          "name": { "type": "string" },
-          "version": { "type": "string", "nullable": true },
-          "description": { "type": "string", "nullable": true },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
           "controls": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/ControlSummary" }
+            "items": {
+              "$ref": "#/components/schemas/ControlSummary"
+            }
           }
         }
       },
@@ -2030,19 +2769,37 @@
         "type": "object",
         "description": "A single framework control",
         "properties": {
-          "id": { "type": "string" },
-          "domain": { "type": "string", "nullable": true },
-          "code": { "type": "string" },
-          "title": { "type": "string" },
-          "guidance": { "type": "string", "nullable": true },
-          "order": { "type": "integer", "nullable": true }
+          "id": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true
+          },
+          "code": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "guidance": {
+            "type": "string",
+            "nullable": true
+          },
+          "order": {
+            "type": "integer",
+            "nullable": true
+          }
         }
       },
       "DashboardSummary": {
         "type": "object",
         "description": "Aggregated portfolio metrics for dashboards and BI tools",
         "properties": {
-          "vendors": { "type": "integer", "description": "Total vendor count" },
+          "vendors": {
+            "type": "integer",
+            "description": "Total vendor count"
+          },
           "vendorCount": {
             "type": "integer",
             "description": "Alias for vendors"
@@ -2051,7 +2808,7 @@
             "type": "number",
             "nullable": true,
             "format": "float",
-            "description": "Portfolio-wide average score (0\u20131)"
+            "description": "Portfolio-wide average score (0–1)"
           },
           "openFindings": {
             "type": "integer",
@@ -2065,10 +2822,18 @@
             "type": "object",
             "description": "RAG score distribution counts",
             "properties": {
-              "green": { "type": "integer" },
-              "amber": { "type": "integer" },
-              "red": { "type": "integer" },
-              "unscored": { "type": "integer" }
+              "green": {
+                "type": "integer"
+              },
+              "amber": {
+                "type": "integer"
+              },
+              "red": {
+                "type": "integer"
+              },
+              "unscored": {
+                "type": "integer"
+              }
             }
           },
           "topDeficientControls": {
@@ -2077,9 +2842,15 @@
             "items": {
               "type": "object",
               "properties": {
-                "controlCode": { "type": "string" },
-                "controlTitle": { "type": "string" },
-                "failCount": { "type": "integer" }
+                "controlCode": {
+                  "type": "string"
+                },
+                "controlTitle": {
+                  "type": "string"
+                },
+                "failCount": {
+                  "type": "integer"
+                }
               }
             }
           },
@@ -2089,8 +2860,12 @@
             "items": {
               "type": "object",
               "properties": {
-                "tier": { "type": "string" },
-                "count": { "type": "integer" }
+                "tier": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer"
+                }
               }
             }
           },
@@ -2098,23 +2873,45 @@
             "type": "object",
             "description": "Assessment count by status",
             "properties": {
-              "COMPLETED": { "type": "integer" },
-              "IN_PROGRESS": { "type": "integer" },
-              "OVERDUE": { "type": "integer" },
-              "UNDER_REVIEW": { "type": "integer" },
-              "SENT": { "type": "integer" },
-              "DRAFT": { "type": "integer" },
-              "SUBMITTED": { "type": "integer" }
+              "COMPLETED": {
+                "type": "integer"
+              },
+              "IN_PROGRESS": {
+                "type": "integer"
+              },
+              "OVERDUE": {
+                "type": "integer"
+              },
+              "UNDER_REVIEW": {
+                "type": "integer"
+              },
+              "SENT": {
+                "type": "integer"
+              },
+              "DRAFT": {
+                "type": "integer"
+              },
+              "SUBMITTED": {
+                "type": "integer"
+              }
             }
           },
           "vendorsByTier": {
             "type": "object",
             "description": "Vendor count by tier (keyed by tier name)",
             "properties": {
-              "LOW": { "type": "integer" },
-              "MEDIUM": { "type": "integer" },
-              "HIGH": { "type": "integer" },
-              "CRITICAL": { "type": "integer" }
+              "LOW": {
+                "type": "integer"
+              },
+              "MEDIUM": {
+                "type": "integer"
+              },
+              "HIGH": {
+                "type": "integer"
+              },
+              "CRITICAL": {
+                "type": "integer"
+              }
             }
           },
           "customerResponsibilitySummary": {
@@ -2122,10 +2919,18 @@
             "type": "object",
             "description": "Aggregated customer responsibility compliance across all vendors",
             "properties": {
-              "totalVendors": { "type": "integer" },
-              "totalActions": { "type": "integer" },
-              "completedActions": { "type": "integer" },
-              "percent": { "type": "integer" }
+              "totalVendors": {
+                "type": "integer"
+              },
+              "totalActions": {
+                "type": "integer"
+              },
+              "completedActions": {
+                "type": "integer"
+              },
+              "percent": {
+                "type": "integer"
+              }
             }
           }
         }

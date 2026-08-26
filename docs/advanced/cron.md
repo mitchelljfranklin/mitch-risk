@@ -1,15 +1,25 @@
 ﻿# Cron & Automation
 
-Mitch‑Risk includes a cron endpoint that handles scheduled maintenance. An external scheduler (system cron, Kubernetes CronJob, etc.) hits this endpoint periodically.
+Mitch‑Risk handles scheduled maintenance automatically. By default the application runs its own scheduler — every five minutes it checks for due reminders, escalations, expiry notices, recurring assessments, log pruning, and orphaned file cleanup. No external cron job, Azure Function, or other scheduler is needed.
 
-## Setup
+## Built-in scheduler (default)
+
+The scheduler starts with the application. You can verify it is working under **Settings → Scheduling**, which shows when jobs last ran ("Last scheduled run"). To turn it off, untick **Run scheduled jobs inside the app** on that tab and save — the change takes effect within five minutes, no restart required.
+
+## External scheduling (optional)
+
+If you prefer to drive scheduling yourself (for example from a system crontab or an orchestrator), disable the built-in scheduler in Settings → Scheduling and call the secured endpoint on your own cadence:
 
 ```bash
 # Every 5 minutes
 */5 * * * * curl -H "X-Cron-Secret: $CRON_SECRET" https://risk.example.com/api/cron/run
 ```
 
-**CRON_SECRET** is required in production — the app refuses to start without it. The endpoint returns 401 if the secret doesn't match (constant-time comparison).
+**CRON_SECRET** is required in production — the app refuses to start without it. The endpoint returns 401 if the secret doesn't match (constant-time comparison), or 409 if another run is still in progress.
+
+## Multi-instance deployments
+
+Run scheduled jobs from exactly one instance. If you scale horizontally, leave the built-in scheduler enabled on one instance only (or disable it everywhere and use external scheduling).
 
 ## Jobs (run in order)
 

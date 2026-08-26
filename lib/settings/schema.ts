@@ -63,6 +63,7 @@ export const assessmentSettingsSchema = z.object({
   portalPageLoadsPerMin: z.coerce.number().int().min(1).default(30),
   portalUploadsPerMin: z.coerce.number().int().min(1).default(10),
   portalSubmitPerMin: z.coerce.number().int().min(1).default(5),
+  portalCommentPerMin: z.coerce.number().int().min(1).default(10),
   portalPasswordAttemptsPerMin: z.coerce.number().int().min(1).default(5),
   passwordResetPerMin: z.coerce.number().int().min(1).default(1),
   breakGlassPerMin: z.coerce.number().int().min(1).default(10),
@@ -178,3 +179,9 @@ export const storageSettingsSchema = z.object({
 });
 
 export type StorageSettings = z.infer<typeof storageSettingsSchema>;
+
+export const cronSettingsSchema = z.object({
+  internalSchedulerEnabled: z.boolean().default(true),
+});
+
+export type CronSettings = z.infer<typeof cronSettingsSchema>;

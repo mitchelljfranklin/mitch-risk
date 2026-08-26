@@ -93,7 +93,7 @@ Show or hide questions based on previous answers using condition rules stored as
 | `operator` | `equals`, `notEquals`, `contains`, `notContains`, `gt`, `lt`, `gte`, `lte`, `answered`, `notAnswered` |
 | `value` | The value to compare against |
 
-Conditional logic is evaluated client-side in the portal and server-side during submission — hidden questions cannot be answered or submitted.
+Conditional logic is evaluated client-side in the portal and server-side during submission — hidden questions cannot be answered or submitted. `equals` / `notEquals` comparisons are case-insensitive, and when the controlling question is a choice type (Yes/No, single choice, combobox) the builder offers its valid answers as a dropdown so condition values always match what vendors submit.
 
 ## Control Mapping
 

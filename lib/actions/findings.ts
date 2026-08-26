@@ -81,8 +81,18 @@ export async function bulkUpdateFindingStatusesAction(
     return { ok: false, message: "No findings selected." };
   }
 
+  // A concurrent delete (e.g. a rescore removing an auto-finding) must not
+  // abort the whole batch — update what still exists and report the rest.
+  const existingIds = (
+    await prisma.finding.findMany({
+      where: { id: { in: findingIds } },
+      select: { id: true },
+    })
+  ).map((finding) => finding.id);
+  const missingCount = findingIds.length - existingIds.length;
+
   await prisma.$transaction(
-    findingIds.map((id) =>
+    existingIds.map((id) =>
       updateFindingStatus({
         findingId: id,
         status: status as FindingStatus,
@@ -92,7 +102,7 @@ export async function bulkUpdateFindingStatusesAction(
     ),
   );
 
-  for (const id of findingIds) {
+  for (const id of existingIds) {
     await logAudit(user.id, AUDIT_ACTIONS.UPDATE_FINDING, "Finding", id, {
       status,
     });
@@ -100,7 +110,7 @@ export async function bulkUpdateFindingStatusesAction(
 
   if (status !== "OPEN") {
     const resolvedFindings = await prisma.finding.findMany({
-      where: { id: { in: findingIds } },
+      where: { id: { in: existingIds } },
       select: { id: true, severity: true, assessmentId: true },
     });
     for (const finding of resolvedFindings) {
@@ -115,8 +125,11 @@ export async function bulkUpdateFindingStatusesAction(
   }
 
   revalidatePath("/risk-register");
+  const updatedCount = existingIds.length;
+  const missingNote =
+    missingCount > 0 ? ` (${missingCount} already removed).` : "";
   return {
     ok: true,
-    message: `${findingIds.length} finding${findingIds.length !== 1 ? "s" : ""} updated.`,
+    message: `${updatedCount} finding${updatedCount !== 1 ? "s" : ""} updated${missingNote}`,
   };
 }

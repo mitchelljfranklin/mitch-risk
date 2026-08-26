@@ -144,8 +144,10 @@ emailed to the vendor. Validation is constant‑time (`timingSafeEqual`).
 
 `POST /api/cron/run` requires the `CRON_SECRET` header. The secret is
 compared in constant time. The application **refuses to boot in
-production without `CRON_SECRET`** (except during `next build`). Only
-the system cron scheduler should call this endpoint.
+production without `CRON_SECRET`** (except during `next build`). The
+endpoint is intended for operators only — scheduled jobs run inside the
+app by default, so external callers should only be your own scheduling
+infrastructure if you have disabled the built-in scheduler.
 
 ### Content Security Policy
 

@@ -2,13 +2,6 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { AutoSubmitSelect } from "@/components/auto-submit-select";
 import { EmptyState } from "@/components/empty-state";
 import { Pagination } from "@/components/pagination";
@@ -28,10 +21,7 @@ import {
   FINDING_STATUS_LABELS,
 } from "@/lib/schemas/assessment";
 import { RISK_WEIGHTS } from "@/lib/schemas/template";
-import {
-  listAllResponsibilityActions,
-  type ResponsibilityActionWithVendor,
-} from "@/lib/db/customer-responsibility";
+import { listAllResponsibilityActions } from "@/lib/db/customer-responsibility";
 import {
   CUSTOMER_RESPONSIBILITY_STATUS_LABELS,
   CUSTOMER_RESPONSIBILITY_STATUS_STYLES,
@@ -117,52 +107,55 @@ export default async function RiskRegisterPage({
           <label className="text-muted-foreground text-xs" htmlFor="status">
             Status
           </label>
-          <Select name="status" defaultValue={sp.status ?? ""}>
-            <SelectTrigger id="status" className="w-40">
-              <SelectValue placeholder="All" />
-            </SelectTrigger>
-            <SelectContent>
-              {FINDING_STATUSES.map((status) => (
-                <SelectItem key={status} value={status}>
-                  {FINDING_STATUS_LABELS[status]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <AutoSubmitSelect
+            name="status"
+            defaultValue={sp.status ?? ""}
+            key={`status-${sp.status ?? ""}`}
+            emptyOptionLabel="All findings"
+            id="status"
+            className="w-40"
+            ariaLabel="Filter findings by status"
+            options={FINDING_STATUSES.map((status) => ({
+              value: status,
+              label: FINDING_STATUS_LABELS[status],
+            }))}
+          />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="severity">
             Severity
           </label>
-          <Select name="severity" defaultValue={sp.severity ?? ""}>
-            <SelectTrigger id="severity" className="w-40">
-              <SelectValue placeholder="All" />
-            </SelectTrigger>
-            <SelectContent>
-              {RISK_WEIGHTS.map((weight) => (
-                <SelectItem key={weight} value={weight}>
-                  {weight.charAt(0) + weight.slice(1).toLowerCase()}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <AutoSubmitSelect
+            name="severity"
+            defaultValue={sp.severity ?? ""}
+            key={`severity-${sp.severity ?? ""}`}
+            emptyOptionLabel="Any severity"
+            id="severity"
+            className="w-40"
+            ariaLabel="Filter findings by severity"
+            options={RISK_WEIGHTS.map((weight) => ({
+              value: weight,
+              label: weight.charAt(0) + weight.slice(1).toLowerCase(),
+            }))}
+          />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="vendorId">
             Vendor
           </label>
-          <Select name="vendorId" defaultValue={sp.vendorId ?? ""}>
-            <SelectTrigger id="vendorId" className="w-48">
-              <SelectValue placeholder="All vendors" />
-            </SelectTrigger>
-            <SelectContent>
-              {vendors.map((vendor) => (
-                <SelectItem key={vendor.id} value={vendor.id}>
-                  {vendor.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <AutoSubmitSelect
+            name="vendorId"
+            defaultValue={sp.vendorId ?? ""}
+            key={`vendorId-${sp.vendorId ?? ""}`}
+            emptyOptionLabel="All vendors"
+            id="vendorId"
+            className="w-48"
+            ariaLabel="Filter findings by vendor"
+            options={vendors.map((vendor) => ({
+              value: vendor.id,
+              label: vendor.name,
+            }))}
+          />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="sort">
@@ -187,15 +180,16 @@ export default async function RiskRegisterPage({
           >
             Show
           </label>
-          <Select name="responsibility" defaultValue={sp.responsibility ?? ""}>
-            <SelectTrigger id="responsibility" className="w-48">
-              <SelectValue placeholder="Findings only" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">Findings only</SelectItem>
-              <SelectItem value="1">Customer responsibility</SelectItem>
-            </SelectContent>
-          </Select>
+          <AutoSubmitSelect
+            name="responsibility"
+            defaultValue={sp.responsibility ?? ""}
+            key={`responsibility-${sp.responsibility ?? ""}`}
+            emptyOptionLabel="Findings only"
+            id="responsibility"
+            className="w-48"
+            ariaLabel="Filter by responsibility"
+            options={[{ value: "1", label: "Customer responsibility" }]}
+          />
         </div>
         <Button type="submit" variant="secondary" size="sm" className="mb-px">
           Filter

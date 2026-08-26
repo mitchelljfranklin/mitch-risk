@@ -57,3 +57,6 @@ next-env.d.ts
 # vitepress docs build output
 /docs/.vitepress/dist
 /docs/.vitepress/cache
+
+# AuditChecks
+AuditNonSync.md

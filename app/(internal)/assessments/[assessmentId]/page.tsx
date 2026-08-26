@@ -16,6 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ProgressBar } from "@/components/progress-bar";
+import { PendingLink } from "@/components/pending-link";
 import { prisma } from "@/lib/prisma";
 import {
   deleteAssessmentAction,
@@ -253,13 +254,12 @@ export default async function AssessmentDetailPage({
             assessment.status === "UNDER_REVIEW" ||
             assessment.status === "COMPLETED" ? (
               <Button asChild variant="outline" size="sm">
-                <a
+                <PendingLink
                   href={`/api/assessments/${assessment.id}/pdf`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  pendingLabel="Preparing report…"
                 >
                   Download PDF
-                </a>
+                </PendingLink>
               </Button>
             ) : null}
             {canDelete ? (
@@ -583,20 +583,28 @@ export default async function AssessmentDetailPage({
                 </div>
               </>
             ) : null}
-            {assessment.questions.map((question) => {
+            {assessment.questions.map((question, questionIndex) => {
               const response = responsesByQuestion.get(question.id);
               if (!matchesReviewFilter(response)) {
                 return null;
               }
+              const prevQuestion = assessment.questions[questionIndex - 1];
+              const showSectionHeader =
+                questionIndex === 0 ||
+                prevQuestion.sectionTitle !== question.sectionTitle;
               const review = response?.review;
               const questionComments =
                 commentsByQuestion.get(question.id) ?? [];
               const topLevelComments = questionComments.filter(
                 (comment) => !comment.parentId,
               );
-
               return (
-                <div key={question.id} className="rounded-md border p-3">
+                <div key={question.id} className="contents">
+                  {showSectionHeader ? (
+                    <h3 className="text-muted-foreground mt-4 border-b pb-1 text-xs font-semibold tracking-wide uppercase first:mt-0">
+                      {question.sectionTitle}
+                    </h3>
+                  ) : null}
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge variant="outline" className="text-xs">
                       {question.sectionTitle}

@@ -146,12 +146,14 @@ export async function uploadEvidenceAction(
   };
 }
 
-export async function submitPortalAction(
-  token: string,
-): Promise<{ ok: boolean; missing: number }> {
+export async function submitPortalAction(token: string): Promise<{
+  ok: boolean;
+  missing: number;
+  missingQuestionIds: string[];
+}> {
   const { portalSubmitPerMin } = await getAssessmentSettings();
   if (!rateLimit("submit", token, portalSubmitPerMin)) {
-    return { ok: false, missing: -1 };
+    return { ok: false, missing: -1, missingQuestionIds: [] };
   }
 
   const result = await submitAssessment(token);
@@ -214,13 +216,20 @@ export async function submitPortalAction(
   return result;
 }
 
+const COMMENT_MAX_LENGTH = 2000;
+
 export async function vendorAddCommentAction(
   token: string,
   assessmentQuestionId: string,
   body: string,
 ): Promise<{ ok: boolean }> {
   const trimmed = body.trim();
-  if (!trimmed) {
+  if (!trimmed || trimmed.length > COMMENT_MAX_LENGTH) {
+    return { ok: false };
+  }
+
+  const { portalCommentPerMin } = await getAssessmentSettings();
+  if (!rateLimit("vendor-comment", token, portalCommentPerMin)) {
     return { ok: false };
   }
 

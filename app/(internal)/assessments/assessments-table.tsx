@@ -69,7 +69,7 @@ function stateToSortParam(state: SortingState): AssessmentSort {
 }
 
 const STATUS_ACCENT: Record<string, string> = {
-  SUBMITTED: "border-l-[var(--rag-amber)] bg-[var(--rag-amber)]/5",
+  SUBMITTED: "border-l-warning bg-warning/5",
   UNDER_REVIEW: "border-l-blue-500 bg-blue-50 dark:bg-blue-950/20",
   COMPLETED: "border-l-[var(--rag-green)] bg-[var(--rag-green)]/5",
 };

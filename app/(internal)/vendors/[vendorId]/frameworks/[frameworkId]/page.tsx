@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ComplianceRadar } from "@/components/compliance-radar";
 import { EmptyState } from "@/components/empty-state";
+import { PendingLink } from "@/components/pending-link";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getVendorDomainRadar, getVendorHeatmap } from "@/lib/db/compliance";
@@ -83,13 +84,12 @@ export default async function VendorHeatmapPage({
         </div>
         {controls.length > 0 ? (
           <Button asChild variant="outline" size="sm">
-            <a
+            <PendingLink
               href={`/api/vendors/${vendorId}/frameworks/${frameworkId}/report`}
-              target="_blank"
-              rel="noopener noreferrer"
+              pendingLabel="Preparing report…"
             >
               Download PDF report
-            </a>
+            </PendingLink>
           </Button>
         ) : null}
       </div>
