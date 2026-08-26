@@ -538,6 +538,20 @@ from the catalog and role defaults).
   under `app\portal\[token]\` with `-Path "app\portal\[token]\page.tsx"` matches nothing,
   silently. Use `-LiteralPath` (and `Get-Content -LiteralPath`) for any path containing
   brackets; this has caused false "file doesn't contain X" conclusions during audits.
+- **PowerShell string pipelines corrupt non-ASCII characters in source files.**
+  `Get-Content` / `-replace` / `Set-Content` decode UTF-8 as Windows-1252, turning
+  `·`, `—`, `→`, `←` into `Â·`/`â€"`-style mojibake; several shipped source lines were
+  damaged this way (an assessments-table due-date placeholder rendered garbled in the UI).
+  Rules: never round-trip file text through PowerShell string ops — if a scripted edit is
+  unavoidable, use `[IO.File]::ReadAllText`/`WriteAllText` with explicit UTF-8 and
+  `[Text.UTF8Encoding]::new($false)`; commit-message/pr-body files likewise. `lib/no-mojibake.test.ts`
+  now scans `app/ components/ emails/ hooks/ lib/` on every test run and fails on any
+  cp1252-mojibake sequence — extend its patterns rather than bypassing it. Note the Grep
+  search tool cannot detect these sequences (it decodes differently); verify encoding with
+  byte/codepoint inspection (`[int][char]`) when corruption is suspected. Two extra traps:
+  JS replacement strings like `"\\u2014"` insert the LITERAL escape text (JSX attributes
+  render it verbatim) — always write real characters; and JSX attribute values never
+  process `\uXXXX` escapes, unlike JS string literals.
 - If `tsc` reports parse errors inside `.next/dev/types/routes.d.ts`, delete `.next` and rebuild —
   a killed dev server can leave the generated route types corrupted.
 - `npm install` rewrites `package.json`; if that leaves it flagged by `format:check`, it's a

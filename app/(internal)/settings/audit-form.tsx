@@ -77,7 +77,7 @@ function formatMeta(meta: Prisma.JsonValue): string {
   if (typeof record.message === "string" && record.message) {
     parts.push(record.message);
   }
-  return parts.join(" Â· ") || JSON.stringify(record);
+  return parts.join(" · ") || JSON.stringify(record);
 }
 
 type AuditFormProps = {
@@ -300,7 +300,7 @@ export function AuditForm({
                             {log.entityName ?? "Deleted"}
                           </Link>
                         ) : (
-                          <span>{log.entityType ?? "â€”"}</span>
+                          <span>{log.entityType ?? "—"}</span>
                         )}
                         {log.meta ? (
                           <span className="text-muted-foreground/60">

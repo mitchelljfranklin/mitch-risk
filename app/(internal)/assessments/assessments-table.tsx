@@ -115,7 +115,7 @@ export function AssessmentsTable({
       accessorKey: "title",
       enableSorting: true,
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Assessment Â· Vendor" />
+        <DataTableColumnHeader column={column} title="Assessment · Vendor" />
       ),
       cell: ({ row }) => {
         const assessment = row.original;
@@ -134,11 +134,11 @@ export function AssessmentsTable({
             <span className="text-muted-foreground block truncate text-xs">
               {assessment.vendorName}
               {assessment.templateName
-                ? ` Â· ${assessment.templateName} v${assessment.templateVersion}`
+                ? ` · ${assessment.templateName} v${assessment.templateVersion}`
                 : ""}
               {assessment.dueDate ? (
                 <span className={overdue ? "text-[var(--rag-red)]" : ""}>
-                  {` Â· due ${formatDate(assessment.dueDate)}`}
+                  {` · due ${formatDate(assessment.dueDate)}`}
                 </span>
               ) : (
                 ""
@@ -194,7 +194,7 @@ export function AssessmentsTable({
       ),
       cell: ({ row }) => (
         <span className="text-muted-foreground text-xs">
-          {row.original.dueDate ? formatDate(row.original.dueDate) : "â€”"}
+          {row.original.dueDate ? formatDate(row.original.dueDate) : "—"}
         </span>
       ),
     },

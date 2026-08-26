@@ -140,7 +140,7 @@ function ChecklistCard({
             </Button>
           </div>
           <span className="text-muted-foreground shrink-0 text-xs">
-            {completed} of {total} Â· {percent}%
+            {completed} of {total} · {percent}%
           </span>
         </div>
         <ProgressBar
@@ -206,7 +206,7 @@ function ActionRow({
       `${existingAttachments.length} file${existingAttachments.length !== 1 ? "s" : ""}`,
     );
   }
-  const metaLine = metaParts.length > 0 ? metaParts.join(" Â· ") : null;
+  const metaLine = metaParts.length > 0 ? metaParts.join(" · ") : null;
 
   return (
     <div className="px-3 py-2.5">

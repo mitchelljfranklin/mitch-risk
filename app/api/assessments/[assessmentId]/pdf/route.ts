@@ -19,7 +19,7 @@ export async function GET(
   if (
     !rateLimit("pdf-report", auth.userId ?? "anonymous", PDF_REPORTS_PER_MIN)
   ) {
-    return new Response("Too many requests â€” try again shortly.", {
+    return new Response("Too many requests — try again shortly.", {
       status: 429,
     });
   }

@@ -190,7 +190,7 @@ export function BulkSendForm({
 
         <StepperNext asChild>
           <Button size="sm" className="w-fit" disabled={!templateId}>
-            Next â†’
+            Next →
           </Button>
         </StepperNext>
       </StepperContent>
@@ -260,12 +260,12 @@ export function BulkSendForm({
         <div className="flex items-center gap-3">
           <StepperPrevious asChild>
             <Button variant="outline" size="sm">
-              â† Back
+              ← Back
             </Button>
           </StepperPrevious>
           <StepperNext asChild>
             <Button size="sm" disabled={selectedIds.size === 0}>
-              Next â†’
+              Next →
             </Button>
           </StepperNext>
         </div>
@@ -286,9 +286,9 @@ export function BulkSendForm({
             <p className="text-muted-foreground mt-1 text-xs">
               Due: {dueDate}
               {reviewerId
-                ? ` Â· Reviewer: ${reviewers.find((reviewer) => reviewer.id === reviewerId)?.label ?? reviewerId}`
+                ? ` · Reviewer: ${reviewers.find((reviewer) => reviewer.id === reviewerId)?.label ?? reviewerId}`
                 : ""}
-              {portalPassword ? " Â· Portal password set" : ""}
+              {portalPassword ? " · Portal password set" : ""}
             </p>
           ) : null}
           <div className="mt-3 flex flex-wrap gap-1">
@@ -308,7 +308,7 @@ export function BulkSendForm({
         <div className="flex items-center gap-3">
           <StepperPrevious asChild>
             <Button variant="outline" size="sm">
-              â† Back
+              ← Back
             </Button>
           </StepperPrevious>
           <Button
