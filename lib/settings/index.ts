@@ -352,12 +352,16 @@ export async function updateStorageSettings(
   );
 }
 
+// Accepts a partial update: stored values are merged over so callers can
+// change only the fields their form owns without resetting the rest.
 export async function updateAssessmentSettings(
-  input: AssessmentSettings,
+  input: Partial<AssessmentSettings>,
 ): Promise<void> {
+  const record = await readCategoryRecord("assessments");
+  const merged = assessmentSettingsSchema.parse(record);
   await persistCategory(
     "assessments",
-    input as unknown as Record<string, unknown>,
+    { ...merged, ...input } as unknown as Record<string, unknown>,
     NO_SECRETS,
   );
 }

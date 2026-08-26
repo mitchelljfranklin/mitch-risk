@@ -459,6 +459,7 @@ export default async function SettingsPage({
                 portalPageLoadsPerMin={assessment.portalPageLoadsPerMin}
                 portalUploadsPerMin={assessment.portalUploadsPerMin}
                 portalSubmitPerMin={assessment.portalSubmitPerMin}
+                portalCommentPerMin={assessment.portalCommentPerMin}
                 portalPasswordAttemptsPerMin={
                   assessment.portalPasswordAttemptsPerMin
                 }

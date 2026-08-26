@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { saveSchedulingSettings } from "./actions";
+import { saveLimitsSettings } from "./actions";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
 
 type LimitsFormProps = {
@@ -19,6 +19,7 @@ type LimitsFormProps = {
   portalPageLoadsPerMin: number;
   portalUploadsPerMin: number;
   portalSubmitPerMin: number;
+  portalCommentPerMin: number;
   portalPasswordAttemptsPerMin: number;
   passwordResetPerMin: number;
   breakGlassPerMin: number;
@@ -39,6 +40,11 @@ const RATE_LIMIT_FIELDS = [
     name: "portalSubmitPerMin",
     label: "Portal submissions / min (per link)",
     help: "Maximum submit attempts for a single questionnaire link.",
+  },
+  {
+    name: "portalCommentPerMin",
+    label: "Portal comments / min (per link)",
+    help: "Maximum comments a vendor can post on a single questionnaire link.",
   },
   {
     name: "portalPasswordAttemptsPerMin",
@@ -80,12 +86,13 @@ export function LimitsForm({
   portalPageLoadsPerMin,
   portalUploadsPerMin,
   portalSubmitPerMin,
+  portalCommentPerMin,
   portalPasswordAttemptsPerMin,
   passwordResetPerMin,
   breakGlassPerMin,
 }: LimitsFormProps) {
   const [state, action, isPending] = useActionState(
-    saveSchedulingSettings,
+    saveLimitsSettings,
     undefined,
   );
   useActionFeedback(state);
@@ -94,6 +101,7 @@ export function LimitsForm({
     portalPageLoadsPerMin,
     portalUploadsPerMin,
     portalSubmitPerMin,
+    portalCommentPerMin,
     portalPasswordAttemptsPerMin,
     passwordResetPerMin,
     breakGlassPerMin,
