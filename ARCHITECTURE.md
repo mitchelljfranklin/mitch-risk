@@ -758,12 +758,18 @@ if (response.isNotApplicable) {
   isCompliant = null
 } else {
   isCompliant = checkCompliance(type, value, expectedAnswer)
+  // For MULTIPLE_CHOICE and COMBOBOX, expectedAnswer may be an array
+  // (any-of): isCompliant = acceptedAnswers.includes(value)
+  // For YES_NO, equals/notEquals are case-insensitive.
   weight = riskWeights[question.riskWeight]   // CRITICAL=10, HIGH=6, MEDIUM=3, LOW=1
   weightedScore = isCompliant ? weight : 0
   maxScore = isCompliant === null ? 0 : weight   // unscorable = excluded
 }
 
 // Assessment total score:
+// Responses are batched by identical result tuples and written via
+// updateMany (not per-row), keeping round-trips proportional to distinct
+// outcomes rather than question count.
 totalScore = sum(weightedScore) / sum(maxScore)   // 0–1 ratio
 
 // RAG classification:
@@ -987,6 +993,11 @@ The vendor portal is a **no-login**, token-based experience. No vendor account i
                                     │  • Re-clarification (IN_PROGRESS) │
                                     └──────────────────────────────────┘
 ```
+
+Multi-section questionnaires are presented one section per page with
+Back/Continue navigation and a review page before final submission.
+Single-section templates render as a continuous scroll. Conditional logic
+`equals`/`notEquals` comparisons are case-insensitive.
 
 ### 8.3 Conditional Question Logic
 
@@ -2059,6 +2070,7 @@ lib/                          Business logic
   schemas/                    Zod validation schemas
   settings/                   DB-backed configuration
   storage/                    File storage provider (local/S3/Azure)
+    orphan-sweep.ts           Orphan file classification (pure, unit-tested)
   auth.ts                     NextAuth v5 config + guards
   permissions.ts              RBAC catalog + helpers
   scoring.ts                  Auto-scoring algorithm
@@ -2077,6 +2089,7 @@ lib/                          Business logic
   framework-report.tsx        @react-pdf/renderer framework compliance report
   portfolio-report.tsx        @react-pdf/renderer portfolio report
   nav.ts                      ?back= / ?tab= navigation-state helpers
+  radar-labels.ts             Short axis labels for compliance radar
   openapi.json                OpenAPI 3.0 specification
   theme-tokens.tsx            CSS variable injection
   utils.ts                    cn(), formatDate(), etc.

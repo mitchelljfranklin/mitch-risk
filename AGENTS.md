@@ -79,6 +79,7 @@ components/          # shadcn ui primitives + domain composites
   view-toggle.tsx    # cookie-backed rows/cards view switcher
   vendor-form.tsx    # vendor create/edit form
   auto-submit-select.tsx # select that auto-submits form on change
+  pending-link.tsx   # link with spinner feedback for slow server-side generation
   page-main.tsx      # client wrapper for full-width dashboard
   assessment-timeline.tsx # interactive activity area chart
   permission-selector.tsx # grouped permission checkboxes (API key scoping, role editing)
@@ -174,8 +175,10 @@ lib/                 # cross-cutting logic
   view-preference.ts # cookie-backed view preference (rows/cards)
   webhooks.ts        # HMAC-signed webhook dispatch to configured endpoints
   compare.ts         # assessment comparison helper (ResponseDiff, compliance change detection)
+  radar-labels.ts    # short axis label generation for compliance radar (dedup, collision-safe)
   storage/           # file storage interface (save/read/delete/list)
                      #   local-disk, s3.ts (AWS S3), azure.ts (Azure Blob)
+                     #   orphan-sweep.ts (cron orphan classification — pure, unit-tested)
 hooks/              # React hooks (use-form-toast, use-action-feedback, use-mobile)
 emails/              # React Email templates (invite, reminder, escalation, dynamic)
 prisma/              # schema.prisma, migrations, seed.ts, seed-runner.cjs, seed-demo.ts, seed-radar-demo.ts
