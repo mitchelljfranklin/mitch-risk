@@ -8,6 +8,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { requireAnyPermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
+import { buildFilterQueryString } from "@/lib/nav";
 import { listAuditLogs, listAuditActions } from "@/lib/db/audit";
 import { listStaffAccounts } from "@/lib/db/users";
 import { listRoles } from "@/lib/db/roles";
@@ -180,6 +181,20 @@ export default async function SettingsPage({
     toDate: sp.toDate,
     page: sp.emailLogPage ? parseInt(sp.emailLogPage) : 1,
     pageSize: sp.emailLogPageSize ? parseInt(sp.emailLogPageSize) : undefined,
+  });
+
+  const auditFilterQuery = buildFilterQueryString({
+    action: sp.action,
+    userId: sp.userId,
+    fromDate: sp.fromDate,
+    toDate: sp.toDate,
+  });
+  const emailFilterQuery = buildFilterQueryString({
+    status: sp.status,
+    type: sp.type,
+    recipient: sp.recipient,
+    fromDate: sp.fromDate,
+    toDate: sp.toDate,
   });
 
   const emailLogStatuses = ["SENT", "FAILED"];
@@ -391,6 +406,7 @@ export default async function SettingsPage({
                 result={emailLogs}
                 statuses={emailLogStatuses}
                 types={emailLogTypes}
+                filterQuery={emailFilterQuery}
               />
             </CardContent>
           </Card>
@@ -560,7 +576,12 @@ export default async function SettingsPage({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <AuditForm result={auditLogs} actions={actions} users={users} />
+              <AuditForm
+                result={auditLogs}
+                actions={actions}
+                users={users}
+                filterQuery={auditFilterQuery}
+              />
             </CardContent>
           </Card>
         </TabsContent>

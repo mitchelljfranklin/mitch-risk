@@ -581,12 +581,21 @@ export async function getDashboardData() {
           : "stable"
       : "stable";
 
+  const assessmentCountGroups = await prisma.assessment.groupBy({
+    by: ["vendorId"],
+    _count: { _all: true },
+  });
+  const assessmentCountByVendor = new Map(
+    assessmentCountGroups.map((group) => [group.vendorId, group._count._all]),
+  );
+
   const portfolio = allVendors.map((vendor) => ({
     id: vendor.id,
     name: vendor.name,
     tier: vendor.tier,
     overallScore: vendor.overallScore,
     overdueCount: vendor._count.assessments,
+    assessmentCount: assessmentCountByVendor.get(vendor.id) ?? 0,
     latestAssessmentTitle: vendor.assessments[0]?.title ?? null,
     latestAssessmentDate: vendor.assessments[0]?.createdAt ?? null,
   }));

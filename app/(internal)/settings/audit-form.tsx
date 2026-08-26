@@ -84,6 +84,7 @@ type AuditFormProps = {
   result: AuditLogResult;
   actions: string[];
   users: { id: string; name: string }[];
+  filterQuery: string;
 };
 
 const ACTION_VARIANT: Record<
@@ -105,7 +106,12 @@ const ACTION_VARIANT: Record<
   API_KEY_DELETED: "destructive",
 };
 
-export function AuditForm({ result, actions, users }: AuditFormProps) {
+export function AuditForm({
+  result,
+  actions,
+  users,
+  filterQuery,
+}: AuditFormProps) {
   const { entries, totalCount, page, pageSize } = result;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
   const searchParams = useSearchParams();
@@ -114,6 +120,8 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
     Boolean(searchParams.get("userId")) ||
     Boolean(searchParams.get("fromDate")) ||
     Boolean(searchParams.get("toDate"));
+  const pageHref = (targetPage: number) =>
+    `/settings?tab=audit&${filterQuery ? `${filterQuery}&` : ""}auditPage=${targetPage}&auditPageSize=${pageSize}`;
 
   return (
     <div className="flex flex-col gap-6">
@@ -313,7 +321,7 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
             <div className="flex items-center gap-2">
               <Button asChild variant="outline" size="sm" disabled={page <= 1}>
                 <a
-                  href={`/settings?tab=audit&auditPage=${page - 1}&auditPageSize=${pageSize}`}
+                  href={pageHref(page - 1)}
                   onClick={(event) => {
                     if (page <= 1) event.preventDefault();
                   }}
@@ -328,7 +336,7 @@ export function AuditForm({ result, actions, users }: AuditFormProps) {
                 disabled={page >= totalPages}
               >
                 <a
-                  href={`/settings?tab=audit&auditPage=${page + 1}&auditPageSize=${pageSize}`}
+                  href={pageHref(page + 1)}
                   onClick={(event) => {
                     if (page >= totalPages) event.preventDefault();
                   }}

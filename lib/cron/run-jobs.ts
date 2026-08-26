@@ -43,9 +43,29 @@ function notificationKeyOf(key: NotificationDedupeKey): string {
   ]);
 }
 
+// Base identity of a dedupe key: everything except the subject. Subject is
+// matched separately because cert/contract expiry keys carry one (their log
+// rows are tagged per expiry window) while reminder/escalation keys do not.
+function dedupeBaseKeyOf(key: NotificationDedupeKey): string {
+  return JSON.stringify([
+    key.assessmentId ?? null,
+    key.type,
+    key.sentTo ?? null,
+  ]);
+}
+
 // One batched lookup replaces a per-item findFirst across the reminder,
 // escalation, and expiry loops.
-async function findSentNotificationKeys(
+//
+// A key counts as "already sent" when its base fields match a stored row AND:
+//   - the key carries no subject (reminders, escalations) -> any stored
+//     subject matches, or
+//   - the key carries a subject (expiry windows) -> only that exact subject
+//     matches.
+// Both sides must be normalised through this same rule; comparing raw
+// serialisations silently fails whenever one side omits subject and the
+// other stores a real email subject line.
+export async function findSentNotificationKeys(
   keys: NotificationDedupeKey[],
 ): Promise<Set<string>> {
   if (keys.length === 0) return new Set();
@@ -67,22 +87,39 @@ async function findSentNotificationKeys(
       status: true,
     },
   });
-  const presentRows = new Set(
-    rows.map((row) =>
-      notificationKeyOf({
-        assessmentId: row.assessmentId ?? undefined,
-        type: row.type,
-        sentTo: row.sentTo ?? undefined,
-        subject: row.subject ?? undefined,
-        status: row.status ?? undefined,
-      }),
-    ),
-  );
-  return new Set(
-    keys
-      .map(notificationKeyOf)
-      .filter((serialized) => presentRows.has(serialized)),
-  );
+
+  const storedByBaseKey = new Map<
+    string,
+    { statuses: Set<string>; subjects: Set<string> }
+  >();
+  for (const row of rows) {
+    const baseKey = dedupeBaseKeyOf({
+      assessmentId: row.assessmentId ?? undefined,
+      type: row.type,
+      sentTo: row.sentTo,
+    });
+    let entry = storedByBaseKey.get(baseKey);
+    if (!entry) {
+      entry = { statuses: new Set(), subjects: new Set() };
+      storedByBaseKey.set(baseKey, entry);
+    }
+    if (row.status !== null) entry.statuses.add(row.status);
+    if (row.subject !== null) entry.subjects.add(row.subject);
+  }
+
+  const sentKeys = new Set<string>();
+  for (const key of keys) {
+    const stored = storedByBaseKey.get(dedupeBaseKeyOf(key));
+    if (!stored) continue;
+    const statusMatches =
+      key.status === undefined || stored.statuses.has(key.status);
+    const subjectMatches =
+      key.subject === undefined || stored.subjects.has(key.subject);
+    if (statusMatches && subjectMatches) {
+      sentKeys.add(notificationKeyOf(key));
+    }
+  }
+  return sentKeys;
 }
 
 // Runs every scheduled job once: reminders, escalations, expiry notices,

@@ -28,6 +28,7 @@ type EmailTrackingFormProps = {
   result: EmailLogResult;
   statuses: string[];
   types: string[];
+  filterQuery: string;
 };
 
 const TYPE_VARIANT: Record<
@@ -44,6 +45,7 @@ export function EmailTrackingForm({
   result,
   statuses,
   types,
+  filterQuery,
 }: EmailTrackingFormProps) {
   const { entries, totalCount, page, pageSize } = result;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
@@ -54,6 +56,8 @@ export function EmailTrackingForm({
     Boolean(searchParams.get("recipient")) ||
     Boolean(searchParams.get("fromDate")) ||
     Boolean(searchParams.get("toDate"));
+  const pageHref = (targetPage: number) =>
+    `/settings?tab=email-tracking&${filterQuery ? `${filterQuery}&` : ""}emailLogPage=${targetPage}&emailLogPageSize=${pageSize}`;
 
   return (
     <div className="flex flex-col gap-6">
@@ -197,7 +201,7 @@ export function EmailTrackingForm({
             <div className="flex items-center gap-2">
               <Button asChild variant="outline" size="sm" disabled={page <= 1}>
                 <a
-                  href={`/settings?tab=email-tracking&emailLogPage=${page - 1}&emailLogPageSize=${pageSize}`}
+                  href={pageHref(page - 1)}
                   onClick={(event) => {
                     if (page <= 1) event.preventDefault();
                   }}
@@ -212,7 +216,7 @@ export function EmailTrackingForm({
                 disabled={page >= totalPages}
               >
                 <a
-                  href={`/settings?tab=email-tracking&emailLogPage=${page + 1}&emailLogPageSize=${pageSize}`}
+                  href={pageHref(page + 1)}
                   onClick={(event) => {
                     if (page >= totalPages) event.preventDefault();
                   }}
