@@ -24,6 +24,7 @@ import {
   getAuditRetention,
   getEmailLogRetention,
   getStorageSettings,
+  getCronSettings,
 } from "@/lib/settings";
 import { getBreakGlassHash, getSsoSecretConfigured } from "@/lib/settings";
 import { listWebhookEndpoints } from "@/lib/db/webhooks";
@@ -146,6 +147,7 @@ export default async function SettingsPage({
     cronLastRunRow && typeof cronLastRunRow.value === "string"
       ? cronLastRunRow.value
       : null;
+  const cronSettings = await getCronSettings();
 
   const users = staffAccounts.map((account) => ({
     id: account.id,
@@ -431,6 +433,7 @@ export default async function SettingsPage({
                 escalationAfterDays={assessment.escalationAfterDays}
                 defaultDueInDays={assessment.defaultDueInDays}
                 cronLastRun={cronLastRun}
+                internalSchedulerEnabled={cronSettings.internalSchedulerEnabled}
               />
             </CardContent>
           </Card>

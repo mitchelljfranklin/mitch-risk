@@ -179,3 +179,9 @@ export const storageSettingsSchema = z.object({
 });
 
 export type StorageSettings = z.infer<typeof storageSettingsSchema>;
+
+export const cronSettingsSchema = z.object({
+  internalSchedulerEnabled: z.boolean().default(true),
+});
+
+export type CronSettings = z.infer<typeof cronSettingsSchema>;

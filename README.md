@@ -250,7 +250,9 @@ server {
 
 ## Operations
 
-### Cron
+### Scheduled jobs
+
+Jobs run inside the app by default — every five minutes, no external scheduler needed. Check **Settings → Scheduling** for the last run time; disable the built-in scheduler there if you'd rather trigger externally:
 
 ```bash
 curl -H "x-cron-secret: $CRON_SECRET" http://localhost:3000/api/cron/run

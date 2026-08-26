@@ -862,4 +862,4 @@ The platform provides mechanics (controls mapping, scoring, findings, audit trai
 This document is maintained as part of the Mitch‑Risk project. Security findings should be reported via the project's issue tracker.
 
 **Last reviewed:** August 2026
-**App version:** 1.2.0
+**App version:** 1.3.0

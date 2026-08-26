@@ -212,11 +212,13 @@ Migrations run automatically on container start (`prisma migrate deploy`).
 The in-memory rate limiter is per-process — correct for single-container deployment. If you scale the app horizontally:
 - Add a shared Redis instance for rate limiting
 - Set `TRUSTED_PROXY_COUNT` correctly for all proxy hops
-- Cron jobs should only run from one instance
+- Scheduled jobs should only run from one instance (leave the built-in scheduler enabled on one instance only, or disable it everywhere and use external scheduling)
 
-## Scheduled Tasks (Cron)
+## Scheduled Tasks
 
-Schedule a system cron to hit the secured endpoint:
+Scheduled jobs run **inside the app by default** — every five minutes the application checks for due work itself; no host crontab or external scheduler is required. Verify under Settings → Scheduling ("Last scheduled run"), where you can also disable the built-in scheduler.
+
+If you prefer external scheduling, disable the built-in scheduler in Settings → Scheduling and point a system cron at the secured endpoint:
 
 ```bash
 # Every 5 minutes

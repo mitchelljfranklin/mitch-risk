@@ -26,7 +26,7 @@ over sprawling configuration. Do not add features that are not in the plan witho
 - **Swagger UI (CDN)** — interactive API documentation at `/docs` (Phase 29)
 - **bcryptjs** — user password hashing and API key hashing
 - **Local-disk volume** — evidence file storage behind a storage interface (save/read/delete/list; S3 and Azure Blob swappable via in-app Settings); files served only via an authenticated route
-- **System cron -> secured `/api/cron/run`** — reminders, escalations, recurring assessments, audit-log & email-log pruning, orphaned-file sweep
+- **Built-in scheduler (default) -> `lib/scheduler.ts` via `instrumentation.ts`** — every 5 minutes: reminders, escalations, recurring assessments, audit-log & email-log pruning, orphaned-file sweep. Toggle in Settings → Scheduling; optional external triggering via secured `/api/cron/run`
 - **Docker Compose** (app + Postgres), reverse proxy (Caddy/nginx) for TLS — self-hosted
 
 ## Repository layout (created during Phase 0)
@@ -166,6 +166,7 @@ lib/                 # cross-cutting logic
   prisma.ts          # shared Prisma client instance
   rate-limit.ts      # in-memory fixed-window rate limiter
   scoring.ts         # weighted scoring engine + compliance checker
+  scheduler.ts       # built-in cron: interval tick + overlap lock + runScheduledJobsOnce()
   session.ts         # computeSessionExpiry() — JWT `exp` sliding-window helper
   theme-tokens.tsx   # server-rendered CSS variable injection (brand colours)
   timing-safe.ts     # constant-time string comparison

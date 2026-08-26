@@ -36,9 +36,13 @@ Deleting a vendor or assessment deletes all associated evidence files and attach
 
 Set a recurrence schedule (Quarterly or Annual) when creating an assessment. The cron job automatically creates the next assessment when the current one completes or when the next scheduled date arrives. Each recurrence uses the same template and vendor.
 
-## What does the cron job do?
+## Do I need to set up a cron job?
 
-The cron endpoint (`/api/cron/run`) triggers:
+No. The application runs its own scheduler by default — every five minutes it processes reminders, escalations, expiry notices, recurring assessments, log pruning, and file cleanup on its own. Check **Settings → Scheduling** to see when jobs last ran. External scheduling via the `/api/cron/run` endpoint remains available if you prefer to drive it yourself.
+
+## What do the scheduled jobs do?
+
+The scheduler (built in by default, or the secured `/api/cron/run` endpoint) triggers:
 - Vendor reminder emails (based on assessment due date and reminder offset)
 - Escalation emails to reviewers for overdue assessments
 - Recurring assessment creation

@@ -1,6 +1,6 @@
 # Mitch‑Risk — Architecture Solution Design Document
 
-> **Version:** 1.2.0  
+> **Version:** 1.3.0  
 > **Last Updated:** August 2026  
 > **Audience:** Engineering, Security, Operations  
 > **Status:** Approved
@@ -1560,20 +1560,27 @@ Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()
 
 ### 14.1 Trigger Mechanism
 
+Scheduled jobs run **inside the app by default**: `instrumentation.ts` starts a scheduler on server boot (`lib/scheduler.ts`) that ticks every five minutes, re-reading the `internalSchedulerEnabled` setting each tick so admins can disable it from Settings → Scheduling without a restart. An in-process lock (`runScheduledJobsOnce()`) ensures the internal tick and the API endpoint never execute jobs concurrently — the second caller receives `409` instead of running a duplicate.
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                      CRON ARCHITECTURE                           │
 │                                                                  │
-│  External scheduler (system cron, Kubernetes CronJob, etc.)      │
+│  Trigger A: internal scheduler (default)                         │
+│    instrumentation.ts → lib/scheduler.ts → tick every 5 min      │
+│    (skips silently when internalSchedulerEnabled = false)        │
+│                                                                  │
+│  Trigger B: external scheduler (optional, system cron etc.)      │
 │       │                                                          │
 │       │  GET /api/cron/run                                       │
 │       │  Header: X-Cron-Secret: <CRON_SECRET>                    │
 │       ▼                                                          │
 │  ┌─────────────────────────────────────────────────────────┐    │
-│  │  app/api/cron/run/route.ts                                  │ │
+│  │  app/api/cron/run/route.ts + lib/cron/run-jobs.ts           │ │
 │  │                                                              │ │
-│  │  1. Validate CRON_SECRET via timing-safe comparison         │ │
-│  │  2. Run all jobs sequentially:                               │ │
+│  │  1. Validate CRON_SECRET via timing-safe comparison          │ │
+│  │  2. Acquire in-process run lock (409 if already running)     │ │
+│  │  3. Run all jobs sequentially:                               │ │
 │  └─────────────────────────────────────────────────────────┘    │
 │       │                                                          │
 │       ▼                                                          │

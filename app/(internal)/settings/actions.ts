@@ -705,11 +705,16 @@ export async function saveSchedulingSettings(
     updateFileSettings,
     updateAuditRetention,
     updateEmailLogRetention,
+    updateCronSettings,
   } = await import("@/lib/settings");
 
   await Promise.all([
     updateAuditRetention(auditRetention),
     updateEmailLogRetention(emailLogRetention),
+    updateCronSettings({
+      internalSchedulerEnabled:
+        formData.get("internalSchedulerEnabled") === "on",
+    }),
     updateAssessmentSettings({
       reminderOffsetDays: reminders.length > 0 ? reminders : [7, 1],
       escalationAfterDays: escalationDays,

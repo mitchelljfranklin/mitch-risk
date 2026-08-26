@@ -14,6 +14,7 @@ import {
   type SsoSettings,
   type AppearanceSettings,
   type StorageSettings,
+  type CronSettings,
   assessmentSettingsSchema,
   emailSettingsSchema,
   emailTemplateSchema,
@@ -23,6 +24,7 @@ import {
   ssoSettingsSchema,
   appearanceSettingsSchema,
   storageSettingsSchema,
+  cronSettingsSchema,
 } from "./schema";
 
 function makeKey(category: string, field: string): string {
@@ -366,6 +368,18 @@ export async function updateFileSettings(input: FileSettings): Promise<void> {
     input as unknown as Record<string, unknown>,
     NO_SECRETS,
   );
+}
+
+// Not cache(): the scheduler tick must re-read the toggle each run so
+// disabling it in Settings takes effect without a restart. The "cron"
+// category also holds cron.lastRun; zod strips that unknown key.
+export async function getCronSettings(): Promise<CronSettings> {
+  const record = await readCategoryRecord("cron");
+  return cronSettingsSchema.parse(record);
+}
+
+export async function updateCronSettings(input: CronSettings): Promise<void> {
+  await persistCategory("cron", input, NO_SECRETS);
 }
 
 export async function getAuditRetention(): Promise<number> {

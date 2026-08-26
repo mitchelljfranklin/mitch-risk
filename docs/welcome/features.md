@@ -140,9 +140,9 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 - **Email tracking** tab with filterable sent/failed log and retry button
 - **Test SMTP** button to verify configuration
 
-## Automation (Cron)
+## Automation
 
-- **Secured endpoint** — `POST /api/cron/run` with `CRON_SECRET` header
+- **Built-in scheduler** — runs every five minutes inside the app; no external cron required (optional external triggering via the secured `POST /api/cron/run` with `CRON_SECRET` header)
 - **Vendor reminders** at configurable offsets before due date
 - **Overdue escalation** with configurable threshold
 - **Recurring assessments** — quarterly, annually
