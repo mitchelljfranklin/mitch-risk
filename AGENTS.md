@@ -232,6 +232,16 @@ ones before declaring any phase complete.
 - **Apply new Prisma migrations to _both_ the dev DB and the test DB** (`prisma migrate deploy`
   against each; the test DB is `TEST_DATABASE_URL`) before running `npm run test`, or integration
   tests fail on missing columns.
+- **Never point `TEST_DATABASE_URL` at the dev/prod database — even with
+  `ALLOW_TESTS_ON_THIS_DB=1`.** Integration suites reset whole tables: the settings-isolation
+  suite snapshots-and-restores all of `app_settings`, but a wipe mid-run still takes the target
+  database down briefly, and other suites mutate rows in place. This bit us for real: runs
+  against dev erased live SMTP/branding/scoring settings. Standard setup:
+  `CREATE DATABASE mitch_risk_test;` then `$env:DATABASE_URL="postgresql://mitch:mitch@localhost:5432/mitch_risk_test?schema=public"; npx prisma migrate deploy`,
+  then run tests with `TEST_DATABASE_URL` pointing there and **no** override flag. The override
+  prints a loud banner when used — treat it as a last resort only. Any new integration test that
+  writes to `app_settings` (or another shared table) must snapshot before and restore after,
+  following `save-settings.integration.test.ts`.
 - **CI runs typecheck + lint + format:check + build on every push.** The same checks are available
   locally via `npm run precheck` (typecheck + lint + format:check). Run `npm run format` to auto-fix
   formatting issues before pushing — Prettier failures are the most common CI rejection.

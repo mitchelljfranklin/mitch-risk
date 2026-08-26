@@ -7,11 +7,14 @@ import { PERMISSIONS, SYSTEM_ROLE_NAMES } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 
 const ADMIN_EMAIL = "p50-admin@example.test";
+const SECOND_ADMIN_EMAIL = "p50-admin-2@example.test";
 const VIEWER_EMAIL = "p50-viewer@example.test";
 
 async function cleanup() {
   await prisma.user.deleteMany({
-    where: { email: { in: [ADMIN_EMAIL, VIEWER_EMAIL] } },
+    where: {
+      email: { in: [ADMIN_EMAIL, SECOND_ADMIN_EMAIL, VIEWER_EMAIL] },
+    },
   });
 }
 
@@ -63,14 +66,30 @@ describe("user delete (integration)", () => {
       admin.id,
       PERMISSIONS.SETTINGS_MANAGE,
     );
-    // There is at least one real admin in the dev DB besides this test admin.
-    expect(othersBefore).toBeGreaterThanOrEqual(1);
-
-    // Excluding a non-admin does not change the admin count meaningfully.
-    const selfExcluded = await countAdminsExcluding(
+    // Hermetic delta check: creating a second admin must raise the count of
+    // "other admins" by exactly one, regardless of what else the database
+    // contains (the suite must pass against an empty test DB too).
+    const beforeSecondAdmin = await countAdminsExcluding(
       admin.id,
       PERMISSIONS.SETTINGS_MANAGE,
     );
-    expect(selfExcluded).toBe(othersBefore);
+
+    const secondAdmin = await createUser({
+      name: "P50 Admin Two",
+      email: SECOND_ADMIN_EMAIL,
+      password: "correct-horse-battery-staple",
+      roleId: adminRole.id,
+    });
+
+    const afterSecondAdmin = await countAdminsExcluding(
+      admin.id,
+      PERMISSIONS.SETTINGS_MANAGE,
+    );
+    expect(afterSecondAdmin).toBe(beforeSecondAdmin + 1);
+
+    // Excluding the second admin still counts the first one.
+    expect(
+      await countAdminsExcluding(secondAdmin.id, PERMISSIONS.SETTINGS_MANAGE),
+    ).toBeGreaterThanOrEqual(1);
   });
 });

@@ -1,4 +1,12 @@
-import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 vi.mock("@/lib/auth", () => ({
   requirePermission: vi.fn().mockResolvedValue(undefined),
@@ -18,6 +26,57 @@ import {
   updateFileSettings,
 } from "@/lib/settings";
 import { saveLimitsSettings, saveSchedulingSettings } from "./actions";
+
+// Snapshot the whole settings table once and restore it before every test.
+// This suite must be safe to point at ANY database (including a populated
+// dev instance): a bare deleteMany({}) here previously wiped live SMTP,
+// branding, scoring and storage config when tests ran against dev.
+type AppSettingSnapshot = {
+  id: string;
+  category: string;
+  key: string;
+  value: unknown;
+  isSecret: boolean;
+};
+
+let settingsSnapshot: AppSettingSnapshot[] = [];
+
+async function restoreSettingsFromSnapshot(): Promise<void> {
+  await prisma.$transaction([
+    prisma.appSetting.deleteMany({}),
+    prisma.appSetting.createMany({
+      data: settingsSnapshot.map((setting) => ({
+        id: setting.id,
+        category: setting.category,
+        key: setting.key,
+        // Json columns reject undefined; the snapshot only holds real values.
+        value: setting.value as never,
+        isSecret: setting.isSecret,
+      })),
+    }),
+  ]);
+}
+
+beforeAll(async () => {
+  settingsSnapshot = await prisma.appSetting.findMany({
+    select: {
+      id: true,
+      category: true,
+      key: true,
+      value: true,
+      isSecret: true,
+    },
+  });
+});
+
+beforeEach(async () => {
+  await restoreSettingsFromSnapshot();
+});
+
+afterAll(async () => {
+  await restoreSettingsFromSnapshot();
+  await prisma.$disconnect();
+});
 
 function schedulingFormData(): FormData {
   const formData = new FormData();
@@ -46,14 +105,6 @@ function limitsFormData(): FormData {
   formData.set("breakGlassPerMin", "12");
   return formData;
 }
-
-beforeEach(async () => {
-  await prisma.appSetting.deleteMany({});
-});
-
-afterAll(async () => {
-  await prisma.$disconnect();
-});
 
 describe("settings save isolation (integration)", () => {
   it("saving scheduling leaves every limits-tab setting untouched", async () => {
