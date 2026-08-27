@@ -2,6 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { signOutAction } from "@/lib/actions/auth";
 
 type IdleTimerProps = {
@@ -82,23 +91,33 @@ export function IdleTimer({ timeoutMinutes }: IdleTimerProps) {
     };
   }, [countdown]);
 
+  function staySignedIn() {
+    lastActivityRef.current = Date.now();
+    countdownRef.current = 0;
+    setCountdown(0);
+  }
+
   if (timeoutMinutes <= 0 || countdown <= 0) return null;
 
   return (
-    <div
-      role="alertdialog"
-      aria-modal="true"
-      aria-label="Session expiring"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-    >
-      <div className="bg-background w-full max-w-sm rounded-lg border p-6 text-center shadow-xl">
-        <p className="text-lg font-semibold">Session expiring</p>
-        <p className="text-muted-foreground mt-2 text-sm" aria-live="assertive">
-          You will be signed out in {countdown} second
-          {countdown !== 1 ? "s" : ""} due to inactivity. Move your mouse or
-          press any key to stay signed in.
-        </p>
-      </div>
-    </div>
+    // Deliberately non-dismissable: Escape/outside clicks are ignored so the
+    // countdown cannot be hidden while the session is still about to expire.
+    <AlertDialog open>
+      <AlertDialogContent className="max-w-sm text-center">
+        <AlertDialogHeader>
+          <AlertDialogTitle>Session expiring</AlertDialogTitle>
+          <AlertDialogDescription aria-live="assertive">
+            You will be signed out in {countdown} second
+            {countdown !== 1 ? "s" : ""} due to inactivity. Move your mouse or
+            press any key to stay signed in.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter className="justify-center sm:justify-center">
+          <AlertDialogAction onClick={staySignedIn}>
+            Stay signed in
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

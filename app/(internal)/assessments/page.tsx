@@ -74,8 +74,8 @@ export default async function AssessmentsPage({
         <h1 className="text-2xl font-semibold tracking-tight">Assessments</h1>
         <p className="text-muted-foreground text-sm">
           {filteredVendorName
-            ? `Questionnaires for ${filteredVendorName}.`
-            : "Questionnaires sent to vendors."}
+            ? `Assessments for ${filteredVendorName}.`
+            : "Assessments sent to vendors."}
         </p>
       </div>
 
@@ -140,6 +140,7 @@ export default async function AssessmentsPage({
           <AutoSubmitSelect
             name="sort"
             defaultValue={sort}
+            key={`sort-${sort ?? ""}`}
             id="sort"
             className="w-44"
             ariaLabel="Sort assessments"
@@ -172,7 +173,7 @@ export default async function AssessmentsPage({
           <EmptyState
             icon="assessments"
             title="No assessments yet"
-            description="Create an assessment from a vendor to send a questionnaire."
+            description="Create an assessment and send the vendor its link to complete it."
           />
         )
       ) : (

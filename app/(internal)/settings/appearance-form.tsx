@@ -228,6 +228,7 @@ export function AppearanceForm({
             type="number"
             min={0}
             max={16}
+            key={borderRadius}
             defaultValue={borderRadius}
             className="w-32"
           />
@@ -237,7 +238,7 @@ export function AppearanceForm({
           <p className="text-muted-foreground text-xs">
             Constrain content to a readable width or use the full screen.
           </p>
-          <Select name="pageWidth" defaultValue={pageWidth}>
+          <Select name="pageWidth" defaultValue={pageWidth} key={pageWidth}>
             <SelectTrigger id="pageWidth" className="w-40">
               <SelectValue />
             </SelectTrigger>

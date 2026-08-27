@@ -310,10 +310,10 @@ export default async function AssessmentDetailPage({
       {isDraft && canCreate ? (
         <Card>
           <CardHeader>
-            <CardTitle>Send questionnaire</CardTitle>
+            <CardTitle>Create vendor link</CardTitle>
             <CardDescription>
-              Generate a no‑login portal link for the vendor. Optionally set a
-              password to protect access.
+              Generate a no‑login vendor link for the assessment. Optionally set
+              a password to protect access.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -385,7 +385,7 @@ export default async function AssessmentDetailPage({
                     value={assessment.id}
                   />
                   <ConfirmDialog
-                    title="Revoke portal link?"
+                    title="Revoke vendor link?"
                     description="The vendor will no longer be able to access the questionnaire. You can regenerate the link later if needed."
                     confirmLabel="Revoke"
                     variant="destructive"

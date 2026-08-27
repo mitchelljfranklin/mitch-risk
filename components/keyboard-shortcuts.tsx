@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { PERMISSIONS, hasPermission, type Permission } from "@/lib/permissions";
 
@@ -211,17 +212,12 @@ export function KeyboardShortcuts({ permissions }: CommandPaletteProps) {
   if (!open) return null;
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label="Command palette"
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 pt-[15vh]"
-      onClick={close}
-    >
-      <div
-        className="bg-background w-full max-w-lg rounded-lg border shadow-xl"
-        onClick={(event) => event.stopPropagation()}
+    <Dialog open={open} onOpenChange={(next) => (next ? undefined : close())}>
+      <DialogContent
+        aria-label="Command palette"
+        className="top-[15vh] max-w-lg translate-y-0 gap-0 p-0"
       >
+        <DialogTitle className="sr-only">Command palette</DialogTitle>
         <div className="border-b px-3 py-3">
           <Input
             ref={inputRef}
@@ -296,7 +292,7 @@ export function KeyboardShortcuts({ permissions }: CommandPaletteProps) {
             </kbd>
           </span>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
