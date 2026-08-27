@@ -2,7 +2,10 @@ import "dotenv/config";
 
 import { existsSync, readFileSync, unlinkSync } from "node:fs";
 
-import { getAssessmentSettings, updateAssessmentSettings } from "@/lib/settings";
+import {
+  getAssessmentSettings,
+  updateAssessmentSettings,
+} from "@/lib/settings";
 import { prisma } from "@/lib/prisma";
 
 const RATE_LIMIT_FILE = "e2e/.ratelimit-original";

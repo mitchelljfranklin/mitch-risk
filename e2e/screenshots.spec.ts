@@ -1,18 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-import { E2E_ADMIN_EMAIL, E2E_ADMIN_PASSWORD } from "./global-setup";
+import { signInAsAdmin } from "./helpers";
 
 const SCREENSHOT_DIR = "docs/screenshots";
 
 test.use({ viewport: { width: 1280, height: 800 } });
-
-async function signInAsAdmin(page: import("@playwright/test").Page) {
-  await page.goto("/login");
-  await page.getByLabel("Email").fill(E2E_ADMIN_EMAIL);
-  await page.getByLabel("Password").fill(E2E_ADMIN_PASSWORD);
-  await page.getByRole("button", { name: "Sign in" }).click();
-  await page.waitForURL("**/dashboard");
-}
 
 test("capture dashboard screenshot", async ({ page }) => {
   await signInAsAdmin(page);
@@ -126,9 +118,7 @@ test("capture template builder screenshot", async ({ page }) => {
   await page.waitForTimeout(2000);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   // Published templates render read-only previews (no section editor).
-  await expect(
-    page.getByText(/This version is published/i),
-  ).toBeVisible();
+  await expect(page.getByText(/This version is published/i)).toBeVisible();
   await page.screenshot({
     path: `${SCREENSHOT_DIR}/template-builder.png`,
   });
@@ -142,7 +132,9 @@ test("capture settings screenshot", async ({ page }) => {
   );
   await page.waitForTimeout(2000);
   // CardTitle divs are not real headings; anchor on the form's own control.
-  await expect(page.getByRole("button", { name: "Save scoring" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Save scoring" }),
+  ).toBeVisible();
   await page.screenshot({
     path: `${SCREENSHOT_DIR}/settings.png`,
   });

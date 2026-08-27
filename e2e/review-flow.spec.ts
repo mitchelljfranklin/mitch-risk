@@ -18,7 +18,8 @@ import { createVendor, deleteVendor } from "@/lib/db/vendors";
 import { findUserByEmail } from "@/lib/db/users";
 import { type QuestionInput } from "@/lib/schemas/template";
 
-import { E2E_REVIEWER_EMAIL, E2E_REVIEWER_PASSWORD } from "./global-setup";
+import { E2E_REVIEWER_EMAIL } from "./global-setup";
+import { signInAsReviewer } from "./helpers";
 
 function buildQuestion(
   overrides: Partial<QuestionInput> & Pick<QuestionInput, "text" | "type">,
@@ -113,14 +114,6 @@ test.beforeAll(async () => {
 test.afterAll(async () => {
   await deleteVendor(vendorId);
 });
-
-async function signInAsReviewer(page: import("@playwright/test").Page) {
-  await page.goto("/login");
-  await page.getByLabel("Email").fill(E2E_REVIEWER_EMAIL);
-  await page.getByLabel("Password").fill(E2E_REVIEWER_PASSWORD);
-  await page.getByRole("button", { name: "Sign in" }).click();
-  await page.waitForURL("**/dashboard");
-}
 
 async function expandAllReviewPanels(page: import("@playwright/test").Page) {
   // Wait out any route skeleton, tolerating both fresh pages (Expand

@@ -1,27 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { E2E_VIEWER_EMAIL, E2E_VIEWER_PASSWORD } from "./global-setup";
-
-async function signInAsViewer(page: import("@playwright/test").Page) {
-  await page.goto("/login");
-  await page.getByLabel("Email").fill(E2E_VIEWER_EMAIL);
-  await page.getByLabel("Password").fill(E2E_VIEWER_PASSWORD);
-  await page.getByRole("button", { name: "Sign in" }).click();
-  await page.waitForURL("**/dashboard");
-}
-
-// Works in both rows and cards list views, and skips utility routes.
-async function openFirstVendor(page: import("@playwright/test").Page) {
-  await page.goto("/vendors");
-  const link = page
-    .locator(
-      `a[href^='/vendors/']:not([href='/vendors/compare']):not([href='/vendors/import']):not([href='/vendors/new']):not([href='/vendors/bulk-send'])`,
-    )
-    .first();
-  await link.waitFor({ state: "visible", timeout: 15000 });
-  await link.click();
-  await page.waitForURL("**/vendors/**", { timeout: 15000 });
-}
+import { openFirstVendor, signInAsViewer } from "./helpers";
 
 test.describe("Viewer role sees a read-only UI", () => {
   test("dashboard hides the New vendor quick action", async ({ page }) => {

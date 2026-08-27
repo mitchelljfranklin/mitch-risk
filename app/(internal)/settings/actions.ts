@@ -743,20 +743,16 @@ export async function saveLimitsSettings(
 
   const allowedExtensions = formData.getAll("allowedExtensions").map(String);
 
-  const {
-    updateAssessmentSettings,
-    updateFileSettings,
-    updateAuditRetention,
-    updateEmailLogRetention,
-  } = await import("@/lib/settings");
+  const { updateAssessmentSettings, updateFileSettings, updateAuditRetention } =
+    await import("@/lib/settings");
 
   await Promise.all([
     updateAuditRetention(auditRetention),
-    updateEmailLogRetention(emailLogRetention),
     updateAssessmentSettings({
       loginRateLimitPerMin: loginRateLimit,
-      // emailLogRetentionDays is owned by the direct upsert above; writing it
-      // here too would create a second source of truth for the same field.
+      // Single writer: the merge in updateAssessmentSettings owns this field
+      // (a concurrent direct upsert raced the merge and the stale value won).
+      emailLogRetentionDays: emailLogRetention,
       sessionTimeoutMinutes,
       portalPageLoadsPerMin: rateLimits.portalPageLoadsPerMin,
       portalUploadsPerMin: rateLimits.portalUploadsPerMin,

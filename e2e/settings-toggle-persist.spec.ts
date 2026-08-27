@@ -1,14 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { signInAsAdmin } from "./helpers";
 import { E2E_ADMIN_EMAIL, E2E_ADMIN_PASSWORD } from "./global-setup";
-
-async function signInAsAdmin(page: import("@playwright/test").Page) {
-  await page.goto("/login");
-  await page.getByLabel("Email").fill(E2E_ADMIN_EMAIL);
-  await page.getByLabel("Password").fill(E2E_ADMIN_PASSWORD);
-  await page.getByRole("button", { name: "Sign in" }).click();
-  await page.waitForURL("**/dashboard");
-}
 
 test("a settings toggle keeps its new state after saving (no reload)", async ({
   page,

@@ -19,10 +19,16 @@ test("a vendor completes the questionnaire via the no-login portal", async ({
     .first()
     .fill("We use role-based access control with least privilege.");
 
+  // The upload validator sniffs magic bytes, so the fixture must be a real
+  // PDF header - a plain-text buffer is correctly rejected as not-a-PDF.
+  const minimalPdf = Buffer.from(
+    "%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF",
+    "utf8",
+  );
   await page.locator('input[type="file"]').setInputFiles({
     name: "policy.pdf",
     mimeType: "application/pdf",
-    buffer: Buffer.from("vendor security policy"),
+    buffer: minimalPdf,
   });
   await expect(page.getByText("Uploaded: policy.pdf")).toBeVisible();
 
