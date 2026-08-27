@@ -83,8 +83,7 @@ export async function reviewAction(formData: FormData) {
   const assessmentId = getField(formData, "assessmentId");
   const responseId = getField(formData, "responseId");
   const decision = getField(formData, "decision");
-  const note = getField(formData, "note") || undefined;
-  if (note && note.length > REVIEW_NOTE_MAX_LENGTH) {
+  const note = getField(formData, "note") || undefined;  if (note && note.length > REVIEW_NOTE_MAX_LENGTH) {
     return;
   }
 

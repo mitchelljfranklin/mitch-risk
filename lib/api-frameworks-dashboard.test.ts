@@ -156,8 +156,27 @@ describe("GET /v1/dashboard", () => {
     );
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.vendorCount).toBe(0);
-    expect(body.scoreDistribution).toBeDefined();
-    expect(body.customerResponsibilitySummary).toBeNull();
+    // The handler spreads the dashboard snapshot and appends only the
+    // responsibility summary - assert the exact projected shape so silent
+    // payload drift fails.
+    expect(body).toEqual({
+      vendors: [],
+      vendorCount: 0,
+      averageScore: null,
+      openFindings: 0,
+      needsAttention: 0,
+      scoreDistribution: { green: 0, amber: 0, red: 0, unscored: 0 },
+      topDeficientControls: [],
+      riskByTier: [],
+      assessmentStatusCounts: {},
+      vendorsByTier: {
+        CRITICAL: 0,
+        HIGH: 0,
+        MEDIUM: 0,
+        LOW: 0,
+        Unspecified: 0,
+      },
+      customerResponsibilitySummary: null,
+    });
   });
 });

@@ -102,9 +102,21 @@ export function buildVendorTimeline(args: {
     });
 
     if (certification.expiresDate) {
-      const thirtyDays = new Date();
-      thirtyDays.setDate(thirtyDays.getDate() + 30);
-      if (certification.expiresDate <= thirtyDays) {
+      // Expiry dates are stored as UTC-midnight instants; comparing them
+      // against a server-local "+30 days" previously skewed the window near
+      // month boundaries for deployments west of UTC.
+      const nowUtc = new Date();
+      const todayUtcStart =
+        Date.UTC(
+          nowUtc.getUTCFullYear(),
+          nowUtc.getUTCMonth(),
+          nowUtc.getUTCDate(),
+        );
+      const thirtyOneDayHorizon = todayUtcStart + 31 * 86_400_000;
+      if (
+        certification.expiresDate.getTime() > todayUtcStart &&
+        certification.expiresDate.getTime() < thirtyOneDayHorizon
+      ) {
         events.push({
           id: `cert-expiring-${certification.id}`,
           type: "certification",

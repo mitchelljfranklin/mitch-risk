@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 
 import { createAssessment, sendAssessment } from "@/lib/db/assessments";
 import { ensureSystemRoles, getRoleByName } from "@/lib/db/roles";
@@ -23,11 +23,14 @@ import {
 const E2E_VENDOR = "E2E Vendor";
 const E2E_TEMPLATE = "E2E Template";
 const TOKEN_FILE = "e2e/.portal-token";
+const RATE_LIMIT_FILE = "e2e/.ratelimit-original";
 
 export const E2E_VIEWER_EMAIL = "e2e-viewer@example.test";
 export const E2E_VIEWER_PASSWORD = "viewer-password-12345";
 export const E2E_ADMIN_EMAIL = "e2e-admin@example.test";
 export const E2E_ADMIN_PASSWORD = "admin-password-12345";
+export const E2E_REVIEWER_EMAIL = "e2e-reviewer@example.test";
+export const E2E_REVIEWER_PASSWORD = "reviewer-password-12345";
 
 function buildQuestion(
   overrides: Partial<QuestionInput> & Pick<QuestionInput, "text" | "type">,
@@ -46,8 +49,14 @@ function buildQuestion(
 
 export default async function globalSetup() {
   // The suite signs in many times from one IP; raise the login throttle so the
-  // per-IP rate limiter doesn't fail otherwise-unrelated tests.
+  // per-IP rate limiter doesn't fail otherwise-unrelated tests. The original
+  // value is persisted for global-teardown to restore.
   const assessmentSettings = await getAssessmentSettings();
+  writeFileSync(
+    RATE_LIMIT_FILE,
+    String(assessmentSettings.loginRateLimitPerMin),
+    "utf8",
+  );
   await updateAssessmentSettings({
     ...assessmentSettings,
     loginRateLimitPerMin: 1000,
@@ -79,6 +88,18 @@ export default async function globalSetup() {
     email: E2E_ADMIN_EMAIL,
     password: E2E_ADMIN_PASSWORD,
     roleId: adminRole.id,
+  });
+
+  const reviewerRole = await getRoleByName(SYSTEM_ROLE_NAMES.REVIEWER);
+  if (!reviewerRole) {
+    throw new Error("Reviewer role not found during e2e setup.");
+  }
+  await prisma.user.deleteMany({ where: { email: E2E_REVIEWER_EMAIL } });
+  await createUser({
+    name: "E2E Reviewer",
+    email: E2E_REVIEWER_EMAIL,
+    password: E2E_REVIEWER_PASSWORD,
+    roleId: reviewerRole.id,
   });
 
   const template = await createTemplate({

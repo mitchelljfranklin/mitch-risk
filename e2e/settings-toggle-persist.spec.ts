@@ -60,3 +60,36 @@ test("a settings-tab save shows its success toast in production", async ({
     timeout: 15000,
   });
 });
+
+test("the built-in scheduler toggle persists its state after saving", async ({
+  page,
+}) => {
+  await signInAsAdmin(page);
+  await page.goto("/settings?tab=scheduling");
+
+  const toggle = page.getByRole("checkbox", {
+    name: "Run scheduled jobs inside the app",
+  });
+  await expect(toggle).toBeVisible();
+
+  const startedChecked = await toggle.isChecked();
+
+  await toggle.click();
+  await page.getByRole("button", { name: "Save scheduling" }).click();
+  await expect(page.getByText("Configuration saved.")).toBeVisible({
+    timeout: 15000,
+  });
+
+  if (startedChecked) {
+    await expect(toggle).not.toBeChecked();
+  } else {
+    await expect(toggle).toBeChecked();
+  }
+
+  // Restore so internal scheduling behaviour stays enabled after the run.
+  await toggle.click();
+  await page.getByRole("button", { name: "Save scheduling" }).click();
+  await expect(page.getByText("Configuration saved.")).toBeVisible({
+    timeout: 15000,
+  });
+});
