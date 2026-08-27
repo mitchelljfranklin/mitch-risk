@@ -1,22 +1,10 @@
 import { z } from "zod";
 
+import { isValidIsoDateString } from "@/lib/utils";
+
 // Shared field-level rules so every entry point (create form, edit form,
 // API) enforces identical bounds. The date rule also rejects rollovers like
 // 2026-02-31 that JavaScript's Date parser silently normalises.
-export function isValidIsoDateString(value: string): boolean {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-  const [year, month, day] = value.split("-").map(Number) as [
-    number,
-    number,
-    number,
-  ];
-  const asUtc = new Date(Date.UTC(year, month - 1, day));
-  return (
-    asUtc.getUTCFullYear() === year &&
-    asUtc.getUTCMonth() === month - 1 &&
-    asUtc.getUTCDate() === day
-  );
-}
 
 export const assessmentTitleSchema = z
   .string()

@@ -1,5 +1,4 @@
 import { render } from "@react-email/components";
-import { revalidatePath } from "next/cache";
 
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
@@ -16,7 +15,7 @@ function replaceTokens(text: string, tokens: Record<string, string>): string {
 
 export async function GET(request: Request) {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
-  revalidatePath("/settings", "page");
+  // Read-only preview renders must not invalidate the settings page cache.
 
   const url = new URL(request.url);
   const templateType = url.searchParams.get("templateType");
@@ -86,7 +85,6 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
-  revalidatePath("/settings", "page");
 
   let body: { templateType?: string; tokens?: Record<string, string> };
   try {

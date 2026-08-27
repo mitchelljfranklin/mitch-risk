@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { cache } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ScoreBadge } from "@/components/score-badge";
@@ -47,6 +48,10 @@ import { cn, formatDateUtc, formatPercent } from "@/lib/utils";
 
 const MAX_VENDOR_ASSESSMENTS = 10;
 
+// generateMetadata and the page both need the vendor; request-scoped
+// deduplication stops the heaviest query from running twice.
+const getVendorCached = cache(getVendor);
+
 function computeInherentRisk(vendor: {
   tier: string | null;
   dataSensitivity: string | null;
@@ -81,7 +86,7 @@ export async function generateMetadata({
   params,
 }: VendorDetailPageProps): Promise<Metadata> {
   const { vendorId } = await params;
-  const vendor = await getVendor(vendorId);
+  const vendor = await getVendorCached(vendorId);
   if (!vendor) return { title: "Vendor not found" };
   return { title: vendor.name };
 }
@@ -109,7 +114,7 @@ export default async function VendorDetailPage({
     PERMISSIONS.ASSESSMENTS_VIEW,
   );
   const { vendorId } = await params;
-  const vendor = await getVendor(vendorId);
+  const vendor = await getVendorCached(vendorId);
   if (!vendor) {
     notFound();
   }
@@ -130,14 +135,32 @@ export default async function VendorDetailPage({
     ]);
   const findings = findingsResult.findings;
   const totalFindings = findingsResult.totalCount;
-  const openFindingsCount = canViewFindings
-    ? await prisma.finding.count({
-        where: { status: "OPEN", assessment: { vendorId } },
-      })
-    : 0;
 
-  const responsibilityCompliance =
-    await getCustomerResponsibilityCompliance(vendorId);
+  // Second parallel batch - these four are independent of each other.
+  const [openFindingsCount, responsibilityCompliance, certAttachments, vendorAttachments] =
+    await Promise.all([
+      canViewFindings
+        ? prisma.finding.count({
+            where: { status: "OPEN", assessment: { vendorId } },
+          })
+        : Promise.resolve(0),
+      getCustomerResponsibilityCompliance(vendorId),
+      certifications.length > 0
+        ? prisma.attachment.findMany({
+            where: {
+              entityType: "VendorCertification",
+              entityId: {
+                in: certifications.map((certification) => certification.id),
+              },
+            },
+            orderBy: { createdAt: "asc" },
+          })
+        : Promise.resolve([]),
+      prisma.attachment.findMany({
+        where: { entityType: "Vendor", entityId: vendor.id },
+        orderBy: { createdAt: "desc" },
+      }),
+    ]);
 
   const timeline = buildVendorTimeline({
     vendorId,
@@ -180,18 +203,6 @@ export default async function VendorDetailPage({
     string,
     { id: string; fileName: string; displayName: string | null }[]
   >();
-  const certAttachments =
-    certifications.length > 0
-      ? await prisma.attachment.findMany({
-          where: {
-            entityType: "VendorCertification",
-            entityId: {
-              in: certifications.map((certification) => certification.id),
-            },
-          },
-          orderBy: { createdAt: "asc" },
-        })
-      : [];
   for (const attachment of certAttachments) {
     const list = certAttachmentMap.get(attachment.entityId) ?? [];
     list.push({
@@ -201,11 +212,6 @@ export default async function VendorDetailPage({
     });
     certAttachmentMap.set(attachment.entityId, list);
   }
-
-  const vendorAttachments = await prisma.attachment.findMany({
-    where: { entityType: "Vendor", entityId: vendor.id },
-    orderBy: { createdAt: "desc" },
-  });
 
   const frameworkOptions = await listFrameworksWithSharedControls();
 

@@ -3,15 +3,21 @@ services:
     image: postgres:17-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: mitch
-      POSTGRES_PASSWORD: mitch
-      POSTGRES_DB: mitch_risk
+      # Credentials parameterised so a .env can override them; defaults keep
+      # backwards compatibility for existing deployments.
+      POSTGRES_USER: "${POSTGRES_USER:-mitch}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-mitch}"
+      POSTGRES_DB: "${POSTGRES_DB:-mitch_risk}"
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U mitch -d mitch_risk"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-mitch} -d ${POSTGRES_DB:-mitch_risk}",
+        ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -30,11 +36,15 @@ services:
         condition: service_healthy
     environment:
       NODE_ENV: production
-      DATABASE_URL: "postgresql://mitch:mitch@db:5432/mitch_risk?schema=public"
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-mitch}:${POSTGRES_PASSWORD:-mitch}@db:5432/${POSTGRES_DB:-mitch_risk}?schema=public"
       AUTH_SECRET: "${AUTH_SECRET:-dev-only-auth-secret-change-me}"
       APP_ENCRYPTION_KEY: "${APP_ENCRYPTION_KEY:-dev-only-encryption-key-change-me}"
       APP_URL: "${APP_URL:-http://localhost:3000}"
-      CRON_SECRET: "${CRON_SECRET:-change-me-cron-secret}"
+      # Required (compose refuses to start without it) because this stack
+      # runs NODE_ENV=production, where the app itself also enforces a
+      # minimum length - a placeholder default here previously guaranteed a
+      # confusing mid-length validation failure instead of this clear one.
+      CRON_SECRET: "${CRON_SECRET:?Set CRON_SECRET in .env - generate with: openssl rand -hex 32}"
       EVIDENCE_STORAGE_PATH: "${EVIDENCE_STORAGE_PATH:-/app/.storage/evidence}"
       TRUSTED_PROXY_COUNT: "${TRUSTED_PROXY_COUNT:-0}"
     # For local development the app port is exposed to the host. For

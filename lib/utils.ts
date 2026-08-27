@@ -10,6 +10,24 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Shared calendar-day validator for YYYY-MM-DD inputs. Rejects rollovers
+// like 2026-02-31 that JavaScript's Date parser silently normalises - used
+// by every form that stores a date-only field as a UTC-midnight instant.
+export function isValidIsoDateString(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const [year, month, day] = value.split("-").map(Number) as [
+    number,
+    number,
+    number,
+  ];
+  const asUtc = new Date(Date.UTC(year, month - 1, day));
+  return (
+    asUtc.getUTCFullYear() === year &&
+    asUtc.getUTCMonth() === month - 1 &&
+    asUtc.getUTCDate() === day
+  );
+}
+
 export function formatPercent(ratio: number, fractionDigits = 0): string {
   const clamped = Math.max(0, Math.min(1, ratio));
   return `${(clamped * 100).toFixed(fractionDigits)}%`;

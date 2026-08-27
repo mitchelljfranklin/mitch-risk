@@ -245,7 +245,6 @@ export async function saveScoringSettings(
       amber: Number(formData.get("ragAmber") ?? 0.6),
       green: Number(formData.get("ragGreen") ?? 0.85),
     },
-    excludeNotApplicable: true,
   });
   if (!parsed.success) {
     return {
@@ -756,7 +755,8 @@ export async function saveLimitsSettings(
     updateEmailLogRetention(emailLogRetention),
     updateAssessmentSettings({
       loginRateLimitPerMin: loginRateLimit,
-      emailLogRetentionDays: emailLogRetention,
+      // emailLogRetentionDays is owned by the direct upsert above; writing it
+      // here too would create a second source of truth for the same field.
       sessionTimeoutMinutes,
       portalPageLoadsPerMin: rateLimits.portalPageLoadsPerMin,
       portalUploadsPerMin: rateLimits.portalUploadsPerMin,

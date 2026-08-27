@@ -10,7 +10,7 @@ import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { createVendor, deleteVendor, updateVendor } from "@/lib/db/vendors";
 import { logAudit, AUDIT_ACTIONS } from "@/lib/db/audit";
-import { getField } from "@/lib/utils";
+import { getField, isValidIsoDateString } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
 import {
@@ -232,19 +232,13 @@ export async function importVendorsAction(
     };
   }
 
+  // Preload every possible match in two queries instead of per-row lookups.
   // Import rows that match an existing vendor take the UPDATE path and can
   // rewrite any vendor regardless of owner. That is an edit privilege, not a
   // create privilege, so detect matches up front and refuse before writing.
-  const matchedIds = new Set(
-    (
-      await prisma.vendor.findMany({
-        where: {
-          id: { in: vendorRows.filter((row) => row.id).map((row) => row.id) },
-        },
-        select: { id: true },
-      })
-    ).map((vendor) => vendor.id),
-  );
+  const explicitIds = [
+    ...new Set(vendorRows.filter((row) => row.id).map((row) => row.id)),
+  ];
   const externalIdCandidates = [
     ...new Set(
       vendorRows
@@ -252,19 +246,32 @@ export async function importVendorsAction(
         .filter((externalId): externalId is string => Boolean(externalId)),
     ),
   ];
-  if (!matchedIds.size && externalIdCandidates.length > 0) {
-    for (const externalId of externalIdCandidates) {
-      const existingByExternalId = await prisma.vendor.findUnique({
-        where: { externalId },
-        select: { id: true },
-      });
-      if (existingByExternalId) {
-        matchedIds.add(existingByExternalId.id);
-        break;
-      }
-    }
-  }
-  if (matchedIds.size > 0) {
+  const [existingByIdRows, existingByExternalRows] = await Promise.all([
+    explicitIds.length > 0
+      ? prisma.vendor.findMany({
+          where: { id: { in: explicitIds } },
+          select: { id: true },
+        })
+      : Promise.resolve([] as { id: string }[]),
+    externalIdCandidates.length > 0
+      ? prisma.vendor.findMany({
+          where: { externalId: { in: externalIdCandidates } },
+          select: { id: true, externalId: true },
+        })
+      : Promise.resolve([] as { id: string; externalId: string | null }[]),
+  ]);
+  const vendorsById = new Set(existingByIdRows.map((vendor) => vendor.id));
+  const vendorIdsByExternalId = new Map(
+    existingByExternalRows.flatMap((vendor) =>
+      vendor.externalId ? [[vendor.externalId, vendor.id] as const] : [],
+    ),
+  );
+  const touchesExistingVendors =
+    explicitIds.some((id) => vendorsById.has(id)) ||
+    externalIdCandidates.some((externalId) =>
+      vendorIdsByExternalId.has(externalId),
+    );
+  if (touchesExistingVendors) {
     const canEdit = actor.permissions.includes(PERMISSIONS.VENDORS_EDIT);
     if (!canEdit) {
       return {
@@ -278,49 +285,30 @@ export async function importVendorsAction(
   let createdCount = 0;
   let updatedCount = 0;
   const user = await getCurrentUser();
+  const auditWrites: Promise<unknown>[] = [];
 
   for (const { id, input } of vendorRows) {
     try {
-      if (id) {
-        const existing = await prisma.vendor.findUnique({
-          where: { id },
-          select: { id: true },
-        });
-        if (existing) {
-          await updateVendor(id, input);
-          if (user) {
-            await logAudit(user.id, AUDIT_ACTIONS.UPDATE_VENDOR, "Vendor", id);
-          }
-          updatedCount++;
-          continue;
+      const existingId =
+        id && vendorsById.has(id)
+          ? id
+          : input.externalId
+            ? vendorIdsByExternalId.get(input.externalId)
+            : undefined;
+      if (existingId) {
+        await updateVendor(existingId, input);
+        if (user) {
+          auditWrites.push(
+            logAudit(user.id, AUDIT_ACTIONS.UPDATE_VENDOR, "Vendor", existingId),
+          );
         }
-      }
-      if (input.externalId) {
-        const existingByExternalId = await prisma.vendor.findUnique({
-          where: { externalId: input.externalId },
-          select: { id: true },
-        });
-        if (existingByExternalId) {
-          await updateVendor(existingByExternalId.id, input);
-          if (user) {
-            await logAudit(
-              user.id,
-              AUDIT_ACTIONS.UPDATE_VENDOR,
-              "Vendor",
-              existingByExternalId.id,
-            );
-          }
-          updatedCount++;
-          continue;
-        }
+        updatedCount++;
+        continue;
       }
       const vendor = await createVendor(input);
       if (user) {
-        await logAudit(
-          user.id,
-          AUDIT_ACTIONS.IMPORT_VENDOR,
-          "Vendor",
-          vendor.id,
+        auditWrites.push(
+          logAudit(user.id, AUDIT_ACTIONS.IMPORT_VENDOR, "Vendor", vendor.id),
         );
       }
       createdCount++;
@@ -334,6 +322,7 @@ export async function importVendorsAction(
       }
     }
   }
+  await Promise.all(auditWrites);
 
   revalidatePath("/vendors");
 
@@ -498,35 +487,55 @@ async function handleCertificationAttachment(
 
   if (!name) return { ok: false, message: "Certification name is required." };
   if (!expiresDate) return { ok: false, message: "Expiry date is required." };
-
-  const certification = await prisma.vendorCertification.create({
-    data: { vendorId, name, issuer, expiresDate: new Date(expiresDate), notes },
-  });
-
-  await applySharedResponsibilityActions(
-    vendorId,
-    certification.id,
-    frameworkName,
-  );
-
-  await prisma.attachment.create({
-    data: {
-      entityType: "VendorCertification",
-      entityId: certification.id,
-      fileName: evidence.fileName,
-      storageKey: newKey,
-      mimeType: evidence.mimeType,
-      sizeBytes: evidence.sizeBytes,
-      displayName: displayName || evidence.fileName,
-    },
-  });
-
-  if (user) {
-    await logAudit(user.id, AUDIT_ACTIONS.UPDATE_VENDOR, "Vendor", vendorId, {
-      note: "Created certification with attached evidence",
-      certificationId: certification.id,
-    });
+  // Validate before any write - a garbage date previously crashed after the
+  // storage copy had already happened.
+  if (!isValidIsoDateString(expiresDate)) {
+    return { ok: false, message: "Enter a valid expiry date." };
   }
+
+  await prisma.$transaction(async (tx) => {
+    const certification = await tx.vendorCertification.create({
+      data: {
+        vendorId,
+        name,
+        issuer,
+        expiresDate: new Date(expiresDate),
+        notes,
+      },
+    });
+
+    await applySharedResponsibilityActions(
+      vendorId,
+      certification.id,
+      frameworkName,
+      tx,
+    );
+
+    await tx.attachment.create({
+      data: {
+        entityType: "VendorCertification",
+        entityId: certification.id,
+        fileName: evidence.fileName,
+        storageKey: newKey,
+        mimeType: evidence.mimeType,
+        sizeBytes: evidence.sizeBytes,
+        displayName: displayName || evidence.fileName,
+      },
+    });
+
+    if (user) {
+      await logAudit(
+        user.id,
+        AUDIT_ACTIONS.UPDATE_VENDOR,
+        "Vendor",
+        vendorId,
+        {
+          note: "Created certification with attached evidence",
+          certificationId: certification.id,
+        },
+      );
+    }
+  });
 
   revalidatePath(`/assessments/${evidence.assessmentId}`);
   revalidatePath(`/vendors/${vendorId}`);

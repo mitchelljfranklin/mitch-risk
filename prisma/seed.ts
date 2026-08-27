@@ -50,7 +50,6 @@ const defaultSettings: DefaultSetting[] = [
     key: "scoring.ragThresholds",
     value: { amber: 0.6, green: 0.85 },
   },
-  { category: "scoring", key: "scoring.excludeNotApplicable", value: true },
   { category: "files", key: "files.maxUploadMb", value: 20 },
   {
     category: "files",
