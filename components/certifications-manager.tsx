@@ -29,7 +29,7 @@ import {
   certificationStatus,
 } from "@/lib/schemas/certification";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
-import { formatDate } from "@/lib/utils";
+import { formatDateUtc } from "@/lib/utils";
 import { Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -300,7 +300,7 @@ export function CertificationsManager({
                     ) : null}
                   </span>
                   <span className="text-muted-foreground text-xs">
-                    Expires {formatDate(cert.expiresDate)}
+                    Expires {formatDateUtc(cert.expiresDate)}
                   </span>
                   {certAttachments.map((attachment) => (
                     <a

@@ -12,6 +12,7 @@ import type {
 } from "../../../prisma/generated/prisma/client";
 import {
   getAppearanceSettings,
+  getStorageSettings,
   updateEmailSettings,
   updateEmailTemplateFields,
   updateOrganizationSettings,
@@ -34,6 +35,11 @@ import {
 } from "@/lib/settings/schema";
 import { randomBytes } from "node:crypto";
 import { z } from "zod";
+import {
+  WEBHOOK_EVENT_VALUES,
+  WEBHOOK_PLATFORM_VALUES,
+  validateWebhookTarget,
+} from "@/lib/webhooks";
 import { storage } from "@/lib/storage";
 import {
   isDangerousUploadMime,
@@ -791,6 +797,13 @@ export async function retryEmailSendAction(
   if (!log) return { ok: false, message: "Email log entry not found." };
   if (log.status !== "FAILED")
     return { ok: false, message: "Only failed emails can be retried." };
+  if (log.type === "RESET") {
+    return {
+      ok: false,
+      message:
+        "Reset links are single-use and cannot be resent. Ask the user to request a new reset.",
+    };
+  }
 
   const sentById = (await getCurrentUser())?.id;
 
@@ -823,9 +836,16 @@ export async function retryEmailSendAction(
     | "clarification"
     | "reset";
 
+  const { getOrganizationSettings } = await import("@/lib/settings");
+  const organizationName =
+    (await getOrganizationSettings()).name || "Mitch-Risk";
+
   const tokens: Record<string, string> = {
     message: "Please review and resubmit your questionnaire.",
     portalPassword: "",
+    // Brand placeholder used across templates; without it {{appName}} would
+    // reach the recipient verbatim on any template that references it.
+    appName: organizationName,
   };
 
   if (log.assessmentId) {
@@ -885,7 +905,7 @@ export async function saveStorageSettings(
 ): Promise<{ ok: boolean; message: string }> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
 
-  const existing = await getAppearanceSettings();
+  const existing = await getStorageSettings();
   const raw: Record<string, string> = {
     provider: String(formData.get("provider") ?? "local"),
     s3Bucket: String(formData.get("s3Bucket") ?? ""),
@@ -931,6 +951,14 @@ export async function saveStorageSettings(
 
 export type WebhookActionState = { ok?: boolean; message?: string } | undefined;
 
+function isWebhookEvent(value: string): value is WebhookEvent {
+  return (WEBHOOK_EVENT_VALUES as readonly string[]).includes(value);
+}
+
+function isWebhookPlatform(value: string): value is WebhookPlatform {
+  return (WEBHOOK_PLATFORM_VALUES as readonly string[]).includes(value);
+}
+
 export async function createWebhookAction(
   _previousState: WebhookActionState,
   formData: FormData,
@@ -939,21 +967,42 @@ export async function createWebhookAction(
 
   const url = getField(formData, "url");
   const name = getField(formData, "name")?.trim() || "";
-  const platform = (getField(formData, "platform") ||
-    "GENERIC") as WebhookPlatform;
-  const events = formData.getAll("events") as WebhookEvent[];
+  const platform = getField(formData, "platform") || "GENERIC";
+  const events = formData.getAll("events").map(String);
 
   if (!url) {
     return { ok: false, message: "URL is required." };
   }
 
-  if (events.length === 0) {
+  if (url.length > 500) {
+    return { ok: false, message: "URL must be 500 characters or fewer." };
+  }
+  if (name.length > 100) {
+    return { ok: false, message: "Name must be 100 characters or fewer." };
+  }
+
+  const targetValidation = validateWebhookTarget(url);
+  if (!targetValidation.ok) {
+    return { ok: false, message: targetValidation.reason };
+  }
+
+  if (!isWebhookPlatform(platform)) {
+    return { ok: false, message: "Unknown platform." };
+  }
+  const validEvents = [...new Set(events.filter(isWebhookEvent))];
+  if (validEvents.length === 0) {
     return { ok: false, message: "At least one event must be selected." };
   }
 
   const secret = randomBytes(32).toString("hex");
 
-  await createWebhookEndpoint({ url, name, secret, events, platform });
+  await createWebhookEndpoint({
+    url,
+    name,
+    secret,
+    events: validEvents as WebhookEvent[],
+    platform: platform as WebhookPlatform,
+  });
 
   if (user) {
     await logAudit(user.id, AUDIT_ACTIONS.CREATE_WEBHOOK, "Webhook", url);

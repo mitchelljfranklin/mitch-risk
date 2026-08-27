@@ -43,7 +43,7 @@ import {
   DATA_SENSITIVITY_LABELS,
   VENDOR_TIER_LABELS,
 } from "@/lib/schemas/vendor";
-import { cn, formatDate, formatPercent } from "@/lib/utils";
+import { cn, formatDateUtc, formatPercent } from "@/lib/utils";
 
 const MAX_VENDOR_ASSESSMENTS = 10;
 
@@ -403,7 +403,7 @@ export default async function VendorDetailPage({
                             : ""
                         }`}
                       >
-                        {formatDate(vendor.contractRenewalDate)}
+                        {formatDateUtc(vendor.contractRenewalDate)}
                         {vendor.contractRenewalDate < new Date()
                           ? " · overdue"
                           : ""}
@@ -805,7 +805,7 @@ export default async function VendorDetailPage({
                               ? `${assessment.template.name} v${assessment.template.version}`
                               : "No template"}
                             {assessment.dueDate
-                              ? ` · due ${formatDate(assessment.dueDate)}`
+                              ? ` · due ${formatDateUtc(assessment.dueDate)}`
                               : ""}
                           </span>
                         </div>

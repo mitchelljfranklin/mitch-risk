@@ -10,6 +10,89 @@ type WebhookPayload = Record<string, unknown>;
 
 const REQUEST_TIMEOUT_MS = 10_000;
 
+// Runtime values mirrored from the Prisma enums so actions can validate
+// formData without importing generated client internals at runtime.
+export const WEBHOOK_EVENT_VALUES = [
+  "ASSESSMENT_SUBMITTED",
+  "ASSESSMENT_OVERDUE",
+  "FINDING_CREATED",
+  "FINDING_RESOLVED",
+  "CERTIFICATION_EXPIRING",
+] as const satisfies readonly WebhookEvent[];
+
+export const WEBHOOK_PLATFORM_VALUES = [
+  "GENERIC",
+  "SLACK",
+  "MICROSOFT_TEAMS",
+  "DISCORD",
+] as const satisfies readonly WebhookPlatform[];
+
+// Admin-entered webhook URLs are fetched server-side by dispatchWebhook, so
+// the target must be a public HTTPS address — otherwise the webhook feature
+// becomes an SSRF pivot into whatever network the container sits on.
+export function validateWebhookTarget(
+  rawUrl: string,
+): { ok: true } | { ok: false; reason: string } {
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(rawUrl);
+  } catch {
+    return { ok: false, reason: "Enter a valid URL." };
+  }
+
+  if (parsedUrl.protocol !== "https:") {
+    return { ok: false, reason: "Webhook URLs must use HTTPS." };
+  }
+
+  const hostname = parsedUrl.hostname.toLowerCase().replace(/^\[|\]$/g, "");
+  if (isBlockedHostname(hostname)) {
+    return {
+      ok: false,
+      reason:
+        "Webhook URLs must point to a public address — internal and loopback hosts are not allowed.",
+    };
+  }
+
+  return { ok: true };
+}
+
+function isBlockedHostname(hostname: string): boolean {
+  if (
+    hostname === "localhost" ||
+    hostname.endsWith(".localhost") ||
+    hostname.endsWith(".local") ||
+    hostname.endsWith(".internal")
+  ) {
+    return true;
+  }
+
+  const ipv4Match = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(
+    hostname,
+  );
+  if (ipv4Match) {
+    const octets = ipv4Match.slice(1).map(Number) as [
+      number,
+      number,
+      number,
+      number,
+    ];
+    if (octets.some((octet) => octet > 255)) return true;
+    const [first, second] = octets;
+    if (first === 0 || first === 10 || first === 127) return true;
+    if (first === 169 && second === 254) return true;
+    if (first === 172 && second >= 16 && second <= 31) return true;
+    if (first === 192 && second === 168) return true;
+    return false;
+  }
+
+  // IPv6: loopback, link-local (fe80::/10), unique-local (fc00::/7).
+  if (hostname === "::1" || hostname === "::") return true;
+  if (/^f[cd]/.test(hostname)) return true;
+  if (/^fe[89ab]/.test(hostname)) return true;
+
+  return false;
+}
+
 const EVENT_LABELS: Record<string, string> = {
   ASSESSMENT_SUBMITTED: "Assessment submitted",
   ASSESSMENT_OVERDUE: "Assessment overdue",

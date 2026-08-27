@@ -122,11 +122,34 @@ export async function findSentNotificationKeys(
   return sentKeys;
 }
 
+// Scheduled jobs treat calendar-day fields (dueDate, expiresDate,
+// contractRenewalDate) as UTC calendar days - they are entered as YYYY-MM-DD
+// and stored as UTC-midnight instants. Building the reminder/escalation/
+// expiry windows in server-local time shifted every window a day for
+// deployments west of UTC. All window math below therefore runs on UTC.
+export function utcDayStartOf(date: Date): Date {
+  return new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()),
+  );
+}
+
+export function addUtcDays(dayStart: Date, days: number): Date {
+  const shifted = new Date(dayStart.getTime());
+  shifted.setUTCDate(shifted.getUTCDate() + days);
+  return shifted;
+}
+
+export function endOfUtcDay(dayStart: Date): Date {
+  return new Date(addUtcDays(dayStart, 1).getTime() - 1);
+}
+
 // Runs every scheduled job once: reminders, escalations, expiry notices,
 // recurring assessments, log pruning, and the orphaned-file sweep.
 // Jobs are idempotent (notification dedupe keys), so calling this more
 // often than needed never double-sends.
-export async function runScheduledJobs(): Promise<ScheduledJobsResult> {
+export async function runScheduledJobs(
+  clockNow: Date = new Date(),
+): Promise<ScheduledJobsResult> {
   const [emailSettings, assessmentSettings] = await Promise.all([
     getEmailSettings(),
     getAssessmentSettings(),
@@ -134,8 +157,8 @@ export async function runScheduledJobs(): Promise<ScheduledJobsResult> {
 
   const smtpConfigured = Boolean(emailSettings.smtpHost);
   const appUrl = env.APP_URL;
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const now = clockNow;
+  const today = utcDayStartOf(now);
 
   const result: ScheduledJobsResult = {
     reminders: 0,
@@ -151,26 +174,14 @@ export async function runScheduledJobs(): Promise<ScheduledJobsResult> {
     // --- reminders ---
     const offsets = assessmentSettings.reminderOffsetDays ?? [7, 1];
     for (const offsetDays of offsets) {
-      const targetDate = new Date(today);
-      targetDate.setDate(targetDate.getDate() + offsetDays);
+      const targetDay = addUtcDays(today, offsetDays);
 
       const dueAssessments = await prisma.assessment.findMany({
         where: {
           status: { in: ["SENT", "IN_PROGRESS"] },
           dueDate: {
-            gte: new Date(
-              targetDate.getFullYear(),
-              targetDate.getMonth(),
-              targetDate.getDate(),
-            ),
-            lte: new Date(
-              targetDate.getFullYear(),
-              targetDate.getMonth(),
-              targetDate.getDate(),
-              23,
-              59,
-              59,
-            ),
+            gte: targetDay,
+            lte: endOfUtcDay(targetDay),
           },
         },
         include: { vendor: { select: { name: true, contactEmail: true } } },
@@ -211,8 +222,7 @@ export async function runScheduledJobs(): Promise<ScheduledJobsResult> {
 
     // --- overdue escalations ---
     const escalationDays = assessmentSettings.escalationAfterDays ?? 3;
-    const overdueSince = new Date(today);
-    overdueSince.setDate(overdueSince.getDate() - escalationDays);
+    const overdueSince = addUtcDays(today, -escalationDays);
 
     const overdue = await prisma.assessment.findMany({
       where: {
@@ -270,21 +280,8 @@ export async function runScheduledJobs(): Promise<ScheduledJobsResult> {
 
     // --- certification & contract expiry notices (to the vendor's risk owner) ---
     for (const offsetDays of EXPIRY_OFFSET_DAYS) {
-      const target = new Date(today);
-      target.setDate(target.getDate() + offsetDays);
-      const dayStart = new Date(
-        target.getFullYear(),
-        target.getMonth(),
-        target.getDate(),
-      );
-      const dayEnd = new Date(
-        target.getFullYear(),
-        target.getMonth(),
-        target.getDate(),
-        23,
-        59,
-        59,
-      );
+      const dayStart = addUtcDays(today, offsetDays);
+      const dayEnd = endOfUtcDay(dayStart);
 
       const expiringCerts = await listCertificationsExpiringOn(
         dayStart,

@@ -5,6 +5,7 @@ import { hashWithSecret } from "@/lib/crypto";
 import { timingSafeEqualString } from "@/lib/timing-safe";
 import { rateLimit } from "@/lib/rate-limit";
 import { formatDate } from "@/lib/utils";
+import { isNoteVisibleToVendor } from "@/lib/portal";
 import {
   getAppearanceSettings,
   getAssessmentSettings,
@@ -213,7 +214,9 @@ export default async function PortalPage({ params }: PortalPageProps) {
                         ? "Clarification requested"
                         : review.decision.toLowerCase()}
                     </span>
-                    {review.note ? ` — ${review.note}` : ""}
+                    {review.note && isNoteVisibleToVendor(review.decision)
+                      ? ` — ${review.note}`
+                      : ""}
                   </p>
                 ) : null}
                 {questionComments.length > 0 ? (
@@ -294,9 +297,12 @@ export default async function PortalPage({ params }: PortalPageProps) {
   > = {};
   for (const response of assessment.responses) {
     if (response.review) {
+      const decision = response.review.decision;
       reviewByQuestionId[response.assessmentQuestionId] = {
-        decision: response.review.decision,
-        note: response.review.note,
+        decision,
+        // Internal reviewer notes stay private; only clarification requests
+        // are meant to be read by the vendor.
+        note: isNoteVisibleToVendor(decision) ? response.review.note : null,
       };
     }
   }

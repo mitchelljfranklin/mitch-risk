@@ -21,7 +21,10 @@ import {
   setAssessmentRecipients,
   updateAssessment,
 } from "@/lib/db/assessments";
-import { assessmentSchema } from "@/lib/schemas/assessment";
+import {
+  assessmentSchema,
+  updateAssessmentSchema,
+} from "@/lib/schemas/assessment";
 
 export type AssessmentFormState =
   { ok?: boolean; error?: string; message?: string } | undefined;
@@ -167,12 +170,21 @@ export async function updateAssessmentAction(
 ): Promise<UpdateAssessmentState> {
   await requirePermission(PERMISSIONS.ASSESSMENTS_EDIT);
   const assessmentId = getField(formData, "assessmentId");
-  const title = getField(formData, "title").trim();
-  const dueDate = getField(formData, "dueDate");
 
-  if (!title) return { ok: false, message: "Title is required." };
+  // Same bounds as creation - unvalidated values previously reached Prisma
+  // raw and an impossible or garbage due date crashed into a bare 500.
+  const parsed = updateAssessmentSchema.safeParse({
+    title: getField(formData, "title"),
+    dueDate: getField(formData, "dueDate") ?? "",
+  });
+  if (!parsed.success) {
+    return {
+      ok: false,
+      message: parsed.error.issues[0]?.message ?? "Invalid input.",
+    };
+  }
 
-  await updateAssessment(assessmentId, { title, dueDate });
+  await updateAssessment(assessmentId, parsed.data);
   revalidatePath(`/assessments/${assessmentId}`);
   revalidatePath("/assessments");
   return { ok: true, message: "Saved." };

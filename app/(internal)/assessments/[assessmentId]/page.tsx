@@ -46,7 +46,12 @@ import {
   SEVERITY_STYLES,
 } from "@/lib/schemas/assessment";
 import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
-import { cn, formatDate, formatResponseValue } from "@/lib/utils";
+import {
+  cn,
+  formatDate,
+  formatDateUtc,
+  formatResponseValue,
+} from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -295,7 +300,9 @@ export default async function AssessmentDetailPage({
           {assessment.template
             ? ` · ${assessment.template.name} v${assessment.template.version}`
             : ""}
-          {assessment.dueDate ? ` · due ${formatDate(assessment.dueDate)}` : ""}
+          {assessment.dueDate
+            ? ` · due ${formatDateUtc(assessment.dueDate)}`
+            : ""}
           {assessment.reviewer ? ` · reviewer ${assessment.reviewer.name}` : ""}
         </p>
       </div>

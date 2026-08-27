@@ -262,6 +262,41 @@ export async function deleteVendor(id: string): Promise<void> {
     });
   }
 
+  // Responsibility actions cascade with the vendor, but their polymorphic
+  // attachments have no FK — without this bucket they would survive as
+  // unreclaimable rows and files (the orphan sweep treats every attachment
+  // row as referenced).
+  const responsibilityActions =
+    await prisma.customerResponsibilityAction.findMany({
+      where: { vendorId: id },
+      select: { id: true },
+    });
+  const responsibilityActionIds = responsibilityActions.map(
+    (action) => action.id,
+  );
+  if (responsibilityActionIds.length > 0) {
+    const actionAttachments = await prisma.attachment.findMany({
+      where: {
+        entityType: "CustomerResponsibilityAction",
+        entityId: { in: responsibilityActionIds },
+      },
+      select: { storageKey: true },
+    });
+    for (const attachment of actionAttachments) {
+      try {
+        await storage.delete(attachment.storageKey);
+      } catch {
+        // Best-effort.
+      }
+    }
+    await prisma.attachment.deleteMany({
+      where: {
+        entityType: "CustomerResponsibilityAction",
+        entityId: { in: responsibilityActionIds },
+      },
+    });
+  }
+
   await prisma.vendor.delete({ where: { id } });
 }
 

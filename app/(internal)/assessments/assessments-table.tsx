@@ -28,7 +28,7 @@ import { Pagination } from "@/components/pagination";
 import { ScoreBadge } from "@/components/score-badge";
 import { type AssessmentSort } from "@/lib/db/assessments";
 import { isAssessmentOverdue } from "@/lib/schemas/assessment";
-import { formatDate } from "@/lib/utils";
+import { formatDateUtc } from "@/lib/utils";
 
 type AssessmentRow = {
   id: string;
@@ -138,7 +138,7 @@ export function AssessmentsTable({
                 : ""}
               {assessment.dueDate ? (
                 <span className={overdue ? "text-[var(--rag-red)]" : ""}>
-                  {` · due ${formatDate(assessment.dueDate)}`}
+                  {` · due ${formatDateUtc(assessment.dueDate)}`}
                 </span>
               ) : (
                 ""
@@ -194,7 +194,7 @@ export function AssessmentsTable({
       ),
       cell: ({ row }) => (
         <span className="text-muted-foreground text-xs">
-          {row.original.dueDate ? formatDate(row.original.dueDate) : "—"}
+          {row.original.dueDate ? formatDateUtc(row.original.dueDate) : "—"}
         </span>
       ),
     },

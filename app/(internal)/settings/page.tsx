@@ -24,7 +24,7 @@ import {
   getFileSettings,
   getAuditRetention,
   getEmailLogRetention,
-  getStorageSettings,
+  getStorageSettingsView,
   getCronSettings,
 } from "@/lib/settings";
 import { getBreakGlassHash, getSsoSecretConfigured } from "@/lib/settings";
@@ -134,7 +134,7 @@ export default async function SettingsPage({
     getFileSettings(),
     getAuditRetention(),
     getEmailLogRetention(),
-    getStorageSettings(),
+    getStorageSettingsView(),
   ]);
 
   const webhookEndpoints = await listWebhookEndpoints();

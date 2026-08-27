@@ -149,7 +149,7 @@ export async function importVendorsAction(
   previousState: VendorsImportState,
   formData: FormData,
 ): Promise<VendorsImportState> {
-  await requirePermission(PERMISSIONS.VENDORS_CREATE);
+  const actor = await requirePermission(PERMISSIONS.VENDORS_CREATE);
 
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {
@@ -230,6 +230,49 @@ export async function importVendorsAction(
       error:
         "No valid vendors found. First error: " + (rowErrors[0] ?? "unknown"),
     };
+  }
+
+  // Import rows that match an existing vendor take the UPDATE path and can
+  // rewrite any vendor regardless of owner. That is an edit privilege, not a
+  // create privilege, so detect matches up front and refuse before writing.
+  const matchedIds = new Set(
+    (
+      await prisma.vendor.findMany({
+        where: {
+          id: { in: vendorRows.filter((row) => row.id).map((row) => row.id) },
+        },
+        select: { id: true },
+      })
+    ).map((vendor) => vendor.id),
+  );
+  const externalIdCandidates = [
+    ...new Set(
+      vendorRows
+        .map((row) => row.input.externalId)
+        .filter((externalId): externalId is string => Boolean(externalId)),
+    ),
+  ];
+  if (!matchedIds.size && externalIdCandidates.length > 0) {
+    for (const externalId of externalIdCandidates) {
+      const existingByExternalId = await prisma.vendor.findUnique({
+        where: { externalId },
+        select: { id: true },
+      });
+      if (existingByExternalId) {
+        matchedIds.add(existingByExternalId.id);
+        break;
+      }
+    }
+  }
+  if (matchedIds.size > 0) {
+    const canEdit = actor.permissions.includes(PERMISSIONS.VENDORS_EDIT);
+    if (!canEdit) {
+      return {
+        ok: false,
+        error:
+          "This import would update existing vendors. Updating requires vendor edit permission.",
+      };
+    }
   }
 
   let createdCount = 0;

@@ -21,9 +21,24 @@ const dateFormatter = new Intl.DateTimeFormat("en-GB", {
   year: "numeric",
 });
 
+// For true calendar-day values (due dates, expiry dates, renewal dates),
+// which are stored as UTC-midnight instants. Rendering them through the
+// runtime-local formatter shifted them a day for anyone west of UTC.
+const utcDateFormatter = new Intl.DateTimeFormat("en-GB", {
+  day: "2-digit",
+  month: "short",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
 export function formatDate(value: Date | string | number): string {
   const date = value instanceof Date ? value : new Date(value);
   return dateFormatter.format(date);
+}
+
+export function formatDateUtc(value: Date | string | number): string {
+  const date = value instanceof Date ? value : new Date(value);
+  return utcDateFormatter.format(date);
 }
 
 export function formatResponseValue(value: unknown): string {

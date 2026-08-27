@@ -1,13 +1,48 @@
 import { z } from "zod";
 
+// Shared field-level rules so every entry point (create form, edit form,
+// API) enforces identical bounds. The date rule also rejects rollovers like
+// 2026-02-31 that JavaScript's Date parser silently normalises.
+export function isValidIsoDateString(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const [year, month, day] = value.split("-").map(Number) as [
+    number,
+    number,
+    number,
+  ];
+  const asUtc = new Date(Date.UTC(year, month - 1, day));
+  return (
+    asUtc.getUTCFullYear() === year &&
+    asUtc.getUTCMonth() === month - 1 &&
+    asUtc.getUTCDate() === day
+  );
+}
+
+export const assessmentTitleSchema = z
+  .string()
+  .trim()
+  .min(1, "Title is required")
+  .max(200, "Title must be 200 characters or fewer");
+
+export const assessmentDueDateSchema = z
+  .string()
+  .refine((value) => value === "" || isValidIsoDateString(value), {
+    message: "Enter a valid due date",
+  });
+
 export const assessmentSchema = z.object({
-  title: z.string().min(1, "Title is required"),
+  title: assessmentTitleSchema,
   templateId: z.string().min(1, "Select a template"),
-  dueDate: z.string().optional().default(""),
+  dueDate: assessmentDueDateSchema.optional().default(""),
   reviewerId: z.string().optional().default(""),
 });
 
 export type AssessmentInput = z.infer<typeof assessmentSchema>;
+
+export const updateAssessmentSchema = z.object({
+  title: assessmentTitleSchema,
+  dueDate: assessmentDueDateSchema,
+});
 
 export const ASSESSMENT_STATUS_LABELS: Record<string, string> = {
   DRAFT: "Draft",
