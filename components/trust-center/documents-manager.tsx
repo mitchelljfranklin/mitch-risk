@@ -120,11 +120,15 @@ export function DocumentsManager({ documents }: DocumentsManagerProps) {
                   >
                     Edit
                   </Button>
-                  <form action={deleteTrustDocumentAction}>
+                  <form
+                    id={`delete-trust-document-${document.id}`}
+                    action={deleteTrustDocumentAction}
+                  >
                     <input type="hidden" name="id" value={document.id} />
                     <ConfirmDialog
                       title="Delete document?"
                       description={`"${document.title}" and its file will be removed from the trust center.`}
+                      formId={`delete-trust-document-${document.id}`}
                     >
                       <Button
                         type="button"

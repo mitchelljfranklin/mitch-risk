@@ -87,11 +87,15 @@ export function SectionsManager({ sections }: SectionsManagerProps) {
                   >
                     Edit
                   </Button>
-                  <form action={deleteTrustSectionAction}>
+                  <form
+                    id={`delete-trust-section-${section.id}`}
+                    action={deleteTrustSectionAction}
+                  >
                     <input type="hidden" name="id" value={section.id} />
                     <ConfirmDialog
                       title="Delete section?"
                       description={`"${section.title}" will be removed from the trust center.`}
+                      formId={`delete-trust-section-${section.id}`}
                     >
                       <Button
                         type="button"

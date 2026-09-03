@@ -101,11 +101,15 @@ export function BadgesManager({ badges }: BadgesManagerProps) {
                   >
                     Edit
                   </Button>
-                  <form action={deleteTrustBadgeAction}>
+                  <form
+                    id={`delete-trust-badge-${badge.id}`}
+                    action={deleteTrustBadgeAction}
+                  >
                     <input type="hidden" name="id" value={badge.id} />
                     <ConfirmDialog
                       title="Delete badge?"
                       description={`The "${badge.title}" badge will be removed from the trust center.`}
+                      formId={`delete-trust-badge-${badge.id}`}
                     >
                       <Button
                         type="button"

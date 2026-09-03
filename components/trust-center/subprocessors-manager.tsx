@@ -98,11 +98,15 @@ export function SubprocessorsManager({
                   >
                     Edit
                   </Button>
-                  <form action={deleteTrustSubprocessorAction}>
+                  <form
+                    id={`delete-trust-subprocessor-${subprocessor.id}`}
+                    action={deleteTrustSubprocessorAction}
+                  >
                     <input type="hidden" name="id" value={subprocessor.id} />
                     <ConfirmDialog
                       title="Delete subprocessor?"
                       description={`"${subprocessor.name}" will be removed from the trust center.`}
+                      formId={`delete-trust-subprocessor-${subprocessor.id}`}
                     >
                       <Button
                         type="button"

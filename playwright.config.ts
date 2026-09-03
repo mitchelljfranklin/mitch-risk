@@ -28,6 +28,13 @@ export default defineConfig({
         process.env.CRON_SECRET ?? "e2e-only-cron-secret-0123456789abcdef",
       APP_URL: "http://localhost:3000",
       AUTH_URL: "http://localhost:3000",
+      // Pin the app to the same database the specs use. Without this the
+      // standalone server loads the repo .env (dev DB) at runtime and e2e
+      // writes silently land in dev instead of the isolated test DB.
+      DATABASE_URL:
+        process.env.TEST_DATABASE_URL ??
+        process.env.DATABASE_URL ??
+        "postgresql://mitch:mitch@localhost:5432/mitch_risk_test?schema=public",
     },
   },
 });
