@@ -484,17 +484,31 @@ export async function runScheduledJobs(
 
   // --- orphaned file sweep ---
   // Every storage writer must be reflected here: evidence, attachments
-  // (vendor + certification + responsibility actions), and the brand logo.
-  const [storedFiles, evidenceRows, attachmentRows, appearance] =
-    await Promise.all([
-      storage.list(),
-      prisma.evidence.findMany({ select: { storageKey: true } }),
-      prisma.attachment.findMany({ select: { storageKey: true } }),
-      getAppearanceSettings(),
-    ]);
+  // (vendor + certification + responsibility actions + trust center
+  // documents), the brand logo, and trust center badge images.
+  const [
+    storedFiles,
+    evidenceRows,
+    attachmentRows,
+    appearance,
+    badgeImageKeys,
+  ] = await Promise.all([
+    storage.list(),
+    prisma.evidence.findMany({ select: { storageKey: true } }),
+    prisma.attachment.findMany({ select: { storageKey: true } }),
+    getAppearanceSettings(),
+    // Badge images live outside the Attachment table (imageKey on the
+    // model), so they must be referenced explicitly or the sweep deletes
+    // them (AGENTS.md storage-writer rule).
+    prisma.trustCenterBadge.findMany({
+      where: { imageKey: { not: "" } },
+      select: { imageKey: true },
+    }),
+  ]);
   const referencedKeys = new Set([
     ...evidenceRows.map((row) => row.storageKey),
     ...attachmentRows.map((row) => row.storageKey),
+    ...badgeImageKeys.map((row) => row.imageKey),
   ]);
   if (appearance.logoKey) {
     referencedKeys.add(appearance.logoKey);
