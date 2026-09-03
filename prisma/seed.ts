@@ -85,6 +85,8 @@ const defaultSettings: DefaultSetting[] = [
     key: "trustcenter.includeInInvites",
     value: false,
   },
+  { category: "trustcenter", key: "trustcenter.pageLoadsPerMin", value: 30 },
+  { category: "trustcenter", key: "trustcenter.downloadsPerMin", value: 30 },
 ];
 
 async function seedDefaultSettings() {

@@ -251,6 +251,8 @@ describe("trust center settings persistence (integration)", () => {
       intro: "Our security commitment",
       contactEmail: "security@example.test",
       includeInInvites: true,
+      pageLoadsPerMin: 30,
+      downloadsPerMin: 30,
     });
 
     const saved = await getTrustCenterSettings();

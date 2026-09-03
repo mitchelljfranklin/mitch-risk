@@ -86,8 +86,21 @@ export type TrustCenterDocumentView = {
 export async function listTrustCenterDocuments(): Promise<
   TrustCenterDocumentView[]
 > {
+  return buildDocumentViews(false);
+}
+
+export async function listPublishedTrustCenterDocuments(): Promise<
+  TrustCenterDocumentView[]
+> {
+  return buildDocumentViews(true);
+}
+
+async function buildDocumentViews(
+  publishedOnly: boolean,
+): Promise<TrustCenterDocumentView[]> {
   const [documents, attachments] = await Promise.all([
     prisma.trustCenterDocument.findMany({
+      where: publishedOnly ? { published: true } : undefined,
       orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
     }),
     prisma.attachment.findMany({
@@ -269,4 +282,83 @@ export function updateTrustSection(id: string, input: TrustCenterSectionInput) {
 
 export function deleteTrustSection(id: string) {
   return prisma.trustCenterSection.delete({ where: { id } });
+}
+
+// --- published-only reads (public trust center page + file routes) ---
+
+// Expiry classification happens here (not in the page render) so the
+// time source stays out of React-purity scope.
+export type PublishedTrustCenterBadge = {
+  id: string;
+  title: string;
+  issuer: string;
+  description: string;
+  imageKey: string;
+  externalUrl: string;
+  expiresDate: Date | null;
+  expired: boolean;
+  expiringSoon: boolean;
+};
+
+export async function listPublishedTrustCenterBadges(): Promise<
+  PublishedTrustCenterBadge[]
+> {
+  const rows = await prisma.trustCenterBadge.findMany({
+    where: { published: true },
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+  });
+
+  const now = Date.now();
+  const thirtyDaysMs = 30 * 86_400_000;
+  return rows.map((badge) => ({
+    id: badge.id,
+    title: badge.title,
+    issuer: badge.issuer,
+    description: badge.description,
+    imageKey: badge.imageKey,
+    externalUrl: badge.externalUrl,
+    expiresDate: badge.expiresDate,
+    expired: badge.expiresDate !== null && badge.expiresDate.getTime() < now,
+    expiringSoon:
+      badge.expiresDate !== null &&
+      badge.expiresDate.getTime() >= now &&
+      badge.expiresDate.getTime() < now + thirtyDaysMs,
+  }));
+}
+
+export function listPublishedTrustCenterSubprocessors() {
+  return prisma.trustCenterSubprocessor.findMany({
+    where: { published: true },
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+  });
+}
+
+export function listPublishedTrustCenterSections() {
+  return prisma.trustCenterSection.findMany({
+    where: { published: true },
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+  });
+}
+
+// Returns the document + its stored file only when the document is
+// published; unpublished or file-less documents 404 at the caller.
+export async function getPublishedTrustCenterDocument(id: string) {
+  const document = await prisma.trustCenterDocument.findFirst({
+    where: { id, published: true },
+  });
+  if (!document) return null;
+  const attachment = await prisma.attachment.findFirst({
+    where: { entityType: DOCUMENT_ENTITY_TYPE, entityId: id },
+    orderBy: { createdAt: "desc" },
+  });
+  if (!attachment) return null;
+  return { document, attachment };
+}
+
+// Returns the storage key only when the badge is published AND has an image.
+export function getPublishedTrustCenterBadgeImage(id: string) {
+  return prisma.trustCenterBadge.findFirst({
+    where: { id, published: true, imageKey: { not: "" } },
+    select: { imageKey: true },
+  });
 }

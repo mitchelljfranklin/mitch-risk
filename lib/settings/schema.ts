@@ -195,6 +195,9 @@ export const trustCenterSettingsSchema = z.object({
     .union([z.literal(""), z.email("Enter a valid email address")])
     .default(""),
   includeInInvites: z.boolean().default(false),
+  // Public-page and download abuse protection (per IP, per minute).
+  pageLoadsPerMin: z.coerce.number().int().min(1).default(30),
+  downloadsPerMin: z.coerce.number().int().min(1).default(30),
 });
 
 export type TrustCenterSettings = z.infer<typeof trustCenterSettingsSchema>;
