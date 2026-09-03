@@ -102,6 +102,15 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 - **Contract renewal date** tracking with overdue flag
 - **Evidence attachment** for certification documents (SOC 2 reports, ISO certificates)
 
+## Trust Center
+
+- **Public page** at `/trust` — no login required, branded with your logo and colours
+- **Compliance badges** with uploaded images, verification links and expiry labels
+- **Security documents** for public download (policies, reports, DPAs) with publish toggles
+- **Subprocessor table** — name, purpose, data location, website
+- **Markdown sections** for overviews, FAQs and disclosures
+- **Invite email footer** — optional trust-center link on every vendor invite
+
 ## API
 
 - **REST v1** under `/api/v1/` — vendors, assessments, findings, frameworks, dashboard, audit

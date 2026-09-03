@@ -27,6 +27,7 @@
 16. [Deployment Architecture](#16-deployment-architecture)
 17. [Data Lifecycle](#17-data-lifecycle)
 18. [Compliance Mapping](#18-compliance-mapping)
+18a. [Trust Center](#18a-trust-center)
 19. [Key Design Decisions](#19-key-design-decisions)
 
 ---
@@ -1969,6 +1970,53 @@ When a vendor answer is non-compliant:
 
 ---
 
+## 18a. Trust Center
+
+The Trust Center is a public, unauthenticated page at `/trust` where the
+deploying organisation publishes its own security posture: compliance
+badges, downloadable security documents, a subprocessor table and
+markdown sections.
+
+```
+┌──────────────────────── TRUST CENTER FLOW ────────────────────────┐
+│                                                                    │
+│  Admin (trustcenter:manage)          Public /trust                 │
+│  ┌──────────────────────────┐        ┌─────────────────────────┐   │
+│  │ /trust-center manager    │        │  force-dynamic page     │   │
+│  │  badges (image upload)   │───────▶│  published rows only    │   │
+│  │  documents (Attachment)  │        │  sanitised markdown     │   │
+│  │  subprocessors           │        │  branded shell + logo   │   │
+│  │  sections (markdown)     │        │  rate-limited per IP    │   │
+│  └──────────────────────────┘        └───────────┬─────────────┘   │
+│                                                  │                 │
+│  /api/trust/documents/[id]  ◀── published-only ◀─┘ downloads      │
+│  /api/trust/badges/[id]/image  raster-only, public cache 1h        │
+└────────────────────────────────────────────────────────────────────┘
+```
+
+### 18a.1 Storage and the orphan sweep
+
+Document files use the polymorphic `Attachment` model
+(`entityType: "TrustCenterDocument"`) and are covered by the cron orphan
+sweep automatically. Badge images live outside the Attachment table
+(`imageKey` on the badge row) and are therefore explicitly added to the
+sweep's `referencedKeys` in `lib/cron/run-jobs.ts` — the AGENTS.md
+storage-writer rule.
+
+### 18a.2 Publication semantics
+
+Every public route filters `published: true`; unpublished items and the
+disabled state return a neutral 404. Deleting a document or badge
+removes both the database rows and the storage files; the confirm
+dialogs in the manager are form-wired so confirms actually submit.
+
+### 18a.3 Invite email footer
+
+When `trustcenter.enabled` and `trustcenter.includeInInvites` are both
+set, `sendEmail` appends a trust-center link to invite/invite-password
+emails at send time. Stored templates are never modified.
+
+---
 ## 19. Key Design Decisions
 
 ### 19.1 Why Next.js App Router (not Pages Router)?

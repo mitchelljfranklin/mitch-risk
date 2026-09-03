@@ -47,7 +47,10 @@ export type TrustCenterActionState =
 
 function refreshTrustPaths(): void {
   // The public page reads published rows on every request; the manager page
-  // renders the same lists.
+  // renders the same lists. Save actions consumed by useActionState must NOT
+  // call this — revalidatePath inside them aborts the action response
+  // streaming on some Node versions (toasts never appear); useActionFeedback
+  // refreshes via router.refresh() instead, and /trust is force-dynamic.
   revalidatePath("/trust-center");
   revalidatePath("/trust");
 }
@@ -179,7 +182,8 @@ export async function saveTrustBadgeAction(
     };
   }
 
-  refreshTrustPaths();
+  // useActionState-consumed save: no revalidatePath (Node streaming bug +
+  // toast race) — useActionFeedback refreshes the manager lists instead.
   return { ok: true, message: "Badge saved." };
 }
 
@@ -245,7 +249,8 @@ export async function saveTrustDocumentAction(
     };
   }
 
-  refreshTrustPaths();
+  // useActionState-consumed save: no revalidatePath (Node streaming bug +
+  // toast race) — useActionFeedback refreshes the manager lists instead.
   return { ok: true, message: "Document saved." };
 }
 
@@ -348,7 +353,8 @@ export async function saveTrustSubprocessorAction(
     };
   }
 
-  refreshTrustPaths();
+  // useActionState-consumed save: no revalidatePath (Node streaming bug +
+  // toast race) — useActionFeedback refreshes the manager lists instead.
   return { ok: true, message: "Subprocessor saved." };
 }
 
@@ -389,7 +395,8 @@ export async function saveTrustSectionAction(
     };
   }
 
-  refreshTrustPaths();
+  // useActionState-consumed save: no revalidatePath (Node streaming bug +
+  // toast race) — useActionFeedback refreshes the manager lists instead.
   return { ok: true, message: "Section saved." };
 }
 

@@ -70,3 +70,7 @@ npx tsx prisma/seed-demo.ts
 ## Can I extend or customize the platform?
 
 The platform is open source. You can modify the code, add new framework libraries via CSV import, create custom roles with any permission combination, and swap the storage backend. The REST API integrates with external systems. The architecture is designed around a pluggable storage interface and configurable scoring engine. For extensions that would benefit the community, pull requests are welcome.
+
+## Can I publish our own security posture to vendors?
+
+Yes — the Trust Center is a public page at `/trust` where you share compliance badges, security documents, subprocessors and narrative sections. Curate it under **Manage → Trust center**, enable it in **Settings → Trust Center**, and optionally link it from vendor invite emails. See the [Trust Center guide](/user-guides/trust-center).

@@ -35,14 +35,17 @@ over sprawling configuration. Do not add features that are not in the plan witho
 app/                 # Next.js App Router
   (internal)/        # authenticated dashboard
     settings/         #   email-tracking, api-form, audit-form, health-tab, etc.
+    trust-center/     #   public trust center content manager (badges, documents, subprocessors, sections)
     risk-register/    #   cross-vendor findings register
     vendors/import/   #   CSV bulk vendor import
     templates/import/ #   JSON template import
     frameworks/import/ # CSV framework import
   (auth)/            # login, first-run setup
   portal/[token]/    # public vendor questionnaire (no login)
+  trust/             # public trust center page (published-only, rate-limited)
   api/               # cron, file serving, auth, REST API v1, Swagger docs
     attachments/[attachmentId]/ # authenticated file serving
+    trust/             #   public trust center file routes (documents, badge images)
     v1/                 #   REST v1 endpoints
       vendors/          #     vendor CRUD + import
         external/[externalId]/ # vendor lookup by external ID
@@ -116,6 +119,7 @@ lib/                 # cross-cutting logic
     findings.ts      #   finding status updates
     frameworks.ts    #   framework CRUD + CSV import
     certifications.ts  # vendor certification CRUD + responsibility generation
+    trust-center.ts    # trust center CRUD + badge/document upload validation
     roles.ts           # role CRUD + duplicate
     auth.ts            # sign-out, password reset, break-glass
     customer-responsibility.ts # responsibility action updates
@@ -124,6 +128,7 @@ lib/                 # cross-cutting logic
                      #   compliance, frameworks, notifications, roles, scoring, templates, users, vendors)
     audit.ts           #   logAudit() + AUDIT_ACTIONS constant (single source of truth for audit event types)
     certifications.ts  # certification CRUD + attachments
+    trust-center.ts    # trust center CRUD + published-only reads + document file lifecycle
     dashboard.ts       # dashboard metrics + upcoming dates
     customer-responsibility.ts # customer responsibility compliance
     findings.ts        # finding list, get, update status
@@ -135,6 +140,7 @@ lib/                 # cross-cutting logic
   schemas/           # shared zod schemas + inferred types
     framework.ts     #   framework + CSV import schema
     certification.ts #   vendor certification schema
+    trust-center.ts  #   trust center badge/document/subprocessor/section schemas
     auth.ts          #   credentials, password reset, profile update, user create, setup admin
     portal.ts        #   portal answer + progress save schemas
     vendor.ts          # vendor schema
