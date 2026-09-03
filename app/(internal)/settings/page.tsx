@@ -25,12 +25,14 @@ import {
   getAuditRetention,
   getEmailLogRetention,
   getStorageSettingsView,
+  getTrustCenterSettings,
   getCronSettings,
 } from "@/lib/settings";
 import { getBreakGlassHash, getSsoSecretConfigured } from "@/lib/settings";
 import { listWebhookEndpoints } from "@/lib/db/webhooks";
 import { UsersManager } from "./users-manager";
 import { RolesManager } from "./roles-manager";
+import { TrustCenterSettingsForm } from "./trust-center-form";
 import { FlashToast } from "@/components/flash-toast";
 
 import { EmailForm, SmtpTestForm } from "./email-form";
@@ -81,6 +83,10 @@ export default async function SettingsPage({
     permissions,
     PERMISSIONS.WEBHOOKS_MANAGE,
   );
+  const canManageTrustCenter = hasPermission(
+    permissions,
+    PERMISSIONS.TRUSTCENTER_MANAGE,
+  );
 
   const sp = await searchParams;
   const [
@@ -101,6 +107,7 @@ export default async function SettingsPage({
     auditRetention,
     emailLogRetention,
     storageSettings,
+    trustCenter,
   ] = await Promise.all([
     getOrganizationSettings(),
     getEmailSettings(),
@@ -136,6 +143,7 @@ export default async function SettingsPage({
     getAuditRetention(),
     getEmailLogRetention(),
     getStorageSettingsView(),
+    getTrustCenterSettings(),
   ]);
 
   const webhookEndpoints = await listWebhookEndpoints();
@@ -219,11 +227,12 @@ export default async function SettingsPage({
           "scoring",
           "scheduling",
           "limits",
-          "sso",
           "storage",
+          "sso",
           "health",
         ]
       : []),
+    ...(canManageTrustCenter ? ["trust-center"] : []),
     ...(canManageUsers ? ["users"] : []),
     ...(canManageRoles ? ["roles"] : []),
     ...(canManageApi ? ["api"] : []),
@@ -269,6 +278,9 @@ export default async function SettingsPage({
             {canManageApi ? <TabsTrigger value="api">API</TabsTrigger> : null}
             {canManageWebhooks ? (
               <TabsTrigger value="webhooks">Webhooks</TabsTrigger>
+            ) : null}
+            {canManageTrustCenter ? (
+              <TabsTrigger value="trust-center">Trust Center</TabsTrigger>
             ) : null}
             {canViewAudit ? (
               <TabsTrigger value="audit">Audit</TabsTrigger>
@@ -566,6 +578,30 @@ export default async function SettingsPage({
                 users={staffAccounts}
                 roles={roleOptions}
                 currentUserId={currentUser.id}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="trust-center" className="mt-4 flex flex-col gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Trust Center</CardTitle>
+              <CardDescription>
+                Public page at <code>/trust</code> sharing compliance badges,
+                security documents, subprocessors and narrative sections with
+                vendors and partners. Curate the content under Manage → Trust
+                center.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <TrustCenterSettingsForm
+                enabled={trustCenter.enabled}
+                intro={trustCenter.intro}
+                contactEmail={trustCenter.contactEmail}
+                includeInInvites={trustCenter.includeInInvites}
+                pageLoadsPerMin={trustCenter.pageLoadsPerMin}
+                downloadsPerMin={trustCenter.downloadsPerMin}
               />
             </CardContent>
           </Card>

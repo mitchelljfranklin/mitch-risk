@@ -4,10 +4,12 @@ import { marked } from "marked";
 import nodemailer from "nodemailer";
 
 import { DynamicEmail } from "@/emails/dynamic";
+import { env } from "@/lib/env";
 import {
   getEmailSecret,
   getEmailSettings,
   getEmailTemplateSettings,
+  getTrustCenterSettings,
 } from "@/lib/settings";
 import { prisma } from "@/lib/prisma";
 
@@ -132,7 +134,22 @@ export async function sendEmail(
   const body = bodyByType[templateType];
 
   const resolvedSubject = replaceTokens(subject, tokens);
-  const resolvedBody = replaceTokens(body, tokens);
+  let resolvedBody = replaceTokens(body, tokens);
+
+  // Trust center footer: injected at send time (stored templates are never
+  // mutated) for invite types when the organisation opts in and the public
+  // page is enabled. The mailer decides internally so every current and
+  // future invite call site gets the footer without remembering to ask.
+  if (templateType === "invite" || templateType === "invite-password") {
+    const trustSettings = await getTrustCenterSettings();
+    if (trustSettings.enabled && trustSettings.includeInInvites) {
+      const trustUrl = `${env.APP_URL}/trust`;
+      if (!resolvedBody.includes(trustUrl)) {
+        resolvedBody += `\n\n---\n\nLearn more about our security posture: ${trustUrl}`;
+      }
+    }
+  }
+
   const htmlBody = await marked.parse(resolvedBody);
 
   const notificationLogId = options?.updateLogId
