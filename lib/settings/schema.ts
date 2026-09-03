@@ -186,3 +186,15 @@ export const cronSettingsSchema = z.object({
 });
 
 export type CronSettings = z.infer<typeof cronSettingsSchema>;
+
+export const trustCenterSettingsSchema = z.object({
+  enabled: z.boolean().default(false),
+  intro: z.string().default(""),
+  // Empty falls back to organization.supportEmail on the public page.
+  contactEmail: z
+    .union([z.literal(""), z.email("Enter a valid email address")])
+    .default(""),
+  includeInInvites: z.boolean().default(false),
+});
+
+export type TrustCenterSettings = z.infer<typeof trustCenterSettingsSchema>;

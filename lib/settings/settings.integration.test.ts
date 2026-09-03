@@ -10,10 +10,12 @@ import {
   getEmailSettings,
   getOrganizationSettings,
   getSsoSecret,
+  getTrustCenterSettings,
   updateAppearanceSettings,
   updateAssessmentSettings,
   updateEmailSettings,
   updateOrganizationSettings,
+  updateTrustCenterSettings,
 } from "@/lib/settings";
 
 // Categories this suite mutates. We snapshot them before and restore them
@@ -25,6 +27,7 @@ const MUTATED_CATEGORIES = [
   "appearance",
   "sso",
   "assessments",
+  "trustcenter",
 ];
 
 let settingsSnapshot: {
@@ -238,5 +241,34 @@ describe("appearance settings persistence (integration)", () => {
     expect(appearance.primaryHex).toBe("");
     expect(appearance.secondaryHex).toBe("");
     expect(appearance.logoKey).toBe("");
+  });
+});
+
+describe("trust center settings persistence (integration)", () => {
+  it("persists and reads back trust center settings", async () => {
+    await updateTrustCenterSettings({
+      enabled: true,
+      intro: "Our security commitment",
+      contactEmail: "security@example.test",
+      includeInInvites: true,
+    });
+
+    const saved = await getTrustCenterSettings();
+    expect(saved.enabled).toBe(true);
+    expect(saved.intro).toBe("Our security commitment");
+    expect(saved.contactEmail).toBe("security@example.test");
+    expect(saved.includeInInvites).toBe(true);
+  });
+
+  it("self-heals to defaults when trust center settings are unset", async () => {
+    await prisma.appSetting.deleteMany({
+      where: { key: { startsWith: "trustcenter." } },
+    });
+
+    const defaults = await getTrustCenterSettings();
+    expect(defaults.enabled).toBe(false);
+    expect(defaults.intro).toBe("");
+    expect(defaults.contactEmail).toBe("");
+    expect(defaults.includeInInvites).toBe(false);
   });
 });

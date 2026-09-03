@@ -607,3 +607,71 @@ enum WebhookPlatform {
   MICROSOFT_TEAMS
   DISCORD
 }
+
+enum TrustCenterDocumentCategory {
+  POLICY
+  SECURITY
+  COMPLIANCE
+  PRIVACY
+  OTHER
+}
+
+model TrustCenterBadge {
+  id          String    @id @default(cuid())
+  title       String
+  issuer      String    @default("")
+  description String    @default("")
+  imageKey    String    @default("")
+  externalUrl String    @default("")
+  issuedDate  DateTime?
+  expiresDate DateTime?
+  sortOrder   Int       @default(0)
+  published   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([published, sortOrder])
+  @@map("trust_center_badges")
+}
+
+model TrustCenterDocument {
+  id          String                      @id @default(cuid())
+  title       String
+  description String                      @default("")
+  category    TrustCenterDocumentCategory @default(OTHER)
+  sortOrder   Int                         @default(0)
+  published   Boolean                     @default(false)
+  createdAt   DateTime                    @default(now())
+  updatedAt   DateTime                    @updatedAt
+
+  @@index([published, sortOrder])
+  @@map("trust_center_documents")
+}
+
+model TrustCenterSubprocessor {
+  id         String   @id @default(cuid())
+  name       String
+  purpose    String   @default("")
+  location   String   @default("")
+  websiteUrl String   @default("")
+  sortOrder  Int      @default(0)
+  published  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([published, sortOrder])
+  @@map("trust_center_subprocessors")
+}
+
+model TrustCenterSection {
+  id         String   @id @default(cuid())
+  title      String
+  body       String   @default("")
+  sortOrder  Int      @default(0)
+  published  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([published, sortOrder])
+  @@map("trust_center_sections")
+}

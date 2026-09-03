@@ -15,6 +15,7 @@ import {
   type AppearanceSettings,
   type StorageSettings,
   type CronSettings,
+  type TrustCenterSettings,
   assessmentSettingsSchema,
   emailSettingsSchema,
   emailTemplateSchema,
@@ -25,6 +26,7 @@ import {
   appearanceSettingsSchema,
   storageSettingsSchema,
   cronSettingsSchema,
+  trustCenterSettingsSchema,
 } from "./schema";
 
 function makeKey(category: string, field: string): string {
@@ -422,6 +424,19 @@ export async function getCronSettings(): Promise<CronSettings> {
 
 export async function updateCronSettings(input: CronSettings): Promise<void> {
   await persistCategory("cron", input, NO_SECRETS);
+}
+
+export const getTrustCenterSettings = cache(
+  async (): Promise<TrustCenterSettings> => {
+    const record = await readCategoryRecord("trustcenter");
+    return trustCenterSettingsSchema.parse(record);
+  },
+);
+
+export async function updateTrustCenterSettings(
+  input: TrustCenterSettings,
+): Promise<void> {
+  await persistCategory("trustcenter", input, NO_SECRETS);
 }
 
 export async function getAuditRetention(): Promise<number> {

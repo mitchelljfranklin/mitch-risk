@@ -21,6 +21,7 @@ export const PERMISSIONS = {
   SETTINGS_MANAGE: "settings:manage",
   API_MANAGE: "api:manage",
   WEBHOOKS_MANAGE: "webhooks:manage",
+  TRUSTCENTER_MANAGE: "trustcenter:manage",
   PROFILE_VIEW: "profile:view",
 } as const;
 
@@ -95,6 +96,16 @@ export const PERMISSION_GROUPS: readonly PermissionGroup[] = [
     label: "Webhooks",
     permissions: [
       { key: PERMISSIONS.WEBHOOKS_MANAGE, label: "Manage webhooks" },
+    ],
+  },
+  {
+    resource: "trustcenter",
+    label: "Trust Center",
+    permissions: [
+      {
+        key: PERMISSIONS.TRUSTCENTER_MANAGE,
+        label: "Manage trust center content",
+      },
     ],
   },
   {
