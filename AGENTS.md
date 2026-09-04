@@ -568,6 +568,14 @@ from the catalog and role defaults).
   JS replacement strings like `"\\u2014"` insert the LITERAL escape text (JSX attributes
   render it verbatim) — always write real characters; and JSX attribute values never
   process `\uXXXX` escapes, unlike JS string literals.
+- **Never run schema-less UPDATE/DELETE against a database — ever.** Manual DB
+  surgery during debugging must use a scripted file with an explicit WHERE
+  clause, parameterised values, and a row-count print BEFORE and AFTER. An
+  unscoped `UPDATE app_settings SET value = …` during trust-center debugging
+  wiped the dev deployment's entire settings table (SMTP config, branding,
+  org name). Recovery needed a re-seed plus manual re-entry of everything not
+  captured in session output. If a quick eval feels necessary, stop and write
+  the script instead.
 - If `tsc` reports parse errors inside `.next/dev/types/routes.d.ts`, delete `.next` and rebuild —
   a killed dev server can leave the generated route types corrupted.
 - `npm install` rewrites `package.json`; if that leaves it flagged by `format:check`, it's a
