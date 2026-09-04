@@ -158,7 +158,13 @@ export type SsoSettings = z.infer<typeof ssoSettingsSchema>;
 export const appearanceSettingsSchema = z.object({
   primaryHex: z.string().default(""),
   secondaryHex: z.string().default(""),
-  logoKey: z.string().default(""),
+  // Some older rows stored the key JSON-string-encoded (wrapped in literal
+  // double quotes), which made the orphan sweep treat the real logo file as
+  // unreferenced and delete it. Normalise on read.
+  logoKey: z
+    .string()
+    .default("")
+    .transform((value) => value.replace(/^"+|"+$/g, "")),
   ragGreenHex: z.string().default(""),
   ragAmberHex: z.string().default(""),
   ragRedHex: z.string().default(""),
