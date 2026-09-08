@@ -107,6 +107,32 @@ export async function listAuditLogs(
   return { entries, totalCount, page, pageSize };
 }
 
+// Settings saves log the tab key ("trustcenter", "scheduling", …) as the
+// entityId — humanise it into a readable name for the audit table.
+function humaniseSettingKey(key: string): string {
+  const labels: Record<string, string> = {
+    general: "General",
+    appearance: "Appearance",
+    email: "Email",
+    "email-tracking": "Email tracking",
+    scoring: "Scoring",
+    scheduling: "Scheduling",
+    limits: "Limits",
+    storage: "Storage",
+    sso: "SSO",
+    api: "API",
+    webhooks: "Webhooks",
+    audit: "Audit log",
+    trustcenter: "Trust center",
+    users: "Users",
+    roles: "Roles",
+  };
+  return (
+    labels[key] ??
+    key.charAt(0).toUpperCase() + key.slice(1).replace(/[-_]/g, " ")
+  );
+}
+
 async function resolveEntityNames(
   rows: { entityType: string | null; entityId: string | null }[],
 ): Promise<Map<string, Map<string, string>>> {
@@ -185,6 +211,54 @@ async function resolveEntityNames(
             select: { id: true, name: true },
           });
           for (const apiKey of keys) map.set(apiKey.id, apiKey.name);
+        } else if (type === "Setting") {
+          // Settings saves log the tab key as entityId (e.g. "trustcenter",
+          // "scheduling") — the key itself is the readable name.
+          for (const id of uniqueIds) {
+            map.set(id, humaniseSettingKey(id));
+          }
+        } else if (type === "Webhook") {
+          const endpoints = await prisma.webhookEndpoint.findMany({
+            where: { id: { in: uniqueIds } },
+            select: { id: true, name: true, url: true },
+          });
+          for (const endpoint of endpoints) {
+            map.set(endpoint.id, endpoint.name || endpoint.url);
+          }
+        } else if (type === "NotificationLog") {
+          const logs = await prisma.notificationLog.findMany({
+            where: { id: { in: uniqueIds } },
+            select: { id: true, subject: true },
+          });
+          for (const log of logs) map.set(log.id, log.subject);
+        } else if (type === "TrustCenter") {
+          // Trust center actions log one of four entity kinds under a single
+          // entityType; resolve the display name from whichever table hits.
+          const [badges, documents, subprocessors, sections] =
+            await Promise.all([
+              prisma.trustCenterBadge.findMany({
+                where: { id: { in: uniqueIds } },
+                select: { id: true, title: true },
+              }),
+              prisma.trustCenterDocument.findMany({
+                where: { id: { in: uniqueIds } },
+                select: { id: true, title: true },
+              }),
+              prisma.trustCenterSubprocessor.findMany({
+                where: { id: { in: uniqueIds } },
+                select: { id: true, name: true },
+              }),
+              prisma.trustCenterSection.findMany({
+                where: { id: { in: uniqueIds } },
+                select: { id: true, title: true },
+              }),
+            ]);
+          for (const badge of badges) map.set(badge.id, badge.title);
+          for (const document of documents)
+            map.set(document.id, document.title);
+          for (const subprocessor of subprocessors)
+            map.set(subprocessor.id, subprocessor.name);
+          for (const section of sections) map.set(section.id, section.title);
         }
       } catch (error: unknown) {
         console.error(

@@ -247,6 +247,7 @@ export async function saveTrustBadgeAction(
   if (!image.ok) return { ok: false, message: image.message };
 
   try {
+    let entityId = id;
     if (id) {
       const existing = await getTrustBadge(id);
       if (!existing) return { ok: false, message: "Badge not found." };
@@ -263,11 +264,12 @@ export async function saveTrustBadgeAction(
       }
     } else {
       const badge = await createTrustBadge(parsed.data);
+      entityId = badge.id;
       if (image.imageKey) {
         await setTrustBadgeImage(badge.id, image.imageKey);
       }
     }
-    await recordAudit(id || "new");
+    await recordAudit(entityId);
   } catch (error: unknown) {
     // Roll back the just-saved image if the record write failed.
     if (image.imageKey) {
@@ -321,6 +323,7 @@ export async function saveTrustDocumentAction(
   const id = getField(formData, "id");
   const file = formData.get("file");
 
+  let entityId = id;
   try {
     if (id) {
       await updateTrustDocument(id, parsed.data);
@@ -336,6 +339,7 @@ export async function saveTrustDocumentAction(
       // never leaves an orphan document row behind.
       const prepared = await prepareTrustDocumentFile(file);
       const document = await createTrustDocument(parsed.data);
+      entityId = document.id;
       try {
         await persistTrustDocumentFile(document.id, prepared);
       } catch (persistError: unknown) {
@@ -350,7 +354,7 @@ export async function saveTrustDocumentAction(
           : new Error("Failed to save file.");
       }
     }
-    await recordAudit(id || "new");
+    await recordAudit(entityId);
   } catch (error: unknown) {
     return {
       ok: false,
@@ -499,7 +503,7 @@ export async function saveTrustSubprocessorAction(
       }
       await setTrustSubprocessorLogo(subprocessorId, newLogoKey);
     }
-    await recordAudit(subprocessorId || "new");
+    await recordAudit(subprocessorId);
   } catch (error: unknown) {
     // Roll back the just-stored logo if the record write failed.
     if (newLogoKey) {
@@ -553,13 +557,15 @@ export async function saveTrustSectionAction(
   if (!parsed.ok) return { ok: false, message: parsed.message };
 
   const id = getField(formData, "id");
+  let entityId = id;
   try {
     if (id) {
       await updateTrustSection(id, parsed.data);
     } else {
-      await createTrustSection(parsed.data);
+      const created = await createTrustSection(parsed.data);
+      entityId = created.id;
     }
-    await recordAudit(id || "new");
+    await recordAudit(entityId);
   } catch (error: unknown) {
     return {
       ok: false,
