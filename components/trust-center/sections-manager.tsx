@@ -20,10 +20,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import {
   deleteTrustSectionAction,
+  moveTrustSectionAction,
   saveTrustSectionAction,
 } from "@/lib/actions/trust-center";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
-import { Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 
 export type TrustSectionView = {
   id: string;
@@ -57,60 +58,94 @@ export function SectionsManager({ sections }: SectionsManagerProps) {
           </p>
         ) : (
           <div className="flex flex-col divide-y rounded-lg border">
-            {sections.map((section) => (
-              <div
-                key={section.id}
-                className="flex items-start justify-between gap-2 p-3"
-              >
-                <div className="flex min-w-0 flex-col gap-1">
-                  <div className="flex items-center gap-2">
-                    <span className="truncate text-sm font-medium">
-                      {section.title}
-                    </span>
-                    {section.published ? null : (
-                      <Badge variant="secondary" className="text-xs">
-                        Draft
-                      </Badge>
-                    )}
+            {sections.map((section, index) => {
+              const isFirst = index === 0;
+              const isLast = index === sections.length - 1;
+              return (
+                <div
+                  key={section.id}
+                  className="flex items-start justify-between gap-2 p-3"
+                >
+                  <div className="flex min-w-0 flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <span className="truncate text-sm font-medium">
+                        {section.title}
+                      </span>
+                      {section.published ? null : (
+                        <Badge variant="secondary" className="text-xs">
+                          Draft
+                        </Badge>
+                      )}
+                    </div>
+                    {section.body ? (
+                      <p className="text-muted-foreground truncate text-xs">
+                        {section.body.slice(0, 120)}
+                      </p>
+                    ) : null}
                   </div>
-                  {section.body ? (
-                    <p className="text-muted-foreground truncate text-xs">
-                      {section.body.slice(0, 120)}
-                    </p>
-                  ) : null}
-                </div>
-                <div className="flex shrink-0 items-center gap-1">
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setEditing(section)}
-                  >
-                    Edit
-                  </Button>
-                  <form
-                    id={`delete-trust-section-${section.id}`}
-                    action={deleteTrustSectionAction}
-                  >
-                    <input type="hidden" name="id" value={section.id} />
-                    <ConfirmDialog
-                      title="Delete section?"
-                      description={`"${section.title}" will be removed from the trust center.`}
-                      formId={`delete-trust-section-${section.id}`}
+                  <div className="flex shrink-0 items-center gap-1">
+                    <form
+                      action={moveTrustSectionAction}
+                      className="flex flex-col"
                     >
+                      <input type="hidden" name="id" value={section.id} />
                       <Button
-                        type="button"
+                        type="submit"
+                        name="direction"
+                        value="up"
                         variant="ghost"
                         size="sm"
-                        aria-label={`Delete ${section.title}`}
+                        className="h-5 w-6 p-0"
+                        disabled={isFirst}
+                        aria-label={`Move ${section.title} up`}
                       >
-                        <Trash2 className="size-4" />
+                        <ChevronUp className="size-3.5" />
                       </Button>
-                    </ConfirmDialog>
-                  </form>
+                      <Button
+                        type="submit"
+                        name="direction"
+                        value="down"
+                        variant="ghost"
+                        size="sm"
+                        className="h-5 w-6 p-0"
+                        disabled={isLast}
+                        aria-label={`Move ${section.title} down`}
+                      >
+                        <ChevronDown className="size-3.5" />
+                      </Button>
+                    </form>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setEditing(section)}
+                    >
+                      Edit
+                    </Button>
+                    <form
+                      id={`delete-trust-section-${section.id}`}
+                      action={deleteTrustSectionAction}
+                    >
+                      <input type="hidden" name="id" value={section.id} />
+                      <ConfirmDialog
+                        title="Delete section?"
+                        description={`"${section.title}" will be removed from the trust center.`}
+                        formId={`delete-trust-section-${section.id}`}
+                      >
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          aria-label={`Delete ${section.title}`}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      </ConfirmDialog>
+                    </form>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </CardContent>

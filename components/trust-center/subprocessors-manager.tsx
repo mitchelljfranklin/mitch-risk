@@ -20,10 +20,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import {
   deleteTrustSubprocessorAction,
+  moveTrustSubprocessorAction,
   saveTrustSubprocessorAction,
 } from "@/lib/actions/trust-center";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
-import { Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 
 export type TrustSubprocessorView = {
   id: string;
@@ -64,73 +65,107 @@ export function SubprocessorsManager({
           </p>
         ) : (
           <div className="flex flex-col divide-y rounded-lg border">
-            {subprocessors.map((subprocessor) => (
-              <div
-                key={subprocessor.id}
-                className="flex items-start justify-between gap-2 p-3"
-              >
-                <div className="flex min-w-0 flex-col gap-1">
-                  <div className="flex items-center gap-2">
-                    {subprocessor.logoKey ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={`/api/trust/subprocessors/${subprocessor.id}/image?v=${subprocessor.logoKey}`}
-                        alt=""
-                        className="size-6 shrink-0 object-contain"
-                      />
+            {subprocessors.map((subprocessor, index) => {
+              const isFirst = index === 0;
+              const isLast = index === subprocessors.length - 1;
+              return (
+                <div
+                  key={subprocessor.id}
+                  className="flex items-start justify-between gap-2 p-3"
+                >
+                  <div className="flex min-w-0 flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      {subprocessor.logoKey ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={`/api/trust/subprocessors/${subprocessor.id}/image?v=${subprocessor.logoKey}`}
+                          alt=""
+                          className="size-6 shrink-0 object-contain"
+                        />
+                      ) : null}
+                      <span className="truncate text-sm font-medium">
+                        {subprocessor.name}
+                      </span>
+                      {subprocessor.published ? null : (
+                        <Badge variant="secondary" className="text-xs">
+                          Draft
+                        </Badge>
+                      )}
+                    </div>
+                    {subprocessor.purpose ? (
+                      <p className="text-muted-foreground truncate text-xs">
+                        {subprocessor.purpose}
+                      </p>
                     ) : null}
-                    <span className="truncate text-sm font-medium">
-                      {subprocessor.name}
-                    </span>
-                    {subprocessor.published ? null : (
-                      <Badge variant="secondary" className="text-xs">
-                        Draft
-                      </Badge>
-                    )}
+                    {subprocessor.location ? (
+                      <p className="text-muted-foreground text-xs">
+                        {subprocessor.location}
+                      </p>
+                    ) : null}
                   </div>
-                  {subprocessor.purpose ? (
-                    <p className="text-muted-foreground truncate text-xs">
-                      {subprocessor.purpose}
-                    </p>
-                  ) : null}
-                  {subprocessor.location ? (
-                    <p className="text-muted-foreground text-xs">
-                      {subprocessor.location}
-                    </p>
-                  ) : null}
-                </div>
-                <div className="flex shrink-0 items-center gap-1">
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setEditing(subprocessor)}
-                  >
-                    Edit
-                  </Button>
-                  <form
-                    id={`delete-trust-subprocessor-${subprocessor.id}`}
-                    action={deleteTrustSubprocessorAction}
-                  >
-                    <input type="hidden" name="id" value={subprocessor.id} />
-                    <ConfirmDialog
-                      title="Delete subprocessor?"
-                      description={`"${subprocessor.name}" will be removed from the trust center.`}
-                      formId={`delete-trust-subprocessor-${subprocessor.id}`}
+                  <div className="flex shrink-0 items-center gap-1">
+                    <form
+                      action={moveTrustSubprocessorAction}
+                      className="flex flex-col"
                     >
+                      <input type="hidden" name="id" value={subprocessor.id} />
                       <Button
-                        type="button"
+                        type="submit"
+                        name="direction"
+                        value="up"
                         variant="ghost"
                         size="sm"
-                        aria-label={`Delete ${subprocessor.name}`}
+                        className="h-5 w-6 p-0"
+                        disabled={isFirst}
+                        aria-label={`Move ${subprocessor.name} up`}
                       >
-                        <Trash2 className="size-4" />
+                        <ChevronUp className="size-3.5" />
                       </Button>
-                    </ConfirmDialog>
-                  </form>
+                      <Button
+                        type="submit"
+                        name="direction"
+                        value="down"
+                        variant="ghost"
+                        size="sm"
+                        className="h-5 w-6 p-0"
+                        disabled={isLast}
+                        aria-label={`Move ${subprocessor.name} down`}
+                      >
+                        <ChevronDown className="size-3.5" />
+                      </Button>
+                    </form>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setEditing(subprocessor)}
+                    >
+                      Edit
+                    </Button>
+                    <form
+                      id={`delete-trust-subprocessor-${subprocessor.id}`}
+                      action={deleteTrustSubprocessorAction}
+                    >
+                      <input type="hidden" name="id" value={subprocessor.id} />
+                      <ConfirmDialog
+                        title="Delete subprocessor?"
+                        description={`"${subprocessor.name}" will be removed from the trust center.`}
+                        formId={`delete-trust-subprocessor-${subprocessor.id}`}
+                      >
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          aria-label={`Delete ${subprocessor.name}`}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      </ConfirmDialog>
+                    </form>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </CardContent>

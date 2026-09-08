@@ -1,3 +1,4 @@
+import { type Prisma } from "../../prisma/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
 import type {
@@ -8,6 +9,68 @@ import type {
 } from "@/lib/schemas/trust-center";
 
 const DOCUMENT_ENTITY_TYPE = "TrustCenterDocument";
+
+// Minimal delegate shape shared by all four trust-center models for
+// reorder/next-position logic. Callers cast their concrete delegate to this.
+type SortOrderDelegate = {
+  findMany(args: {
+    orderBy: Record<string, "asc" | "desc">[];
+    select: { id: true; sortOrder: true };
+    take?: number;
+  }): Promise<{ id: string; sortOrder: number }[]>;
+  update(args: {
+    where: { id: string };
+    data: { sortOrder: number };
+  }): Prisma.PrismaPromise<unknown>;
+};
+
+export type TrustCenterMoveDirection = "up" | "down";
+
+// Swaps the item's position with its ordered neighbour. Ties (e.g. legacy
+// all-zero sortOrder) are normalised to sequential positions first, and the
+// full sequence is persisted — writing only the swapped pair would leave
+// other tied rows sharing a position and break the display order.
+async function moveTrustCenterItem(
+  delegate: SortOrderDelegate,
+  id: string,
+  direction: TrustCenterMoveDirection,
+): Promise<void> {
+  const items = await delegate.findMany({
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    select: { id: true, sortOrder: true },
+  });
+  const index = items.findIndex((item) => item.id === id);
+  if (index === -1) return;
+
+  const targetIndex = direction === "up" ? index - 1 : index + 1;
+  if (targetIndex < 0 || targetIndex >= items.length) return;
+
+  // Desired order: display order with the two neighbours swapped, then
+  // persist array position as the new sortOrder for every row.
+  const desired = [...items];
+  [desired[index], desired[targetIndex]] = [
+    desired[targetIndex]!,
+    desired[index]!,
+  ];
+
+  const updates = desired.map((item, position) =>
+    delegate.update({
+      where: { id: item.id },
+      data: { sortOrder: position },
+    }),
+  );
+  await prisma.$transaction(updates);
+}
+
+// New items land at the bottom of their list.
+async function nextSortOrder(delegate: SortOrderDelegate): Promise<number> {
+  const rows = await delegate.findMany({
+    orderBy: [{ sortOrder: "desc" }],
+    select: { id: true, sortOrder: true },
+    take: 1,
+  });
+  return rows.length > 0 ? rows[0]!.sortOrder + 1 : 0;
+}
 
 function toDate(value: string): Date | null {
   return value ? new Date(value) : null;
@@ -44,8 +107,12 @@ function badgeData(input: TrustCenterBadgeInput) {
   };
 }
 
-export function createTrustBadge(input: TrustCenterBadgeInput) {
-  return prisma.trustCenterBadge.create({ data: badgeData(input) });
+export async function createTrustBadge(input: TrustCenterBadgeInput) {
+  const badgeDelegate = prisma.trustCenterBadge as unknown as SortOrderDelegate;
+  const sortOrder = await nextSortOrder(badgeDelegate);
+  return prisma.trustCenterBadge.create({
+    data: { ...badgeData(input), sortOrder },
+  });
 }
 
 export function updateTrustBadge(id: string, input: TrustCenterBadgeInput) {
@@ -65,6 +132,17 @@ export async function deleteTrustBadge(id: string): Promise<void> {
     });
   }
   await prisma.trustCenterBadge.delete({ where: { id } });
+}
+
+export async function moveTrustBadge(
+  id: string,
+  direction: TrustCenterMoveDirection,
+): Promise<void> {
+  await moveTrustCenterItem(
+    prisma.trustCenterBadge as unknown as SortOrderDelegate,
+    id,
+    direction,
+  );
 }
 
 // --- documents ---
@@ -144,8 +222,13 @@ function documentData(input: TrustCenterDocumentInput) {
   };
 }
 
-export function createTrustDocument(input: TrustCenterDocumentInput) {
-  return prisma.trustCenterDocument.create({ data: documentData(input) });
+export async function createTrustDocument(input: TrustCenterDocumentInput) {
+  const documentDelegate =
+    prisma.trustCenterDocument as unknown as SortOrderDelegate;
+  const sortOrder = await nextSortOrder(documentDelegate);
+  return prisma.trustCenterDocument.create({
+    data: { ...documentData(input), sortOrder },
+  });
 }
 
 export function updateTrustDocument(
@@ -215,7 +298,16 @@ export async function replaceTrustDocumentFile(
   }
 }
 
-// --- subprocessors ---
+export async function moveTrustDocument(
+  id: string,
+  direction: TrustCenterMoveDirection,
+): Promise<void> {
+  await moveTrustCenterItem(
+    prisma.trustCenterDocument as unknown as SortOrderDelegate,
+    id,
+    direction,
+  );
+}
 
 // --- subprocessors ---
 
@@ -246,9 +338,14 @@ function subprocessorData(input: TrustCenterSubprocessorInput) {
   };
 }
 
-export function createTrustSubprocessor(input: TrustCenterSubprocessorInput) {
+export async function createTrustSubprocessor(
+  input: TrustCenterSubprocessorInput,
+) {
+  const subprocessorDelegate =
+    prisma.trustCenterSubprocessor as unknown as SortOrderDelegate;
+  const sortOrder = await nextSortOrder(subprocessorDelegate);
   return prisma.trustCenterSubprocessor.create({
-    data: subprocessorData(input),
+    data: { ...subprocessorData(input), sortOrder },
   });
 }
 
@@ -274,6 +371,17 @@ export async function deleteTrustSubprocessor(id: string): Promise<void> {
   await prisma.trustCenterSubprocessor.delete({ where: { id } });
 }
 
+export async function moveTrustSubprocessor(
+  id: string,
+  direction: TrustCenterMoveDirection,
+): Promise<void> {
+  await moveTrustCenterItem(
+    prisma.trustCenterSubprocessor as unknown as SortOrderDelegate,
+    id,
+    direction,
+  );
+}
+
 // --- sections ---
 
 export function listTrustCenterSections() {
@@ -290,8 +398,13 @@ function sectionData(input: TrustCenterSectionInput) {
   };
 }
 
-export function createTrustSection(input: TrustCenterSectionInput) {
-  return prisma.trustCenterSection.create({ data: sectionData(input) });
+export async function createTrustSection(input: TrustCenterSectionInput) {
+  const sectionDelegate =
+    prisma.trustCenterSection as unknown as SortOrderDelegate;
+  const sortOrder = await nextSortOrder(sectionDelegate);
+  return prisma.trustCenterSection.create({
+    data: { ...sectionData(input), sortOrder },
+  });
 }
 
 export function updateTrustSection(id: string, input: TrustCenterSectionInput) {
@@ -303,6 +416,17 @@ export function updateTrustSection(id: string, input: TrustCenterSectionInput) {
 
 export function deleteTrustSection(id: string) {
   return prisma.trustCenterSection.delete({ where: { id } });
+}
+
+export async function moveTrustSection(
+  id: string,
+  direction: TrustCenterMoveDirection,
+): Promise<void> {
+  await moveTrustCenterItem(
+    prisma.trustCenterSection as unknown as SortOrderDelegate,
+    id,
+    direction,
+  );
 }
 
 // --- published-only reads (public trust center page + file routes) ---

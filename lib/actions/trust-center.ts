@@ -19,6 +19,10 @@ import {
   deleteTrustSubprocessor,
   getTrustBadge,
   getTrustSubprocessor,
+  moveTrustBadge,
+  moveTrustDocument,
+  moveTrustSection,
+  moveTrustSubprocessor,
   replaceTrustDocumentFile,
   setTrustBadgeImage,
   setTrustSubprocessorLogo,
@@ -293,6 +297,16 @@ export async function deleteTrustBadgeAction(
   refreshTrustPaths();
 }
 
+export async function moveTrustBadgeAction(formData: FormData): Promise<void> {
+  await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
+  const id = getField(formData, "id");
+  const direction = getField(formData, "direction");
+  if (!id || (direction !== "up" && direction !== "down")) return;
+  await moveTrustBadge(id, direction);
+  await recordAudit(id);
+  refreshTrustPaths();
+}
+
 // --- documents ---
 
 export async function saveTrustDocumentAction(
@@ -420,6 +434,18 @@ export async function deleteTrustDocumentAction(
   refreshTrustPaths();
 }
 
+export async function moveTrustDocumentAction(
+  formData: FormData,
+): Promise<void> {
+  await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
+  const id = getField(formData, "id");
+  const direction = getField(formData, "direction");
+  if (!id || (direction !== "up" && direction !== "down")) return;
+  await moveTrustDocument(id, direction);
+  await recordAudit(id);
+  refreshTrustPaths();
+}
+
 // --- subprocessors ---
 
 export async function saveTrustSubprocessorAction(
@@ -503,6 +529,18 @@ export async function deleteTrustSubprocessorAction(
   refreshTrustPaths();
 }
 
+export async function moveTrustSubprocessorAction(
+  formData: FormData,
+): Promise<void> {
+  await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
+  const id = getField(formData, "id");
+  const direction = getField(formData, "direction");
+  if (!id || (direction !== "up" && direction !== "down")) return;
+  await moveTrustSubprocessor(id, direction);
+  await recordAudit(id);
+  refreshTrustPaths();
+}
+
 // --- sections ---
 
 export async function saveTrustSectionAction(
@@ -541,6 +579,18 @@ export async function deleteTrustSectionAction(
   const id = getField(formData, "id");
   if (!id) return;
   await deleteTrustSection(id);
+  await recordAudit(id);
+  refreshTrustPaths();
+}
+
+export async function moveTrustSectionAction(
+  formData: FormData,
+): Promise<void> {
+  await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
+  const id = getField(formData, "id");
+  const direction = getField(formData, "direction");
+  if (!id || (direction !== "up" && direction !== "down")) return;
+  await moveTrustSection(id, direction);
   await recordAudit(id);
   refreshTrustPaths();
 }

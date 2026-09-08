@@ -27,11 +27,12 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import {
   deleteTrustDocumentAction,
+  moveTrustDocumentAction,
   saveTrustDocumentAction,
 } from "@/lib/actions/trust-center";
 import { TRUST_CENTER_DOCUMENT_CATEGORY_LABELS } from "@/lib/schemas/trust-center";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
-import { FileText, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, FileText, Trash2 } from "lucide-react";
 
 export type TrustDocumentView = {
   id: string;
@@ -79,71 +80,105 @@ export function DocumentsManager({ documents }: DocumentsManagerProps) {
           </p>
         ) : (
           <div className="flex flex-col divide-y rounded-lg border">
-            {documents.map((document) => (
-              <div
-                key={document.id}
-                className="flex items-start justify-between gap-2 p-3"
-              >
-                <div className="flex min-w-0 flex-col gap-1">
-                  <div className="flex items-center gap-2">
-                    <FileText className="text-muted-foreground size-4" />
-                    <span className="truncate text-sm font-medium">
-                      {document.title}
-                    </span>
-                    <Badge variant="secondary" className="text-xs">
-                      {TRUST_CENTER_DOCUMENT_CATEGORY_LABELS[
-                        document.category
-                      ] ?? document.category}
-                    </Badge>
-                    {document.published ? null : (
+            {documents.map((document, index) => {
+              const isFirst = index === 0;
+              const isLast = index === documents.length - 1;
+              return (
+                <div
+                  key={document.id}
+                  className="flex items-start justify-between gap-2 p-3"
+                >
+                  <div className="flex min-w-0 flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <FileText className="text-muted-foreground size-4" />
+                      <span className="truncate text-sm font-medium">
+                        {document.title}
+                      </span>
                       <Badge variant="secondary" className="text-xs">
-                        Draft
+                        {TRUST_CENTER_DOCUMENT_CATEGORY_LABELS[
+                          document.category
+                        ] ?? document.category}
                       </Badge>
-                    )}
-                  </div>
-                  {document.description ? (
-                    <p className="text-muted-foreground truncate text-xs">
-                      {document.description}
+                      {document.published ? null : (
+                        <Badge variant="secondary" className="text-xs">
+                          Draft
+                        </Badge>
+                      )}
+                    </div>
+                    {document.description ? (
+                      <p className="text-muted-foreground truncate text-xs">
+                        {document.description}
+                      </p>
+                    ) : null}
+                    <p className="text-muted-foreground text-xs">
+                      {document.file
+                        ? `${document.file.fileName} · ${formatSize(document.file.sizeBytes)}`
+                        : "No file uploaded"}
                     </p>
-                  ) : null}
-                  <p className="text-muted-foreground text-xs">
-                    {document.file
-                      ? `${document.file.fileName} · ${formatSize(document.file.sizeBytes)}`
-                      : "No file uploaded"}
-                  </p>
-                </div>
-                <div className="flex shrink-0 items-center gap-1">
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setEditing(document)}
-                  >
-                    Edit
-                  </Button>
-                  <form
-                    id={`delete-trust-document-${document.id}`}
-                    action={deleteTrustDocumentAction}
-                  >
-                    <input type="hidden" name="id" value={document.id} />
-                    <ConfirmDialog
-                      title="Delete document?"
-                      description={`"${document.title}" and its file will be removed from the trust center.`}
-                      formId={`delete-trust-document-${document.id}`}
+                  </div>
+                  <div className="flex shrink-0 items-center gap-1">
+                    <form
+                      action={moveTrustDocumentAction}
+                      className="flex flex-col"
                     >
+                      <input type="hidden" name="id" value={document.id} />
                       <Button
-                        type="button"
+                        type="submit"
+                        name="direction"
+                        value="up"
                         variant="ghost"
                         size="sm"
-                        aria-label={`Delete ${document.title}`}
+                        className="h-5 w-6 p-0"
+                        disabled={isFirst}
+                        aria-label={`Move ${document.title} up`}
                       >
-                        <Trash2 className="size-4" />
+                        <ChevronUp className="size-3.5" />
                       </Button>
-                    </ConfirmDialog>
-                  </form>
+                      <Button
+                        type="submit"
+                        name="direction"
+                        value="down"
+                        variant="ghost"
+                        size="sm"
+                        className="h-5 w-6 p-0"
+                        disabled={isLast}
+                        aria-label={`Move ${document.title} down`}
+                      >
+                        <ChevronDown className="size-3.5" />
+                      </Button>
+                    </form>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setEditing(document)}
+                    >
+                      Edit
+                    </Button>
+                    <form
+                      id={`delete-trust-document-${document.id}`}
+                      action={deleteTrustDocumentAction}
+                    >
+                      <input type="hidden" name="id" value={document.id} />
+                      <ConfirmDialog
+                        title="Delete document?"
+                        description={`"${document.title}" and its file will be removed from the trust center.`}
+                        formId={`delete-trust-document-${document.id}`}
+                      >
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          aria-label={`Delete ${document.title}`}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      </ConfirmDialog>
+                    </form>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </CardContent>

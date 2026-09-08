@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useEffect, useActionState, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,11 +20,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import {
   deleteTrustBadgeAction,
+  moveTrustBadgeAction,
   saveTrustBadgeAction,
 } from "@/lib/actions/trust-center";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
-import { useEffect } from "react";
-import { BadgeCheck, Trash2 } from "lucide-react";
+import { BadgeCheck, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 
 export type TrustBadgeView = {
   id: string;
@@ -61,71 +61,105 @@ export function BadgesManager({ badges }: BadgesManagerProps) {
           </p>
         ) : (
           <div className="grid gap-2 sm:grid-cols-2">
-            {badges.map((badge) => (
-              <div
-                key={badge.id}
-                className="flex items-start justify-between gap-2 rounded-md border p-3"
-              >
-                <div className="flex min-w-0 flex-col gap-1">
-                  <div className="flex items-center gap-2">
-                    <BadgeCheck className="text-muted-foreground size-4" />
-                    <span className="truncate text-sm font-medium">
-                      {badge.title}
-                    </span>
-                    {badge.published ? null : (
-                      <Badge variant="secondary" className="text-xs">
-                        Draft
-                      </Badge>
-                    )}
+            {badges.map((badge, index) => {
+              const isFirst = index === 0;
+              const isLast = index === badges.length - 1;
+              return (
+                <div
+                  key={badge.id}
+                  className="flex items-start justify-between gap-2 rounded-md border p-3"
+                >
+                  <div className="flex min-w-0 flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <BadgeCheck className="text-muted-foreground size-4" />
+                      <span className="truncate text-sm font-medium">
+                        {badge.title}
+                      </span>
+                      {badge.published ? null : (
+                        <Badge variant="secondary" className="text-xs">
+                          Draft
+                        </Badge>
+                      )}
+                    </div>
+                    {badge.issuer ? (
+                      <p className="text-muted-foreground truncate text-xs">
+                        {badge.issuer}
+                      </p>
+                    ) : null}
+                    {badge.externalUrl ? (
+                      <a
+                        href={badge.externalUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs underline"
+                      >
+                        Verification link
+                      </a>
+                    ) : null}
                   </div>
-                  {badge.issuer ? (
-                    <p className="text-muted-foreground truncate text-xs">
-                      {badge.issuer}
-                    </p>
-                  ) : null}
-                  {badge.externalUrl ? (
-                    <a
-                      href={badge.externalUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs underline"
+                  <div className="flex shrink-0 items-center gap-1">
+                    <form
+                      action={moveTrustBadgeAction}
+                      className="flex flex-col"
                     >
-                      Verification link
-                    </a>
-                  ) : null}
-                </div>
-                <div className="flex shrink-0 items-center gap-1">
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setEditing(badge)}
-                  >
-                    Edit
-                  </Button>
-                  <form
-                    id={`delete-trust-badge-${badge.id}`}
-                    action={deleteTrustBadgeAction}
-                  >
-                    <input type="hidden" name="id" value={badge.id} />
-                    <ConfirmDialog
-                      title="Delete badge?"
-                      description={`The "${badge.title}" badge will be removed from the trust center.`}
-                      formId={`delete-trust-badge-${badge.id}`}
-                    >
+                      <input type="hidden" name="id" value={badge.id} />
                       <Button
-                        type="button"
+                        type="submit"
+                        name="direction"
+                        value="up"
                         variant="ghost"
                         size="sm"
-                        aria-label={`Delete ${badge.title}`}
+                        className="h-5 w-6 p-0"
+                        disabled={isFirst}
+                        aria-label={`Move ${badge.title} up`}
                       >
-                        <Trash2 className="size-4" />
+                        <ChevronUp className="size-3.5" />
                       </Button>
-                    </ConfirmDialog>
-                  </form>
+                      <Button
+                        type="submit"
+                        name="direction"
+                        value="down"
+                        variant="ghost"
+                        size="sm"
+                        className="h-5 w-6 p-0"
+                        disabled={isLast}
+                        aria-label={`Move ${badge.title} down`}
+                      >
+                        <ChevronDown className="size-3.5" />
+                      </Button>
+                    </form>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setEditing(badge)}
+                    >
+                      Edit
+                    </Button>
+                    <form
+                      id={`delete-trust-badge-${badge.id}`}
+                      action={deleteTrustBadgeAction}
+                    >
+                      <input type="hidden" name="id" value={badge.id} />
+                      <ConfirmDialog
+                        title="Delete badge?"
+                        description={`The "${badge.title}" badge will be removed from the trust center.`}
+                        formId={`delete-trust-badge-${badge.id}`}
+                      >
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          aria-label={`Delete ${badge.title}`}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      </ConfirmDialog>
+                    </form>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </CardContent>
