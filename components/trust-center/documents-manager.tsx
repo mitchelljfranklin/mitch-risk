@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useEffect, useActionState, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,10 +19,11 @@ import {
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { SubmitButton } from "@/components/ui/submit-button";
 import { Textarea } from "@/components/ui/textarea";
 import {
   deleteTrustDocumentAction,
@@ -185,79 +186,102 @@ function DocumentEditor({
   );
   useActionFeedback(state);
 
+  useEffect(() => {
+    if (state?.ok) {
+      onDone();
+    }
+  }, [state, onDone]);
+
+  const isNew = document === null;
+
   return (
-    <form action={formAction} className="mt-4 flex flex-col gap-4">
-      {document ? <input type="hidden" name="id" value={document.id} /> : null}
-      <div className="grid gap-2">
-        <Label htmlFor="document-title">Title</Label>
-        <Input
-          id="document-title"
-          name="title"
-          defaultValue={document?.title ?? ""}
-          required
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="document-description">Description</Label>
-        <Textarea
-          id="document-description"
-          name="description"
-          rows={2}
-          defaultValue={document?.description ?? ""}
-          placeholder="What this document covers"
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="document-category">Category</Label>
-        <Select name="category" defaultValue={document?.category ?? "OTHER"}>
-          <SelectTrigger id="document-category">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(TRUST_CENTER_DOCUMENT_CATEGORY_LABELS).map(
-              ([value, label]) => (
-                <SelectItem key={value} value={value}>
-                  {label}
-                </SelectItem>
-              ),
-            )}
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="document-file">
-          {document?.file ? "Replace file" : "File"}
-        </Label>
-        <Input
-          id="document-file"
-          name="file"
-          type="file"
-          accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx"
-          required={!document?.file}
-        />
-        <p className="text-muted-foreground text-xs">
-          PDF, PNG, JPG, DOCX or XLSX. Max 20 MB.
-          {document?.file
-            ? ` Current: ${document.file.fileName}. Replacing deletes the old file.`
-            : ""}
-        </p>
-      </div>
-      <div className="flex items-center gap-2">
-        <Checkbox
-          id="document-published"
-          name="published"
-          defaultChecked={document?.published ?? true}
-        />
-        <Label htmlFor="document-published">Published</Label>
-      </div>
-      <div className="flex items-center gap-2">
-        <SubmitButton size="sm">
-          {isPending ? "Saving..." : "Save"}
-        </SubmitButton>
+    <SheetContent className="w-full overflow-y-auto sm:max-w-md">
+      <SheetHeader>
+        <SheetTitle>{isNew ? "Add document" : "Edit document"}</SheetTitle>
+        <SheetDescription>
+          Published documents are downloadable from the public trust center
+          page.
+        </SheetDescription>
+      </SheetHeader>
+      <form
+        id="trust-document-form"
+        action={formAction}
+        className="flex flex-1 flex-col gap-4 px-4"
+      >
+        {document ? (
+          <input type="hidden" name="id" value={document.id} />
+        ) : null}
+        <div className="grid gap-2">
+          <Label htmlFor="document-title">Title</Label>
+          <Input
+            id="document-title"
+            name="title"
+            defaultValue={document?.title ?? ""}
+            required
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="document-description">Description</Label>
+          <Textarea
+            id="document-description"
+            name="description"
+            rows={2}
+            defaultValue={document?.description ?? ""}
+            placeholder="What this document covers"
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="document-category">Category</Label>
+          <Select name="category" defaultValue={document?.category ?? "OTHER"}>
+            <SelectTrigger id="document-category">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(TRUST_CENTER_DOCUMENT_CATEGORY_LABELS).map(
+                ([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ),
+              )}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="document-file">
+            {document?.file ? "Replace file" : "File"}
+          </Label>
+          <Input
+            id="document-file"
+            name="file"
+            type="file"
+            accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx"
+            required={!document?.file}
+          />
+          <p className="text-muted-foreground text-xs">
+            PDF, PNG, JPG, DOCX or XLSX. Max 20 MB.
+            {document?.file
+              ? ` Current: ${document.file.fileName}. Replacing deletes the old file.`
+              : ""}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id="document-published"
+            name="published"
+            defaultChecked={document?.published ?? true}
+          />
+          <Label htmlFor="document-published">Published</Label>
+        </div>
+      </form>
+      <SheetFooter className="px-4">
+        <Button type="submit" form="trust-document-form" disabled={isPending}>
+          {isPending ? "Saving..." : "Save document"}
+        </Button>
         <Button type="button" variant="outline" onClick={onDone}>
           Cancel
         </Button>
-      </div>
-    </form>
+      </SheetFooter>
+    </SheetContent>
   );
 }

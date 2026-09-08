@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useEffect, useActionState, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,10 +12,11 @@ import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { SubmitButton } from "@/components/ui/submit-button";
 import { Textarea } from "@/components/ui/textarea";
 import {
   deleteTrustSectionAction,
@@ -152,44 +153,64 @@ function SectionEditor({
   );
   useActionFeedback(state);
 
+  useEffect(() => {
+    if (state?.ok) {
+      onDone();
+    }
+  }, [state, onDone]);
+
+  const isNew = section === null;
+
   return (
-    <form action={formAction} className="mt-4 flex flex-col gap-4">
-      {section ? <input type="hidden" name="id" value={section.id} /> : null}
-      <div className="grid gap-2">
-        <Label htmlFor="section-title">Title</Label>
-        <Input
-          id="section-title"
-          name="title"
-          defaultValue={section?.title ?? ""}
-          required
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="section-body">Body (markdown)</Label>
-        <Textarea
-          id="section-body"
-          name="body"
-          rows={10}
-          defaultValue={section?.body ?? ""}
-          placeholder="Supports markdown formatting."
-        />
-      </div>
-      <div className="flex items-center gap-2">
-        <Checkbox
-          id="section-published"
-          name="published"
-          defaultChecked={section?.published ?? true}
-        />
-        <Label htmlFor="section-published">Published</Label>
-      </div>
-      <div className="flex items-center gap-2">
-        <SubmitButton size="sm">
-          {isPending ? "Saving..." : "Save"}
-        </SubmitButton>
+    <SheetContent className="w-full overflow-y-auto sm:max-w-md">
+      <SheetHeader>
+        <SheetTitle>{isNew ? "Add section" : "Edit section"}</SheetTitle>
+        <SheetDescription>
+          Free markdown blocks rendered on the public trust center page.
+        </SheetDescription>
+      </SheetHeader>
+      <form
+        id="trust-section-form"
+        action={formAction}
+        className="flex flex-1 flex-col gap-4 px-4"
+      >
+        {section ? <input type="hidden" name="id" value={section.id} /> : null}
+        <div className="grid gap-2">
+          <Label htmlFor="section-title">Title</Label>
+          <Input
+            id="section-title"
+            name="title"
+            defaultValue={section?.title ?? ""}
+            required
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="section-body">Body (markdown)</Label>
+          <Textarea
+            id="section-body"
+            name="body"
+            rows={10}
+            defaultValue={section?.body ?? ""}
+            placeholder="Supports markdown formatting."
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id="section-published"
+            name="published"
+            defaultChecked={section?.published ?? true}
+          />
+          <Label htmlFor="section-published">Published</Label>
+        </div>
+      </form>
+      <SheetFooter className="px-4">
+        <Button type="submit" form="trust-section-form" disabled={isPending}>
+          {isPending ? "Saving..." : "Save section"}
+        </Button>
         <Button type="button" variant="outline" onClick={onDone}>
           Cancel
         </Button>
-      </div>
-    </form>
+      </SheetFooter>
+    </SheetContent>
   );
 }

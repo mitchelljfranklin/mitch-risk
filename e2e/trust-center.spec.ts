@@ -131,11 +131,11 @@ test.describe.serial("trust center journeys", () => {
     await page.getByRole("button", { name: "Add badge" }).click();
     await page.locator("#badge-title").fill(BADGE_TITLE);
     await page.locator("#badge-issuer").fill("E2E Issuer");
-    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await page.getByRole("button", { name: "Save badge" }).click();
     await expect(page.getByText("Badge saved.")).toBeVisible({
       timeout: 15000,
     });
-    await page.getByRole("button", { name: "Cancel" }).click();
+    // The sheet auto-closes on success (editor effect closes on state.ok).
 
     await expect(page.getByText(BADGE_TITLE).first()).toBeVisible();
 
@@ -148,11 +148,10 @@ test.describe.serial("trust center journeys", () => {
     await page.getByRole("button", { name: "Add subprocessor" }).click();
     await page.locator("#subprocessor-name").fill(SUBPROCESSOR_NAME);
     await page.locator("#subprocessor-purpose").fill("Cloud hosting");
-    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await page.getByRole("button", { name: "Save subprocessor" }).click();
     await expect(page.getByText("Subprocessor saved.")).toBeVisible({
       timeout: 15000,
     });
-    await page.getByRole("button", { name: "Cancel" }).click();
 
     await expect(page.getByText(SUBPROCESSOR_NAME).first()).toBeVisible();
 
@@ -162,11 +161,10 @@ test.describe.serial("trust center journeys", () => {
     await page
       .locator("#section-body")
       .fill("Our **security** commitment statement.");
-    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await page.getByRole("button", { name: "Save section" }).click();
     await expect(page.getByText("Section saved.")).toBeVisible({
       timeout: 15000,
     });
-    await page.getByRole("button", { name: "Cancel" }).click();
 
     await expect(page.getByText(SECTION_TITLE).first()).toBeVisible();
   });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useEffect, useActionState, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,10 +12,11 @@ import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { SubmitButton } from "@/components/ui/submit-button";
 import { Textarea } from "@/components/ui/textarea";
 import {
   deleteTrustSubprocessorAction,
@@ -172,96 +173,123 @@ function SubprocessorEditor({
   );
   useActionFeedback(state);
 
+  useEffect(() => {
+    if (state?.ok) {
+      onDone();
+    }
+  }, [state, onDone]);
+
+  const isNew = subprocessor === null;
+
   return (
-    <form action={formAction} className="mt-4 flex flex-col gap-4">
-      {subprocessor ? (
-        <input type="hidden" name="id" value={subprocessor.id} />
-      ) : null}
-      <div className="grid gap-2">
-        <Label htmlFor="subprocessor-name">Name</Label>
-        <Input
-          id="subprocessor-name"
-          name="name"
-          defaultValue={subprocessor?.name ?? ""}
-          required
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="subprocessor-purpose">Purpose</Label>
-        <Textarea
-          id="subprocessor-purpose"
-          name="purpose"
-          rows={2}
-          defaultValue={subprocessor?.purpose ?? ""}
-          placeholder="e.g. Cloud hosting of application data"
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="subprocessor-location">Data location</Label>
-        <Input
-          id="subprocessor-location"
-          name="location"
-          defaultValue={subprocessor?.location ?? ""}
-          placeholder="e.g. Australia (Sydney)"
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="subprocessor-websiteUrl">Website</Label>
-        <Input
-          id="subprocessor-websiteUrl"
-          name="websiteUrl"
-          type="url"
-          defaultValue={subprocessor?.websiteUrl ?? ""}
-          placeholder="https://…"
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="subprocessor-logoFile">Logo image</Label>
-        <Input
-          id="subprocessor-logoFile"
-          name="logoFile"
-          type="file"
-          accept=".png,.jpg,.jpeg,.gif,.webp"
-        />
-        <p className="text-muted-foreground text-xs">
-          PNG, JPG, GIF or WebP. Max 2 MB. SVG is not allowed.
-          {subprocessor?.logoKey
-            ? " Leave empty to keep the current logo."
-            : ""}
-        </p>
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="subprocessor-logoUrl">
-          …or fetch a logo from a URL
-        </Label>
-        <Input
-          id="subprocessor-logoUrl"
-          name="logoUrl"
-          type="url"
-          placeholder="https://example.com/logo.png"
-        />
-        <p className="text-muted-foreground text-xs">
-          The image is downloaded and stored with the other trust center files —
-          the public page never loads external hosts. An uploaded file takes
-          priority over a URL.
-        </p>
-      </div>
-      <div className="flex items-center gap-2">
-        <Checkbox
-          id="subprocessor-published"
-          name="published"
-          defaultChecked={subprocessor?.published ?? true}
-        />
-        <Label htmlFor="subprocessor-published">Published</Label>
-      </div>
-      <div className="flex items-center gap-2">
-        <SubmitButton size="sm">
-          {isPending ? "Saving..." : "Save"}
-        </SubmitButton>
+    <SheetContent className="w-full overflow-y-auto sm:max-w-md">
+      <SheetHeader>
+        <SheetTitle>
+          {isNew ? "Add subprocessor" : "Edit subprocessor"}
+        </SheetTitle>
+        <SheetDescription>
+          Third parties that process data on your behalf, listed on the public
+          trust center page.
+        </SheetDescription>
+      </SheetHeader>
+      <form
+        id="trust-subprocessor-form"
+        action={formAction}
+        className="flex flex-1 flex-col gap-4 px-4"
+      >
+        {subprocessor ? (
+          <input type="hidden" name="id" value={subprocessor.id} />
+        ) : null}
+        <div className="grid gap-2">
+          <Label htmlFor="subprocessor-name">Name</Label>
+          <Input
+            id="subprocessor-name"
+            name="name"
+            defaultValue={subprocessor?.name ?? ""}
+            required
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="subprocessor-purpose">Purpose</Label>
+          <Textarea
+            id="subprocessor-purpose"
+            name="purpose"
+            rows={2}
+            defaultValue={subprocessor?.purpose ?? ""}
+            placeholder="e.g. Cloud hosting of application data"
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="subprocessor-location">Data location</Label>
+          <Input
+            id="subprocessor-location"
+            name="location"
+            defaultValue={subprocessor?.location ?? ""}
+            placeholder="e.g. Australia (Sydney)"
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="subprocessor-websiteUrl">Website</Label>
+          <Input
+            id="subprocessor-websiteUrl"
+            name="websiteUrl"
+            type="url"
+            defaultValue={subprocessor?.websiteUrl ?? ""}
+            placeholder="https://…"
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="subprocessor-logoFile">Logo image</Label>
+          <Input
+            id="subprocessor-logoFile"
+            name="logoFile"
+            type="file"
+            accept=".png,.jpg,.jpeg,.gif,.webp"
+          />
+          <p className="text-muted-foreground text-xs">
+            PNG, JPG, GIF or WebP. Max 2 MB. SVG is not allowed.
+            {subprocessor?.logoKey
+              ? " Leave empty to keep the current logo."
+              : ""}
+          </p>
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="subprocessor-logoUrl">
+            …or fetch a logo from a URL
+          </Label>
+          <Input
+            id="subprocessor-logoUrl"
+            name="logoUrl"
+            type="url"
+            placeholder="https://example.com/logo.png"
+          />
+          <p className="text-muted-foreground text-xs">
+            The image is downloaded and stored with the other trust center files
+            — the public page never loads external hosts. An uploaded file takes
+            priority over a URL.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id="subprocessor-published"
+            name="published"
+            defaultChecked={subprocessor?.published ?? true}
+          />
+          <Label htmlFor="subprocessor-published">Published</Label>
+        </div>
+      </form>
+      <SheetFooter className="px-4">
+        <Button
+          type="submit"
+          form="trust-subprocessor-form"
+          disabled={isPending}
+        >
+          {isPending ? "Saving..." : "Save subprocessor"}
+        </Button>
         <Button type="button" variant="outline" onClick={onDone}>
           Cancel
         </Button>
-      </div>
-    </form>
+      </SheetFooter>
+    </SheetContent>
   );
 }

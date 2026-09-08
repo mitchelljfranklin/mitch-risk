@@ -12,16 +12,18 @@ import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { SubmitButton } from "@/components/ui/submit-button";
 import { Textarea } from "@/components/ui/textarea";
 import {
   deleteTrustBadgeAction,
   saveTrustBadgeAction,
 } from "@/lib/actions/trust-center";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
+import { useEffect } from "react";
 import { BadgeCheck, Trash2 } from "lucide-react";
 
 export type TrustBadgeView = {
@@ -166,76 +168,96 @@ function BadgeEditor({
   );
   useActionFeedback(state);
 
+  useEffect(() => {
+    if (state?.ok) {
+      onDone();
+    }
+  }, [state, onDone]);
+
+  const isNew = badge === null;
+
   return (
-    <form action={formAction} className="mt-4 flex flex-col gap-4">
-      {badge ? <input type="hidden" name="id" value={badge.id} /> : null}
-      <div className="grid gap-2">
-        <Label htmlFor="badge-title">Title</Label>
-        <Input
-          id="badge-title"
-          name="title"
-          defaultValue={badge?.title ?? ""}
-          required
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="badge-issuer">Issuer</Label>
-        <Input
-          id="badge-issuer"
-          name="issuer"
-          defaultValue={badge?.issuer ?? ""}
-          placeholder="e.g. AICPA, BSI"
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="badge-description">Description</Label>
-        <Textarea
-          id="badge-description"
-          name="description"
-          rows={2}
-          defaultValue={badge?.description ?? ""}
-          placeholder="e.g. SOC 2 Type II audited annually"
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="badge-externalUrl">Verification URL</Label>
-        <Input
-          id="badge-externalUrl"
-          name="externalUrl"
-          type="url"
-          defaultValue={badge?.externalUrl ?? ""}
-          placeholder="https://…"
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="badge-image">Badge image</Label>
-        <Input
-          id="badge-image"
-          name="imageFile"
-          type="file"
-          accept=".png,.jpg,.jpeg,.gif,.webp"
-        />
-        <p className="text-muted-foreground text-xs">
-          PNG, JPG, GIF or WebP. Max 2 MB. SVG is not allowed.
-          {badge?.imageKey ? " Leave empty to keep the current image." : ""}
-        </p>
-      </div>
-      <div className="flex items-center gap-2">
-        <Checkbox
-          id="badge-published"
-          name="published"
-          defaultChecked={badge?.published ?? true}
-        />
-        <Label htmlFor="badge-published">Published</Label>
-      </div>
-      <div className="flex items-center gap-2">
-        <SubmitButton size="sm">
-          {isPending ? "Saving..." : "Save"}
-        </SubmitButton>
+    <SheetContent className="w-full overflow-y-auto sm:max-w-md">
+      <SheetHeader>
+        <SheetTitle>{isNew ? "Add badge" : "Edit badge"}</SheetTitle>
+        <SheetDescription>
+          Shown as a certification tile on the public trust center page.
+        </SheetDescription>
+      </SheetHeader>
+      <form
+        id="trust-badge-form"
+        action={formAction}
+        className="flex flex-1 flex-col gap-4 px-4"
+      >
+        {badge ? <input type="hidden" name="id" value={badge.id} /> : null}
+        <div className="grid gap-2">
+          <Label htmlFor="badge-title">Title</Label>
+          <Input
+            id="badge-title"
+            name="title"
+            defaultValue={badge?.title ?? ""}
+            required
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="badge-issuer">Issuer</Label>
+          <Input
+            id="badge-issuer"
+            name="issuer"
+            defaultValue={badge?.issuer ?? ""}
+            placeholder="e.g. AICPA, BSI"
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="badge-description">Description</Label>
+          <Textarea
+            id="badge-description"
+            name="description"
+            rows={2}
+            defaultValue={badge?.description ?? ""}
+            placeholder="e.g. SOC 2 Type II audited annually"
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="badge-externalUrl">Verification URL</Label>
+          <Input
+            id="badge-externalUrl"
+            name="externalUrl"
+            type="url"
+            defaultValue={badge?.externalUrl ?? ""}
+            placeholder="https://…"
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="badge-image">Badge image</Label>
+          <Input
+            id="badge-image"
+            name="imageFile"
+            type="file"
+            accept=".png,.jpg,.jpeg,.gif,.webp"
+          />
+          <p className="text-muted-foreground text-xs">
+            PNG, JPG, GIF or WebP. Max 2 MB. SVG is not allowed.
+            {badge?.imageKey ? " Leave empty to keep the current image." : ""}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id="badge-published"
+            name="published"
+            defaultChecked={badge?.published ?? true}
+          />
+          <Label htmlFor="badge-published">Published</Label>
+        </div>
+      </form>
+      <SheetFooter className="px-4">
+        <Button type="submit" form="trust-badge-form" disabled={isPending}>
+          {isPending ? "Saving..." : "Save badge"}
+        </Button>
         <Button type="button" variant="outline" onClick={onDone}>
           Cancel
         </Button>
-      </div>
-    </form>
+      </SheetFooter>
+    </SheetContent>
   );
 }
