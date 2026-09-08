@@ -654,6 +654,7 @@ model TrustCenterSubprocessor {
   purpose    String   @default("")
   location   String   @default("")
   websiteUrl String   @default("")
+  logoKey    String   @default("")
   sortOrder  Int      @default(0)
   published  Boolean  @default(false)
   createdAt  DateTime @default(now())

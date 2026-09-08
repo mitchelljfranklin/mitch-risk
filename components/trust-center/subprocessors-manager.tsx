@@ -30,6 +30,7 @@ export type TrustSubprocessorView = {
   purpose: string;
   location: string;
   websiteUrl: string;
+  logoKey: string;
   published: boolean;
 };
 
@@ -69,6 +70,14 @@ export function SubprocessorsManager({
               >
                 <div className="flex min-w-0 flex-col gap-1">
                   <div className="flex items-center gap-2">
+                    {subprocessor.logoKey ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={`/api/trust/subprocessors/${subprocessor.id}/image?v=${subprocessor.logoKey}`}
+                        alt=""
+                        className="size-6 shrink-0 object-contain"
+                      />
+                    ) : null}
                     <span className="truncate text-sm font-medium">
                       {subprocessor.name}
                     </span>
@@ -131,7 +140,7 @@ export function SubprocessorsManager({
           if (!open) setEditing(null);
         }}
       >
-        <SheetContent>
+        <SheetContent className="w-full overflow-y-auto sm:max-w-md">
           <SheetHeader>
             <SheetTitle>
               {editing === "new" ? "Add subprocessor" : "Edit subprocessor"}
@@ -205,6 +214,37 @@ function SubprocessorEditor({
           defaultValue={subprocessor?.websiteUrl ?? ""}
           placeholder="https://…"
         />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="subprocessor-logoFile">Logo image</Label>
+        <Input
+          id="subprocessor-logoFile"
+          name="logoFile"
+          type="file"
+          accept=".png,.jpg,.jpeg,.gif,.webp"
+        />
+        <p className="text-muted-foreground text-xs">
+          PNG, JPG, GIF or WebP. Max 2 MB. SVG is not allowed.
+          {subprocessor?.logoKey
+            ? " Leave empty to keep the current logo."
+            : ""}
+        </p>
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="subprocessor-logoUrl">
+          …or fetch a logo from a URL
+        </Label>
+        <Input
+          id="subprocessor-logoUrl"
+          name="logoUrl"
+          type="url"
+          placeholder="https://example.com/logo.png"
+        />
+        <p className="text-muted-foreground text-xs">
+          The image is downloaded and stored with the other trust center files —
+          the public page never loads external hosts. An uploaded file takes
+          priority over a URL.
+        </p>
       </div>
       <div className="flex items-center gap-2">
         <Checkbox

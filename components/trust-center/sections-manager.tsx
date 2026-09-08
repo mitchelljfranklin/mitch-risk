@@ -120,7 +120,7 @@ export function SectionsManager({ sections }: SectionsManagerProps) {
           if (!open) setEditing(null);
         }}
       >
-        <SheetContent>
+        <SheetContent className="w-full overflow-y-auto sm:max-w-md">
           <SheetHeader>
             <SheetTitle>
               {editing === "new" ? "Add section" : "Edit section"}

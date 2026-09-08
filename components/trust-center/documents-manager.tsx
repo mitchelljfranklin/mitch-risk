@@ -153,7 +153,7 @@ export function DocumentsManager({ documents }: DocumentsManagerProps) {
           if (!open) setEditing(null);
         }}
       >
-        <SheetContent>
+        <SheetContent className="w-full overflow-y-auto sm:max-w-md">
           <SheetHeader>
             <SheetTitle>
               {editing === "new" ? "Add document" : "Edit document"}

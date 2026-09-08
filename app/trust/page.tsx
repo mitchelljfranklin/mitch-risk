@@ -17,6 +17,7 @@ import {
 } from "@/lib/db/trust-center";
 import { TRUST_CENTER_DOCUMENT_CATEGORY_LABELS } from "@/lib/schemas/trust-center";
 import { Badge } from "@/components/ui/badge";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { ShieldCheck } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -54,6 +55,9 @@ export default async function TrustCenterPublicPage() {
   return (
     <div className="bg-background min-h-svh">
       <div className="mx-auto flex max-w-3xl flex-col gap-10 px-6 py-12">
+        <div className="flex justify-end">
+          <ThemeToggle />
+        </div>
         <header className="flex flex-col items-center gap-3 text-center">
           {appearance.logoKey ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -204,18 +208,28 @@ export default async function TrustCenterPublicPage() {
                       className="border-b last:border-b-0"
                     >
                       <td className="px-4 py-2">
-                        {subprocessor.websiteUrl ? (
-                          <a
-                            href={subprocessor.websiteUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="underline"
-                          >
-                            {subprocessor.name}
-                          </a>
-                        ) : (
-                          subprocessor.name
-                        )}
+                        <div className="flex items-center gap-2">
+                          {subprocessor.logoKey ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={`/api/trust/subprocessors/${subprocessor.id}/image?v=${subprocessor.logoKey}`}
+                              alt={`${subprocessor.name} logo`}
+                              className="size-6 shrink-0 object-contain"
+                            />
+                          ) : null}
+                          {subprocessor.websiteUrl ? (
+                            <a
+                              href={subprocessor.websiteUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="underline"
+                            >
+                              {subprocessor.name}
+                            </a>
+                          ) : (
+                            subprocessor.name
+                          )}
+                        </div>
                       </td>
                       <td className="text-muted-foreground px-4 py-2">
                         {subprocessor.purpose}

@@ -217,9 +217,22 @@ export async function replaceTrustDocumentFile(
 
 // --- subprocessors ---
 
+// --- subprocessors ---
+
 export function listTrustCenterSubprocessors() {
   return prisma.trustCenterSubprocessor.findMany({
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+  });
+}
+
+export function getTrustSubprocessor(id: string) {
+  return prisma.trustCenterSubprocessor.findUnique({ where: { id } });
+}
+
+export function setTrustSubprocessorLogo(id: string, logoKey: string) {
+  return prisma.trustCenterSubprocessor.update({
+    where: { id },
+    data: { logoKey },
   });
 }
 
@@ -249,8 +262,16 @@ export function updateTrustSubprocessor(
   });
 }
 
-export function deleteTrustSubprocessor(id: string) {
-  return prisma.trustCenterSubprocessor.delete({ where: { id } });
+export async function deleteTrustSubprocessor(id: string): Promise<void> {
+  const subprocessor = await prisma.trustCenterSubprocessor.findUnique({
+    where: { id },
+  });
+  if (subprocessor?.logoKey) {
+    await storage.delete(subprocessor.logoKey).catch(() => {
+      // Best-effort; the orphan sweep is the backstop.
+    });
+  }
+  await prisma.trustCenterSubprocessor.delete({ where: { id } });
 }
 
 // --- sections ---
@@ -337,6 +358,15 @@ export function listPublishedTrustCenterSections() {
   return prisma.trustCenterSection.findMany({
     where: { published: true },
     orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+  });
+}
+
+// Returns the storage key only when the subprocessor is published AND has a
+// stored logo.
+export function getPublishedTrustCenterSubprocessorLogo(id: string) {
+  return prisma.trustCenterSubprocessor.findFirst({
+    where: { id, published: true, logoKey: { not: "" } },
+    select: { logoKey: true },
   });
 }
 

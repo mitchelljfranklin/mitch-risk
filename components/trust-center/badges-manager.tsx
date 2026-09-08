@@ -134,7 +134,7 @@ export function BadgesManager({ badges }: BadgesManagerProps) {
           if (!open) setEditing(null);
         }}
       >
-        <SheetContent>
+        <SheetContent className="w-full overflow-y-auto sm:max-w-md">
           <SheetHeader>
             <SheetTitle>
               {editing === "new" ? "Add badge" : "Edit badge"}
