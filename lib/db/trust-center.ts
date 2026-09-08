@@ -313,7 +313,7 @@ export async function moveTrustDocument(
 
 export function listTrustCenterSubprocessors() {
   return prisma.trustCenterSubprocessor.findMany({
-    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
   });
 }
 
@@ -474,7 +474,7 @@ export async function listPublishedTrustCenterBadges(): Promise<
 export function listPublishedTrustCenterSubprocessors() {
   return prisma.trustCenterSubprocessor.findMany({
     where: { published: true },
-    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
   });
 }
 
