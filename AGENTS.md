@@ -232,9 +232,26 @@ ones before declaring any phase complete.
 - **e2e runs against the _production_ build.** Playwright's `webServer` is `npm run start`, so
   the suite exercises `next build` output (dev and prod behave differently — e.g. Server-Action
   result delivery). `npm run start` runs in production mode and **requires `CRON_SECRET`**; the
-  Playwright config injects one via `webServer.env`. Locally, `reuseExistingServer` reuses a server
-  you already have up; in CI it starts a fresh production server. Do not assume a green `dev` run
-  means prod is green — verify with a production build.
+  Playwright config injects one via `webServer.env`. The config now **refuses to run** unless
+  `DATABASE_URL` points at a `*test*` database (specs and server share it), pins
+  `EVIDENCE_STORAGE_PATH` to an absolute path (the standalone server chdirs to
+  `.next/standalone`, so a relative storage path gives the server its own storage root —
+  downloads 404 even for published files), and **`reuseExistingServer` is off**: a running
+  dev server on :3000 made server-side writes land in dev while specs hit the test DB
+  (silent split-brain). Kill any process on :3000 before running e2e locally.
+- **New permission keys converge to existing databases only when the seed runs.**
+  `PERMISSIONS` / `SYSTEM_ROLE_DEFINITIONS` changes do nothing to an already-seeded
+  database until `npm run db:seed` (or `ensureSystemRoles()`) re-runs against it — the Admin
+  role's stored permission array won't contain the new key, so gated UI stays hidden.
+  Re-run the seed on dev + test DBs after touching the catalog.
+- **Do not add `loading.tsx` to public routes that call `notFound()`.** The Suspense
+  boundary flushes the loading shell with status 200 before the page render throws, so
+  `notFound()` can no longer turn the response into a 404 — a disabled trust center
+  returned 200 until its loading segment was removed. Status-sensitive public pages must
+  render without a streaming boundary.
+- **Playwright + Radix Select.** `selectOption()` mutates the hidden native `<select>`
+  without updating Radix/React state — the app never sees the change. Drive the visible
+  trigger: click the combobox, `waitFor` the listbox, click `getByRole("option", …)`.
 - **Apply new Prisma migrations to _both_ the dev DB and the test DB** (`prisma migrate deploy`
   against each; the test DB is `TEST_DATABASE_URL`) before running `npm run test`, or integration
   tests fail on missing columns.
@@ -252,21 +269,34 @@ ones before declaring any phase complete.
   locally via `npm run precheck` (typecheck + lint + format:check). Run `npm run format` to auto-fix
   formatting issues before pushing — Prettier failures are the most common CI rejection.
 - **Server Actions that feed `useActionState`.** An action that returns a value for
-  `useActionState` should prefer to let the client handle the refresh via the
-  `useActionFeedback` hook (toast + `router.refresh()`) rather than calling `revalidatePath`
-  for its own current route from inside the action. Doing both causes a redundant
-  double-refresh but is harmless: Sonner toasts render via `<Toaster />` portal
-  (`components/ui/sonner.tsx`) and survive route refetches. When an action is also called
-  from non-`useActionState` contexts (e.g. API routes, cron), calling `revalidatePath` is
-  fine — the double-refresh only matters when the client also calls `router.refresh()`.
+  `useActionState` must NOT call `revalidatePath` at all — on Node >= 23 the
+  revalidation aborts the action's response streaming entirely
+  ("ResponseAborted" in server logs): the button sticks pending, the toast
+  never appears and the write may look lost. Let the client refresh via the
+  `useActionFeedback` hook (toast + `router.refresh()`) instead. When an action
+  is also called from non-`useActionState` contexts (e.g. API routes, cron),
+  calling `revalidatePath` there is fine. (This was previously described as a
+  harmless double-refresh; the Node 24 behaviour makes it a hard rule.)
 
 ### Client/Server state patterns (learned the hard way)
 
+- **Slide-out (Sheet) editors follow the certifications-manager pattern.** Use it
+  as the reference when adding any new Sheet-based CRUD editor:
+  `SheetContent className="w-full overflow-y-auto sm:max-w-md"` → `SheetHeader`
+  with `SheetTitle` **and** `SheetDescription` → form
+  `className="flex flex-1 flex-col gap-4 px-4"` with a stable `id` →
+  `<SheetFooter className="px-4">` holding Save/Cancel with
+  `form="the-form-id"` wiring. The editor closes itself via
+  `useEffect(() => { if (state?.ok) onDone(); }, [state, onDone])`. Skipping the
+  `px-4` leaves fields flush against the sheet edge; skipping the form/footer
+  wiring leaves confirm-dialog submits as no-ops.
+- **ConfirmDialog must be paired with a form id.** Without the `formId` prop its
+  confirm button renders `type="button"` and closes the dialog WITHOUT
+  submitting anything — the delete silently never happens. Pattern: give the
+  wrapping `<form>` a unique `id`, pass it as `formId`, and keep the hidden
+  inputs inside that form.
+
 - **Key-based remounting for uncontrolled inputs.** When a shadcn/Radix form control
-  (`<Select>`, `<Checkbox>`, etc.) uses `defaultValue`/`defaultChecked` inside a form
-  that persists via a Server Action, React only reads the default on initial mount. If
-  the server component re-renders with a new prop value after `revalidatePath`, the
-  control keeps its stale internal state. Fix: add `key={currentValue}` to the control —
   React unmounts and remounts it, and the fresh instance picks up the new default. This
   is simpler and more reliable than controlled state (`useState` + `value` +
   `onValueChange`). The canonical reference is `finding-status-form.tsx:38`.
