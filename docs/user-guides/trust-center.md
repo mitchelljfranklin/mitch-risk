@@ -13,6 +13,8 @@ While disabled, `/trust` returns a not-found message and nothing is served publi
 
 Open **Manage → Trust center** in the sidebar. Four blocks are available; each item has a publish toggle, so you can prepare drafts and publish when ready. Unpublished items never appear on the public page.
 
+Every manager row also has **chevron up/down buttons** to reorder items — the order is saved immediately and reflected on the public page.
+
 ### Compliance badges
 
 Certification tiles such as SOC 2, ISO 27001 or GDPR. Each badge has:
@@ -29,7 +31,7 @@ Upload PDFs, images or Office documents (max 20 MB) for public download — poli
 
 ### Subprocessors
 
-The standard name / purpose / data-location table. Optionally link each subprocessor's website.
+The standard name / purpose / data-location table. Optionally link each subprocessor's website. Each subprocessor can also have a **logo** — either upload an image (PNG, JPG, GIF, WebP, max 2 MB) or paste an image URL, which is downloaded and stored with the other trust center files. The public page never loads external hosts.
 
 ### Custom sections
 
@@ -37,11 +39,15 @@ Free markdown blocks for anything the structured types don't cover — an overvi
 
 ## Public page
 
-Visit `/trust` (or click **View public page** in the manager). The page is branded with your logo and theme colours, rate-limited against abuse, and shows **only published** content. Use the "View public page" button to check your work as you edit.
+Visit `/trust` (or click **View public page** in the manager). The page is branded with your logo and theme colours, has a light/dark theme selector, is rate-limited against abuse, and shows **only published** content. Use the "View public page" button to check your work as you edit.
 
 ## Invite emails
 
 Tick **Link to the trust center in vendor invite emails** and every assessment invite gains a footer line pointing at the page. The link is added when the email is sent — your stored templates are not modified.
+
+## Rate limits
+
+The public page loads and document downloads are rate-limited per IP (defaults: 30/min each). Adjust both under **Settings → Trust Center** if you expect heavy legitimate traffic.
 
 ## Multi-instance note
 

@@ -7,9 +7,9 @@ branch receives security patches. We do not backport fixes to older tags.
 
 | Version   | Supported          |
 | --------- | ------------------ |
-| 1.2.x     | :white_check_mark: |
+| 1.3.x     | :white_check_mark: |
 | `master`  | :white_check_mark: |
-| < 1.2     | :x:                |
+| < 1.3     | :x:                |
 
 ## Reporting a vulnerability
 
@@ -111,6 +111,7 @@ An in‑memory fixed‑window rate limiter (`lib/rate-limit.ts`) protects:
 - Login and break‑glass emergency access
 - Password reset requests
 - Vendor portal: page loads, autosave, file uploads, and submission
+- Trust center: public page loads and document downloads (per IP)
 - API key authentication (per IP and per key)
 - Cron endpoint (requires `CRON_SECRET` header)
 
@@ -127,12 +128,14 @@ in‑app via Settings. Storage credentials are encrypted at rest.
 Key security properties:
 - **Path‑traversal guard:** `resolveKeyPath()` rejects keys that resolve
   outside the configured storage root via canonical‑path prefix check.
-- **No public URLs:** files are served only through an authenticated
-  Next.js route (`/api/attachments/[attachmentId]`).
+- **No public URLs:** evidence and attachment files are served only
+  through authenticated routes. The public trust center serves *only*
+  published badge/subprocessor images and published documents via
+  raster‑only, rate‑limited routes.
 - **Cleanup on delete:** deleting a record removes its associated
   storage files. An orphaned‑file sweep in the cron job is the backstop.
 - **MIME validation:** uploads are validated against an allowlist of
-  permitted types.
+  permitted types, with magic‑byte sniffing for images and documents.
 
 ### Portal tokens
 

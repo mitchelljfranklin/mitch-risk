@@ -32,7 +32,7 @@ features:
   - title: REST API
     details: Session + API key auth with Bearer tokens, IP allowlisting, and configurable expiry. Interactive Swagger UI at /docs on any running instance.
   - title: Role-Based Access Control
-    details: Three system roles (Admin, Reviewer, Viewer) plus custom roles with 23 fine-grained resource:action permissions.
+    details: Three system roles (Admin, Reviewer, Viewer) plus custom roles with 24 fine-grained resource:action permissions.
   - title: Self-Hosted
     details: Docker Compose behind any reverse proxy. Local disk or cloud storage (S3, Azure Blob). Runs anywhere.
 ---

@@ -399,6 +399,7 @@ The platform is designed around three principles:
 | Vendor → VendorCertification | 1:N | Cascade | Expiry-tracked certifications |
 | Any entity → Attachment | Polymorphic | None | entityType + entityId pair |
 | Control → CustomerResponsibilityAction | 1:N (via controlCode) | Cascade | Customer obligations for shared-responsibility controls |
+| TrustCenterBadge / Document / Subprocessor / Section | standalone tables | None | Trust Center content; published + sortOrder indexed; subprocessor logo_key stored |
 
 ### 4.3 Enums
 
@@ -564,7 +565,7 @@ When SSO is enforced (`disableLocalAuth = true`), a break-glass token allows loc
 
 ### 5.4 Role-Based Access Control (RBAC)
 
-#### Permission Catalog (23 keys)
+#### Permission Catalog (24 keys)
 
 ```
 ┌─────────────────┬──────────────────────────────────────────────┐
@@ -597,7 +598,7 @@ When SSO is enforced (`disableLocalAuth = true`), a break-glass token allows loc
 
 | Role | Permissions Count | Description |
 |---|---|---|
-| **Admin** | 23 (all) | Full system control (locked, cannot be deleted) |
+| **Admin** | 24 (all) | Full system control (locked, cannot be deleted) |
 | **Reviewer** | 17 | Vendor/Assessment/Template/Framework CRUD. Cannot manage users, roles, settings, API, or view audit |
 | **Viewer** | 5 | Read-only: `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view`, `profile:view` |
 
@@ -1226,6 +1227,13 @@ All email subjects and bodies are DB-backed via `email.template` AppSetting cate
 
 Available token variables: `{{vendorName}}`, `{{assessmentTitle}}`, `{{portalUrl}}`, `{{dueDate}}`, `{{reviewerName}}`, `{{assessmentUrl}}`, `{{message}}`, `{{appName}}`, `{{resetUrl}}`, `{{expiresIn}}`, `{{itemName}}`, `{{vendorUrl}}`, `{{portalPassword}}`.
 
+### 10.3a Trust Center Invite Footer
+
+When `trustcenter.enabled` and `trustcenter.includeInInvites` are both set,
+`sendEmail` appends a trust-center link (`{APP_URL}/trust`) to
+invite/invite-password emails at send time. Stored templates are never
+modified; the footer is injected after token replacement. See §18a.3.
+
 ### 10.4 Email Logging & Retention
 
 - Every sent email creates a `NotificationLog` row (type, recipient, subject, status)
@@ -1278,6 +1286,9 @@ All operational configuration lives in the `AppSetting` database table. No confi
 │         ├── appearance: primaryHex, secondaryHex, logoKey,       │
 │         │               ragGreenHex, ragAmberHex, ragRedHex,     │
 │         │               ragUnscoredHex, borderRadius, pageWidth  │
+│         ├── trustcenter: enabled, intro, contactEmail,           │
+│         │       includeInInvites, pageLoadsPerMin,               │
+│         │       downloadsPerMin                                  │
 │         └── storage: provider, s3*, azure* (secrets encrypted)    │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1381,6 +1392,9 @@ Unexpected errors return a generic `{"error":{"message":"Internal error","status
 | GET | `/api/cron/run` | CRON_SECRET header | Trigger all cron jobs |
 | GET | `/api/brand/logo` | None | Serve org logo (cache-busted) |
 | GET | `/api/attachments/[id]` | Session / API key | Serve attachment file |
+| GET | `/api/trust/documents/[id]` | None (published only, IP rate-limited) | Serve published trust center document |
+| GET | `/api/trust/badges/[id]/image` | None (published only) | Serve badge image (raster-only) |
+| GET | `/api/trust/subprocessors/[id]/image` | None (published only) | Serve subprocessor logo (raster-only) |
 | GET | `/api/docs` | Session or API key (`api:manage`) | Serve OpenAPI spec JSON |
 | **Vendors** ||||
 | GET | `/api/v1/vendors` | Bearer token | List vendors (`?query=`, `?tier=`) |
@@ -1643,7 +1657,8 @@ Scheduled jobs run **inside the app by default**: `instrumentation.ts` starts a 
 │  │  JOB 7: Orphaned File Sweep                                 │ │
 │  │  ─────────────────                                         │ │
 │  │  • List all stored files via storage.list()                │ │
-│  │  • Compare against Evidence.storageKey and logoKey         │ │
+│  │  •   Compare against Evidence.storageKey, Attachment.storageKey, badge imageKey
+  and subprocessor logoKey                                             │ │
 │  │  • Delete unreferenced files older than 1 hour             │ │
 │  │    (grace period for in-flight uploads)                    │ │
 │  └─────────────────────────────────────────────────────────┘    │
@@ -1902,7 +1917,7 @@ AuditLog
 └── FINDING_UPDATED (status changes)
 ```
 
-- Entity names shown as clickable links (batch-resolved across 9 entity types)
+- Entity names shown as clickable links (batch-resolved across 13 entity types)
 - `meta` JSON field stores contextual data (review decisions, role changes, notes)
 - Pruneable via `audit.retentionDays` setting
 

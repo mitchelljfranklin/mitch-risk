@@ -113,6 +113,10 @@ components/          # shadcn ui primitives + domain composites
   control-multi-select.tsx               # multi-select for framework controls
   compliance-radar.tsx                   # recharts radar of framework domain compliance
   url-tabs.tsx                           # ?tab= URL-synced tabs
+  trust-center/badges-manager.tsx        # trust center badge CRUD manager
+  trust-center/documents-manager.tsx     # trust center document CRUD manager
+  trust-center/subprocessors-manager.tsx # trust center subprocessor CRUD manager (logo upload/URL)
+  trust-center/sections-manager.tsx      # trust center markdown section CRUD manager
   auth/sso-buttons.tsx                   # SSO login buttons
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
@@ -543,10 +547,11 @@ from the catalog and role defaults).
 - **Data lifecycle.** Deleting a record must also remove its associated storage files
   (evidence, logos); a replaced upload deletes the old file. The cron orphaned-file sweep is
   the backstop, not the primary cleanup. **Every storage writer must be reflected in the
-  sweep's referenced-key set** (`app/api/cron/run` collects evidence, attachment, and logo
-  keys) — adding a new key format without registering it there means the cron will delete
-  those files within an hour. Deleting a user preserves audit and review history via
-  nullable `SetNull` relations (surfaced as "Deleted user") — never cascade-delete audit trails.
+  sweep's referenced-key set** (`lib/cron/run-jobs.ts` collects evidence, attachment, brand
+  logo, trust-center badge image, and subprocessor logo keys) — adding a new key format
+  without registering it there means the cron will delete those files within an hour. Deleting
+  a user preserves audit and review history via nullable `SetNull` relations (surfaced as
+  "Deleted user") — never cascade-delete audit trails.
 - Prefer Server Components for reads and Server Actions for writes.
 - **Keep the OpenAPI spec current.** Whenever a new API endpoint is added, modified, or
   removed, update `lib/openapi.json` in the same phase. The spec lives at `/api/docs` and
