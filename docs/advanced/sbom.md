@@ -1,6 +1,6 @@
 # Software Bill of Materials (SBOM)
 
-This document lists every direct software dependency used by Mitch‑Risk v1.3.0, organised by functional purpose. It is intended for security reviewers, compliance assessors, and procurement teams evaluating the platform for organisational use.
+This document lists every direct software dependency used by Mitch‑Risk v1.4.0, organised by functional purpose. It is intended for security reviewers, compliance assessors, and procurement teams evaluating the platform for organisational use.
 
 ## Runtime Requirements
 
