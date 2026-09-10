@@ -3,7 +3,7 @@
 export default function PortalLoading() {
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-4 p-6">
-      <div className="bg-muted animate-pulse h-16 w-16 rounded-full" />
+      <div className="bg-muted h-16 w-16 animate-pulse rounded-full" />
       <div className="flex w-full max-w-md flex-col gap-3">
         <div className="bg-muted h-7 w-2/3 animate-pulse rounded" />
         <div className="bg-muted h-4 w-full animate-pulse rounded" />
