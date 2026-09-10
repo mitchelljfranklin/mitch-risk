@@ -46,7 +46,8 @@ export const scoringSettingsSchema = z.object({
   ragThresholds: z
     .object({ amber: z.number(), green: z.number() })
     .catch({ amber: 0.6, green: 0.85 }),
-  excludeNotApplicable: z.boolean().catch(true),
+  // Note: not-applicable responses are always excluded from scoring
+  // denominators by design; there is no toggle for this.
 });
 
 export type ScoringSettings = z.infer<typeof scoringSettingsSchema>;

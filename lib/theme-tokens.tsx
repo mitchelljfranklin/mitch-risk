@@ -10,7 +10,7 @@ function hexToRgb(hex: string): [number, number, number] | null {
   ];
 }
 
-function relativeLuminance(hex: string): number {
+export function relativeLuminance(hex: string): number {
   const rgb = hexToRgb(hex);
   if (!rgb) return 0;
   const [r, g, b] = rgb.map((channel) => {
@@ -22,7 +22,7 @@ function relativeLuminance(hex: string): number {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
-function foregroundFor(hex: string): string {
+export function foregroundFor(hex: string): string {
   return relativeLuminance(hex) > 0.4 ? "oklch(0.205 0 0)" : "oklch(0.985 0 0)";
 }
 

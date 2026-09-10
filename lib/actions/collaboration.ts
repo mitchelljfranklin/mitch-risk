@@ -16,10 +16,13 @@ import { getAssessmentRecipients } from "@/lib/db/assessments";
 import { logAudit, AUDIT_ACTIONS } from "@/lib/db/audit";
 import { sendEmail } from "@/lib/email/mailer";
 import { env } from "@/lib/env";
+import { COMMENT_MAX_LENGTH } from "@/lib/portal";
 import { getField } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 
 const VALID_DECISIONS = ["APPROVED", "CLARIFICATION_REQUESTED"];
+const VALID_VISIBILITIES = ["INTERNAL", "VENDOR"];
+const REVIEW_NOTE_MAX_LENGTH = 2000;
 
 export async function addCommentAction(formData: FormData) {
   await requirePermission(PERMISSIONS.ASSESSMENTS_REVIEW);
@@ -31,6 +34,25 @@ export async function addCommentAction(formData: FormData) {
   const visibility = getField(formData, "visibility") || "INTERNAL";
   if (!body) {
     return;
+  }
+  // The portal enforces this cap on vendors; internal authors get the same
+  // guard so oversized bodies can't bloat pages where comments render inline.
+  if (body.length > COMMENT_MAX_LENGTH) {
+    return;
+  }
+  // A typo'd visibility value would change who can read the content.
+  if (!VALID_VISIBILITIES.includes(visibility)) {
+    return;
+  }
+  // Replies must stay within the same assessment as their parent thread.
+  if (parentId) {
+    const parentComment = await prisma.comment.findUnique({
+      where: { id: parentId },
+      select: { assessmentId: true },
+    });
+    if (!parentComment || parentComment.assessmentId !== assessmentId) {
+      return;
+    }
   }
 
   const user = await getCurrentUser();
@@ -62,6 +84,9 @@ export async function reviewAction(formData: FormData) {
   const responseId = getField(formData, "responseId");
   const decision = getField(formData, "decision");
   const note = getField(formData, "note") || undefined;
+  if (note && note.length > REVIEW_NOTE_MAX_LENGTH) {
+    return;
+  }
 
   if (!VALID_DECISIONS.includes(decision)) {
     return;
@@ -129,6 +154,9 @@ export async function sendBackToVendorAction(formData: FormData) {
   await requirePermission(PERMISSIONS.ASSESSMENTS_REVIEW);
   const assessmentId = getField(formData, "assessmentId");
   const message = getField(formData, "message").trim();
+  if (message.length > COMMENT_MAX_LENGTH) {
+    return;
+  }
 
   await sendBackToVendor(assessmentId);
 
@@ -160,16 +188,15 @@ export async function sendBackToVendorAction(formData: FormData) {
         { assessmentId, sentById: user?.id },
       );
     }
-  }
 
-  const user = await getCurrentUser();
-  if (user) {
-    await logAudit(
-      user.id,
-      AUDIT_ACTIONS.SEND_BACK_TO_VENDOR,
-      "Assessment",
-      assessmentId,
-    );
+    if (user) {
+      await logAudit(
+        user.id,
+        AUDIT_ACTIONS.SEND_BACK_TO_VENDOR,
+        "Assessment",
+        assessmentId,
+      );
+    }
   }
   revalidatePath(`/assessments/${assessmentId}`);
 }

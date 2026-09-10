@@ -109,8 +109,8 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
         </div>
 
         {showNewKey ? (
-          <div className="rounded-md border border-green-300 bg-green-50 p-4 dark:border-green-800 dark:bg-green-950/30">
-            <p className="text-sm font-semibold text-green-800 dark:text-green-200">
+          <div className="border-success/30 bg-success/10 rounded-md border p-4">
+            <p className="text-success text-sm font-semibold">
               Key created — copy it now
             </p>
             <p className="text-muted-foreground mt-1 text-xs">

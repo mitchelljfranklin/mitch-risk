@@ -46,7 +46,12 @@ import {
   SEVERITY_STYLES,
 } from "@/lib/schemas/assessment";
 import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
-import { cn, formatDate, formatResponseValue } from "@/lib/utils";
+import {
+  cn,
+  formatDate,
+  formatDateUtc,
+  formatResponseValue,
+} from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -295,7 +300,9 @@ export default async function AssessmentDetailPage({
           {assessment.template
             ? ` · ${assessment.template.name} v${assessment.template.version}`
             : ""}
-          {assessment.dueDate ? ` · due ${formatDate(assessment.dueDate)}` : ""}
+          {assessment.dueDate
+            ? ` · due ${formatDateUtc(assessment.dueDate)}`
+            : ""}
           {assessment.reviewer ? ` · reviewer ${assessment.reviewer.name}` : ""}
         </p>
       </div>
@@ -303,10 +310,10 @@ export default async function AssessmentDetailPage({
       {isDraft && canCreate ? (
         <Card>
           <CardHeader>
-            <CardTitle>Send questionnaire</CardTitle>
+            <CardTitle>Create vendor link</CardTitle>
             <CardDescription>
-              Generate a no‑login portal link for the vendor. Optionally set a
-              password to protect access.
+              Generate a no‑login vendor link for the assessment. Optionally set
+              a password to protect access.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -378,7 +385,7 @@ export default async function AssessmentDetailPage({
                     value={assessment.id}
                   />
                   <ConfirmDialog
-                    title="Revoke portal link?"
+                    title="Revoke vendor link?"
                     description="The vendor will no longer be able to access the questionnaire. You can regenerate the link later if needed."
                     confirmLabel="Revoke"
                     variant="destructive"

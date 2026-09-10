@@ -164,6 +164,7 @@ export default async function RiskRegisterPage({
           <AutoSubmitSelect
             name="sort"
             defaultValue={sort}
+            key={`sort-${sort ?? ""}`}
             id="sort"
             className="w-40"
             ariaLabel="Sort findings"

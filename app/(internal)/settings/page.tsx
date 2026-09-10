@@ -24,13 +24,14 @@ import {
   getFileSettings,
   getAuditRetention,
   getEmailLogRetention,
-  getStorageSettings,
+  getStorageSettingsView,
   getCronSettings,
 } from "@/lib/settings";
 import { getBreakGlassHash, getSsoSecretConfigured } from "@/lib/settings";
 import { listWebhookEndpoints } from "@/lib/db/webhooks";
 import { UsersManager } from "./users-manager";
 import { RolesManager } from "./roles-manager";
+import { FlashToast } from "@/components/flash-toast";
 
 import { EmailForm, SmtpTestForm } from "./email-form";
 import { TemplatesManager } from "./templates-manager";
@@ -134,7 +135,7 @@ export default async function SettingsPage({
     getFileSettings(),
     getAuditRetention(),
     getEmailLogRetention(),
-    getStorageSettings(),
+    getStorageSettingsView(),
   ]);
 
   const webhookEndpoints = await listWebhookEndpoints();
@@ -535,6 +536,9 @@ export default async function SettingsPage({
         </TabsContent>
 
         <TabsContent value="roles" className="mt-4 flex flex-col gap-6">
+          {sp.roleError ? (
+            <FlashToast variant="error" message={sp.roleError} />
+          ) : null}
           <Card>
             <CardHeader>
               <CardTitle>Roles</CardTitle>

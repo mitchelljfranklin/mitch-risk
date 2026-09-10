@@ -300,7 +300,7 @@ function EmailLogRow({ log }: { log: EmailLogEntry }) {
         {log.sentBy?.name ?? "System"}
       </TableCell>
       <TableCell>
-        {log.status === "FAILED" ? (
+        {log.status === "FAILED" && log.type !== "RESET" ? (
           <form action={action} className="inline">
             <input type="hidden" name="logId" value={log.id} />
             <Button

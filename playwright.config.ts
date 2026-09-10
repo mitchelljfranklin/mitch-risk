@@ -3,6 +3,7 @@ import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "./e2e",
   globalSetup: "./e2e/global-setup.ts",
+  globalTeardown: "./e2e/global-teardown.ts",
   timeout: 30_000,
   fullyParallel: false,
   use: {
@@ -22,7 +23,9 @@ export default defineConfig({
     // developer's .env (which may point APP_URL at a real deployment — that
     // would make NextAuth redirect sign-in off localhost and break every test).
     env: {
-      CRON_SECRET: process.env.CRON_SECRET ?? "e2e-cron-secret",
+      // >=32 chars so the production CRON_SECRET validation accepts it.
+      CRON_SECRET:
+        process.env.CRON_SECRET ?? "e2e-only-cron-secret-0123456789abcdef",
       APP_URL: "http://localhost:3000",
       AUTH_URL: "http://localhost:3000",
     },

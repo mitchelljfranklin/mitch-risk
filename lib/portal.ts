@@ -243,3 +243,14 @@ export function findMissingRequiredQuestions<T extends PortalQuestionSummary>(
     return !hasAnswer(answers[question.id]);
   });
 }
+
+// Vendor-facing review policy: internal reviewer notes are private unless the
+// reviewer explicitly requested clarification - that is the one decision
+// whose note is meant to be read by the vendor (it drives their rework).
+export function isNoteVisibleToVendor(decision: string): boolean {
+  return decision === "CLARIFICATION_REQUESTED";
+}
+
+// Maximum length of any comment body - enforced identically on the vendor
+// portal and for internal reviewers.
+export const COMMENT_MAX_LENGTH = 2000;

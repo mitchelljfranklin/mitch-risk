@@ -789,7 +789,9 @@ null → UNSCORED
 | LOW weight | 1 | `scoring.riskWeights` |
 | GREEN threshold | >= 0.85 | `scoring.ragThresholds` |
 | AMBER threshold | >= 0.60 | `scoring.ragThresholds` |
-| Exclude N/A | true | `scoring.excludeNotApplicable` |
+
+> Not-applicable responses are always excluded from scoring denominators by
+> design; there is no configurable toggle.
 
 #### Domain Compliance Radar
 
@@ -1264,8 +1266,7 @@ All operational configuration lives in the `AppSetting` database table. No confi
 │         ├── email: smtpHost, smtpPort, smtpUser, fromAddress,    │
 │         │         fromName, smtpPassword (secret)                │
 │         ├── files: maxUploadMb, allowedExtensions[]              │
-│         ├── scoring: riskWeights, ragThresholds,                 │
-│         │           excludeNotApplicable                          │
+│         ├── scoring: riskWeights, ragThresholds                 │
 │         ├── assessments: defaultDueInDays, reminderOffsetDays,   │
 │         │                escalationAfterDays, all rate-limits,   │
 │         │                sessionTimeoutMinutes,                  │

@@ -3,7 +3,7 @@
   "info": {
     "title": "mitch-risk API",
     "version": "1.0.0",
-    "description": "REST API for mitch-risk — a lightweight third party vendor risk management solution. Supports two authentication methods: browser session cookies (log in via the web app) and API keys (generated in Settings → API). API keys use Bearer token authentication and must be enabled by an admin before they can be used. API keys grant full access to every endpoint and remain valid independently of the account that created them. Keys can be IP-restricted and have configurable expiry.",
+    "description": "REST API for mitch-risk — a lightweight third party vendor risk management solution. Supports two authentication methods: browser session cookies (log in via the web app) and API keys (generated in Settings → API). API keys use Bearer token authentication and must be enabled by an admin before they can be used. API keys grant full access to every endpoint and remain valid independently of the account that created them. Keys can be IP-restricted and have configurable expiry.\n\nNon-REST infrastructure endpoints (interactive Swagger at /api/docs, brand logo, health probe, CSP report sink and the settings email preview) are intentionally undocumented here.",
     "contact": {
       "name": "mitch-risk",
       "url": "https://github.com/mitchelljfranklin/mitch-risk"
@@ -1309,6 +1309,170 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/cron/run": {
+      "get": {
+        "tags": ["Automation"],
+        "summary": "Trigger all scheduled jobs",
+        "description": "Runs vendor reminders, overdue escalations, certification/contract expiry notices, recurring assessment creation, audit/email log pruning, and the orphaned-file sweep. Intended for external schedulers when the built-in scheduler (default) is disabled in Settings → Scheduling. Safe to call more often than every five minutes: notification dedupe prevents duplicate emails.",
+        "operationId": "runScheduledJobs",
+        "parameters": [
+          {
+            "name": "x-cron-secret",
+            "in": "header",
+            "required": true,
+            "description": "The CRON_SECRET deployment environment variable.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Jobs executed; per-job counters returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reminders": {
+                      "type": "integer"
+                    },
+                    "escalations": {
+                      "type": "integer"
+                    },
+                    "recurrences": {
+                      "type": "integer"
+                    },
+                    "expiryNotices": {
+                      "type": "integer"
+                    },
+                    "pruned": {
+                      "type": "integer",
+                      "description": "Audit entries pruned (present when > 0)"
+                    },
+                    "prunedEmails": {
+                      "type": "integer",
+                      "description": "Email logs pruned (present when > 0)"
+                    },
+                    "prunedFiles": {
+                      "type": "integer",
+                      "description": "Orphaned files deleted (present when > 0)"
+                    },
+                    "prunedFileKeys": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "reminders": 2,
+                  "escalations": 0,
+                  "recurrences": 1,
+                  "expiryNotices": 0
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or incorrect x-cron-secret (constant-time comparison)"
+          },
+          "409": {
+            "description": "A scheduled job run is already in progress in this instance"
+          },
+          "429": {
+            "description": "Rate limited: more than 10 attempts per minute from one IP"
+          }
+        }
+      }
+    },
+    "/attachments/{attachmentId}": {
+      "get": {
+        "tags": ["Files"],
+        "summary": "Download a vendor/certification attachment",
+        "description": "Streams the stored attachment binary. Inline-safe types (PDF/images) are served with their original content type; everything else downloads as application/octet-stream. Requires VENDORS_VIEW.",
+        "operationId": "downloadAttachment",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "attachmentId",
+            "in": "path",
+            "required": true,
+            "description": "The attachment's unique ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attachment file bytes",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Attachment or underlying storage file not found"
+          }
+        }
+      }
+    },
+    "/files/{evidenceId}": {
+      "get": {
+        "tags": ["Files"],
+        "summary": "Download an assessment evidence file",
+        "description": "Streams the evidence file uploaded against a questionnaire response. Requires ASSESSMENTS_VIEW.",
+        "operationId": "downloadEvidence",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "evidenceId",
+            "in": "path",
+            "required": true,
+            "description": "The evidence record's unique ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Evidence file bytes",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Evidence record or underlying storage file not found"
           }
         }
       }

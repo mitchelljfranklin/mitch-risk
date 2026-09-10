@@ -14,6 +14,7 @@ import {
   submitAssessment,
 } from "@/lib/db/assessments";
 import { addComment } from "@/lib/db/collaboration";
+import { COMMENT_MAX_LENGTH } from "@/lib/portal";
 import { getClientIp } from "@/lib/client-ip";
 import { sendEmail } from "@/lib/email/mailer";
 import { env } from "@/lib/env";
@@ -215,8 +216,6 @@ export async function submitPortalAction(token: string): Promise<{
 
   return result;
 }
-
-const COMMENT_MAX_LENGTH = 2000;
 
 export async function vendorAddCommentAction(
   token: string,

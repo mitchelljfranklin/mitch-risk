@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 import { Prisma } from "../../prisma/generated/prisma/client";
 import { requirePermission, getCurrentUser } from "@/lib/auth";
@@ -123,6 +124,12 @@ export async function duplicateRoleAction(formData: FormData): Promise<void> {
       `[roles] failed to duplicate role ${roleId}:`,
       error instanceof Error ? error.message : String(error),
     );
+    // Surface the failure - without this the admin sees a dead button.
+    const reason =
+      error instanceof Error ? error.message : "Unknown database error";
+    redirect(
+      `/settings?tab=roles&roleError=${encodeURIComponent(`Could not duplicate the role: ${reason}`)}`,
+    );
   }
 }
 
@@ -145,6 +152,11 @@ export async function deleteRoleAction(formData: FormData): Promise<void> {
     console.error(
       `[roles] failed to delete role ${roleId}:`,
       error instanceof Error ? error.message : String(error),
+    );
+    const reason =
+      error instanceof Error ? error.message : "Unknown database error";
+    redirect(
+      `/settings?tab=roles&roleError=${encodeURIComponent(`Could not delete the role: ${reason}`)}`,
     );
   }
 }

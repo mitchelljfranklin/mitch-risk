@@ -242,4 +242,77 @@ describe("scoring engine", () => {
     // null value is non-compliant
     expect(isCompliant("CHECKBOX", null, "true")).toBe(false);
   });
+
+  describe("edge cases around data integrity", () => {
+    it("zeroes orphan responses (no matching question) and excludes them from the denominator", () => {
+      const responses: ResponseData[] = [
+        {
+          id: "orphan",
+          assessmentQuestionId: "q-deleted",
+          value: "YES",
+          isNotApplicable: false,
+        },
+        {
+          id: "r1",
+          assessmentQuestionId: "q1",
+          value: "YES",
+          isNotApplicable: false,
+        },
+      ];
+      const scored = scoreResponses(questions, responses, defaultWeights);
+
+      const orphan = scored.find((s) => s.id === "orphan")!;
+      expect(orphan).toEqual({
+        id: "orphan",
+        isCompliant: null,
+        weightedScore: 0,
+        maxScore: 0,
+      });
+
+      // The denominator only counts the real q1 weight, so a single
+      // compliant answer scores 1.0 rather than 10/16.
+      expect(computeTotalScore(scored)).toBeCloseTo(1.0, 4);
+    });
+
+    it("treats unknown risk weights as zero contribution instead of crashing", () => {
+      const unknownWeightQuestions = [
+        {
+          id: "q1",
+          type: "YES_NO",
+          riskWeight: "BLOCKER" as unknown as "CRITICAL",
+          expectedAnswer: "YES",
+        },
+      ];
+      const scored = scoreResponses(
+        unknownWeightQuestions,
+        [
+          {
+            id: "r1",
+            assessmentQuestionId: "q1",
+            value: "YES",
+            isNotApplicable: false,
+          },
+        ],
+        defaultWeights,
+      );
+      expect(scored[0]).toEqual({
+        id: "r1",
+        isCompliant: true,
+        weightedScore: 0,
+        maxScore: 0,
+      });
+      expect(computeTotalScore(scored)).toBeNull();
+    });
+
+    it("marks non-numeric NUMERIC answers non-compliant rather than crashing on NaN", () => {
+      expect(isCompliant("NUMERIC", "banana", 256)).toBe(false);
+      expect(isCompliant("NUMERIC", "", 256)).toBe(false);
+      expect(isCompliant("RATING", "not-a-number", 4)).toBe(false);
+    });
+
+    it("requires exact MULTI_SELECT sets even with duplicate entries", () => {
+      expect(isCompliant("MULTI_SELECT", ["AWS", "AWS"], ["AWS"])).toBe(false);
+      expect(isCompliant("MULTI_SELECT", ["AWS"], ["AWS", "AWS"])).toBe(false);
+    });
+  });
 });

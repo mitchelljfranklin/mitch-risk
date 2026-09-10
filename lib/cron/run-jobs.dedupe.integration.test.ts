@@ -97,7 +97,18 @@ describe("findSentNotificationKeys (integration)", () => {
       },
     ]);
 
-    expect(matchingWindow).toBeDefined();
+    // Identity matters: the matched key must be the 30-day window's own
+    // serialisation (notificationKeyOf appends a null status slot), not
+    // merely "something came back".
+    expect(matchingWindow).toBe(
+      JSON.stringify([
+        null,
+        "EXPIRY",
+        RECIPIENT,
+        `cert:${assessmentId}:2026-01-01:30d`,
+        null,
+      ]),
+    );
     expect(otherWindow).toBeUndefined();
   });
 });

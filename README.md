@@ -48,11 +48,18 @@ docker compose -f docker-compose.pull.yml up -d
 git clone https://github.com/mitchelljfranklin/mitch-risk.git
 cd mitch-risk
 cp .env.example .env
-# Edit .env with your own AUTH_SECRET, APP_ENCRYPTION_KEY, and CRON_SECRET
+# Edit .env with your own AUTH_SECRET, APP_ENCRYPTION_KEY, and CRON_SECRET.
+# CRON_SECRET is required - compose refuses to start without it.
 
 docker compose up -d
 # Open http://localhost:3000/setup to create your admin account
 ```
+
+> The Compose stack defaults to database credentials `mitch`/`mitch`. To use
+> your own, set `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `POSTGRES_DB` in
+> `.env` before starting (the container's `DATABASE_URL` is derived from them
+> automatically). The default local host connection for non-Docker runs is
+> unchanged.
 
 ---
 

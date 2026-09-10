@@ -1,4 +1,7 @@
+import { type Prisma } from "../../prisma/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+
+type ResponsibilityTx = Prisma.TransactionClient;
 
 export type CustomerResponsibilityActionView = {
   id: string;
@@ -125,6 +128,7 @@ export async function applySharedResponsibilityActions(
   vendorId: string,
   certificationId: string,
   frameworkName: string | null | undefined,
+  tx: ResponsibilityTx = prisma,
 ): Promise<void> {
   if (!frameworkName) {
     return;
@@ -143,6 +147,7 @@ export async function applySharedResponsibilityActions(
       frameworkName,
       controlTitle: control.title,
     })),
+    tx,
   );
 }
 
@@ -150,11 +155,12 @@ export async function upsertActionsForCertification(
   vendorId: string,
   certificationId: string,
   actions: UpsertActionInput[],
+  tx: ResponsibilityTx = prisma,
 ): Promise<number> {
   let created = 0;
 
   for (const action of actions) {
-    await prisma.customerResponsibilityAction.upsert({
+    await tx.customerResponsibilityAction.upsert({
       where: {
         vendorId_certificationId_controlCode: {
           vendorId,

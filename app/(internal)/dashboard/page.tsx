@@ -111,7 +111,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
             Vendor risk overview
@@ -121,7 +121,7 @@ export default async function DashboardPage() {
             {portfolio.length !== 1 ? "s" : ""} tracked
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {canCreateVendor ? (
             <Button asChild variant="outline" size="sm">
               <Link href="/vendors/new">New vendor</Link>

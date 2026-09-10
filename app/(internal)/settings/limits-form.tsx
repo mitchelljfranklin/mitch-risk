@@ -29,7 +29,7 @@ const RATE_LIMIT_FIELDS = [
   {
     name: "portalPageLoadsPerMin",
     label: "Portal page loads / min (per visitor)",
-    help: "How often a vendor's browser can load the questionnaire link. Guards against link-enumeration.",
+    help: "How often a vendor's browser can load the vendor link. Guards against link-enumeration.",
   },
   {
     name: "portalUploadsPerMin",
@@ -39,12 +39,12 @@ const RATE_LIMIT_FIELDS = [
   {
     name: "portalSubmitPerMin",
     label: "Portal submissions / min (per link)",
-    help: "Maximum submit attempts for a single questionnaire link.",
+    help: "Maximum submit attempts for a single vendor link.",
   },
   {
     name: "portalCommentPerMin",
     label: "Portal comments / min (per link)",
-    help: "Maximum comments a vendor can post on a single questionnaire link.",
+    help: "Maximum comments a vendor can post on a single vendor link.",
   },
   {
     name: "portalPasswordAttemptsPerMin",

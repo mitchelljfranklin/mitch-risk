@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScoreBadge } from "@/components/score-badge";
-import { formatDate } from "@/lib/utils";
+import { formatDateUtc } from "@/lib/utils";
 
 type OverdueEntry = {
   vendorId: string;
@@ -218,7 +218,7 @@ export function AttentionGroups({
                                   ? "1 overdue assessment"
                                   : `${entry.overdueCount} overdue assessments`}
                                 {entry.mostOverdueDate
-                                  ? ` · oldest since ${formatDate(entry.mostOverdueDate)}`
+                                  ? ` · oldest since ${formatDateUtc(entry.mostOverdueDate)}`
                                   : ""}
                               </span>
                             </div>
@@ -259,7 +259,7 @@ export function AttentionGroups({
                                   {entry.vendorName}
                                 </span>
                                 <span className="text-muted-foreground truncate text-xs">
-                                  {entry.label} · {formatDate(entry.date)}
+                                  {entry.label} · {formatDateUtc(entry.date)}
                                 </span>
                               </div>
                               <span

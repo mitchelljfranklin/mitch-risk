@@ -342,6 +342,44 @@ export const getStorageSettings = cache(async (): Promise<StorageSettings> => {
   return parsed;
 });
 
+export type StorageSettingsView = Omit<
+  StorageSettings,
+  "s3SecretAccessKey" | "azureConnectionString"
+> & {
+  s3SecretConfigured: boolean;
+  azureConnectionStringConfigured: boolean;
+};
+
+// Safe-for-client view of storage settings mirroring getEmailSettings():
+// decrypted secrets never leave the server; only presence booleans do.
+// The full secrets are re-read inside lib/storage when connections are made.
+export async function getStorageSettingsView(): Promise<StorageSettingsView> {
+  const record = await readCategoryRecord("storage");
+  const parsed = storageSettingsSchema.parse(record);
+  const resolveSecretPresence = (
+    field: string,
+  ): { stored: string; configured: boolean } => {
+    const raw = record[field];
+    const stored =
+      typeof raw === "string" && raw.length > 0
+        ? (safeDecryptSecret(raw, field) ?? "")
+        : "";
+    return { stored, configured: stored.length > 0 };
+  };
+  const s3 = resolveSecretPresence("s3SecretAccessKey");
+  const azure = resolveSecretPresence("azureConnectionString");
+
+  return {
+    provider: parsed.provider,
+    s3Bucket: parsed.s3Bucket,
+    s3Region: parsed.s3Region,
+    s3AccessKeyId: parsed.s3AccessKeyId,
+    azureContainerName: parsed.azureContainerName,
+    s3SecretConfigured: s3.configured,
+    azureConnectionStringConfigured: azure.configured,
+  };
+}
+
 export async function updateStorageSettings(
   input: StorageSettings,
 ): Promise<void> {

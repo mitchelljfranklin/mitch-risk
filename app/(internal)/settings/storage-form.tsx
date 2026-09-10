@@ -15,10 +15,10 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { saveStorageSettings } from "@/app/(internal)/settings/actions";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
-import type { StorageSettings } from "@/lib/settings/schema";
+import type { StorageSettingsView } from "@/lib/settings";
 
 type StorageFormProps = {
-  defaults: StorageSettings;
+  defaults: StorageSettingsView;
 };
 
 const initialState: { ok: boolean; message: string } | undefined = undefined;
@@ -93,7 +93,7 @@ export function StorageForm({ defaults }: StorageFormProps) {
             name="s3SecretAccessKey"
             type="password"
             defaultValue=""
-            placeholder={defaults.s3SecretAccessKey ? "········" : ""}
+            placeholder={defaults.s3SecretConfigured ? "········" : ""}
           />
           <p className="text-muted-foreground text-xs">
             Stored encrypted at rest. Leave blank to keep the existing value.
@@ -120,7 +120,9 @@ export function StorageForm({ defaults }: StorageFormProps) {
             name="azureConnectionString"
             type="password"
             defaultValue=""
-            placeholder={defaults.azureConnectionString ? "········" : ""}
+            placeholder={
+              defaults.azureConnectionStringConfigured ? "········" : ""
+            }
           />
           <p className="text-muted-foreground text-xs">
             Stored encrypted at rest. Leave blank to keep the existing value.

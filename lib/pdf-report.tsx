@@ -7,7 +7,7 @@ import {
   renderToBuffer,
 } from "@react-pdf/renderer";
 
-import { formatDate, formatPercent } from "@/lib/utils";
+import { formatDate, formatDateUtc, formatPercent } from "@/lib/utils";
 import { getCustomerResponsibilityCompliance } from "@/lib/db/customer-responsibility";
 
 type AssessmentPdfData = {
@@ -157,7 +157,7 @@ function AssessmentPdfDocument({ data }: { data: AssessmentPdfData }) {
           </Text>
           {data.dueDate ? (
             <Text style={{ fontSize: 9, color: "#6b7280", marginTop: 2 }}>
-              Due: {formatDate(data.dueDate)}
+              Due: {formatDateUtc(data.dueDate)}
               {data.completedAt
                 ? ` | Completed: ${formatDate(data.completedAt)}`
                 : ""}

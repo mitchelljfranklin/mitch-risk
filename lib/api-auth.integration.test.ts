@@ -22,6 +22,13 @@ let fullKey = "";
 let keyId = "";
 let scopedKey = "";
 let viewerId = "";
+// Restored in afterAll so a pre-existing api.enabled value (e.g. someone
+// running the suite against their own database) survives the run.
+let previousApiEnabled: {
+  id: string;
+  category: string;
+  value: unknown;
+} | null = null;
 
 async function cleanup() {
   await prisma.apiKey.deleteMany({
@@ -32,6 +39,16 @@ async function cleanup() {
 
 beforeAll(async () => {
   await cleanup();
+  const existingSetting = await prisma.appSetting.findUnique({
+    where: { key: "api.enabled" },
+  });
+  if (existingSetting) {
+    previousApiEnabled = {
+      id: existingSetting.id,
+      category: existingSetting.category,
+      value: existingSetting.value,
+    };
+  }
   await ensureSystemRoles();
   const viewerRole = await getRoleByName(SYSTEM_ROLE_NAMES.VIEWER);
   if (!viewerRole) throw new Error("viewer role not found");
@@ -80,7 +97,21 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await prisma.appSetting.deleteMany({ where: { key: "api.enabled" } });
+  await prisma.$transaction([
+    prisma.appSetting.deleteMany({ where: { key: "api.enabled" } }),
+    ...(previousApiEnabled
+      ? [
+          prisma.appSetting.create({
+            data: {
+              id: previousApiEnabled.id,
+              key: "api.enabled",
+              category: previousApiEnabled.category,
+              value: previousApiEnabled.value as never,
+            },
+          }),
+        ]
+      : []),
+  ]);
   await cleanup();
   await prisma.$disconnect();
 });

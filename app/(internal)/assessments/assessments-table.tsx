@@ -28,7 +28,7 @@ import { Pagination } from "@/components/pagination";
 import { ScoreBadge } from "@/components/score-badge";
 import { type AssessmentSort } from "@/lib/db/assessments";
 import { isAssessmentOverdue } from "@/lib/schemas/assessment";
-import { formatDate } from "@/lib/utils";
+import { formatDateUtc } from "@/lib/utils";
 
 type AssessmentRow = {
   id: string;
@@ -70,7 +70,7 @@ function stateToSortParam(state: SortingState): AssessmentSort {
 
 const STATUS_ACCENT: Record<string, string> = {
   SUBMITTED: "border-l-warning bg-warning/5",
-  UNDER_REVIEW: "border-l-blue-500 bg-blue-50 dark:bg-blue-950/20",
+  UNDER_REVIEW: "border-l-primary bg-primary/5 dark:bg-primary/10",
   COMPLETED: "border-l-[var(--rag-green)] bg-[var(--rag-green)]/5",
 };
 
@@ -138,7 +138,7 @@ export function AssessmentsTable({
                 : ""}
               {assessment.dueDate ? (
                 <span className={overdue ? "text-[var(--rag-red)]" : ""}>
-                  {` · due ${formatDate(assessment.dueDate)}`}
+                  {` · due ${formatDateUtc(assessment.dueDate)}`}
                 </span>
               ) : (
                 ""
@@ -194,7 +194,7 @@ export function AssessmentsTable({
       ),
       cell: ({ row }) => (
         <span className="text-muted-foreground text-xs">
-          {row.original.dueDate ? formatDate(row.original.dueDate) : "—"}
+          {row.original.dueDate ? formatDateUtc(row.original.dueDate) : "—"}
         </span>
       ),
     },
@@ -218,7 +218,7 @@ export function AssessmentsTable({
 
   return (
     <div>
-      <div className="overflow-hidden rounded-md border">
+      <div className="overflow-x-auto rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

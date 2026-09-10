@@ -181,7 +181,7 @@ lib/                 # cross-cutting logic
                      #   local-disk, s3.ts (AWS S3), azure.ts (Azure Blob)
                      #   orphan-sweep.ts (cron orphan classification — pure, unit-tested)
 hooks/              # React hooks (use-form-toast, use-action-feedback, use-mobile)
-emails/              # React Email templates (invite, reminder, escalation, dynamic)
+emails/              # React Email templates: dynamic.tsx renders all configured templates from Settings (invite, reminder, escalation, etc.) via token replacement
 prisma/              # schema.prisma, migrations, seed.ts, seed-runner.cjs, seed-demo.ts, seed-radar-demo.ts
   seed-data/         # ISO 27001, SOC 2, NIST CSF, Essential Eight seed data + types
     templates/       #   full out-of-the-box questionnaire templates (one per framework)

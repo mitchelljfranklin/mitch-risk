@@ -38,7 +38,7 @@ test("vendor edit shows its success toast in production", async ({ page }) => {
   await page.goto(`/vendors/${vendor.id}/edit`);
 
   await page.getByLabel("Vendor name").fill("E2E Vendor");
-  await page.getByRole("button", { name: "Save vendor" }).click();
+  await page.getByRole("button", { name: "Save changes" }).click();
   await expect(page.getByText("Vendor updated.")).toBeVisible({
     timeout: 15000,
   });

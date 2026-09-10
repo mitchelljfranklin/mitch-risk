@@ -142,6 +142,15 @@ describe("compliance domain and heatmap (integration)", () => {
       expect(entry.frameworkId).toBeTruthy();
       expect(entry.frameworkName).toBeTruthy();
     }
+
+    // Exact lockout: both seeded ISO controls share one domain, Q1 answers
+    // YES (compliant) and Q2 NO (not), both weighted MEDIUM -> one entry at
+    // exactly half compliance with both controls counted.
+    expect(profile.domainBreakdown.length).toBe(1);
+    const domainEntry = profile.domainBreakdown[0]!;
+    expect(domainEntry.frameworkName).toBe("ISO 27001");
+    expect(domainEntry.controlCount).toBe(2);
+    expect(domainEntry.complianceRatio).toBeCloseTo(0.5, 4);
   });
 
   it("heatmap returns rag=none for controls with no mapped questions", async () => {

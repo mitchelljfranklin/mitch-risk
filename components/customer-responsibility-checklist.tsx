@@ -33,7 +33,7 @@ const STATUS_OPTIONS = [
 
 const STATUS_STYLES: Record<string, string> = {
   PENDING: "bg-warning text-warning-foreground",
-  IN_PROGRESS: "bg-blue-600 text-white",
+  IN_PROGRESS: "bg-primary text-primary-foreground",
   COMPLETED: "bg-[var(--rag-green)] text-white",
   NOT_APPLICABLE: "bg-muted text-muted-foreground",
 };

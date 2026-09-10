@@ -62,10 +62,6 @@ describe("user delete (integration)", () => {
       roleId: adminRole.id,
     });
 
-    const othersBefore = await countAdminsExcluding(
-      admin.id,
-      PERMISSIONS.SETTINGS_MANAGE,
-    );
     // Hermetic delta check: creating a second admin must raise the count of
     // "other admins" by exactly one, regardless of what else the database
     // contains (the suite must pass against an empty test DB too).

@@ -210,6 +210,11 @@ export async function saveQuestionAction(
   let conditionalLogic: unknown = { match: "all", rules: [] };
   const conditionalRaw = getField(formData, "conditionalLogic");
   if (conditionalRaw) {
+    // The rule builder produces a few hundred bytes; a runaway payload here
+    // would be stored per-question and shipped to every portal load.
+    if (conditionalRaw.length > 10_000) {
+      return { error: "Conditional logic payload is too large." };
+    }
     try {
       conditionalLogic = JSON.parse(conditionalRaw);
     } catch (error: unknown) {
