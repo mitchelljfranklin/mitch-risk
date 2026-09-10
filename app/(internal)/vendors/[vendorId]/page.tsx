@@ -137,30 +137,34 @@ export default async function VendorDetailPage({
   const totalFindings = findingsResult.totalCount;
 
   // Second parallel batch - these four are independent of each other.
-  const [openFindingsCount, responsibilityCompliance, certAttachments, vendorAttachments] =
-    await Promise.all([
-      canViewFindings
-        ? prisma.finding.count({
-            where: { status: "OPEN", assessment: { vendorId } },
-          })
-        : Promise.resolve(0),
-      getCustomerResponsibilityCompliance(vendorId),
-      certifications.length > 0
-        ? prisma.attachment.findMany({
-            where: {
-              entityType: "VendorCertification",
-              entityId: {
-                in: certifications.map((certification) => certification.id),
-              },
+  const [
+    openFindingsCount,
+    responsibilityCompliance,
+    certAttachments,
+    vendorAttachments,
+  ] = await Promise.all([
+    canViewFindings
+      ? prisma.finding.count({
+          where: { status: "OPEN", assessment: { vendorId } },
+        })
+      : Promise.resolve(0),
+    getCustomerResponsibilityCompliance(vendorId),
+    certifications.length > 0
+      ? prisma.attachment.findMany({
+          where: {
+            entityType: "VendorCertification",
+            entityId: {
+              in: certifications.map((certification) => certification.id),
             },
-            orderBy: { createdAt: "asc" },
-          })
-        : Promise.resolve([]),
-      prisma.attachment.findMany({
-        where: { entityType: "Vendor", entityId: vendor.id },
-        orderBy: { createdAt: "desc" },
-      }),
-    ]);
+          },
+          orderBy: { createdAt: "asc" },
+        })
+      : Promise.resolve([]),
+    prisma.attachment.findMany({
+      where: { entityType: "Vendor", entityId: vendor.id },
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
 
   const timeline = buildVendorTimeline({
     vendorId,

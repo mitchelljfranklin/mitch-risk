@@ -299,7 +299,12 @@ export async function importVendorsAction(
         await updateVendor(existingId, input);
         if (user) {
           auditWrites.push(
-            logAudit(user.id, AUDIT_ACTIONS.UPDATE_VENDOR, "Vendor", existingId),
+            logAudit(
+              user.id,
+              AUDIT_ACTIONS.UPDATE_VENDOR,
+              "Vendor",
+              existingId,
+            ),
           );
         }
         updatedCount++;
@@ -524,16 +529,10 @@ async function handleCertificationAttachment(
     });
 
     if (user) {
-      await logAudit(
-        user.id,
-        AUDIT_ACTIONS.UPDATE_VENDOR,
-        "Vendor",
-        vendorId,
-        {
-          note: "Created certification with attached evidence",
-          certificationId: certification.id,
-        },
-      );
+      await logAudit(user.id, AUDIT_ACTIONS.UPDATE_VENDOR, "Vendor", vendorId, {
+        note: "Created certification with attached evidence",
+        certificationId: certification.id,
+      });
     }
   });
 

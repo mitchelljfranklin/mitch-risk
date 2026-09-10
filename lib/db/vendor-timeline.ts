@@ -106,12 +106,11 @@ export function buildVendorTimeline(args: {
       // against a server-local "+30 days" previously skewed the window near
       // month boundaries for deployments west of UTC.
       const nowUtc = new Date();
-      const todayUtcStart =
-        Date.UTC(
-          nowUtc.getUTCFullYear(),
-          nowUtc.getUTCMonth(),
-          nowUtc.getUTCDate(),
-        );
+      const todayUtcStart = Date.UTC(
+        nowUtc.getUTCFullYear(),
+        nowUtc.getUTCMonth(),
+        nowUtc.getUTCDate(),
+      );
       const thirtyOneDayHorizon = todayUtcStart + 31 * 86_400_000;
       if (
         certification.expiresDate.getTime() > todayUtcStart &&
