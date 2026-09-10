@@ -10,6 +10,7 @@ import {
   Settings,
   ShieldAlert,
   ShieldCheck,
+  ShieldEllipsis,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -45,6 +46,7 @@ const MANAGE_PERMISSIONS: Permission[] = [
   PERMISSIONS.ROLES_MANAGE,
   PERMISSIONS.SETTINGS_MANAGE,
   PERMISSIONS.API_MANAGE,
+  PERMISSIONS.TRUSTCENTER_MANAGE,
 ];
 
 export function AppSidebar({
@@ -98,6 +100,10 @@ export function AppSidebar({
   ].filter((item) => hasPermission(permissions, item.permission));
 
   const canManage = hasAnyPermission(permissions, MANAGE_PERMISSIONS);
+  const canManageTrustCenter = hasPermission(
+    permissions,
+    PERMISSIONS.TRUSTCENTER_MANAGE,
+  );
 
   return (
     <Sidebar>
@@ -197,6 +203,22 @@ export function AppSidebar({
             <SidebarGroupLabel>Manage</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
+                {canManageTrustCenter ? (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={
+                        pathname === "/trust-center" ||
+                        pathname.startsWith("/trust-center/")
+                      }
+                    >
+                      <Link href="/trust-center">
+                        <ShieldEllipsis />
+                        <span>Trust center</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ) : null}
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     asChild

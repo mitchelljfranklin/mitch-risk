@@ -77,6 +77,16 @@ const defaultSettings: DefaultSetting[] = [
     key: "assessments.sessionTimeoutMinutes",
     value: 30,
   },
+  { category: "trustcenter", key: "trustcenter.enabled", value: false },
+  { category: "trustcenter", key: "trustcenter.intro", value: "" },
+  { category: "trustcenter", key: "trustcenter.contactEmail", value: "" },
+  {
+    category: "trustcenter",
+    key: "trustcenter.includeInInvites",
+    value: false,
+  },
+  { category: "trustcenter", key: "trustcenter.pageLoadsPerMin", value: 30 },
+  { category: "trustcenter", key: "trustcenter.downloadsPerMin", value: 30 },
 ];
 
 async function seedDefaultSettings() {

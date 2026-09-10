@@ -19,7 +19,7 @@ But that value comes at a cost — the subscription, the onboarding overhead, th
 
 Mitch‑Risk bridges that gap. It strips third party vendor risk management down to its essentials: build a questionnaire, send it, score the answers, track compliance over time. No AI risk scoring, no vendor universe crawling, no board reporting module. Just the core workflow, done well, running in Docker Compose.
 
-> **Security-hardened.** Mitch‑Risk has undergone a comprehensive security audit — 69 findings across 4 severity levels. 66 resolved (fixed or dismissed), 3 deferred or monitored, 0 open. [Read the full report](APPSECURITY.md).
+> **Security-hardened.** Mitch‑Risk has undergone a comprehensive security audit — 71 findings across 4 severity levels. 64 resolved (fixed or dismissed), 7 accepted or deferred, 0 open. [Read the full report](APPSECURITY.md).
 
 ---
 
@@ -148,9 +148,18 @@ docker compose up -d
 - CSV framework import supports `is_shared_responsibility` column
 - SOC 2 ships with 13 controls pre-marked as shared responsibility
 
+### Trust Center
+- Public page at `/trust` — no login required, branded with your logo and colours, light/dark theme selector
+- Compliance badges with uploaded images, verification links and expiry labels
+- Security documents for public download (policies, reports, DPAs) with publish toggles
+- Subprocessor table with logos (upload or fetch from a URL), purpose and data location
+- Custom markdown sections for overviews, FAQs and disclosures
+- Reorder every block from the manager; enable/disable gates the whole page behind a 404
+- Optional trust-center footer on vendor invite emails
+
 ### Access Control
 - 3 system roles (Admin, Reviewer, Viewer) + custom roles
-- 23 granular `resource:action` permissions
+- 24 granular `resource:action` permissions
 - UI controls hidden (not greyed) — Viewer sees a clean read-only screen
 - Sidebar navigation and settings tabs permission-filtered
 
@@ -216,7 +225,7 @@ Files served through authenticated `GET /api/attachments/{id}`. Full interactive
 <details>
 <summary><strong>Reverse Proxy Configuration</strong></summary>
 
-The app is designed to run behind a TLS-terminating reverse proxy (Caddy, nginx, Zorazy, Azure Application Gateway, etc.). Auth.js runs with `trustHost` enabled.
+The app is designed to run behind a TLS-terminating reverse proxy (Caddy, nginx, Zoraxy, Azure Application Gateway, etc.). Auth.js runs with `trustHost` enabled.
 
 **Your proxy must forward:**
 - `Host` / `X-Forwarded-Host` — public hostname
@@ -305,7 +314,7 @@ docker run --rm -v mitch-risk_evidence_data:/data -v "$PWD":/backup alpine \
 | [Architecture](ARCHITECTURE.md) | Full platform architecture with diagrams |
 | [Security](APPSECURITY.md) | Security architecture, hardening, and risk register |
 | [Cloud Storage](STORAGE.md) | AWS S3 and Azure Blob configuration |
-| [SSO](SSOConfig.md) | Entra ID, Google, and generic OIDC setup |
+| [SSO](ssoConfig.md) | Entra ID, Google, and generic OIDC setup |
 | [Security Policy](SECURITY.md) | Vulnerability reporting, supported versions, security model |
 | [Privacy Policy](PRIVACY.md) | Data processing, retention, vendor portal privacy, cookies |
 

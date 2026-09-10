@@ -23,6 +23,7 @@ const sidebar = [
       { text: "Self-Assessment", link: "/user-guides/self-assessment" },
       { text: "Vendors", link: "/user-guides/vendors" },
       { text: "Customer Responsibility", link: "/user-guides/customer-responsibility" },
+{ text: "Trust Center", link: "/user-guides/trust-center" },
       { text: "RBAC & Roles", link: "/user-guides/rbac" },
     ],
   },

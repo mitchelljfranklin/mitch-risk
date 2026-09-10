@@ -44,6 +44,17 @@ describe("findOrphanFileKeys", () => {
     expect(orphans).toEqual([]);
   });
 
+  it("treats quote-wrapped reference keys as matching the bare file name", () => {
+    // Historical rows stored some keys JSON-string-encoded; the real file
+    // on disk is unquoted. The sweep must not delete the live file.
+    const orphans = findOrphanFileKeys({
+      storedFiles: [file("logo-5b22ff73.png", ORPHAN_MIN_AGE_MS / 60000 + 240)],
+      referencedKeys: new Set(['"logo-5b22ff73.png"']),
+      now: NOW,
+    });
+    expect(orphans).toEqual([]);
+  });
+
   it("keeps recent unreferenced files (in-flight uploads)", () => {
     const orphans = findOrphanFileKeys({
       storedFiles: [

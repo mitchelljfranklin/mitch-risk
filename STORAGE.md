@@ -144,10 +144,10 @@ The platform performs four operations:
 
 | Operation | Required permission | Used for |
 |-----------|-------------------|----------|
-| Upload file | `s3:PutObject` | Saving new evidence, logos, attachments |
-| Download file | `s3:GetObject` | Serving evidence, logo, and attachment downloads |
+| Upload file | `s3:PutObject` | Saving new evidence, logos, attachments, trust center badge/subprocessor images |
+| Download file | `s3:GetObject` | Serving evidence, logo, attachment, and trust center image downloads |
 | Delete file | `s3:DeleteObject` | Removing evidence, replacing uploads, cleanup |
-| List files | `s3:ListBucket` | Cron orphaned-file sweep |
+| List files | `s3:ListBucket` | Cron orphaned-file sweep (references evidence, attachment, logo, trust badge and subprocessor logo keys) |
 
 ---
 

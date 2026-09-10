@@ -2,7 +2,21 @@
 
 All operational settings in Mitch‑Risk are managed through the in-app **Settings** page. There are no YAML config files, no environment variables to tweak after deployment, and no manual database edits required. Every option is configurable via the UI by users with the **Settings: manage** permission.
 
-The Settings page is organised into 15 tabs. Nine are configuration forms, three are management screens (Users, Roles, API), one is a webhook endpoint manager, one is a read-only audit log, and one is a system health dashboard.
+The Settings page is organised into 16 tabs. Nine are configuration forms, three are management screens (Users, Roles, API), one is a webhook endpoint manager, one is a trust center content manager, one is a read-only audit log, and one is a system health dashboard.
+
+---
+
+## Trust Center
+
+Configure and enable the public trust center page at `/trust` — see the [Trust Center guide](/user-guides/trust-center). Content itself (badges, documents, subprocessors, sections) is curated under **Manage → Trust center**.
+
+| Setting | Description |
+|---------|-------------|
+| **Enable the trust center** | Master switch — while off, `/trust` shows a not-found message |
+| **Intro (markdown)** | Short paragraph under the organisation name on the public page |
+| **Contact email** | Shown at the foot of the public page; falls back to the support email |
+| **Link in invite emails** | Adds a trust-center footer to vendor invite emails at send time |
+| **Page loads / downloads per min** | Per-IP rate limits for the public page and document downloads |
 
 ---
 
@@ -142,7 +156,7 @@ Manage staff accounts. Create users with email, password (minimum 12 characters)
 
 ## Roles
 
-Manage custom roles. Three system roles are built in. Create custom roles with any combination of the 23 fine-grained `resource:action` permissions. Roles can be duplicated, edited, and deleted. Requires **Roles: manage** permission.
+Manage custom roles. Three system roles are built in. Create custom roles with any combination of the 24 fine-grained `resource:action` permissions. Roles can be duplicated, edited, and deleted. Requires **Roles: manage** permission.
 
 See [RBAC & Roles](../user-guides/rbac) for the permission catalog and default role definitions.
 
@@ -167,7 +181,7 @@ API authentication supports Bearer tokens and session cookies. Full interactive 
 
 ## Audit
 
-A read-only, paginated log of all administrative actions. Filter by action type, user, or date range. Click **Clear** to reset all active filters. Export to CSV (all results or current page). 47 distinct action types are tracked including logins, user management, vendor CRUD, assessment lifecycle, template operations, and settings changes. Requires **Audit: view** permission.
+A read-only, paginated log of all administrative actions. Filter by action type, user, or date range. Click **Clear** to reset all active filters. Export to CSV (all results or current page). 57 distinct action types are tracked including logins, user management, vendor CRUD, assessment lifecycle, template operations, and settings changes. Requires **Audit: view** permission.
 
 ---
 

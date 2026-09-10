@@ -102,12 +102,23 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 - **Contract renewal date** tracking with overdue flag
 - **Evidence attachment** for certification documents (SOC 2 reports, ISO certificates)
 
+## Trust Center
+
+- **Public page** at `/trust` — no login required, branded with your logo and colours, light/dark theme selector
+- **Compliance badges** with uploaded images, verification links and expiry labels
+- **Security documents** for public download (policies, reports, DPAs) with publish toggles
+- **Subprocessor table** — name, purpose, data location, website, logos by upload or fetched URL
+- **Markdown sections** for overviews, FAQs and disclosures
+- **Reorder every block** — chevron up/down controls in the manager
+- **Invite email footer** — optional trust-center link on every vendor invite
+- **Per-IP rate limits** for public page loads and document downloads
+
 ## API
 
 - **REST v1** under `/api/v1/` — vendors, assessments, findings, frameworks, dashboard, audit
 - **Session cookie auth** (web login) + **API key auth** (Bearer tokens)
 - **Full-access API keys** — independent of creating account, survive user deletion
-- **Per-key permission scoping** with 23 resource:action permissions
+- **Per-key permission scoping** with 24 resource:action permissions
 - **IP allowlisting** with IPv4/IPv6 CIDR support
 - **Configurable API key expiry** (30/90/180/365 days or permanent)
 - **Rate limiting** per API key
@@ -123,7 +134,7 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 ## Access Control
 
 - **3 system roles** — Admin (all permissions, locked), Reviewer (write + review), Viewer (read-only)
-- **Custom roles** with any subset of 23 resource:action permissions
+- **Custom roles** with any subset of 24 resource:action permissions
 - **Permission enforcement** on every server action, API route, and page
 - **UI controls hidden** (not greyed) — Viewer sees a clean read-only screen
 - **Sidebar** and **Settings tabs** permission-filtered

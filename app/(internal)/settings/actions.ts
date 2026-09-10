@@ -32,6 +32,7 @@ import {
   scoringSettingsSchema,
   ssoSettingsSchema,
   storageSettingsSchema,
+  trustCenterSettingsSchema,
 } from "@/lib/settings/schema";
 import { randomBytes } from "node:crypto";
 import { z } from "zod";
@@ -595,6 +596,46 @@ export async function saveApiSettingsAction(
   // the current route races with the returned state in production builds and can
   // drop the success toast. The client refreshes after handling the result.
   return { ok: true, message: "API settings saved." };
+}
+
+export async function saveTrustCenterSettings(
+  previousState: SettingsActionState,
+  formData: FormData,
+): Promise<SettingsActionState> {
+  await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
+
+  const parsed = trustCenterSettingsSchema.safeParse({
+    enabled: formData.get("enabled") !== null,
+    intro: (formData.get("intro") as string) ?? "",
+    contactEmail: (formData.get("contactEmail") as string) ?? "",
+    includeInInvites: formData.get("includeInInvites") !== null,
+    pageLoadsPerMin: (formData.get("pageLoadsPerMin") as string) || "30",
+    downloadsPerMin: (formData.get("downloadsPerMin") as string) || "30",
+  });
+  if (!parsed.success) {
+    return {
+      ok: false,
+      message: parsed.error.issues[0]?.message ?? "Invalid input.",
+    };
+  }
+
+  const { updateTrustCenterSettings } = await import("@/lib/settings");
+  await updateTrustCenterSettings(parsed.data);
+
+  const user = await getCurrentUser();
+  if (user) {
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_SETTINGS,
+      "Setting",
+      "trustcenter",
+    );
+  }
+
+  // Toggling enabled flips the public /trust route between live content and
+  // a 404, so the public path is revalidated alongside the settings UI.
+  revalidatePath("/trust");
+  return { ok: true, message: "Trust center settings saved." };
 }
 
 export async function saveSchedulingSettings(

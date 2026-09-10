@@ -35,14 +35,17 @@ over sprawling configuration. Do not add features that are not in the plan witho
 app/                 # Next.js App Router
   (internal)/        # authenticated dashboard
     settings/         #   email-tracking, api-form, audit-form, health-tab, etc.
+    trust-center/     #   public trust center content manager (badges, documents, subprocessors, sections)
     risk-register/    #   cross-vendor findings register
     vendors/import/   #   CSV bulk vendor import
     templates/import/ #   JSON template import
     frameworks/import/ # CSV framework import
   (auth)/            # login, first-run setup
   portal/[token]/    # public vendor questionnaire (no login)
+  trust/             # public trust center page (published-only, rate-limited)
   api/               # cron, file serving, auth, REST API v1, Swagger docs
     attachments/[attachmentId]/ # authenticated file serving
+    trust/             #   public trust center file routes (documents, badge images)
     v1/                 #   REST v1 endpoints
       vendors/          #     vendor CRUD + import
         external/[externalId]/ # vendor lookup by external ID
@@ -110,12 +113,17 @@ components/          # shadcn ui primitives + domain composites
   control-multi-select.tsx               # multi-select for framework controls
   compliance-radar.tsx                   # recharts radar of framework domain compliance
   url-tabs.tsx                           # ?tab= URL-synced tabs
+  trust-center/badges-manager.tsx        # trust center badge CRUD manager
+  trust-center/documents-manager.tsx     # trust center document CRUD manager
+  trust-center/subprocessors-manager.tsx # trust center subprocessor CRUD manager (logo upload/URL)
+  trust-center/sections-manager.tsx      # trust center markdown section CRUD manager
   auth/sso-buttons.tsx                   # SSO login buttons
 lib/                 # cross-cutting logic
   actions/           # server actions (assessments, collaboration, portal, templates, users, vendors)
     findings.ts      #   finding status updates
     frameworks.ts    #   framework CRUD + CSV import
     certifications.ts  # vendor certification CRUD + responsibility generation
+    trust-center.ts    # trust center CRUD + badge/document upload validation
     roles.ts           # role CRUD + duplicate
     auth.ts            # sign-out, password reset, break-glass
     customer-responsibility.ts # responsibility action updates
@@ -124,6 +132,7 @@ lib/                 # cross-cutting logic
                      #   compliance, frameworks, notifications, roles, scoring, templates, users, vendors)
     audit.ts           #   logAudit() + AUDIT_ACTIONS constant (single source of truth for audit event types)
     certifications.ts  # certification CRUD + attachments
+    trust-center.ts    # trust center CRUD + published-only reads + document file lifecycle
     dashboard.ts       # dashboard metrics + upcoming dates
     customer-responsibility.ts # customer responsibility compliance
     findings.ts        # finding list, get, update status
@@ -135,6 +144,7 @@ lib/                 # cross-cutting logic
   schemas/           # shared zod schemas + inferred types
     framework.ts     #   framework + CSV import schema
     certification.ts #   vendor certification schema
+    trust-center.ts  #   trust center badge/document/subprocessor/section schemas
     auth.ts          #   credentials, password reset, profile update, user create, setup admin
     portal.ts        #   portal answer + progress save schemas
     vendor.ts          # vendor schema
@@ -226,9 +236,26 @@ ones before declaring any phase complete.
 - **e2e runs against the _production_ build.** Playwright's `webServer` is `npm run start`, so
   the suite exercises `next build` output (dev and prod behave differently — e.g. Server-Action
   result delivery). `npm run start` runs in production mode and **requires `CRON_SECRET`**; the
-  Playwright config injects one via `webServer.env`. Locally, `reuseExistingServer` reuses a server
-  you already have up; in CI it starts a fresh production server. Do not assume a green `dev` run
-  means prod is green — verify with a production build.
+  Playwright config injects one via `webServer.env`. The config now **refuses to run** unless
+  `DATABASE_URL` points at a `*test*` database (specs and server share it), pins
+  `EVIDENCE_STORAGE_PATH` to an absolute path (the standalone server chdirs to
+  `.next/standalone`, so a relative storage path gives the server its own storage root —
+  downloads 404 even for published files), and **`reuseExistingServer` is off**: a running
+  dev server on :3000 made server-side writes land in dev while specs hit the test DB
+  (silent split-brain). Kill any process on :3000 before running e2e locally.
+- **New permission keys converge to existing databases only when the seed runs.**
+  `PERMISSIONS` / `SYSTEM_ROLE_DEFINITIONS` changes do nothing to an already-seeded
+  database until `npm run db:seed` (or `ensureSystemRoles()`) re-runs against it — the Admin
+  role's stored permission array won't contain the new key, so gated UI stays hidden.
+  Re-run the seed on dev + test DBs after touching the catalog.
+- **Do not add `loading.tsx` to public routes that call `notFound()`.** The Suspense
+  boundary flushes the loading shell with status 200 before the page render throws, so
+  `notFound()` can no longer turn the response into a 404 — a disabled trust center
+  returned 200 until its loading segment was removed. Status-sensitive public pages must
+  render without a streaming boundary.
+- **Playwright + Radix Select.** `selectOption()` mutates the hidden native `<select>`
+  without updating Radix/React state — the app never sees the change. Drive the visible
+  trigger: click the combobox, `waitFor` the listbox, click `getByRole("option", …)`.
 - **Apply new Prisma migrations to _both_ the dev DB and the test DB** (`prisma migrate deploy`
   against each; the test DB is `TEST_DATABASE_URL`) before running `npm run test`, or integration
   tests fail on missing columns.
@@ -246,21 +273,34 @@ ones before declaring any phase complete.
   locally via `npm run precheck` (typecheck + lint + format:check). Run `npm run format` to auto-fix
   formatting issues before pushing — Prettier failures are the most common CI rejection.
 - **Server Actions that feed `useActionState`.** An action that returns a value for
-  `useActionState` should prefer to let the client handle the refresh via the
-  `useActionFeedback` hook (toast + `router.refresh()`) rather than calling `revalidatePath`
-  for its own current route from inside the action. Doing both causes a redundant
-  double-refresh but is harmless: Sonner toasts render via `<Toaster />` portal
-  (`components/ui/sonner.tsx`) and survive route refetches. When an action is also called
-  from non-`useActionState` contexts (e.g. API routes, cron), calling `revalidatePath` is
-  fine — the double-refresh only matters when the client also calls `router.refresh()`.
+  `useActionState` must NOT call `revalidatePath` at all — on Node >= 23 the
+  revalidation aborts the action's response streaming entirely
+  ("ResponseAborted" in server logs): the button sticks pending, the toast
+  never appears and the write may look lost. Let the client refresh via the
+  `useActionFeedback` hook (toast + `router.refresh()`) instead. When an action
+  is also called from non-`useActionState` contexts (e.g. API routes, cron),
+  calling `revalidatePath` there is fine. (This was previously described as a
+  harmless double-refresh; the Node 24 behaviour makes it a hard rule.)
 
 ### Client/Server state patterns (learned the hard way)
 
+- **Slide-out (Sheet) editors follow the certifications-manager pattern.** Use it
+  as the reference when adding any new Sheet-based CRUD editor:
+  `SheetContent className="w-full overflow-y-auto sm:max-w-md"` → `SheetHeader`
+  with `SheetTitle` **and** `SheetDescription` → form
+  `className="flex flex-1 flex-col gap-4 px-4"` with a stable `id` →
+  `<SheetFooter className="px-4">` holding Save/Cancel with
+  `form="the-form-id"` wiring. The editor closes itself via
+  `useEffect(() => { if (state?.ok) onDone(); }, [state, onDone])`. Skipping the
+  `px-4` leaves fields flush against the sheet edge; skipping the form/footer
+  wiring leaves confirm-dialog submits as no-ops.
+- **ConfirmDialog must be paired with a form id.** Without the `formId` prop its
+  confirm button renders `type="button"` and closes the dialog WITHOUT
+  submitting anything — the delete silently never happens. Pattern: give the
+  wrapping `<form>` a unique `id`, pass it as `formId`, and keep the hidden
+  inputs inside that form.
+
 - **Key-based remounting for uncontrolled inputs.** When a shadcn/Radix form control
-  (`<Select>`, `<Checkbox>`, etc.) uses `defaultValue`/`defaultChecked` inside a form
-  that persists via a Server Action, React only reads the default on initial mount. If
-  the server component re-renders with a new prop value after `revalidatePath`, the
-  control keeps its stale internal state. Fix: add `key={currentValue}` to the control —
   React unmounts and remounts it, and the fresh instance picks up the new default. This
   is simpler and more reliable than controlled state (`useState` + `value` +
   `onValueChange`). The canonical reference is `finding-status-form.tsx:38`.
@@ -507,10 +547,11 @@ from the catalog and role defaults).
 - **Data lifecycle.** Deleting a record must also remove its associated storage files
   (evidence, logos); a replaced upload deletes the old file. The cron orphaned-file sweep is
   the backstop, not the primary cleanup. **Every storage writer must be reflected in the
-  sweep's referenced-key set** (`app/api/cron/run` collects evidence, attachment, and logo
-  keys) — adding a new key format without registering it there means the cron will delete
-  those files within an hour. Deleting a user preserves audit and review history via
-  nullable `SetNull` relations (surfaced as "Deleted user") — never cascade-delete audit trails.
+  sweep's referenced-key set** (`lib/cron/run-jobs.ts` collects evidence, attachment, brand
+  logo, trust-center badge image, and subprocessor logo keys) — adding a new key format
+  without registering it there means the cron will delete those files within an hour. Deleting
+  a user preserves audit and review history via nullable `SetNull` relations (surfaced as
+  "Deleted user") — never cascade-delete audit trails.
 - Prefer Server Components for reads and Server Actions for writes.
 - **Keep the OpenAPI spec current.** Whenever a new API endpoint is added, modified, or
   removed, update `lib/openapi.json` in the same phase. The spec lives at `/api/docs` and
@@ -562,6 +603,14 @@ from the catalog and role defaults).
   JS replacement strings like `"\\u2014"` insert the LITERAL escape text (JSX attributes
   render it verbatim) — always write real characters; and JSX attribute values never
   process `\uXXXX` escapes, unlike JS string literals.
+- **Never run schema-less UPDATE/DELETE against a database — ever.** Manual DB
+  surgery during debugging must use a scripted file with an explicit WHERE
+  clause, parameterised values, and a row-count print BEFORE and AFTER. An
+  unscoped `UPDATE app_settings SET value = …` during trust-center debugging
+  wiped the dev deployment's entire settings table (SMTP config, branding,
+  org name). Recovery needed a re-seed plus manual re-entry of everything not
+  captured in session output. If a quick eval feels necessary, stop and write
+  the script instead.
 - If `tsc` reports parse errors inside `.next/dev/types/routes.d.ts`, delete `.next` and rebuild —
   a killed dev server can leave the generated route types corrupted.
 - `npm install` rewrites `package.json`; if that leaves it flagged by `format:check`, it's a

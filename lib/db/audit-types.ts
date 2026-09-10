@@ -79,4 +79,10 @@ export const AUDIT_ACTION_LABELS: Record<string, string> = {
   UPDATE_RESPONSIBILITY_ACTION: "Updated responsibility action",
   MARK_CONTROL_SHARED: "Marked control as shared responsibility",
   UNMARK_CONTROL_SHARED: "Unmarked control as shared responsibility",
+  RETRY_EMAIL_SEND: "Retried email send",
+  CREATE_WEBHOOK: "Created webhook",
+  DELETE_WEBHOOK: "Deleted webhook",
+  ENABLE_WEBHOOK: "Enabled webhook",
+  DISABLE_WEBHOOK: "Disabled webhook",
+  UPDATE_TRUST_CENTER: "Updated trust center",
 };

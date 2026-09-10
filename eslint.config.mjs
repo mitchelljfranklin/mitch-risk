@@ -28,6 +28,8 @@ const eslintConfig = defineConfig([
     // Generated files:
     "site/.astro/**",
     "site/dist/**",
+    "docs/.vitepress/dist/**",
+    "docs/.vitepress/cache/**",
     // CJS seed runner (uses require() intentionally):
     "prisma/seed-runner.cjs",
   ]),

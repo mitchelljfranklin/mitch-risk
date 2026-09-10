@@ -61,3 +61,9 @@ next-env.d.ts
 # AuditChecks
 AuditNonSync.md
 AUDIT.md
+
+# Local feature plans (not synced)
+docs/feature-plans/trust-center.md
+docs/feature-plans/customer-responsibility-tracking.md
+.tmp-*.txt
+RELEASE-NOTES-*.md

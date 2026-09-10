@@ -1,8 +1,8 @@
-﻿# RBAC & Roles
+# RBAC & Roles
 
-Mitch‑Risk uses **permission-based** access control, not "is authenticated" gating. Three system roles are built in, and admins can create custom roles with any combination of the 23 fine-grained permissions.
+Mitch‑Risk uses **permission-based** access control, not "is authenticated" gating. Three system roles are built in, and admins can create custom roles with any combination of the 24 fine-grained permissions.
 
-## Permission Catalog (23 Permissions)
+## Permission Catalog (24 Permissions)
 
 ### Vendors (4)
 
@@ -61,7 +61,7 @@ Mitch‑Risk uses **permission-based** access control, not "is authenticated" ga
 
 | Role | Permissions | Who It's For |
 |------|:----------:|--------------|
-| **Admin** | 23 (all) | Full platform control. Locked — cannot be deleted or edited. |
+| **Admin** | 24 (all) | Full platform control. Locked — cannot be deleted or edited. |
 | **Reviewer** | 17 | Staff who manage vendors and assessments. Cannot manage users, roles, settings, API, or view audit. |
 | **Viewer** | 5 | Read-only: `vendors:view`, `assessments:view`, `templates:view`, `frameworks:view`, `profile:view` |
 
@@ -76,7 +76,7 @@ Admins can create custom roles in **Settings → Roles**:
 3. Select the permissions to grant.
 4. Assign the role to any user.
 
-Custom roles can have any subset of the 23 permissions. Use them to create role profiles like "Auditor" (audit + view only), "Vendor Manager" (vendors + assessments + templates), or "API-only" (just the relevant API permission set).
+Custom roles can have any subset of the 24 permissions. Use them to create role profiles like "Auditor" (audit + view only), "Vendor Manager" (vendors + assessments + templates), or "API-only" (just the relevant API permission set).
 
 ## Enforcement
 

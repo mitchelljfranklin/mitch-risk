@@ -41,6 +41,14 @@ function entityLink(entityType: string, entityId: string): string {
       return `/settings?tab=roles`;
     case "VendorCertification":
       return `/vendors/${entityId}`;
+    case "ApiKey":
+      return `/settings?tab=api`;
+    case "Webhook":
+      return `/settings?tab=webhooks`;
+    case "NotificationLog":
+      return `/settings?tab=email-tracking`;
+    case "TrustCenter":
+      return `/trust-center`;
     default:
       return "#";
   }
@@ -104,6 +112,12 @@ const ACTION_VARIANT: Record<
   API_KEY_REVOKED: "destructive",
   API_KEY_ENABLED: "default",
   API_KEY_DELETED: "destructive",
+  CREATE_WEBHOOK: "secondary",
+  DELETE_WEBHOOK: "destructive",
+  ENABLE_WEBHOOK: "default",
+  DISABLE_WEBHOOK: "outline",
+  UPDATE_TRUST_CENTER: "secondary",
+  UPDATE_SETTINGS: "outline",
 };
 
 export function AuditForm({
