@@ -92,19 +92,60 @@ export async function listAuditLogs(
 
   const entityNames = await resolveEntityNames(rows);
 
-  const entries: AuditLogEntry[] = rows.map((row) => ({
-    id: row.id,
-    action: row.action,
-    entityType: row.entityType,
-    entityId: row.entityId,
-    entityName:
-      entityNames.get(row.entityType ?? "")?.get(row.entityId ?? "") ?? null,
-    meta: (row.meta as Prisma.JsonValue) ?? null,
-    createdAt: row.createdAt,
-    user: row.user ?? { id: "", name: "Deleted user" },
-  }));
+  const entries: AuditLogEntry[] = rows.map((row) => {
+    const resolvedName =
+      entityNames.get(row.entityType ?? "")?.get(row.entityId ?? "") ?? null;
+    const entityType = row.entityType ?? null;
+    const entityName =
+      resolvedName ??
+      (entityType && !RESOLVED_ENTITY_TYPES.has(entityType)
+        ? humaniseEntityType(entityType)
+        : null);
+
+    return {
+      id: row.id,
+      action: row.action,
+      entityType,
+      entityId: row.entityId,
+      entityName,
+      meta: (row.meta as Prisma.JsonValue) ?? null,
+      createdAt: row.createdAt,
+      user: row.user ?? { id: "", name: "Deleted user" },
+    };
+  });
 
   return { entries, totalCount, page, pageSize };
+}
+
+// Entity types resolveEntityNames knows about. A row whose type is here but
+// whose name came back empty means the entity was deleted — the UI shows
+// "Deleted". A row with an unresolvable type (e.g. a future action logging a
+// new entity kind) falls back to a humanised type label instead of a false
+// "Deleted".
+const RESOLVED_ENTITY_TYPES = new Set([
+  "Vendor",
+  "Assessment",
+  "Template",
+  "VendorCertification",
+  "Framework",
+  "User",
+  "Role",
+  "Finding",
+  "ApiKey",
+  "Setting",
+  "Settings",
+  "Webhook",
+  "NotificationLog",
+  "Control",
+  "CustomerResponsibilityAction",
+  "Response",
+  "TrustCenter",
+]);
+
+function humaniseEntityType(type: string): string {
+  return type
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2");
 }
 
 // Settings saves log the tab key ("trustcenter", "scheduling", …) as the
@@ -211,9 +252,10 @@ async function resolveEntityNames(
             select: { id: true, name: true },
           });
           for (const apiKey of keys) map.set(apiKey.id, apiKey.name);
-        } else if (type === "Setting") {
+        } else if (type === "Setting" || type === "Settings") {
           // Settings saves log the tab key as entityId (e.g. "trustcenter",
-          // "scheduling") — the key itself is the readable name.
+          // "scheduling") — the key itself is the readable name. "Settings"
+          // is a legacy alias from the storage settings action.
           for (const id of uniqueIds) {
             map.set(id, humaniseSettingKey(id));
           }
@@ -231,6 +273,30 @@ async function resolveEntityNames(
             select: { id: true, subject: true },
           });
           for (const log of logs) map.set(log.id, log.subject);
+        } else if (type === "Control") {
+          const controls = await prisma.control.findMany({
+            where: { id: { in: uniqueIds } },
+            select: { id: true, code: true, title: true },
+          });
+          for (const control of controls) {
+            map.set(control.id, `${control.code} — ${control.title}`);
+          }
+        } else if (type === "CustomerResponsibilityAction") {
+          const actions = await prisma.customerResponsibilityAction.findMany({
+            where: { id: { in: uniqueIds } },
+            select: { id: true, controlTitle: true },
+          });
+          for (const action of actions) map.set(action.id, action.controlTitle);
+        } else if (type === "Response") {
+          // A review decision targets an individual answer; the meaningful
+          // name is the assessment it belongs to.
+          const responses = await prisma.response.findMany({
+            where: { id: { in: uniqueIds } },
+            select: { id: true, assessment: { select: { title: true } } },
+          });
+          for (const response of responses) {
+            map.set(response.id, response.assessment.title);
+          }
         } else if (type === "TrustCenter") {
           // Trust center actions log one of four entity kinds under a single
           // entityType; resolve the display name from whichever table hits.

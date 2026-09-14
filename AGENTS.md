@@ -243,11 +243,18 @@ ones before declaring any phase complete.
   downloads 404 even for published files), and **`reuseExistingServer` is off**: a running
   dev server on :3000 made server-side writes land in dev while specs hit the test DB
   (silent split-brain). Kill any process on :3000 before running e2e locally.
-- **New permission keys converge to existing databases only when the seed runs.**
-  `PERMISSIONS` / `SYSTEM_ROLE_DEFINITIONS` changes do nothing to an already-seeded
-  database until `npm run db:seed` (or `ensureSystemRoles()`) re-runs against it — the Admin
-  role's stored permission array won't contain the new key, so gated UI stays hidden.
-  Re-run the seed on dev + test DBs after touching the catalog.
+- **New permission keys converge at boot, not just at seed time.** `PERMISSIONS` /
+  `SYSTEM_ROLE_DEFINITIONS` changes do nothing to an already-seeded database until the
+  system roles' stored permission arrays are updated — the Admin role's array won't
+  contain the new key, so gated UI stays hidden. `convergeSystemRolePermissions()` (wired
+  into `instrumentation.ts`) now heals this on every container start, additively: Admin is
+  reset to the full catalog (it is locked by design), Reviewer/Viewer gain only keys that
+  are new to the database (absent from the stored Admin array), and custom roles are never
+  touched. Deliberate trims of Reviewer/Viewer keys therefore survive restarts — do not
+  replace this with a wholesale `ensureSystemRoles()` re-run, which would stomp those
+  customisations on every boot. Historical note: this bit a real customer upgrading to
+  v1.4.0 (Trust Center invisible to admins) because the `.seeded` sentinel on the
+  persistent volume skipped the seed on every upgrade.
 - **Do not add `loading.tsx` to public routes that call `notFound()`.** The Suspense
   boundary flushes the loading shell with status 200 before the page render throws, so
   `notFound()` can no longer turn the response into a 404 — a disabled trust center
