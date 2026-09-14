@@ -978,7 +978,7 @@ export async function saveStorageSettings(
     await logAudit(
       user.id,
       AUDIT_ACTIONS.UPDATE_SETTINGS,
-      "Settings",
+      "Setting",
       "storage",
     );
   }

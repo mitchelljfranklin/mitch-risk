@@ -2,6 +2,7 @@ import { type Role } from "../../prisma/generated/prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import {
+  ALL_PERMISSIONS,
   SYSTEM_ROLE_DEFINITIONS,
   SYSTEM_ROLE_NAMES,
   isValidPermission,
@@ -132,4 +133,83 @@ export async function ensureSystemRoles(): Promise<void> {
       },
     });
   }
+}
+
+// Upgrades ship new permission keys, but the .seeded marker stops the seed
+// from re-running on an existing deployment — so existing databases would
+// keep the old Admin permission array forever and hide new features (this
+// bit a real customer upgrading to v1.4.0: the Trust Center stayed invisible
+// to admins). Additive-only convergence at boot closes that gap:
+//
+// - Admin is locked by design (updateRole refuses to edit it), so it is
+//   always reset to the full current catalog.
+// - The keys "new since this database's last seed" are those the stored
+//   Admin permissions lack — everything already known to the database is
+//   treated as a deliberate choice and left alone.
+// - Reviewer/Viewer gain only those new keys that their shipped defaults
+//   include. A key an admin deliberately removed from Reviewer is already
+//   in the stored Admin set, so it never gets re-added.
+// - Custom roles are never touched.
+export async function convergeSystemRolePermissions(): Promise<void> {
+  const adminName = SYSTEM_ROLE_NAMES.ADMIN;
+  const adminRole = await prisma.role.findUnique({
+    where: { name: adminName },
+  });
+
+  if (!adminRole) {
+    // Fresh database — create all system roles from their definitions.
+    await ensureSystemRoles();
+    return;
+  }
+
+  const storedAdminPermissions = adminRole.permissions;
+  const newKeys = ALL_PERMISSIONS.filter(
+    (permission) => !storedAdminPermissions.includes(permission),
+  );
+
+  const updates: Promise<unknown>[] = [
+    prisma.role.update({
+      where: { id: adminRole.id },
+      data: { permissions: [...ALL_PERMISSIONS] },
+    }),
+  ];
+
+  for (const definition of SYSTEM_ROLE_DEFINITIONS) {
+    if (definition.name === adminName) continue;
+
+    const role = await prisma.role.findUnique({
+      where: { name: definition.name },
+    });
+    if (!role) {
+      updates.push(
+        prisma.role.create({
+          data: {
+            name: definition.name,
+            description: definition.description,
+            permissions: [...definition.permissions],
+            isSystem: true,
+          },
+        }),
+      );
+      continue;
+    }
+
+    const permissionsToGain = definition.permissions.filter((permission) =>
+      newKeys.includes(permission),
+    );
+    if (permissionsToGain.length === 0) continue;
+
+    updates.push(
+      prisma.role.update({
+        where: { id: role.id },
+        data: {
+          permissions: [
+            ...new Set([...role.permissions, ...permissionsToGain]),
+          ],
+        },
+      }),
+    );
+  }
+
+  await Promise.all(updates);
 }

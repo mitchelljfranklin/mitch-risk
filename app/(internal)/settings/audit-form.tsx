@@ -25,7 +25,7 @@ import { AUDIT_ACTION_LABELS, type AuditLogResult } from "@/lib/db/audit-types";
 import type { Prisma } from "../../../prisma/generated/prisma/client";
 import { formatDate } from "@/lib/utils";
 
-function entityLink(entityType: string, entityId: string): string {
+function entityLink(entityType: string, entityId: string): string | null {
   switch (entityType) {
     case "Vendor":
       return `/vendors/${entityId}`;
@@ -49,8 +49,12 @@ function entityLink(entityType: string, entityId: string): string {
       return `/settings?tab=email-tracking`;
     case "TrustCenter":
       return `/trust-center`;
+    case "Control":
+      return `/frameworks`;
+    case "CustomerResponsibilityAction":
+      return `/risk-register`;
     default:
-      return "#";
+      return null;
   }
 }
 
@@ -286,45 +290,57 @@ export function AuditForm({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {entries.map((log) => (
-                  <TableRow key={log.id}>
-                    <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
-                      {formatDate(log.createdAt)}{" "}
-                      {log.createdAt.getHours().toString().padStart(2, "0")}:
-                      {log.createdAt.getMinutes().toString().padStart(2, "0")}
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {log.user.name}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={ACTION_VARIANT[log.action] ?? "outline"}
-                        className="text-xs"
-                      >
-                        {AUDIT_ACTION_LABELS[log.action] ?? log.action}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-xs">
-                      <div className="flex flex-col gap-0.5">
-                        {log.entityId && log.entityType ? (
-                          <Link
-                            href={entityLink(log.entityType, log.entityId)}
-                            className="text-primary hover:underline"
-                          >
-                            {log.entityName ?? "Deleted"}
-                          </Link>
-                        ) : (
-                          <span>{log.entityType ?? "—"}</span>
-                        )}
-                        {log.meta ? (
-                          <span className="text-muted-foreground/60">
-                            {formatMeta(log.meta)}
-                          </span>
-                        ) : null}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {entries.map((log) => {
+                  const entityHref =
+                    log.entityId && log.entityType
+                      ? entityLink(log.entityType, log.entityId)
+                      : null;
+                  const entityLabel = log.entityName ?? "Deleted";
+
+                  return (
+                    <TableRow key={log.id}>
+                      <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
+                        {formatDate(log.createdAt)}{" "}
+                        {log.createdAt.getHours().toString().padStart(2, "0")}:
+                        {log.createdAt.getMinutes().toString().padStart(2, "0")}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {log.user.name}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={ACTION_VARIANT[log.action] ?? "outline"}
+                          className="text-xs"
+                        >
+                          {AUDIT_ACTION_LABELS[log.action] ?? log.action}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground text-xs">
+                        <div className="flex flex-col gap-0.5">
+                          {log.entityId && log.entityType ? (
+                            entityHref ? (
+                              <Link
+                                href={entityHref}
+                                className="text-primary hover:underline"
+                              >
+                                {entityLabel}
+                              </Link>
+                            ) : (
+                              <span>{entityLabel}</span>
+                            )
+                          ) : (
+                            <span>{log.entityType ?? "—"}</span>
+                          )}
+                          {log.meta ? (
+                            <span className="text-muted-foreground/60">
+                              {formatMeta(log.meta)}
+                            </span>
+                          ) : null}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </div>
