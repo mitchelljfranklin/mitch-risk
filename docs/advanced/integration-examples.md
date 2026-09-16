@@ -1,10 +1,10 @@
 ﻿# Integration Examples
 
-Practical examples for integrating Mitch‑Risk with external systems via the REST API. All examples use curl and assume an API key generated under **Settings → API**.
+Practical examples for integrating Mitch‑Risk with external systems via the REST API. All examples use curl and assume an API key generated under **Admin → API**.
 
 ## Authentication
 
-All API requests authenticate via a Bearer token. Generate a key under **Settings → API**:
+All API requests authenticate via a Bearer token. Generate a key under **Admin → API**:
 
 ```
 mrk_a1b2c3d4.e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2
@@ -201,9 +201,9 @@ Recommended crontab for a production deployment:
 
 | Operation | Settings Path |
 |---|---|
-| Generate key | Settings → API → New Key |
-| Set IP allowlist | Settings → API → edit key → Allowed IPs (one CIDR per line) |
-| Set expiry | Settings → API → edit key → Expiry date |
-| Revoke key | Settings → API → disable or delete key |
-| Global enable/disable | Settings → API → toggle "Enable API" |
-| Default rate limit | Settings → Limits → API default rate (30/min) |
+| Generate key | Admin → API → New Key |
+| Set IP allowlist | Admin → API → edit key → Allowed IPs (one CIDR per line) |
+| Set expiry | Admin → API → edit key → Expiry date |
+| Revoke key | Admin → API → disable or delete key |
+| Global enable/disable | Admin → API → toggle "Enable API" |
+| Default rate limit | Admin → API → API default rate (30/min) |

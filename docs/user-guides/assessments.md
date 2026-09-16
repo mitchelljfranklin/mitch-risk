@@ -115,7 +115,7 @@ Scores are classified into Red/Amber/Green bands:
 | **Red** | < 60% | Non-compliant — high risk |
 | **Unscored** | No scorable questions | No data — no auto-score possible |
 
-RAG thresholds and risk weight values are configurable in Settings → Scoring.
+RAG thresholds and risk weight values are configurable in Admin → Scoring.
 
 ### Findings Reconciliation
 

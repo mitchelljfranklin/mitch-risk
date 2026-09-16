@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { saveTrustCenterSettings } from "@/app/(internal)/settings/actions";
+import { saveTrustCenterSettings } from "./actions";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
 
 type TrustCenterSettingsFormProps = {

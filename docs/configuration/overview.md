@@ -1,8 +1,16 @@
 # Configuration Overview
 
-All operational settings in Mitch‑Risk are managed through the in-app **Settings** page. There are no YAML config files, no environment variables to tweak after deployment, and no manual database edits required. Every option is configurable via the UI by users with the **Settings: manage** permission.
+All operational settings in Mitch‑Risk are managed through the in-app **Admin** area (the gear icon in the header). There are no YAML config files, no environment variables to tweak after deployment, and no manual database edits required. Every option is configurable via the UI by users with the relevant admin permission.
 
-The Settings page is organised into 16 tabs. Nine are configuration forms, three are management screens (Users, Roles, API), one is a webhook endpoint manager, one is a trust center content manager, one is a read-only audit log, and one is a system health dashboard.
+The Admin area is organised into seven groups and sixteen sections. Each section lives on its own page, and the sidebar shows only the sections your role can access:
+
+- **Workspace** — General, Appearance
+- **Email** — Email (SMTP + templates), Email tracking
+- **Assessments** — Scoring, Scheduling
+- **Files** — Storage (backend + upload constraints)
+- **Access & security** — Users, Roles, Sign-in (SSO + sessions), Rate limits
+- **Integrations** — API, Webhooks
+- **Platform** — Trust Center, Audit log, Health
 
 ---
 
@@ -66,7 +74,7 @@ See [Email Configuration](./email) for template token reference and SMTP setup.
 
 ## Email Tracking
 
-A read-only log of every email sent by the platform. Filter by status (SENT/FAILED), type (invite/reminder/escalation/etc.), recipient, or date range. Click **Clear** to reset all active filters. Failed sends can be retried. Requires **Settings: manage** permission.
+A read-only log of every email sent by the platform. Filter by status (SENT/FAILED), type (invite/reminder/escalation/etc.), recipient, or date range. Click **Clear** to reset all active filters. Failed sends can be retried. The **email log retention** policy (how long send records are kept) is configured on this page. Requires **Settings: manage** permission.
 
 ---
 
@@ -96,55 +104,54 @@ Configure assessment deadlines, reminders, and escalation behaviour.
 
 ---
 
-## Limits
-
-Configure rate limits, session behaviour, file restrictions, and data retention.
-
-| Setting | Default | Description |
-|---------|---------|-------------|
-| **Login rate limit** | 10/min | Maximum login attempts per IP per minute |
-| **Session timeout** | 30 min | Inactivity timer before auto-sign-out (0 = disabled). Enforced via client-side countdown + server-side JWT expiry |
-| **Portal page loads** | 30/min | Maximum portal questionnaire page loads per IP per minute |
-| **Portal uploads** | 10/min | Maximum file uploads per IP per minute on the portal |
-| **Portal submissions** | 5/min | Maximum questionnaire submissions per IP per minute |
-| **Password attempts** | 5/min | Maximum portal password attempts per token per minute |
-| **Password resets** | 1/min | Maximum password reset requests per IP per minute |
-| **Break-glass attempts** | 10/min | Maximum break-glass login attempts per IP per minute |
-| **Audit retention days** | 0 | Days to retain audit log entries (0 = never prune) |
-| **Email log retention** | 14 | Days to retain email notification logs |
-| **Max upload size** | 20 MB | Maximum allowed file upload size |
-| **Allowed extensions** | pdf, png, jpg, jpeg, docx, xlsx | File extensions permitted for upload |
-
----
-
 ## Storage
 
-Configure where evidence files and attachments are stored.
+Configure where evidence files and attachments are stored, and what vendors can upload.
 
 | Setting | Description |
 |---------|-------------|
 | **Provider** | Local disk (default), AWS S3, or Azure Blob Storage |
 | **S3 settings** | Bucket name, region, access key ID, and secret access key |
 | **Azure settings** | Connection string and container name |
+| **Max upload size** | Maximum allowed file upload size (default 20 MB) |
+| **Allowed extensions** | File extensions permitted for evidence upload (default pdf, png, jpg, jpeg, docx, xlsx) |
 
 See [Cloud Storage](../deployment/cloud-storage) for detailed setup instructions per provider.
 
 ---
 
-## SSO
+## Sign-in
 
-Configure Single Sign-On for internal staff via Microsoft Entra ID, Google Workspace, or any generic OIDC provider.
+Configure how staff authenticate and how long they stay signed in.
 
 | Setting | Description |
 |---------|-------------|
-| **Provider toggles** | Enable/disable each provider independently |
+| **Provider toggles** | Enable/disable Microsoft Entra ID, Google Workspace, and generic OIDC independently |
 | **Client credentials** | Client ID and secret for each provider (secrets encrypted at rest) |
 | **Auto-provision role** | Role assigned to users created on first SSO sign-in |
 | **Allowed domain** | Restrict SSO to a specific email domain (e.g. `@company.com`) |
 | **Disable local auth** | Hide the email/password login form when SSO is available |
 | **Break-glass URL** | Generate a 24-hour, single-use emergency login URL |
+| **Login rate limit** | Maximum login attempts per IP per minute (default 10/min) |
+| **Session timeout** | Inactivity timer before auto-sign-out (default 30 min, 0 = disabled). Enforced via client-side countdown + server-side JWT expiry |
 
 See [SSO Configuration](./sso) for per-provider setup guides.
+
+---
+
+## Rate limits
+
+Abuse protection for the public vendor portal and account recovery.
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| **Portal page loads** | 30/min | Maximum portal questionnaire page loads per IP per minute |
+| **Portal uploads** | 10/min | Maximum file uploads per IP per minute on the portal |
+| **Portal submissions** | 5/min | Maximum questionnaire submissions per IP per minute |
+| **Portal comments** | 10/min | Maximum comments a vendor can post per link per minute |
+| **Password attempts** | 5/min | Maximum portal password attempts per token per minute |
+| **Password resets** | 1/min | Maximum password reset requests per IP per minute |
+| **Break-glass attempts** | 10/min | Maximum break-glass login attempts per IP per minute |
 
 ---
 
@@ -179,9 +186,9 @@ API authentication supports Bearer tokens and session cookies. Full interactive 
 
 ---
 
-## Audit
+## Audit log
 
-A read-only, paginated log of all administrative actions. Filter by action type, user, or date range. Click **Clear** to reset all active filters. Export to CSV (all results or current page). 57 distinct action types are tracked including logins, user management, vendor CRUD, assessment lifecycle, template operations, and settings changes. Requires **Audit: view** permission.
+A read-only, paginated log of all administrative actions. Filter by action type, user, or date range. Click **Clear** to reset all active filters. Export to CSV (all results or current page). 57 distinct action types are tracked including logins, user management, vendor CRUD, assessment lifecycle, template operations, and settings changes. The **audit retention** policy (how long entries are kept) is configured on this page. Requires **Audit: view** permission.
 
 ---
 

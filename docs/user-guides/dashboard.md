@@ -75,7 +75,7 @@ Type to fuzzy-search by page name. The palette only shows pages your role has pe
 
 If your session is inactive for longer than the configured session timeout (default: 30 minutes), a 60-second countdown appears. If you do not interact with the page before the countdown reaches zero, you are automatically signed out.
 
-The timeout is configurable under Settings → Limits. Setting it to `0` disables the timer entirely.
+The timeout is configurable under Admin → Sign-in. Setting it to `0` disables the timer entirely.
 
 The countdown resets on any mouse movement, keyboard input, scroll, or tap — you only need to interact with the page, not click anything specific.
 

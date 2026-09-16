@@ -153,7 +153,7 @@ export function AttentionGroups({
             ) : null}
             {failedEmailCount > 0 ? (
               <Link
-                href="/settings?tab=email-tracking&status=FAILED"
+                href="/admin/email-tracking?status=FAILED"
                 className="bg-muted hover:bg-accent inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs transition-colors"
               >
                 <span className="font-medium">{failedEmailCount}</span>

@@ -26,7 +26,7 @@ When logged into the web dashboard, your Auth.js session cookie is automatically
 
 ### 2. API Key (Bearer Token)
 
-Generate an API key in **Settings → API**. Include it as a Bearer token:
+Generate an API key in **Admin → API**. Include it as a Bearer token:
 
 ```
 Authorization: Bearer mrk_<prefix>.<secret>

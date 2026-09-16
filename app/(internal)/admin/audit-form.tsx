@@ -36,17 +36,17 @@ function entityLink(entityType: string, entityId: string): string | null {
     case "Framework":
       return `/frameworks/${entityId}`;
     case "User":
-      return `/settings?tab=users`;
+      return `/admin/users`;
     case "Role":
-      return `/settings?tab=roles`;
+      return `/admin/roles`;
     case "VendorCertification":
       return `/vendors/${entityId}`;
     case "ApiKey":
-      return `/settings?tab=api`;
+      return `/admin/api`;
     case "Webhook":
-      return `/settings?tab=webhooks`;
+      return `/admin/webhooks`;
     case "NotificationLog":
-      return `/settings?tab=email-tracking`;
+      return `/admin/email-tracking`;
     case "TrustCenter":
       return `/trust-center`;
     case "Control":
@@ -139,7 +139,7 @@ export function AuditForm({
     Boolean(searchParams.get("fromDate")) ||
     Boolean(searchParams.get("toDate"));
   const pageHref = (targetPage: number) =>
-    `/settings?tab=audit&${filterQuery ? `${filterQuery}&` : ""}auditPage=${targetPage}&auditPageSize=${pageSize}`;
+    `/admin/audit?${filterQuery ? `${filterQuery}&` : ""}auditPage=${targetPage}&auditPageSize=${pageSize}`;
 
   return (
     <div className="flex flex-col gap-6">
@@ -219,7 +219,7 @@ export function AuditForm({
         </Button>
         {hasFilters ? (
           <Button asChild variant="ghost" size="sm">
-            <Link href="/settings?tab=audit">Clear</Link>
+            <Link href="/admin/audit">Clear</Link>
           </Button>
         ) : null}
         <DropdownMenu>

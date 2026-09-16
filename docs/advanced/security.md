@@ -21,7 +21,7 @@ Mitch‑Risk supports two authentication paths for internal staff:
 
 When SSO-only mode is enabled (local login hidden), a **break-glass URL** provides emergency access:
 
-1. Generate under **Settings → SSO → Break-glass**
+1. Generate under **Admin → Sign-in → Break-glass**
 2. URL format: `/login?break-glass=<token>`
 3. Token is bcrypt-hashed and stored as a JSON object with a consumed flag (not stored plaintext)
 4. Tokens expire 24 hours after generation and are single-use
@@ -44,7 +44,7 @@ When SSO-only mode is enabled (local login hidden), a **break-glass URL** provid
 - IP allowlisting via CIDR (empty = all IPs allowed)
 - Configurable expiry (30/90/180/365 days or permanent)
 - Per-key permission scoping — restrict keys to specific permission groups (e.g., read-only audit key) or grant full access
-- API key auth must be enabled globally under **Settings → API**
+- API key auth must be enabled globally under **Admin → API**
 
 ## Portal token security
 

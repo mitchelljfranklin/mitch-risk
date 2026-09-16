@@ -11,10 +11,26 @@ test.describe("Viewer role sees a read-only UI", () => {
     await expect(page.getByRole("link", { name: "New vendor" })).toHaveCount(0);
   });
 
-  test("sidebar hides Settings for a viewer", async ({ page }) => {
+  test("sidebar and header hide the admin area for a viewer", async ({
+    page,
+  }) => {
     await signInAsViewer(page);
     await expect(page.getByRole("link", { name: "Vendors" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Settings" })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Admin" })).toHaveCount(0);
+    await expect(
+      page.getByRole("link", { name: "Admin", exact: true }),
+    ).toHaveCount(0);
+  });
+
+  test("viewer navigating to /admin is redirected to the dashboard", async ({
+    page,
+  }) => {
+    await signInAsViewer(page);
+    await page.goto("/admin");
+    await page.waitForURL("**/dashboard");
+    await expect(
+      page.getByRole("heading", { name: "Vendor risk overview" }),
+    ).toBeVisible();
   });
 
   test("vendors list hides create/import/bulk controls but shows vendors", async ({

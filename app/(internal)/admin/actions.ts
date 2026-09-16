@@ -557,7 +557,7 @@ export async function toggleApiKeyAction(formData: FormData): Promise<void> {
     );
   }
 
-  revalidatePath("/settings");
+  revalidatePath("/admin/api");
 }
 
 export async function deleteApiKeyAction(formData: FormData): Promise<void> {
@@ -574,7 +574,7 @@ export async function deleteApiKeyAction(formData: FormData): Promise<void> {
     await logAudit(user.id, AUDIT_ACTIONS.API_KEY_DELETED, "ApiKey", keyId);
   }
 
-  revalidatePath("/settings");
+  revalidatePath("/admin/api");
 }
 
 export async function saveApiSettingsAction(
@@ -696,24 +696,12 @@ export async function saveSchedulingSettings(
   return { ok: true, message: "Configuration saved." };
 }
 
-export async function saveLimitsSettings(
+export async function saveSignInSecuritySettings(
   previousState: SettingsActionState,
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
 
-  const auditRetention = parseInt(
-    (formData.get("auditRetention") as string) || "0",
-    10,
-  );
-  const emailLogRetention = parseInt(
-    (formData.get("emailLogRetention") as string) || "14",
-    10,
-  );
-  const maxUploadMb = parseInt(
-    (formData.get("maxUploadMb") as string) || "20",
-    10,
-  );
   const loginRateLimit = parseInt(
     (formData.get("loginRateLimit") as string) || "10",
     10,
@@ -722,6 +710,47 @@ export async function saveLimitsSettings(
     (formData.get("sessionTimeoutMinutes") as string) || "30",
     10,
   );
+
+  if (isNaN(loginRateLimit) || loginRateLimit < 1) {
+    return {
+      ok: false,
+      message: "Login rate limit must be at least 1 per minute.",
+    };
+  }
+  if (
+    isNaN(sessionTimeoutMinutes) ||
+    (sessionTimeoutMinutes > 0 && sessionTimeoutMinutes < 5) ||
+    sessionTimeoutMinutes < 0
+  ) {
+    return {
+      ok: false,
+      message: "Auto-logout must be 0 (disabled) or at least 5 minutes.",
+    };
+  }
+
+  const { updateAssessmentSettings } = await import("@/lib/settings");
+  await updateAssessmentSettings({
+    loginRateLimitPerMin: loginRateLimit,
+    sessionTimeoutMinutes,
+  });
+
+  const user = await getCurrentUser();
+  if (user)
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_SETTINGS,
+      "Setting",
+      "sign-in",
+    );
+
+  return { ok: true, message: "Sign-in settings saved." };
+}
+
+export async function saveRateLimitSettings(
+  previousState: SettingsActionState,
+  formData: FormData,
+): Promise<SettingsActionState> {
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
 
   const rateLimitFields = {
     portalPageLoadsPerMin: { label: "Portal page loads", default: 30 },
@@ -750,71 +779,121 @@ export async function saveLimitsSettings(
     rateLimits[field] = value;
   }
 
+  const { updateAssessmentSettings } = await import("@/lib/settings");
+  await updateAssessmentSettings({
+    portalPageLoadsPerMin: rateLimits.portalPageLoadsPerMin,
+    portalUploadsPerMin: rateLimits.portalUploadsPerMin,
+    portalSubmitPerMin: rateLimits.portalSubmitPerMin,
+    portalCommentPerMin: rateLimits.portalCommentPerMin,
+    portalPasswordAttemptsPerMin: rateLimits.portalPasswordAttemptsPerMin,
+    passwordResetPerMin: rateLimits.passwordResetPerMin,
+    breakGlassPerMin: rateLimits.breakGlassPerMin,
+  });
+
+  const user = await getCurrentUser();
+  if (user)
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_SETTINGS,
+      "Setting",
+      "rate-limits",
+    );
+
+  return { ok: true, message: "Rate limits saved." };
+}
+
+export async function saveUploadSettings(
+  previousState: SettingsActionState,
+  formData: FormData,
+): Promise<SettingsActionState> {
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+
+  const maxUploadMb = parseInt(
+    (formData.get("maxUploadMb") as string) || "20",
+    10,
+  );
+  if (isNaN(maxUploadMb) || maxUploadMb < 1) {
+    return { ok: false, message: "Maximum upload size must be at least 1 MB." };
+  }
+
+  const allowedExtensions = formData.getAll("allowedExtensions").map(String);
+
+  const { updateFileSettings } = await import("@/lib/settings");
+  await updateFileSettings({
+    maxUploadMb,
+    allowedExtensions:
+      allowedExtensions.length > 0 ? allowedExtensions : ["pdf"],
+  });
+
+  const user = await getCurrentUser();
+  if (user)
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_SETTINGS,
+      "Setting",
+      "storage",
+    );
+
+  return { ok: true, message: "Upload constraints saved." };
+}
+
+export async function saveAuditRetentionSettings(
+  previousState: SettingsActionState,
+  formData: FormData,
+): Promise<SettingsActionState> {
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+
+  const auditRetention = parseInt(
+    (formData.get("auditRetention") as string) || "0",
+    10,
+  );
   if (isNaN(auditRetention) || auditRetention < 0) {
     return {
       ok: false,
       message: "Audit retention must be 0 or a positive number.",
     };
   }
+
+  const { updateAuditRetention } = await import("@/lib/settings");
+  await updateAuditRetention(auditRetention);
+
+  const user = await getCurrentUser();
+  if (user)
+    await logAudit(user.id, AUDIT_ACTIONS.UPDATE_SETTINGS, "Setting", "audit");
+
+  return { ok: true, message: "Audit retention saved." };
+}
+
+export async function saveEmailLogRetentionSettings(
+  previousState: SettingsActionState,
+  formData: FormData,
+): Promise<SettingsActionState> {
+  await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+
+  const emailLogRetention = parseInt(
+    (formData.get("emailLogRetention") as string) || "14",
+    10,
+  );
   if (isNaN(emailLogRetention) || emailLogRetention < 0) {
     return {
       ok: false,
       message: "Email log retention must be 0 or a positive number.",
     };
   }
-  if (isNaN(maxUploadMb) || maxUploadMb < 1) {
-    return { ok: false, message: "Maximum upload size must be at least 1 MB." };
-  }
-  if (isNaN(loginRateLimit) || loginRateLimit < 1) {
-    return {
-      ok: false,
-      message: "Login rate limit must be at least 1 per minute.",
-    };
-  }
-  if (
-    isNaN(sessionTimeoutMinutes) ||
-    (sessionTimeoutMinutes > 0 && sessionTimeoutMinutes < 5) ||
-    sessionTimeoutMinutes < 0
-  ) {
-    return {
-      ok: false,
-      message: "Auto-logout must be 0 (disabled) or at least 5 minutes.",
-    };
-  }
 
-  const allowedExtensions = formData.getAll("allowedExtensions").map(String);
-
-  const { updateAssessmentSettings, updateFileSettings, updateAuditRetention } =
-    await import("@/lib/settings");
-
-  await Promise.all([
-    updateAuditRetention(auditRetention),
-    updateAssessmentSettings({
-      loginRateLimitPerMin: loginRateLimit,
-      // Single writer: the merge in updateAssessmentSettings owns this field
-      // (a concurrent direct upsert raced the merge and the stale value won).
-      emailLogRetentionDays: emailLogRetention,
-      sessionTimeoutMinutes,
-      portalPageLoadsPerMin: rateLimits.portalPageLoadsPerMin,
-      portalUploadsPerMin: rateLimits.portalUploadsPerMin,
-      portalSubmitPerMin: rateLimits.portalSubmitPerMin,
-      portalCommentPerMin: rateLimits.portalCommentPerMin,
-      portalPasswordAttemptsPerMin: rateLimits.portalPasswordAttemptsPerMin,
-      passwordResetPerMin: rateLimits.passwordResetPerMin,
-      breakGlassPerMin: rateLimits.breakGlassPerMin,
-    }),
-    updateFileSettings({
-      maxUploadMb,
-      allowedExtensions:
-        allowedExtensions.length > 0 ? allowedExtensions : ["pdf"],
-    }),
-  ]);
+  const { updateAssessmentSettings } = await import("@/lib/settings");
+  await updateAssessmentSettings({ emailLogRetentionDays: emailLogRetention });
 
   const user = await getCurrentUser();
   if (user)
-    await logAudit(user.id, AUDIT_ACTIONS.UPDATE_SETTINGS, "Setting", "limits");
+    await logAudit(
+      user.id,
+      AUDIT_ACTIONS.UPDATE_SETTINGS,
+      "Setting",
+      "email-tracking",
+    );
 
-  return { ok: true, message: "Configuration saved." };
+  return { ok: true, message: "Email log retention saved." };
 }
 
 export async function retryEmailSendAction(
@@ -856,7 +935,7 @@ export async function retryEmailSendAction(
           "NotificationLog",
           logId,
         );
-      revalidatePath("/settings");
+      revalidatePath("/admin/email-tracking");
       return { ok: true, message: "Test email resent." };
     }
     return { ok: false, message: result.message };
@@ -926,7 +1005,7 @@ export async function retryEmailSendAction(
         "NotificationLog",
         logId,
       );
-    revalidatePath("/settings");
+    revalidatePath("/admin/email-tracking");
     return { ok: true, message: `Email resent successfully.` };
   }
 
@@ -1045,7 +1124,7 @@ export async function createWebhookAction(
     await logAudit(user.id, AUDIT_ACTIONS.CREATE_WEBHOOK, "Webhook", url);
   }
 
-  revalidatePath("/settings");
+  revalidatePath("/admin/webhooks");
   return { ok: true, message: "Webhook endpoint created." };
 }
 
@@ -1061,7 +1140,7 @@ export async function deleteWebhookAction(formData: FormData) {
     await logAudit(user.id, AUDIT_ACTIONS.DELETE_WEBHOOK, "Webhook", webhookId);
   }
 
-  revalidatePath("/settings");
+  revalidatePath("/admin/webhooks");
 }
 
 export async function toggleWebhookAction(formData: FormData) {
@@ -1082,5 +1161,5 @@ export async function toggleWebhookAction(formData: FormData) {
     );
   }
 
-  revalidatePath("/settings");
+  revalidatePath("/admin/webhooks");
 }

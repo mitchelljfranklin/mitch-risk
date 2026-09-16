@@ -118,7 +118,7 @@ export async function duplicateRoleAction(formData: FormData): Promise<void> {
         sourceRoleId: roleId,
       });
     }
-    revalidatePath("/settings");
+    revalidatePath("/admin/roles");
   } catch (error: unknown) {
     console.error(
       `[roles] failed to duplicate role ${roleId}:`,
@@ -128,7 +128,7 @@ export async function duplicateRoleAction(formData: FormData): Promise<void> {
     const reason =
       error instanceof Error ? error.message : "Unknown database error";
     redirect(
-      `/settings?tab=roles&roleError=${encodeURIComponent(`Could not duplicate the role: ${reason}`)}`,
+      `/admin/roles?roleError=${encodeURIComponent(`Could not duplicate the role: ${reason}`)}`,
     );
   }
 }
@@ -147,7 +147,7 @@ export async function deleteRoleAction(formData: FormData): Promise<void> {
     if (actor) {
       await logAudit(actor.id, AUDIT_ACTIONS.DELETE_ROLE, "Role", roleId);
     }
-    revalidatePath("/settings");
+    revalidatePath("/admin/roles");
   } catch (error: unknown) {
     console.error(
       `[roles] failed to delete role ${roleId}:`,
@@ -156,7 +156,7 @@ export async function deleteRoleAction(formData: FormData): Promise<void> {
     const reason =
       error instanceof Error ? error.message : "Unknown database error";
     redirect(
-      `/settings?tab=roles&roleError=${encodeURIComponent(`Could not delete the role: ${reason}`)}`,
+      `/admin/roles?roleError=${encodeURIComponent(`Could not delete the role: ${reason}`)}`,
     );
   }
 }

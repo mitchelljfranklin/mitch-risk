@@ -69,7 +69,7 @@ System roles are seeded on first run and cannot be deleted. The Admin role canno
 
 ## Custom Roles
 
-Admins can create custom roles in **Settings → Roles**:
+Admins can create custom roles in **Admin → Roles**:
 
 1. Click **Create Role**.
 2. Name the role and write a description.

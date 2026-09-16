@@ -2,7 +2,7 @@
 
 > See also: [STORAGE.md](https://github.com/mitchelljfranklin/mitch-risk/blob/master/STORAGE.md) in the repo root for more detailed step-by-step setup instructions.
 
-Mitch‑Risk supports three storage backends for evidence files and attachments: local disk (default), AWS S3, and Azure Blob Storage. Switching between them requires no code changes — configure in Settings → Storage and the change takes effect immediately.
+Mitch‑Risk supports three storage backends for evidence files and attachments: local disk (default), AWS S3, and Azure Blob Storage. Switching between them requires no code changes — configure in Admin → Storage and the change takes effect immediately.
 
 ## Architecture
 
@@ -13,11 +13,11 @@ FileStorage Interface
   └── Azure Blob   (@azure/storage-blob, dynamic import)
 ```
 
-All providers implement the same `save`, `read`, `delete`, and `list` operations. The provider is selected at runtime based on your Settings → Storage configuration. If cloud initialization fails, the platform falls back to local disk — no data loss, no downtime.
+All providers implement the same `save`, `read`, `delete`, and `list` operations. The provider is selected at runtime based on your Admin → Storage configuration. If cloud initialization fails, the platform falls back to local disk — no data loss, no downtime.
 
 ## Switching Providers
 
-1. Go to **Settings → Storage**.
+1. Go to **Admin → Storage**.
 2. Select your provider (Local Disk, Amazon S3, or Azure Blob).
 3. Fill in the provider-specific settings.
 4. Click **Save storage settings**.

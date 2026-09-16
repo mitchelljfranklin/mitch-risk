@@ -156,9 +156,9 @@ az containerapp create \
 
 ## 6. Scheduled tasks
 
-Scheduled jobs run inside the app by default — no Azure Function or external scheduler is required. Verify under Settings → Scheduling ("Last scheduled run").
+Scheduled jobs run inside the app by default — no Azure Function or external scheduler is required. Verify under Admin → Scheduling ("Last scheduled run").
 
-If you prefer external scheduling, disable the built-in scheduler in Settings → Scheduling and call the cron endpoint every 5 minutes from an Azure Function (timer trigger) or a separate lightweight service:
+If you prefer external scheduling, disable the built-in scheduler in Admin → Scheduling and call the cron endpoint every 5 minutes from an Azure Function (timer trigger) or a separate lightweight service:
 
 ```bash
 curl -H "x-cron-secret: <cron-secret>" https://<app-url>/api/cron/run
@@ -673,7 +673,7 @@ Click **Save** then **Create** to deploy the new revision.
 
 ### 8. Scheduled Tasks (Optional External Cron)
 
-Scheduled jobs run inside the app by default — this section is only needed if you disabled the built-in scheduler under Settings → Scheduling and prefer external scheduling. Use an Azure Function:
+Scheduled jobs run inside the app by default — this section is only needed if you disabled the built-in scheduler under Admin → Scheduling and prefer external scheduling. Use an Azure Function:
 
 1. **Portal → Function App → Create**
    - Runtime stack: **PowerShell Core** or **Node.js**

@@ -1576,7 +1576,7 @@ Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()
 
 ### 14.1 Trigger Mechanism
 
-Scheduled jobs run **inside the app by default**: `instrumentation.ts` starts a scheduler on server boot (`lib/scheduler.ts`) that ticks every five minutes, re-reading the `internalSchedulerEnabled` setting each tick so admins can disable it from Settings → Scheduling without a restart. An in-process lock (`runScheduledJobsOnce()`) ensures the internal tick and the API endpoint never execute jobs concurrently — the second caller receives `409` instead of running a duplicate.
+Scheduled jobs run **inside the app by default**: `instrumentation.ts` starts a scheduler on server boot (`lib/scheduler.ts`) that ticks every five minutes, re-reading the `internalSchedulerEnabled` setting each tick so admins can disable it from Admin → Scheduling without a restart. An in-process lock (`runScheduledJobsOnce()`) ensures the internal tick and the API endpoint never execute jobs concurrently — the second caller receives `409` instead of running a duplicate.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -2118,7 +2118,8 @@ app/                          Next.js App Router
     frameworks/               Framework list + detail
       import/                 CSV framework import
     risk-register/            Cross-vendor findings view
-    settings/                 All settings tabs
+    admin/                    Admin area (one page per section)
+    settings/                 Legacy redirect to /admin
   (auth)/                     Login, first-run setup
   portal/[token]/             Vendor questionnaire (public)
   api/                        Route handlers

@@ -129,7 +129,7 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 - **5 event types** — ASSESSMENT_SUBMITTED, ASSESSMENT_OVERDUE, FINDING_CREATED, FINDING_RESOLVED, CERTIFICATION_EXPIRING
 - **HMAC-SHA256 signed** payloads with per-endpoint secrets
 - **Platform presets** — Generic JSON, Slack Block Kit, Microsoft Teams Adaptive Card, Discord Embed
-- **Configurable** in Settings → Webhooks (Admin only)
+- **Configurable** in Admin → Webhooks (Admin only)
 
 ## Access Control
 
@@ -177,7 +177,7 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 ## Storage
 
 - **Local disk** (default) — configurable path
-- **AWS S3** and **Azure Blob Storage** — configure via Settings → Storage
+- **AWS S3** and **Azure Blob Storage** — configure via Admin → Storage
 - **Single storage interface** — save, read, delete, list
 - **Polymorphic attachment model** — evidence attached to any entity
 - **Evidence preview** for PDFs and images in a slide-out sheet

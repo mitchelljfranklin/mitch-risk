@@ -126,7 +126,7 @@ test("capture template builder screenshot", async ({ page }) => {
 
 test("capture settings screenshot", async ({ page }) => {
   await signInAsAdmin(page);
-  await page.goto("/settings?tab=scoring");
+  await page.goto("/admin/scoring");
   await page.waitForFunction(
     () => !document.body.textContent?.includes("Loading..."),
   );

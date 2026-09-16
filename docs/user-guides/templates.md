@@ -56,7 +56,7 @@ Each question carries a risk weight that determines its contribution to the over
 | `MEDIUM` | 3 | Standard control with moderate impact |
 | `LOW` | 1 | Good-to-have control with minimal direct risk |
 
-Weights are configurable in Settings → Scoring. The default values above can be adjusted to match your organisation's risk appetite.
+Weights are configurable in Admin → Scoring. The default values above can be adjusted to match your organisation's risk appetite.
 
 ## Expected Answers
 

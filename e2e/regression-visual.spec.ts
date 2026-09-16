@@ -64,7 +64,7 @@ test.describe("visual regression guards", () => {
     page,
   }) => {
     await signInAsAdmin(page);
-    await page.goto("/settings?tab=appearance");
+    await page.goto("/admin/appearance");
 
     const radius = page.getByLabel("Border radius (px)");
     await radius.fill("14");

@@ -22,7 +22,7 @@ test("admin creates a user: modal closes and the row appears (prod)", async ({
   page,
 }) => {
   await signInAsAdmin(page);
-  await page.goto("/settings?tab=users");
+  await page.goto("/admin/users");
 
   await page.getByRole("button", { name: "New user" }).click();
   const dialog = page.getByRole("dialog");
