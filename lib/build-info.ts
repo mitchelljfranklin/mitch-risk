@@ -36,7 +36,7 @@ export function getBuildInfo(): BuildInfo {
   if (!cached) {
     const fromFile = tryReadBuildFile();
     cached = {
-      version: fromFile?.version ?? "1.4.1",
+      version: fromFile?.version ?? "1.5.0",
       commit: fromFile?.commit ?? tryGitCommit(),
       buildTime: fromFile?.buildTime ?? "",
     };
