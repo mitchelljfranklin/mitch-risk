@@ -226,6 +226,12 @@ ones before declaring any phase complete.
 - `npm run docs:dev` — VitePress docs dev server with hot reload
 - `npm run docs:build` — build VitePress docs for production
 - `npm run docs:preview` — preview the built docs locally
+- `npm run bump -- X.Y.Z` — bump the release version across all 8 spots
+  (package.json, package-lock.json ×2, Dockerfile, lib/build-info.ts,
+  ARCHITECTURE.md, APPSECURITY.md, docs/advanced/sbom.md). Never hand-edit
+  these files — a PowerShell `-Encoding utf8` bump once wrote a BOM into
+  package.json and broke CI's JSON parse. The script aborts without writing
+  if any spot is missing its expected old version.
 - `docker compose up` — app + Postgres for local/self-host
 
 > If a command above does not yet exist for the phase you are in, create it as part of
