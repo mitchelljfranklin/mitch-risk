@@ -2,7 +2,7 @@
 
 Webhooks let your external systems receive real-time event notifications from Mitch‑Risk. When an assessment is submitted, a finding is created, or a certification is about to expire, a signed JSON payload is POSTed to your configured HTTPS endpoint.
 
-Configuration is under **Settings → Webhooks** (requires **Webhooks: manage** permission — Admin by default).
+Configuration is under **Admin → Webhooks** (requires **Webhooks: manage** permission — Admin by default).
 
 ## Platform Presets
 
@@ -33,7 +33,7 @@ Each endpoint subscribes to the events you select — you can configure differen
 
 ## Creating an Endpoint
 
-1. Go to **Settings → Webhooks**
+1. Go to **Admin → Webhooks**
 2. Click **Add endpoint**
 3. Enter a **name** to identify the endpoint (e.g. "Slack alerts")  
 4. Choose a **platform** preset (Generic, Slack, Microsoft Teams, Discord)  

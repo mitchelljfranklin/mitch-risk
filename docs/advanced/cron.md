@@ -4,11 +4,11 @@ Mitch‑Risk handles scheduled maintenance automatically. By default the applica
 
 ## Built-in scheduler (default)
 
-The scheduler starts with the application. You can verify it is working under **Settings → Scheduling**, which shows when jobs last ran ("Last scheduled run"). To turn it off, untick **Run scheduled jobs inside the app** on that tab and save — the change takes effect within five minutes, no restart required.
+The scheduler starts with the application. You can verify it is working under **Admin → Scheduling**, which shows when jobs last ran ("Last scheduled run"). To turn it off, untick **Run scheduled jobs inside the app** on that tab and save — the change takes effect within five minutes, no restart required.
 
 ## External scheduling (optional)
 
-If you prefer to drive scheduling yourself (for example from a system crontab or an orchestrator), disable the built-in scheduler in Settings → Scheduling and call the secured endpoint on your own cadence:
+If you prefer to drive scheduling yourself (for example from a system crontab or an orchestrator), disable the built-in scheduler in Admin → Scheduling and call the secured endpoint on your own cadence:
 
 ```bash
 # Every 5 minutes
@@ -25,8 +25,8 @@ Run scheduled jobs from exactly one instance. If you scale horizontally, leave t
 
 | # | Job | Description |
 |---|---|---|
-| 1 | **Reminders** | Emails vendors when assessment is due in N days. Default offsets: 7 and 1 day before due. Configurable under Settings → Scheduling |
-| 2 | **Escalations** | Emails reviewer when assessment is overdue beyond threshold. Default: 3 days past due. Configurable under Settings → Scheduling |
+| 1 | **Reminders** | Emails vendors when assessment is due in N days. Default offsets: 7 and 1 day before due. Configurable under Admin → Scheduling |
+| 2 | **Escalations** | Emails reviewer when assessment is overdue beyond threshold. Default: 3 days past due. Configurable under Admin → Scheduling |
 | 3 | **Expiry notices** | Emails risk owner when certification or contract is expiring. 30-day and 7-day windows |
 | 4 | **Recurring assessments** | Clones assessments set to quarterly/annual, sends new invitation, schedules next run |
 | 5 | **Audit log pruning** | Deletes audit entries older than retention period (configurable) |
@@ -41,12 +41,12 @@ All notification jobs (reminders, escalations, expiry notices) check for existin
 
 | Log type | Default retention | Config location |
 |---|---|---|
-| Email logs | 14 days | Settings → Limits |
-| Audit logs | Configurable | Settings → Limits |
+| Email logs | 14 days | Admin → Email tracking |
+| Audit logs | Configurable | Admin → Audit log |
 
 ## Rate limit configuration
 
-All abuse-protection limits are configurable under **Settings → Limits**:
+All abuse-protection limits are configurable under **Admin → Rate limits**:
 
 | Limit | Default | Purpose |
 |---|---|---|

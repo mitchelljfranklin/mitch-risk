@@ -2,11 +2,11 @@
 
 Mitch‑Risk sends email notifications (assessment invitations, reminders, escalations, password resets) via **Nodemailer over SMTP**. Any standard SMTP relay works — SendGrid, Mailgun, AWS SES, or your organisation's mail server.
 
-Configuration is in-app under **Settings → Email** (requires **Settings: manage** permission).
+Configuration is in-app under **Admin → Email** (requires **Settings: manage** permission).
 
 ## Setup
 
-1. Go to **Settings → Email**
+1. Go to **Admin → Email**
 2. Enter your SMTP credentials:
    - **SMTP Host** — your relay's hostname (e.g. `smtp.sendgrid.net`)
    - **SMTP Port** — typically 587 (TLS) or 465 (SSL). Defaults to 587
@@ -19,7 +19,7 @@ Configuration is in-app under **Settings → Email** (requires **Settings: manag
 
 ## Email templates
 
-All email subjects and bodies are customisable under **Settings → Email → Templates**. The body editor is a WYSIWYG Markdown editor with a live preview. When an email is sent, the Markdown body is automatically converted to styled HTML — vendors and reviewers receive properly formatted emails. Tokens work in both subjects and bodies:
+All email subjects and bodies are customisable under **Admin → Email → Email templates**. The body editor is a WYSIWYG Markdown editor with a live preview. When an email is sent, the Markdown body is automatically converted to styled HTML — vendors and reviewers receive properly formatted emails. Tokens work in both subjects and bodies:
 
 ```
 {{vendorName}}, {{assessmentTitle}}, {{portalUrl}}, {{dueDate}},
@@ -41,9 +41,9 @@ All email subjects and bodies are customisable under **Settings → Email → Te
 
 ## Email logging
 
-Every sent email creates a log entry with type, recipient, subject, and status (SENT / FAILED). Failed sends include the error message. View logs under **Settings → Email Tracking**.
+Every sent email creates a log entry with type, recipient, subject, and status (SENT / FAILED). Failed sends include the error message. View logs under **Admin → Email tracking**.
 
-Logs are pruned automatically by the cron job (default: 14 day retention, configurable under Settings → Limits).
+Logs are pruned automatically by the cron job (default: 14 day retention, configurable under Admin → Email tracking).
 
 ## Provider examples
 

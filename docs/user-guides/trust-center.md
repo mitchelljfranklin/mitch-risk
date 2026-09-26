@@ -4,7 +4,7 @@ The Trust Center is a public page at `/trust` where your organisation publishes 
 
 ## Enabling the Trust Center
 
-1. Go to **Settings → Trust Center**
+1. Go to **Admin → Trust Center**
 2. Tick **Enable the trust center** and save
 
 While disabled, `/trust` returns a not-found message and nothing is served publicly.
@@ -47,7 +47,7 @@ Tick **Link to the trust center in vendor invite emails** and every assessment i
 
 ## Rate limits
 
-The public page loads and document downloads are rate-limited per IP (defaults: 30/min each). Adjust both under **Settings → Trust Center** if you expect heavy legitimate traffic.
+The public page loads and document downloads are rate-limited per IP (defaults: 30/min each). Adjust both under **Admin → Trust Center** if you expect heavy legitimate traffic.
 
 ## Multi-instance note
 

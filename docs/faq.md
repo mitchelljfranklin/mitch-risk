@@ -22,11 +22,11 @@ For a complete explanation — including inherent risk, residual risk, worked ex
 
 ## How do I set up SSO (Single Sign-On)?
 
-SSO is configured in Settings → SSO. Microsoft Entra ID, Google, and generic OIDC providers are supported. See the [SSO Configuration](./configuration/sso) guide for per-provider setup instructions.
+SSO is configured in Admin → Sign-in. Microsoft Entra ID, Google, and generic OIDC providers are supported. See the [SSO Configuration](./configuration/sso) guide for per-provider setup instructions.
 
 ## How do I configure email?
 
-Go to Settings → Email. Enter your SMTP server details (host, port, username, from address). The SMTP password is encrypted at rest with AES-256-GCM. Use the test button to verify the configuration. Email templates can be customized with `{{tokens}}` for vendor name, assessment title, portal URL, due date, and other dynamic values.
+Go to Admin → Email. Enter your SMTP server details (host, port, username, from address). The SMTP password is encrypted at rest with AES-256-GCM. Use the test button to verify the configuration. Email templates can be customized with `{{tokens}}` for vendor name, assessment title, portal URL, due date, and other dynamic values.
 
 ## What happens to files when I delete a record?
 
@@ -38,7 +38,7 @@ Set a recurrence schedule (Quarterly or Annual) when creating an assessment. The
 
 ## Do I need to set up a cron job?
 
-No. The application runs its own scheduler by default — every five minutes it processes reminders, escalations, expiry notices, recurring assessments, log pruning, and file cleanup on its own. Check **Settings → Scheduling** to see when jobs last ran. External scheduling via the `/api/cron/run` endpoint remains available if you prefer to drive it yourself.
+No. The application runs its own scheduler by default — every five minutes it processes reminders, escalations, expiry notices, recurring assessments, log pruning, and file cleanup on its own. Check **Admin → Scheduling** to see when jobs last ran. External scheduling via the `/api/cron/run` endpoint remains available if you prefer to drive it yourself.
 
 ## What do the scheduled jobs do?
 
@@ -73,4 +73,4 @@ The platform is open source. You can modify the code, add new framework librarie
 
 ## Can I publish our own security posture to vendors?
 
-Yes — the Trust Center is a public page at `/trust` where you share compliance badges, security documents, subprocessors and narrative sections. Curate it under **Manage → Trust center**, enable it in **Settings → Trust Center**, and optionally link it from vendor invite emails. See the [Trust Center guide](/user-guides/trust-center).
+Yes — the Trust Center is a public page at `/trust` where you share compliance badges, security documents, subprocessors and narrative sections. Curate it under **Manage → Trust center**, enable it in **Admin → Trust Center**, and optionally link it from vendor invite emails. See the [Trust Center guide](/user-guides/trust-center).

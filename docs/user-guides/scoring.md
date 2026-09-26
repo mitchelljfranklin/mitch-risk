@@ -72,7 +72,7 @@ These questions return a `null` compliance status and do not contribute to the s
 
 If the vendor marks a question **Not Applicable** (because it genuinely does not apply to their service), it is excluded from both the numerator and denominator of the score. This prevents irrelevant questions from unfairly dragging down a vendor's score.
 
-> The platform default is to exclude N/A responses. You can change this to treat N/A as non-compliant in Settings → Scoring.
+> The platform default is to exclude N/A responses. You can change this to treat N/A as non-compliant in Admin → Scoring.
 
 ### Step 3: Compare Each Response Against Its Expected Answer
 
@@ -101,7 +101,7 @@ Each question carries a **risk weight** that determines how much it contributes 
 | `MEDIUM` | 3 | Standard due diligence question (e.g., "Does the vendor have a change management process?") |
 | `LOW` | 1 | Supplementary or nice-to-have (e.g., "Does the vendor publish a transparency report?") |
 
-Weight values are configurable in Settings → Scoring.
+Weight values are configurable in Admin → Scoring.
 
 For each response:
 - **Compliant** → earns the full risk weight (`weightedScore = weight, maxScore = weight`)
@@ -152,7 +152,7 @@ The thresholds are configurable. If you want stricter scoring, raise the green t
 
 ### RAG Colours
 
-The visual colours for each band (`--rag-green`, `--rag-amber`, `--rag-red`) are configurable under Settings → Appearance. These are cosmetic only — they do not change the threshold logic. RAG colour tokens are used exclusively for score and compliance indicators; UI chrome (success/error states) uses separate semantic tokens.
+The visual colours for each band (`--rag-green`, `--rag-amber`, `--rag-red`) are configurable under Admin → Appearance. These are cosmetic only — they do not change the threshold logic. RAG colour tokens are used exclusively for score and compliance indicators; UI chrome (success/error states) uses separate semantic tokens.
 
 ## Inherent Risk vs Residual Risk
 
@@ -210,7 +210,7 @@ The radar applies the exact same risk-weight formula as the overall score (see [
 domainScore = sum(compliant weights in that domain) / sum(all weights in that domain)
 ```
 
-Where each question's weight is `CRITICAL` = 10, `HIGH` = 6, `MEDIUM` = 3, `LOW` = 1 (configurable in Settings → Scoring). A CRITICAL control you fail pulls its domain's axis down far harder than a LOW control you fail — so the radar reads as a **residual risk rating**, not a flat compliance %.
+Where each question's weight is `CRITICAL` = 10, `HIGH` = 6, `MEDIUM` = 3, `LOW` = 1 (configurable in Admin → Scoring). A CRITICAL control you fail pulls its domain's axis down far harder than a LOW control you fail — so the radar reads as a **residual risk rating**, not a flat compliance %.
 
 The same exclusions apply as the overall score:
 
@@ -308,7 +308,7 @@ The vendor's score history is analysed with a linear regression to determine tre
 
 ## Configurable Parameters
 
-All scoring parameters are managed in-app under **Settings → Scoring** (requires **Settings: manage** permission):
+All scoring parameters are managed in-app under **Admin → Scoring** (requires **Settings: manage** permission):
 
 | Parameter | Default | Range |
 |---|---|---|
@@ -320,7 +320,7 @@ All scoring parameters are managed in-app under **Settings → Scoring** (requir
 | **Amber threshold** | 0.60 | 0–1 |
 | **Exclude N/A** | Enabled | Toggle |
 
-RAG visual colours are configured separately under Settings → Appearance.
+RAG visual colours are configured separately under Admin → Appearance.
 
 ## Scoring via the API
 

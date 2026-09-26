@@ -57,7 +57,7 @@ export function EmailTrackingForm({
     Boolean(searchParams.get("fromDate")) ||
     Boolean(searchParams.get("toDate"));
   const pageHref = (targetPage: number) =>
-    `/settings?tab=email-tracking&${filterQuery ? `${filterQuery}&` : ""}emailLogPage=${targetPage}&emailLogPageSize=${pageSize}`;
+    `/admin/email-tracking?${filterQuery ? `${filterQuery}&` : ""}emailLogPage=${targetPage}&emailLogPageSize=${pageSize}`;
 
   return (
     <div className="flex flex-col gap-6">
@@ -163,7 +163,7 @@ export function EmailTrackingForm({
         </Button>
         {hasFilters ? (
           <Button asChild variant="ghost" size="sm">
-            <Link href="/settings?tab=email-tracking">Clear</Link>
+            <Link href="/admin/email-tracking">Clear</Link>
           </Button>
         ) : null}
       </form>

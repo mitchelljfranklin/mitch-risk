@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { saveStorageSettings } from "@/app/(internal)/settings/actions";
+import { saveStorageSettings } from "./actions";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
 import type { StorageSettingsView } from "@/lib/settings";
 

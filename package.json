@@ -1,6 +1,6 @@
 {
   "name": "mitch-risk",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -24,7 +24,8 @@
     "db:studio": "prisma studio",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "bump": "node scripts/bump-version.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1086.0",

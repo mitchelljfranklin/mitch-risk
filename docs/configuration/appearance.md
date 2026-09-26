@@ -1,6 +1,6 @@
 # Appearance & Branding
 
-Mitch‑Risk supports full visual customisation to match your organisation's identity. All settings are configured under **Settings → Appearance** and require the **Settings: manage** permission.
+Mitch‑Risk supports full visual customisation to match your organisation's identity. All settings are configured under **Admin → Appearance** and require the **Settings: manage** permission.
 
 Changes take effect immediately — no restart or rebuild required.
 
@@ -10,7 +10,7 @@ Changes take effect immediately — no restart or rebuild required.
 
 ### Organisation Name
 
-Set under **Settings → General**. The organisation name appears in:
+Set under **Admin → General**. The organisation name appears in:
 
 - The **sidebar header** (next to the logo)
 - The **login screen**
@@ -20,13 +20,13 @@ Set under **Settings → General**. The organisation name appears in:
 
 ### Logo
 
-Upload under **Settings → Appearance**. Supported formats: **PNG, JPG, GIF, or WEBP** (SVG is not accepted for security reasons).
+Upload under **Admin → Appearance**. Supported formats: **PNG, JPG, GIF, or WEBP** (SVG is not accepted for security reasons).
 
 The logo appears in:
 
 - The **sidebar header** — displayed above the organisation name
 - The **login screen** — centred above the sign-in form
-- Navigate to **Settings → Appearance** and click the logo area to upload or replace. Click **Remove logo** to revert to the text-only organisation name display.
+- Navigate to **Admin → Appearance** and click the logo area to upload or replace. Click **Remove logo** to revert to the text-only organisation name display.
 
 ---
 

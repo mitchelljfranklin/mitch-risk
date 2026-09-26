@@ -65,7 +65,7 @@ function uniqueSuffix(): string {
 test.describe("settings hardening regression", () => {
   test("storage secrets never reach the browser payload", async ({ page }) => {
     await signInAsAdmin(page);
-    await page.goto("/settings?tab=storage");
+    await page.goto("/admin/storage");
 
     const secret = "S3CR3T-e2e-0123456789-abcdef";
     await page.getByLabel("Bucket").fill("e2e-bucket");
@@ -80,7 +80,7 @@ test.describe("settings hardening regression", () => {
     let documentBody = "";
     page.on("response", (response) => {
       if (
-        response.url().includes("/settings") &&
+        response.url().includes("/admin/storage") &&
         response.request().method() === "GET"
       ) {
         response
@@ -116,7 +116,7 @@ test.describe("settings hardening regression", () => {
     page,
   }) => {
     await signInAsAdmin(page);
-    await page.goto("/settings?tab=webhooks");
+    await page.goto("/admin/webhooks");
 
     const openForm = async () => {
       if ((await page.locator("#webhookName").count()) === 0) {
@@ -303,7 +303,7 @@ test.describe("settings hardening regression", () => {
     });
 
     await signInAsAdmin(page);
-    await page.goto("/settings?tab=email-tracking");
+    await page.goto("/admin/email-tracking");
     const row = page.locator("tr", { hasText: marker });
     await expect(row).toBeVisible();
     await expect(row.getByRole("button", { name: "Retry" })).toHaveCount(0);
@@ -338,7 +338,7 @@ test.describe("settings hardening regression", () => {
     });
 
     await signInAsAdmin(page);
-    await page.goto("/settings?tab=roles");
+    await page.goto("/admin/roles");
 
     // Each role renders its own delete form keyed by role id.
     const deleteForm = page.locator(`form#delete-role-${role.id}`);
@@ -355,39 +355,51 @@ test.describe("settings hardening regression", () => {
     await prisma.role.deleteMany({ where: { id: role.id } });
   });
 
-  test("limits and scheduling values persist across reloads", async ({
+  test("retention and rate-limit values persist across reloads", async ({
     page,
   }) => {
     await signInAsAdmin(page);
 
-    await page.goto("/settings?tab=limits");
+    // Audit retention now lives on the audit page, next to the log it prunes.
+    await page.goto("/admin/audit");
     await page.getByLabel("Audit log retention (days)").fill("45");
-    await page.getByLabel("Email log retention (days)").fill("10");
-    await page.getByRole("button", { name: "Save limits" }).click();
-    await expect(page.getByText("Configuration saved.")).toBeVisible({
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.getByText("Audit retention saved.")).toBeVisible({
       timeout: 15000,
     });
-
     await page.reload();
     await expect(page.getByLabel("Audit log retention (days)")).toHaveValue(
       "45",
     );
+
+    // Email log retention lives on the email tracking page.
+    await page.goto("/admin/email-tracking");
+    await page.getByLabel("Email log retention (days)").fill("10");
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.getByText("Email log retention saved.")).toBeVisible({
+      timeout: 15000,
+    });
+    await page.reload();
     await expect(page.getByLabel("Email log retention (days)")).toHaveValue(
       "10",
     );
 
-    // The scheduling tab's toggle must be untouched by a limits save.
-    await page.goto("/settings?tab=scheduling");
+    // Field-level isolation (retention saves leaving scheduling untouched) is
+    // covered precisely by save-settings.integration.test.ts; here we only
+    // assert the scheduling page still renders. Asserting the scheduler
+    // toggle's STATE would race with settings-toggle-persist.spec.ts, which
+    // flips the same shared setting in a parallel worker.
+    await page.goto("/admin/scheduling");
     await expect(
-      page.getByRole("checkbox", { name: "Run scheduled jobs inside the app" }),
-    ).toBeChecked();
+      page.getByRole("heading", { name: "Scheduling" }),
+    ).toBeVisible();
   });
 
   test("scoring tab has no exclude-N/A control and saves cleanly", async ({
     page,
   }) => {
     await signInAsAdmin(page);
-    await page.goto("/settings?tab=scoring");
+    await page.goto("/admin/scoring");
 
     await expect(page.getByText(/Exclude/i)).toHaveCount(0);
     await page.getByRole("button", { name: "Save scoring" }).click();

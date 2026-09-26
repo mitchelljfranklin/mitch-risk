@@ -130,7 +130,7 @@ docker compose up -d
 ### Webhooks
 - Outbound event notifications for assessments submitted, findings changed, certifications expiring
 - HMAC-SHA256 signed payloads with per-endpoint secrets
-- Configured in Settings → Webhooks (Admin only)
+- Configured in Admin → Webhooks (Admin only)
 - 5 event types: ASSESSMENT_SUBMITTED, ASSESSMENT_OVERDUE, FINDING_CREATED, FINDING_RESOLVED, CERTIFICATION_EXPIRING
 
 ### Inherent Risk
@@ -207,7 +207,7 @@ docker compose up -d
 
 ## API
 
-Authenticated REST API under `/api/v1/`. Authenticate via session cookie (web login) or Bearer token (API key generated in Settings → API).
+Authenticated REST API under `/api/v1/`. Authenticate via session cookie (web login) or Bearer token (API key generated in Admin → API).
 
 | Resource | Endpoints |
 |----------|-----------|
@@ -268,7 +268,7 @@ server {
 
 ### Scheduled jobs
 
-Jobs run inside the app by default — every five minutes, no external scheduler needed. Check **Settings → Scheduling** for the last run time; disable the built-in scheduler there if you'd rather trigger externally:
+Jobs run inside the app by default — every five minutes, no external scheduler needed. Check **Admin → Scheduling** for the last run time; disable the built-in scheduler there if you'd rather trigger externally:
 
 ```bash
 curl -H "x-cron-secret: $CRON_SECRET" http://localhost:3000/api/cron/run

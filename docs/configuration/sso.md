@@ -2,14 +2,14 @@
 
 > See also: [SSOConfig.md](https://github.com/mitchelljfranklin/mitch-risk/blob/master/SSOConfig.md) in the repo root for provider-specific setup guides (Auth0, Keycloak, Authentik, Authelia, VoidAuth, Okta).
 
-Mitch‑Risk supports Single Sign-On for internal staff via **Microsoft Entra ID**, **Google Workspace**, and any **generic OIDC** provider. All configuration is done in-app under **Settings → SSO** (requires the **Settings: manage** permission).
+Mitch‑Risk supports Single Sign-On for internal staff via **Microsoft Entra ID**, **Google Workspace**, and any **generic OIDC** provider. All configuration is done in-app under **Admin → Sign-in** (requires the **Settings: manage** permission).
 
 All three providers can be enabled at once; each appears as its own button on the login screen.
 
 ## How SSO works
 
 - **Standard OIDC / OAuth 2.0.** Mitch‑Risk is the relying party; your IdP is the authorization server. Uses the Authorization Code flow.
-- **Just-in-time provisioning.** First SSO login creates a local user linked to the IdP email, assigned the default role (falls back to Reviewer). Change a user's role later under **Settings → Users**.
+- **Just-in-time provisioning.** First SSO login creates a local user linked to the IdP email, assigned the default role (falls back to Reviewer). Change a user's role later under **Admin → Users**.
 - **Email is the identity key.** Your IdP must return an `email` claim. It provisions/links the account and enforces optional domain restriction.
 - **Domain restriction.** Optional — rejects logins whose email domain doesn't match (e.g. `example.com`).
 - **No local password.** SSO-provisioned users have no password. Their profile page hides the password section and shows read-only email. Password reset flow skips SSO-only accounts.
@@ -32,7 +32,7 @@ All three providers can be enabled at once; each appears as its own button on th
 
 ## In-app setup (all providers)
 
-1. Sign in as Admin → **Settings → SSO**
+1. Sign in as Admin → **Admin → Sign-in**
 2. Fill in fields for your provider (see sections below)
 3. Set **Default role for new SSO users** (e.g. Reviewer)
 4. (Optional) Set **Restrict to domain**
@@ -47,7 +47,7 @@ All three providers can be enabled at once; each appears as its own button on th
    - Redirect URI: Web, `https://YOUR_DOMAIN/api/auth/callback/microsoft-entra-id`
 2. Copy the **Application (client) ID**
 3. **Certificates & secrets → New client secret** — copy the Value
-4. In Mitch‑Risk **Settings → SSO → Microsoft Entra ID**: tick Enabled, paste Client ID and Client secret, Save
+4. In Mitch‑Risk **Admin → Sign-in → Microsoft Entra ID**: tick Enabled, paste Client ID and Client secret, Save
 
 > The built-in Entra integration uses Microsoft's multi-tenant `common` endpoint. To restrict to your organisation, set **Restrict to domain** to your tenant's email domain, or use **Custom OIDC** with your tenant issuer `https://login.microsoftonline.com/<tenant-id>/v2.0`.
 
@@ -56,7 +56,7 @@ All three providers can be enabled at once; each appears as its own button on th
 1. **Google Cloud Console → APIs & Services → Credentials → Create OAuth client ID**
 2. Configure OAuth consent screen (Internal user type keeps it to your Workspace)
 3. Application type: **Web application**, redirect URI: `https://YOUR_DOMAIN/api/auth/callback/google`
-4. In Mitch‑Risk **Settings → SSO → Google Workspace**: tick Enabled, paste Client ID and Client secret, Save
+4. In Mitch‑Risk **Admin → Sign-in → Google Workspace**: tick Enabled, paste Client ID and Client secret, Save
 5. To limit sign-in to your company, set **Restrict to domain**
 
 ## Custom OIDC
@@ -91,7 +91,7 @@ Use for any OpenID Connect provider (Auth0, Keycloak, Authentik, Authelia, VoidA
 
 Once at least one provider works:
 
-1. **Settings → SSO → Break-glass → Generate break-glass URL** — copy and store securely (shown once). The token expires in 24 hours and is consumed on first use.
+1. **Admin → Sign-in → Break-glass → Generate break-glass URL** — copy and store securely (shown once). The token expires in 24 hours and is consumed on first use.
 2. Tick **Disable email/password sign-in** and Save
 3. Login page now shows only SSO buttons. Local login remains at the break-glass URL, and auto-keeps available if no SSO provider is enabled (anti-lock-out)
 
@@ -105,5 +105,5 @@ Once at least one provider works:
 | Discovery error (OIDC) | Issuer URL wrong. Verify `.well-known/openid-configuration` returns valid JSON |
 | Login succeeds at IdP but bounces back | Domain restriction mismatch, or IdP not returning `email` claim |
 | Cookies not set behind proxy | Reverse proxy must forward `X-Forwarded-Proto: https`. See Deployment → Reverse Proxy |
-| New SSO user has wrong permissions | Received the default role for new SSO users. Adjust it or change user's role under Settings → Users |
+| New SSO user has wrong permissions | Received the default role for new SSO users. Adjust it or change user's role under Admin → Users |
 | Locked out after SSO-only | Use break-glass URL to sign in locally, then fix SSO config |

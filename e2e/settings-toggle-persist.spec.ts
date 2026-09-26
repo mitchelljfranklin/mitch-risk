@@ -7,7 +7,7 @@ test("a settings toggle keeps its new state after saving (no reload)", async ({
   page,
 }) => {
   await signInAsAdmin(page);
-  await page.goto("/settings?tab=api");
+  await page.goto("/admin/api");
 
   const toggle = page.getByRole("checkbox", {
     name: "Enable API key authentication",
@@ -44,7 +44,7 @@ test("a settings-tab save shows its success toast in production", async ({
   page,
 }) => {
   await signInAsAdmin(page);
-  await page.goto("/settings?tab=scoring");
+  await page.goto("/admin/scoring");
 
   // Scoring is a plain save form migrated to useActionFeedback: saving must show
   // the toast even though the action no longer revalidates the current route.
@@ -58,7 +58,7 @@ test("the built-in scheduler toggle persists its state after saving", async ({
   page,
 }) => {
   await signInAsAdmin(page);
-  await page.goto("/settings?tab=scheduling");
+  await page.goto("/admin/scheduling");
 
   const toggle = page.getByRole("checkbox", {
     name: "Run scheduled jobs inside the app",

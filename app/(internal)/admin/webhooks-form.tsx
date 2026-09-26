@@ -23,7 +23,7 @@ import {
   createWebhookAction,
   deleteWebhookAction,
   toggleWebhookAction,
-} from "@/app/(internal)/settings/actions";
+} from "./actions";
 
 const EVENT_LABELS: Record<string, string> = {
   ASSESSMENT_SUBMITTED: "Assessment submitted",

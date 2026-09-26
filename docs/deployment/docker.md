@@ -216,9 +216,9 @@ The in-memory rate limiter is per-process — correct for single-container deplo
 
 ## Scheduled Tasks
 
-Scheduled jobs run **inside the app by default** — every five minutes the application checks for due work itself; no host crontab or external scheduler is required. Verify under Settings → Scheduling ("Last scheduled run"), where you can also disable the built-in scheduler.
+Scheduled jobs run **inside the app by default** — every five minutes the application checks for due work itself; no host crontab or external scheduler is required. Verify under Admin → Scheduling ("Last scheduled run"), where you can also disable the built-in scheduler.
 
-If you prefer external scheduling, disable the built-in scheduler in Settings → Scheduling and point a system cron at the secured endpoint:
+If you prefer external scheduling, disable the built-in scheduler in Admin → Scheduling and point a system cron at the secured endpoint:
 
 ```bash
 # Every 5 minutes

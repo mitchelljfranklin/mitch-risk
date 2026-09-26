@@ -26,7 +26,7 @@ over sprawling configuration. Do not add features that are not in the plan witho
 - **Swagger UI (CDN)** — interactive API documentation at `/docs` (Phase 29)
 - **bcryptjs** — user password hashing and API key hashing
 - **Local-disk volume** — evidence file storage behind a storage interface (save/read/delete/list; S3 and Azure Blob swappable via in-app Settings); files served only via an authenticated route
-- **Built-in scheduler (default) -> `lib/scheduler.ts` via `instrumentation.ts`** — every 5 minutes: reminders, escalations, recurring assessments, audit-log & email-log pruning, orphaned-file sweep. Toggle in Settings → Scheduling; optional external triggering via secured `/api/cron/run`
+- **Built-in scheduler (default) -> `lib/scheduler.ts` via `instrumentation.ts`** — every 5 minutes: reminders, escalations, recurring assessments, audit-log & email-log pruning, orphaned-file sweep. Toggle in Admin → Scheduling; optional external triggering via secured `/api/cron/run`
 - **Docker Compose** (app + Postgres), reverse proxy (Caddy/nginx) for TLS — self-hosted
 
 ## Repository layout (created during Phase 0)
@@ -34,7 +34,10 @@ over sprawling configuration. Do not add features that are not in the plan witho
 ```
 app/                 # Next.js App Router
   (internal)/        # authenticated dashboard
-    settings/         #   email-tracking, api-form, audit-form, health-tab, etc.
+    admin/           #   admin area — one page per section (general, users, roles,
+                     #   api, webhooks, audit, trust-center, etc.); header gear icon
+                     #   swaps the sidebar into admin nav (lib/admin-nav.ts)
+    settings/        #   legacy /settings?tab= redirect shim to /admin
     trust-center/     #   public trust center content manager (badges, documents, subprocessors, sections)
     risk-register/    #   cross-vendor findings register
     vendors/import/   #   CSV bulk vendor import
@@ -226,6 +229,12 @@ ones before declaring any phase complete.
 - `npm run docs:dev` — VitePress docs dev server with hot reload
 - `npm run docs:build` — build VitePress docs for production
 - `npm run docs:preview` — preview the built docs locally
+- `npm run bump -- X.Y.Z` — bump the release version across all 8 spots
+  (package.json, package-lock.json ×2, Dockerfile, lib/build-info.ts,
+  ARCHITECTURE.md, APPSECURITY.md, docs/advanced/sbom.md). Never hand-edit
+  these files — a PowerShell `-Encoding utf8` bump once wrote a BOM into
+  package.json and broke CI's JSON parse. The script aborts without writing
+  if any spot is missing its expected old version.
 - `docker compose up` — app + Postgres for local/self-host
 
 > If a command above does not yet exist for the phase you are in, create it as part of
@@ -609,7 +618,11 @@ from the catalog and role defaults).
   byte/codepoint inspection (`[int][char]`) when corruption is suspected. Two extra traps:
   JS replacement strings like `"\\u2014"` insert the LITERAL escape text (JSX attributes
   render it verbatim) — always write real characters; and JSX attribute values never
-  process `\uXXXX` escapes, unlike JS string literals.
+  process `\uXXXX` escapes, unlike JS string literals. Even the "safe" `[IO.File]` method
+  has mangled bulk edits once (a docs sweep turned every `c` into `o` in a `docs/` file —
+  caught by byte-level inspection and reverted); for bulk text mutation across many
+  files, prefer a Node script (like `scripts/bump-version.mjs`) with post-write
+  corruption-signature assertions, and `git diff` the result before continuing.
 - **Never run schema-less UPDATE/DELETE against a database — ever.** Manual DB
   surgery during debugging must use a scripted file with an explicit WHERE
   clause, parameterised values, and a row-count print BEFORE and AFTER. An

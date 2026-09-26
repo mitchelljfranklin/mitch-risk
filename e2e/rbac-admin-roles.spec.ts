@@ -25,7 +25,7 @@ test("admin creates a custom role via the slide-over with select-all", async ({
   page,
 }) => {
   await signInAsAdmin(page);
-  await page.goto("/settings?tab=roles");
+  await page.goto("/admin/roles");
 
   await expect(page.getByRole("button", { name: "New role" })).toBeVisible();
 

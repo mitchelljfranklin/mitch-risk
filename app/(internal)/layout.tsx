@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
+import { AdminNavButton } from "@/components/admin-nav-button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -14,6 +15,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 import { IdleTimer } from "@/components/idle-timer";
 import { requireUser } from "@/lib/auth";
+import { ADMIN_AREA_PERMISSIONS } from "@/lib/admin-nav";
+import { hasAnyPermission } from "@/lib/permissions";
 import {
   getAppearanceSettings,
   getAssessmentSettings,
@@ -29,6 +32,10 @@ export default async function InternalLayout({
     getAppearanceSettings(),
     getAssessmentSettings(),
   ]);
+  const canAccessAdmin = hasAnyPermission(
+    user.permissions,
+    ADMIN_AREA_PERMISSIONS,
+  );
 
   return (
     <>
@@ -47,6 +54,7 @@ export default async function InternalLayout({
             <SidebarTrigger />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <div className="flex-1" />
+            {canAccessAdmin ? <AdminNavButton /> : null}
             <ThemeToggle />
             <UserMenu
               name={user.name ?? user.email ?? "Account"}
