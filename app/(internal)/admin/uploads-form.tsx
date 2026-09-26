@@ -27,7 +27,10 @@ const ALL_EXTENSIONS = [
   "pptx",
 ];
 
-export function UploadsForm({ maxUploadMb, allowedExtensions }: UploadsFormProps) {
+export function UploadsForm({
+  maxUploadMb,
+  allowedExtensions,
+}: UploadsFormProps) {
   const [state, action, isPending] = useActionState(
     saveUploadSettings,
     undefined,

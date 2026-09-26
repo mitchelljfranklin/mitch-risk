@@ -121,7 +121,9 @@ function writeUtf8NoBom(filePath, content) {
 function main() {
   const target = process.argv[2];
   if (!target || !VERSION_PATTERN.test(target)) {
-    console.error(`Usage: npm run bump -- X.Y.Z   (got: ${target ?? "<none>"})`);
+    console.error(
+      `Usage: npm run bump -- X.Y.Z   (got: ${target ?? "<none>"})`,
+    );
     process.exit(1);
   }
 
@@ -138,10 +140,16 @@ function main() {
   const edits = [
     { file: "package.json", transform: transformPackageJson },
     { file: "Dockerfile", transform: transformDockerfile },
-    { file: path.join("lib", "build-info.ts"), transform: transformBuildInfoTs },
+    {
+      file: path.join("lib", "build-info.ts"),
+      transform: transformBuildInfoTs,
+    },
     { file: "ARCHITECTURE.md", transform: transformArchitectureMd },
     { file: "APPSECURITY.md", transform: transformAppSecurityMd },
-    { file: path.join("docs", "advanced", "sbom.md"), transform: transformSbomMd },
+    {
+      file: path.join("docs", "advanced", "sbom.md"),
+      transform: transformSbomMd,
+    },
   ];
 
   // Transform everything first; write only if every spot resolved.
