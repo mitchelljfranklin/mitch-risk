@@ -33,6 +33,10 @@ export default defineConfig({
   globalSetup: "./e2e/global-setup.ts",
   globalTeardown: "./e2e/global-teardown.ts",
   timeout: 30_000,
+  // CI runners are slower and the whole suite shares one app server and one
+  // database, so parallel workers make heavy revalidations time out and race
+  // on shared settings (e.g. the scheduler toggle). One worker in CI.
+  workers: process.env.CI ? 1 : undefined,
   fullyParallel: false,
   use: {
     baseURL: "http://localhost:3000",

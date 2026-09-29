@@ -33,12 +33,15 @@ async function navigateToFirstVendor(page: import("@playwright/test").Page) {
     () => !document.body.textContent?.includes("Loading..."),
   );
   await page.waitForTimeout(2000);
-  await page
+  const vendorLink = page
     .locator(
       `a[href^='/vendors/']:not([href='/vendors/compare']):not([href='/vendors/import']):not([href='/vendors/new']):not([href='/vendors/bulk-send'])`,
     )
-    .first()
-    .click();
+    .first();
+  // Wait for the row explicitly: clicking before it renders times out the
+  // whole test under CI load.
+  await expect(vendorLink).toBeVisible({ timeout: 30_000 });
+  await vendorLink.click();
   await page.waitForURL("**/vendors/**");
   await page.waitForFunction(
     () => !document.body.textContent?.includes("Loading..."),

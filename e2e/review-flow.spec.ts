@@ -191,6 +191,12 @@ async function saveFirstPendingDecision(
 const NODE_MAJOR = Number(process.versions.node.split(".")[0]);
 
 test.describe("reviewer decision cycle", () => {
+  // saveFirstPendingDecision waits up to 60s for the heavy route to refresh
+  // after a decision; the global 30s test timeout would kill the test before
+  // it could ever reach that patience (it passed locally only because the
+  // refresh happened to finish inside 30s). Give this journey room on CI.
+  test.describe.configure({ timeout: 120_000 });
+
   test.skip(
     NODE_MAJOR >= 23,
     "Server Action streaming is broken on Node >= 23 (Next 16 known issue); run e2e under Node 22.",
