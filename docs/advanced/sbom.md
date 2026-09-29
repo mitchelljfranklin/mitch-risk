@@ -16,7 +16,7 @@ This document lists every direct software dependency used by Mitch‑Risk v1.5.0
 
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
-| [next](https://npmjs.com/package/next) | 16.2.10 | MIT | Full-stack React framework (App Router, Server Components, Server Actions) |
+| [next](https://npmjs.com/package/next) | 16.3.7 | MIT | Full-stack React framework (App Router, Server Components, Server Actions) |
 | [react](https://npmjs.com/package/react) | 19.2.7 | MIT | UI library |
 | [react-dom](https://npmjs.com/package/react-dom) | 19.2.7 | MIT | React DOM renderer |
 
@@ -33,7 +33,7 @@ This document lists every direct software dependency used by Mitch‑Risk v1.5.0
 
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
-| [next-auth](https://npmjs.com/package/next-auth) | 5.0.0-beta.31 | ISC | Authentication framework — session management, SSO (OIDC), credentials |
+| [next-auth](https://npmjs.com/package/next-auth) | 5.0.0-beta.32 | ISC | Authentication framework — session management, SSO (OIDC), credentials |
 | [bcryptjs](https://npmjs.com/package/bcryptjs) | 3.0.3 | BSD-3-Clause | Password hashing (12 rounds) and API key verification |
 | [zod](https://npmjs.com/package/zod) | 4.4.3 | MIT | Schema validation for all external input (forms, API bodies, imports) |
 
@@ -74,7 +74,7 @@ This document lists every direct software dependency used by Mitch‑Risk v1.5.0
 
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
-| [nodemailer](https://npmjs.com/package/nodemailer) | 9.0.3 | MIT-0 | SMTP email delivery (invites, reminders, escalations) |
+| [nodemailer](https://npmjs.com/package/nodemailer) | 9.1.1 | MIT-0 | SMTP email delivery (invites, reminders, escalations) |
 | [@react-email/components](https://npmjs.com/package/@react-email/components) | 1.0.12 | MIT | React components for email template rendering |
 
 ### File Storage
@@ -105,7 +105,7 @@ These packages are used during development and CI only — they are not included
 |---------|---------|---------|---------|
 | [typescript](https://npmjs.com/package/typescript) | 6.x | Apache-2.0 | Static type checking |
 | [eslint](https://npmjs.com/package/eslint) | 9.x | MIT | Code quality linting |
-| [eslint-config-next](https://npmjs.com/package/eslint-config-next) | 16.2.10 | MIT | Next.js-specific lint rules |
+| [eslint-config-next](https://npmjs.com/package/eslint-config-next) | 16.3.7 | MIT | Next.js-specific lint rules |
 | [prettier](https://npmjs.com/package/prettier) | 3.x | MIT | Code formatting |
 | [prettier-plugin-tailwindcss](https://npmjs.com/package/prettier-plugin-tailwindcss) | 0.8.0 | MIT | Tailwind class sorting |
 | [tailwindcss](https://npmjs.com/package/tailwindcss) | 4.x | MIT | CSS framework (compiled at build) |
