@@ -22,6 +22,7 @@ import {
 } from "@/lib/db/notifications-types";
 import type { EmailLogResult } from "@/lib/db/notifications-types";
 import { formatDate } from "@/lib/utils";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 import { retryEmailSendAction } from "./actions";
 
 type EmailTrackingFormProps = {
@@ -233,7 +234,11 @@ export function EmailTrackingForm({
 }
 
 function EmailLogRow({ log }: { log: EmailLogEntry }) {
-  const [, action, isPending] = useActionState(retryEmailSendAction, undefined);
+  const [retryState, action, isPending] = useActionState(
+    retryEmailSendAction,
+    undefined,
+  );
+  useActionFeedback(retryState);
 
   return (
     <TableRow>

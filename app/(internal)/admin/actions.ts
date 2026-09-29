@@ -632,9 +632,6 @@ export async function saveTrustCenterSettings(
     );
   }
 
-  // Toggling enabled flips the public /trust route between live content and
-  // a 404, so the public path is revalidated alongside the settings UI.
-  revalidatePath("/trust");
   return { ok: true, message: "Trust center settings saved." };
 }
 
@@ -935,7 +932,6 @@ export async function retryEmailSendAction(
           "NotificationLog",
           logId,
         );
-      revalidatePath("/admin/email-tracking");
       return { ok: true, message: "Test email resent." };
     }
     return { ok: false, message: result.message };
@@ -1005,7 +1001,6 @@ export async function retryEmailSendAction(
         "NotificationLog",
         logId,
       );
-    revalidatePath("/admin/email-tracking");
     return { ok: true, message: `Email resent successfully.` };
   }
 
@@ -1124,7 +1119,6 @@ export async function createWebhookAction(
     await logAudit(user.id, AUDIT_ACTIONS.CREATE_WEBHOOK, "Webhook", url);
   }
 
-  revalidatePath("/admin/webhooks");
   return { ok: true, message: "Webhook endpoint created." };
 }
 
