@@ -124,7 +124,7 @@ test("capture template builder screenshot", async ({ page }) => {
   });
 });
 
-test("capture settings screenshot", async ({ page }) => {
+test("capture admin scoring screenshot", async ({ page }) => {
   await signInAsAdmin(page);
   await page.goto("/admin/scoring");
   await page.waitForFunction(
@@ -136,6 +136,6 @@ test("capture settings screenshot", async ({ page }) => {
     page.getByRole("button", { name: "Save scoring" }),
   ).toBeVisible();
   await page.screenshot({
-    path: `${SCREENSHOT_DIR}/settings.png`,
+    path: `${SCREENSHOT_DIR}/admin-scoring.png`,
   });
 });

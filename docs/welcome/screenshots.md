@@ -40,8 +40,8 @@ Templates define the questionnaire structure — sections, questions, answer typ
 
 ![Template Builder](../screenshots/template-builder.png)
 
-## In-App Settings
+## In-App Admin Area
 
-All operational configuration is managed through the Settings interface. This includes scoring weights and RAG thresholds, email delivery and templates, user roles and permissions, API key management, SSO provider configuration, storage backend selection, and brand customisation.
+All operational configuration is managed through the Admin area (the gear icon in the header). This includes scoring weights and RAG thresholds, email delivery and templates, user roles and permissions, API key management, SSO provider configuration, storage backend selection, and brand customisation.
 
-![Settings](../screenshots/settings.png)
+![Admin — Scoring](../screenshots/admin-scoring.png)

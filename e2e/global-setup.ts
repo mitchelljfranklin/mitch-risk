@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 
 import { createAssessment, sendAssessment } from "@/lib/db/assessments";
 import { ensureSystemRoles, getRoleByName } from "@/lib/db/roles";

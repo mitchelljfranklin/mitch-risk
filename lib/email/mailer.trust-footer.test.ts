@@ -18,7 +18,6 @@ vi.mock("@/lib/prisma", () => ({
 }));
 
 const sendMailMock = vi.fn().mockResolvedValue({});
-const transporterMock = { sendMail: sendMailMock };
 
 vi.mock("nodemailer", () => ({
   default: {

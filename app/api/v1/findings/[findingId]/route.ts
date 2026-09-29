@@ -2,6 +2,7 @@ import { type FindingStatus } from "../../../../../prisma/generated/prisma/clien
 import { authenticateRequest, authResultHasPermission } from "@/lib/api-auth";
 import { apiError, runApiHandler } from "@/lib/api-response";
 import { PERMISSIONS } from "@/lib/permissions";
+import { findingStatusUpdateSchema } from "@/lib/schemas/findings";
 import { getFinding, updateFindingStatus } from "@/lib/db/findings";
 
 export async function PATCH(
@@ -27,22 +28,21 @@ export async function PATCH(
     } catch {
       return apiError("Invalid JSON body.", 400);
     }
-    if (!data || typeof data !== "object" || Array.isArray(data))
-      return apiError("Invalid request body.", 400);
 
-    const record = data as Record<string, unknown>;
-    const status = record.status;
-    const resolutionNote =
-      typeof record.resolutionNote === "string"
-        ? record.resolutionNote
-        : undefined;
-
-    if (status !== "REMEDIATED" && status !== "RISK_ACCEPTED")
+    const parsed = findingStatusUpdateSchema.safeParse(data);
+    if (!parsed.success) {
+      const statusInvalid = parsed.error.issues.some(
+        (issue) => issue.path[0] === "status",
+      );
       return apiError(
-        "Invalid status. Must be REMEDIATED or RISK_ACCEPTED.",
+        statusInvalid
+          ? "Invalid status. Must be REMEDIATED or RISK_ACCEPTED."
+          : "Invalid request body.",
         400,
       );
+    }
 
+    const { status, resolutionNote } = parsed.data;
     const resolvedById = auth.userId ?? null;
 
     const updated = await updateFindingStatus({

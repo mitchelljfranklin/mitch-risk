@@ -7,10 +7,6 @@ vi.mock("@/lib/auth", () => ({
 
 import { prisma } from "@/lib/prisma";
 import {
-  deleteTrustBadge,
-  deleteTrustDocument,
-  deleteTrustSection,
-  deleteTrustSubprocessor,
   moveTrustBadge,
   moveTrustDocument,
   moveTrustSection,
