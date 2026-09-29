@@ -124,7 +124,6 @@ export async function bulkUpdateFindingStatusesAction(
     }
   }
 
-  revalidatePath("/risk-register");
   const updatedCount = existingIds.length;
   const missingNote =
     missingCount > 0 ? ` (${missingCount} already removed).` : "";

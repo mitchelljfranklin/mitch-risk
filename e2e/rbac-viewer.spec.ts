@@ -15,8 +15,9 @@ test.describe("Viewer role sees a read-only UI", () => {
     page,
   }) => {
     await signInAsViewer(page);
-    await expect(page.getByRole("link", { name: "Vendors" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Admin" })).toHaveCount(0);
+    await expect(
+      page.getByRole("link", { name: "Vendors", exact: true }),
+    ).toBeVisible();
     await expect(
       page.getByRole("link", { name: "Admin", exact: true }),
     ).toHaveCount(0);

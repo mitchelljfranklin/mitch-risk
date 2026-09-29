@@ -125,7 +125,6 @@ export async function updateVendorAction(
   if (user) {
     await logAudit(user.id, AUDIT_ACTIONS.UPDATE_VENDOR, "Vendor", vendorId);
   }
-  revalidatePath(`/vendors/${vendorId}`);
   return { ok: true, message: "Vendor updated." };
 }
 
@@ -328,8 +327,6 @@ export async function importVendorsAction(
     }
   }
   await Promise.all(auditWrites);
-
-  revalidatePath("/vendors");
 
   const parts: string[] = [];
   if (createdCount > 0) {

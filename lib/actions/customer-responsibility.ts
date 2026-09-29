@@ -78,8 +78,6 @@ export async function updateResponsibilityAction(
     actionId,
   );
 
-  revalidatePath(`/vendors/${vendorId}`);
-
   return { ok: true, message: "Saved." };
 }
 

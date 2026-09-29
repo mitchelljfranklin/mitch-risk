@@ -185,8 +185,6 @@ export async function updateAssessmentAction(
   }
 
   await updateAssessment(assessmentId, parsed.data);
-  revalidatePath(`/assessments/${assessmentId}`);
-  revalidatePath("/assessments");
   return { ok: true, message: "Saved." };
 }
 
@@ -410,9 +408,6 @@ export async function sendBulkAssessmentsAction(
       );
     }
   }
-
-  revalidatePath("/assessments");
-  revalidatePath("/vendors");
 
   return {
     ok: true,

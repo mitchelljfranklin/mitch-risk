@@ -161,8 +161,6 @@ export async function importFrameworkAction(
     framework.id,
   );
 
-  revalidatePath("/frameworks");
-
   return {
     ok: true,
     message: `Imported "${framework.name} v${framework.version}" with ${controls.length} controls.`,

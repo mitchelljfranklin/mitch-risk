@@ -267,7 +267,6 @@ export async function saveQuestionAction(
       },
     );
   }
-  revalidatePath(`/templates/${templateId}`);
   redirect(`/templates/${templateId}`);
 }
 

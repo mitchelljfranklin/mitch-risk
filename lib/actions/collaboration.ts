@@ -241,6 +241,5 @@ export async function finalizeWithStateAction(
       assessmentId,
     );
   }
-  revalidatePath(`/assessments/${assessmentId}`);
   return { ok: true, message: "" };
 }
