@@ -184,10 +184,13 @@ async function saveFirstPendingDecision(
   }
 }
 
-// Next 16's Server-Action response streaming crashes on Node >= 23
-// ("transformAlgorithm is not a function" after revalidatePath in the
-// action), which is an environment bug, not an application one - CI runs
-// the suite under Node 22 where it executes normally.
+// Next 16's Server-Action streaming is broken on Node >= 23: the action
+// returns 200 but the client never receives its result, so the save looks
+// like a no-op. Trialled 2026-09-29 - removing revalidatePath from the
+// useActionState actions, additionally removing it from this flow's plain
+// action, and bumping Next to 16.3.7 all still failed on Node 24, so this
+// is an upstream Next/Node incompatibility rather than application code.
+// Keep e2e on Node 22 (.nvmrc / Dockerfile) and re-test on a future release.
 const NODE_MAJOR = Number(process.versions.node.split(".")[0]);
 
 test.describe("reviewer decision cycle", () => {
