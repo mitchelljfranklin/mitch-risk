@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 import {
   type FinalizeState,
   finalizeWithStateAction,
@@ -15,6 +16,7 @@ export function FinalizeButton({ assessmentId }: { assessmentId: string }) {
     finalizeWithStateAction,
     initialState,
   );
+  useActionFeedback(state);
 
   return (
     <div className="flex items-start gap-2">

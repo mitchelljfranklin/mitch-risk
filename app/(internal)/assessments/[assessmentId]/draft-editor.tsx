@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useActionFeedback } from "@/hooks/use-action-feedback";
 import { updateAssessmentAction } from "@/lib/actions/assessments";
 
 type DraftEditorProps = {
@@ -19,10 +20,11 @@ export function DraftEditor({
   title,
   dueDate,
 }: DraftEditorProps) {
-  const [, action, isPending] = useActionState(
+  const [state, action, isPending] = useActionState(
     updateAssessmentAction,
     undefined,
   );
+  useActionFeedback(state);
 
   return (
     <Card>
