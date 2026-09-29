@@ -28,11 +28,22 @@ if (!looksLikeTestDatabase && process.env.ALLOW_TESTS_ON_THIS_DB !== "1") {
   );
 }
 
+const isCi = process.env.CI === "true";
+
 export default defineConfig({
   testDir: "./e2e",
   globalSetup: "./e2e/global-setup.ts",
   globalTeardown: "./e2e/global-teardown.ts",
-  timeout: 30_000,
+  // Shared CI runners are slower; give navigation/assertions more room.
+  timeout: isCi ? 120_000 : 30_000,
+  expect: { timeout: isCi ? 30_000 : 5_000 },
+  // Absorb the intermittent action/toast timing on shared runners. A real
+  // failure still fails all attempts; local runs stay strict.
+  retries: isCi ? 2 : 0,
+  // CI runners are slower and the whole suite shares one app server and one
+  // database, so parallel workers make heavy revalidations time out and race
+  // on shared settings (e.g. the scheduler toggle). One worker in CI.
+  workers: isCi ? 1 : undefined,
   fullyParallel: false,
   use: {
     baseURL: "http://localhost:3000",

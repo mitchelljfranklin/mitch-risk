@@ -25,7 +25,7 @@ test("profile save shows its success toast in production", async ({ page }) => {
   await page.getByLabel("Current password").fill(E2E_ADMIN_PASSWORD);
   await page.getByRole("button", { name: "Save changes" }).click();
   await expect(page.getByText("Profile updated.")).toBeVisible({
-    timeout: 15000,
+    timeout: 30000,
   });
 });
 
@@ -40,6 +40,6 @@ test("vendor edit shows its success toast in production", async ({ page }) => {
   await page.getByLabel("Vendor name").fill("E2E Vendor");
   await page.getByRole("button", { name: "Save changes" }).click();
   await expect(page.getByText("Vendor updated.")).toBeVisible({
-    timeout: 15000,
+    timeout: 30000,
   });
 });

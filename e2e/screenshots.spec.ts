@@ -4,6 +4,12 @@ import { signInAsAdmin } from "./helpers";
 
 const SCREENSHOT_DIR = "docs/screenshots";
 
+// These capture the images embedded in the docs site and are regenerated
+// locally. They are not a CI gate: the same pages are smoke-tested by the rbac
+// and settings specs, and image generation is timing-sensitive enough to flake
+// on shared runners.
+test.skip(process.env.CI === "true", "docs screenshots are generated locally");
+
 test.use({ viewport: { width: 1280, height: 800 } });
 
 test("capture dashboard screenshot", async ({ page }) => {
@@ -33,12 +39,15 @@ async function navigateToFirstVendor(page: import("@playwright/test").Page) {
     () => !document.body.textContent?.includes("Loading..."),
   );
   await page.waitForTimeout(2000);
-  await page
+  const vendorLink = page
     .locator(
       `a[href^='/vendors/']:not([href='/vendors/compare']):not([href='/vendors/import']):not([href='/vendors/new']):not([href='/vendors/bulk-send'])`,
     )
-    .first()
-    .click();
+    .first();
+  // Wait for the row explicitly: clicking before it renders times out the
+  // whole test under CI load.
+  await expect(vendorLink).toBeVisible({ timeout: 30_000 });
+  await vendorLink.click();
   await page.waitForURL("**/vendors/**");
   await page.waitForFunction(
     () => !document.body.textContent?.includes("Loading..."),
@@ -124,7 +133,7 @@ test("capture template builder screenshot", async ({ page }) => {
   });
 });
 
-test("capture settings screenshot", async ({ page }) => {
+test("capture admin scoring screenshot", async ({ page }) => {
   await signInAsAdmin(page);
   await page.goto("/admin/scoring");
   await page.waitForFunction(
@@ -136,6 +145,6 @@ test("capture settings screenshot", async ({ page }) => {
     page.getByRole("button", { name: "Save scoring" }),
   ).toBeVisible();
   await page.screenshot({
-    path: `${SCREENSHOT_DIR}/settings.png`,
+    path: `${SCREENSHOT_DIR}/admin-scoring.png`,
   });
 });

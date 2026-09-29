@@ -296,7 +296,11 @@ ones before declaring any phase complete.
   `useActionFeedback` hook (toast + `router.refresh()`) instead. When an action
   is also called from non-`useActionState` contexts (e.g. API routes, cron),
   calling `revalidatePath` there is fine. (This was previously described as a
-  harmless double-refresh; the Node 24 behaviour makes it a hard rule.)
+  harmless double-refresh; the Node 24 behaviour makes it a hard rule.) The
+  consumer must actually call the hook — a component that discards the state
+  (`const [, action] = useActionState(...)`) or only renders it inline has no
+  refresh path of its own, so removing the action's `revalidatePath` leaves its
+  view stale. Removing one half without the other silently regresses the UI.
 
 ### Client/Server state patterns (learned the hard way)
 
@@ -607,18 +611,21 @@ from the catalog and role defaults).
   brackets; this has caused false "file doesn't contain X" conclusions during audits.
 - **PowerShell string pipelines corrupt non-ASCII characters in source files.**
   `Get-Content` / `-replace` / `Set-Content` decode UTF-8 as Windows-1252, turning
-  `·`, `—`, `→`, `←` into `Â·`/`â€"`-style mojibake; several shipped source lines were
+  `·`, `—`, `→`, `←` into a lead-byte-plus-punctuation sequence known as mojibake
+  (an em-dash becomes three garbled characters); several shipped source lines were
   damaged this way (an assessments-table due-date placeholder rendered garbled in the UI).
   Rules: never round-trip file text through PowerShell string ops — if a scripted edit is
   unavoidable, use `[IO.File]::ReadAllText`/`WriteAllText` with explicit UTF-8 and
   `[Text.UTF8Encoding]::new($false)`; commit-message/pr-body files likewise. `lib/no-mojibake.test.ts`
-  now scans `app/ components/ emails/ hooks/ lib/` on every test run and fails on any
-  cp1252-mojibake sequence — extend its patterns rather than bypassing it. Note the Grep
+  now scans `app/ components/ emails/ hooks/ lib/ docs/ scripts/` plus root-level markdown
+  on every test run and fails on any cp1252-mojibake sequence — extend its patterns rather
+  than bypassing it. Note the Grep
   search tool cannot detect these sequences (it decodes differently); verify encoding with
   byte/codepoint inspection (`[int][char]`) when corruption is suspected. Two extra traps:
-  JS replacement strings like `"\\u2014"` insert the LITERAL escape text (JSX attributes
-  render it verbatim) — always write real characters; and JSX attribute values never
-  process `\uXXXX` escapes, unlike JS string literals. Even the "safe" `[IO.File]` method
+  JS replacement strings written as the four-digit backslash-u escape (for example the
+  em-dash code point) insert the LITERAL escape text (JSX attributes render it verbatim) —
+  always write real characters; and JSX attribute values never process such escapes, unlike
+  JS string literals. Even the "safe" `[IO.File]` method
   has mangled bulk edits once (a docs sweep turned every `c` into `o` in a `docs/` file —
   caught by byte-level inspection and reverted); for bulk text mutation across many
   files, prefer a Node script (like `scripts/bump-version.mjs`) with post-write

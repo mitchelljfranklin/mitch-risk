@@ -20,9 +20,26 @@ const ESCAPED_GLYPH_PATTERN = new RegExp(
   "i",
 );
 
-const SCAN_ROOTS = ["app", "components", "emails", "hooks", "lib"];
-const SCANNED_EXTENSIONS = [".ts", ".tsx", ".md"];
-const SKIPPED_SEGMENTS = new Set(["generated", "node_modules", ".next"]);
+const SCAN_ROOTS = [
+  "app",
+  "components",
+  "emails",
+  "hooks",
+  "lib",
+  "docs",
+  "scripts",
+];
+const SCANNED_EXTENSIONS = [".ts", ".tsx", ".md", ".mjs", ".cjs"];
+const SKIPPED_SEGMENTS = new Set([
+  "generated",
+  "node_modules",
+  ".next",
+  "dist",
+  "cache",
+  ".vitepress",
+  "test-results",
+  ".storage",
+]);
 
 function collectSourceFiles(directory: string, files: string[] = []): string[] {
   for (const entry of readdirSync(directory)) {
@@ -30,26 +47,39 @@ function collectSourceFiles(directory: string, files: string[] = []): string[] {
     if (SKIPPED_SEGMENTS.has(entry)) continue;
     if (statSync(fullPath).isDirectory()) {
       collectSourceFiles(fullPath, files);
-    } else if (
-      SCANNED_EXTENSIONS.some((extension) => entry.endsWith(extension))
-    ) {
+    } else if (isScannedFile(entry)) {
       files.push(fullPath);
     }
   }
   return files;
 }
 
+function isScannedFile(name: string): boolean {
+  return SCANNED_EXTENSIONS.some((extension) => name.endsWith(extension));
+}
+
+// Root-level docs (README.md, AGENTS.md, …) are part of the same surface and
+// are discovered dynamically so new ones are covered automatically.
+function collectRootFiles(): string[] {
+  return readdirSync(".")
+    .filter((entry) => isScannedFile(entry) && statSync(entry).isFile())
+    .map((entry) => entry);
+}
+
 describe("source encoding guard", () => {
   it("no source file contains cp1252-mojibake sequences", () => {
     const violations: string[] = [];
 
-    for (const root of SCAN_ROOTS) {
-      for (const file of collectSourceFiles(root)) {
-        const lines = readFileSync(file, "utf8").split("\n");
-        for (const [index, line] of lines.entries()) {
-          if (MOJIBAKE_PATTERN.test(line) || ESCAPED_GLYPH_PATTERN.test(line)) {
-            violations.push(`${file}:${index + 1}`);
-          }
+    const files = [
+      ...SCAN_ROOTS.flatMap((root) => collectSourceFiles(root)),
+      ...collectRootFiles(),
+    ];
+
+    for (const file of files) {
+      const lines = readFileSync(file, "utf8").split("\n");
+      for (const [index, line] of lines.entries()) {
+        if (MOJIBAKE_PATTERN.test(line) || ESCAPED_GLYPH_PATTERN.test(line)) {
+          violations.push(`${file}:${index + 1}`);
         }
       }
     }

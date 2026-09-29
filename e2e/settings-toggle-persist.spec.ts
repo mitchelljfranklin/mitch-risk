@@ -1,7 +1,6 @@
 import { expect, test } from "@playwright/test";
 
 import { signInAsAdmin } from "./helpers";
-import { E2E_ADMIN_EMAIL, E2E_ADMIN_PASSWORD } from "./global-setup";
 
 test("a settings toggle keeps its new state after saving (no reload)", async ({
   page,
