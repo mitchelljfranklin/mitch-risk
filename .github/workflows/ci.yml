@@ -26,3 +26,54 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: mitch
+          POSTGRES_PASSWORD: mitch
+          POSTGRES_DB: mitch_risk_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U mitch -d mitch_risk_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # The database name contains "test" so playwright.config's guard allows
+      # the run — e2e mutates and resets data.
+      DATABASE_URL: "postgresql://mitch:mitch@localhost:5432/mitch_risk_test?schema=public"
+      AUTH_SECRET: "ci-e2e-auth-secret-0000000000000000000000"
+      APP_ENCRYPTION_KEY: "ci-e2e-encryption-key-000000000000000000"
+      CRON_SECRET: "ci-e2e-cron-secret-0123456789abcdef0123"
+      APP_URL: "http://localhost:3000"
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci --no-audit --no-fund --legacy-peer-deps
+      - run: npx prisma generate
+      - run: npx prisma migrate deploy
+      - run: npx prisma db seed
+      - run: mkdir -p .storage/evidence
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm run test:e2e
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results
+          retention-days: 7
+          if-no-files-found: ignore

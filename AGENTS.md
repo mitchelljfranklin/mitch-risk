@@ -296,7 +296,11 @@ ones before declaring any phase complete.
   `useActionFeedback` hook (toast + `router.refresh()`) instead. When an action
   is also called from non-`useActionState` contexts (e.g. API routes, cron),
   calling `revalidatePath` there is fine. (This was previously described as a
-  harmless double-refresh; the Node 24 behaviour makes it a hard rule.)
+  harmless double-refresh; the Node 24 behaviour makes it a hard rule.) The
+  consumer must actually call the hook — a component that discards the state
+  (`const [, action] = useActionState(...)`) or only renders it inline has no
+  refresh path of its own, so removing the action's `revalidatePath` leaves its
+  view stale. Removing one half without the other silently regresses the UI.
 
 ### Client/Server state patterns (learned the hard way)
 
