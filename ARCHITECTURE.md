@@ -87,7 +87,7 @@ The platform is designed around three principles:
                                    │  │  │ • Templates Builder    │  │  │
                                    │  │  │ • Frameworks           │  │  │
                                    │  │  │ • Risk Register        │  │  │
-                                   │  │  │ • Settings             │  │  │
+                                   │  │  │ • Admin                │  │  │
                                    │  │  │ • Audit Log            │  │  │
                                    │  │  │ • Reports & Exports    │  │  │
                                    │  │  └───────────────────────┘  │  │
@@ -470,12 +470,12 @@ The platform is designed around three principles:
 ### 5.2 Session Auth (NextAuth v5)
 
 - **Strategy:** JWT (stateless), no database session store
-- **Session expiry:** Sliding-window JWT `exp` claim via `computeSessionExpiry()`. Configurable via `sessionTimeoutMinutes` in Settings (default 30 min). The `exp` claim is refreshed on each authenticated request. `sessionTimeoutMinutes = 0` disables server-side expiry
+- **Session expiry:** Sliding-window JWT `exp` claim via `computeSessionExpiry()`. Configurable via `sessionTimeoutMinutes` in Admin (default 30 min). The `exp` claim is refreshed on each authenticated request. `sessionTimeoutMinutes = 0` disables server-side expiry
 - **Providers:**
   - **Credentials** — email + bcryptjs password (12 rounds), rate-limited at login
-  - **Microsoft Entra ID** — OIDC, configurable via Settings
-  - **Google** — OAuth 2.0, configurable via Settings
-  - **Generic OIDC** — Custom issuer/provider, configurable via Settings
+  - **Microsoft Entra ID** — OIDC, configurable in the Admin area
+  - **Google** — OAuth 2.0, configurable in the Admin area
+  - **Generic OIDC** — Custom issuer/provider, configurable in the Admin area
 - **Session payload:** `{ userId, roleId, roleName, permissions[] }` — permissions hydrated from Role table
 - **Audit:** Every login creates an AuditLog entry
 
@@ -640,7 +640,7 @@ When SSO is enforced (`disableLocalAuth = true`), a break-glass token allows loc
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │ sidebar items filtered by hasPermission(permissions, ...) │    │
 │  │ Viewer sees: Vendors, Assessments, Risk Register only    │    │
-│  │ Admin sees: All items including Settings                  │    │
+│  │ Admin sees: All items including Admin                     │    │
 │  └─────────────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1484,7 +1484,7 @@ Unexpected errors return a generic `{"error":{"message":"Internal error","status
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │ • In-memory fixed-window per concern                   │    │
 │  │ • Login, portal, password reset, API, break-glass        │    │
-│  │ • All limits configurable via Settings                    │    │
+│  │ • All limits configurable via Admin                       │    │
 │  └─────────────────────────────────────────────────────────┘    │
 │                                                                  │
 │  Layer 7: DATA PROTECTION                                        │
@@ -2092,7 +2092,7 @@ emails at send time. Stored templates are never modified.
 
 - **Single-container deployment:** No horizontal scaling in target architecture
 - **Simplicity:** No additional infrastructure dependency
-- **Configurable:** All limits adjustable via Settings UI
+- **Configurable:** All limits adjustable in the Admin area
 
 ### 19.10 Why Inline In-Process Storage Fingerprint (not Watchdog)?
 

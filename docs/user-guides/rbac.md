@@ -89,7 +89,7 @@ Access control is enforced at every layer:
 | **API routes** | `authenticateRequest()` + permission check | Returns 403 JSON envelope if denied |
 | **UI controls** | `hasPermission(user.permissions, key)` in JSX | Controls are **hidden**, not greyed out |
 | **Sidebar nav** | Permission-filtered navigation items | User only sees sections they can access |
-| **Settings tabs** | Tab params sanitized against permissions | Hidden tabs cannot be forced via URL |
+| **Admin sections** | Route and tab params sanitized against permissions | Hidden sections cannot be forced via URL |
 
 > **Hide, don't disable.** A role without a permission simply does not see the control. A Viewer gets a clean read-only screen — no write buttons, no redirect-on-click traps.
 

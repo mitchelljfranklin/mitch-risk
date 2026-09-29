@@ -233,10 +233,10 @@ This triggers: vendor reminders, overdue escalations, recurring assessment creat
 
 **To rotate safely:**
 
-1. Before changing `APP_ENCRYPTION_KEY`, open Settings and note down every encrypted value (SMTP password, SSO client secrets, cloud credentials). They will be blanked when the new key is applied.
+1. Before changing `APP_ENCRYPTION_KEY`, open the Admin area and note down every encrypted value (SMTP password, SSO client secrets, cloud credentials). They will be blanked when the new key is applied.
 2. Change the key in `.env` or `docker-compose.yml`.
 3. Restart the container.
-4. Re-enter all secrets in Settings. They will be encrypted with the new key.
+4. Re-enter all secrets in Admin. They will be encrypted with the new key.
 
 **To recover after an accidental key change:**
 

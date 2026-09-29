@@ -72,7 +72,7 @@ sliding‑window expiry.
   IP allowlist (single IP or CIDR notation, IPv4 + IPv6).
 - Each key has an optional expiry date.
 - An in‑app toggle disables the entire API surface.
-- Request count per key is tracked and surfaced in Settings for
+- Request count per key is tracked and surfaced in Admin for
   operational monitoring.
 
 **Vendor portal** access uses opaque, cryptographically random tokens
@@ -123,7 +123,7 @@ required — this is documented in the deployment guide.
 
 Files are stored behind a pluggable `FileStorage` interface supporting
 local disk, AWS S3, and Azure Blob. The active provider is configured
-in‑app via Settings. Storage credentials are encrypted at rest.
+in‑app via the Admin area. Storage credentials are encrypted at rest.
 
 Key security properties:
 - **Path‑traversal guard:** `resolveKeyPath()` rejects keys that resolve

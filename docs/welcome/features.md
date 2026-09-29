@@ -137,7 +137,7 @@ Mitch‑Risk is a self-hosted third party vendor risk management solution. Here'
 - **Custom roles** with any subset of 24 resource:action permissions
 - **Permission enforcement** on every server action, API route, and page
 - **UI controls hidden** (not greyed) — Viewer sees a clean read-only screen
-- **Sidebar** and **Settings tabs** permission-filtered
+- **Sidebar** and **admin sections** permission-filtered
 - **SSO** — Microsoft Entra ID, Google Workspace, and generic OIDC providers
 - **SSO-only mode** with break-glass emergency access
 
