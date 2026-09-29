@@ -4,6 +4,12 @@ import { signInAsAdmin } from "./helpers";
 
 const SCREENSHOT_DIR = "docs/screenshots";
 
+// These capture the images embedded in the docs site and are regenerated
+// locally. They are not a CI gate: the same pages are smoke-tested by the rbac
+// and settings specs, and image generation is timing-sensitive enough to flake
+// on shared runners.
+test.skip(process.env.CI === "true", "docs screenshots are generated locally");
+
 test.use({ viewport: { width: 1280, height: 800 } });
 
 test("capture dashboard screenshot", async ({ page }) => {

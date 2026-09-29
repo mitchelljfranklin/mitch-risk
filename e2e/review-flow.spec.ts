@@ -167,14 +167,28 @@ async function saveFirstPendingDecision(
       .locator('textarea[name="note"]')
       .fill("Please quantify coverage for third-party accounts.");
   }
+
+  // Wait for the action's own POST to finish before touching the page - a
+  // reload while it is in flight aborts it and loses the decision. Verify
+  // persistence by reloading afterwards: that is deterministic, whereas
+  // waiting for the route's live revalidation is unreliable on CI, where the
+  // heavy route can take longer than any sane wait (and the revalidation may
+  // abort, leaving the panel in place even though the write succeeded).
+  const actionHandled = page.waitForResponse(
+    (response) =>
+      response.request().method() === "POST" &&
+      response.url().includes("/assessments/"),
+    { timeout: 60_000 },
+  );
   await panels.first().getByRole("button", { name: "Save" }).click();
-  // The very first interaction on a freshly navigated heavy page can race
-  // the lazy action-chunk download; give the POST room to finish.
-  await page.waitForTimeout(3000);
+  await actionHandled;
+
+  await page.reload();
+  await expandAllReviewPanels(page);
   try {
     await expect(page.locator('form:has(select[name="decision"])')).toHaveCount(
       expectedForms,
-      { timeout: 60000 },
+      { timeout: 30_000 },
     );
     return true;
   } catch {
