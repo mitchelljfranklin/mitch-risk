@@ -37,7 +37,7 @@ Internal users authenticate via email/password credentials or Single Sign-On (SS
 The platform supports Microsoft Entra ID (OIDC), Google Workspace (OAuth), and any generic OIDC-compliant IdP. Provider configuration — including enable/disable flags, client IDs, and client secrets — is managed entirely via in-app Settings. No SSO credentials are stored in environment variables or config files. Secrets are encrypted at rest with AES-256-GCM.
 
 Key SSO security features:
-- **Conditional provider registration:** `buildSsoProviders()` only registers providers if they are enabled in Settings AND have a configured clientId. Disabled providers expose no OAuth/OIDC callback routes.
+- **Conditional provider registration:** `buildSsoProviders()` only registers providers if they are enabled in Admin AND have a configured clientId. Disabled providers expose no OAuth/OIDC callback routes.
 - **Domain restriction:** Optional `allowedDomain` setting restricts SSO to a specific email domain (e.g., `@company.com`). Enforced in the `signIn` callback.
 - **Auto-provisioning:** First SSO login creates a local user with the configured `autoProvisionRoleId`. Auto-provisioned users get an **empty `passwordHash`**, preventing local-login bypass.
 - **SSO-only login + break-glass:** When `disableLocalAuth` is enabled and at least one SSO provider is configured, the local login form is hidden. A break-glass URL (`/login?breakGlass=<token>`) restores the local form for emergency access. Break-glass tokens use 24-byte random hex, bcrypt-hashed in DB, expire 24 hours after generation, are consumed on first successful verification, and are rate-limited.
@@ -109,7 +109,7 @@ Permission definitions, default role mappings, and helpers live in `lib/permissi
 
 1. **Server-side guard:** Every page, Server Action, and API route calls `requirePermission("<key>")` before executing. Unauthorized access returns a redirect to `/dashboard` (pages) or 403 (API routes).
 2. **UI gating:** Controls that trigger gated actions are **hidden** (not greyed-out) via server-rendered conditionals. A Viewer sees a clean read-only screen — no write buttons, no redirect-on-click traps.
-3. **Navigation + tabs:** Sidebar items the user lacks permission for are not rendered. Settings tab parameters are sanitized against the user's allowed permission set.
+3. **Navigation + sections:** Sidebar items the user lacks permission for are not rendered. Admin sections and their route/tab parameters are sanitized against the user's allowed permission set.
 4. **API key auth:** Programmatic access via API keys grants **scoped permissions** configurable at key creation. An empty scope defaults to full access (backward compatible). Keys are independent of the creator — deleting or disabling the creating user does not revoke the key.
 
 ### 3.4 Strengths & Considerations
@@ -477,7 +477,7 @@ Portal file uploads are restricted by:
 
 ### 9.7 Cloud Storage (S3 / Azure Blob)
 
-External cloud storage is supported through the same `FileStorage` interface. A Storage tab in Settings lets admins configure AWS S3 or Azure Blob as the storage backend. The provider is selected lazily at runtime — no restart required.
+External cloud storage is supported through the same `FileStorage` interface. A Storage section in Admin lets admins configure AWS S3 or Azure Blob as the storage backend. The provider is selected lazily at runtime — no restart required.
 
 **Provider selection:**
 - Default: local disk (`EVIDENCE_STORAGE_PATH` env var)

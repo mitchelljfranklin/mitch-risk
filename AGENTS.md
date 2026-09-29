@@ -25,7 +25,7 @@ over sprawling configuration. Do not add features that are not in the plan witho
 - **@react-pdf/renderer** — PDF assessment reports (Phase 19)
 - **Swagger UI (CDN)** — interactive API documentation at `/docs` (Phase 29)
 - **bcryptjs** — user password hashing and API key hashing
-- **Local-disk volume** — evidence file storage behind a storage interface (save/read/delete/list; S3 and Azure Blob swappable via in-app Settings); files served only via an authenticated route
+- **Local-disk volume** — evidence file storage behind a storage interface (save/read/delete/list; S3 and Azure Blob swappable via the Admin area); files served only via an authenticated route
 - **Built-in scheduler (default) -> `lib/scheduler.ts` via `instrumentation.ts`** — every 5 minutes: reminders, escalations, recurring assessments, audit-log & email-log pruning, orphaned-file sweep. Toggle in Admin → Scheduling; optional external triggering via secured `/api/cron/run`
 - **Docker Compose** (app + Postgres), reverse proxy (Caddy/nginx) for TLS — self-hosted
 
@@ -557,7 +557,7 @@ from the catalog and role defaults).
   running. Only deployment bootstrap/infra belongs in env (`DATABASE_URL`, `AUTH_SECRET`,
   `APP_ENCRYPTION_KEY`, `CRON_SECRET`, `APP_URL`, storage path). This split is for end-user
   operation, not product build/dev config (tsconfig, ESLint, etc.).
-- Keep deployment secrets in environment variables; secrets stored in Settings (e.g. the SMTP
+- Keep deployment secrets in environment variables; secrets stored in Admin (e.g. the SMTP
   password) are encrypted at rest with `APP_ENCRYPTION_KEY` and never returned to the client.
 - **No single-letter variables.** Except for loop indices (`i`, `j`) and standard
   mathematical notation in algorithm functions, every variable must have a descriptive

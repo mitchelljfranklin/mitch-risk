@@ -42,7 +42,7 @@ The **Needs Attention** section groups actionable items so you can focus on what
 |---|---|---|
 | **Unreviewed** | Assessments waiting for review (status `SUBMITTED`) | Assessments filtered by status |
 | **Clarifications** | Assessments sent back to vendors for clarification | Assessments list |
-| **Failed emails (24h)** | Email delivery failures in the last 24 hours | Email Tracking in Settings |
+| **Failed emails (24h)** | Email delivery failures in the last 24 hours | Email tracking in Admin |
 
 Below the pills, three expandable groups provide vendor-level detail:
 

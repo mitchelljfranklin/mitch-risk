@@ -133,7 +133,7 @@ Cloud credentials are stored in the database, encrypted at rest with AES-256-GCM
 | Error | Likely Cause | Solution |
 |-------|-------------|----------|
 | `AccessDenied` | IAM policy missing permissions | Verify IAM policy includes all four required actions |
-| `NoSuchBucket` | Bucket name incorrect | Check bucket name in Settings (case-sensitive) |
+| `NoSuchBucket` | Bucket name incorrect | Check the bucket name in Admin (case-sensitive) |
 | `InvalidAccessKeyId` | Access key wrong | Regenerate IAM access keys |
 | `SignatureDoesNotMatch` | Secret key wrong | Re-enter secret access key |
 | `NetworkingError` | Outbound HTTPS blocked | Check firewall for `*.amazonaws.com` |

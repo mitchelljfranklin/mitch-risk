@@ -161,7 +161,7 @@ docker compose up -d
 - 3 system roles (Admin, Reviewer, Viewer) + custom roles
 - 24 granular `resource:action` permissions
 - UI controls hidden (not greyed) — Viewer sees a clean read-only screen
-- Sidebar navigation and settings tabs permission-filtered
+- Sidebar navigation and admin sections permission-filtered
 
 ### Security
 - bcryptjs at 12 rounds for passwords, API keys, and break-glass tokens
