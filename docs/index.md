@@ -3,7 +3,7 @@ layout: home
 
 hero:
   name: "Mitch‑Risk"
-  text: "Lightweight third party vendor risk management"
+  text: "White-label third party vendor risk management"
   tagline: Build security questionnaires with conditional logic, send them via no-login secure portal links, auto-score responses with configurable RAG thresholds, and map answers to ISO 27001, SOC 2, NIST CSF, and Essential Eight.
   image:
     src: /favicon.svg

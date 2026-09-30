@@ -34,7 +34,7 @@
 
 ## 1. Executive Summary
 
-**Mitch‑Risk** is a lightweight, self-hosted third party vendor risk management solution. It enables small-to-medium businesses to:
+**Mitch‑Risk** is a white-label, lightweight, self-hosted third party vendor risk management solution. It enables small-to-medium businesses to:
 
 - Build and version questionnaire templates with conditional logic
 - Send assessments to vendors via no-login secure portal links

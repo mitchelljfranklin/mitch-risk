@@ -2,7 +2,7 @@
 
 ## What is Mitch‑Risk?
 
-Mitch‑Risk is a lightweight, self-hosted third party vendor risk management solution. It helps organisations build security questionnaires, send them to vendors via no-login secure portal links, auto-score responses, map answers to compliance frameworks (ISO 27001, SOC 2, NIST CSF, Essential Eight), surface gaps as findings, and track each vendor's risk profile over time.
+Mitch‑Risk is a white-label, lightweight, self-hosted third party vendor risk management solution. It helps organisations build security questionnaires, send them to vendors via no-login secure portal links, auto-score responses, map answers to compliance frameworks (ISO 27001, SOC 2, NIST CSF, Essential Eight), surface gaps as findings, and track each vendor's risk profile over time.
 
 Designed with simplicity at its core, Mitch‑Risk favours fewer, well-connected screens over sprawling configuration. Everything — email delivery, scoring weights, user roles, storage backends, and the rest — is managed through an intuitive in-app interface. No YAML config files, no Kubernetes manifests, no professional services engagement.
 
