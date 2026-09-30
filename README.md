@@ -7,7 +7,7 @@
 [![Release](https://img.shields.io/github/v/release/mitchelljfranklin/mitch-risk)](https://github.com/mitchelljfranklin/mitch-risk/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/mitchelljfranklin/mitch-risk/total)](https://github.com/mitchelljfranklin/mitch-risk/releases)
 
-> A self-hosted third party vendor risk management solution. Free, open-source, deploy anywhere.
+> A white-label, lightweight, self-hosted third party vendor risk management solution. Free, open-source, deploy anywhere.
 
 ---
 
