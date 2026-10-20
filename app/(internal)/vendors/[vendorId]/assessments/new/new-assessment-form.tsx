@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
@@ -35,6 +36,7 @@ export function NewAssessmentForm({
   templates,
   reviewers,
 }: NewAssessmentFormProps) {
+  const translations = useTranslations("Assessments.new.form");
   const [state, formAction, isPending] = useActionState(
     createAssessmentAction,
     initialState,
@@ -45,34 +47,34 @@ export function NewAssessmentForm({
     <form action={formAction} className="grid gap-4">
       <input type="hidden" name="vendorId" value={vendorId} />
       <div className="grid gap-2">
-        <Label htmlFor="title">Title</Label>
+        <Label htmlFor="title">{translations("title")}</Label>
         <Input
           id="title"
           name="title"
-          placeholder="e.g. Annual security review"
+          placeholder={translations("titlePlaceholder")}
           required
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="templateId">Questionnaire template</Label>
+        <Label htmlFor="templateId">{translations("template")}</Label>
         <Combobox
           name="templateId"
           options={templates}
-          placeholder="Select a published template"
-          emptyText="No templates found."
+          placeholder={translations("templatePlaceholder")}
+          emptyText={translations("noTemplates")}
           required
         />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="grid gap-2">
-          <Label htmlFor="dueDate">Due date</Label>
+          <Label htmlFor="dueDate">{translations("dueDate")}</Label>
           <Input id="dueDate" name="dueDate" type="date" />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="reviewerId">Reviewer</Label>
+          <Label htmlFor="reviewerId">{translations("reviewer")}</Label>
           <Select name="reviewerId" defaultValue="">
             <SelectTrigger id="reviewerId">
-              <SelectValue placeholder="Unassigned" />
+              <SelectValue placeholder={translations("unassigned")} />
             </SelectTrigger>
             <SelectContent>
               {reviewers.map((reviewer) => (
@@ -86,7 +88,7 @@ export function NewAssessmentForm({
       </div>
       {templates.length === 0 ? (
         <p className="text-muted-foreground text-sm">
-          Publish a template first to create an assessment.
+          {translations("publishFirst")}
         </p>
       ) : null}
       {state?.error ? (
@@ -96,10 +98,10 @@ export function NewAssessmentForm({
       ) : null}
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending || templates.length === 0}>
-          {isPending ? "Creating..." : "Create assessment"}
+          {isPending ? translations("creating") : translations("create")}
         </Button>
         <Button asChild variant="outline">
-          <Link href={`/vendors/${vendorId}`}>Cancel</Link>
+          <Link href={`/vendors/${vendorId}`}>{translations("cancel")}</Link>
         </Button>
       </div>
     </form>

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
@@ -23,6 +24,7 @@ import {
 } from "@/lib/db/assessments";
 import {
   assessmentSchema,
+  assessmentValidationErrorKey,
   updateAssessmentSchema,
 } from "@/lib/schemas/assessment";
 
@@ -34,6 +36,7 @@ export async function createAssessmentAction(
   formData: FormData,
 ): Promise<AssessmentFormState> {
   await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
+  const translations = await getTranslations("Assessments.errors");
   const vendorId = getField(formData, "vendorId");
   const parsed = assessmentSchema.safeParse({
     title: getField(formData, "title"),
@@ -42,7 +45,9 @@ export async function createAssessmentAction(
     reviewerId: getField(formData, "reviewerId"),
   });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+    return {
+      error: translations(assessmentValidationErrorKey(parsed.error)),
+    };
   }
   const assessment = await createAssessment(vendorId, parsed.data);
   const user = await getCurrentUser();
@@ -169,6 +174,7 @@ export async function updateAssessmentAction(
   formData: FormData,
 ): Promise<UpdateAssessmentState> {
   await requirePermission(PERMISSIONS.ASSESSMENTS_EDIT);
+  const translations = await getTranslations("Assessments.errors");
   const assessmentId = getField(formData, "assessmentId");
 
   // Same bounds as creation - unvalidated values previously reached Prisma
@@ -180,12 +186,12 @@ export async function updateAssessmentAction(
   if (!parsed.success) {
     return {
       ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
+      message: translations(assessmentValidationErrorKey(parsed.error)),
     };
   }
 
   await updateAssessment(assessmentId, parsed.data);
-  return { ok: true, message: "Saved." };
+  return { ok: true, message: translations("saved") };
 }
 
 export async function revokeAssessmentAction(formData: FormData) {
@@ -422,6 +428,7 @@ export async function createAndStartSelfAssessmentAction(
   formData: FormData,
 ): Promise<AssessmentFormState & { portalUrl?: string }> {
   await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
+  const translations = await getTranslations("Assessments.errors");
 
   const vendorId = getField(formData, "vendorId");
   const parsed = assessmentSchema.safeParse({
@@ -431,7 +438,9 @@ export async function createAndStartSelfAssessmentAction(
     reviewerId: "",
   });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+    return {
+      error: translations(assessmentValidationErrorKey(parsed.error)),
+    };
   }
 
   const assessment = await createAssessment(vendorId, parsed.data);
@@ -452,11 +461,15 @@ export async function createAndStartSelfAssessmentAction(
 
   if (!portalUrl) {
     return {
-      error: "Assessment created but portal link could not be generated.",
+      error: translations("portalLinkFailed"),
     };
   }
 
-  return { ok: true, message: "Assessment started.", portalUrl };
+  return {
+    ok: true,
+    message: translations("started"),
+    portalUrl,
+  };
 }
 
 async function getAssessmentForPortalToken(

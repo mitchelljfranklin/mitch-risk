@@ -383,6 +383,79 @@
       "cancel": "Cancelar"
     }
   },
+  "Assessments": {
+    "list": {
+      "title": "Evaluaciones",
+      "subtitle": "Evaluaciones enviadas a proveedores.",
+      "subtitleForVendor": "Evaluaciones de {vendorName}.",
+      "filters": {
+        "search": "Buscar",
+        "searchPlaceholder": "Título o proveedor...",
+        "status": "Estado",
+        "allStatuses": "Todos los estados",
+        "statusAriaLabel": "Filtrar evaluaciones por estado",
+        "from": "Desde",
+        "to": "Hasta",
+        "sort": "Ordenar",
+        "sortAriaLabel": "Ordenar evaluaciones",
+        "overdueOnly": "Solo vencidas",
+        "apply": "Filtrar",
+        "clear": "Limpiar"
+      },
+      "sorts": {
+        "created": "Más recientes",
+        "created-asc": "Más antiguas",
+        "due-asc": "Fecha de vencimiento (más próxima)",
+        "due-desc": "Fecha de vencimiento (más lejana)",
+        "score-asc": "Puntuación (de menor a mayor)",
+        "score-desc": "Puntuación (de mayor a menor)",
+        "vendor": "Proveedor (A–Z)",
+        "status": "Estado (A–Z)",
+        "status-desc": "Estado (Z–A)"
+      },
+      "emptyFiltered": "Ninguna evaluación coincide con los filtros seleccionados.",
+      "emptyTitle": "Todavía no hay evaluaciones",
+      "emptyDescription": "Crea una evaluación y envía al proveedor su enlace para completarla.",
+      "items": "evaluaciones",
+      "columns": {
+        "assessmentVendor": "Evaluación · Proveedor",
+        "score": "Puntuación",
+        "status": "Estado",
+        "due": "Vencimiento"
+      },
+      "overdue": "Vencida",
+      "due": " · vence {date}"
+    },
+    "new": {
+      "title": "Nueva evaluación para {vendorName}",
+      "breadcrumb": "Nueva evaluación",
+      "cardTitle": "Detalles de la evaluación",
+      "form": {
+        "title": "Título",
+        "titlePlaceholder": "p. ej., revisión anual de seguridad",
+        "template": "Plantilla del cuestionario",
+        "templatePlaceholder": "Selecciona una plantilla publicada",
+        "noTemplates": "No se encontraron plantillas.",
+        "dueDate": "Fecha de vencimiento",
+        "reviewer": "Revisor",
+        "unassigned": "Sin asignar",
+        "publishFirst": "Publica primero una plantilla para crear una evaluación.",
+        "creating": "Creando...",
+        "create": "Crear evaluación",
+        "cancel": "Cancelar"
+      }
+    },
+    "errors": {
+      "invalidInput": "Entrada no válida.",
+      "titleRequired": "El título es obligatorio",
+      "titleTooLong": "El título debe tener 200 caracteres o menos",
+      "templateRequired": "Selecciona una plantilla",
+      "invalidDueDate": "Introduce una fecha de vencimiento válida",
+      "saved": "Guardado.",
+      "started": "Evaluación iniciada.",
+      "portalLinkFailed": "Se creó la evaluación, pero no se pudo generar el enlace del portal."
+    }
+  },
   "Shell": {
     "workspace": {
       "dashboard": "Panel",

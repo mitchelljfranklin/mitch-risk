@@ -383,6 +383,79 @@
       "cancel": "Cancel"
     }
   },
+  "Assessments": {
+    "list": {
+      "title": "Assessments",
+      "subtitle": "Assessments sent to vendors.",
+      "subtitleForVendor": "Assessments for {vendorName}.",
+      "filters": {
+        "search": "Search",
+        "searchPlaceholder": "Title or vendor...",
+        "status": "Status",
+        "allStatuses": "All statuses",
+        "statusAriaLabel": "Filter assessments by status",
+        "from": "From",
+        "to": "To",
+        "sort": "Sort",
+        "sortAriaLabel": "Sort assessments",
+        "overdueOnly": "Overdue only",
+        "apply": "Filter",
+        "clear": "Clear"
+      },
+      "sorts": {
+        "created": "Newest first",
+        "created-asc": "Oldest first",
+        "due-asc": "Due date (soonest)",
+        "due-desc": "Due date (latest)",
+        "score-asc": "Score (low → high)",
+        "score-desc": "Score (high → low)",
+        "vendor": "Vendor (A–Z)",
+        "status": "Status (A–Z)",
+        "status-desc": "Status (Z–A)"
+      },
+      "emptyFiltered": "No assessments match the selected filters.",
+      "emptyTitle": "No assessments yet",
+      "emptyDescription": "Create an assessment and send the vendor its link to complete it.",
+      "items": "assessments",
+      "columns": {
+        "assessmentVendor": "Assessment · Vendor",
+        "score": "Score",
+        "status": "Status",
+        "due": "Due"
+      },
+      "overdue": "Overdue",
+      "due": " · due {date}"
+    },
+    "new": {
+      "title": "New assessment for {vendorName}",
+      "breadcrumb": "New assessment",
+      "cardTitle": "Assessment details",
+      "form": {
+        "title": "Title",
+        "titlePlaceholder": "e.g. Annual security review",
+        "template": "Questionnaire template",
+        "templatePlaceholder": "Select a published template",
+        "noTemplates": "No templates found.",
+        "dueDate": "Due date",
+        "reviewer": "Reviewer",
+        "unassigned": "Unassigned",
+        "publishFirst": "Publish a template first to create an assessment.",
+        "creating": "Creating...",
+        "create": "Create assessment",
+        "cancel": "Cancel"
+      }
+    },
+    "errors": {
+      "invalidInput": "Invalid input.",
+      "titleRequired": "Title is required",
+      "titleTooLong": "Title must be 200 characters or fewer",
+      "templateRequired": "Select a template",
+      "invalidDueDate": "Enter a valid due date",
+      "saved": "Saved.",
+      "started": "Assessment started.",
+      "portalLinkFailed": "Assessment created but portal link could not be generated."
+    }
+  },
   "Shell": {
     "workspace": {
       "dashboard": "Dashboard",

@@ -202,4 +202,64 @@ test.describe("internal shell", () => {
       page.getByRole("link", { name: "Exportar CSV" }),
     ).toBeVisible();
   });
+
+  test("translates the assessments list", async ({ page }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto("/assessments");
+
+    await expect(
+      page.getByRole("heading", { name: "Evaluaciones" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Evaluaciones enviadas a proveedores."),
+    ).toBeVisible();
+    await expect(page.getByLabel("Buscar")).toBeVisible();
+    await expect(
+      page.getByRole("combobox", { name: "Filtrar evaluaciones por estado" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("combobox", { name: "Ordenar evaluaciones" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Filtrar", exact: true }),
+    ).toBeVisible();
+    await expect(page.getByText("Solo vencidas")).toBeVisible();
+  });
+
+  test("translates the new assessment page", async ({ page }) => {
+    const vendor = await prisma.vendor.findFirst({ orderBy: { name: "asc" } });
+    if (!vendor) {
+      throw new Error("The seeded test database has no vendors.");
+    }
+
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto(`/vendors/${vendor.id}/assessments/new`);
+
+    await expect(
+      page.getByRole("heading", {
+        name: `Nueva evaluación para ${vendor.name}`,
+      }),
+    ).toBeVisible();
+    await expect(page.getByText("Detalles de la evaluación")).toBeVisible();
+    await expect(page.getByText("Plantilla del cuestionario")).toBeVisible();
+    await expect(page.getByText("Fecha de vencimiento")).toBeVisible();
+    await expect(page.getByText("Revisor")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Cancelar" })).toBeVisible();
+  });
 });

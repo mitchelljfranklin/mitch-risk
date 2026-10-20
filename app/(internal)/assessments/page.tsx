@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,7 +20,10 @@ import { buildBackParam } from "@/lib/nav";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Assessments" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Assessments.list");
+  return { title: translations("title") };
+}
 
 type AssessmentsPageProps = {
   searchParams: Promise<Record<string, string | undefined>>;
@@ -29,35 +33,40 @@ export default async function AssessmentsPage({
   searchParams,
 }: AssessmentsPageProps) {
   await requirePermission(PERMISSIONS.ASSESSMENTS_VIEW);
-  const sp = await searchParams;
-  const overdue = sp.overdue === "1" || sp.overdue === "on";
-  const sort = (sp.sort as AssessmentSort) || "created";
-  const page = sp.page ? parseInt(sp.page, 10) || 1 : 1;
+  const translations = await getTranslations("Assessments.list");
+  const commonTranslations = await getTranslations("Common");
+  const searchParameters = await searchParams;
+  const overdue =
+    searchParameters.overdue === "1" || searchParameters.overdue === "on";
+  const sort = (searchParameters.sort as AssessmentSort) || "created";
+  const pageNumber = searchParameters.page
+    ? parseInt(searchParameters.page, 10) || 1
+    : 1;
 
   const { assessments, totalCount, pageSize } = await listAssessments({
-    query: sp.query,
-    status: sp.status,
-    vendorId: sp.vendorId,
-    fromDate: sp.from,
-    toDate: sp.to,
+    query: searchParameters.query,
+    status: searchParameters.status,
+    vendorId: searchParameters.vendorId,
+    fromDate: searchParameters.from,
+    toDate: searchParameters.to,
     overdue,
     sort,
-    page,
+    page: pageNumber,
   });
 
   const hasFilters =
-    Boolean(sp.query) ||
-    Boolean(sp.status) ||
-    Boolean(sp.vendorId) ||
-    Boolean(sp.from) ||
-    Boolean(sp.to) ||
+    Boolean(searchParameters.query) ||
+    Boolean(searchParameters.status) ||
+    Boolean(searchParameters.vendorId) ||
+    Boolean(searchParameters.from) ||
+    Boolean(searchParameters.to) ||
     overdue;
 
-  const filteredVendorName = sp.vendorId
-    ? ((await getVendor(sp.vendorId))?.name ?? null)
+  const filteredVendorName = searchParameters.vendorId
+    ? ((await getVendor(searchParameters.vendorId))?.name ?? null)
     : null;
 
-  const backParam = buildBackParam("/assessments", sp, [
+  const backParam = buildBackParam("/assessments", searchParameters, [
     "query",
     "status",
     "vendorId",
@@ -68,74 +77,88 @@ export default async function AssessmentsPage({
     "page",
   ]);
 
+  const statusOptions = Object.keys(ASSESSMENT_STATUS_LABELS).map((status) => ({
+    value: status,
+    label: commonTranslations.has(`assessmentStatuses.${status}`)
+      ? commonTranslations(`assessmentStatuses.${status}`)
+      : status,
+  }));
+
+  const sortOptions = ASSESSMENT_SORTS.map((value) => ({
+    value,
+    label: translations(`sorts.${value}`),
+  }));
+
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Assessments</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {translations("title")}
+        </h1>
         <p className="text-muted-foreground text-sm">
           {filteredVendorName
-            ? `Assessments for ${filteredVendorName}.`
-            : "Assessments sent to vendors."}
+            ? translations("subtitleForVendor", {
+                vendorName: filteredVendorName,
+              })
+            : translations("subtitle")}
         </p>
       </div>
 
       <form className="flex flex-wrap items-end gap-2">
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="query">
-            Search
+            {translations("filters.search")}
           </label>
           <Input
             id="query"
             name="query"
-            placeholder="Title or vendor..."
-            defaultValue={sp.query ?? ""}
+            placeholder={translations("filters.searchPlaceholder")}
+            defaultValue={searchParameters.query ?? ""}
             className="w-48"
           />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="status">
-            Status
+            {translations("filters.status")}
           </label>
           <AutoSubmitSelect
             name="status"
-            defaultValue={sp.status ?? ""}
-            key={`status-${sp.status ?? ""}`}
-            emptyOptionLabel="All statuses"
+            defaultValue={searchParameters.status ?? ""}
+            key={`status-${searchParameters.status ?? ""}`}
+            emptyOptionLabel={translations("filters.allStatuses")}
             id="status"
             className="w-40"
-            ariaLabel="Filter assessments by status"
-            options={Object.entries(ASSESSMENT_STATUS_LABELS).map(
-              ([value, label]) => ({ value, label }),
-            )}
+            ariaLabel={translations("filters.statusAriaLabel")}
+            options={statusOptions}
           />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="from">
-            From
+            {translations("filters.from")}
           </label>
           <Input
             id="from"
             name="from"
             type="date"
-            defaultValue={sp.from ?? ""}
+            defaultValue={searchParameters.from ?? ""}
             className="w-36"
           />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="to">
-            To
+            {translations("filters.to")}
           </label>
           <Input
             id="to"
             name="to"
             type="date"
-            defaultValue={sp.to ?? ""}
+            defaultValue={searchParameters.to ?? ""}
             className="w-36"
           />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="sort">
-            Sort
+            {translations("filters.sort")}
           </label>
           <AutoSubmitSelect
             name="sort"
@@ -143,23 +166,20 @@ export default async function AssessmentsPage({
             key={`sort-${sort ?? ""}`}
             id="sort"
             className="w-44"
-            ariaLabel="Sort assessments"
-            options={Object.entries(ASSESSMENT_SORTS).map(([value, label]) => ({
-              value,
-              label,
-            }))}
+            ariaLabel={translations("filters.sortAriaLabel")}
+            options={sortOptions}
           />
         </div>
         <label className="mb-1.5 flex items-center gap-2 text-sm">
           <Checkbox name="overdue" value="1" defaultChecked={overdue} />
-          Overdue only
+          {translations("filters.overdueOnly")}
         </label>
         <Button type="submit" variant="secondary" size="sm" className="mb-px">
-          Filter
+          {translations("filters.apply")}
         </Button>
         {hasFilters ? (
           <Button asChild variant="ghost" size="sm" className="mb-px">
-            <Link href="/assessments">Clear</Link>
+            <Link href="/assessments">{translations("filters.clear")}</Link>
           </Button>
         ) : null}
       </form>
@@ -167,13 +187,13 @@ export default async function AssessmentsPage({
       {assessments.length === 0 ? (
         hasFilters ? (
           <p className="text-muted-foreground text-sm">
-            No assessments match the selected filters.
+            {translations("emptyFiltered")}
           </p>
         ) : (
           <EmptyState
             icon="assessments"
-            title="No assessments yet"
-            description="Create an assessment and send the vendor its link to complete it."
+            title={translations("emptyTitle")}
+            description={translations("emptyDescription")}
           />
         )
       ) : (
@@ -190,7 +210,7 @@ export default async function AssessmentsPage({
           }))}
           backParam={backParam}
           initialSort={sort}
-          page={page}
+          page={pageNumber}
           pageSize={pageSize}
           totalCount={totalCount}
         />
