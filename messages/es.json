@@ -1,10 +1,104 @@
 {
   "Common": {
     "changeLanguage": "Cambiar idioma",
-    "skipToContent": "Ir al contenido"
+    "skipToContent": "Ir al contenido",
+    "tiers": {
+      "CRITICAL": "Crítico",
+      "HIGH": "Alto",
+      "MEDIUM": "Medio",
+      "LOW": "Bajo"
+    }
   },
   "Metadata": {
     "description": "Solución white-label para la gestión del riesgo de terceros"
+  },
+  "Dashboard": {
+    "metaTitle": "Panel",
+    "title": "Resumen de riesgo de proveedores",
+    "tracked": "{count, plural, one {# proveedor en seguimiento} other {# proveedores en seguimiento}}",
+    "newVendor": "Nuevo proveedor",
+    "assessments": "Evaluaciones",
+    "portfolioReport": "Informe de cartera",
+    "emptyTitle": "Aún no hay proveedores",
+    "emptyCanCreate": "Añade tu primer proveedor para empezar a seguir su riesgo.",
+    "emptyReadOnly": "Todavía no hay proveedores en seguimiento.",
+    "addVendor": "Añadir un proveedor →",
+    "stats": {
+      "vendors": "Proveedores en seguimiento",
+      "averageScore": "Puntuación media",
+      "openFindings": "Hallazgos abiertos",
+      "needsAttention": "Requieren atención"
+    },
+    "topControls": "Controles más deficientes",
+    "viewRiskRegister": "Ver registro de riesgos →",
+    "highestRisk": "Proveedores de mayor riesgo",
+    "viewAllVendors": "Ver todos los proveedores →",
+    "noAssessments": "Sin evaluaciones",
+    "overdue": "{count} vencidas",
+    "attention": {
+      "title": "Requieren atención",
+      "allClear": "Todo en orden: no hay nada que requiera atención ahora mismo.",
+      "titleWithCount": "Requieren atención ({count})",
+      "unreviewed": "sin revisar",
+      "clarification": "aclaración",
+      "clarifications": "aclaraciones",
+      "failedEmail": "correo fallido (24 h)",
+      "failedEmails": "correos fallidos (24 h)",
+      "groups": {
+        "overdue": "Evaluaciones vencidas",
+        "belowThreshold": "Por debajo del umbral",
+        "keyDates": "Fechas clave (60 días)"
+      },
+      "overdueAssessment": "{count, plural, one {# evaluación vencida} other {# evaluaciones vencidas}}",
+      "oldestSince": "la más antigua desde {date}",
+      "belowThreshold": "por debajo del umbral del {percent}%",
+      "contractRenewal": "Renovación del contrato",
+      "daysOverdue": "{days} d de retraso",
+      "inDays": "en {days} d"
+    },
+    "charts": {
+      "portfolioHealth": "Salud de la cartera",
+      "openFindingsBySeverity": "Hallazgos abiertos por gravedad",
+      "assessmentStatus": "Estado de las evaluaciones",
+      "riskByTier": "Riesgo por nivel",
+      "vendors": "proveedores",
+      "assessments": "Evaluaciones",
+      "openFindings": "Hallazgos abiertos",
+      "ragShort": {
+        "green": "Verde",
+        "amber": "Ámbar",
+        "red": "Rojo",
+        "unscored": "Sin puntuar"
+      },
+      "rag": {
+        "green": "Verde (≥85%)",
+        "amber": "Ámbar (60–84%)",
+        "red": "Rojo (<60%)",
+        "unscored": "Sin puntuar"
+      },
+      "severity": {
+        "CRITICAL": "Crítico",
+        "HIGH": "Alto",
+        "MEDIUM": "Medio",
+        "LOW": "Bajo"
+      },
+      "status": {
+        "DRAFT": "Borrador",
+        "SENT": "Enviado",
+        "IN_PROGRESS": "En curso",
+        "SUBMITTED": "Enviado a revisión",
+        "UNDER_REVIEW": "En revisión",
+        "COMPLETED": "Completado",
+        "OVERDUE": "Vencido"
+      },
+      "tier": {
+        "CRITICAL": "Crítico",
+        "HIGH": "Alto",
+        "MEDIUM": "Medio",
+        "LOW": "Bajo",
+        "Unspecified": "Sin especificar"
+      }
+    }
   },
   "Shell": {
     "workspace": {

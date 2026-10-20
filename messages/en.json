@@ -1,10 +1,104 @@
 {
   "Common": {
     "changeLanguage": "Change language",
-    "skipToContent": "Skip to content"
+    "skipToContent": "Skip to content",
+    "tiers": {
+      "CRITICAL": "Critical",
+      "HIGH": "High",
+      "MEDIUM": "Medium",
+      "LOW": "Low"
+    }
   },
   "Metadata": {
     "description": "White-label third party vendor risk management solution"
+  },
+  "Dashboard": {
+    "metaTitle": "Dashboard",
+    "title": "Vendor risk overview",
+    "tracked": "{count, plural, one {# vendor tracked} other {# vendors tracked}}",
+    "newVendor": "New vendor",
+    "assessments": "Assessments",
+    "portfolioReport": "Portfolio report",
+    "emptyTitle": "No vendors yet",
+    "emptyCanCreate": "Add your first vendor to start tracking their risk.",
+    "emptyReadOnly": "No vendors are being tracked yet.",
+    "addVendor": "Add a vendor →",
+    "stats": {
+      "vendors": "Vendors tracked",
+      "averageScore": "Average score",
+      "openFindings": "Open findings",
+      "needsAttention": "Needs attention"
+    },
+    "topControls": "Top deficient controls",
+    "viewRiskRegister": "View risk register →",
+    "highestRisk": "Highest-risk vendors",
+    "viewAllVendors": "View all vendors →",
+    "noAssessments": "No assessments",
+    "overdue": "{count} overdue",
+    "attention": {
+      "title": "Needs attention",
+      "allClear": "All clear — nothing needs attention right now.",
+      "titleWithCount": "Needs attention ({count})",
+      "unreviewed": "unreviewed",
+      "clarification": "clarification",
+      "clarifications": "clarifications",
+      "failedEmail": "failed email (24h)",
+      "failedEmails": "failed emails (24h)",
+      "groups": {
+        "overdue": "Overdue assessments",
+        "belowThreshold": "Below score threshold",
+        "keyDates": "Key dates (60 days)"
+      },
+      "overdueAssessment": "{count, plural, one {# overdue assessment} other {# overdue assessments}}",
+      "oldestSince": "oldest since {date}",
+      "belowThreshold": "below {percent}% threshold",
+      "contractRenewal": "Contract renewal",
+      "daysOverdue": "{days}d overdue",
+      "inDays": "in {days}d"
+    },
+    "charts": {
+      "portfolioHealth": "Portfolio health",
+      "openFindingsBySeverity": "Open findings by severity",
+      "assessmentStatus": "Assessment status",
+      "riskByTier": "Risk by tier",
+      "vendors": "vendors",
+      "assessments": "Assessments",
+      "openFindings": "Open findings",
+      "ragShort": {
+        "green": "Green",
+        "amber": "Amber",
+        "red": "Red",
+        "unscored": "Unscored"
+      },
+      "rag": {
+        "green": "Green (≥85%)",
+        "amber": "Amber (60–84%)",
+        "red": "Red (<60%)",
+        "unscored": "Unscored"
+      },
+      "severity": {
+        "CRITICAL": "Critical",
+        "HIGH": "High",
+        "MEDIUM": "Medium",
+        "LOW": "Low"
+      },
+      "status": {
+        "DRAFT": "Draft",
+        "SENT": "Sent",
+        "IN_PROGRESS": "In progress",
+        "SUBMITTED": "Submitted",
+        "UNDER_REVIEW": "Under review",
+        "COMPLETED": "Completed",
+        "OVERDUE": "Overdue"
+      },
+      "tier": {
+        "CRITICAL": "Critical",
+        "HIGH": "High",
+        "MEDIUM": "Medium",
+        "LOW": "Low",
+        "Unspecified": "Unspecified"
+      }
+    }
   },
   "Shell": {
     "workspace": {

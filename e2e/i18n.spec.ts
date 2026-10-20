@@ -138,4 +138,16 @@ test.describe("internal shell", () => {
     expect(response.status()).toBe(200);
     expect(response.headers()["content-type"]).toContain("application/pdf");
   });
+
+  test("translates the dashboard", async ({ page }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+
+    await expect(
+      page.getByRole("heading", { name: "Resumen de riesgo de proveedores" }),
+    ).toBeVisible();
+  });
 });

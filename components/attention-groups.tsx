@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useFormatter, useTranslations } from "next-intl";
 import {
   AlertTriangle,
   Calendar,
@@ -12,7 +13,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScoreBadge } from "@/components/score-badge";
-import { formatDateUtc } from "@/lib/utils";
 
 type OverdueEntry = {
   vendorId: string;
@@ -29,6 +29,7 @@ type BelowThresholdEntry = {
 };
 
 type KeyDateEntry = {
+  type: "Certification" | "Contract" | "Reassessment";
   vendorId: string;
   vendorName: string;
   label: string;
@@ -38,7 +39,6 @@ type KeyDateEntry = {
 
 type GroupConfig = {
   key: string;
-  label: string;
   variant: "destructive" | "default" | "outline";
   icon: React.ReactNode;
 };
@@ -46,19 +46,16 @@ type GroupConfig = {
 const GROUPS: GroupConfig[] = [
   {
     key: "overdue",
-    label: "Overdue assessments",
     variant: "destructive",
     icon: <AlertTriangle className="size-3.5" />,
   },
   {
     key: "belowThreshold",
-    label: "Below score threshold",
     variant: "destructive",
     icon: <AlertTriangle className="size-3.5" />,
   },
   {
     key: "keyDates",
-    label: "Key dates (60 days)",
     variant: "outline",
     icon: <Calendar className="size-3.5" />,
   },
@@ -83,17 +80,127 @@ export function AttentionGroups({
   clarificationCount,
   failedEmailCount,
 }: AttentionGroupsProps) {
+  const translations = useTranslations("Dashboard");
+  const dateFormatter = useFormatter();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
-  function toggle(key: string) {
-    setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
+  function toggle(groupKey: string) {
+    setExpanded((previous) => ({
+      ...previous,
+      [groupKey]: !previous[groupKey],
+    }));
   }
 
-  function totalForGroup(key: string): number {
-    if (key === "overdue") return overdueGroups.length;
-    if (key === "belowThreshold") return belowThresholdGroups.length;
-    if (key === "keyDates") return keyDates?.length ?? 0;
+  function totalForGroup(groupKey: string): number {
+    if (groupKey === "overdue") return overdueGroups.length;
+    if (groupKey === "belowThreshold") return belowThresholdGroups.length;
+    if (groupKey === "keyDates") return keyDates?.length ?? 0;
     return 0;
+  }
+
+  function renderOverdueEntries() {
+    return overdueGroups.map((entry) => {
+      const href = entry.mostOverdueAssessmentId
+        ? `/assessments/${entry.mostOverdueAssessmentId}`
+        : `/vendors/${entry.vendorId}?tab=assessments`;
+      return (
+        <Link
+          key={entry.vendorId}
+          href={href}
+          className="hover:bg-accent/40 flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors"
+        >
+          <div className="flex min-w-0 flex-1 flex-col">
+            <span className="truncate font-medium">{entry.vendorName}</span>
+            <span className="text-muted-foreground truncate text-xs">
+              {translations("attention.overdueAssessment", {
+                count: entry.overdueCount,
+              })}
+              {entry.mostOverdueDate
+                ? ` · ${translations("attention.oldestSince", {
+                    date: dateFormatter.dateTime(entry.mostOverdueDate, {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                      timeZone: "UTC",
+                    }),
+                  })}`
+                : ""}
+            </span>
+          </div>
+        </Link>
+      );
+    });
+  }
+
+  function renderBelowThresholdEntries() {
+    return belowThresholdGroups.map((entry) => (
+      <Link
+        key={entry.vendorId}
+        href={`/vendors/${entry.vendorId}`}
+        className="hover:bg-accent/40 flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors"
+      >
+        <div className="flex min-w-0 flex-1 flex-col">
+          <span className="truncate font-medium">{entry.vendorName}</span>
+          <span className="text-muted-foreground text-xs">
+            {translations("attention.belowThreshold", {
+              percent: Math.round(amberThreshold * 100),
+            })}
+          </span>
+        </div>
+        {entry.score !== null ? (
+          <ScoreBadge score={entry.score} size="sm" />
+        ) : null}
+      </Link>
+    ));
+  }
+
+  function renderKeyDateEntries() {
+    return (keyDates ?? []).map((entry) => {
+      const isOverdue = entry.daysUntil < 0;
+      const dateLabel =
+        entry.type === "Contract"
+          ? translations("attention.contractRenewal")
+          : entry.label;
+      return (
+        <Link
+          key={`${entry.vendorId}-${String(entry.date)}`}
+          href={`/vendors/${entry.vendorId}`}
+          className="hover:bg-accent/40 flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors"
+        >
+          <div className="flex min-w-0 flex-1 flex-col">
+            <span className="truncate font-medium">{entry.vendorName}</span>
+            <span className="text-muted-foreground truncate text-xs">
+              {dateLabel} ·{" "}
+              {dateFormatter.dateTime(new Date(entry.date), {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                timeZone: "UTC",
+              })}
+            </span>
+          </div>
+          <span
+            className={
+              isOverdue
+                ? "text-destructive shrink-0 text-xs font-medium"
+                : "text-muted-foreground shrink-0 text-xs"
+            }
+          >
+            {isOverdue
+              ? translations("attention.daysOverdue", {
+                  days: Math.abs(entry.daysUntil),
+                })
+              : translations("attention.inDays", { days: entry.daysUntil })}
+          </span>
+        </Link>
+      );
+    });
+  }
+
+  function renderGroupEntries(groupKey: string) {
+    if (groupKey === "overdue") return renderOverdueEntries();
+    if (groupKey === "belowThreshold") return renderBelowThresholdEntries();
+    return renderKeyDateEntries();
   }
 
   const summaryTotal = unreviewedCount + clarificationCount + failedEmailCount;
@@ -107,11 +214,11 @@ export function AttentionGroups({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Needs attention</CardTitle>
+          <CardTitle>{translations("attention.title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground text-sm">
-            All clear — nothing needs attention right now.
+            {translations("attention.allClear")}
           </p>
         </CardContent>
       </Card>
@@ -121,7 +228,9 @@ export function AttentionGroups({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Needs attention ({totalItems})</CardTitle>
+        <CardTitle>
+          {translations("attention.titleWithCount", { count: totalItems })}
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         {summaryTotal > 0 ? (
@@ -134,7 +243,7 @@ export function AttentionGroups({
                 <AlertTriangle className="size-3" />
                 <span className="font-medium">{unreviewedCount}</span>
                 <span className="text-muted-foreground">
-                  {unreviewedCount === 1 ? "unreviewed" : "unreviewed"}
+                  {translations("attention.unreviewed")}
                 </span>
               </Link>
             ) : null}
@@ -146,8 +255,8 @@ export function AttentionGroups({
                 <span className="font-medium">{clarificationCount}</span>
                 <span className="text-muted-foreground">
                   {clarificationCount === 1
-                    ? "clarification"
-                    : "clarifications"}
+                    ? translations("attention.clarification")
+                    : translations("attention.clarifications")}
                 </span>
               </Link>
             ) : null}
@@ -158,8 +267,9 @@ export function AttentionGroups({
               >
                 <span className="font-medium">{failedEmailCount}</span>
                 <span className="text-muted-foreground">
-                  failed email
-                  {failedEmailCount !== 1 ? "s" : ""} (24h)
+                  {failedEmailCount === 1
+                    ? translations("attention.failedEmail")
+                    : translations("attention.failedEmails")}
                 </span>
               </Link>
             ) : null}
@@ -190,7 +300,9 @@ export function AttentionGroups({
                   >
                     {group.icon}
                   </span>
-                  <span className="text-sm font-medium">{group.label}</span>
+                  <span className="text-sm font-medium">
+                    {translations(`attention.groups.${group.key}`)}
+                  </span>
                 </span>
                 <Badge variant={group.variant} className="ml-auto text-xs">
                   {count}
@@ -198,80 +310,7 @@ export function AttentionGroups({
               </button>
               {isExpanded ? (
                 <div className="ml-6 flex flex-col divide-y rounded-md border">
-                  {group.key === "overdue"
-                    ? overdueGroups.map((entry) => {
-                        const href = entry.mostOverdueAssessmentId
-                          ? `/assessments/${entry.mostOverdueAssessmentId}`
-                          : `/vendors/${entry.vendorId}?tab=assessments`;
-                        return (
-                          <Link
-                            key={entry.vendorId}
-                            href={href}
-                            className="hover:bg-accent/40 flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors"
-                          >
-                            <div className="flex min-w-0 flex-1 flex-col">
-                              <span className="truncate font-medium">
-                                {entry.vendorName}
-                              </span>
-                              <span className="text-muted-foreground truncate text-xs">
-                                {entry.overdueCount === 1
-                                  ? "1 overdue assessment"
-                                  : `${entry.overdueCount} overdue assessments`}
-                                {entry.mostOverdueDate
-                                  ? ` · oldest since ${formatDateUtc(entry.mostOverdueDate)}`
-                                  : ""}
-                              </span>
-                            </div>
-                          </Link>
-                        );
-                      })
-                    : group.key === "belowThreshold"
-                      ? belowThresholdGroups.map((entry) => (
-                          <Link
-                            key={entry.vendorId}
-                            href={`/vendors/${entry.vendorId}`}
-                            className="hover:bg-accent/40 flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors"
-                          >
-                            <div className="flex min-w-0 flex-1 flex-col">
-                              <span className="truncate font-medium">
-                                {entry.vendorName}
-                              </span>
-                              <span className="text-muted-foreground text-xs">
-                                below {Math.round(amberThreshold * 100)}%
-                                threshold
-                              </span>
-                            </div>
-                            {entry.score !== null ? (
-                              <ScoreBadge score={entry.score} size="sm" />
-                            ) : null}
-                          </Link>
-                        ))
-                      : keyDates?.map((entry, _index) => {
-                          const overdue = entry.daysUntil < 0;
-                          return (
-                            <Link
-                              key={`${entry.vendorId}-${String(entry.date)}`}
-                              href={`/vendors/${entry.vendorId}`}
-                              className="hover:bg-accent/40 flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors"
-                            >
-                              <div className="flex min-w-0 flex-1 flex-col">
-                                <span className="truncate font-medium">
-                                  {entry.vendorName}
-                                </span>
-                                <span className="text-muted-foreground truncate text-xs">
-                                  {entry.label} · {formatDateUtc(entry.date)}
-                                </span>
-                              </div>
-                              <span
-                                className={`shrink-0 text-xs ${overdue ? "text-destructive font-medium" : "text-muted-foreground"}`}
-                              >
-                                {overdue
-                                  ? `${Math.abs(entry.daysUntil)}d overdue`
-                                  : `in ${entry.daysUntil}d`}
-                              </span>
-                            </Link>
-                          );
-                        })}
+                  {renderGroupEntries(group.key)}
                 </div>
               ) : null}
             </div>
