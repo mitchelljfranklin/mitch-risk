@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ import {
 const initialState: ResetPasswordState = undefined;
 
 export function ResetPasswordForm({ token }: { token: string }) {
+  const t = useTranslations("Auth.reset");
   const [state, formAction, isPending] = useActionState(
     resetPasswordAction,
     initialState,
@@ -23,7 +25,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
     <form action={formAction} className="grid gap-4">
       <input type="hidden" name="token" value={token} />
       <div className="grid gap-2">
-        <Label htmlFor="password">New password</Label>
+        <Label htmlFor="password">{t("newPassword")}</Label>
         <Input
           id="password"
           name="password"
@@ -34,7 +36,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="confirmPassword">Confirm password</Label>
+        <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
         <Input
           id="confirmPassword"
           name="confirmPassword"
@@ -57,13 +59,13 @@ export function ResetPasswordForm({ token }: { token: string }) {
       {!state?.ok ? (
         <>
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Resetting..." : "Reset password"}
+            {isPending ? t("submitting") : t("submit")}
           </Button>
           <Link
             href="/login"
             className="text-muted-foreground text-center text-xs hover:underline"
           >
-            Back to sign in
+            {t("back")}
           </Link>
         </>
       ) : null}

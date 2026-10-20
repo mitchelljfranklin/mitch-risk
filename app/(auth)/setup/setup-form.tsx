@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import { createInitialAdmin, type SetupState } from "./actions";
 const initialState: SetupState = undefined;
 
 export function SetupForm() {
+  const t = useTranslations("Auth.setup");
   const [state, formAction, isPending] = useActionState(
     createInitialAdmin,
     initialState,
@@ -19,11 +21,11 @@ export function SetupForm() {
   return (
     <form action={formAction} className="grid gap-4">
       <div className="grid gap-2">
-        <Label htmlFor="name">Full name</Label>
+        <Label htmlFor="name">{t("fullName")}</Label>
         <Input id="name" name="name" autoComplete="name" required />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{t("email")}</Label>
         <Input
           id="email"
           name="email"
@@ -33,7 +35,7 @@ export function SetupForm() {
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">{t("password")}</Label>
         <Input
           id="password"
           name="password"
@@ -42,7 +44,7 @@ export function SetupForm() {
           minLength={12}
           required
         />
-        <p className="text-muted-foreground text-xs">At least 12 characters.</p>
+        <p className="text-muted-foreground text-xs">{t("passwordHint")}</p>
       </div>
       {state?.error ? (
         <p className="text-destructive text-sm" role="alert">
@@ -50,7 +52,7 @@ export function SetupForm() {
         </p>
       ) : null}
       <Button type="submit" disabled={isPending}>
-        {isPending ? "Creating…" : "Create admin"}
+        {isPending ? t("submitting") : t("submit")}
       </Button>
     </form>
   );

@@ -1,0 +1,69 @@
+{
+  "Common": {
+    "changeLanguage": "Cambiar idioma",
+    "skipToContent": "Ir al contenido"
+  },
+  "Metadata": {
+    "description": "Solución white-label para la gestión del riesgo de terceros"
+  },
+  "Auth": {
+    "tagline": "Gestión del riesgo de proveedores",
+    "login": {
+      "title": "Iniciar sesión",
+      "description": "Inicia sesión en tu cuenta.",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Iniciar sesión",
+      "submitting": "Iniciando sesión…",
+      "forgot": "¿Olvidaste tu contraseña?",
+      "or": "o",
+      "invalid": "Correo electrónico o contraseña incorrectos.",
+      "tooMany": "Demasiados intentos. Espera un momento e inténtalo de nuevo."
+    },
+    "forgot": {
+      "title": "Olvidé mi contraseña",
+      "description": "Introduce tu correo electrónico y te enviaremos un enlace para restablecerla.",
+      "email": "Correo electrónico",
+      "submit": "Enviar enlace",
+      "submitting": "Enviando...",
+      "back": "Volver a iniciar sesión",
+      "invalidEmail": "Introduce una dirección de correo electrónico válida.",
+      "rateLimited": "Si existe una cuenta con ese correo, ya se ha enviado un enlace recientemente.",
+      "sent": "Si existe una cuenta con ese correo, se ha enviado un enlace para restablecerla."
+    },
+    "reset": {
+      "title": "Restablecer contraseña",
+      "description": "Elige una nueva contraseña para tu cuenta.",
+      "missing": "Este enlace de restablecimiento falta o no es válido. Solicita uno nuevo en la",
+      "expired": "Este enlace de restablecimiento ha caducado o ya se ha utilizado. Solicita uno nuevo en la",
+      "forgotLink": "página de contraseña olvidada",
+      "forUser": "Elige una nueva contraseña para {email}.",
+      "newPassword": "Nueva contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "submit": "Restablecer contraseña",
+      "submitting": "Restableciendo...",
+      "back": "Volver a iniciar sesión",
+      "invalidLink": "Enlace de restablecimiento no válido.",
+      "invalidPassword": "Usa una contraseña que cumpla los requisitos.",
+      "expiredToken": "Este enlace de restablecimiento no es válido o ha caducado."
+    },
+    "setup": {
+      "title": "Crear administrador",
+      "cardTitle": "Crea el primer administrador",
+      "description": "Configura la cuenta de administrador inicial para empezar a gestionar el riesgo de proveedores.",
+      "fullName": "Nombre completo",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "passwordHint": "Al menos 12 caracteres.",
+      "submit": "Crear administrador",
+      "submitting": "Creando…",
+      "alreadyDone": "La configuración ya se ha completado.",
+      "invalid": "Revisa el nombre, el correo y la contraseña (al menos 12 caracteres).",
+      "roleError": "No se pudo inicializar el rol de administrador. Inténtalo de nuevo.",
+      "createdSignIn": "Cuenta creada. Inicia sesión."
+    },
+    "sso": {
+      "orSignInWith": "o inicia sesión con"
+    }
+  }
+}

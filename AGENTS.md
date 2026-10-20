@@ -59,11 +59,13 @@ lib/                 cross-cutting logic
   settings/            DB-backed operational config (schema, accessor, read/write)
   storage/             storage interface + local-disk/s3/azure + orphan-sweep
   email/               Nodemailer mailer + token replacer
+  i18n/                cookie-based locale config, resolver, and request config
   permissions.ts       PERMISSIONS catalog, SYSTEM_ROLE_DEFINITIONS/NAMES, hasPermission()
   auth.ts              Auth.js config + requirePermission()
   prisma.ts            shared Prisma client instance
 hooks/               use-form-toast, use-action-feedback, use-mobile
 emails/              React Email templates rendered from Settings via token replacement
+messages/            en/es translation catalogs (key parity enforced by a unit test)
 prisma/              schema.prisma, migrations, seed.ts, seed-demo.ts, seed-data/
 scripts/             backup, bump-version.mjs, prepare-standalone.mjs
 e2e/                 Playwright end-to-end tests
@@ -277,6 +279,12 @@ UI hiding is cosmetic; the server guard is the real control — **both are alway
   user-configurable `--rag-*` palette (score/compliance indicators only).
 - **No copy-paste.** If markup or logic appears twice, extract a component/function; a reused
   Prisma query belongs in `lib/db/`.
+- **i18n is cookie-based** (`NEXT_LOCALE`): there are no `/[locale]/` URL segments and no
+  next-intl middleware. Server components/actions use `getTranslations`; client components use
+  `useTranslations`. Keep `messages/en.json` and `messages/es.json` key-identical — a unit test
+  enforces it. Resolution is cookie → org default (not yet implemented) → `Accept-Language` →
+  `en`. `setLocaleAction` only writes the cookie; the switcher calls `router.refresh()` (never
+  `revalidatePath`).
 
 ## Windows / PowerShell tooling notes
 

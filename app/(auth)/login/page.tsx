@@ -1,6 +1,8 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { SsoButtons } from "@/components/auth/sso-buttons";
 import {
@@ -28,7 +30,10 @@ import { LoginForm } from "./login-form";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Sign in" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Auth.login");
+  return { title: t("title") };
+}
 
 type LoginPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -42,6 +47,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     redirect("/dashboard");
   }
 
+  const t = await getTranslations("Auth.login");
   const [ssoSettings, organization] = await Promise.all([
     getSsoSettings(),
     getOrganizationSettings(),
@@ -92,7 +98,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     <Card>
       <CardHeader>
         <CardTitle>{organization.name}</CardTitle>
-        <CardDescription>Sign in to your account.</CardDescription>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         {showLocalAuth ? (
@@ -102,14 +108,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               href="/forgot-password"
               className="hover:text-primary text-muted-foreground text-center text-xs hover:underline"
             >
-              Forgot password?
+              {t("forgot")}
             </Link>
           </>
         ) : null}
         {showLocalAuth && ssoProviders.length > 0 ? (
           <div className="flex items-center gap-3">
             <Separator className="flex-1" />
-            <span className="text-muted-foreground text-xs">or</span>
+            <span className="text-muted-foreground text-xs">{t("or")}</span>
             <Separator className="flex-1" />
           </div>
         ) : null}

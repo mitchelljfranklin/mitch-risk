@@ -1,0 +1,69 @@
+{
+  "Common": {
+    "changeLanguage": "Change language",
+    "skipToContent": "Skip to content"
+  },
+  "Metadata": {
+    "description": "White-label third party vendor risk management solution"
+  },
+  "Auth": {
+    "tagline": "Vendor risk management",
+    "login": {
+      "title": "Sign in",
+      "description": "Sign in to your account.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "forgot": "Forgot password?",
+      "or": "or",
+      "invalid": "Invalid email or password.",
+      "tooMany": "Too many attempts. Please wait a moment and try again."
+    },
+    "forgot": {
+      "title": "Forgot password",
+      "description": "Enter your email and we will send you a reset link.",
+      "email": "Email",
+      "submit": "Send reset link",
+      "submitting": "Sending...",
+      "back": "Back to sign in",
+      "invalidEmail": "Enter a valid email address.",
+      "rateLimited": "If an account with that email exists, a reset link has already been sent recently.",
+      "sent": "If an account with that email exists, a reset link has been sent."
+    },
+    "reset": {
+      "title": "Reset password",
+      "description": "Choose a new password for your account.",
+      "missing": "This reset link is missing or invalid. Request a new one on the",
+      "expired": "This reset link has expired or has already been used. Request a new one on the",
+      "forgotLink": "forgot-password page",
+      "forUser": "Choose a new password for {email}.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "submit": "Reset password",
+      "submitting": "Resetting...",
+      "back": "Back to sign in",
+      "invalidLink": "Invalid reset link.",
+      "invalidPassword": "Use a password that meets the requirements.",
+      "expiredToken": "This reset link is invalid or has expired."
+    },
+    "setup": {
+      "title": "Create admin",
+      "cardTitle": "Create the first admin",
+      "description": "Set up the initial administrator account to start managing vendor risk.",
+      "fullName": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "passwordHint": "At least 12 characters.",
+      "submit": "Create admin",
+      "submitting": "Creating…",
+      "alreadyDone": "Setup has already been completed.",
+      "invalid": "Check the name, email, and password (at least 12 characters).",
+      "roleError": "Could not initialize the Admin role. Please try again.",
+      "createdSignIn": "Account created. Please sign in."
+    },
+    "sso": {
+      "orSignInWith": "or sign in with"
+    }
+  }
+}

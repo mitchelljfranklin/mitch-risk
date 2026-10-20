@@ -1,5 +1,6 @@
 "use server";
 
+import { getTranslations } from "next-intl/server";
 import { signOut } from "@/lib/auth";
 import {
   createPasswordResetToken,
@@ -25,13 +26,14 @@ export async function sendResetEmailAction(
   previousState: ForgotPasswordState,
   formData: FormData,
 ): Promise<ForgotPasswordState> {
+  const t = await getTranslations("Auth.forgot");
   const parsed = forgotPasswordSchema.safeParse({
     email: formData.get("email"),
   });
   if (!parsed.success) {
     return {
       ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid email.",
+      message: t("invalidEmail"),
     };
   }
 
@@ -41,8 +43,7 @@ export async function sendResetEmailAction(
   if (!rateLimit("resetPassword", email.toLowerCase(), passwordResetPerMin)) {
     return {
       ok: true,
-      message:
-        "If an account with that email exists, a reset link has already been sent recently.",
+      message: t("rateLimited"),
     };
   }
 
@@ -52,8 +53,7 @@ export async function sendResetEmailAction(
     // SSO-only accounts have no local password to reset; that is the IdP's role.
     return {
       ok: true,
-      message:
-        "If an account with that email exists, a reset link has been sent.",
+      message: t("sent"),
     };
   }
 
@@ -69,8 +69,7 @@ export async function sendResetEmailAction(
 
   return {
     ok: true,
-    message:
-      "If an account with that email exists, a reset link has been sent.",
+    message: t("sent"),
   };
 }
 
@@ -80,9 +79,10 @@ export async function resetPasswordAction(
   previousState: ResetPasswordState,
   formData: FormData,
 ): Promise<ResetPasswordState> {
+  const t = await getTranslations("Auth.reset");
   const token = formData.get("token") as string;
   if (!token) {
-    return { ok: false, message: "Invalid reset link." };
+    return { ok: false, message: t("invalidLink") };
   }
 
   const parsed = resetPasswordSchema.safeParse({
@@ -92,13 +92,13 @@ export async function resetPasswordAction(
   if (!parsed.success) {
     return {
       ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid password.",
+      message: t("invalidPassword"),
     };
   }
 
   const userId = await consumeResetToken(token);
   if (!userId) {
-    return { ok: false, message: "This reset link is invalid or has expired." };
+    return { ok: false, message: t("expiredToken") };
   }
 
   await resetUserPassword(userId, parsed.data.password);

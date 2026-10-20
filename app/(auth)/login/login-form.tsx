@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import { authenticate, type LoginState } from "./actions";
 const initialState: LoginState = undefined;
 
 export function LoginForm() {
+  const t = useTranslations("Auth.login");
   const [state, formAction, isPending] = useActionState(
     authenticate,
     initialState,
@@ -19,7 +21,7 @@ export function LoginForm() {
   return (
     <form action={formAction} className="grid gap-4">
       <div className="grid gap-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{t("email")}</Label>
         <Input
           id="email"
           name="email"
@@ -29,7 +31,7 @@ export function LoginForm() {
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">{t("password")}</Label>
         <Input
           id="password"
           name="password"
@@ -44,7 +46,7 @@ export function LoginForm() {
         </p>
       ) : null}
       <Button type="submit" disabled={isPending}>
-        {isPending ? "Signing in…" : "Sign in"}
+        {isPending ? t("submitting") : t("submit")}
       </Button>
     </form>
   );

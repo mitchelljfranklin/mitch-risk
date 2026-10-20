@@ -1,6 +1,7 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-
+import { getTranslations } from "next-intl/server";
 import {
   Card,
   CardContent,
@@ -9,14 +10,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getCurrentUser } from "@/lib/auth";
-import { countUsers } from "@/lib/db/users";
-import { findValidResetToken } from "@/lib/db/users";
+import { countUsers, findValidResetToken } from "@/lib/db/users";
 
 import { ResetPasswordForm } from "./reset-password-form";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Reset password" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Auth.reset");
+  return { title: t("title") };
+}
 
 type ResetPageProps = {
   searchParams: Promise<{ token?: string }>;
@@ -32,22 +35,21 @@ export default async function ResetPasswordPage({
     redirect("/dashboard");
   }
 
+  const t = await getTranslations("Auth.reset");
   const { token } = await searchParams;
 
   if (!token) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Reset password</CardTitle>
-          <CardDescription>
-            Choose a new password for your account.
-          </CardDescription>
+          <CardTitle>{t("title")}</CardTitle>
+          <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground text-sm">
-            This reset link is missing or invalid. Request a new one on the{" "}
+            {t("missing")}{" "}
             <Link href="/forgot-password" className="hover:underline">
-              forgot-password page
+              {t("forgotLink")}
             </Link>
             .
           </p>
@@ -62,17 +64,14 @@ export default async function ResetPasswordPage({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Reset password</CardTitle>
-          <CardDescription>
-            Choose a new password for your account.
-          </CardDescription>
+          <CardTitle>{t("title")}</CardTitle>
+          <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground text-sm">
-            This reset link has expired or has already been used. Request a new
-            one on the{" "}
+            {t("expired")}{" "}
             <Link href="/forgot-password" className="hover:underline">
-              forgot-password page
+              {t("forgotLink")}
             </Link>
             .
           </p>
@@ -84,14 +83,12 @@ export default async function ResetPasswordPage({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Reset password</CardTitle>
-        <CardDescription>
-          Choose a new password for your account.
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <p className="text-muted-foreground mb-4 text-sm">
-          Choose a new password for {user.email}.
+          {t("forUser", { email: user.email })}
         </p>
         <ResetPasswordForm token={token} />
       </CardContent>

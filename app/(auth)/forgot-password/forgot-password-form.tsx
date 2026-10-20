@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ import {
 const initialState: ForgotPasswordState = undefined;
 
 export function ForgotPasswordForm() {
+  const t = useTranslations("Auth.forgot");
   const [state, formAction, isPending] = useActionState(
     sendResetEmailAction,
     initialState,
@@ -26,7 +28,7 @@ export function ForgotPasswordForm() {
       ) : (
         <>
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("email")}</Label>
             <Input
               id="email"
               name="email"
@@ -41,7 +43,7 @@ export function ForgotPasswordForm() {
             </p>
           ) : null}
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Sending..." : "Send reset link"}
+            {isPending ? t("submitting") : t("submit")}
           </Button>
         </>
       )}
@@ -49,7 +51,7 @@ export function ForgotPasswordForm() {
         href="/login"
         className="text-muted-foreground text-center text-xs hover:underline"
       >
-        Back to sign in
+        {t("back")}
       </Link>
     </form>
   );

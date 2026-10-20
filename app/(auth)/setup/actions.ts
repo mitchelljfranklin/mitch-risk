@@ -1,6 +1,7 @@
 "use server";
 
 import { AuthError } from "next-auth";
+import { getTranslations } from "next-intl/server";
 
 import { signIn } from "@/lib/auth";
 import { countUsers, createUser } from "@/lib/db/users";
@@ -15,8 +16,9 @@ export async function createInitialAdmin(
   previousState: SetupState,
   formData: FormData,
 ): Promise<SetupState> {
+  const t = await getTranslations("Auth.setup");
   if ((await countUsers()) > 0) {
-    return { error: "Setup has already been completed." };
+    return { error: t("alreadyDone") };
   }
 
   const parsed = setupAdminSchema.safeParse({
@@ -25,13 +27,13 @@ export async function createInitialAdmin(
     password: formData.get("password"),
   });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid details." };
+    return { error: t("invalid") };
   }
 
   await ensureSystemRoles();
   const adminRole = await getRoleByName(SYSTEM_ROLE_NAMES.ADMIN);
   if (!adminRole) {
-    return { error: "Could not initialize the Admin role. Please try again." };
+    return { error: t("roleError") };
   }
 
   try {
@@ -41,7 +43,7 @@ export async function createInitialAdmin(
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
-      return { error: "Setup has already been completed." };
+      return { error: t("alreadyDone") };
     }
     throw error;
   }
@@ -55,7 +57,7 @@ export async function createInitialAdmin(
     return undefined;
   } catch (error) {
     if (error instanceof AuthError) {
-      return { error: "Account created. Please sign in." };
+      return { error: t("createdSignIn") };
     }
     throw error;
   }

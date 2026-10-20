@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import {
   Card,
@@ -13,21 +15,23 @@ import { SetupForm } from "./setup-form";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Create admin" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Auth.setup");
+  return { title: t("title") };
+}
 
 export default async function SetupPage() {
   if ((await countUsers()) > 0) {
     redirect("/login");
   }
 
+  const t = await getTranslations("Auth.setup");
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Create the first admin</CardTitle>
-        <CardDescription>
-          Set up the initial administrator account to start managing vendor
-          risk.
-        </CardDescription>
+        <CardTitle>{t("cardTitle")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <SetupForm />

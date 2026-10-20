@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import {
   Card,
@@ -14,7 +16,10 @@ import { ForgotPasswordForm } from "./forgot-password-form";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Forgot password" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Auth.forgot");
+  return { title: t("title") };
+}
 
 export default async function ForgotPasswordPage() {
   if ((await countUsers()) === 0) {
@@ -24,13 +29,13 @@ export default async function ForgotPasswordPage() {
     redirect("/dashboard");
   }
 
+  const t = await getTranslations("Auth.forgot");
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Forgot password</CardTitle>
-        <CardDescription>
-          Enter your email and we&apos;ll send you a reset link.
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <ForgotPasswordForm />
