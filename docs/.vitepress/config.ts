@@ -94,7 +94,7 @@ const sidebar = [
 export default defineConfig({
   title: "Mitch‑Risk",
   description:
-    "Lightweight third party vendor risk management — build questionnaires, assess vendors, track compliance",
+    "White-label third party vendor risk management — build questionnaires, assess vendors, track compliance",
   lang: "en-US",
   srcDir: ".",
   base: "/",
@@ -146,7 +146,7 @@ export default defineConfig({
 
     footer: {
       message:
-        "Open-source, self-hosted third party vendor risk management.",
+        "Open-source, self-hosted white-label third party vendor risk management.",
     },
   },
 

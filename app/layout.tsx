@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: { template: `%s — ${orgName}`, default: orgName },
-    description: "Lightweight third party vendor risk management solution",
+    description: "White-label third party vendor risk management solution",
     icons,
   };
 }
