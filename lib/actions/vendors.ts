@@ -3,6 +3,7 @@
 import { randomBytes } from "crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { Prisma } from "../../prisma/generated/prisma/client";
 
@@ -41,6 +42,7 @@ export async function createVendorAction(
   formData: FormData,
 ): Promise<VendorFormState> {
   await requirePermission(PERMISSIONS.VENDORS_CREATE);
+  const translations = await getTranslations("Vendors.errors");
   const parsed = vendorSchema.safeParse({
     name: getField(formData, "name"),
     externalId: getField(formData, "externalId"),
@@ -61,7 +63,7 @@ export async function createVendorAction(
     ownerId: getField(formData, "ownerId"),
   });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+    return { error: translations("invalidInput") };
   }
 
   let vendor;
@@ -70,7 +72,7 @@ export async function createVendorAction(
   } catch (error: unknown) {
     if (isDuplicateExternalId(error)) {
       return {
-        error: "A vendor with this external ID already exists.",
+        error: translations("duplicateExternalId"),
       };
     }
     throw error;
@@ -88,6 +90,7 @@ export async function updateVendorAction(
   formData: FormData,
 ): Promise<VendorFormState> {
   await requirePermission(PERMISSIONS.VENDORS_EDIT);
+  const translations = await getTranslations("Vendors.errors");
   const vendorId = getField(formData, "vendorId");
   const parsed = vendorSchema.safeParse({
     name: getField(formData, "name"),
@@ -109,14 +112,14 @@ export async function updateVendorAction(
     ownerId: getField(formData, "ownerId"),
   });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+    return { error: translations("invalidInput") };
   }
   try {
     await updateVendor(vendorId, parsed.data);
   } catch (error: unknown) {
     if (isDuplicateExternalId(error)) {
       return {
-        error: "A vendor with this external ID already exists.",
+        error: translations("duplicateExternalId"),
       };
     }
     throw error;
@@ -125,7 +128,7 @@ export async function updateVendorAction(
   if (user) {
     await logAudit(user.id, AUDIT_ACTIONS.UPDATE_VENDOR, "Vendor", vendorId);
   }
-  return { ok: true, message: "Vendor updated." };
+  return { ok: true, message: translations("vendorUpdated") };
 }
 
 export async function deleteVendorAction(formData: FormData) {
@@ -352,31 +355,34 @@ export async function addVendorAttachmentAction(
   formData: FormData,
 ): Promise<{ ok: boolean; message: string }> {
   const user = await requirePermission(PERMISSIONS.VENDORS_EDIT);
+  const translations = await getTranslations("Vendors.errors");
 
   const vendorId = getField(formData, "vendorId");
   const file = formData.get("attachmentFile") as File | null;
 
   if (!vendorId || !file || !(file instanceof File) || file.size === 0) {
-    return { ok: false, message: "No file selected." };
+    return { ok: false, message: translations("noFile") };
   }
 
-  const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
-  if (!ALLOWED_ATTACHMENT_EXTS.includes(ext)) {
-    return { ok: false, message: "File type not allowed." };
+  const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+  if (!ALLOWED_ATTACHMENT_EXTS.includes(extension)) {
+    return { ok: false, message: translations("fileTypeNotAllowed") };
   }
 
   if (file.size > MAX_ATTACHMENT_BYTES) {
     return {
       ok: false,
-      message: `File is too large (max ${MAX_ATTACHMENT_BYTES / (1024 * 1024)} MB).`,
+      message: translations("fileTooLarge", {
+        max: MAX_ATTACHMENT_BYTES / (1024 * 1024),
+      }),
     };
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  if (!validateMagicBytes(ext, buffer)) {
-    return { ok: false, message: "This file type is not accepted." };
+  if (!validateMagicBytes(extension, buffer)) {
+    return { ok: false, message: translations("fileTypeNotAccepted") };
   }
-  const storageKey = `attachment-${randomBytes(12).toString("hex")}.${ext}`;
+  const storageKey = `attachment-${randomBytes(12).toString("hex")}.${extension}`;
 
   await storage.save(storageKey, buffer);
 

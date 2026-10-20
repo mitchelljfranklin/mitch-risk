@@ -7,6 +7,15 @@
       "HIGH": "High",
       "MEDIUM": "Medium",
       "LOW": "Low"
+    },
+    "pagination": {
+      "pageOf": "Page {page} of {totalPages} · {totalCount} {itemLabel}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "viewToggle": {
+      "rows": "Row view",
+      "cards": "Card view"
     }
   },
   "Metadata": {
@@ -98,6 +107,123 @@
         "LOW": "Low",
         "Unspecified": "Unspecified"
       }
+    }
+  },
+  "Vendors": {
+    "metaTitle": "Vendors",
+    "title": "Vendors",
+    "subtitle": "Vendors you assess for security risk.",
+    "compare": "Compare",
+    "import": "Import",
+    "bulkSend": "Bulk send",
+    "newVendor": "New vendor",
+    "search": "Search",
+    "searchPlaceholder": "Name or email…",
+    "tier": "Tier",
+    "anyTier": "Any tier",
+    "filterTierAria": "Filter vendors by tier",
+    "sort": "Sort",
+    "sortAria": "Sort vendors",
+    "filter": "Filter",
+    "clear": "Clear",
+    "viewAria": "Vendor list view",
+    "noMatches": "No vendors match the selected filters.",
+    "emptyTitle": "No vendors yet",
+    "emptyDescription": "Add a vendor to start tracking their security risk.",
+    "assessed": "Assessed {date}",
+    "notAssessed": "Not assessed",
+    "assessmentCount": "{count, plural, one {# assessment} other {# assessments}}",
+    "openFindingCount": "{count, plural, one {# open finding} other {# open findings}}",
+    "list": {
+      "vendor": "Vendor",
+      "tier": "Tier",
+      "score": "Score",
+      "items": "vendors"
+    },
+    "sorts": {
+      "name": "Name (A–Z)",
+      "name-desc": "Name (Z–A)",
+      "score-asc": "Score (low → high)",
+      "score-desc": "Score (high → low)",
+      "tier": "Tier (A–Z)",
+      "tier-desc": "Tier (Z–A)",
+      "last-assessed": "Last assessed",
+      "assessments": "Most assessments"
+    },
+    "form": {
+      "vendorName": "Vendor name",
+      "externalId": "External ID",
+      "externalIdPlaceholder": "e.g. ERP-V-001",
+      "externalIdHint": "Optional reference to this vendor in another system",
+      "contactName": "Contact name",
+      "contactEmail": "Contact email",
+      "tier": "Tier",
+      "website": "Website",
+      "riskOwner": "Risk owner",
+      "dataSensitivity": "Data sensitivity",
+      "contractValue": "Contract value",
+      "geographicRisk": "Geographic risk",
+      "tags": "Tags",
+      "tagsPlaceholder": "e.g. saas, critical, finance",
+      "tagsHint": "Comma-separated labels for grouping and filtering",
+      "serviceProvided": "Service provided",
+      "servicePlaceholder": "e.g. Cloud email hosting",
+      "contractRenewalDate": "Contract renewal date",
+      "notes": "Notes",
+      "saving": "Saving...",
+      "saveChanges": "Save changes",
+      "create": "Create vendor",
+      "cancel": "Cancel",
+      "unspecified": "Unspecified",
+      "unassigned": "Unassigned",
+      "levels": {
+        "NONE": "None",
+        "LOW": "Low",
+        "MEDIUM": "Medium",
+        "HIGH": "High"
+      },
+      "dataSensitivities": {
+        "PUBLIC": "Public",
+        "INTERNAL": "Internal",
+        "CONFIDENTIAL": "Confidential",
+        "RESTRICTED": "Restricted"
+      }
+    },
+    "new": {
+      "title": "New vendor",
+      "cardTitle": "Vendor details",
+      "cardDescription": "Add a new vendor to track.",
+      "breadcrumb": "New"
+    },
+    "edit": {
+      "title": "Edit vendor",
+      "cardTitle": "Vendor details",
+      "cardDescription": "Update vendor details.",
+      "breadcrumb": "Edit"
+    },
+    "attachments": {
+      "title": "Attachments",
+      "emptyTitle": "No attachments yet",
+      "emptyDescription": "Upload contracts, letters, or other documents.",
+      "removeAria": "Remove attachment",
+      "dropHint": "Drop a file or click to browse",
+      "uploading": "Uploading…",
+      "upload": "Upload"
+    },
+    "export": {
+      "button": "Export CSV",
+      "all": "All vendors",
+      "currentPage": "Current page"
+    },
+    "errors": {
+      "invalidInput": "Invalid input.",
+      "duplicateExternalId": "A vendor with this external ID already exists.",
+      "vendorCreated": "Vendor created.",
+      "vendorUpdated": "Vendor updated.",
+      "noFile": "No file selected.",
+      "fileTypeNotAllowed": "File type not allowed.",
+      "fileTypeNotAccepted": "This file type is not accepted.",
+      "fileTooLarge": "File is too large (max {max} MB)."
     }
   },
   "Shell": {

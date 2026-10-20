@@ -285,10 +285,10 @@ UI hiding is cosmetic; the server guard is the real control — **both are alway
   single-letter variables. Keep `messages/en.json` and `messages/es.json` key-identical — a unit
   test enforces it. Resolution is cookie → org default (Admin → General) → `Accept-Language` →
   `en`. `setLocaleAction` only writes the cookie; the switcher calls `router.refresh()` (never
-  `revalidatePath`). Translated: auth screens, internal shell, dashboard, public trust center,
-  vendor portal, emails, and PDFs. Internal pages are being translated area by area (vendors,
-  assessments, templates, frameworks, admin forms still to come). Email templates are
-  admin-authored; only the built-in defaults are translated
+  `revalidatePath`). Translated: auth screens, internal shell, dashboard, vendors
+  list/create/edit, public trust center, vendor portal, emails, and PDFs. Internal pages are
+  being translated area by area (vendor detail, assessments, templates, frameworks, admin forms
+  still to come). Email templates are admin-authored; only the built-in defaults are translated
   (`lib/settings/email-template-defaults.ts`) — customized templates are sent as written. PDFs
   follow the request locale via `getTranslations`/`getFormatter`; use those (not `formatDate()`,
   which is fixed to en-GB) for dates on translated surfaces.

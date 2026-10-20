@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   type ColumnDef,
   type SortingState,
@@ -26,7 +27,6 @@ import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Pagination } from "@/components/pagination";
 import { ScoreBadge } from "@/components/score-badge";
 import { type VendorSort } from "@/lib/db/vendors";
-import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 
 type VendorRow = {
   id: string;
@@ -44,19 +44,21 @@ const SORT_KEY_MAP: Record<string, { asc: VendorSort; desc: VendorSort }> = {
 
 function sortParamToState(sort: VendorSort | undefined): SortingState {
   if (!sort) return [{ id: "name", desc: false }];
-  for (const [col, { asc, desc }] of Object.entries(SORT_KEY_MAP)) {
-    if (sort === asc) return [{ id: col, desc: false }];
-    if (sort === desc) return [{ id: col, desc: true }];
+  for (const [columnId, { asc: ascending, desc: descending }] of Object.entries(
+    SORT_KEY_MAP,
+  )) {
+    if (sort === ascending) return [{ id: columnId, desc: false }];
+    if (sort === descending) return [{ id: columnId, desc: true }];
   }
   return [{ id: "name", desc: false }];
 }
 
 function stateToSortParam(state: SortingState): VendorSort {
   if (state.length === 0) return "name";
-  const { id, desc } = state[0];
-  const map = SORT_KEY_MAP[id];
-  if (!map) return "name";
-  return desc ? map.desc : map.asc;
+  const { id, desc: isDescending } = state[0];
+  const sortMapping = SORT_KEY_MAP[id];
+  if (!sortMapping) return "name";
+  return isDescending ? sortMapping.desc : sortMapping.asc;
 }
 
 type VendorsTableProps = {
@@ -76,6 +78,8 @@ export function VendorsTable({
   pageSize,
   totalCount,
 }: VendorsTableProps) {
+  const translations = useTranslations("Vendors.list");
+  const commonTranslations = useTranslations("Common");
   const router = useRouter();
 
   const [sorting, setSorting] = useState<SortingState>(() =>
@@ -100,7 +104,7 @@ export function VendorsTable({
       accessorKey: "name",
       enableSorting: true,
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Vendor" />
+        <DataTableColumnHeader column={column} title={translations("vendor")} />
       ),
       cell: ({ row }) => {
         const vendor = row.original;
@@ -119,13 +123,15 @@ export function VendorsTable({
       accessorKey: "tier",
       enableSorting: true,
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Tier" />
+        <DataTableColumnHeader column={column} title={translations("tier")} />
       ),
       cell: ({ row }) => {
         const tier = row.original.tier;
         return tier ? (
           <Badge variant="outline">
-            {VENDOR_TIER_LABELS[tier as keyof typeof VENDOR_TIER_LABELS]}
+            {commonTranslations.has(`tiers.${tier}`)
+              ? commonTranslations(`tiers.${tier}`)
+              : tier}
           </Badge>
         ) : null;
       },
@@ -135,7 +141,7 @@ export function VendorsTable({
       accessorKey: "overallScore",
       enableSorting: true,
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Score" />
+        <DataTableColumnHeader column={column} title={translations("score")} />
       ),
       cell: ({ row }) => (
         <ScoreBadge score={row.original.overallScore} size="sm" />
@@ -183,12 +189,12 @@ export function VendorsTable({
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => {
-                  const isFirstCol = cell.column.id === "name";
+                  const isFirstColumn = cell.column.id === "name";
                   return (
                     <TableCell
                       key={cell.id}
                       className={
-                        isFirstCol ? "p-3" : "hidden p-3 md:table-cell"
+                        isFirstColumn ? "p-3" : "hidden p-3 md:table-cell"
                       }
                     >
                       {flexRender(
@@ -208,7 +214,7 @@ export function VendorsTable({
           page={page}
           pageSize={pageSize}
           totalCount={totalCount}
-          itemLabel="vendors"
+          itemLabel={translations("items")}
         />
       </div>
     </div>

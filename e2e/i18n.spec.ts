@@ -150,4 +150,26 @@ test.describe("internal shell", () => {
       page.getByRole("heading", { name: "Resumen de riesgo de proveedores" }),
     ).toBeVisible();
   });
+
+  test("translates the vendors list", async ({ page }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+    await page.goto("/vendors");
+
+    await expect(
+      page.getByRole("heading", { name: "Proveedores" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Proveedores que evalúas para el riesgo de seguridad."),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Nuevo proveedor" }),
+    ).toBeVisible();
+  });
 });

@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import {
@@ -18,7 +20,10 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Edit vendor" };
+export async function generateMetadata(): Promise<Metadata> {
+  const translations = await getTranslations("Vendors");
+  return { title: translations("edit.title") };
+}
 
 type EditVendorPageProps = {
   params: Promise<{ vendorId: string }>;
@@ -39,28 +44,33 @@ export default async function EditVendorPage({ params }: EditVendorPageProps) {
     notFound();
   }
 
-  const attachments = attachmentRows.map((assessment) => ({
-    id: assessment.id,
-    fileName: assessment.fileName,
-    displayName: assessment.displayName,
-    sizeBytes: assessment.sizeBytes,
-    createdAt: assessment.createdAt.toISOString(),
+  const attachments = attachmentRows.map((attachment) => ({
+    id: attachment.id,
+    fileName: attachment.fileName,
+    displayName: attachment.displayName,
+    sizeBytes: attachment.sizeBytes,
+    createdAt: attachment.createdAt.toISOString(),
   }));
+  const translations = await getTranslations("Vendors");
 
   return (
     <div className="flex max-w-3xl flex-col gap-6">
       <Breadcrumbs
         segments={[
-          { label: "Vendors", href: "/vendors" },
+          { label: translations("title"), href: "/vendors" },
           { label: vendor.name, href: `/vendors/${vendor.id}` },
-          { label: "Edit" },
+          { label: translations("edit.breadcrumb") },
         ]}
       />
-      <h1 className="text-2xl font-semibold tracking-tight">Edit vendor</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">
+        {translations("edit.title")}
+      </h1>
       <Card>
         <CardHeader>
-          <CardTitle>Vendor details</CardTitle>
-          <CardDescription>Update vendor details.</CardDescription>
+          <CardTitle>{translations("edit.cardTitle")}</CardTitle>
+          <CardDescription>
+            {translations("edit.cardDescription")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <VendorForm

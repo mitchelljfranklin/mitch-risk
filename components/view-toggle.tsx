@@ -3,6 +3,7 @@
 import { LayoutGrid, List } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { LIST_VIEW_COOKIE_MAX_AGE, type ListView } from "@/lib/view-preference";
@@ -15,20 +16,21 @@ type ViewToggleProps = {
 };
 
 export function ViewToggle({ value, cookieName, ariaLabel }: ViewToggleProps) {
+  const translations = useTranslations("Common.viewToggle");
   const router = useRouter();
 
   const setView = useCallback(
-    (next: ListView) => {
-      if (next === value) return;
-      document.cookie = `${cookieName}=${next}; path=/; max-age=${LIST_VIEW_COOKIE_MAX_AGE}`;
+    (nextView: ListView) => {
+      if (nextView === value) return;
+      document.cookie = `${cookieName}=${nextView}; path=/; max-age=${LIST_VIEW_COOKIE_MAX_AGE}`;
       router.refresh();
     },
     [value, cookieName, router],
   );
 
   const options: { view: ListView; label: string; Icon: typeof List }[] = [
-    { view: "rows", label: "Row view", Icon: List },
-    { view: "cards", label: "Card view", Icon: LayoutGrid },
+    { view: "rows", label: translations("rows"), Icon: List },
+    { view: "cards", label: translations("cards"), Icon: LayoutGrid },
   ];
 
   return (

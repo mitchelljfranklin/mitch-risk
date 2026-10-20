@@ -7,6 +7,15 @@
       "HIGH": "Alto",
       "MEDIUM": "Medio",
       "LOW": "Bajo"
+    },
+    "pagination": {
+      "pageOf": "Página {page} de {totalPages} · {totalCount} {itemLabel}",
+      "previous": "Anterior",
+      "next": "Siguiente"
+    },
+    "viewToggle": {
+      "rows": "Vista de filas",
+      "cards": "Vista de tarjetas"
     }
   },
   "Metadata": {
@@ -98,6 +107,123 @@
         "LOW": "Bajo",
         "Unspecified": "Sin especificar"
       }
+    }
+  },
+  "Vendors": {
+    "metaTitle": "Proveedores",
+    "title": "Proveedores",
+    "subtitle": "Proveedores que evalúas para el riesgo de seguridad.",
+    "compare": "Comparar",
+    "import": "Importar",
+    "bulkSend": "Envío masivo",
+    "newVendor": "Nuevo proveedor",
+    "search": "Buscar",
+    "searchPlaceholder": "Nombre o correo…",
+    "tier": "Nivel",
+    "anyTier": "Cualquier nivel",
+    "filterTierAria": "Filtrar proveedores por nivel",
+    "sort": "Ordenar",
+    "sortAria": "Ordenar proveedores",
+    "filter": "Filtrar",
+    "clear": "Limpiar",
+    "viewAria": "Vista de la lista de proveedores",
+    "noMatches": "Ningún proveedor coincide con los filtros seleccionados.",
+    "emptyTitle": "Aún no hay proveedores",
+    "emptyDescription": "Añade un proveedor para empezar a seguir su riesgo de seguridad.",
+    "assessed": "Evaluado {date}",
+    "notAssessed": "Sin evaluar",
+    "assessmentCount": "{count, plural, one {# evaluación} other {# evaluaciones}}",
+    "openFindingCount": "{count, plural, one {# hallazgo abierto} other {# hallazgos abiertos}}",
+    "list": {
+      "vendor": "Proveedor",
+      "tier": "Nivel",
+      "score": "Puntuación",
+      "items": "proveedores"
+    },
+    "sorts": {
+      "name": "Nombre (A–Z)",
+      "name-desc": "Nombre (Z–A)",
+      "score-asc": "Puntuación (de menor a mayor)",
+      "score-desc": "Puntuación (de mayor a menor)",
+      "tier": "Nivel (A–Z)",
+      "tier-desc": "Nivel (Z–A)",
+      "last-assessed": "Última evaluación",
+      "assessments": "Más evaluaciones"
+    },
+    "form": {
+      "vendorName": "Nombre del proveedor",
+      "externalId": "ID externo",
+      "externalIdPlaceholder": "p. ej. ERP-V-001",
+      "externalIdHint": "Referencia opcional a este proveedor en otro sistema",
+      "contactName": "Nombre de contacto",
+      "contactEmail": "Correo de contacto",
+      "tier": "Nivel",
+      "website": "Sitio web",
+      "riskOwner": "Responsable del riesgo",
+      "dataSensitivity": "Sensibilidad de los datos",
+      "contractValue": "Valor del contrato",
+      "geographicRisk": "Riesgo geográfico",
+      "tags": "Etiquetas",
+      "tagsPlaceholder": "p. ej. saas, crítico, finanzas",
+      "tagsHint": "Etiquetas separadas por comas para agrupar y filtrar",
+      "serviceProvided": "Servicio prestado",
+      "servicePlaceholder": "p. ej. Alojamiento de correo en la nube",
+      "contractRenewalDate": "Fecha de renovación del contrato",
+      "notes": "Notas",
+      "saving": "Guardando...",
+      "saveChanges": "Guardar cambios",
+      "create": "Crear proveedor",
+      "cancel": "Cancelar",
+      "unspecified": "Sin especificar",
+      "unassigned": "Sin asignar",
+      "levels": {
+        "NONE": "Ninguno",
+        "LOW": "Bajo",
+        "MEDIUM": "Medio",
+        "HIGH": "Alto"
+      },
+      "dataSensitivities": {
+        "PUBLIC": "Público",
+        "INTERNAL": "Interno",
+        "CONFIDENTIAL": "Confidencial",
+        "RESTRICTED": "Restringido"
+      }
+    },
+    "new": {
+      "title": "Nuevo proveedor",
+      "cardTitle": "Datos del proveedor",
+      "cardDescription": "Añade un nuevo proveedor para seguirlo.",
+      "breadcrumb": "Nuevo"
+    },
+    "edit": {
+      "title": "Editar proveedor",
+      "cardTitle": "Datos del proveedor",
+      "cardDescription": "Actualiza los datos del proveedor.",
+      "breadcrumb": "Editar"
+    },
+    "attachments": {
+      "title": "Archivos adjuntos",
+      "emptyTitle": "Aún no hay archivos adjuntos",
+      "emptyDescription": "Sube contratos, cartas u otros documentos.",
+      "removeAria": "Eliminar archivo adjunto",
+      "dropHint": "Suelta un archivo o haz clic para buscarlo",
+      "uploading": "Subiendo…",
+      "upload": "Subir"
+    },
+    "export": {
+      "button": "Exportar CSV",
+      "all": "Todos los proveedores",
+      "currentPage": "Página actual"
+    },
+    "errors": {
+      "invalidInput": "Datos no válidos.",
+      "duplicateExternalId": "Ya existe un proveedor con este ID externo.",
+      "vendorCreated": "Proveedor creado.",
+      "vendorUpdated": "Proveedor actualizado.",
+      "noFile": "No se ha seleccionado ningún archivo.",
+      "fileTypeNotAllowed": "Tipo de archivo no permitido.",
+      "fileTypeNotAccepted": "Este tipo de archivo no se acepta.",
+      "fileTooLarge": "El archivo es demasiado grande (máximo {max} MB)."
     }
   },
   "Shell": {

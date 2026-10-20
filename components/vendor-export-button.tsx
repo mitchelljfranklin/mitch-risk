@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useTranslations } from "next-intl";
 import { csvEscape } from "@/lib/utils";
 import { Download } from "lucide-react";
 
@@ -83,12 +84,13 @@ export function VendorExportButton({
   allVendors: VendorExportRow[];
   currentVendors: VendorExportRow[];
 }) {
+  const translations = useTranslations("Vendors.export");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm">
           <Download className="size-3.5" />
-          Export CSV
+          {translations("button")}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
@@ -97,14 +99,14 @@ export function VendorExportButton({
             downloadCsv(buildCsv(allVendors), "vendors-export.csv")
           }
         >
-          All vendors
+          {translations("all")}
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() =>
             downloadCsv(buildCsv(currentVendors), "vendors-export-page.csv")
           }
         >
-          Current page
+          {translations("currentPage")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
