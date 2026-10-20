@@ -6,8 +6,14 @@ import {
   StyleSheet,
   renderToBuffer,
 } from "@react-pdf/renderer";
+import { getFormatter, getTranslations } from "next-intl/server";
 
 import { formatPercent } from "@/lib/utils";
+import {
+  type PdfFormatter,
+  type PdfTranslate,
+  translateOrRaw,
+} from "@/lib/pdf-i18n";
 
 type RagThresholds = { green: number; amber: number };
 
@@ -135,16 +141,19 @@ function ragColor(rag: "green" | "amber" | "red" | "none"): string {
   }
 }
 
-function ragLabel(rag: "green" | "amber" | "red" | "none"): string {
+function ragLabel(
+  t: PdfTranslate,
+  rag: "green" | "amber" | "red" | "none",
+): string {
   switch (rag) {
     case "green":
-      return "Green";
+      return t("framework.ragGreen");
     case "amber":
-      return "Amber";
+      return t("framework.ragAmber");
     case "red":
-      return "Red";
+      return t("framework.ragRed");
     default:
-      return "Not assessed";
+      return t("framework.ragNone");
   }
 }
 
@@ -154,7 +163,15 @@ function changeLabel(change: number | null): string {
   return String(change);
 }
 
-function FrameworkReportDocument({ data }: { data: FrameworkReportData }) {
+function FrameworkReportDocument({
+  data,
+  t,
+  format,
+}: {
+  data: FrameworkReportData;
+  t: PdfTranslate;
+  format: PdfFormatter;
+}) {
   const grouped = new Map<string, typeof data.controls>();
   for (const control of data.controls) {
     const list = grouped.get(control.domain) ?? [];
@@ -169,20 +186,38 @@ function FrameworkReportDocument({ data }: { data: FrameworkReportData }) {
           <Text style={styles.orgName}>{data.organizationName}</Text>
           <Text style={styles.title}>{data.vendorName}</Text>
           <Text style={styles.subtitle}>
-            {data.frameworkName} {data.frameworkVersion} — Compliance Report
+            {t("framework.complianceReport", {
+              frameworkName: data.frameworkName,
+              version: data.frameworkVersion,
+            })}
           </Text>
           <Text style={styles.vendorInfo}>
             {data.vendorContact}
-            {data.vendorTier ? ` | Tier: ${data.vendorTier}` : ""}
-            {` | Generated: ${data.generatedDate}`}
+            {data.vendorTier
+              ? ` | ${t("common.tier", {
+                  tier: translateOrRaw(
+                    t,
+                    `tiers.${data.vendorTier}`,
+                    data.vendorTier,
+                  ),
+                })}`
+              : ""}
+            {` | ${t("common.generated", {
+              date: format.dateTime(new Date(data.generatedDate), {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                timeZone: "UTC",
+              }),
+            })}`}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Summary</Text>
+          <Text style={styles.sectionTitle}>{t("framework.summary")}</Text>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryItem}>
-              Overall score:{" "}
+              {t("framework.overallScore")}{" "}
               <Text
                 style={[
                   styles.summaryValue,
@@ -191,15 +226,15 @@ function FrameworkReportDocument({ data }: { data: FrameworkReportData }) {
               >
                 {data.overallScore !== null
                   ? formatPercent(data.overallScore)
-                  : "Not scored"}
+                  : t("common.notScored")}
               </Text>
             </Text>
             <Text style={styles.summaryItem}>
-              Domains assessed:{" "}
+              {t("framework.domainsAssessed")}{" "}
               <Text style={styles.summaryValue}>{data.domains.length}</Text>
             </Text>
             <Text style={styles.summaryItem}>
-              Controls mapped:{" "}
+              {t("framework.controlsMapped")}{" "}
               <Text style={styles.summaryValue}>{data.controls.length}</Text>
             </Text>
           </View>
@@ -207,19 +242,21 @@ function FrameworkReportDocument({ data }: { data: FrameworkReportData }) {
 
         {data.domains.length > 0 ? (
           <View style={styles.section} wrap={false}>
-            <Text style={styles.sectionTitle}>Domain compliance</Text>
+            <Text style={styles.sectionTitle}>
+              {t("framework.domainCompliance")}
+            </Text>
             <View style={styles.tableHeader}>
               <Text style={styles.domainCol}>
-                <Text style={styles.label}>Domain</Text>
+                <Text style={styles.label}>{t("framework.domain")}</Text>
               </Text>
               <Text style={styles.valueCol}>
-                <Text style={styles.label}>Current</Text>
+                <Text style={styles.label}>{t("framework.current")}</Text>
               </Text>
               <Text style={styles.valueCol}>
-                <Text style={styles.label}>Previous</Text>
+                <Text style={styles.label}>{t("framework.previous")}</Text>
               </Text>
               <Text style={styles.valueCol}>
-                <Text style={styles.label}>Change</Text>
+                <Text style={styles.label}>{t("framework.change")}</Text>
               </Text>
             </View>
             {data.domains.map((domain) => {
@@ -256,22 +293,26 @@ function FrameworkReportDocument({ data }: { data: FrameworkReportData }) {
 
         {data.controls.length > 0 ? (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Control heatmap</Text>
+            <Text style={styles.sectionTitle}>
+              {t("framework.controlHeatmap")}
+            </Text>
             {[...grouped.entries()].map(([domain, domainControls]) => (
               <View key={domain}>
                 <Text style={styles.domainHeading}>{domain}</Text>
                 <View style={styles.tableHeader}>
                   <Text style={styles.codeCol}>
-                    <Text style={styles.label}>Control</Text>
+                    <Text style={styles.label}>{t("framework.control")}</Text>
                   </Text>
                   <Text style={styles.titleCol}>
-                    <Text style={styles.label}>Title</Text>
+                    <Text style={styles.label}>{t("framework.title")}</Text>
                   </Text>
                   <Text style={styles.ratioCol}>
-                    <Text style={styles.label}>Compliance</Text>
+                    <Text style={styles.label}>
+                      {t("framework.compliance")}
+                    </Text>
                   </Text>
                   <Text style={styles.statusCol}>
-                    <Text style={styles.label}>Status</Text>
+                    <Text style={styles.label}>{t("framework.status")}</Text>
                   </Text>
                 </View>
                 {domainControls.map((control) => (
@@ -294,7 +335,7 @@ function FrameworkReportDocument({ data }: { data: FrameworkReportData }) {
                         { color: ragColor(control.rag) },
                       ]}
                     >
-                      {ragLabel(control.rag)}
+                      {ragLabel(t, control.rag)}
                     </Text>
                   </View>
                 ))}
@@ -306,7 +347,7 @@ function FrameworkReportDocument({ data }: { data: FrameworkReportData }) {
         <Text
           style={styles.footer}
           render={({ pageNumber, totalPages }) =>
-            `Page ${pageNumber} of ${totalPages}`
+            t("common.pageOf", { page: pageNumber, total: totalPages })
           }
           fixed
         />
@@ -319,6 +360,15 @@ export async function generateFrameworkReportPdf(
   vendorId: string,
   frameworkId: string,
 ): Promise<Buffer | null> {
+  const t = await getTranslations("Pdf");
+  const formatter = await getFormatter();
+  const translate: PdfTranslate = Object.assign(
+    (key: string, values?: Record<string, string | number>) => t(key, values),
+    { has: (key: string) => t.has(key) },
+  );
+  const format: PdfFormatter = {
+    dateTime: (value, options) => formatter.dateTime(value, options),
+  };
   const { getVendor } = await import("@/lib/db/vendors");
   const { getFramework } = await import("@/lib/db/frameworks");
   const { getVendorHeatmap, getVendorDomainRadar } =
@@ -359,5 +409,7 @@ export async function generateFrameworkReportPdf(
     })),
   };
 
-  return renderToBuffer(<FrameworkReportDocument data={data} />);
+  return renderToBuffer(
+    <FrameworkReportDocument data={data} t={translate} format={format} />,
+  );
 }

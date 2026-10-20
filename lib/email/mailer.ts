@@ -2,15 +2,19 @@ import { render } from "@react-email/components";
 import { type Prisma } from "../../prisma/generated/prisma/client";
 import { marked } from "marked";
 import nodemailer from "nodemailer";
+import { createTranslator } from "next-intl";
 
 import { DynamicEmail } from "@/emails/dynamic";
 import { env } from "@/lib/env";
+import { loadMessages, type Translate } from "@/lib/i18n/messages";
 import {
   getEmailSecret,
   getEmailSettings,
   getEmailTemplateSettings,
+  getOrganizationSettings,
   getTrustCenterSettings,
 } from "@/lib/settings";
+import { localizeEmailTemplates } from "@/lib/settings/email-template-defaults";
 import { prisma } from "@/lib/prisma";
 
 async function getTransporter(): Promise<nodemailer.Transporter | null> {
@@ -104,10 +108,19 @@ export async function sendEmail(
   tokens: Record<string, string>,
   options?: SendEmailOptions,
 ): Promise<SendEmailResult> {
-  const [emailSettings, templates] = await Promise.all([
+  const [emailSettings, storedTemplates, organization] = await Promise.all([
     getEmailSettings(),
     getEmailTemplateSettings(),
+    getOrganizationSettings(),
   ]);
+  const locale = organization.defaultLocale;
+  const messages = await loadMessages(locale);
+  const t = createTranslator({
+    locale,
+    messages,
+    namespace: "Email",
+  }) as unknown as Translate;
+  const templates = localizeEmailTemplates(storedTemplates, locale);
 
   const subjectByType: Record<TemplateType, string> = {
     invite: templates.inviteSubject,
@@ -145,7 +158,7 @@ export async function sendEmail(
     if (trustSettings.enabled && trustSettings.includeInInvites) {
       const trustUrl = `${env.APP_URL}/trust`;
       if (!resolvedBody.includes(trustUrl)) {
-        resolvedBody += `\n\n---\n\nLearn more about our security posture: ${trustUrl}`;
+        resolvedBody += `\n\n---\n\n${t("trustFooter", { url: trustUrl })}`;
       }
     }
   }
@@ -188,6 +201,7 @@ export async function sendEmail(
         heading: resolvedSubject,
         body: resolvedBody,
         htmlBody,
+        footer: t("footer", { appName: organization.name }),
       }),
     );
     await transport.sendMail({
@@ -218,16 +232,24 @@ export async function sendTestEmail(
   updateLogId?: string,
 ): Promise<{ ok: boolean; message: string }> {
   const settings = await getEmailSettings();
+  const organization = await getOrganizationSettings();
+  const locale = organization.defaultLocale;
+  const messages = await loadMessages(locale);
+  const t = createTranslator({
+    locale,
+    messages,
+    namespace: "Email",
+  }) as unknown as Translate;
   if (!settings.smtpHost) {
-    return { ok: false, message: "SMTP is not configured." };
+    return { ok: false, message: t("smtpNotConfigured") };
   }
 
   const transport = await getTransporter();
   if (!transport) {
-    return { ok: false, message: "Failed to create transporter." };
+    return { ok: false, message: t("transporterFailed") };
   }
 
-  const subject = "mitch-risk — SMTP test";
+  const subject = t("testSubject", { appName: organization.name });
 
   const notificationLogId = updateLogId
     ? updateLogId
@@ -244,11 +266,11 @@ export async function sendTestEmail(
       from: `${settings.fromName} <${settings.fromAddress || settings.smtpUser}>`,
       to,
       subject,
-      text: "Your SMTP settings are working correctly.",
+      text: t("testBody"),
     });
 
     await updateNotificationLogStatus(notificationLogId, "SENT", null);
-    return { ok: true, message: "Test email sent." };
+    return { ok: true, message: t("testSent") };
   } catch (sendError: unknown) {
     const errorMessage = `Failed: ${sendError instanceof Error ? sendError.message : "unknown error"}`;
     await updateNotificationLogStatus(

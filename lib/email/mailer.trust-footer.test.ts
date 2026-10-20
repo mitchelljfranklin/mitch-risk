@@ -71,6 +71,11 @@ let trustCenterState = {
 vi.mock("@/lib/settings", () => ({
   getEmailSettings: vi.fn(async () => smtpSettings),
   getEmailTemplateSettings: vi.fn(async () => templateSettings),
+  getOrganizationSettings: vi.fn(async () => ({
+    name: "Test",
+    supportEmail: "",
+    defaultLocale: "en",
+  })),
   getTrustCenterSettings: vi.fn(async () => trustCenterState),
   getEmailSecret: vi.fn(async () => null),
   getAuditRetention: vi.fn(async () => 0),

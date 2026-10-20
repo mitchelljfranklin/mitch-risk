@@ -3,16 +3,9 @@ import { getRequestConfig } from "next-intl/server";
 
 import { getOrganizationSettings } from "@/lib/settings";
 
-import { LOCALE_COOKIE, type Locale } from "./config";
+import { LOCALE_COOKIE } from "./config";
 import { resolveLocale } from "./locale";
-
-const MESSAGE_LOADERS: Record<
-  Locale,
-  () => Promise<{ default: Record<string, unknown> }>
-> = {
-  en: () => import("../../messages/en.json"),
-  es: () => import("../../messages/es.json"),
-};
+import { loadMessages } from "./messages";
 
 export default getRequestConfig(async () => {
   const [cookieStore, headerStore] = await Promise.all([cookies(), headers()]);
@@ -35,6 +28,6 @@ export default getRequestConfig(async () => {
 
   return {
     locale,
-    messages: (await MESSAGE_LOADERS[locale]()).default,
+    messages: await loadMessages(locale),
   };
 });

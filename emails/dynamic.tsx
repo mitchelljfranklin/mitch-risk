@@ -11,9 +11,18 @@ type DynamicEmailProps = {
   heading: string;
   body: string;
   htmlBody?: string;
+  footer?: string;
 };
 
-export function DynamicEmail({ heading, body, htmlBody }: DynamicEmailProps) {
+const DEFAULT_FOOTER =
+  "This email was sent by mitch-risk. If the button does not work, copy and paste the link into your browser.";
+
+export function DynamicEmail({
+  heading,
+  body,
+  htmlBody,
+  footer = DEFAULT_FOOTER,
+}: DynamicEmailProps) {
   const paragraphs = body.split("\n").filter((line) => line.length > 0);
 
   return (
@@ -40,8 +49,7 @@ export function DynamicEmail({ heading, body, htmlBody }: DynamicEmailProps) {
               fontSize: "12px",
             }}
           >
-            This email was sent by mitch-risk. If the button does not work, copy
-            and paste the link into your browser.
+            {footer}
           </Text>
         </Container>
       </Body>
@@ -52,4 +60,5 @@ export function DynamicEmail({ heading, body, htmlBody }: DynamicEmailProps) {
 DynamicEmail.PreviewProps = {
   heading: "Annual review",
   body: "Acme Logistics, you have been asked to complete the security questionnaire: Annual review.\n\nPlease submit by 2026-08-15.\n\nOpen: https://mitch-risk.local/portal/abc123",
+  footer: DEFAULT_FOOTER,
 } satisfies DynamicEmailProps;

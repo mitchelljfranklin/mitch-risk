@@ -6,9 +6,15 @@ import {
   StyleSheet,
   renderToBuffer,
 } from "@react-pdf/renderer";
+import { getFormatter, getTranslations } from "next-intl/server";
 
-import { formatDate, formatDateUtc, formatPercent } from "@/lib/utils";
+import { formatPercent } from "@/lib/utils";
 import { getCustomerResponsibilityCompliance } from "@/lib/db/customer-responsibility";
+import {
+  type PdfFormatter,
+  type PdfTranslate,
+  translateOrRaw,
+} from "@/lib/pdf-i18n";
 
 type AssessmentPdfData = {
   title: string;
@@ -131,7 +137,15 @@ function ragLabel(scorePct: number | null): string {
   return formatPercent(scorePct);
 }
 
-function AssessmentPdfDocument({ data }: { data: AssessmentPdfData }) {
+function AssessmentPdfDocument({
+  data,
+  t,
+  format,
+}: {
+  data: AssessmentPdfData;
+  t: PdfTranslate;
+  format: PdfFormatter;
+}) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -141,34 +155,64 @@ function AssessmentPdfDocument({ data }: { data: AssessmentPdfData }) {
           <Text style={styles.title}>{data.title}</Text>
           <Text style={styles.vendorInfo}>
             {data.vendorContact}
-            {data.vendorTier ? ` | Tier: ${data.vendorTier}` : ""}
-            {data.templateName
-              ? ` | Template: ${data.templateName} v${data.templateVersion}`
+            {data.vendorTier
+              ? ` | ${t("common.tier", {
+                  tier: translateOrRaw(
+                    t,
+                    `tiers.${data.vendorTier}`,
+                    data.vendorTier,
+                  ),
+                })}`
               : ""}
-            {data.reviewerName ? ` | Reviewer: ${data.reviewerName}` : ""}
+            {data.templateName
+              ? ` | ${t("common.template", {
+                  name: data.templateName,
+                  version: data.templateVersion ?? 1,
+                })}`
+              : ""}
+            {data.reviewerName
+              ? ` | ${t("common.reviewer", { name: data.reviewerName })}`
+              : ""}
           </Text>
         </View>
 
         {/* Score */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Score</Text>
+          <Text style={styles.sectionTitle}>{t("assessment.score")}</Text>
           <Text style={[styles.scoreValue, { color: scoreColor(data.score) }]}>
-            {data.score !== null ? formatPercent(data.score) : "Not scored"}
+            {data.score !== null
+              ? formatPercent(data.score)
+              : t("common.notScored")}
           </Text>
           {data.dueDate ? (
             <Text style={{ fontSize: 9, color: "#6b7280", marginTop: 2 }}>
-              Due: {formatDateUtc(data.dueDate)}
+              {t("common.due", {
+                date: format.dateTime(data.dueDate, {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                  timeZone: "UTC",
+                }),
+              })}
               {data.completedAt
-                ? ` | Completed: ${formatDate(data.completedAt)}`
+                ? ` | ${t("common.completed", {
+                    date: format.dateTime(data.completedAt, {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    }),
+                  })}`
                 : ""}
             </Text>
           ) : null}
           {data.responsibilityCompliance &&
           data.responsibilityCompliance.total > 0 ? (
             <Text style={{ fontSize: 9, color: "#6b7280", marginTop: 2 }}>
-              Customer Responsibility: {data.responsibilityCompliance.percent}%
-              ({data.responsibilityCompliance.completed}/
-              {data.responsibilityCompliance.total} completed)
+              {t("assessment.customerResponsibility", {
+                percent: data.responsibilityCompliance.percent,
+                completed: data.responsibilityCompliance.completed,
+                total: data.responsibilityCompliance.total,
+              })}
             </Text>
           ) : null}
         </View>
@@ -177,36 +221,50 @@ function AssessmentPdfDocument({ data }: { data: AssessmentPdfData }) {
         {data.questions.length > 0 ? (
           <View style={styles.section} wrap={false}>
             <Text style={styles.sectionTitle}>
-              Responses ({data.questions.length})
+              {t("assessment.responses", { count: data.questions.length })}
             </Text>
             <View style={styles.tableHeader}>
               <Text style={styles.col1}>
-                <Text style={styles.label}>Question</Text>
+                <Text style={styles.label}>{t("assessment.question")}</Text>
               </Text>
               <Text style={styles.col2}>
-                <Text style={styles.label}>Answer</Text>
+                <Text style={styles.label}>{t("assessment.answer")}</Text>
               </Text>
               <Text style={styles.col3}>
-                <Text style={styles.label}>Type</Text>
+                <Text style={styles.label}>{t("assessment.type")}</Text>
               </Text>
               <Text style={styles.col4}>
-                <Text style={styles.label}>Weight</Text>
+                <Text style={styles.label}>{t("assessment.weight")}</Text>
               </Text>
               <Text style={styles.col5}>
-                <Text style={styles.label}>Compliant</Text>
+                <Text style={styles.label}>{t("assessment.compliant")}</Text>
               </Text>
               <Text style={styles.col6}>
-                <Text style={styles.label}>Score</Text>
+                <Text style={styles.label}>{t("assessment.scoreColumn")}</Text>
               </Text>
             </View>
             {data.questions.map((question, i) => (
               <View key={i} style={styles.tableRow}>
                 <Text style={styles.col1}>{question.text}</Text>
                 <Text style={styles.col2}>
-                  {question.isNa ? "N/A" : question.answer || "--"}
+                  {question.isNa
+                    ? t("common.na")
+                    : question.answer || t("common.none")}
                 </Text>
-                <Text style={styles.col3}>{question.type}</Text>
-                <Text style={styles.col4}>{question.riskWeight}</Text>
+                <Text style={styles.col3}>
+                  {translateOrRaw(
+                    t,
+                    `questionTypes.${question.type}`,
+                    question.type,
+                  )}
+                </Text>
+                <Text style={styles.col4}>
+                  {translateOrRaw(
+                    t,
+                    `tiers.${question.riskWeight}`,
+                    question.riskWeight,
+                  )}
+                </Text>
                 <Text
                   style={[
                     styles.col5,
@@ -214,12 +272,12 @@ function AssessmentPdfDocument({ data }: { data: AssessmentPdfData }) {
                   ]}
                 >
                   {question.isNa
-                    ? "N/A"
+                    ? t("common.na")
                     : question.isCompliant === true
-                      ? "Yes"
+                      ? t("common.yes")
                       : question.isCompliant === false
-                        ? "No"
-                        : "--"}
+                        ? t("common.no")
+                        : t("common.none")}
                 </Text>
                 <Text
                   style={[
@@ -238,12 +296,17 @@ function AssessmentPdfDocument({ data }: { data: AssessmentPdfData }) {
         {data.findings.length > 0 ? (
           <View style={styles.section} wrap={false}>
             <Text style={styles.sectionTitle}>
-              Findings ({data.findings.length})
+              {t("assessment.findings", { count: data.findings.length })}
             </Text>
             {data.findings.map((finding, i) => (
               <View key={i} style={styles.findingRow}>
                 <Text style={styles.findingTitle}>
-                  {finding.severity}: {finding.title}
+                  {translateOrRaw(
+                    t,
+                    `tiers.${finding.severity}`,
+                    finding.severity,
+                  )}
+                  : {finding.title}
                 </Text>
                 <Text style={styles.findingMeta}>{finding.description}</Text>
                 {finding.controls.length > 0 ? (
@@ -269,7 +332,7 @@ function AssessmentPdfDocument({ data }: { data: AssessmentPdfData }) {
         <Text
           style={styles.footer}
           render={({ pageNumber, totalPages }) =>
-            `Page ${pageNumber} of ${totalPages}`
+            t("common.pageOf", { page: pageNumber, total: totalPages })
           }
           fixed
         />
@@ -281,6 +344,15 @@ function AssessmentPdfDocument({ data }: { data: AssessmentPdfData }) {
 export async function generateAssessmentPdf(
   assessmentId: string,
 ): Promise<Buffer> {
+  const t = await getTranslations("Pdf");
+  const formatter = await getFormatter();
+  const translate: PdfTranslate = Object.assign(
+    (key: string, values?: Record<string, string | number>) => t(key, values),
+    { has: (key: string) => t.has(key) },
+  );
+  const format: PdfFormatter = {
+    dateTime: (value, options) => formatter.dateTime(value, options),
+  };
   const { getAssessment } = await import("@/lib/db/assessments");
   const { getOrganizationSettings } = await import("@/lib/settings");
 
@@ -358,7 +430,9 @@ export async function generateAssessmentPdf(
     ),
   };
 
-  const pdfBuffer = await renderToBuffer(<AssessmentPdfDocument data={data} />);
+  const pdfBuffer = await renderToBuffer(
+    <AssessmentPdfDocument data={data} t={translate} format={format} />,
+  );
 
   return pdfBuffer;
 }

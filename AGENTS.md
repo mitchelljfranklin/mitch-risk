@@ -284,9 +284,11 @@ UI hiding is cosmetic; the server guard is the real control — **both are alway
   `useTranslations`. Keep `messages/en.json` and `messages/es.json` key-identical — a unit test
   enforces it. Resolution is cookie → org default (Admin → General) → `Accept-Language` → `en`.
   `setLocaleAction` only writes the cookie; the switcher calls `router.refresh()` (never
-  `revalidatePath`). Translated so far: auth screens, internal shell, public trust center, and
-  the vendor portal; emails and PDFs are still English-only. Use `useFormatter`/`getFormatter`
-  for dates on translated surfaces — `formatDate()` is fixed to en-GB.
+  `revalidatePath`). Translated: auth screens, internal shell, public trust center, vendor
+  portal, emails, and PDFs. Email templates are admin-authored; only the built-in defaults are
+  translated (`lib/settings/email-template-defaults.ts`) — customized templates are sent as
+  written. PDFs follow the request locale via `getTranslations`/`getFormatter`; use those (not
+  `formatDate()`, which is fixed to en-GB) for dates on translated surfaces.
 
 ## Windows / PowerShell tooling notes
 

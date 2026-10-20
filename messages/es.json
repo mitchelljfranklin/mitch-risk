@@ -182,6 +182,117 @@
       "vendorAuthor": "Proveedor"
     }
   },
+  "Pdf": {
+    "common": {
+      "pageOf": "Página {page} de {total}",
+      "na": "N/D",
+      "none": "--",
+      "yes": "Sí",
+      "no": "No",
+      "notScored": "Sin puntuación",
+      "tier": "Nivel: {tier}",
+      "template": "Plantilla: {name} v{version}",
+      "reviewer": "Revisor: {name}",
+      "generated": "Generado el {date}",
+      "due": "Vence: {date}",
+      "completed": "Completado: {date}"
+    },
+    "tiers": {
+      "CRITICAL": "Crítico",
+      "HIGH": "Alto",
+      "MEDIUM": "Medio",
+      "LOW": "Bajo"
+    },
+    "questionTypes": {
+      "YES_NO": "Sí / No",
+      "MULTIPLE_CHOICE": "Elección única",
+      "FREE_TEXT": "Texto libre",
+      "FILE_UPLOAD": "Subida de archivo",
+      "DATE": "Fecha",
+      "NUMERIC": "Numérico",
+      "COMBOBOX": "Lista desplegable",
+      "MULTI_SELECT": "Selección múltiple",
+      "RATING": "Valoración",
+      "URL": "URL",
+      "EMAIL": "Correo electrónico",
+      "CHECKBOX": "Casilla de verificación"
+    },
+    "statuses": {
+      "DRAFT": "Borrador",
+      "SENT": "Enviado",
+      "IN_PROGRESS": "En curso",
+      "SUBMITTED": "Enviado a revisión",
+      "UNDER_REVIEW": "En revisión",
+      "COMPLETED": "Completado"
+    },
+    "assessment": {
+      "score": "Puntuación",
+      "customerResponsibility": "Responsabilidad del cliente: {percent}% ({completed}/{total} completadas)",
+      "responses": "Respuestas ({count})",
+      "question": "Pregunta",
+      "answer": "Respuesta",
+      "type": "Tipo",
+      "weight": "Peso",
+      "compliant": "Cumple",
+      "scoreColumn": "Puntuación",
+      "findings": "Hallazgos ({count})"
+    },
+    "framework": {
+      "complianceReport": "{frameworkName} {version} — Informe de cumplimiento",
+      "summary": "Resumen",
+      "overallScore": "Puntuación global:",
+      "domainsAssessed": "Dominios evaluados:",
+      "controlsMapped": "Controles asignados:",
+      "domainCompliance": "Cumplimiento por dominio",
+      "domain": "Dominio",
+      "current": "Actual",
+      "previous": "Anterior",
+      "change": "Cambio",
+      "controlHeatmap": "Mapa de calor de controles",
+      "control": "Control",
+      "title": "Título",
+      "compliance": "Cumplimiento",
+      "status": "Estado",
+      "ragGreen": "Verde",
+      "ragAmber": "Ámbar",
+      "ragRed": "Rojo",
+      "ragNone": "Sin evaluar"
+    },
+    "portfolio": {
+      "title": "Riesgo de proveedores\nInforme de cartera",
+      "vendors": "Proveedores",
+      "averageScore": "Puntuación media",
+      "openFindings": "Hallazgos abiertos",
+      "needsAttention": "Requieren atención",
+      "scoreDistribution": "Distribución de puntuaciones",
+      "green": "Verde (≥85%)",
+      "amber": "Ámbar (60–84%)",
+      "red": "Rojo (<60%)",
+      "unscored": "Sin puntuar",
+      "vendorsByTier": "Proveedores por nivel",
+      "assessmentsByStatus": "Evaluaciones por estado",
+      "vendorsCount": "Proveedores ({count})",
+      "vendor": "Proveedor",
+      "tier": "Nivel",
+      "score": "Puntuación",
+      "lastAssessed": "Última evaluación",
+      "assessments": "Evaluaciones",
+      "notAssessed": "Sin evaluar",
+      "topDeficientControls": "Controles más deficientes ({count})",
+      "control": "Control",
+      "title": "Título",
+      "vendorsAffected": "Proveedores afectados"
+    }
+  },
+  "Email": {
+    "footer": "Este correo lo ha enviado {appName}. Si el botón no funciona, copia y pega el enlace en tu navegador.",
+    "trustFooter": "Más información sobre nuestra postura de seguridad: {url}",
+    "testSubject": "{appName} — Prueba de SMTP",
+    "testBody": "Tus ajustes de SMTP funcionan correctamente.",
+    "testSent": "Correo de prueba enviado.",
+    "smtpNotConfigured": "SMTP no está configurado.",
+    "transporterFailed": "No se pudo crear el transporte."
+  },
   "Auth": {
     "tagline": "Gestión del riesgo de proveedores",
     "login": {

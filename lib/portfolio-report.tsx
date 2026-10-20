@@ -6,8 +6,14 @@ import {
   StyleSheet,
   renderToBuffer,
 } from "@react-pdf/renderer";
+import { getFormatter, getTranslations } from "next-intl/server";
 
-import { formatDate, formatPercent } from "@/lib/utils";
+import { formatPercent } from "@/lib/utils";
+import {
+  type PdfFormatter,
+  type PdfTranslate,
+  translateOrRaw,
+} from "@/lib/pdf-i18n";
 
 type PortfolioPdfData = {
   organizationName: string;
@@ -140,15 +146,21 @@ const styles = StyleSheet.create({
   },
 });
 
-function StatsSummary({ data }: { data: PortfolioPdfData }) {
+function StatsSummary({
+  data,
+  t,
+}: {
+  data: PortfolioPdfData;
+  t: PdfTranslate;
+}) {
   return (
     <View style={styles.statGrid}>
       <View style={styles.statBox}>
-        <Text style={styles.statLabel}>Vendors</Text>
+        <Text style={styles.statLabel}>{t("portfolio.vendors")}</Text>
         <Text style={styles.statValue}>{data.vendorCount}</Text>
       </View>
       <View style={styles.statBox}>
-        <Text style={styles.statLabel}>Average score</Text>
+        <Text style={styles.statLabel}>{t("portfolio.averageScore")}</Text>
         <Text
           style={[styles.statValue, { color: scoreColor(data.averageScore) }]}
         >
@@ -156,13 +168,13 @@ function StatsSummary({ data }: { data: PortfolioPdfData }) {
         </Text>
       </View>
       <View style={styles.statBox}>
-        <Text style={styles.statLabel}>Open findings</Text>
+        <Text style={styles.statLabel}>{t("portfolio.openFindings")}</Text>
         <Text style={[styles.statValue, { color: "#dc2626" }]}>
           {data.openFindings}
         </Text>
       </View>
       <View style={styles.statBox}>
-        <Text style={styles.statLabel}>Needs attention</Text>
+        <Text style={styles.statLabel}>{t("portfolio.needsAttention")}</Text>
         <Text style={[styles.statValue, { color: "#d97706" }]}>
           {data.needsAttention}
         </Text>
@@ -171,7 +183,13 @@ function StatsSummary({ data }: { data: PortfolioPdfData }) {
   );
 }
 
-function ScoreDistribution({ data }: { data: PortfolioPdfData }) {
+function ScoreDistribution({
+  data,
+  t,
+}: {
+  data: PortfolioPdfData;
+  t: PdfTranslate;
+}) {
   const dist = data.scoreDistribution;
   const total = dist.green + dist.amber + dist.red + dist.unscored || 1;
   const maxWidth = 200;
@@ -179,7 +197,7 @@ function ScoreDistribution({ data }: { data: PortfolioPdfData }) {
   return (
     <View>
       <View style={styles.distRow}>
-        <Text style={styles.distLabel}>Green (&ge;85%)</Text>
+        <Text style={styles.distLabel}>{t("portfolio.green")}</Text>
         <View
           style={[
             styles.distBar,
@@ -192,7 +210,7 @@ function ScoreDistribution({ data }: { data: PortfolioPdfData }) {
         <Text style={styles.distValue}>{dist.green}</Text>
       </View>
       <View style={styles.distRow}>
-        <Text style={styles.distLabel}>Amber (60–84%)</Text>
+        <Text style={styles.distLabel}>{t("portfolio.amber")}</Text>
         <View
           style={[
             styles.distBar,
@@ -205,7 +223,7 @@ function ScoreDistribution({ data }: { data: PortfolioPdfData }) {
         <Text style={styles.distValue}>{dist.amber}</Text>
       </View>
       <View style={styles.distRow}>
-        <Text style={styles.distLabel}>Red (&lt;60%)</Text>
+        <Text style={styles.distLabel}>{t("portfolio.red")}</Text>
         <View
           style={[
             styles.distBar,
@@ -218,7 +236,7 @@ function ScoreDistribution({ data }: { data: PortfolioPdfData }) {
         <Text style={styles.distValue}>{dist.red}</Text>
       </View>
       <View style={styles.distRow}>
-        <Text style={styles.distLabel}>Unscored</Text>
+        <Text style={styles.distLabel}>{t("portfolio.unscored")}</Text>
         <View
           style={[
             styles.distBar,
@@ -234,7 +252,15 @@ function ScoreDistribution({ data }: { data: PortfolioPdfData }) {
   );
 }
 
-function VendorsTable({ data }: { data: PortfolioPdfData }) {
+function VendorsTable({
+  data,
+  t,
+  format,
+}: {
+  data: PortfolioPdfData;
+  t: PdfTranslate;
+  format: PdfFormatter;
+}) {
   const sorted = [...data.vendors].sort(
     (a, b) => (a.overallScore ?? Infinity) - (b.overallScore ?? Infinity),
   );
@@ -243,26 +269,32 @@ function VendorsTable({ data }: { data: PortfolioPdfData }) {
     <View>
       <View style={styles.tableHeader}>
         <Text style={styles.colName}>
-          <Text style={styles.label}>Vendor</Text>
+          <Text style={styles.label}>{t("portfolio.vendor")}</Text>
         </Text>
         <Text style={styles.colTier}>
-          <Text style={styles.label}>Tier</Text>
+          <Text style={styles.label}>{t("portfolio.tier")}</Text>
         </Text>
         <Text style={styles.colScore}>
-          <Text style={styles.label}>Score</Text>
+          <Text style={styles.label}>{t("portfolio.score")}</Text>
         </Text>
         <Text style={styles.colDate}>
-          <Text style={styles.label}>Last assessed</Text>
+          <Text style={styles.label}>{t("portfolio.lastAssessed")}</Text>
         </Text>
         <Text style={styles.colCount}>
-          <Text style={styles.label}>Assessments</Text>
+          <Text style={styles.label}>{t("portfolio.assessments")}</Text>
         </Text>
       </View>
       {sorted.map((vendor, i) => (
         <View key={i} style={styles.tableRow}>
           <Text style={styles.colName}>{vendor.name}</Text>
           <Text style={styles.colTier}>
-            {vendor.tier ? (TIER_LABELS[vendor.tier] ?? vendor.tier) : "—"}
+            {vendor.tier
+              ? translateOrRaw(
+                  t,
+                  `tiers.${vendor.tier}`,
+                  TIER_LABELS[vendor.tier] ?? vendor.tier,
+                )
+              : "—"}
           </Text>
           <Text
             style={[
@@ -276,8 +308,12 @@ function VendorsTable({ data }: { data: PortfolioPdfData }) {
           </Text>
           <Text style={styles.colDate}>
             {vendor.latestAssessmentDate
-              ? formatDate(vendor.latestAssessmentDate)
-              : "Not assessed"}
+              ? format.dateTime(vendor.latestAssessmentDate, {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })
+              : t("portfolio.notAssessed")}
           </Text>
           <Text style={styles.colCount}>{vendor.assessmentCount}</Text>
         </View>
@@ -286,19 +322,36 @@ function VendorsTable({ data }: { data: PortfolioPdfData }) {
   );
 }
 
-function PortfolioPdfDocument({ data }: { data: PortfolioPdfData }) {
+function PortfolioPdfDocument({
+  data,
+  t,
+  format,
+}: {
+  data: PortfolioPdfData;
+  t: PdfTranslate;
+  format: PdfFormatter;
+}) {
   return (
     <Document>
       {/* Cover page */}
       <Page size="A4" style={[styles.page, { justifyContent: "center" }]}>
         <Text style={styles.orgName}>{data.organizationName}</Text>
-        <Text style={styles.coverTitle}>Vendor Risk{"\n"}Portfolio Report</Text>
-        <Text style={styles.coverSubtitle}>Generated {data.generatedDate}</Text>
-        <StatsSummary data={data} />
+        <Text style={styles.coverTitle}>{t("portfolio.title")}</Text>
+        <Text style={styles.coverSubtitle}>
+          {t("common.generated", {
+            date: format.dateTime(new Date(data.generatedDate), {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              timeZone: "UTC",
+            }),
+          })}
+        </Text>
+        <StatsSummary data={data} t={t} />
         <Text
           style={styles.footer}
           render={({ pageNumber, totalPages }) =>
-            `Page ${pageNumber} of ${totalPages}`
+            t("common.pageOf", { page: pageNumber, total: totalPages })
           }
           fixed
         />
@@ -306,23 +359,31 @@ function PortfolioPdfDocument({ data }: { data: PortfolioPdfData }) {
 
       {/* Distribution page */}
       <Page size="A4" style={styles.page}>
-        <Text style={styles.sectionTitle}>Score distribution</Text>
-        <ScoreDistribution data={data} />
+        <Text style={styles.sectionTitle}>
+          {t("portfolio.scoreDistribution")}
+        </Text>
+        <ScoreDistribution data={data} t={t} />
 
-        <Text style={styles.sectionTitle}>Vendors by tier</Text>
+        <Text style={styles.sectionTitle}>{t("portfolio.vendorsByTier")}</Text>
         {Object.entries(data.vendorsByTier).map(([tier, count]) => (
           <View key={tier} style={styles.distRow}>
-            <Text style={styles.distLabel}>{TIER_LABELS[tier] ?? tier}</Text>
+            <Text style={styles.distLabel}>
+              {translateOrRaw(t, `tiers.${tier}`, TIER_LABELS[tier] ?? tier)}
+            </Text>
             <Text style={styles.distValue}>{count}</Text>
           </View>
         ))}
 
-        <Text style={styles.sectionTitle}>Assessments by status</Text>
+        <Text style={styles.sectionTitle}>
+          {t("portfolio.assessmentsByStatus")}
+        </Text>
         {Object.entries(data.assessmentStatusCounts)
           .filter(([, count]) => count > 0)
           .map(([status, count]) => (
             <View key={status} style={styles.distRow}>
-              <Text style={styles.distLabel}>{status}</Text>
+              <Text style={styles.distLabel}>
+                {translateOrRaw(t, `statuses.${status}`, status)}
+              </Text>
               <Text style={styles.distValue}>{count}</Text>
             </View>
           ))}
@@ -330,7 +391,7 @@ function PortfolioPdfDocument({ data }: { data: PortfolioPdfData }) {
         <Text
           style={styles.footer}
           render={({ pageNumber, totalPages }) =>
-            `Page ${pageNumber} of ${totalPages}`
+            t("common.pageOf", { page: pageNumber, total: totalPages })
           }
           fixed
         />
@@ -338,13 +399,15 @@ function PortfolioPdfDocument({ data }: { data: PortfolioPdfData }) {
 
       {/* Vendor table (may span multiple pages) */}
       <Page size="A4" style={styles.page}>
-        <Text style={styles.sectionTitle}>Vendors ({data.vendorCount})</Text>
-        <VendorsTable data={data} />
+        <Text style={styles.sectionTitle}>
+          {t("portfolio.vendorsCount", { count: data.vendorCount })}
+        </Text>
+        <VendorsTable data={data} t={t} format={format} />
 
         <Text
           style={styles.footer}
           render={({ pageNumber, totalPages }) =>
-            `Page ${pageNumber} of ${totalPages}`
+            t("common.pageOf", { page: pageNumber, total: totalPages })
           }
           fixed
         />
@@ -354,18 +417,22 @@ function PortfolioPdfDocument({ data }: { data: PortfolioPdfData }) {
       {data.topControls.length > 0 ? (
         <Page size="A4" style={styles.page}>
           <Text style={styles.sectionTitle}>
-            Top deficient controls ({data.topControls.length})
+            {t("portfolio.topDeficientControls", {
+              count: data.topControls.length,
+            })}
           </Text>
           <View>
             <View style={styles.tableHeader}>
               <Text style={styles.colCode}>
-                <Text style={styles.label}>Control</Text>
+                <Text style={styles.label}>{t("portfolio.control")}</Text>
               </Text>
               <Text style={styles.colControlTitle}>
-                <Text style={styles.label}>Title</Text>
+                <Text style={styles.label}>{t("portfolio.title")}</Text>
               </Text>
               <Text style={styles.colControlCount}>
-                <Text style={styles.label}>Vendors affected</Text>
+                <Text style={styles.label}>
+                  {t("portfolio.vendorsAffected")}
+                </Text>
               </Text>
             </View>
             {data.topControls.map((control, i) => (
@@ -382,7 +449,7 @@ function PortfolioPdfDocument({ data }: { data: PortfolioPdfData }) {
           <Text
             style={styles.footer}
             render={({ pageNumber, totalPages }) =>
-              `Page ${pageNumber} of ${totalPages}`
+              t("common.pageOf", { page: pageNumber, total: totalPages })
             }
             fixed
           />
@@ -450,6 +517,15 @@ export function buildPortfolioPdfData(
 }
 
 export async function generatePortfolioPdf(): Promise<Buffer> {
+  const t = await getTranslations("Pdf");
+  const formatter = await getFormatter();
+  const translate: PdfTranslate = Object.assign(
+    (key: string, values?: Record<string, string | number>) => t(key, values),
+    { has: (key: string) => t.has(key) },
+  );
+  const format: PdfFormatter = {
+    dateTime: (value, options) => formatter.dateTime(value, options),
+  };
   const { getDashboardData } = await import("@/lib/db/compliance");
   const { getOrganizationSettings } = await import("@/lib/settings");
 
@@ -461,5 +537,7 @@ export async function generatePortfolioPdf(): Promise<Buffer> {
   const today = new Date().toISOString().slice(0, 10);
   const data = buildPortfolioPdfData(dashboard, org.name, today);
 
-  return renderToBuffer(<PortfolioPdfDocument data={data} />);
+  return renderToBuffer(
+    <PortfolioPdfDocument data={data} t={translate} format={format} />,
+  );
 }

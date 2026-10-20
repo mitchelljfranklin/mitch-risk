@@ -121,4 +121,21 @@ test.describe("internal shell", () => {
       sidebar.getByRole("link", { name: "Vendors" }).first(),
     ).toBeVisible();
   });
+
+  test("generates the portfolio PDF in the selected language", async ({
+    page,
+  }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    const response = await page.request.get("/api/dashboard/report");
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-type"]).toContain("application/pdf");
+  });
 });

@@ -182,6 +182,117 @@
       "vendorAuthor": "Vendor"
     }
   },
+  "Pdf": {
+    "common": {
+      "pageOf": "Page {page} of {total}",
+      "na": "N/A",
+      "none": "--",
+      "yes": "Yes",
+      "no": "No",
+      "notScored": "Not scored",
+      "tier": "Tier: {tier}",
+      "template": "Template: {name} v{version}",
+      "reviewer": "Reviewer: {name}",
+      "generated": "Generated {date}",
+      "due": "Due: {date}",
+      "completed": "Completed: {date}"
+    },
+    "tiers": {
+      "CRITICAL": "Critical",
+      "HIGH": "High",
+      "MEDIUM": "Medium",
+      "LOW": "Low"
+    },
+    "questionTypes": {
+      "YES_NO": "Yes / No",
+      "MULTIPLE_CHOICE": "Single choice",
+      "FREE_TEXT": "Free text",
+      "FILE_UPLOAD": "File upload",
+      "DATE": "Date",
+      "NUMERIC": "Numeric",
+      "COMBOBOX": "Combobox",
+      "MULTI_SELECT": "Multi-select",
+      "RATING": "Rating",
+      "URL": "URL",
+      "EMAIL": "Email",
+      "CHECKBOX": "Checkbox"
+    },
+    "statuses": {
+      "DRAFT": "Draft",
+      "SENT": "Sent",
+      "IN_PROGRESS": "In progress",
+      "SUBMITTED": "Submitted",
+      "UNDER_REVIEW": "Under review",
+      "COMPLETED": "Completed"
+    },
+    "assessment": {
+      "score": "Score",
+      "customerResponsibility": "Customer Responsibility: {percent}% ({completed}/{total} completed)",
+      "responses": "Responses ({count})",
+      "question": "Question",
+      "answer": "Answer",
+      "type": "Type",
+      "weight": "Weight",
+      "compliant": "Compliant",
+      "scoreColumn": "Score",
+      "findings": "Findings ({count})"
+    },
+    "framework": {
+      "complianceReport": "{frameworkName} {version} — Compliance Report",
+      "summary": "Summary",
+      "overallScore": "Overall score:",
+      "domainsAssessed": "Domains assessed:",
+      "controlsMapped": "Controls mapped:",
+      "domainCompliance": "Domain compliance",
+      "domain": "Domain",
+      "current": "Current",
+      "previous": "Previous",
+      "change": "Change",
+      "controlHeatmap": "Control heatmap",
+      "control": "Control",
+      "title": "Title",
+      "compliance": "Compliance",
+      "status": "Status",
+      "ragGreen": "Green",
+      "ragAmber": "Amber",
+      "ragRed": "Red",
+      "ragNone": "Not assessed"
+    },
+    "portfolio": {
+      "title": "Vendor Risk\nPortfolio Report",
+      "vendors": "Vendors",
+      "averageScore": "Average score",
+      "openFindings": "Open findings",
+      "needsAttention": "Needs attention",
+      "scoreDistribution": "Score distribution",
+      "green": "Green (≥85%)",
+      "amber": "Amber (60–84%)",
+      "red": "Red (<60%)",
+      "unscored": "Unscored",
+      "vendorsByTier": "Vendors by tier",
+      "assessmentsByStatus": "Assessments by status",
+      "vendorsCount": "Vendors ({count})",
+      "vendor": "Vendor",
+      "tier": "Tier",
+      "score": "Score",
+      "lastAssessed": "Last assessed",
+      "assessments": "Assessments",
+      "notAssessed": "Not assessed",
+      "topDeficientControls": "Top deficient controls ({count})",
+      "control": "Control",
+      "title": "Title",
+      "vendorsAffected": "Vendors affected"
+    }
+  },
+  "Email": {
+    "footer": "This email was sent by {appName}. If the button does not work, copy and paste the link into your browser.",
+    "trustFooter": "Learn more about our security posture: {url}",
+    "testSubject": "{appName} — SMTP test",
+    "testBody": "Your SMTP settings are working correctly.",
+    "testSent": "Test email sent.",
+    "smtpNotConfigured": "SMTP is not configured.",
+    "transporterFailed": "Failed to create transporter."
+  },
   "Auth": {
     "tagline": "Vendor risk management",
     "login": {
