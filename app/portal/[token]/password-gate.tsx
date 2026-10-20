@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,6 +15,7 @@ type PasswordGateProps = {
 };
 
 export function PasswordGate({ token }: PasswordGateProps) {
+  const t = useTranslations("Portal.password");
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(
     async (
@@ -34,22 +36,19 @@ export function PasswordGate({ token }: PasswordGateProps) {
     <form action={formAction} className="flex flex-col items-center gap-4">
       <Card>
         <CardContent className="flex flex-col items-center gap-4 pt-6">
-          <h1 className="text-xl font-semibold tracking-tight">
-            Password required
-          </h1>
+          <h1 className="text-xl font-semibold tracking-tight">{t("title")}</h1>
           <p className="text-muted-foreground text-center text-sm">
-            This questionnaire is password protected. Enter the password
-            provided by the requester to continue.
+            {t("description")}
           </p>
           <div className="flex w-64 flex-col gap-2">
             <Label htmlFor="portal-password" className="sr-only">
-              Password
+              {t("label")}
             </Label>
             <Input
               id="portal-password"
               name="password"
               type="password"
-              placeholder="Enter password"
+              placeholder={t("placeholder")}
               autoFocus
               required
             />
@@ -60,7 +59,7 @@ export function PasswordGate({ token }: PasswordGateProps) {
             </p>
           ) : null}
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Verifying..." : "Continue"}
+            {isPending ? t("verifying") : t("continue")}
           </Button>
         </CardContent>
       </Card>

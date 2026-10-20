@@ -2,6 +2,7 @@
 
 import { randomBytes } from "node:crypto";
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 
 import {
   createEvidence,
@@ -66,9 +67,10 @@ function sanitizeFileName(name: string): string {
 export async function uploadEvidenceAction(
   formData: FormData,
 ): Promise<UploadResult> {
+  const t = await getTranslations("Portal.upload");
   const { portalUploadsPerMin } = await getAssessmentSettings();
   if (!rateLimit("upload", await clientIp(), portalUploadsPerMin)) {
-    return { ok: false, error: "Too many uploads. Please wait a moment." };
+    return { ok: false, error: t("tooMany") };
   }
 
   const token = String(formData.get("token") ?? "");
@@ -82,15 +84,15 @@ export async function uploadEvidenceAction(
     !assessment ||
     !isPortalEditable(assessment.status, assessment.tokenExpiresAt)
   ) {
-    return { ok: false, error: "This link is no longer valid." };
+    return { ok: false, error: t("linkInvalid") };
   }
   if (!(file instanceof File) || file.size === 0) {
-    return { ok: false, error: "No file selected." };
+    return { ok: false, error: t("noFile") };
   }
 
   const question = await getAssessmentQuestion(assessmentQuestionId);
   if (!question || question.assessmentId !== assessment.id) {
-    return { ok: false, error: "Invalid question." };
+    return { ok: false, error: t("invalidQuestion") };
   }
 
   const fileSettings = await getFileSettings();
@@ -98,7 +100,7 @@ export async function uploadEvidenceAction(
   if (file.size > maxBytes) {
     return {
       ok: false,
-      error: `File exceeds the ${fileSettings.maxUploadMb} MB limit.`,
+      error: t("tooLarge", { max: fileSettings.maxUploadMb }),
     };
   }
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
@@ -106,17 +108,17 @@ export async function uploadEvidenceAction(
     fileSettings.allowedExtensions.length > 0 &&
     !fileSettings.allowedExtensions.includes(extension)
   ) {
-    return { ok: false, error: `Files of type .${extension} are not allowed.` };
+    return { ok: false, error: t("badType", { ext: extension }) };
   }
   if (isDangerousUploadMime(file.type)) {
-    return { ok: false, error: "This file type is not allowed." };
+    return { ok: false, error: t("dangerousType") };
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
   if (!validateMagicBytes(extension, buffer)) {
     return {
       ok: false,
-      error: `The file content does not match a .${extension} file.`,
+      error: t("mismatch", { ext: extension }),
     };
   }
 

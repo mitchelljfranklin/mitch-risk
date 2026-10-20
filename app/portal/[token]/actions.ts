@@ -2,6 +2,7 @@
 
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
+import { getTranslations } from "next-intl/server";
 
 import { hashWithSecret } from "@/lib/crypto";
 import { getAssessmentByToken } from "@/lib/db/assessments";
@@ -12,6 +13,7 @@ export async function validatePortalPassword(
   token: string,
   password: string,
 ): Promise<{ ok: boolean; message?: string }> {
+  const t = await getTranslations("Portal.password");
   const { portalPasswordAttemptsPerMin } = await getAssessmentSettings();
   const allowed = rateLimit(
     "portal-password",
@@ -19,17 +21,17 @@ export async function validatePortalPassword(
     portalPasswordAttemptsPerMin,
   );
   if (!allowed) {
-    return { ok: false, message: "Too many attempts. Please wait a minute." };
+    return { ok: false, message: t("tooMany") };
   }
 
   const assessment = await getAssessmentByToken(token);
   if (!assessment || !assessment.portalPasswordHash) {
-    return { ok: false, message: "No password is set for this link." };
+    return { ok: false, message: t("notSet") };
   }
 
   const valid = await bcrypt.compare(password, assessment.portalPasswordHash);
   if (!valid) {
-    return { ok: false, message: "Incorrect password." };
+    return { ok: false, message: t("incorrect") };
   }
 
   // The cookie must not simply echo the token — the token is public (it is

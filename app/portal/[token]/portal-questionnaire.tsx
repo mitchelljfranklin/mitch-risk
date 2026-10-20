@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useFormatter, useTranslations } from "next-intl";
 import { type ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 
 import {
@@ -27,7 +28,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ThemeToggle } from "@/components/theme-toggle";
 import ReactMarkdown from "react-markdown";
 import { ProgressBar } from "@/components/progress-bar";
 import {
@@ -37,7 +37,6 @@ import {
   uploadEvidenceAction,
   vendorAddCommentAction,
 } from "@/lib/actions/portal";
-import { formatDate } from "@/lib/utils";
 import {
   findMissingRequiredQuestions,
   hasAnswer,
@@ -166,6 +165,8 @@ export function PortalQuestionnaire({
   allowedExtensions = ["pdf", "docx", "xlsx"],
 }: PortalQuestionnaireProps) {
   const router = useRouter();
+  const t = useTranslations("Portal.questionnaire");
+  const format = useFormatter();
   const [answers, setAnswers] = useState<PortalAnswers>(() =>
     buildInitialAnswers(initialAnswers),
   );
@@ -211,7 +212,9 @@ export function PortalQuestionnaire({
   const [comments, setComments] = useState<PortalComment[]>(initialComments);
   const [commentText, setCommentText] = useState<Record<string, string>>({});
   const [sendingComment, setSendingComment] = useState(false);
-  const [expiryLabel, setExpiryLabel] = useState<string | null>(null);
+  const [expiry, setExpiry] = useState<
+    { kind: "expired" } | { kind: "hours" | "minutes"; value: number } | null
+  >(null);
   const [isLinkExpired, setIsLinkExpired] = useState(false);
 
   async function handleVendorComment(questionId: string) {
@@ -228,7 +231,7 @@ export function PortalQuestionnaire({
           id: `local-${Date.now()}`,
           assessmentQuestionId: questionId,
           authorType: "VENDOR",
-          authorName: "Vendor",
+          authorName: t("vendorAuthor"),
           body,
           createdAt: new Date(),
         },
@@ -299,7 +302,7 @@ export function PortalQuestionnaire({
     function update() {
       const remaining = new Date(tokenExpiresAt!).getTime() - Date.now();
       if (remaining <= 0) {
-        setExpiryLabel("This link has expired.");
+        setExpiry({ kind: "expired" });
         setIsLinkExpired(true);
         return;
       }
@@ -307,17 +310,13 @@ export function PortalQuestionnaire({
       const hours = Math.floor(remaining / (1000 * 60 * 60));
       const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
       if (hours > 24) {
-        setExpiryLabel(null);
+        setExpiry(null);
         return;
       }
       if (hours > 0) {
-        setExpiryLabel(
-          `This link expires in ${hours} hour${hours > 1 ? "s" : ""}.`,
-        );
+        setExpiry({ kind: "hours", value: hours });
       } else {
-        setExpiryLabel(
-          `This link expires in ${minutes} minute${minutes > 1 ? "s" : ""}.`,
-        );
+        setExpiry({ kind: "minutes", value: minutes });
       }
     }
     update();
@@ -410,9 +409,7 @@ export function PortalQuestionnaire({
     setIsSubmitting(false);
 
     if (result.missingQuestionIds.length > 0) {
-      setSubmitError(
-        `Please answer ${result.missing} required question(s) before submitting.`,
-      );
+      setSubmitError(t("missingRequired", { count: result.missing }));
       // Jump to the section containing the first missing answer and highlight
       // it so the vendor never has to hunt.
       const firstMissingId = result.missingQuestionIds[0]!;
@@ -428,7 +425,7 @@ export function PortalQuestionnaire({
       return;
     }
 
-    setSubmitError("This link is no longer valid.");
+    setSubmitError(t("linkInvalid"));
   }
 
   function renderInput(question: PortalQuestion) {
@@ -449,11 +446,11 @@ export function PortalQuestionnaire({
         >
           <div className="flex items-center gap-2">
             <RadioGroupItem value="YES" id={`${question.id}-yes`} />
-            <Label htmlFor={`${question.id}-yes`}>Yes</Label>
+            <Label htmlFor={`${question.id}-yes`}>{t("yes")}</Label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="NO" id={`${question.id}-no`} />
-            <Label htmlFor={`${question.id}-no`}>No</Label>
+            <Label htmlFor={`${question.id}-no`}>{t("no")}</Label>
           </div>
         </RadioGroup>
       );
@@ -531,21 +528,24 @@ export function PortalQuestionnaire({
             onChange={(event) => handleFileUpload(question.id, event)}
           />
           <p className="text-muted-foreground text-xs">
-            Max {maxUploadMb} MB. Allowed: {allowedExtensions.join(", ")}.
-            {isUploading ? " Uploading…" : null}
+            {t("maxUpload", {
+              maxUploadMb,
+              extensions: allowedExtensions.join(", "),
+            })}
+            {isUploading ? t("uploading") : null}
           </p>
           {(evidence[question.id] ?? []).map((file) => (
             <span
               key={file.id}
               className="text-muted-foreground flex items-center gap-2 text-xs"
             >
-              Uploaded: {file.fileName}
+              {t("uploaded", { fileName: file.fileName })}
               <button
                 type="button"
                 className="text-destructive hover:underline"
                 onClick={() => handleRemoveEvidence(file.id, question.id)}
               >
-                Remove
+                {t("remove")}
               </button>
             </span>
           ))}
@@ -561,7 +561,7 @@ export function PortalQuestionnaire({
           disabled={disabled}
         >
           <SelectTrigger className="max-w-xs">
-            <SelectValue placeholder="Select…" />
+            <SelectValue placeholder={t("selectPlaceholder")} />
           </SelectTrigger>
           <SelectContent>
             {question.options.map((option) => (
@@ -666,7 +666,7 @@ export function PortalQuestionnaire({
             }
           />
           <Label htmlFor={`${question.id}-checkbox`}>
-            I confirm this statement
+            {t("confirmStatement")}
           </Label>
         </div>
       );
@@ -719,9 +719,7 @@ export function PortalQuestionnaire({
           }
           return (
             <div className="bg-muted/50 border-l-warning rounded-md border-l-2 p-2 text-sm">
-              <p className="text-xs font-medium">
-                The reviewer requested clarification on this answer.
-              </p>
+              <p className="text-xs font-medium">{t("clarification")}</p>
               {review.note ? (
                 <p className="text-muted-foreground mt-1 text-xs">
                   {review.note}
@@ -745,7 +743,7 @@ export function PortalQuestionnaire({
             htmlFor={`${question.id}-na`}
             className="text-muted-foreground text-xs"
           >
-            Not applicable
+            {t("notApplicable")}
           </Label>
         </div>
         {(() => {
@@ -775,7 +773,7 @@ export function PortalQuestionnaire({
                 <div className="flex items-start gap-2">
                   <Textarea
                     className="min-h-16 text-xs"
-                    placeholder="Add a comment…"
+                    placeholder={t("commentPlaceholder")}
                     value={commentText[question.id] ?? ""}
                     onChange={(event) =>
                       setCommentText((previous) => ({
@@ -794,7 +792,7 @@ export function PortalQuestionnaire({
                     }
                     onClick={() => handleVendorComment(question.id)}
                   >
-                    Send
+                    {t("send")}
                   </Button>
                 </div>
               ) : null}
@@ -860,32 +858,30 @@ export function PortalQuestionnaire({
   }
 
   const expiresLabel = tokenExpiresAt
-    ? `Expires ${formatDate(tokenExpiresAt)}`
+    ? t("expires", {
+        date: format.dateTime(new Date(tokenExpiresAt), {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }),
+      })
     : null;
 
   return (
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-            <p className="text-muted-foreground text-sm">{vendorName}</p>
-          </div>
-          <ThemeToggle />
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+          <p className="text-muted-foreground text-sm">{vendorName}</p>
         </div>
-        <p className="text-muted-foreground text-xs">
-          Your answers are saved automatically — you can close this page and
-          return using the same link at any time.
-        </p>
+        <p className="text-muted-foreground text-xs">{t("autosaveHint")}</p>
         {saveStatus === "error" ? (
           <div
             className="border-destructive/50 bg-destructive/10 flex flex-wrap items-center justify-between gap-2 rounded-md border px-4 py-2"
             role="alert"
           >
             <p className="text-destructive text-xs font-medium">
-              {isLinkExpired
-                ? "This link has expired — your recent changes could not be saved."
-                : "We couldn't save your latest changes. Check your connection and retry."}
+              {isLinkExpired ? t("saveExpired") : t("saveError")}
             </p>
             {!isLinkExpired ? (
               <Button
@@ -894,15 +890,19 @@ export function PortalQuestionnaire({
                 variant="outline"
                 onClick={() => void performSave()}
               >
-                Retry save
+                {t("retrySave")}
               </Button>
             ) : null}
           </div>
         ) : null}
-        {expiryLabel ? (
+        {expiry ? (
           <div className="border-warning/50 bg-warning/10 rounded-md border px-4 py-2">
             <p className="text-muted-foreground text-xs font-medium">
-              {expiryLabel}
+              {expiry.kind === "expired"
+                ? t("expiry.expired")
+                : expiry.kind === "hours"
+                  ? t("expiry.hours", { hours: expiry.value })
+                  : t("expiry.minutes", { minutes: expiry.value })}
             </p>
           </div>
         ) : null}
@@ -926,8 +926,10 @@ export function PortalQuestionnaire({
             className="text-muted-foreground shrink-0 text-xs"
             aria-live="polite"
           >
-            · Section {Math.min(sectionCursor + 1, steppedSections.length)} of{" "}
-            {steppedSections.length}
+            {t("sectionCounter", {
+              current: Math.min(sectionCursor + 1, steppedSections.length),
+              total: steppedSections.length,
+            })}
           </span>
         ) : null}
         {expiresLabel ? (
@@ -943,13 +945,13 @@ export function PortalQuestionnaire({
           }
         >
           {saveStatus === "saving"
-            ? "Saving…"
+            ? t("saving")
             : saveStatus === "error"
-              ? "Save failed"
+              ? t("saveFailed")
               : saveStatus === "saved" && lastSavedAt
-                ? `Saved at ${lastSavedAt}`
+                ? t("savedAt", { time: lastSavedAt })
                 : lastSavedAt
-                  ? `Last saved at ${lastSavedAt}`
+                  ? t("lastSavedAt", { time: lastSavedAt })
                   : ""}
         </span>
       </div>
@@ -981,7 +983,7 @@ export function PortalQuestionnaire({
               setSectionCursor((cursor) => cursor - 1);
             }}
           >
-            Back
+            {t("back")}
           </Button>
           <div className="flex flex-col items-end gap-1">
             {continueWarned && currentMissingCount > 0 ? (
@@ -989,13 +991,11 @@ export function PortalQuestionnaire({
                 className="text-destructive max-w-sm text-right text-xs"
                 role="alert"
               >
-                {currentMissingCount} required question
-                {currentMissingCount !== 1 ? "s" : ""} on this section still
-                need answers. You can continue and come back.
+                {t("continueWarning", { count: currentMissingCount })}
               </p>
             ) : null}
             <Button type="button" onClick={goToNextStep}>
-              {isLastStep ? "Review answers" : "Continue"}
+              {isLastStep ? t("reviewAnswers") : t("continue")}
             </Button>
           </div>
         </div>
@@ -1007,7 +1007,7 @@ export function PortalQuestionnaire({
           className="flex flex-col gap-4"
         >
           <h2 id="review-heading" className="text-lg font-medium">
-            Review your answers
+            {t("reviewHeading")}
           </h2>
           {steppedSections.map((group, index) => {
             const answered = group.questions.filter((question) =>
@@ -1025,8 +1025,13 @@ export function PortalQuestionnaire({
                 <div>
                   <p className="text-sm font-medium">{group.title}</p>
                   <p className="text-muted-foreground text-xs">
-                    {answered}/{group.questions.length} answered
-                    {missing > 0 ? ` · ${missing} required missing` : ""}
+                    {t("reviewAnswered", {
+                      answered,
+                      total: group.questions.length,
+                    })}
+                    {missing > 0
+                      ? ` · ${t("reviewMissing", { count: missing })}`
+                      : ""}
                   </p>
                 </div>
                 <Button
@@ -1039,7 +1044,7 @@ export function PortalQuestionnaire({
                     setContinueWarned(false);
                   }}
                 >
-                  Open section
+                  {t("openSection")}
                 </Button>
               </div>
             );
@@ -1070,24 +1075,23 @@ export function PortalQuestionnaire({
                 size="lg"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Submitting…" : "Submit questionnaire"}
+                {isSubmitting ? t("submitting") : t("submit")}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Submit questionnaire?</AlertDialogTitle>
+                <AlertDialogTitle>{t("submitTitle")}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  You will not be able to edit your answers after submission.
-                  Are you sure you are ready to submit?
+                  {t("submitDescription")}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={() => handleSubmit()}
                   className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
-                  Submit
+                  {t("submitConfirm")}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

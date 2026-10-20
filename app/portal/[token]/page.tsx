@@ -1,16 +1,18 @@
+import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
+import { getFormatter, getTranslations } from "next-intl/server";
 import { getAssessmentByToken, isTokenExpired } from "@/lib/db/assessments";
 import { getClientIp } from "@/lib/client-ip";
 import { hashWithSecret } from "@/lib/crypto";
 import { timingSafeEqualString } from "@/lib/timing-safe";
 import { rateLimit } from "@/lib/rate-limit";
-import { formatDate } from "@/lib/utils";
 import { isNoteVisibleToVendor } from "@/lib/portal";
 import {
   getAppearanceSettings,
   getAssessmentSettings,
   getFileSettings,
 } from "@/lib/settings";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 import { PortalQuestionnaire } from "./portal-questionnaire";
@@ -18,7 +20,10 @@ import { PasswordGate } from "./password-gate";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Vendor questionnaire" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Portal");
+  return { title: t("metaTitle") };
+}
 
 type PortalPageProps = {
   params: Promise<{ token: string }>;
@@ -46,23 +51,30 @@ function normalizeAnswerValue(
 function PortalShell({
   children,
   logoUrl,
+  noscriptText,
+  logoAlt,
 }: {
   children: React.ReactNode;
   logoUrl: string | null;
+  noscriptText: string;
+  logoAlt: string;
 }) {
   return (
     <div className="mx-auto flex min-h-svh w-full max-w-2xl flex-col gap-6 p-6">
+      <div className="flex items-center justify-end gap-2">
+        <LocaleSwitcher />
+        <ThemeToggle />
+      </div>
       <noscript>
         <p className="border-warning/50 bg-warning/10 rounded-md border p-3 text-sm">
-          JavaScript is required to complete this questionnaire. Please enable
-          JavaScript in your browser settings.
+          {noscriptText}
         </p>
       </noscript>
       {logoUrl ? (
         <div className="flex justify-center">
           <img
             src={logoUrl}
-            alt="Logo"
+            alt={logoAlt}
             width={80}
             height={40}
             loading="lazy"
@@ -79,13 +91,21 @@ function PortalMessage({
   title,
   body,
   logoUrl,
+  noscriptText,
+  logoAlt,
 }: {
   title: string;
   body: string;
   logoUrl: string | null;
+  noscriptText: string;
+  logoAlt: string;
 }) {
   return (
-    <PortalShell logoUrl={logoUrl}>
+    <PortalShell
+      logoUrl={logoUrl}
+      noscriptText={noscriptText}
+      logoAlt={logoAlt}
+    >
       <div className="mt-24 text-center">
         <h1 className="text-xl font-semibold tracking-tight">{title}</h1>
         <p className="text-muted-foreground mt-2 text-sm">{body}</p>
@@ -96,6 +116,8 @@ function PortalMessage({
 
 export default async function PortalPage({ params }: PortalPageProps) {
   const { token } = await params;
+  const t = await getTranslations("Portal");
+  const format = await getFormatter();
 
   const requestHeaders = await headers();
   const clientIp = getClientIp(requestHeaders);
@@ -116,9 +138,11 @@ export default async function PortalPage({ params }: PortalPageProps) {
   if (!withinRateLimit) {
     return (
       <PortalMessage
-        title="Link not found"
-        body="This questionnaire link is invalid."
+        title={t("linkNotFound")}
+        body={t("linkInvalid")}
         logoUrl={logoUrl}
+        noscriptText={t("noscript")}
+        logoAlt={t("logoAlt")}
       />
     );
   }
@@ -131,9 +155,11 @@ export default async function PortalPage({ params }: PortalPageProps) {
   if (!assessment) {
     return (
       <PortalMessage
-        title="Link not found"
-        body="This questionnaire link is invalid."
+        title={t("linkNotFound")}
+        body={t("linkInvalid")}
         logoUrl={logoUrl}
+        noscriptText={t("noscript")}
+        logoAlt={t("logoAlt")}
       />
     );
   }
@@ -142,9 +168,11 @@ export default async function PortalPage({ params }: PortalPageProps) {
   if (isExpired) {
     return (
       <PortalMessage
-        title="Link expired"
-        body="This questionnaire link has expired. Please contact the requester for a new link."
+        title={t("linkExpiredTitle")}
+        body={t("linkExpiredBody")}
         logoUrl={logoUrl}
+        noscriptText={t("noscript")}
+        logoAlt={t("logoAlt")}
       />
     );
   }
@@ -161,42 +189,43 @@ export default async function PortalPage({ params }: PortalPageProps) {
       ]),
     );
     return (
-      <PortalShell logoUrl={logoUrl}>
+      <PortalShell
+        logoUrl={logoUrl}
+        noscriptText={t("noscript")}
+        logoAlt={t("logoAlt")}
+      >
         <div className="flex flex-col gap-6">
           <header className="flex items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl font-semibold tracking-tight">
-                {assessment.title} — submitted
+                {t("submittedTitle", { title: assessment.title })}
               </h1>
               <p className="text-muted-foreground text-sm">
                 {assessment.vendor.name}
               </p>
             </div>
-            <ThemeToggle />
           </header>
           <div className="rounded-md border border-[var(--success)] bg-[var(--success)]/10 px-4 py-3">
-            <p className="text-sm font-medium">
-              ✓ Your responses have been submitted.
-            </p>
+            <p className="text-sm font-medium">{t("submittedBanner")}</p>
             <p className="text-muted-foreground mt-1 text-xs">
-              The requester will review your answers and may request
-              clarifications. You can return to this link to see any updates.
+              {t("submittedBody")}
             </p>
           </div>
           {assessment.questions.map((question) => {
             const response = responseMap.get(question.id);
             const review = response?.review;
             const questionComments = assessment.comments.filter(
-              (c) =>
-                c.assessmentQuestionId === question.id &&
-                (c.visibility === "VENDOR" || c.authorType === "VENDOR"),
+              (comment) =>
+                comment.assessmentQuestionId === question.id &&
+                (comment.visibility === "VENDOR" ||
+                  comment.authorType === "VENDOR"),
             );
             return (
               <div key={question.id} className="rounded-md border p-4">
                 <p className="text-sm font-medium">{question.text}</p>
                 <p className="text-muted-foreground mt-1 text-sm">
                   {response?.isNotApplicable
-                    ? "N/A"
+                    ? t("notApplicableShort")
                     : response
                       ? String(response.value ?? "—")
                       : "—"}
@@ -210,9 +239,9 @@ export default async function PortalPage({ params }: PortalPageProps) {
                           : "text-muted-foreground"
                       }
                     >
-                      {review.decision === "CLARIFICATION_REQUESTED"
-                        ? "Clarification requested"
-                        : review.decision.toLowerCase()}
+                      {t.has(`decisions.${review.decision}`)
+                        ? t(`decisions.${review.decision}`)
+                        : review.decision}
                     </span>
                     {review.note && isNoteVisibleToVendor(review.decision)
                       ? ` — ${review.note}`
@@ -229,7 +258,12 @@ export default async function PortalPage({ params }: PortalPageProps) {
                         <span className="font-medium">
                           {comment.authorName}
                         </span>{" "}
-                        · {formatDate(comment.createdAt)}
+                        ·{" "}
+                        {format.dateTime(comment.createdAt, {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
                         <p className="mt-0.5 text-sm">{comment.body}</p>
                       </div>
                     ))}
@@ -246,9 +280,11 @@ export default async function PortalPage({ params }: PortalPageProps) {
   if (assessment.status !== "SENT" && assessment.status !== "IN_PROGRESS") {
     return (
       <PortalMessage
-        title="Not available"
-        body="This questionnaire is not currently available."
+        title={t("notAvailableTitle")}
+        body={t("notAvailableBody")}
         logoUrl={logoUrl}
+        noscriptText={t("noscript")}
+        logoAlt={t("logoAlt")}
       />
     );
   }
@@ -265,7 +301,11 @@ export default async function PortalPage({ params }: PortalPageProps) {
       !timingSafeEqualString(portalAuthCookie.value, expectedCookieValue)
     ) {
       return (
-        <PortalShell logoUrl={logoUrl}>
+        <PortalShell
+          logoUrl={logoUrl}
+          noscriptText={t("noscript")}
+          logoAlt={t("logoAlt")}
+        >
           <PasswordGate token={token} />
         </PortalShell>
       );
@@ -308,14 +348,16 @@ export default async function PortalPage({ params }: PortalPageProps) {
   }
 
   return (
-    <PortalShell logoUrl={logoUrl}>
+    <PortalShell
+      logoUrl={logoUrl}
+      noscriptText={t("noscript")}
+      logoAlt={t("logoAlt")}
+    >
       {assessment.status === "IN_PROGRESS" ? (
         <div className="border-warning/50 bg-warning/10 rounded-md border px-4 py-3">
-          <p className="text-sm font-medium">
-            Additional information has been requested.
-          </p>
+          <p className="text-sm font-medium">{t("additionalInfoTitle")}</p>
           <p className="text-muted-foreground mt-1 text-xs">
-            Please review the flagged questions and resubmit when ready.
+            {t("additionalInfoBody")}
           </p>
         </div>
       ) : null}
@@ -329,7 +371,8 @@ export default async function PortalPage({ params }: PortalPageProps) {
         initialEvidence={assessment.evidence}
         reviewByQuestionId={reviewByQuestionId}
         initialComments={assessment.comments.filter(
-          (c) => c.visibility === "VENDOR" || c.authorType === "VENDOR",
+          (comment) =>
+            comment.visibility === "VENDOR" || comment.authorType === "VENDOR",
         )}
         maxUploadMb={fileSettings.maxUploadMb}
         allowedExtensions={fileSettings.allowedExtensions}
