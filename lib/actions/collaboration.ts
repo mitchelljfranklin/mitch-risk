@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 
 import { getCurrentUser, requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
@@ -80,6 +81,7 @@ export async function addCommentAction(formData: FormData) {
 
 export async function reviewAction(formData: FormData) {
   await requirePermission(PERMISSIONS.ASSESSMENTS_REVIEW);
+  const translations = await getTranslations("Assessments.detail.review");
   const assessmentId = getField(formData, "assessmentId");
   const responseId = getField(formData, "responseId");
   const decision = getField(formData, "decision");
@@ -115,13 +117,20 @@ export async function reviewAction(formData: FormData) {
       where: { id: responseId },
       select: { assessmentQuestionId: true },
     });
+    const previousDecision =
+      existing.decision === "CLARIFICATION_REQUESTED"
+        ? translations("clarificationRequested")
+        : translations("approved");
 
     await addComment({
       assessmentId,
       assessmentQuestionId: parentResponse?.assessmentQuestionId ?? undefined,
       authorType: "INTERNAL",
       authorName: user.name ?? user.email ?? "Reviewer",
-      body: `Previous review (${existing.decision === "CLARIFICATION_REQUESTED" ? "clarification requested" : existing.decision.toLowerCase()}): ${existing.note}`,
+      body: translations("previousReview", {
+        decision: previousDecision,
+        note: existing.note,
+      }),
       visibility: "VENDOR",
     });
   }
@@ -162,6 +171,7 @@ export async function sendBackToVendorAction(formData: FormData) {
 
   const details = await getAssessmentRecipients(assessmentId);
   if (details) {
+    const translations = await getTranslations("Assessments.detail.sendBack");
     const recipients =
       details.portalRecipients.length > 0
         ? details.portalRecipients
@@ -183,7 +193,7 @@ export async function sendBackToVendorAction(formData: FormData) {
           dueDate: details.dueDate
             ? details.dueDate.toISOString().slice(0, 10)
             : "",
-          message: message || "Please review and resubmit your questionnaire.",
+          message: message || translations("emailFallback"),
         },
         { assessmentId, sentById: user?.id },
       );
@@ -224,12 +234,13 @@ export async function finalizeWithStateAction(
   formData: FormData,
 ): Promise<FinalizeState> {
   await requirePermission(PERMISSIONS.ASSESSMENTS_REVIEW);
+  const translations = await getTranslations("Assessments.errors");
   const assessmentId = getField(formData, "assessmentId");
   const result = await finalizeAssessment(assessmentId);
   if (!result.ok) {
     return {
       ok: false,
-      message: `${result.missing} response(s) still need to be reviewed.`,
+      message: translations("missingReviews", { count: result.missing }),
     };
   }
   const user = await getCurrentUser();

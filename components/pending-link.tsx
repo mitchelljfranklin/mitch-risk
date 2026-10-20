@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ComponentProps } from "react";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 
@@ -10,12 +11,14 @@ type PendingLinkProps = ComponentProps<"a"> & {
 };
 
 export function PendingLink({
-  pendingLabel = "Preparing…",
+  pendingLabel,
   className,
   onClick,
   children,
   ...rest
 }: PendingLinkProps) {
+  const translations = useTranslations("Common.pendingLink");
+  const resolvedPendingLabel = pendingLabel ?? translations("preparing");
   const [pending, setPending] = useState(false);
 
   return (
@@ -33,7 +36,7 @@ export function PendingLink({
       {pending ? (
         <span className="inline-flex items-center gap-2">
           <span className="size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-          {pendingLabel}
+          {resolvedPendingLabel}
         </span>
       ) : (
         children

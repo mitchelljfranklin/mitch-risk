@@ -29,6 +29,30 @@
       "OPEN": "Abierto",
       "REMEDIATED": "Remediado",
       "RISK_ACCEPTED": "Riesgo aceptado"
+    },
+    "copyLink": {
+      "copy": "Copiar",
+      "copied": "Copiado"
+    },
+    "pendingLink": {
+      "preparing": "Preparando…"
+    },
+    "evidencePreview": {
+      "preview": "Vista previa de {fileName}"
+    },
+    "questionTypes": {
+      "YES_NO": "Sí / No",
+      "MULTIPLE_CHOICE": "Opción única (elige una)",
+      "FREE_TEXT": "Texto libre",
+      "FILE_UPLOAD": "Carga de archivo",
+      "DATE": "Fecha",
+      "NUMERIC": "Numérico",
+      "COMBOBOX": "Cuadro combinado",
+      "MULTI_SELECT": "Selección múltiple (elige varias)",
+      "RATING": "Valoración (1‑5)",
+      "URL": "URL",
+      "EMAIL": "Correo electrónico",
+      "CHECKBOX": "Casilla de confirmación"
     }
   },
   "Metadata": {
@@ -119,6 +143,17 @@
         "MEDIUM": "Medio",
         "LOW": "Bajo",
         "Unspecified": "Sin especificar"
+      },
+      "activity": {
+        "title": "Actividad de evaluaciones",
+        "noActivity": "Sin actividad en este periodo",
+        "timeRange": "Seleccionar un intervalo de tiempo",
+        "ranges": {
+          "90d": "Últimos 3 meses",
+          "30d": "Últimos 30 días",
+          "7d": "Últimos 7 días"
+        },
+        "assessments": "Evaluaciones"
       }
     }
   },
@@ -445,6 +480,150 @@
         "cancel": "Cancelar"
       }
     },
+    "detail": {
+      "notFound": "Evaluación no encontrada",
+      "breadcrumbs": {
+        "assessments": "Evaluaciones",
+        "vendors": "Proveedores"
+      },
+      "actions": {
+        "reopen": "Reabrir revisión",
+        "exportCsv": "Exportar CSV",
+        "downloadPdf": "Descargar PDF",
+        "preparingReport": "Preparando informe…",
+        "finalize": "Finalizar",
+        "finalizing": "Finalizando…",
+        "delete": "Eliminar",
+        "deleteTitle": "¿Eliminar evaluación?",
+        "deleteDescription": "Esto eliminará permanentemente «{title}» y todas las respuestas, hallazgos y evidencias. Esta acción no se puede deshacer."
+      },
+      "meta": {
+        "due": " · vence {date}",
+        "reviewer": " · revisor: {name}"
+      },
+      "draft": {
+        "createLinkTitle": "Crear enlace para el proveedor",
+        "createLinkDescription": "Genera un enlace para el proveedor sin inicio de sesión. Opcionalmente, establece una contraseña para proteger el acceso.",
+        "settingsTitle": "Configuración del borrador",
+        "title": "Título",
+        "dueDate": "Fecha de vencimiento",
+        "saving": "Guardando…",
+        "save": "Guardar cambios"
+      },
+      "link": {
+        "title": "Enlace para el proveedor (sin inicio de sesión)",
+        "expires": "Caduca el {date}",
+        "noExpiry": "Sin caducidad",
+        "passwordProtected": "Protegido con contraseña",
+        "extend": "Ampliar 30 días",
+        "regenerate": "Regenerar enlace",
+        "revoke": "Revocar",
+        "revokeTitle": "¿Revocar el enlace del proveedor?",
+        "revokeDescription": "El proveedor ya no podrá acceder al cuestionario. Puedes regenerar el enlace más adelante si es necesario.",
+        "revokedTitle": "Enlace para el proveedor",
+        "revokedDescription": "El enlace se ha revocado."
+      },
+      "score": {
+        "title": "Puntuación",
+        "low": "Riesgo bajo",
+        "moderate": "Riesgo moderado",
+        "high": "Riesgo alto"
+      },
+      "findings": {
+        "summary": "Hallazgos ({count} · {open, plural, one {# abierto} other {# abiertos}})",
+        "deletedUser": "Usuario eliminado",
+        "noneTitle": "Hallazgos",
+        "allCompliant": "Todas las respuestas cumplen: no hay hallazgos."
+      },
+      "responses": {
+        "title": "Respuestas",
+        "summary": "{approved} de {total} aprobadas · {pending} pendientes",
+        "summaryClarifications": " · {count, plural, one {# aclaración} other {# aclaraciones}}",
+        "filters": {
+          "all": "Todas",
+          "pending": "Pendientes ({count})",
+          "approved": "Aprobadas ({count})",
+          "clarification": "Aclaración ({count})"
+        },
+        "notApplicable": "N/A",
+        "evidenceAlt": "Archivo de evidencia: {fileName}",
+        "viewPdf": "Ver PDF: {fileName} ↗",
+        "attachToVendor": "Adjuntar al proveedor"
+      },
+      "sender": {
+        "password": "Contraseña del portal (opcional)",
+        "passwordPlaceholder": "Exige al proveedor que introduzca una contraseña",
+        "passwordHint": "Si se establece, los proveedores deberán introducir esta contraseña antes de acceder al cuestionario.",
+        "sendToVendor": "Enviar al proveedor",
+        "generateOnly": "Generar solo el enlace",
+        "customEmailPlaceholder": "custom@example.com",
+        "sendTo": "Enviar a"
+      },
+      "sendBack": {
+        "trigger": "Devolver al proveedor",
+        "title": "¿Devolver al proveedor?",
+        "description": "El proveedor podrá editar y volver a enviar sus respuestas, y recibirá un correo con tu mensaje. Sus respuestas actuales se conservan.",
+        "messageLabel": "Mensaje para el proveedor (opcional)",
+        "messagePlaceholder": "Explica qué información adicional se necesita…",
+        "cancel": "Cancelar",
+        "confirm": "Devolver",
+        "emailFallback": "Revisa y vuelve a enviar tu cuestionario."
+      },
+      "review": {
+        "approved": "Aprobada",
+        "clarificationRequested": "Aclaración solicitada",
+        "noReviewYet": "Aún no hay revisión",
+        "collapse": "Contraer",
+        "expand": "Expandir",
+        "reviewPlaceholder": "Revisar",
+        "approve": "Aprobar",
+        "requestClarification": "Solicitar aclaración",
+        "notePlaceholder": "Nota opcional (visible para el proveedor si se solicita aclaración)",
+        "save": "Guardar",
+        "vendor": "proveedor",
+        "internal": "interno",
+        "replyPlaceholder": "Responder",
+        "internalOption": "Interno",
+        "vendorOption": "Visible para el proveedor",
+        "reply": "Responder",
+        "commentPlaceholder": "Añadir un comentario",
+        "comment": "Comentar",
+        "commentCount": "{count, plural, one {# comentario} other {# comentarios}}",
+        "previousReview": "Revisión anterior ({decision}): {note}"
+      },
+      "findingStatus": {
+        "resolutionNotePlaceholder": "Nota de resolución (opcional)",
+        "save": "Guardar"
+      },
+      "attachEvidence": {
+        "trigger": "Adjuntar",
+        "refreshing": "{message}. Actualizando…",
+        "attachAs": "Adjuntar como",
+        "certificationOption": "Certificación o acreditación",
+        "generalOption": "Archivo adjunto general",
+        "certificationName": "Nombre de la certificación",
+        "namePlaceholder": "p. ej., SOC 2 Tipo II",
+        "issuer": "Emisor (opcional)",
+        "issuerPlaceholder": "p. ej., empresa auditora",
+        "expiryDate": "Fecha de caducidad",
+        "displayNameForFile": "Nombre visible del archivo",
+        "notes": "Notas (opcional)",
+        "notesPlaceholder": "Contexto adicional…",
+        "complianceActions": "Se requieren acciones de cumplimiento",
+        "selectFramework": "Selecciona un marco...",
+        "displayName": "Nombre visible",
+        "generalNotesPlaceholder": "Motivo del archivo adjunto…",
+        "adding": "Añadiendo…",
+        "addCertification": "Añadir certificación",
+        "attachToVendor": "Adjuntar al proveedor",
+        "cancel": "Cancelar"
+      },
+      "error": {
+        "title": "No se pudo cargar la evaluación",
+        "description": "Se produjo un error al cargar esta evaluación. Inténtalo de nuevo.",
+        "retry": "Reintentar"
+      }
+    },
     "errors": {
       "invalidInput": "Entrada no válida.",
       "titleRequired": "El título es obligatorio",
@@ -453,7 +632,8 @@
       "invalidDueDate": "Introduce una fecha de vencimiento válida",
       "saved": "Guardado.",
       "started": "Evaluación iniciada.",
-      "portalLinkFailed": "Se creó la evaluación, pero no se pudo generar el enlace del portal."
+      "portalLinkFailed": "Se creó la evaluación, pero no se pudo generar el enlace del portal.",
+      "missingReviews": "{count, plural, one {Queda # respuesta por revisar.} other {Quedan # respuestas por revisar.}}"
     }
   },
   "Shell": {

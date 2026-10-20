@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getFormatter, getTranslations } from "next-intl/server";
 
 import { CopyLink } from "@/components/copy-link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -39,19 +40,11 @@ import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getAssessment } from "@/lib/db/assessments";
 import { env } from "@/lib/env";
 import {
-  ASSESSMENT_STATUS_LABELS,
-  FINDING_STATUS_LABELS,
   FINDING_STATUS_STYLES,
   SEVERITY_ACCENT,
   SEVERITY_STYLES,
 } from "@/lib/schemas/assessment";
-import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
-import {
-  cn,
-  formatDate,
-  formatDateUtc,
-  formatResponseValue,
-} from "@/lib/utils";
+import { cn, formatResponseValue } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -68,7 +61,10 @@ export async function generateMetadata({
     where: { id: assessmentId },
     select: { title: true },
   });
-  if (!assessment) return { title: "Assessment not found" };
+  if (!assessment) {
+    const translations = await getTranslations("Assessments.detail");
+    return { title: translations("notFound") };
+  }
   return { title: assessment.title };
 }
 
@@ -77,6 +73,9 @@ export default async function AssessmentDetailPage({
   searchParams,
 }: AssessmentDetailPageProps) {
   const user = await requirePermission(PERMISSIONS.ASSESSMENTS_VIEW);
+  const translations = await getTranslations("Assessments.detail");
+  const commonTranslations = await getTranslations("Common");
+  const dateFormatter = await getFormatter();
   const canCreate = hasPermission(
     user.permissions,
     PERMISSIONS.ASSESSMENTS_CREATE,
@@ -100,8 +99,8 @@ export default async function AssessmentDetailPage({
     notFound();
   }
 
-  const sp = await searchParams;
-  const reviewFilter = sp.review ?? "all";
+  const searchParameters = await searchParams;
+  const reviewFilter = searchParameters.review ?? "all";
 
   const isDraft = assessment.status === "DRAFT";
   const isReviewable =
@@ -121,13 +120,13 @@ export default async function AssessmentDetailPage({
       (response) => response.review?.decision === "APPROVED",
     ).length,
     clarification: answerable.filter(
-      (r) => r.review?.decision === "CLARIFICATION_REQUESTED",
+      (response) => response.review?.decision === "CLARIFICATION_REQUESTED",
     ).length,
     pending: answerable.filter((response) => !response.review).length,
   };
 
   const openFindings = assessment.findings.filter(
-    (f) => f.status === "OPEN",
+    (finding) => finding.status === "OPEN",
   ).length;
 
   type ResponseRow = (typeof assessment.responses)[number];
@@ -143,12 +142,24 @@ export default async function AssessmentDetailPage({
   }
 
   const reviewFilters = [
-    { value: "all", label: "All" },
-    { value: "pending", label: `Pending (${reviewCounts.pending})` },
-    { value: "approved", label: `Approved (${reviewCounts.approved})` },
+    { value: "all", label: translations("responses.filters.all") },
+    {
+      value: "pending",
+      label: translations("responses.filters.pending", {
+        count: reviewCounts.pending,
+      }),
+    },
+    {
+      value: "approved",
+      label: translations("responses.filters.approved", {
+        count: reviewCounts.approved,
+      }),
+    },
     {
       value: "clarification",
-      label: `Clarification (${reviewCounts.clarification})`,
+      label: translations("responses.filters.clarification", {
+        count: reviewCounts.clarification,
+      }),
     },
   ];
 
@@ -163,21 +174,22 @@ export default async function AssessmentDetailPage({
     if (!item.assessmentQuestionId) {
       continue;
     }
-    const list = evidenceByQuestion.get(item.assessmentQuestionId) ?? [];
-    list.push(item);
-    evidenceByQuestion.set(item.assessmentQuestionId, list);
+    const evidenceForQuestion =
+      evidenceByQuestion.get(item.assessmentQuestionId) ?? [];
+    evidenceForQuestion.push(item);
+    evidenceByQuestion.set(item.assessmentQuestionId, evidenceForQuestion);
   }
   const commentsByQuestion = new Map<string, typeof assessment.comments>();
   const replyByParentId = new Map<string, typeof assessment.comments>();
   for (const comment of assessment.comments) {
     const questionId = comment.assessmentQuestionId ?? "";
-    const list = commentsByQuestion.get(questionId) ?? [];
-    list.push(comment);
-    commentsByQuestion.set(questionId, list);
+    const commentsForQuestion = commentsByQuestion.get(questionId) ?? [];
+    commentsForQuestion.push(comment);
+    commentsByQuestion.set(questionId, commentsForQuestion);
     if (comment.parentId) {
-      const replies = replyByParentId.get(comment.parentId) ?? [];
-      replies.push(comment);
-      replyByParentId.set(comment.parentId, replies);
+      const repliesForComment = replyByParentId.get(comment.parentId) ?? [];
+      repliesForComment.push(comment);
+      replyByParentId.set(comment.parentId, repliesForComment);
     }
   }
 
@@ -192,26 +204,52 @@ export default async function AssessmentDetailPage({
     }>
   > = {};
   for (const [parentId, replies] of replyByParentId) {
-    repliesRecord[parentId] = replies.map((response) => ({
-      id: response.id,
-      authorName: response.authorName,
-      body: response.body,
-      visibility: response.visibility,
-      createdAt: response.createdAt.toISOString(),
+    repliesRecord[parentId] = replies.map((reply) => ({
+      id: reply.id,
+      authorName: reply.authorName,
+      body: reply.body,
+      visibility: reply.visibility,
+      createdAt: reply.createdAt.toISOString(),
     }));
+  }
+
+  function riskLabel(score: number): string {
+    if (score >= 0.85) {
+      return translations("score.low");
+    }
+    if (score >= 0.6) {
+      return translations("score.moderate");
+    }
+    return translations("score.high");
+  }
+
+  function scoreBarClass(score: number): string {
+    if (score >= 0.85) {
+      return "bg-[var(--rag-green)]";
+    }
+    if (score >= 0.6) {
+      return "bg-[var(--rag-amber)]";
+    }
+    return "bg-[var(--rag-red)]";
   }
 
   return (
     <div className="flex max-w-5xl flex-col gap-6">
       <Breadcrumbs
         segments={
-          sp.back?.startsWith("/assessments")
+          searchParameters.back?.startsWith("/assessments")
             ? [
-                { label: "Assessments", href: sp.back },
+                {
+                  label: translations("breadcrumbs.assessments"),
+                  href: searchParameters.back,
+                },
                 { label: assessment.title },
               ]
             : [
-                { label: "Vendors", href: "/vendors" },
+                {
+                  label: translations("breadcrumbs.vendors"),
+                  href: "/vendors",
+                },
                 {
                   label: assessment.vendor.name,
                   href: `/vendors/${assessment.vendorId}`,
@@ -225,7 +263,9 @@ export default async function AssessmentDetailPage({
           <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
             {assessment.title}
             <Badge variant="secondary">
-              {ASSESSMENT_STATUS_LABELS[assessment.status]}
+              {commonTranslations.has(`assessmentStatuses.${assessment.status}`)
+                ? commonTranslations(`assessmentStatuses.${assessment.status}`)
+                : assessment.status}
             </Badge>
           </h1>
           <ActionGroup>
@@ -244,7 +284,7 @@ export default async function AssessmentDetailPage({
                     value={assessment.id}
                   />
                   <Button type="submit" variant="outline" size="sm">
-                    Reopen review
+                    {translations("actions.reopen")}
                   </Button>
                 </form>
                 <SendBackDialog assessmentId={assessment.id} />
@@ -252,7 +292,7 @@ export default async function AssessmentDetailPage({
             ) : null}
             <Button asChild variant="outline" size="sm">
               <a href={`/api/assessments/${assessment.id}/export`} download>
-                Export CSV
+                {translations("actions.exportCsv")}
               </a>
             </Button>
             {assessment.status === "SUBMITTED" ||
@@ -261,9 +301,9 @@ export default async function AssessmentDetailPage({
               <Button asChild variant="outline" size="sm">
                 <PendingLink
                   href={`/api/assessments/${assessment.id}/pdf`}
-                  pendingLabel="Preparing report…"
+                  pendingLabel={translations("actions.preparingReport")}
                 >
-                  Download PDF
+                  {translations("actions.downloadPdf")}
                 </PendingLink>
               </Button>
             ) : null}
@@ -278,12 +318,14 @@ export default async function AssessmentDetailPage({
                   value={assessment.id}
                 />
                 <ConfirmDialog
-                  title="Delete assessment?"
-                  description={`This will permanently delete "${assessment.title}" and all responses, findings, and evidence. This action cannot be undone.`}
+                  title={translations("actions.deleteTitle")}
+                  description={translations("actions.deleteDescription", {
+                    title: assessment.title,
+                  })}
                   formId={`delete-assessment-${assessment.id}`}
                 >
                   <Button type="button" variant="outline">
-                    Delete
+                    {translations("actions.delete")}
                   </Button>
                 </ConfirmDialog>
               </form>
@@ -301,19 +343,29 @@ export default async function AssessmentDetailPage({
             ? ` · ${assessment.template.name} v${assessment.template.version}`
             : ""}
           {assessment.dueDate
-            ? ` · due ${formatDateUtc(assessment.dueDate)}`
+            ? translations("meta.due", {
+                date: dateFormatter.dateTime(assessment.dueDate, {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                  timeZone: "UTC",
+                }),
+              })
             : ""}
-          {assessment.reviewer ? ` · reviewer ${assessment.reviewer.name}` : ""}
+          {assessment.reviewer
+            ? translations("meta.reviewer", {
+                name: assessment.reviewer.name,
+              })
+            : ""}
         </p>
       </div>
 
       {isDraft && canCreate ? (
         <Card>
           <CardHeader>
-            <CardTitle>Create vendor link</CardTitle>
+            <CardTitle>{translations("draft.createLinkTitle")}</CardTitle>
             <CardDescription>
-              Generate a no‑login vendor link for the assessment. Optionally set
-              a password to protect access.
+              {translations("draft.createLinkDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -337,19 +389,25 @@ export default async function AssessmentDetailPage({
       {portalUrl ? (
         <Card>
           <CardHeader>
-            <CardTitle>Vendor link (no login required)</CardTitle>
+            <CardTitle>{translations("link.title")}</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
             <CopyLink value={portalUrl} />
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-muted-foreground text-xs">
                 {assessment.tokenExpiresAt
-                  ? `Expires ${formatDate(assessment.tokenExpiresAt)}`
-                  : "No expiry"}
+                  ? translations("link.expires", {
+                      date: dateFormatter.dateTime(assessment.tokenExpiresAt, {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      }),
+                    })
+                  : translations("link.noExpiry")}
               </p>
               {assessment.portalPasswordHash ? (
                 <Badge variant="secondary" className="text-xs">
-                  Password protected
+                  {translations("link.passwordProtected")}
                 </Badge>
               ) : null}
             </div>
@@ -362,7 +420,7 @@ export default async function AssessmentDetailPage({
                     value={assessment.id}
                   />
                   <Button type="submit" variant="outline" size="sm">
-                    Extend 30 days
+                    {translations("link.extend")}
                   </Button>
                 </form>
                 <form action={regenerateAssessmentAction}>
@@ -372,7 +430,7 @@ export default async function AssessmentDetailPage({
                     value={assessment.id}
                   />
                   <Button type="submit" variant="outline" size="sm">
-                    Regenerate link
+                    {translations("link.regenerate")}
                   </Button>
                 </form>
                 <form
@@ -385,14 +443,14 @@ export default async function AssessmentDetailPage({
                     value={assessment.id}
                   />
                   <ConfirmDialog
-                    title="Revoke vendor link?"
-                    description="The vendor will no longer be able to access the questionnaire. You can regenerate the link later if needed."
-                    confirmLabel="Revoke"
+                    title={translations("link.revokeTitle")}
+                    description={translations("link.revokeDescription")}
+                    confirmLabel={translations("link.revoke")}
                     variant="destructive"
                     formId={`revoke-${assessment.id}`}
                   >
                     <Button type="button" variant="ghost" size="sm">
-                      Revoke
+                      {translations("link.revoke")}
                     </Button>
                   </ConfirmDialog>
                 </form>
@@ -405,11 +463,11 @@ export default async function AssessmentDetailPage({
       {!isDraft && !portalUrl ? (
         <Card>
           <CardHeader>
-            <CardTitle>Vendor link</CardTitle>
+            <CardTitle>{translations("link.revokedTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
             <p className="text-muted-foreground text-sm">
-              The link has been revoked.
+              {translations("link.revokedDescription")}
             </p>
             {canEdit ? (
               <form action={regenerateAssessmentAction}>
@@ -419,7 +477,7 @@ export default async function AssessmentDetailPage({
                   value={assessment.id}
                 />
                 <Button type="submit" variant="outline" size="sm">
-                  Regenerate link
+                  {translations("link.regenerate")}
                 </Button>
               </form>
             ) : null}
@@ -430,29 +488,19 @@ export default async function AssessmentDetailPage({
       {assessment.score !== null ? (
         <Card>
           <CardHeader>
-            <CardTitle>Score</CardTitle>
+            <CardTitle>{translations("score.title")}</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
             <div className="flex items-baseline gap-3">
               <ScoreBadge score={assessment.score} size="lg" />
               <span className="text-muted-foreground text-sm">
-                {assessment.score >= 0.85
-                  ? "Low risk"
-                  : assessment.score >= 0.6
-                    ? "Moderate risk"
-                    : "High risk"}
+                {riskLabel(assessment.score)}
               </span>
             </div>
             <div>
               <ProgressBar
                 value={Math.round(assessment.score * 100)}
-                className={cn(
-                  assessment.score >= 0.85
-                    ? "bg-[var(--rag-green)]"
-                    : assessment.score >= 0.6
-                      ? "bg-[var(--rag-amber)]"
-                      : "bg-[var(--rag-red)]",
-                )}
+                className={scoreBarClass(assessment.score)}
               />
             </div>
           </CardContent>
@@ -463,7 +511,10 @@ export default async function AssessmentDetailPage({
         <Card>
           <CardHeader>
             <CardTitle>
-              Findings ({assessment.findings.length} · {openFindings} open)
+              {translations("findings.summary", {
+                count: assessment.findings.length,
+                open: openFindings,
+              })}
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
@@ -481,7 +532,9 @@ export default async function AssessmentDetailPage({
                           "bg-muted text-muted-foreground",
                       )}
                     >
-                      {finding.severity}
+                      {commonTranslations.has(`tiers.${finding.severity}`)
+                        ? commonTranslations(`tiers.${finding.severity}`)
+                        : finding.severity}
                     </span>
                     <span
                       className={cn(
@@ -490,7 +543,13 @@ export default async function AssessmentDetailPage({
                           "bg-muted text-muted-foreground",
                       )}
                     >
-                      {FINDING_STATUS_LABELS[finding.status] ?? finding.status}
+                      {commonTranslations.has(
+                        `findingStatuses.${finding.status}`,
+                      )
+                        ? commonTranslations(
+                            `findingStatuses.${finding.status}`,
+                          )
+                        : finding.status}
                     </span>
                     <span className="text-sm font-medium">{finding.title}</span>
                   </div>
@@ -515,9 +574,14 @@ export default async function AssessmentDetailPage({
                       {finding.resolutionNote
                         ? `“${finding.resolutionNote}” · `
                         : ""}
-                      {finding.resolvedBy?.name ?? "Deleted user"}
+                      {finding.resolvedBy?.name ??
+                        translations("findings.deletedUser")}
                       {finding.resolvedAt
-                        ? ` · ${formatDate(finding.resolvedAt)}`
+                        ? ` · ${dateFormatter.dateTime(finding.resolvedAt, {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })}`
                         : ""}
                     </p>
                   ) : null}
@@ -537,11 +601,11 @@ export default async function AssessmentDetailPage({
       ) : assessment.score !== null ? (
         <Card>
           <CardHeader>
-            <CardTitle>Findings</CardTitle>
+            <CardTitle>{translations("findings.noneTitle")}</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground text-sm">
-              All answers compliant — no findings.
+              {translations("findings.allCompliant")}
             </p>
           </CardContent>
         </Card>
@@ -550,13 +614,18 @@ export default async function AssessmentDetailPage({
       {assessment.questions.length > 0 ? (
         <Card>
           <CardHeader>
-            <CardTitle>Responses</CardTitle>
+            <CardTitle>{translations("responses.title")}</CardTitle>
             {reviewCounts.total > 0 ? (
               <CardDescription>
-                {reviewCounts.approved} of {reviewCounts.total} approved ·{" "}
-                {reviewCounts.pending} pending
+                {translations("responses.summary", {
+                  approved: reviewCounts.approved,
+                  total: reviewCounts.total,
+                  pending: reviewCounts.pending,
+                })}
                 {reviewCounts.clarification > 0
-                  ? ` · ${reviewCounts.clarification} clarification`
+                  ? translations("responses.summaryClarifications", {
+                      count: reviewCounts.clarification,
+                    })
                   : ""}
               </CardDescription>
             ) : null}
@@ -617,13 +686,15 @@ export default async function AssessmentDetailPage({
                       {question.sectionTitle}
                     </Badge>
                     <Badge variant="secondary" className="text-xs">
-                      {QUESTION_TYPE_LABELS[question.type]}
+                      {commonTranslations.has(`questionTypes.${question.type}`)
+                        ? commonTranslations(`questionTypes.${question.type}`)
+                        : question.type}
                     </Badge>
                   </div>
                   <p className="mt-1 text-sm font-medium">{question.text}</p>
                   <p className="text-muted-foreground mt-1 text-sm">
                     {response?.isNotApplicable
-                      ? "N/A"
+                      ? translations("responses.notApplicable")
                       : formatResponseValue(response?.value)}
                   </p>
                   {(evidenceByQuestion.get(question.id) ?? []).map((item) => {
@@ -634,7 +705,12 @@ export default async function AssessmentDetailPage({
                         <img
                           key={item.id}
                           src={`/api/files/${item.id}?inline=true`}
-                          alt={item.note ?? `Evidence file: ${item.fileName}`}
+                          alt={
+                            item.note ??
+                            translations("responses.evidenceAlt", {
+                              fileName: item.fileName,
+                            })
+                          }
                           loading="lazy"
                           width={400}
                           height={256}
@@ -651,7 +727,9 @@ export default async function AssessmentDetailPage({
                           className="text-primary text-xs hover:underline"
                         >
                           {isPdf
-                            ? `View PDF: ${item.fileName} ↗`
+                            ? translations("responses.viewPdf", {
+                                fileName: item.fileName,
+                              })
                             : item.fileName}
                         </a>
                         <EvidencePreview
@@ -668,7 +746,7 @@ export default async function AssessmentDetailPage({
                   (evidenceByQuestion.get(question.id) ?? []).length > 0 ? (
                     <div className="flex flex-col gap-1.5">
                       <span className="text-muted-foreground text-xs">
-                        Attach to vendor
+                        {translations("responses.attachToVendor")}
                       </span>
                       {(evidenceByQuestion.get(question.id) ?? []).map(
                         (item) => (

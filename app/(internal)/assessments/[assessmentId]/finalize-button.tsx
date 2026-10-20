@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
@@ -12,6 +13,7 @@ import {
 const initialState: FinalizeState = undefined;
 
 export function FinalizeButton({ assessmentId }: { assessmentId: string }) {
+  const translations = useTranslations("Assessments.detail.actions");
   const [state, formAction, isPending] = useActionState(
     finalizeWithStateAction,
     initialState,
@@ -23,7 +25,7 @@ export function FinalizeButton({ assessmentId }: { assessmentId: string }) {
       <form action={formAction}>
         <input type="hidden" name="assessmentId" value={assessmentId} />
         <Button type="submit" size="sm" disabled={isPending}>
-          {isPending ? "Finalizing…" : "Finalize"}
+          {isPending ? translations("finalizing") : translations("finalize")}
         </Button>
       </form>
       {state?.ok === false ? (

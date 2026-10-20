@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,7 @@ export function AttachEvidenceButton({
   evidenceId: string;
   fileName: string;
 }) {
+  const translations = useTranslations("Assessments.detail.attachEvidence");
   const [open, setOpen] = useState(false);
   const [attachType, setAttachType] = useState<"certification" | "general">(
     "certification",
@@ -53,7 +55,7 @@ export function AttachEvidenceButton({
   if (state?.ok && open) {
     return (
       <p className="text-muted-foreground text-xs">
-        {state.message}. Refreshing…
+        {translations("refreshing", { message: state.message })}
       </p>
     );
   }
@@ -68,7 +70,7 @@ export function AttachEvidenceButton({
         onClick={() => setOpen(true)}
       >
         <Paperclip className="size-3" />
-        Attach
+        {translations("trigger")}
       </Button>
     );
   }
@@ -81,19 +83,23 @@ export function AttachEvidenceButton({
       <input type="hidden" name="evidenceId" value={evidenceId} />
       <input type="hidden" name="attachType" value={attachType} />
       <div className="grid gap-1.5">
-        <Label className="text-xs">Attach as</Label>
+        <Label className="text-xs">{translations("attachAs")}</Label>
         <Select
           value={attachType}
-          onValueChange={(v) => setAttachType(v as typeof attachType)}
+          onValueChange={(selectedValue) =>
+            setAttachType(selectedValue as typeof attachType)
+          }
         >
           <SelectTrigger className="h-7 text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="certification">
-              Certification / attestation
+              {translations("certificationOption")}
             </SelectItem>
-            <SelectItem value="general">General attachment</SelectItem>
+            <SelectItem value="general">
+              {translations("generalOption")}
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -102,30 +108,30 @@ export function AttachEvidenceButton({
         <>
           <div className="grid gap-1.5">
             <Label htmlFor={`name-${evidenceId}`} className="text-xs">
-              Certification name
+              {translations("certificationName")}
             </Label>
             <Input
               id={`name-${evidenceId}`}
               name="name"
               required
-              placeholder="e.g. SOC 2 Type II"
+              placeholder={translations("namePlaceholder")}
               className="h-7 text-xs"
             />
           </div>
           <div className="grid gap-1.5">
             <Label htmlFor={`issuer-${evidenceId}`} className="text-xs">
-              Issuer (optional)
+              {translations("issuer")}
             </Label>
             <Input
               id={`issuer-${evidenceId}`}
               name="issuer"
-              placeholder="e.g. Audit firm"
+              placeholder={translations("issuerPlaceholder")}
               className="h-7 text-xs"
             />
           </div>
           <div className="grid gap-1.5">
             <Label htmlFor={`expires-${evidenceId}`} className="text-xs">
-              Expiry date
+              {translations("expiryDate")}
             </Label>
             <Input
               id={`expires-${evidenceId}`}
@@ -137,7 +143,7 @@ export function AttachEvidenceButton({
           </div>
           <div className="grid gap-1.5">
             <Label htmlFor={`displayName-${evidenceId}`} className="text-xs">
-              Display name for file
+              {translations("displayNameForFile")}
             </Label>
             <Input
               id={`displayName-${evidenceId}`}
@@ -148,14 +154,14 @@ export function AttachEvidenceButton({
           </div>
           <div className="grid gap-1.5">
             <Label htmlFor={`notes-${evidenceId}`} className="text-xs">
-              Notes (optional)
+              {translations("notes")}
             </Label>
             <Textarea
               id={`notes-${evidenceId}`}
               name="notes"
               rows={2}
               className="min-h-12 text-xs"
-              placeholder="Additional context…"
+              placeholder={translations("notesPlaceholder")}
             />
           </div>
 
@@ -174,7 +180,7 @@ export function AttachEvidenceButton({
                   htmlFor={`compliance-${evidenceId}`}
                   className="cursor-pointer text-xs font-normal"
                 >
-                  Compliance actions required
+                  {translations("complianceActions")}
                 </Label>
                 {complianceEnabled ? (
                   <Select
@@ -183,7 +189,9 @@ export function AttachEvidenceButton({
                     onValueChange={setSelectedFramework}
                   >
                     <SelectTrigger className="h-7 text-xs">
-                      <SelectValue placeholder="Select a framework..." />
+                      <SelectValue
+                        placeholder={translations("selectFramework")}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {frameworkOptions.map((option) => (
@@ -202,7 +210,7 @@ export function AttachEvidenceButton({
         <>
           <div className="grid gap-1.5">
             <Label htmlFor={`displayName-${evidenceId}`} className="text-xs">
-              Display name
+              {translations("displayName")}
             </Label>
             <Input
               id={`displayName-${evidenceId}`}
@@ -213,14 +221,14 @@ export function AttachEvidenceButton({
           </div>
           <div className="grid gap-1.5">
             <Label htmlFor={`notes-${evidenceId}`} className="text-xs">
-              Notes (optional)
+              {translations("notes")}
             </Label>
             <Textarea
               id={`notes-${evidenceId}`}
               name="notes"
               rows={2}
               className="min-h-12 text-xs"
-              placeholder="Why this was attached…"
+              placeholder={translations("generalNotesPlaceholder")}
             />
           </div>
         </>
@@ -239,10 +247,10 @@ export function AttachEvidenceButton({
           disabled={isPending}
         >
           {isPending
-            ? "Adding…"
+            ? translations("adding")
             : attachType === "certification"
-              ? "Add certification"
-              : "Attach to vendor"}
+              ? translations("addCertification")
+              : translations("attachToVendor")}
         </Button>
         <Button
           type="button"
@@ -251,7 +259,7 @@ export function AttachEvidenceButton({
           className="h-7 text-xs"
           onClick={() => setOpen(false)}
         >
-          Cancel
+          {translations("cancel")}
         </Button>
       </div>
     </form>

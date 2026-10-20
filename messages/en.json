@@ -29,6 +29,30 @@
       "OPEN": "Open",
       "REMEDIATED": "Remediated",
       "RISK_ACCEPTED": "Risk accepted"
+    },
+    "copyLink": {
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "pendingLink": {
+      "preparing": "Preparing…"
+    },
+    "evidencePreview": {
+      "preview": "Preview {fileName}"
+    },
+    "questionTypes": {
+      "YES_NO": "Yes / No",
+      "MULTIPLE_CHOICE": "Single choice (pick one)",
+      "FREE_TEXT": "Free text",
+      "FILE_UPLOAD": "File upload",
+      "DATE": "Date",
+      "NUMERIC": "Numeric",
+      "COMBOBOX": "Combobox",
+      "MULTI_SELECT": "Multi‑select (pick many)",
+      "RATING": "Rating (1‑5)",
+      "URL": "URL",
+      "EMAIL": "Email",
+      "CHECKBOX": "Checkbox (acknowledgment)"
     }
   },
   "Metadata": {
@@ -119,6 +143,17 @@
         "MEDIUM": "Medium",
         "LOW": "Low",
         "Unspecified": "Unspecified"
+      },
+      "activity": {
+        "title": "Assessment activity",
+        "noActivity": "No activity in this period",
+        "timeRange": "Select a time range",
+        "ranges": {
+          "90d": "Last 3 months",
+          "30d": "Last 30 days",
+          "7d": "Last 7 days"
+        },
+        "assessments": "Assessments"
       }
     }
   },
@@ -445,6 +480,150 @@
         "cancel": "Cancel"
       }
     },
+    "detail": {
+      "notFound": "Assessment not found",
+      "breadcrumbs": {
+        "assessments": "Assessments",
+        "vendors": "Vendors"
+      },
+      "actions": {
+        "reopen": "Reopen review",
+        "exportCsv": "Export CSV",
+        "downloadPdf": "Download PDF",
+        "preparingReport": "Preparing report…",
+        "finalize": "Finalize",
+        "finalizing": "Finalizing…",
+        "delete": "Delete",
+        "deleteTitle": "Delete assessment?",
+        "deleteDescription": "This will permanently delete \"{title}\" and all responses, findings, and evidence. This action cannot be undone."
+      },
+      "meta": {
+        "due": " · due {date}",
+        "reviewer": " · reviewer {name}"
+      },
+      "draft": {
+        "createLinkTitle": "Create vendor link",
+        "createLinkDescription": "Generate a no-login vendor link for the assessment. Optionally set a password to protect access.",
+        "settingsTitle": "Draft settings",
+        "title": "Title",
+        "dueDate": "Due date",
+        "saving": "Saving…",
+        "save": "Save changes"
+      },
+      "link": {
+        "title": "Vendor link (no login required)",
+        "expires": "Expires {date}",
+        "noExpiry": "No expiry",
+        "passwordProtected": "Password protected",
+        "extend": "Extend 30 days",
+        "regenerate": "Regenerate link",
+        "revoke": "Revoke",
+        "revokeTitle": "Revoke vendor link?",
+        "revokeDescription": "The vendor will no longer be able to access the questionnaire. You can regenerate the link later if needed.",
+        "revokedTitle": "Vendor link",
+        "revokedDescription": "The link has been revoked."
+      },
+      "score": {
+        "title": "Score",
+        "low": "Low risk",
+        "moderate": "Moderate risk",
+        "high": "High risk"
+      },
+      "findings": {
+        "summary": "Findings ({count} · {open, plural, one {# open} other {# open}})",
+        "deletedUser": "Deleted user",
+        "noneTitle": "Findings",
+        "allCompliant": "All answers compliant — no findings."
+      },
+      "responses": {
+        "title": "Responses",
+        "summary": "{approved} of {total} approved · {pending} pending",
+        "summaryClarifications": " · {count, plural, one {# clarification} other {# clarifications}}",
+        "filters": {
+          "all": "All",
+          "pending": "Pending ({count})",
+          "approved": "Approved ({count})",
+          "clarification": "Clarification ({count})"
+        },
+        "notApplicable": "N/A",
+        "evidenceAlt": "Evidence file: {fileName}",
+        "viewPdf": "View PDF: {fileName} ↗",
+        "attachToVendor": "Attach to vendor"
+      },
+      "sender": {
+        "password": "Portal password (optional)",
+        "passwordPlaceholder": "Require vendor to enter a password",
+        "passwordHint": "If set, vendors must enter this password before accessing the questionnaire.",
+        "sendToVendor": "Send to vendor",
+        "generateOnly": "Generate link only",
+        "customEmailPlaceholder": "custom@example.com",
+        "sendTo": "Send to"
+      },
+      "sendBack": {
+        "trigger": "Send back to vendor",
+        "title": "Send back to vendor?",
+        "description": "The vendor will be able to edit and resubmit their answers, and will receive an email with your message. Their existing answers are kept.",
+        "messageLabel": "Message to the vendor (optional)",
+        "messagePlaceholder": "Explain what additional information is needed…",
+        "cancel": "Cancel",
+        "confirm": "Send back",
+        "emailFallback": "Please review and resubmit your questionnaire."
+      },
+      "review": {
+        "approved": "Approved",
+        "clarificationRequested": "Clarification requested",
+        "noReviewYet": "No review yet",
+        "collapse": "Collapse",
+        "expand": "Expand",
+        "reviewPlaceholder": "Review",
+        "approve": "Approve",
+        "requestClarification": "Request clarification",
+        "notePlaceholder": "Optional note (visible to vendor if clarification requested)",
+        "save": "Save",
+        "vendor": "vendor",
+        "internal": "internal",
+        "replyPlaceholder": "Reply",
+        "internalOption": "Internal",
+        "vendorOption": "Visible to vendor",
+        "reply": "Reply",
+        "commentPlaceholder": "Add a comment",
+        "comment": "Comment",
+        "commentCount": "{count, plural, one {# comment} other {# comments}}",
+        "previousReview": "Previous review ({decision}): {note}"
+      },
+      "findingStatus": {
+        "resolutionNotePlaceholder": "Resolution note (optional)",
+        "save": "Save"
+      },
+      "attachEvidence": {
+        "trigger": "Attach",
+        "refreshing": "{message}. Refreshing…",
+        "attachAs": "Attach as",
+        "certificationOption": "Certification / attestation",
+        "generalOption": "General attachment",
+        "certificationName": "Certification name",
+        "namePlaceholder": "e.g. SOC 2 Type II",
+        "issuer": "Issuer (optional)",
+        "issuerPlaceholder": "e.g. Audit firm",
+        "expiryDate": "Expiry date",
+        "displayNameForFile": "Display name for file",
+        "notes": "Notes (optional)",
+        "notesPlaceholder": "Additional context…",
+        "complianceActions": "Compliance actions required",
+        "selectFramework": "Select a framework...",
+        "displayName": "Display name",
+        "generalNotesPlaceholder": "Why this was attached…",
+        "adding": "Adding…",
+        "addCertification": "Add certification",
+        "attachToVendor": "Attach to vendor",
+        "cancel": "Cancel"
+      },
+      "error": {
+        "title": "Failed to load assessment",
+        "description": "An error occurred while loading this assessment. Please try again.",
+        "retry": "Try again"
+      }
+    },
     "errors": {
       "invalidInput": "Invalid input.",
       "titleRequired": "Title is required",
@@ -453,7 +632,8 @@
       "invalidDueDate": "Enter a valid due date",
       "saved": "Saved.",
       "started": "Assessment started.",
-      "portalLinkFailed": "Assessment created but portal link could not be generated."
+      "portalLinkFailed": "Assessment created but portal link could not be generated.",
+      "missingReviews": "{count, plural, one {# response still needs to be reviewed.} other {# responses still need to be reviewed.}}"
     }
   },
   "Shell": {

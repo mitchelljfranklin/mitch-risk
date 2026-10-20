@@ -150,6 +150,7 @@ test.describe("internal shell", () => {
     await expect(
       page.getByRole("heading", { name: "Resumen de riesgo de proveedores" }),
     ).toBeVisible();
+    await expect(page.getByText("Actividad de evaluaciones")).toBeVisible();
   });
 
   test("translates the vendors list", async ({ page }) => {
@@ -261,5 +262,42 @@ test.describe("internal shell", () => {
     await expect(page.getByText("Fecha de vencimiento")).toBeVisible();
     await expect(page.getByText("Revisor")).toBeVisible();
     await expect(page.getByRole("link", { name: "Cancelar" })).toBeVisible();
+  });
+
+  test("translates the assessment detail page", async ({ page }) => {
+    const assessment = await prisma.assessment.findFirst({
+      where: { title: "E2E Assessment" },
+    });
+    if (!assessment) {
+      throw new Error("The e2e assessment fixture was not created.");
+    }
+    const statusLabels: Record<string, string> = {
+      DRAFT: "Borrador",
+      SENT: "Enviado",
+      IN_PROGRESS: "En curso",
+      SUBMITTED: "Enviado a revisión",
+      UNDER_REVIEW: "En revisión",
+      COMPLETED: "Completado",
+    };
+
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto(`/assessments/${assessment.id}`);
+
+    await expect(page.locator("h1")).toContainText(assessment.title);
+    await expect(page.locator("h1")).toContainText(
+      statusLabels[assessment.status] ?? assessment.status,
+    );
+    await expect(
+      page.getByRole("link", { name: "Exportar CSV" }),
+    ).toBeVisible();
+    await expect(page.getByText("Respuestas", { exact: true })).toBeVisible();
   });
 });

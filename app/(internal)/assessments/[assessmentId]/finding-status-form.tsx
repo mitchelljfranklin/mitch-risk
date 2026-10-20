@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Input } from "@/components/ui/input";
 import { SubmitButton } from "@/components/ui/submit-button";
 import {
@@ -10,10 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { updateFindingStatusAction } from "@/lib/actions/findings";
-import {
-  FINDING_STATUSES,
-  FINDING_STATUS_LABELS,
-} from "@/lib/schemas/assessment";
+import { FINDING_STATUSES } from "@/lib/schemas/assessment";
 
 type FindingStatusFormProps = {
   findingId: string;
@@ -28,6 +27,9 @@ export function FindingStatusForm({
   currentStatus,
   currentNote,
 }: FindingStatusFormProps) {
+  const translations = useTranslations("Assessments.detail.findingStatus");
+  const commonTranslations = useTranslations("Common");
+
   return (
     <form
       action={updateFindingStatusAction}
@@ -42,7 +44,9 @@ export function FindingStatusForm({
         <SelectContent>
           {FINDING_STATUSES.map((status) => (
             <SelectItem key={status} value={status}>
-              {FINDING_STATUS_LABELS[status]}
+              {commonTranslations.has(`findingStatuses.${status}`)
+                ? commonTranslations(`findingStatuses.${status}`)
+                : status}
             </SelectItem>
           ))}
         </SelectContent>
@@ -50,11 +54,11 @@ export function FindingStatusForm({
       <Input
         name="resolutionNote"
         defaultValue={currentNote}
-        placeholder="Resolution note (optional)"
+        placeholder={translations("resolutionNotePlaceholder")}
         className="h-8 flex-1 text-xs"
       />
       <SubmitButton type="submit" size="sm" variant="secondary">
-        Save
+        {translations("save")}
       </SubmitButton>
     </form>
   );

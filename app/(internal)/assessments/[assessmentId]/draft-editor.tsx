@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,6 +21,7 @@ export function DraftEditor({
   title,
   dueDate,
 }: DraftEditorProps) {
+  const translations = useTranslations("Assessments.detail.draft");
   const [state, action, isPending] = useActionState(
     updateAssessmentAction,
     undefined,
@@ -29,18 +31,18 @@ export function DraftEditor({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Draft settings</CardTitle>
+        <CardTitle>{translations("settingsTitle")}</CardTitle>
       </CardHeader>
       <CardContent>
         <form action={action} className="grid gap-4">
           <input type="hidden" name="assessmentId" value={assessmentId} />
           <div className="grid gap-2">
-            <Label htmlFor="draftTitle">Title</Label>
+            <Label htmlFor="draftTitle">{translations("title")}</Label>
             <Input id="draftTitle" name="title" defaultValue={title} required />
           </div>
           <div className="flex items-end gap-3">
             <div className="grid gap-2">
-              <Label htmlFor="draftDueDate">Due date</Label>
+              <Label htmlFor="draftDueDate">{translations("dueDate")}</Label>
               <Input
                 id="draftDueDate"
                 name="dueDate"
@@ -49,7 +51,7 @@ export function DraftEditor({
               />
             </div>
             <Button type="submit" variant="secondary" disabled={isPending}>
-              {isPending ? "Saving…" : "Save changes"}
+              {isPending ? translations("saving") : translations("save")}
             </Button>
           </div>
         </form>

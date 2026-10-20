@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,22 +17,22 @@ type SendFormsProps = {
 };
 
 export function SendForms({ assessmentId }: SendFormsProps) {
+  const translations = useTranslations("Assessments.detail.sender");
   const [password, setPassword] = useState("");
 
   return (
     <>
       <div className="grid gap-2">
-        <Label htmlFor="portalPassword">Portal password (optional)</Label>
+        <Label htmlFor="portalPassword">{translations("password")}</Label>
         <Input
           id="portalPassword"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          placeholder="Require vendor to enter a password"
+          placeholder={translations("passwordPlaceholder")}
           className="w-full max-w-72"
         />
         <p className="text-muted-foreground text-xs">
-          If set, vendors must enter this password before accessing the
-          questionnaire.
+          {translations("passwordHint")}
         </p>
       </div>
 
@@ -40,7 +41,7 @@ export function SendForms({ assessmentId }: SendFormsProps) {
           <input type="hidden" name="assessmentId" value={assessmentId} />
           <input type="hidden" name="portalPassword" value={password} />
           <SubmitButton type="submit" size="sm">
-            Send to vendor
+            {translations("sendToVendor")}
           </SubmitButton>
         </form>
 
@@ -48,7 +49,7 @@ export function SendForms({ assessmentId }: SendFormsProps) {
           <input type="hidden" name="assessmentId" value={assessmentId} />
           <input type="hidden" name="portalPassword" value={password} />
           <SubmitButton type="submit" variant="outline" size="sm">
-            Generate link only
+            {translations("generateOnly")}
           </SubmitButton>
         </form>
 
@@ -61,11 +62,11 @@ export function SendForms({ assessmentId }: SendFormsProps) {
           <Input
             type="email"
             name="customEmail"
-            placeholder="custom@example.com"
+            placeholder={translations("customEmailPlaceholder")}
             className="h-9 w-48"
           />
           <SubmitButton type="submit" variant="outline" size="sm">
-            Send to
+            {translations("sendTo")}
           </SubmitButton>
         </form>
       </div>
