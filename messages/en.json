@@ -16,6 +16,19 @@
     "viewToggle": {
       "rows": "Row view",
       "cards": "Card view"
+    },
+    "assessmentStatuses": {
+      "DRAFT": "Draft",
+      "SENT": "Sent",
+      "IN_PROGRESS": "In progress",
+      "SUBMITTED": "Submitted",
+      "UNDER_REVIEW": "Under review",
+      "COMPLETED": "Completed"
+    },
+    "findingStatuses": {
+      "OPEN": "Open",
+      "REMEDIATED": "Remediated",
+      "RISK_ACCEPTED": "Risk accepted"
     }
   },
   "Metadata": {
@@ -224,6 +237,150 @@
       "fileTypeNotAllowed": "File type not allowed.",
       "fileTypeNotAccepted": "This file type is not accepted.",
       "fileTooLarge": "File is too large (max {max} MB)."
+    },
+    "detail": {
+      "notFound": "Vendor not found",
+      "created": "Vendor created.",
+      "breadcrumbs": {
+        "riskRegister": "Risk register",
+        "vendors": "Vendors"
+      },
+      "edit": "Edit",
+      "exportCsv": "Export CSV",
+      "delete": "Delete",
+      "deleteTitle": "Delete vendor?",
+      "deleteDescription": "This will permanently delete {vendorName} and all {count, plural, one {# assessment} other {# assessments}}. This action cannot be undone.",
+      "tabs": {
+        "overview": "Overview",
+        "compliance": "Compliance",
+        "findings": "Findings",
+        "assessments": "Assessments"
+      },
+      "overview": {
+        "title": "Overview",
+        "serviceProvided": "Service provided",
+        "riskOwner": "Risk owner",
+        "unassigned": "Unassigned",
+        "externalId": "External ID",
+        "dataSensitivity": "Data sensitivity",
+        "unspecified": "Unspecified",
+        "website": "Website",
+        "contractRenewal": "Contract renewal",
+        "overdue": " · overdue",
+        "attachments": "Attachments",
+        "emptyTitle": "No overview details",
+        "emptyDescription": "Edit this vendor to add service details, a risk owner, and other profile information."
+      },
+      "riskProfile": {
+        "title": "Risk profile",
+        "inherent": "Inherent (pre-assessment)",
+        "residual": "Residual (assessed)",
+        "trendingUp": "Trending up ↑",
+        "trendingDown": "Trending down ↓",
+        "stable": "Stable →",
+        "noScore": "No score yet — submit an assessment",
+        "trend": "Trend",
+        "compareLastTwo": "Compare last two →"
+      },
+      "certifications": "Certifications & attestations",
+      "compliance": {
+        "vendorCompliance": "Vendor compliance",
+        "yourCompliance": "Your compliance",
+        "domainCompliance": "Domain compliance",
+        "noDataTitle": "No compliance data",
+        "noDataDescription": "Complete an assessment to see domain compliance scores.",
+        "frameworkHeatmaps": "Framework heatmaps",
+        "noAssessmentData": "No assessment data",
+        "noFrameworksTitle": "No frameworks available",
+        "noFrameworksDescription": "Import or seed framework libraries to map controls to assessment questions."
+      },
+      "findings": {
+        "title": "Findings",
+        "openCount": "{count, plural, one {# open} other {# open}}",
+        "viewAll": "{count, plural, one {View the finding in the risk register →} other {View all # findings in the risk register →}}",
+        "emptyTitle": "No findings",
+        "emptyDescription": "Findings are generated when assessment answers are non-compliant. Complete an assessment to see findings here."
+      },
+      "assessments": {
+        "title": "Assessments",
+        "new": "New assessment",
+        "emptyTitle": "No assessments",
+        "emptyDescription": "No assessments have been created for this vendor yet.",
+        "noTemplate": "No template",
+        "due": " · due {date}",
+        "viewAll": "{count, plural, one {View the assessment →} other {View all # assessments →}}",
+        "activity": "Activity"
+      }
+    },
+    "timeline": {
+      "empty": "No activity recorded yet.",
+      "assessmentCreated": "Assessment created",
+      "assessmentSent": "Assessment sent",
+      "assessmentSubmitted": "Assessment submitted",
+      "findingOpened": "Finding opened",
+      "remediated": "Remediated",
+      "riskAccepted": "Risk accepted",
+      "certificationAdded": "Certification added",
+      "certificationExpiring": "Certification expiring",
+      "certificationExpiringDescription": "{name} — expires {date}"
+    },
+    "certifications": {
+      "empty": "No certifications tracked yet.",
+      "expires": "Expires {date}",
+      "statuses": {
+        "valid": "Valid",
+        "expiring": "Expiring soon",
+        "expired": "Expired"
+      },
+      "add": "Add certification",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteTitle": "Delete certification?",
+      "deleteDescription": "\"{name}\" will be permanently removed.",
+      "editor": {
+        "addTitle": "Add certification",
+        "description": "Track an attestation (SOC 2, ISO 27001, …) and its expiry.",
+        "name": "Name",
+        "namePlaceholder": "e.g. SOC 2 Type II",
+        "issuer": "Issuer (optional)",
+        "issuerPlaceholder": "e.g. Auditor / certification body",
+        "issued": "Issued (optional)",
+        "expires": "Expires",
+        "notes": "Notes (optional)",
+        "complianceActions": "Compliance actions required",
+        "selectFramework": "Select a framework...",
+        "attachment": "Attachment (optional)",
+        "attachmentHint": "Upload a certificate, report, or contract. Max 20 MB.",
+        "attachments": "Attachments",
+        "saving": "Saving...",
+        "save": "Save certification",
+        "cancel": "Cancel"
+      }
+    },
+    "customerResponsibility": {
+      "title": "Customer Responsibility",
+      "collapse": "Collapse",
+      "expand": "Expand",
+      "progress": "{completed} of {total} · {percent}%",
+      "empty": "No shared-responsibility controls for this certification.",
+      "assignedTo": "Assigned to {name}",
+      "fileCount": "{count, plural, one {# file} other {# files}}",
+      "status": "Status",
+      "statuses": {
+        "PENDING": "Pending",
+        "IN_PROGRESS": "In Progress",
+        "COMPLETED": "Completed",
+        "NOT_APPLICABLE": "Not Applicable"
+      },
+      "assignedToLabel": "Assigned to",
+      "assignedToPlaceholder": "User ID (optional)",
+      "attachment": "Attachment",
+      "notes": "Notes",
+      "notesPlaceholder": "Add notes about implementation...",
+      "files": "Files",
+      "saving": "Saving...",
+      "save": "Save",
+      "cancel": "Cancel"
     }
   },
   "Shell": {

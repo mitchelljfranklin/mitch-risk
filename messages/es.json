@@ -16,6 +16,19 @@
     "viewToggle": {
       "rows": "Vista de filas",
       "cards": "Vista de tarjetas"
+    },
+    "assessmentStatuses": {
+      "DRAFT": "Borrador",
+      "SENT": "Enviado",
+      "IN_PROGRESS": "En curso",
+      "SUBMITTED": "Enviado a revisión",
+      "UNDER_REVIEW": "En revisión",
+      "COMPLETED": "Completado"
+    },
+    "findingStatuses": {
+      "OPEN": "Abierto",
+      "REMEDIATED": "Remediado",
+      "RISK_ACCEPTED": "Riesgo aceptado"
     }
   },
   "Metadata": {
@@ -224,6 +237,150 @@
       "fileTypeNotAllowed": "Tipo de archivo no permitido.",
       "fileTypeNotAccepted": "Este tipo de archivo no se acepta.",
       "fileTooLarge": "El archivo es demasiado grande (máximo {max} MB)."
+    },
+    "detail": {
+      "notFound": "Proveedor no encontrado",
+      "created": "Proveedor creado.",
+      "breadcrumbs": {
+        "riskRegister": "Registro de riesgos",
+        "vendors": "Proveedores"
+      },
+      "edit": "Editar",
+      "exportCsv": "Exportar CSV",
+      "delete": "Eliminar",
+      "deleteTitle": "¿Eliminar proveedor?",
+      "deleteDescription": "Esto eliminará permanentemente a {vendorName} y {count, plural, one {# evaluación} other {# evaluaciones}}. Esta acción no se puede deshacer.",
+      "tabs": {
+        "overview": "Resumen",
+        "compliance": "Cumplimiento",
+        "findings": "Hallazgos",
+        "assessments": "Evaluaciones"
+      },
+      "overview": {
+        "title": "Resumen",
+        "serviceProvided": "Servicio prestado",
+        "riskOwner": "Responsable del riesgo",
+        "unassigned": "Sin asignar",
+        "externalId": "ID externo",
+        "dataSensitivity": "Sensibilidad de los datos",
+        "unspecified": "Sin especificar",
+        "website": "Sitio web",
+        "contractRenewal": "Renovación del contrato",
+        "overdue": " · vencido",
+        "attachments": "Archivos adjuntos",
+        "emptyTitle": "No hay datos de resumen",
+        "emptyDescription": "Edita este proveedor para añadir detalles del servicio, un responsable del riesgo y otra información del perfil."
+      },
+      "riskProfile": {
+        "title": "Perfil de riesgo",
+        "inherent": "Inherente (antes de la evaluación)",
+        "residual": "Residual (evaluado)",
+        "trendingUp": "Tendencia al alza ↑",
+        "trendingDown": "Tendencia a la baja ↓",
+        "stable": "Estable →",
+        "noScore": "Aún no hay puntuación: envía una evaluación",
+        "trend": "Tendencia",
+        "compareLastTwo": "Comparar las dos últimas →"
+      },
+      "certifications": "Certificaciones y acreditaciones",
+      "compliance": {
+        "vendorCompliance": "Cumplimiento del proveedor",
+        "yourCompliance": "Tu cumplimiento",
+        "domainCompliance": "Cumplimiento por dominio",
+        "noDataTitle": "No hay datos de cumplimiento",
+        "noDataDescription": "Completa una evaluación para ver las puntuaciones de cumplimiento por dominio.",
+        "frameworkHeatmaps": "Mapas de calor de marcos",
+        "noAssessmentData": "Sin datos de evaluación",
+        "noFrameworksTitle": "No hay marcos disponibles",
+        "noFrameworksDescription": "Importa o carga bibliotecas de marcos para asignar controles a las preguntas de la evaluación."
+      },
+      "findings": {
+        "title": "Hallazgos",
+        "openCount": "{count, plural, one {# abierto} other {# abiertos}}",
+        "viewAll": "{count, plural, one {Ver el hallazgo en el registro de riesgos →} other {Ver los # hallazgos en el registro de riesgos →}}",
+        "emptyTitle": "No hay hallazgos",
+        "emptyDescription": "Los hallazgos se generan cuando las respuestas de la evaluación no cumplen. Completa una evaluación para verlos aquí."
+      },
+      "assessments": {
+        "title": "Evaluaciones",
+        "new": "Nueva evaluación",
+        "emptyTitle": "No hay evaluaciones",
+        "emptyDescription": "Todavía no se ha creado ninguna evaluación para este proveedor.",
+        "noTemplate": "Sin plantilla",
+        "due": " · vence {date}",
+        "viewAll": "{count, plural, one {Ver la evaluación →} other {Ver las # evaluaciones →}}",
+        "activity": "Actividad"
+      }
+    },
+    "timeline": {
+      "empty": "Aún no hay actividad registrada.",
+      "assessmentCreated": "Evaluación creada",
+      "assessmentSent": "Evaluación enviada",
+      "assessmentSubmitted": "Evaluación enviada a revisión",
+      "findingOpened": "Hallazgo abierto",
+      "remediated": "Remediado",
+      "riskAccepted": "Riesgo aceptado",
+      "certificationAdded": "Certificación añadida",
+      "certificationExpiring": "Certificación a punto de caducar",
+      "certificationExpiringDescription": "{name} — caduca el {date}"
+    },
+    "certifications": {
+      "empty": "Todavía no hay certificaciones registradas.",
+      "expires": "Caduca el {date}",
+      "statuses": {
+        "valid": "Válida",
+        "expiring": "Caduca pronto",
+        "expired": "Caducada"
+      },
+      "add": "Añadir certificación",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "deleteTitle": "¿Eliminar certificación?",
+      "deleteDescription": "«{name}» se eliminará permanentemente.",
+      "editor": {
+        "addTitle": "Añadir certificación",
+        "description": "Registra una acreditación (SOC 2, ISO 27001, …) y su caducidad.",
+        "name": "Nombre",
+        "namePlaceholder": "p. ej., SOC 2 Tipo II",
+        "issuer": "Emisor (opcional)",
+        "issuerPlaceholder": "p. ej., auditor o entidad certificadora",
+        "issued": "Fecha de emisión (opcional)",
+        "expires": "Caduca",
+        "notes": "Notas (opcional)",
+        "complianceActions": "Se requieren acciones de cumplimiento",
+        "selectFramework": "Selecciona un marco...",
+        "attachment": "Archivo adjunto (opcional)",
+        "attachmentHint": "Sube un certificado, informe o contrato. Máximo 20 MB.",
+        "attachments": "Archivos adjuntos",
+        "saving": "Guardando...",
+        "save": "Guardar certificación",
+        "cancel": "Cancelar"
+      }
+    },
+    "customerResponsibility": {
+      "title": "Responsabilidad del cliente",
+      "collapse": "Contraer",
+      "expand": "Expandir",
+      "progress": "{completed} de {total} · {percent}%",
+      "empty": "No hay controles de responsabilidad compartida para esta certificación.",
+      "assignedTo": "Asignado a {name}",
+      "fileCount": "{count, plural, one {# archivo} other {# archivos}}",
+      "status": "Estado",
+      "statuses": {
+        "PENDING": "Pendiente",
+        "IN_PROGRESS": "En curso",
+        "COMPLETED": "Completado",
+        "NOT_APPLICABLE": "No aplicable"
+      },
+      "assignedToLabel": "Asignado a",
+      "assignedToPlaceholder": "ID de usuario (opcional)",
+      "attachment": "Archivo adjunto",
+      "notes": "Notas",
+      "notesPlaceholder": "Añade notas sobre la implementación...",
+      "files": "Archivos",
+      "saving": "Guardando...",
+      "save": "Guardar",
+      "cancel": "Cancelar"
     }
   },
   "Shell": {

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getFormatter, getTranslations } from "next-intl/server";
 import { cache } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -35,16 +36,10 @@ import { TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UrlTabs } from "@/components/url-tabs";
 import { resolveBackHref } from "@/lib/nav";
 import {
-  ASSESSMENT_STATUS_LABELS,
-  FINDING_STATUS_LABELS,
   FINDING_STATUS_STYLES,
   SEVERITY_STYLES,
 } from "@/lib/schemas/assessment";
-import {
-  DATA_SENSITIVITY_LABELS,
-  VENDOR_TIER_LABELS,
-} from "@/lib/schemas/vendor";
-import { cn, formatDateUtc, formatPercent } from "@/lib/utils";
+import { cn, formatPercent } from "@/lib/utils";
 
 const MAX_VENDOR_ASSESSMENTS = 10;
 
@@ -87,7 +82,10 @@ export async function generateMetadata({
 }: VendorDetailPageProps): Promise<Metadata> {
   const { vendorId } = await params;
   const vendor = await getVendorCached(vendorId);
-  if (!vendor) return { title: "Vendor not found" };
+  if (!vendor) {
+    const translations = await getTranslations("Vendors.detail");
+    return { title: translations("notFound") };
+  }
   return { title: vendor.name };
 }
 
@@ -95,7 +93,12 @@ export default async function VendorDetailPage({
   params,
   searchParams,
 }: VendorDetailPageProps) {
-  const sp = await searchParams;
+  const searchParameters = await searchParams;
+  const translations = await getTranslations("Vendors.detail");
+  const commonTranslations = await getTranslations("Common");
+  const formTranslations = await getTranslations("Vendors.form");
+  const timelineTranslations = await getTranslations("Vendors.timeline");
+  const dateFormatter = await getFormatter();
   const user = await requirePermission(PERMISSIONS.VENDORS_VIEW);
   const canEditVendor = hasPermission(
     user.permissions,
@@ -140,7 +143,7 @@ export default async function VendorDetailPage({
   const [
     openFindingsCount,
     responsibilityCompliance,
-    certAttachments,
+    certificationAttachments,
     vendorAttachments,
   ] = await Promise.all([
     canViewFindings
@@ -166,60 +169,76 @@ export default async function VendorDetailPage({
     }),
   ]);
 
-  const timeline = buildVendorTimeline({
-    vendorId,
-    assessments: vendor.assessments.map((assessment) => ({
-      id: assessment.id,
-      title: assessment.title,
-      status: assessment.status,
-      createdAt: assessment.createdAt,
-      accessToken: assessment.accessToken,
-      submittedAt: assessment.submittedAt,
-    })),
-    findings: findings.map((finding) => ({
-      id: finding.id,
-      title: finding.title,
-      status: finding.status,
-      createdAt: finding.createdAt,
-      resolvedAt: finding.resolvedAt,
-    })),
-    certifications: certifications.map((certification) => ({
-      id: certification.id,
-      name: certification.name,
-      issuedDate: certification.issuedDate,
-      expiresDate: certification.expiresDate,
-      createdAt: certification.createdAt,
-    })),
-  });
-  const certificationViews = certifications.map((cert) => ({
-    id: cert.id,
-    name: cert.name,
-    issuer: cert.issuer ?? "",
-    issuedDate: cert.issuedDate
-      ? cert.issuedDate.toISOString().slice(0, 10)
+  const timeline = buildVendorTimeline(
+    {
+      vendorId,
+      assessments: vendor.assessments.map((assessment) => ({
+        id: assessment.id,
+        title: assessment.title,
+        status: assessment.status,
+        createdAt: assessment.createdAt,
+        accessToken: assessment.accessToken,
+        submittedAt: assessment.submittedAt,
+      })),
+      findings: findings.map((finding) => ({
+        id: finding.id,
+        title: finding.title,
+        status: finding.status,
+        createdAt: finding.createdAt,
+        resolvedAt: finding.resolvedAt,
+      })),
+      certifications: certifications.map((certification) => ({
+        id: certification.id,
+        name: certification.name,
+        issuedDate: certification.issuedDate,
+        expiresDate: certification.expiresDate,
+        createdAt: certification.createdAt,
+      })),
+    },
+    {
+      translate: timelineTranslations,
+      formatDate: (date) =>
+        dateFormatter.dateTime(date, {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          timeZone: "UTC",
+        }),
+    },
+  );
+  const certificationViews = certifications.map((certification) => ({
+    id: certification.id,
+    name: certification.name,
+    issuer: certification.issuer ?? "",
+    issuedDate: certification.issuedDate
+      ? certification.issuedDate.toISOString().slice(0, 10)
       : "",
-    expiresDate: cert.expiresDate.toISOString().slice(0, 10),
-    notes: cert.notes ?? "",
+    expiresDate: certification.expiresDate.toISOString().slice(0, 10),
+    notes: certification.notes ?? "",
   }));
 
   // Fetch attachments for all certifications on this vendor.
-  const certAttachmentMap = new Map<
+  const certificationAttachmentMap = new Map<
     string,
     { id: string; fileName: string; displayName: string | null }[]
   >();
-  for (const attachment of certAttachments) {
-    const list = certAttachmentMap.get(attachment.entityId) ?? [];
-    list.push({
+  for (const attachment of certificationAttachments) {
+    const attachmentsForCertification =
+      certificationAttachmentMap.get(attachment.entityId) ?? [];
+    attachmentsForCertification.push({
       id: attachment.id,
       fileName: attachment.fileName,
       displayName: attachment.displayName,
     });
-    certAttachmentMap.set(attachment.entityId, list);
+    certificationAttachmentMap.set(
+      attachment.entityId,
+      attachmentsForCertification,
+    );
   }
 
   const frameworkOptions = await listFrameworksWithSharedControls();
 
-  const defaultTab = sp.tab ?? "overview";
+  const defaultTab = searchParameters.tab ?? "overview";
   const allowedTabs = [
     "overview",
     "compliance",
@@ -227,8 +246,8 @@ export default async function VendorDetailPage({
     "assessments",
   ];
   const safeTab = allowedTabs.includes(defaultTab) ? defaultTab : "overview";
-  const frameworkBackParam = sp.back
-    ? `&back=${encodeURIComponent(sp.back)}`
+  const frameworkBackParam = searchParameters.back
+    ? `&back=${encodeURIComponent(searchParameters.back)}`
     : "";
 
   const hasOverviewFields =
@@ -242,18 +261,27 @@ export default async function VendorDetailPage({
 
   return (
     <div className="flex max-w-5xl flex-col gap-6">
-      {sp.created ? <FlashToast message="Vendor created." /> : null}
+      {searchParameters.created ? (
+        <FlashToast message={translations("created")} />
+      ) : null}
       <Breadcrumbs
         segments={
-          sp.back?.startsWith("/risk-register")
+          searchParameters.back?.startsWith("/risk-register")
             ? [
-                { label: "Risk register", href: sp.back },
+                {
+                  label: translations("breadcrumbs.riskRegister"),
+                  href: searchParameters.back,
+                },
                 { label: vendor.name },
               ]
             : [
                 {
-                  label: "Vendors",
-                  href: resolveBackHref(sp.back, "/vendors", "/vendors"),
+                  label: translations("breadcrumbs.vendors"),
+                  href: resolveBackHref(
+                    searchParameters.back,
+                    "/vendors",
+                    "/vendors",
+                  ),
                 },
                 { label: vendor.name },
               ]
@@ -265,18 +293,22 @@ export default async function VendorDetailPage({
           <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
             {vendor.name}
             {vendor.tier ? (
-              <Badge variant="outline">{VENDOR_TIER_LABELS[vendor.tier]}</Badge>
+              <Badge variant="outline">
+                {commonTranslations(`tiers.${vendor.tier}`)}
+              </Badge>
             ) : null}
           </h1>
           <ActionGroup>
             {canEditVendor ? (
               <Button asChild variant="outline">
-                <Link href={`/vendors/${vendor.id}/edit`}>Edit</Link>
+                <Link href={`/vendors/${vendor.id}/edit`}>
+                  {translations("edit")}
+                </Link>
               </Button>
             ) : null}
             <Button asChild variant="outline" size="sm">
               <a href={`/api/v1/vendors/${vendor.id}/export`} download>
-                Export CSV
+                {translations("exportCsv")}
               </a>
             </Button>
             {canDeleteVendor ? (
@@ -286,12 +318,15 @@ export default async function VendorDetailPage({
               >
                 <input type="hidden" name="vendorId" value={vendor.id} />
                 <ConfirmDialog
-                  title="Delete vendor?"
-                  description={`This will permanently delete ${vendor.name} and all ${vendor.assessments.length} assessment(s). This action cannot be undone.`}
+                  title={translations("deleteTitle")}
+                  description={translations("deleteDescription", {
+                    vendorName: vendor.name,
+                    count: vendor.assessments.length,
+                  })}
                   formId={`delete-vendor-${vendor.id}`}
                 >
                   <Button type="button" variant="outline">
-                    Delete
+                    {translations("delete")}
                   </Button>
                 </ConfirmDialog>
               </form>
@@ -325,11 +360,15 @@ export default async function VendorDetailPage({
         className="max-w-full"
       >
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="compliance">Compliance</TabsTrigger>
+          <TabsTrigger value="overview">
+            {translations("tabs.overview")}
+          </TabsTrigger>
+          <TabsTrigger value="compliance">
+            {translations("tabs.compliance")}
+          </TabsTrigger>
           {canViewFindings ? (
             <TabsTrigger value="findings">
-              Findings
+              {translations("tabs.findings")}
               {openFindingsCount > 0 ? (
                 <Badge variant="secondary" className="ml-1 text-[10px]">
                   {openFindingsCount}
@@ -337,7 +376,9 @@ export default async function VendorDetailPage({
               ) : null}
             </TabsTrigger>
           ) : null}
-          <TabsTrigger value="assessments">Assessments</TabsTrigger>
+          <TabsTrigger value="assessments">
+            {translations("tabs.assessments")}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-4 flex flex-col gap-6">
@@ -345,13 +386,13 @@ export default async function VendorDetailPage({
             {hasOverviewFields ? (
               <Card>
                 <CardHeader>
-                  <CardTitle>Overview</CardTitle>
+                  <CardTitle>{translations("overview.title")}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
                   {vendor.serviceDescription ? (
                     <div className="flex flex-col gap-0.5">
                       <span className="text-muted-foreground text-xs">
-                        Service provided
+                        {translations("overview.serviceProvided")}
                       </span>
                       <span className="text-sm">
                         {vendor.serviceDescription}
@@ -360,16 +401,17 @@ export default async function VendorDetailPage({
                   ) : null}
                   <div className="flex flex-col gap-0.5">
                     <span className="text-muted-foreground text-xs">
-                      Risk owner
+                      {translations("overview.riskOwner")}
                     </span>
                     <span className="text-sm">
-                      {vendor.owner?.name ?? "Unassigned"}
+                      {vendor.owner?.name ??
+                        translations("overview.unassigned")}
                     </span>
                   </div>
                   {vendor.externalId ? (
                     <div className="flex flex-col gap-0.5">
                       <span className="text-muted-foreground text-xs">
-                        External ID
+                        {translations("overview.externalId")}
                       </span>
                       <span className="font-mono text-sm">
                         {vendor.externalId}
@@ -378,18 +420,20 @@ export default async function VendorDetailPage({
                   ) : null}
                   <div className="flex flex-col gap-0.5">
                     <span className="text-muted-foreground text-xs">
-                      Data sensitivity
+                      {translations("overview.dataSensitivity")}
                     </span>
                     <span className="text-sm">
                       {vendor.dataSensitivity
-                        ? DATA_SENSITIVITY_LABELS[vendor.dataSensitivity]
-                        : "Unspecified"}
+                        ? formTranslations(
+                            `dataSensitivities.${vendor.dataSensitivity}`,
+                          )
+                        : translations("overview.unspecified")}
                     </span>
                   </div>
                   {vendor.website ? (
                     <div className="flex flex-col gap-0.5">
                       <span className="text-muted-foreground text-xs">
-                        Website
+                        {translations("overview.website")}
                       </span>
                       <a
                         href={vendor.website}
@@ -404,7 +448,7 @@ export default async function VendorDetailPage({
                   {vendor.contractRenewalDate ? (
                     <div className="flex flex-col gap-0.5">
                       <span className="text-muted-foreground text-xs">
-                        Contract renewal
+                        {translations("overview.contractRenewal")}
                       </span>
                       <span
                         className={`text-sm ${
@@ -413,9 +457,14 @@ export default async function VendorDetailPage({
                             : ""
                         }`}
                       >
-                        {formatDateUtc(vendor.contractRenewalDate)}
+                        {dateFormatter.dateTime(vendor.contractRenewalDate, {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                          timeZone: "UTC",
+                        })}
                         {vendor.contractRenewalDate < new Date()
-                          ? " · overdue"
+                          ? translations("overview.overdue")
                           : ""}
                       </span>
                     </div>
@@ -423,7 +472,7 @@ export default async function VendorDetailPage({
                   {vendorAttachments.length > 0 ? (
                     <div className="flex flex-col gap-1">
                       <span className="text-muted-foreground text-xs">
-                        Attachments
+                        {translations("overview.attachments")}
                       </span>
                       <div className="flex flex-col gap-1">
                         {vendorAttachments.map((attachment) => (
@@ -445,14 +494,14 @@ export default async function VendorDetailPage({
             ) : (
               <Card>
                 <CardHeader>
-                  <CardTitle>Overview</CardTitle>
+                  <CardTitle>{translations("overview.title")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <EmptyState
                     compact
                     icon="vendors"
-                    title="No overview details"
-                    description="Edit this vendor to add service details, a risk owner, and other profile information."
+                    title={translations("overview.emptyTitle")}
+                    description={translations("overview.emptyDescription")}
                   />
                 </CardContent>
               </Card>
@@ -460,13 +509,13 @@ export default async function VendorDetailPage({
 
             <Card>
               <CardHeader>
-                <CardTitle>Risk profile</CardTitle>
+                <CardTitle>{translations("riskProfile.title")}</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2">
                     <span className="text-muted-foreground text-xs">
-                      Inherent (pre-assessment)
+                      {translations("riskProfile.inherent")}
                     </span>
                     <Badge variant="secondary" className="text-[11px]">
                       {formatPercent(computeInherentRisk(vendor) ?? 0)}
@@ -475,7 +524,7 @@ export default async function VendorDetailPage({
                   {profile != null && profile.overallScore != null ? (
                     <div className="flex items-center gap-2">
                       <span className="text-muted-foreground text-xs">
-                        Residual (assessed)
+                        {translations("riskProfile.residual")}
                       </span>
                       <ScoreBadge score={profile.overallScore} size="sm" />
                       {profile.trend !== "stable" ? (
@@ -486,25 +535,25 @@ export default async function VendorDetailPage({
                           className="text-[11px]"
                         >
                           {profile.trend === "up"
-                            ? "Trending up ↑"
-                            : "Trending down ↓"}
+                            ? translations("riskProfile.trendingUp")
+                            : translations("riskProfile.trendingDown")}
                         </Badge>
                       ) : (
                         <Badge variant="secondary" className="text-[11px]">
-                          Stable →
+                          {translations("riskProfile.stable")}
                         </Badge>
                       )}
                     </div>
                   ) : (
                     <span className="text-muted-foreground text-xs">
-                      No score yet — submit an assessment
+                      {translations("riskProfile.noScore")}
                     </span>
                   )}
                 </div>
                 {profile && profile.history.length > 0 ? (
                   <div className="flex flex-col gap-2">
                     <span className="text-muted-foreground text-xs font-medium">
-                      Trend
+                      {translations("riskProfile.trend")}
                     </span>
                     <div
                       className="flex items-end gap-1"
@@ -546,7 +595,7 @@ export default async function VendorDetailPage({
                         href={`/vendors/${vendor.id}/compare?left=${profile.history[1]?.id}&right=${profile.history[0]?.id}`}
                         className="text-muted-foreground text-xs hover:underline"
                       >
-                        Compare last two →
+                        {translations("riskProfile.compareLastTwo")}
                       </Link>
                     ) : null}
                   </div>
@@ -557,13 +606,13 @@ export default async function VendorDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Certifications &amp; attestations</CardTitle>
+              <CardTitle>{translations("certifications")}</CardTitle>
             </CardHeader>
             <CardContent>
               <CertificationsManager
                 vendorId={vendor.id}
                 certifications={certificationViews}
-                attachments={certAttachmentMap}
+                attachments={certificationAttachmentMap}
                 canEdit={canEditVendor}
                 frameworkOptions={frameworkOptions}
               />
@@ -580,11 +629,11 @@ export default async function VendorDetailPage({
           {responsibilityCompliance ? (
             <div className="grid gap-4 sm:grid-cols-2">
               <ScoreStatCard
-                label="Vendor compliance"
+                label={translations("compliance.vendorCompliance")}
                 score={vendor.overallScore}
               />
               <ScoreStatCard
-                label="Your compliance"
+                label={translations("compliance.yourCompliance")}
                 score={
                   responsibilityCompliance.total > 0
                     ? responsibilityCompliance.percent / 100
@@ -596,7 +645,9 @@ export default async function VendorDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Domain compliance</CardTitle>
+              <CardTitle>
+                {translations("compliance.domainCompliance")}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               {profile && profile.frameworkCompliance.length > 0 ? (
@@ -647,8 +698,8 @@ export default async function VendorDetailPage({
                 <EmptyState
                   compact
                   icon="assessments"
-                  title="No compliance data"
-                  description="Complete an assessment to see domain compliance scores."
+                  title={translations("compliance.noDataTitle")}
+                  description={translations("compliance.noDataDescription")}
                 />
               )}
             </CardContent>
@@ -657,7 +708,9 @@ export default async function VendorDetailPage({
           {frameworks.length > 0 ? (
             <Card>
               <CardHeader>
-                <CardTitle>Framework heatmaps</CardTitle>
+                <CardTitle>
+                  {translations("compliance.frameworkHeatmaps")}
+                </CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-2">
                 {frameworks.map((framework) => {
@@ -679,7 +732,7 @@ export default async function VendorDetailPage({
                       </Link>
                       {!hasData ? (
                         <span className="text-muted-foreground text-xs">
-                          No assessment data
+                          {translations("compliance.noAssessmentData")}
                         </span>
                       ) : null}
                     </div>
@@ -690,14 +743,18 @@ export default async function VendorDetailPage({
           ) : (
             <Card>
               <CardHeader>
-                <CardTitle>Framework heatmaps</CardTitle>
+                <CardTitle>
+                  {translations("compliance.frameworkHeatmaps")}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <EmptyState
                   compact
                   icon="frameworks"
-                  title="No frameworks available"
-                  description="Import or seed framework libraries to map controls to assessment questions."
+                  title={translations("compliance.noFrameworksTitle")}
+                  description={translations(
+                    "compliance.noFrameworksDescription",
+                  )}
                 />
               </CardContent>
             </Card>
@@ -709,10 +766,12 @@ export default async function VendorDetailPage({
             <Card>
               <CardHeader>
                 <CardTitle>
-                  Findings
+                  {translations("findings.title")}
                   {openFindingsCount > 0 ? (
                     <span className="text-muted-foreground ml-2 text-sm font-normal">
-                      {openFindingsCount} open
+                      {translations("findings.openCount", {
+                        count: openFindingsCount,
+                      })}
                     </span>
                   ) : null}
                 </CardTitle>
@@ -738,16 +797,22 @@ export default async function VendorDetailPage({
                           <Badge
                             className={SEVERITY_STYLES[finding.severity] ?? ""}
                           >
-                            {finding.severity.charAt(0) +
-                              finding.severity.slice(1).toLowerCase()}
+                            {commonTranslations.has(`tiers.${finding.severity}`)
+                              ? commonTranslations(`tiers.${finding.severity}`)
+                              : finding.severity}
                           </Badge>
                           <Badge
                             className={
                               FINDING_STATUS_STYLES[finding.status] ?? ""
                             }
                           >
-                            {FINDING_STATUS_LABELS[finding.status] ??
-                              finding.status}
+                            {commonTranslations.has(
+                              `findingStatuses.${finding.status}`,
+                            )
+                              ? commonTranslations(
+                                  `findingStatuses.${finding.status}`,
+                                )
+                              : finding.status}
                           </Badge>
                         </div>
                       </Link>
@@ -757,7 +822,9 @@ export default async function VendorDetailPage({
                         href={`/risk-register?vendorId=${vendor.id}`}
                         className="text-muted-foreground text-xs hover:underline"
                       >
-                        View all {totalFindings} findings in the risk register →
+                        {translations("findings.viewAll", {
+                          count: totalFindings,
+                        })}
                       </Link>
                     ) : null}
                   </div>
@@ -765,8 +832,8 @@ export default async function VendorDetailPage({
                   <EmptyState
                     compact
                     icon="findings"
-                    title="No findings"
-                    description="Findings are generated when assessment answers are non-compliant. Complete an assessment to see findings here."
+                    title={translations("findings.emptyTitle")}
+                    description={translations("findings.emptyDescription")}
                   />
                 )}
               </CardContent>
@@ -778,11 +845,11 @@ export default async function VendorDetailPage({
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between gap-2">
-                <CardTitle>Assessments</CardTitle>
+                <CardTitle>{translations("assessments.title")}</CardTitle>
                 {canCreateAssessment ? (
                   <Button asChild size="sm">
                     <Link href={`/vendors/${vendor.id}/assessments/new`}>
-                      New assessment
+                      {translations("assessments.new")}
                     </Link>
                   </Button>
                 ) : null}
@@ -793,8 +860,8 @@ export default async function VendorDetailPage({
                 <EmptyState
                   compact
                   icon="assessments"
-                  title="No assessments"
-                  description="No assessments have been created for this vendor yet."
+                  title={translations("assessments.emptyTitle")}
+                  description={translations("assessments.emptyDescription")}
                 />
               ) : (
                 <div className="flex flex-col gap-2">
@@ -813,14 +880,30 @@ export default async function VendorDetailPage({
                           <span className="text-muted-foreground text-xs">
                             {assessment.template
                               ? `${assessment.template.name} v${assessment.template.version}`
-                              : "No template"}
+                              : translations("assessments.noTemplate")}
                             {assessment.dueDate
-                              ? ` · due ${formatDateUtc(assessment.dueDate)}`
+                              ? translations("assessments.due", {
+                                  date: dateFormatter.dateTime(
+                                    assessment.dueDate,
+                                    {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                      timeZone: "UTC",
+                                    },
+                                  ),
+                                })
                               : ""}
                           </span>
                         </div>
                         <Badge variant="secondary">
-                          {ASSESSMENT_STATUS_LABELS[assessment.status]}
+                          {commonTranslations.has(
+                            `assessmentStatuses.${assessment.status}`,
+                          )
+                            ? commonTranslations(
+                                `assessmentStatuses.${assessment.status}`,
+                              )
+                            : assessment.status}
                         </Badge>
                       </Link>
                     ))}
@@ -829,7 +912,9 @@ export default async function VendorDetailPage({
                       href={`/assessments?vendorId=${vendor.id}`}
                       className="text-muted-foreground text-xs hover:underline"
                     >
-                      View all {vendor.assessments.length} assessments →
+                      {translations("assessments.viewAll", {
+                        count: vendor.assessments.length,
+                      })}
                     </Link>
                   ) : null}
                 </div>
@@ -839,7 +924,7 @@ export default async function VendorDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Activity</CardTitle>
+              <CardTitle>{translations("assessments.activity")}</CardTitle>
             </CardHeader>
             <CardContent>
               <VendorTimeline events={timeline} />

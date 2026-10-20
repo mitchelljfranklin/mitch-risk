@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,10 +26,10 @@ import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronUp, Paperclip, Trash2 } from "lucide-react";
 
 const STATUS_OPTIONS = [
-  { value: "PENDING", label: "Pending" },
-  { value: "IN_PROGRESS", label: "In Progress" },
-  { value: "COMPLETED", label: "Completed" },
-  { value: "NOT_APPLICABLE", label: "Not Applicable" },
+  "PENDING",
+  "IN_PROGRESS",
+  "COMPLETED",
+  "NOT_APPLICABLE",
 ] as const;
 
 const STATUS_STYLES: Record<string, string> = {
@@ -98,6 +99,7 @@ function ChecklistCard({
   attachments?: Map<string, AttachmentView[]>;
 }) {
   const [expanded, setExpanded] = useState(true);
+  const translations = useTranslations("Vendors.customerResponsibility");
   const total = group.actions.length;
   const completed = group.actions.filter(
     (action) =>
@@ -111,7 +113,7 @@ function ChecklistCard({
         <div className="flex items-center justify-between">
           <div className="flex min-w-0 items-center gap-2">
             <CardTitle className="text-base">
-              Customer Responsibility
+              {translations("title")}
               {group.certificationName ? (
                 <span className="text-muted-foreground text-sm font-normal">
                   {" "}
@@ -129,18 +131,18 @@ function ChecklistCard({
               {expanded ? (
                 <>
                   <ChevronUp className="size-3" />
-                  Collapse
+                  {translations("collapse")}
                 </>
               ) : (
                 <>
                   <ChevronDown className="size-3" />
-                  Expand
+                  {translations("expand")}
                 </>
               )}
             </Button>
           </div>
           <span className="text-muted-foreground shrink-0 text-xs">
-            {completed} of {total} · {percent}%
+            {translations("progress", { completed, total, percent })}
           </span>
         </div>
         <ProgressBar
@@ -158,7 +160,7 @@ function ChecklistCard({
         <CardContent className="pt-0">
           {total === 0 ? (
             <p className="text-muted-foreground text-sm">
-              No shared-responsibility controls for this certification.
+              {translations("empty")}
             </p>
           ) : (
             <div className="flex flex-col divide-y rounded-md border">
@@ -191,6 +193,7 @@ function ActionRow({
   existingAttachments: AttachmentView[];
 }) {
   const [expanded, setExpanded] = useState(false);
+  const translations = useTranslations("Vendors.customerResponsibility");
   const [state, formAction, isPending] = useActionState(
     updateResponsibilityAction,
     undefined,
@@ -199,11 +202,11 @@ function ActionRow({
 
   const metaParts: string[] = [];
   if (action.assignedToName) {
-    metaParts.push(`Assigned to ${action.assignedToName}`);
+    metaParts.push(translations("assignedTo", { name: action.assignedToName }));
   }
   if (existingAttachments.length > 0) {
     metaParts.push(
-      `${existingAttachments.length} file${existingAttachments.length !== 1 ? "s" : ""}`,
+      translations("fileCount", { count: existingAttachments.length }),
     );
   }
   const metaLine = metaParts.length > 0 ? metaParts.join(" · ") : null;
@@ -228,8 +231,9 @@ function ActionRow({
               STATUS_STYLES[action.status] ?? STATUS_STYLES.PENDING,
             )}
           >
-            {STATUS_OPTIONS.find((option) => option.value === action.status)
-              ?.label ?? action.status}
+            {translations.has(`statuses.${action.status}`)
+              ? translations(`statuses.${action.status}`)
+              : action.status}
           </Badge>
           {canEdit ? (
             <Button
@@ -242,12 +246,12 @@ function ActionRow({
               {expanded ? (
                 <>
                   <ChevronUp className="size-3" />
-                  Collapse
+                  {translations("collapse")}
                 </>
               ) : (
                 <>
                   <ChevronDown className="size-3" />
-                  Expand
+                  {translations("expand")}
                 </>
               )}
             </Button>
@@ -262,7 +266,7 @@ function ActionRow({
 
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1">
-              <Label className="text-xs">Status</Label>
+              <Label className="text-xs">{translations("status")}</Label>
               <Select
                 key={action.status}
                 name="status"
@@ -273,18 +277,22 @@ function ActionRow({
                 </SelectTrigger>
                 <SelectContent>
                   {STATUS_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
+                    <SelectItem key={option} value={option}>
+                      {translations.has(`statuses.${option}`)
+                        ? translations(`statuses.${option}`)
+                        : option}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="flex flex-col gap-1">
-              <Label className="text-xs">Assigned to</Label>
+              <Label className="text-xs">
+                {translations("assignedToLabel")}
+              </Label>
               <Input
                 name="assignedToId"
-                placeholder="User ID (optional)"
+                placeholder={translations("assignedToPlaceholder")}
                 defaultValue={action.assignedToName ?? ""}
                 className="h-7 text-xs"
               />
@@ -294,7 +302,7 @@ function ActionRow({
           <div className="flex flex-col gap-1">
             <Label className="flex items-center gap-1 text-xs">
               <Paperclip className="size-3" />
-              Attachment
+              {translations("attachment")}
             </Label>
             <input
               name="attachmentFile"
@@ -305,19 +313,21 @@ function ActionRow({
           </div>
 
           <div className="flex flex-col gap-1">
-            <Label className="text-xs">Notes</Label>
+            <Label className="text-xs">{translations("notes")}</Label>
             <Textarea
               name="notes"
               defaultValue={action.notes ?? ""}
               rows={2}
               className="text-xs"
-              placeholder="Add notes about implementation..."
+              placeholder={translations("notesPlaceholder")}
             />
           </div>
 
           {existingAttachments.length > 0 ? (
             <div className="flex flex-col gap-1">
-              <span className="text-muted-foreground text-xs">Files</span>
+              <span className="text-muted-foreground text-xs">
+                {translations("files")}
+              </span>
               {existingAttachments.map((attachment) => (
                 <div
                   key={attachment.id}
@@ -354,7 +364,7 @@ function ActionRow({
 
           <div className="flex items-center gap-2">
             <Button type="submit" disabled={isPending} size="sm">
-              {isPending ? "Saving..." : "Save"}
+              {isPending ? translations("saving") : translations("save")}
             </Button>
             <Button
               type="button"
@@ -362,7 +372,7 @@ function ActionRow({
               size="sm"
               onClick={() => setExpanded(false)}
             >
-              Cancel
+              {translations("cancel")}
             </Button>
           </div>
         </form>

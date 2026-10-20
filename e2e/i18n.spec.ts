@@ -4,6 +4,7 @@ import {
   getOrganizationSettings,
   updateOrganizationSettings,
 } from "@/lib/settings";
+import { prisma } from "@/lib/prisma";
 
 import { signInAsAdmin } from "./helpers";
 
@@ -170,6 +171,35 @@ test.describe("internal shell", () => {
     ).toBeVisible();
     await expect(
       page.getByRole("link", { name: "Nuevo proveedor" }),
+    ).toBeVisible();
+  });
+
+  test("translates the vendor detail page", async ({ page }) => {
+    const vendor = await prisma.vendor.findFirst({ orderBy: { name: "asc" } });
+    if (!vendor) {
+      throw new Error("The seeded test database has no vendors.");
+    }
+
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto(`/vendors/${vendor.id}`);
+
+    await expect(page.getByRole("tab", { name: "Resumen" })).toBeVisible();
+    await expect(page.getByRole("tab", { name: "Cumplimiento" })).toBeVisible();
+    await expect(page.getByText("Perfil de riesgo")).toBeVisible();
+    await expect(
+      page.getByText("Certificaciones y acreditaciones"),
+    ).toBeVisible();
+    await expect(page.getByRole("link", { name: "Editar" })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Exportar CSV" }),
     ).toBeVisible();
   });
 });

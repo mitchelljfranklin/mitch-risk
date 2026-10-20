@@ -201,4 +201,40 @@ describe("buildVendorTimeline", () => {
       true,
     );
   });
+
+  it("uses the injected translator and date formatter", () => {
+    const translate = (
+      key: string,
+      values?: Record<string, string | number>,
+    ) => {
+      if (key === "certificationExpiringDescription") {
+        return `${values?.name} caduca ${values?.date}`;
+      }
+      return `translated:${key}`;
+    };
+    const timeline = buildVendorTimeline(
+      {
+        vendorId: "v",
+        assessments: [],
+        findings: [],
+        certifications: [
+          {
+            id: "c1",
+            name: "ISO 27001",
+            issuedDate: null,
+            expiresDate: utcDay(10),
+            createdAt: utcDay(-90),
+          },
+        ],
+      },
+      {
+        translate,
+        formatDate: () => "formatted-date",
+      },
+    );
+
+    const expiring = timeline.find((event) => event.id === "cert-expiring-c1");
+    expect(expiring?.action).toBe("translated:certificationExpiring");
+    expect(expiring?.description).toBe("ISO 27001 caduca formatted-date");
+  });
 });
