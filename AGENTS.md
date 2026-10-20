@@ -63,7 +63,7 @@ lib/                 cross-cutting logic
   permissions.ts       PERMISSIONS catalog, SYSTEM_ROLE_DEFINITIONS/NAMES, hasPermission()
   auth.ts              Auth.js config + requirePermission()
   prisma.ts            shared Prisma client instance
-hooks/               use-form-toast, use-action-feedback, use-mobile
+hooks/               use-form-toast, use-action-feedback, use-locale-switch, use-mobile
 emails/              React Email templates rendered from Settings via token replacement
 messages/            en/es translation catalogs (key parity enforced by a unit test)
 prisma/              schema.prisma, migrations, seed.ts, seed-demo.ts, seed-data/

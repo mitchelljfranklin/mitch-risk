@@ -1,7 +1,8 @@
 "use client";
 
-import { ChevronsUpDown, LogOut, User } from "lucide-react";
+import { Check, ChevronsUpDown, Languages, LogOut, User } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -10,9 +11,14 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useLocaleSwitch } from "@/hooks/use-locale-switch";
 import { signOutAction } from "@/lib/actions/auth";
+import { LOCALE_LABELS, LOCALES } from "@/lib/i18n/config";
 
 type UserMenuProps = {
   name: string;
@@ -21,6 +27,9 @@ type UserMenuProps = {
 };
 
 export function UserMenu({ name, email, role }: UserMenuProps) {
+  const t = useTranslations("Shell.header");
+  const { locale, switchLocale } = useLocaleSwitch();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -46,9 +55,28 @@ export function UserMenu({ name, email, role }: UserMenuProps) {
             className="flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none"
           >
             <User className="size-4" />
-            Profile
+            {t("profile")}
           </Link>
         </DropdownMenuItem>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <Languages className="size-4" />
+            {t("language")}
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            {LOCALES.map((availableLocale) => (
+              <DropdownMenuItem
+                key={availableLocale}
+                onSelect={() => switchLocale(availableLocale)}
+              >
+                {LOCALE_LABELS[availableLocale]}
+                {availableLocale === locale ? (
+                  <Check className="ml-auto size-4" />
+                ) : null}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
         <DropdownMenuSeparator />
         <form action={signOutAction}>
           <DropdownMenuItem
@@ -60,7 +88,7 @@ export function UserMenu({ name, email, role }: UserMenuProps) {
               className="hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none"
             >
               <LogOut className="size-4" />
-              Sign out
+              {t("signOut")}
             </button>
           </DropdownMenuItem>
         </form>

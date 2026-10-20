@@ -1,8 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import {
   Select,
@@ -11,24 +10,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { setLocaleAction } from "@/lib/actions/locale";
+import { useLocaleSwitch } from "@/hooks/use-locale-switch";
 import { LOCALE_LABELS, LOCALES } from "@/lib/i18n/config";
 
 export function LocaleSwitcher() {
-  const locale = useLocale();
   const t = useTranslations("Common");
-  const router = useRouter();
+  const { locale, isPending, switchLocale } = useLocaleSwitch();
   const [selectedLocale, setSelectedLocale] = useState(locale);
-  const [isPending, startTransition] = useTransition();
 
   function changeLocale(nextLocale: string) {
     if (nextLocale === selectedLocale) return;
     setSelectedLocale(nextLocale);
-
-    startTransition(async () => {
-      await setLocaleAction(nextLocale);
-      router.refresh();
-    });
+    switchLocale(nextLocale);
   }
 
   return (

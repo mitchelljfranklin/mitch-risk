@@ -3,6 +3,7 @@
 import { Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 
@@ -10,6 +11,7 @@ import { Button } from "@/components/ui/button";
 // at least one admin permission (the server layout gates it); the icon
 // highlights while anywhere under /admin.
 export function AdminNavButton() {
+  const t = useTranslations("Shell.header");
   const pathname = usePathname();
   const isActive = pathname === "/admin" || pathname.startsWith("/admin/");
 
@@ -19,14 +21,14 @@ export function AdminNavButton() {
       size="icon"
       type="button"
       asChild
-      aria-label="Admin"
+      aria-label={t("admin")}
     >
       <Link
         href="/admin"
         className={isActive ? "border-primary text-primary" : undefined}
       >
         <Settings className="size-4" />
-        <span className="sr-only">Admin</span>
+        <span className="sr-only">{t("admin")}</span>
       </Link>
     </Button>
   );

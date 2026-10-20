@@ -80,3 +80,45 @@ test.describe("organization default language", () => {
     await visitor.close();
   });
 });
+
+test.describe("internal shell", () => {
+  test.beforeEach(async () => {
+    const organization = await getOrganizationSettings();
+    if (organization.defaultLocale !== "en") {
+      await updateOrganizationSettings({
+        ...organization,
+        defaultLocale: "en",
+      });
+    }
+  });
+
+  test("switches the shell language from the user menu", async ({ page }) => {
+    await signInAsAdmin(page);
+
+    const sidebar = page.locator("[data-slot='sidebar-inner']");
+    await expect(
+      sidebar.getByRole("link", { name: "Vendors" }).first(),
+    ).toBeVisible();
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+
+    await expect(
+      sidebar.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.reload();
+    await expect(
+      sidebar.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Idioma" }).hover();
+    await page.getByRole("menuitem", { name: "English" }).click();
+
+    await expect(
+      sidebar.getByRole("link", { name: "Vendors" }).first(),
+    ).toBeVisible();
+  });
+});

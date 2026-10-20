@@ -14,6 +14,7 @@ import { ScrollLockFix } from "@/components/scroll-lock-fix";
 import { Toaster } from "@/components/ui/sonner";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 import { IdleTimer } from "@/components/idle-timer";
+import { getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/auth";
 import { ADMIN_AREA_PERMISSIONS } from "@/lib/admin-nav";
 import { hasAnyPermission } from "@/lib/permissions";
@@ -27,6 +28,7 @@ export default async function InternalLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const user = await requireUser();
+  const t = await getTranslations("Shell");
   const [organization, appearance, assessment] = await Promise.all([
     getOrganizationSettings(),
     getAppearanceSettings(),
@@ -51,7 +53,7 @@ export default async function InternalLayout({
         />
         <SidebarInset>
           <header className="bg-background sticky top-0 z-10 flex h-14 items-center gap-2 border-b px-4">
-            <SidebarTrigger />
+            <SidebarTrigger label={t("sidebar.toggle")} />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <div className="flex-1" />
             {canAccessAdmin ? <AdminNavButton /> : null}

@@ -7,28 +7,36 @@ import { type Permission, PERMISSIONS, hasPermission } from "@/lib/permissions";
 //
 // Sections carry the same permission keys the old settings tabs enforced.
 // A section the user cannot access is hidden, never greyed out.
+//
+// `key` is the translation key under Shell.admin; `label` remains the English
+// fallback for non-sidebar surfaces.
 
 export type AdminSection = {
+  key: string;
   label: string;
   href: string;
   permission: Permission;
 };
 
 export type AdminSectionGroup = {
+  key: string;
   label: string;
   sections: AdminSection[];
 };
 
 export const ADMIN_SECTION_GROUPS: readonly AdminSectionGroup[] = [
   {
+    key: "workspace",
     label: "Workspace",
     sections: [
       {
+        key: "general",
         label: "General",
         href: "/admin/general",
         permission: PERMISSIONS.SETTINGS_MANAGE,
       },
       {
+        key: "appearance",
         label: "Appearance",
         href: "/admin/appearance",
         permission: PERMISSIONS.SETTINGS_MANAGE,
@@ -36,14 +44,17 @@ export const ADMIN_SECTION_GROUPS: readonly AdminSectionGroup[] = [
     ],
   },
   {
+    key: "email",
     label: "Email",
     sections: [
       {
+        key: "email",
         label: "Email",
         href: "/admin/email",
         permission: PERMISSIONS.SETTINGS_MANAGE,
       },
       {
+        key: "emailTracking",
         label: "Email tracking",
         href: "/admin/email-tracking",
         permission: PERMISSIONS.SETTINGS_MANAGE,
@@ -51,14 +62,17 @@ export const ADMIN_SECTION_GROUPS: readonly AdminSectionGroup[] = [
     ],
   },
   {
+    key: "assessments",
     label: "Assessments",
     sections: [
       {
+        key: "scoring",
         label: "Scoring",
         href: "/admin/scoring",
         permission: PERMISSIONS.SETTINGS_MANAGE,
       },
       {
+        key: "scheduling",
         label: "Scheduling",
         href: "/admin/scheduling",
         permission: PERMISSIONS.SETTINGS_MANAGE,
@@ -66,9 +80,11 @@ export const ADMIN_SECTION_GROUPS: readonly AdminSectionGroup[] = [
     ],
   },
   {
+    key: "files",
     label: "Files",
     sections: [
       {
+        key: "storage",
         label: "Storage",
         href: "/admin/storage",
         permission: PERMISSIONS.SETTINGS_MANAGE,
@@ -76,24 +92,29 @@ export const ADMIN_SECTION_GROUPS: readonly AdminSectionGroup[] = [
     ],
   },
   {
+    key: "accessSecurity",
     label: "Access & security",
     sections: [
       {
+        key: "users",
         label: "Users",
         href: "/admin/users",
         permission: PERMISSIONS.USERS_MANAGE,
       },
       {
+        key: "roles",
         label: "Roles",
         href: "/admin/roles",
         permission: PERMISSIONS.ROLES_MANAGE,
       },
       {
+        key: "signIn",
         label: "Sign-in",
         href: "/admin/sign-in",
         permission: PERMISSIONS.SETTINGS_MANAGE,
       },
       {
+        key: "rateLimits",
         label: "Rate limits",
         href: "/admin/rate-limits",
         permission: PERMISSIONS.SETTINGS_MANAGE,
@@ -101,14 +122,17 @@ export const ADMIN_SECTION_GROUPS: readonly AdminSectionGroup[] = [
     ],
   },
   {
+    key: "integrations",
     label: "Integrations",
     sections: [
       {
+        key: "api",
         label: "API",
         href: "/admin/api",
         permission: PERMISSIONS.API_MANAGE,
       },
       {
+        key: "webhooks",
         label: "Webhooks",
         href: "/admin/webhooks",
         permission: PERMISSIONS.WEBHOOKS_MANAGE,
@@ -116,19 +140,23 @@ export const ADMIN_SECTION_GROUPS: readonly AdminSectionGroup[] = [
     ],
   },
   {
+    key: "platform",
     label: "Platform",
     sections: [
       {
+        key: "trustCenter",
         label: "Trust Center",
         href: "/admin/trust-center",
         permission: PERMISSIONS.TRUSTCENTER_MANAGE,
       },
       {
+        key: "auditLog",
         label: "Audit log",
         href: "/admin/audit",
         permission: PERMISSIONS.AUDIT_VIEW,
       },
       {
+        key: "health",
         label: "Health",
         href: "/admin/health",
         permission: PERMISSIONS.SETTINGS_MANAGE,

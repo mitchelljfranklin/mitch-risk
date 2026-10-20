@@ -6,6 +6,67 @@
   "Metadata": {
     "description": "White-label third party vendor risk management solution"
   },
+  "Shell": {
+    "workspace": {
+      "dashboard": "Dashboard",
+      "vendors": "Vendors",
+      "assessments": "Assessments",
+      "riskRegister": "Risk register",
+      "selfAssessment": "Self-assessment",
+      "frameworks": "Frameworks",
+      "templates": "Templates",
+      "trustCenter": "Trust center",
+      "admin": "Admin",
+      "groups": {
+        "risk": "Risk",
+        "frameworks": "Frameworks",
+        "manage": "Manage"
+      }
+    },
+    "admin": {
+      "backToWorkspace": "Back to workspace",
+      "groups": {
+        "workspace": "Workspace",
+        "email": "Email",
+        "assessments": "Assessments",
+        "files": "Files",
+        "accessSecurity": "Access & security",
+        "integrations": "Integrations",
+        "platform": "Platform"
+      },
+      "sections": {
+        "general": "General",
+        "appearance": "Appearance",
+        "email": "Email",
+        "emailTracking": "Email tracking",
+        "scoring": "Scoring",
+        "scheduling": "Scheduling",
+        "storage": "Storage",
+        "users": "Users",
+        "roles": "Roles",
+        "signIn": "Sign-in",
+        "rateLimits": "Rate limits",
+        "api": "API",
+        "webhooks": "Webhooks",
+        "trustCenter": "Trust Center",
+        "auditLog": "Audit log",
+        "health": "Health"
+      }
+    },
+    "header": {
+      "admin": "Admin",
+      "toggleTheme": "Toggle theme",
+      "themeLight": "Light",
+      "themeDark": "Dark",
+      "themeSystem": "System",
+      "profile": "Profile",
+      "language": "Language",
+      "signOut": "Sign out"
+    },
+    "sidebar": {
+      "toggle": "Toggle sidebar"
+    }
+  },
   "Auth": {
     "tagline": "Vendor risk management",
     "login": {

@@ -6,6 +6,67 @@
   "Metadata": {
     "description": "Solución white-label para la gestión del riesgo de terceros"
   },
+  "Shell": {
+    "workspace": {
+      "dashboard": "Panel",
+      "vendors": "Proveedores",
+      "assessments": "Evaluaciones",
+      "riskRegister": "Registro de riesgos",
+      "selfAssessment": "Autoevaluación",
+      "frameworks": "Marcos",
+      "templates": "Plantillas",
+      "trustCenter": "Centro de confianza",
+      "admin": "Administración",
+      "groups": {
+        "risk": "Riesgo",
+        "frameworks": "Marcos",
+        "manage": "Gestión"
+      }
+    },
+    "admin": {
+      "backToWorkspace": "Volver al panel",
+      "groups": {
+        "workspace": "Espacio de trabajo",
+        "email": "Correo electrónico",
+        "assessments": "Evaluaciones",
+        "files": "Archivos",
+        "accessSecurity": "Acceso y seguridad",
+        "integrations": "Integraciones",
+        "platform": "Plataforma"
+      },
+      "sections": {
+        "general": "General",
+        "appearance": "Apariencia",
+        "email": "Correo electrónico",
+        "emailTracking": "Seguimiento de correo",
+        "scoring": "Puntuación",
+        "scheduling": "Programación",
+        "storage": "Almacenamiento",
+        "users": "Usuarios",
+        "roles": "Roles",
+        "signIn": "Inicio de sesión",
+        "rateLimits": "Límites de velocidad",
+        "api": "API",
+        "webhooks": "Webhooks",
+        "trustCenter": "Centro de confianza",
+        "auditLog": "Registro de auditoría",
+        "health": "Estado"
+      }
+    },
+    "header": {
+      "admin": "Administración",
+      "toggleTheme": "Cambiar tema",
+      "themeLight": "Claro",
+      "themeDark": "Oscuro",
+      "themeSystem": "Sistema",
+      "profile": "Perfil",
+      "language": "Idioma",
+      "signOut": "Cerrar sesión"
+    },
+    "sidebar": {
+      "toggle": "Alternar barra lateral"
+    }
+  },
   "Auth": {
     "tagline": "Gestión del riesgo de proveedores",
     "login": {
