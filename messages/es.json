@@ -67,6 +67,27 @@
       "toggle": "Alternar barra lateral"
     }
   },
+  "Trust": {
+    "title": "Centro de confianza de {orgName}",
+    "compliance": "Cumplimiento y certificaciones",
+    "expired": "Caducado",
+    "expiringSoon": "Caduca pronto",
+    "verify": "Verificar",
+    "documents": "Documentos de seguridad",
+    "download": "Descargar",
+    "subprocessors": "Subencargados",
+    "name": "Nombre",
+    "purpose": "Finalidad",
+    "location": "Ubicación",
+    "contactPrompt": "¿Preguntas sobre nuestra postura de seguridad?",
+    "categories": {
+      "POLICY": "Política",
+      "SECURITY": "Informe de seguridad",
+      "COMPLIANCE": "Cumplimiento",
+      "PRIVACY": "Privacidad",
+      "OTHER": "Otro"
+    }
+  },
   "Auth": {
     "tagline": "Gestión del riesgo de proveedores",
     "login": {

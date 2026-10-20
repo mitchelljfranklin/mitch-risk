@@ -67,6 +67,27 @@
       "toggle": "Toggle sidebar"
     }
   },
+  "Trust": {
+    "title": "{orgName} Trust Center",
+    "compliance": "Compliance & certifications",
+    "expired": "Expired",
+    "expiringSoon": "Expiring soon",
+    "verify": "Verify",
+    "documents": "Security documents",
+    "download": "Download",
+    "subprocessors": "Subprocessors",
+    "name": "Name",
+    "purpose": "Purpose",
+    "location": "Location",
+    "contactPrompt": "Questions about our security posture?",
+    "categories": {
+      "POLICY": "Policy",
+      "SECURITY": "Security report",
+      "COMPLIANCE": "Compliance",
+      "PRIVACY": "Privacy",
+      "OTHER": "Other"
+    }
+  },
   "Auth": {
     "tagline": "Vendor risk management",
     "login": {

@@ -284,7 +284,8 @@ UI hiding is cosmetic; the server guard is the real control — **both are alway
   `useTranslations`. Keep `messages/en.json` and `messages/es.json` key-identical — a unit test
   enforces it. Resolution is cookie → org default (Admin → General) → `Accept-Language` → `en`.
   `setLocaleAction` only writes the cookie; the switcher calls `router.refresh()` (never
-  `revalidatePath`).
+  `revalidatePath`). Translated so far: auth screens, internal shell, and the public trust
+  center; the vendor portal, emails, and PDFs are still English-only.
 
 ## Windows / PowerShell tooling notes
 
