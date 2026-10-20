@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { LOCALES, defaultLocale as fallbackLocale } from "@/lib/i18n/config";
+
 export const organizationSettingsSchema = z.object({
   name: z
     .string()
@@ -8,6 +10,7 @@ export const organizationSettingsSchema = z.object({
   supportEmail: z
     .union([z.literal(""), z.email("Enter a valid email address")])
     .default(""),
+  defaultLocale: z.enum(LOCALES).default(fallbackLocale),
 });
 
 export type OrganizationSettings = z.infer<typeof organizationSettingsSchema>;

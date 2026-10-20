@@ -282,8 +282,8 @@ UI hiding is cosmetic; the server guard is the real control — **both are alway
 - **i18n is cookie-based** (`NEXT_LOCALE`): there are no `/[locale]/` URL segments and no
   next-intl middleware. Server components/actions use `getTranslations`; client components use
   `useTranslations`. Keep `messages/en.json` and `messages/es.json` key-identical — a unit test
-  enforces it. Resolution is cookie → org default (not yet implemented) → `Accept-Language` →
-  `en`. `setLocaleAction` only writes the cookie; the switcher calls `router.refresh()` (never
+  enforces it. Resolution is cookie → org default (Admin → General) → `Accept-Language` → `en`.
+  `setLocaleAction` only writes the cookie; the switcher calls `router.refresh()` (never
   `revalidatePath`).
 
 ## Windows / PowerShell tooling notes

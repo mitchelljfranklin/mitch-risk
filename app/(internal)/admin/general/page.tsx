@@ -31,13 +31,15 @@ export default async function AdminGeneralPage() {
         <CardHeader>
           <CardTitle>Organization</CardTitle>
           <CardDescription>
-            The name and support email shown in emails and the interface.
+            The name, support email, and default language shown in emails and
+            the interface.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <OrganizationForm
             name={organization.name}
             supportEmail={organization.supportEmail}
+            defaultLocale={organization.defaultLocale}
           />
         </CardContent>
       </Card>

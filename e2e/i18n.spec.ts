@@ -1,5 +1,12 @@
 import { expect, test } from "@playwright/test";
 
+import {
+  getOrganizationSettings,
+  updateOrganizationSettings,
+} from "@/lib/settings";
+
+import { signInAsAdmin } from "./helpers";
+
 test.describe("locale selection", () => {
   test("switches the auth screens and persists the choice", async ({
     page,
@@ -26,5 +33,50 @@ test.describe("locale selection", () => {
 
     await expect(page.getByRole("button", { name: "Sign in" })).toBeVisible();
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  });
+});
+
+test.describe("organization default language", () => {
+  test.beforeEach(async () => {
+    const organization = await getOrganizationSettings();
+    if (organization.defaultLocale !== "en") {
+      await updateOrganizationSettings({
+        ...organization,
+        defaultLocale: "en",
+      });
+    }
+  });
+
+  test.afterEach(async () => {
+    const organization = await getOrganizationSettings();
+    if (organization.defaultLocale !== "en") {
+      await updateOrganizationSettings({
+        ...organization,
+        defaultLocale: "en",
+      });
+    }
+  });
+
+  test("applies to visitors without a language cookie", async ({
+    page,
+    browser,
+  }) => {
+    await signInAsAdmin(page);
+    await page.goto("/admin/general");
+
+    await page.getByRole("combobox", { name: "Default language" }).click();
+    await page.getByRole("option", { name: "Español" }).click();
+    await page.getByRole("button", { name: "Save" }).first().click();
+    await expect(page.getByText("Organization settings saved.")).toBeVisible({
+      timeout: 15000,
+    });
+
+    const visitor = await browser.newContext({ locale: "en-US" });
+    const visitorPage = await visitor.newPage();
+    await visitorPage.goto("/login");
+    await expect(
+      visitorPage.getByRole("button", { name: "Iniciar sesión" }),
+    ).toBeVisible();
+    await visitor.close();
   });
 });

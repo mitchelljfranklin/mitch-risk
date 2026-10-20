@@ -67,6 +67,7 @@ export async function saveOrganizationSettings(
   const parsed = organizationSettingsSchema.safeParse({
     name: formData.get("name"),
     supportEmail: formData.get("supportEmail") ?? "",
+    defaultLocale: formData.get("defaultLocale") ?? undefined,
   });
   if (!parsed.success) {
     return {
