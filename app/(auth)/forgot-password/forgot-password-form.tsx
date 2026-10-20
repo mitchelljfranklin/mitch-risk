@@ -15,7 +15,7 @@ import {
 const initialState: ForgotPasswordState = undefined;
 
 export function ForgotPasswordForm() {
-  const t = useTranslations("Auth.forgot");
+  const translations = useTranslations("Auth.forgot");
   const [state, formAction, isPending] = useActionState(
     sendResetEmailAction,
     initialState,
@@ -28,7 +28,7 @@ export function ForgotPasswordForm() {
       ) : (
         <>
           <div className="grid gap-2">
-            <Label htmlFor="email">{t("email")}</Label>
+            <Label htmlFor="email">{translations("email")}</Label>
             <Input
               id="email"
               name="email"
@@ -43,7 +43,7 @@ export function ForgotPasswordForm() {
             </p>
           ) : null}
           <Button type="submit" disabled={isPending}>
-            {isPending ? t("submitting") : t("submit")}
+            {isPending ? translations("submitting") : translations("submit")}
           </Button>
         </>
       )}
@@ -51,7 +51,7 @@ export function ForgotPasswordForm() {
         href="/login"
         className="text-muted-foreground text-center text-xs hover:underline"
       >
-        {t("back")}
+        {translations("back")}
       </Link>
     </form>
   );

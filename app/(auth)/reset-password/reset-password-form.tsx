@@ -15,7 +15,7 @@ import {
 const initialState: ResetPasswordState = undefined;
 
 export function ResetPasswordForm({ token }: { token: string }) {
-  const t = useTranslations("Auth.reset");
+  const translations = useTranslations("Auth.reset");
   const [state, formAction, isPending] = useActionState(
     resetPasswordAction,
     initialState,
@@ -25,7 +25,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
     <form action={formAction} className="grid gap-4">
       <input type="hidden" name="token" value={token} />
       <div className="grid gap-2">
-        <Label htmlFor="password">{t("newPassword")}</Label>
+        <Label htmlFor="password">{translations("newPassword")}</Label>
         <Input
           id="password"
           name="password"
@@ -36,7 +36,9 @@ export function ResetPasswordForm({ token }: { token: string }) {
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
+        <Label htmlFor="confirmPassword">
+          {translations("confirmPassword")}
+        </Label>
         <Input
           id="confirmPassword"
           name="confirmPassword"
@@ -59,13 +61,13 @@ export function ResetPasswordForm({ token }: { token: string }) {
       {!state?.ok ? (
         <>
           <Button type="submit" disabled={isPending}>
-            {isPending ? t("submitting") : t("submit")}
+            {isPending ? translations("submitting") : translations("submit")}
           </Button>
           <Link
             href="/login"
             className="text-muted-foreground text-center text-xs hover:underline"
           >
-            {t("back")}
+            {translations("back")}
           </Link>
         </>
       ) : null}

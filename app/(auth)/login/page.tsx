@@ -31,8 +31,8 @@ import { LoginForm } from "./login-form";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("Auth.login");
-  return { title: t("title") };
+  const translations = await getTranslations("Auth.login");
+  return { title: translations("title") };
 }
 
 type LoginPageProps = {
@@ -47,7 +47,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     redirect("/dashboard");
   }
 
-  const t = await getTranslations("Auth.login");
+  const translations = await getTranslations("Auth.login");
   const [ssoSettings, organization] = await Promise.all([
     getSsoSettings(),
     getOrganizationSettings(),
@@ -98,7 +98,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     <Card>
       <CardHeader>
         <CardTitle>{organization.name}</CardTitle>
-        <CardDescription>{t("description")}</CardDescription>
+        <CardDescription>{translations("description")}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         {showLocalAuth ? (
@@ -108,14 +108,16 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               href="/forgot-password"
               className="hover:text-primary text-muted-foreground text-center text-xs hover:underline"
             >
-              {t("forgot")}
+              {translations("forgot")}
             </Link>
           </>
         ) : null}
         {showLocalAuth && ssoProviders.length > 0 ? (
           <div className="flex items-center gap-3">
             <Separator className="flex-1" />
-            <span className="text-muted-foreground text-xs">{t("or")}</span>
+            <span className="text-muted-foreground text-xs">
+              {translations("or")}
+            </span>
             <Separator className="flex-1" />
           </div>
         ) : null}

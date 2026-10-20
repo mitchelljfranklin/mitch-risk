@@ -17,8 +17,8 @@ import { ForgotPasswordForm } from "./forgot-password-form";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("Auth.forgot");
-  return { title: t("title") };
+  const translations = await getTranslations("Auth.forgot");
+  return { title: translations("title") };
 }
 
 export default async function ForgotPasswordPage() {
@@ -29,13 +29,13 @@ export default async function ForgotPasswordPage() {
     redirect("/dashboard");
   }
 
-  const t = await getTranslations("Auth.forgot");
+  const translations = await getTranslations("Auth.forgot");
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
-        <CardDescription>{t("description")}</CardDescription>
+        <CardTitle>{translations("title")}</CardTitle>
+        <CardDescription>{translations("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <ForgotPasswordForm />

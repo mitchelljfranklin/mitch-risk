@@ -137,7 +137,7 @@ type NavProps = {
 };
 
 function WorkspaceNav({ permissions, pathname }: NavProps) {
-  const t = useTranslations("Shell.workspace");
+  const translations = useTranslations("Shell.workspace");
   const riskItems = [
     {
       key: "vendors",
@@ -201,7 +201,7 @@ function WorkspaceNav({ permissions, pathname }: NavProps) {
               >
                 <Link href="/dashboard">
                   <LayoutDashboard />
-                  <span>{t("dashboard")}</span>
+                  <span>{translations("dashboard")}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -211,7 +211,7 @@ function WorkspaceNav({ permissions, pathname }: NavProps) {
 
       {riskItems.length > 0 ? (
         <SidebarGroup>
-          <SidebarGroupLabel>{t("groups.risk")}</SidebarGroupLabel>
+          <SidebarGroupLabel>{translations("groups.risk")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {riskItems.map((item) => {
@@ -223,7 +223,7 @@ function WorkspaceNav({ permissions, pathname }: NavProps) {
                     <SidebarMenuButton asChild isActive={isActive}>
                       <Link href={item.href}>
                         <item.icon />
-                        <span>{t(item.key)}</span>
+                        <span>{translations(item.key)}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -236,7 +236,9 @@ function WorkspaceNav({ permissions, pathname }: NavProps) {
 
       {frameworkItems.length > 0 ? (
         <SidebarGroup>
-          <SidebarGroupLabel>{t("groups.frameworks")}</SidebarGroupLabel>
+          <SidebarGroupLabel>
+            {translations("groups.frameworks")}
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {frameworkItems.map((item) => {
@@ -248,7 +250,7 @@ function WorkspaceNav({ permissions, pathname }: NavProps) {
                     <SidebarMenuButton asChild isActive={isActive}>
                       <Link href={item.href}>
                         <item.icon />
-                        <span>{t(item.key)}</span>
+                        <span>{translations(item.key)}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -261,7 +263,7 @@ function WorkspaceNav({ permissions, pathname }: NavProps) {
 
       {canManage ? (
         <SidebarGroup>
-          <SidebarGroupLabel>{t("groups.manage")}</SidebarGroupLabel>
+          <SidebarGroupLabel>{translations("groups.manage")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {canManageTrustCenter ? (
@@ -275,7 +277,7 @@ function WorkspaceNav({ permissions, pathname }: NavProps) {
                   >
                     <Link href="/trust-center">
                       <ShieldEllipsis />
-                      <span>{t("trustCenter")}</span>
+                      <span>{translations("trustCenter")}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -289,7 +291,7 @@ function WorkspaceNav({ permissions, pathname }: NavProps) {
                 >
                   <Link href="/admin">
                     <Settings />
-                    <span>{t("admin")}</span>
+                    <span>{translations("admin")}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -302,7 +304,7 @@ function WorkspaceNav({ permissions, pathname }: NavProps) {
 }
 
 function AdminNav({ permissions }: { permissions: string[] }) {
-  const t = useTranslations("Shell.admin");
+  const translations = useTranslations("Shell.admin");
   const pathname = usePathname();
 
   const groups = ADMIN_SECTION_GROUPS.map((group) => ({
@@ -322,10 +324,13 @@ function AdminNav({ permissions }: { permissions: string[] }) {
         <SidebarGroupContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={t("backToWorkspace")}>
+              <SidebarMenuButton
+                asChild
+                tooltip={translations("backToWorkspace")}
+              >
                 <Link href="/dashboard">
                   <ArrowLeft />
-                  <span>{t("backToWorkspace")}</span>
+                  <span>{translations("backToWorkspace")}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -335,7 +340,9 @@ function AdminNav({ permissions }: { permissions: string[] }) {
 
       {groups.map((group) => (
         <SidebarGroup key={group.key}>
-          <SidebarGroupLabel>{t(`groups.${group.key}`)}</SidebarGroupLabel>
+          <SidebarGroupLabel>
+            {translations(`groups.${group.key}`)}
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {group.sections.map((section: AdminSection) => {
@@ -348,7 +355,7 @@ function AdminNav({ permissions }: { permissions: string[] }) {
                     >
                       <Link href={section.href}>
                         <Icon />
-                        <span>{t(`sections.${section.key}`)}</span>
+                        <span>{translations(`sections.${section.key}`)}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

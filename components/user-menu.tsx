@@ -27,7 +27,7 @@ type UserMenuProps = {
 };
 
 export function UserMenu({ name, email, role }: UserMenuProps) {
-  const t = useTranslations("Shell.header");
+  const translations = useTranslations("Shell.header");
   const { locale, switchLocale } = useLocaleSwitch();
 
   return (
@@ -55,13 +55,13 @@ export function UserMenu({ name, email, role }: UserMenuProps) {
             className="flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none"
           >
             <User className="size-4" />
-            {t("profile")}
+            {translations("profile")}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>
             <Languages className="size-4" />
-            {t("language")}
+            {translations("language")}
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             {LOCALES.map((availableLocale) => (
@@ -88,7 +88,7 @@ export function UserMenu({ name, email, role }: UserMenuProps) {
               className="hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none"
             >
               <LogOut className="size-4" />
-              {t("signOut")}
+              {translations("signOut")}
             </button>
           </DropdownMenuItem>
         </form>

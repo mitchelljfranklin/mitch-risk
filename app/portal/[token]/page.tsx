@@ -21,8 +21,8 @@ import { PasswordGate } from "./password-gate";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("Portal");
-  return { title: t("metaTitle") };
+  const translations = await getTranslations("Portal");
+  return { title: translations("metaTitle") };
 }
 
 type PortalPageProps = {
@@ -116,8 +116,8 @@ function PortalMessage({
 
 export default async function PortalPage({ params }: PortalPageProps) {
   const { token } = await params;
-  const t = await getTranslations("Portal");
-  const format = await getFormatter();
+  const translations = await getTranslations("Portal");
+  const dateFormatter = await getFormatter();
 
   const requestHeaders = await headers();
   const clientIp = getClientIp(requestHeaders);
@@ -138,11 +138,11 @@ export default async function PortalPage({ params }: PortalPageProps) {
   if (!withinRateLimit) {
     return (
       <PortalMessage
-        title={t("linkNotFound")}
-        body={t("linkInvalid")}
+        title={translations("linkNotFound")}
+        body={translations("linkInvalid")}
         logoUrl={logoUrl}
-        noscriptText={t("noscript")}
-        logoAlt={t("logoAlt")}
+        noscriptText={translations("noscript")}
+        logoAlt={translations("logoAlt")}
       />
     );
   }
@@ -155,11 +155,11 @@ export default async function PortalPage({ params }: PortalPageProps) {
   if (!assessment) {
     return (
       <PortalMessage
-        title={t("linkNotFound")}
-        body={t("linkInvalid")}
+        title={translations("linkNotFound")}
+        body={translations("linkInvalid")}
         logoUrl={logoUrl}
-        noscriptText={t("noscript")}
-        logoAlt={t("logoAlt")}
+        noscriptText={translations("noscript")}
+        logoAlt={translations("logoAlt")}
       />
     );
   }
@@ -168,11 +168,11 @@ export default async function PortalPage({ params }: PortalPageProps) {
   if (isExpired) {
     return (
       <PortalMessage
-        title={t("linkExpiredTitle")}
-        body={t("linkExpiredBody")}
+        title={translations("linkExpiredTitle")}
+        body={translations("linkExpiredBody")}
         logoUrl={logoUrl}
-        noscriptText={t("noscript")}
-        logoAlt={t("logoAlt")}
+        noscriptText={translations("noscript")}
+        logoAlt={translations("logoAlt")}
       />
     );
   }
@@ -191,14 +191,14 @@ export default async function PortalPage({ params }: PortalPageProps) {
     return (
       <PortalShell
         logoUrl={logoUrl}
-        noscriptText={t("noscript")}
-        logoAlt={t("logoAlt")}
+        noscriptText={translations("noscript")}
+        logoAlt={translations("logoAlt")}
       >
         <div className="flex flex-col gap-6">
           <header className="flex items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl font-semibold tracking-tight">
-                {t("submittedTitle", { title: assessment.title })}
+                {translations("submittedTitle", { title: assessment.title })}
               </h1>
               <p className="text-muted-foreground text-sm">
                 {assessment.vendor.name}
@@ -206,9 +206,11 @@ export default async function PortalPage({ params }: PortalPageProps) {
             </div>
           </header>
           <div className="rounded-md border border-[var(--success)] bg-[var(--success)]/10 px-4 py-3">
-            <p className="text-sm font-medium">{t("submittedBanner")}</p>
+            <p className="text-sm font-medium">
+              {translations("submittedBanner")}
+            </p>
             <p className="text-muted-foreground mt-1 text-xs">
-              {t("submittedBody")}
+              {translations("submittedBody")}
             </p>
           </div>
           {assessment.questions.map((question) => {
@@ -220,15 +222,19 @@ export default async function PortalPage({ params }: PortalPageProps) {
                 (comment.visibility === "VENDOR" ||
                   comment.authorType === "VENDOR"),
             );
+            let answerText = "—";
+            if (response) {
+              if (response.isNotApplicable) {
+                answerText = translations("notApplicableShort");
+              } else {
+                answerText = String(response.value ?? "—");
+              }
+            }
             return (
               <div key={question.id} className="rounded-md border p-4">
                 <p className="text-sm font-medium">{question.text}</p>
                 <p className="text-muted-foreground mt-1 text-sm">
-                  {response?.isNotApplicable
-                    ? t("notApplicableShort")
-                    : response
-                      ? String(response.value ?? "—")
-                      : "—"}
+                  {answerText}
                 </p>
                 {review ? (
                   <p className="text-muted-foreground mt-1 text-xs">
@@ -239,8 +245,8 @@ export default async function PortalPage({ params }: PortalPageProps) {
                           : "text-muted-foreground"
                       }
                     >
-                      {t.has(`decisions.${review.decision}`)
-                        ? t(`decisions.${review.decision}`)
+                      {translations.has(`decisions.${review.decision}`)
+                        ? translations(`decisions.${review.decision}`)
                         : review.decision}
                     </span>
                     {review.note && isNoteVisibleToVendor(review.decision)
@@ -259,7 +265,7 @@ export default async function PortalPage({ params }: PortalPageProps) {
                           {comment.authorName}
                         </span>{" "}
                         ·{" "}
-                        {format.dateTime(comment.createdAt, {
+                        {dateFormatter.dateTime(comment.createdAt, {
                           day: "2-digit",
                           month: "short",
                           year: "numeric",
@@ -280,11 +286,11 @@ export default async function PortalPage({ params }: PortalPageProps) {
   if (assessment.status !== "SENT" && assessment.status !== "IN_PROGRESS") {
     return (
       <PortalMessage
-        title={t("notAvailableTitle")}
-        body={t("notAvailableBody")}
+        title={translations("notAvailableTitle")}
+        body={translations("notAvailableBody")}
         logoUrl={logoUrl}
-        noscriptText={t("noscript")}
-        logoAlt={t("logoAlt")}
+        noscriptText={translations("noscript")}
+        logoAlt={translations("logoAlt")}
       />
     );
   }
@@ -303,8 +309,8 @@ export default async function PortalPage({ params }: PortalPageProps) {
       return (
         <PortalShell
           logoUrl={logoUrl}
-          noscriptText={t("noscript")}
-          logoAlt={t("logoAlt")}
+          noscriptText={translations("noscript")}
+          logoAlt={translations("logoAlt")}
         >
           <PasswordGate token={token} />
         </PortalShell>
@@ -350,14 +356,16 @@ export default async function PortalPage({ params }: PortalPageProps) {
   return (
     <PortalShell
       logoUrl={logoUrl}
-      noscriptText={t("noscript")}
-      logoAlt={t("logoAlt")}
+      noscriptText={translations("noscript")}
+      logoAlt={translations("logoAlt")}
     >
       {assessment.status === "IN_PROGRESS" ? (
         <div className="border-warning/50 bg-warning/10 rounded-md border px-4 py-3">
-          <p className="text-sm font-medium">{t("additionalInfoTitle")}</p>
+          <p className="text-sm font-medium">
+            {translations("additionalInfoTitle")}
+          </p>
           <p className="text-muted-foreground mt-1 text-xs">
-            {t("additionalInfoBody")}
+            {translations("additionalInfoBody")}
           </p>
         </div>
       ) : null}

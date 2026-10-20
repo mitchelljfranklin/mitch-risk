@@ -40,7 +40,7 @@ async function getTransporter(): Promise<nodemailer.Transporter | null> {
 function replaceTokens(text: string, tokens: Record<string, string>): string {
   return text.replace(
     /\{\{(\w+)\}\}/g,
-    (_, key) => tokens[key] ?? `{{${key}}}`,
+    (_fullMatch, key) => tokens[key] ?? `{{${key}}}`,
   );
 }
 
@@ -115,7 +115,7 @@ export async function sendEmail(
   ]);
   const locale = organization.defaultLocale;
   const messages = await loadMessages(locale);
-  const t = createTranslator({
+  const translations = createTranslator({
     locale,
     messages,
     namespace: "Email",
@@ -158,7 +158,7 @@ export async function sendEmail(
     if (trustSettings.enabled && trustSettings.includeInInvites) {
       const trustUrl = `${env.APP_URL}/trust`;
       if (!resolvedBody.includes(trustUrl)) {
-        resolvedBody += `\n\n---\n\n${t("trustFooter", { url: trustUrl })}`;
+        resolvedBody += `\n\n---\n\n${translations("trustFooter", { url: trustUrl })}`;
       }
     }
   }
@@ -201,7 +201,7 @@ export async function sendEmail(
         heading: resolvedSubject,
         body: resolvedBody,
         htmlBody,
-        footer: t("footer", { appName: organization.name }),
+        footer: translations("footer", { appName: organization.name }),
       }),
     );
     await transport.sendMail({
@@ -235,21 +235,21 @@ export async function sendTestEmail(
   const organization = await getOrganizationSettings();
   const locale = organization.defaultLocale;
   const messages = await loadMessages(locale);
-  const t = createTranslator({
+  const translations = createTranslator({
     locale,
     messages,
     namespace: "Email",
   }) as unknown as Translate;
   if (!settings.smtpHost) {
-    return { ok: false, message: t("smtpNotConfigured") };
+    return { ok: false, message: translations("smtpNotConfigured") };
   }
 
   const transport = await getTransporter();
   if (!transport) {
-    return { ok: false, message: t("transporterFailed") };
+    return { ok: false, message: translations("transporterFailed") };
   }
 
-  const subject = t("testSubject", { appName: organization.name });
+  const subject = translations("testSubject", { appName: organization.name });
 
   const notificationLogId = updateLogId
     ? updateLogId
@@ -266,11 +266,11 @@ export async function sendTestEmail(
       from: `${settings.fromName} <${settings.fromAddress || settings.smtpUser}>`,
       to,
       subject,
-      text: t("testBody"),
+      text: translations("testBody"),
     });
 
     await updateNotificationLogStatus(notificationLogId, "SENT", null);
-    return { ok: true, message: t("testSent") };
+    return { ok: true, message: translations("testSent") };
   } catch (sendError: unknown) {
     const errorMessage = `Failed: ${sendError instanceof Error ? sendError.message : "unknown error"}`;
     await updateNotificationLogStatus(

@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 // at least one admin permission (the server layout gates it); the icon
 // highlights while anywhere under /admin.
 export function AdminNavButton() {
-  const t = useTranslations("Shell.header");
+  const translations = useTranslations("Shell.header");
   const pathname = usePathname();
   const isActive = pathname === "/admin" || pathname.startsWith("/admin/");
 
@@ -21,14 +21,14 @@ export function AdminNavButton() {
       size="icon"
       type="button"
       asChild
-      aria-label={t("admin")}
+      aria-label={translations("admin")}
     >
       <Link
         href="/admin"
         className={isActive ? "border-primary text-primary" : undefined}
       >
         <Settings className="size-4" />
-        <span className="sr-only">{t("admin")}</span>
+        <span className="sr-only">{translations("admin")}</span>
       </Link>
     </Button>
   );

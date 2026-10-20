@@ -281,9 +281,10 @@ UI hiding is cosmetic; the server guard is the real control — **both are alway
   Prisma query belongs in `lib/db/`.
 - **i18n is cookie-based** (`NEXT_LOCALE`): there are no `/[locale]/` URL segments and no
   next-intl middleware. Server components/actions use `getTranslations`; client components use
-  `useTranslations`. Keep `messages/en.json` and `messages/es.json` key-identical — a unit test
-  enforces it. Resolution is cookie → org default (Admin → General) → `Accept-Language` → `en`.
-  `setLocaleAction` only writes the cookie; the switcher calls `router.refresh()` (never
+  `useTranslations`. Name the translator `translations`, **never `t`** — the repo bans
+  single-letter variables. Keep `messages/en.json` and `messages/es.json` key-identical — a unit
+  test enforces it. Resolution is cookie → org default (Admin → General) → `Accept-Language` →
+  `en`. `setLocaleAction` only writes the cookie; the switcher calls `router.refresh()` (never
   `revalidatePath`). Translated: auth screens, internal shell, public trust center, vendor
   portal, emails, and PDFs. Email templates are admin-authored; only the built-in defaults are
   translated (`lib/settings/email-template-defaults.ts`) — customized templates are sent as

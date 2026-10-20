@@ -12,7 +12,7 @@ export default async function AuthLayout({
     getAppearanceSettings(),
     getOrganizationSettings(),
   ]);
-  const t = await getTranslations("Auth");
+  const translations = await getTranslations("Auth");
 
   return (
     <div className="relative grid min-h-svh place-items-center p-4">
@@ -44,7 +44,9 @@ export default async function AuthLayout({
             <h1 className="text-2xl font-semibold tracking-tight">
               {organization.name}
             </h1>
-            <p className="text-muted-foreground mt-1 text-sm">{t("tagline")}</p>
+            <p className="text-muted-foreground mt-1 text-sm">
+              {translations("tagline")}
+            </p>
           </div>
         )}
         {children}

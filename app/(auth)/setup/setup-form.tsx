@@ -12,7 +12,7 @@ import { createInitialAdmin, type SetupState } from "./actions";
 const initialState: SetupState = undefined;
 
 export function SetupForm() {
-  const t = useTranslations("Auth.setup");
+  const translations = useTranslations("Auth.setup");
   const [state, formAction, isPending] = useActionState(
     createInitialAdmin,
     initialState,
@@ -21,11 +21,11 @@ export function SetupForm() {
   return (
     <form action={formAction} className="grid gap-4">
       <div className="grid gap-2">
-        <Label htmlFor="name">{t("fullName")}</Label>
+        <Label htmlFor="name">{translations("fullName")}</Label>
         <Input id="name" name="name" autoComplete="name" required />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="email">{t("email")}</Label>
+        <Label htmlFor="email">{translations("email")}</Label>
         <Input
           id="email"
           name="email"
@@ -35,7 +35,7 @@ export function SetupForm() {
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="password">{t("password")}</Label>
+        <Label htmlFor="password">{translations("password")}</Label>
         <Input
           id="password"
           name="password"
@@ -44,7 +44,9 @@ export function SetupForm() {
           minLength={12}
           required
         />
-        <p className="text-muted-foreground text-xs">{t("passwordHint")}</p>
+        <p className="text-muted-foreground text-xs">
+          {translations("passwordHint")}
+        </p>
       </div>
       {state?.error ? (
         <p className="text-destructive text-sm" role="alert">
@@ -52,7 +54,7 @@ export function SetupForm() {
         </p>
       ) : null}
       <Button type="submit" disabled={isPending}>
-        {isPending ? t("submitting") : t("submit")}
+        {isPending ? translations("submitting") : translations("submit")}
       </Button>
     </form>
   );

@@ -15,9 +15,9 @@ export type PdfFormatter = {
 };
 
 export function translateOrRaw(
-  t: PdfTranslate,
+  translations: PdfTranslate,
   key: string,
-  raw: string,
+  fallback: string,
 ): string {
-  return t.has(key) ? t(key) : raw;
+  return translations.has(key) ? translations(key) : fallback;
 }

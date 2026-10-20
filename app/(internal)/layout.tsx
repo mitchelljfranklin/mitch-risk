@@ -28,7 +28,7 @@ export default async function InternalLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const user = await requireUser();
-  const t = await getTranslations("Shell");
+  const translations = await getTranslations("Shell");
   const [organization, appearance, assessment] = await Promise.all([
     getOrganizationSettings(),
     getAppearanceSettings(),
@@ -53,7 +53,7 @@ export default async function InternalLayout({
         />
         <SidebarInset>
           <header className="bg-background sticky top-0 z-10 flex h-14 items-center gap-2 border-b px-4">
-            <SidebarTrigger label={t("sidebar.toggle")} />
+            <SidebarTrigger label={translations("sidebar.toggle")} />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <div className="flex-1" />
             {canAccessAdmin ? <AdminNavButton /> : null}

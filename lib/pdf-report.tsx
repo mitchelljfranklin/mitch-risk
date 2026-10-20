@@ -37,7 +37,7 @@ type AssessmentPdfData = {
     answer: string;
     isNa: boolean;
     isCompliant: boolean | null;
-    scorePct: number | null;
+    scorePercent: number | null;
   }[];
   findings: {
     title: string;
@@ -132,19 +132,31 @@ function ragColor(isCompliant: boolean | null): string {
   return "#6b7280";
 }
 
-function ragLabel(scorePct: number | null): string {
-  if (scorePct === null) return "--%";
-  return formatPercent(scorePct);
+function ragLabel(scorePercent: number | null): string {
+  if (scorePercent === null) return "--%";
+  return formatPercent(scorePercent);
+}
+
+type AssessmentPdfQuestion = AssessmentPdfData["questions"][number];
+
+function complianceLabel(
+  translations: PdfTranslate,
+  question: AssessmentPdfQuestion,
+): string {
+  if (question.isNa) return translations("common.na");
+  if (question.isCompliant === true) return translations("common.yes");
+  if (question.isCompliant === false) return translations("common.no");
+  return translations("common.none");
 }
 
 function AssessmentPdfDocument({
   data,
-  t,
-  format,
+  translations,
+  dateFormatter,
 }: {
   data: AssessmentPdfData;
-  t: PdfTranslate;
-  format: PdfFormatter;
+  translations: PdfTranslate;
+  dateFormatter: PdfFormatter;
 }) {
   return (
     <Document>
@@ -156,38 +168,40 @@ function AssessmentPdfDocument({
           <Text style={styles.vendorInfo}>
             {data.vendorContact}
             {data.vendorTier
-              ? ` | ${t("common.tier", {
+              ? ` | ${translations("common.tier", {
                   tier: translateOrRaw(
-                    t,
+                    translations,
                     `tiers.${data.vendorTier}`,
                     data.vendorTier,
                   ),
                 })}`
               : ""}
             {data.templateName
-              ? ` | ${t("common.template", {
+              ? ` | ${translations("common.template", {
                   name: data.templateName,
                   version: data.templateVersion ?? 1,
                 })}`
               : ""}
             {data.reviewerName
-              ? ` | ${t("common.reviewer", { name: data.reviewerName })}`
+              ? ` | ${translations("common.reviewer", { name: data.reviewerName })}`
               : ""}
           </Text>
         </View>
 
         {/* Score */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t("assessment.score")}</Text>
+          <Text style={styles.sectionTitle}>
+            {translations("assessment.score")}
+          </Text>
           <Text style={[styles.scoreValue, { color: scoreColor(data.score) }]}>
             {data.score !== null
               ? formatPercent(data.score)
-              : t("common.notScored")}
+              : translations("common.notScored")}
           </Text>
           {data.dueDate ? (
             <Text style={{ fontSize: 9, color: "#6b7280", marginTop: 2 }}>
-              {t("common.due", {
-                date: format.dateTime(data.dueDate, {
+              {translations("common.due", {
+                date: dateFormatter.dateTime(data.dueDate, {
                   day: "2-digit",
                   month: "short",
                   year: "numeric",
@@ -195,8 +209,8 @@ function AssessmentPdfDocument({
                 }),
               })}
               {data.completedAt
-                ? ` | ${t("common.completed", {
-                    date: format.dateTime(data.completedAt, {
+                ? ` | ${translations("common.completed", {
+                    date: dateFormatter.dateTime(data.completedAt, {
                       day: "2-digit",
                       month: "short",
                       year: "numeric",
@@ -208,7 +222,7 @@ function AssessmentPdfDocument({
           {data.responsibilityCompliance &&
           data.responsibilityCompliance.total > 0 ? (
             <Text style={{ fontSize: 9, color: "#6b7280", marginTop: 2 }}>
-              {t("assessment.customerResponsibility", {
+              {translations("assessment.customerResponsibility", {
                 percent: data.responsibilityCompliance.percent,
                 completed: data.responsibilityCompliance.completed,
                 total: data.responsibilityCompliance.total,
@@ -221,26 +235,40 @@ function AssessmentPdfDocument({
         {data.questions.length > 0 ? (
           <View style={styles.section} wrap={false}>
             <Text style={styles.sectionTitle}>
-              {t("assessment.responses", { count: data.questions.length })}
+              {translations("assessment.responses", {
+                count: data.questions.length,
+              })}
             </Text>
             <View style={styles.tableHeader}>
               <Text style={styles.col1}>
-                <Text style={styles.label}>{t("assessment.question")}</Text>
+                <Text style={styles.label}>
+                  {translations("assessment.question")}
+                </Text>
               </Text>
               <Text style={styles.col2}>
-                <Text style={styles.label}>{t("assessment.answer")}</Text>
+                <Text style={styles.label}>
+                  {translations("assessment.answer")}
+                </Text>
               </Text>
               <Text style={styles.col3}>
-                <Text style={styles.label}>{t("assessment.type")}</Text>
+                <Text style={styles.label}>
+                  {translations("assessment.type")}
+                </Text>
               </Text>
               <Text style={styles.col4}>
-                <Text style={styles.label}>{t("assessment.weight")}</Text>
+                <Text style={styles.label}>
+                  {translations("assessment.weight")}
+                </Text>
               </Text>
               <Text style={styles.col5}>
-                <Text style={styles.label}>{t("assessment.compliant")}</Text>
+                <Text style={styles.label}>
+                  {translations("assessment.compliant")}
+                </Text>
               </Text>
               <Text style={styles.col6}>
-                <Text style={styles.label}>{t("assessment.scoreColumn")}</Text>
+                <Text style={styles.label}>
+                  {translations("assessment.scoreColumn")}
+                </Text>
               </Text>
             </View>
             {data.questions.map((question, i) => (
@@ -248,19 +276,19 @@ function AssessmentPdfDocument({
                 <Text style={styles.col1}>{question.text}</Text>
                 <Text style={styles.col2}>
                   {question.isNa
-                    ? t("common.na")
-                    : question.answer || t("common.none")}
+                    ? translations("common.na")
+                    : question.answer || translations("common.none")}
                 </Text>
                 <Text style={styles.col3}>
                   {translateOrRaw(
-                    t,
+                    translations,
                     `questionTypes.${question.type}`,
                     question.type,
                   )}
                 </Text>
                 <Text style={styles.col4}>
                   {translateOrRaw(
-                    t,
+                    translations,
                     `tiers.${question.riskWeight}`,
                     question.riskWeight,
                   )}
@@ -271,13 +299,7 @@ function AssessmentPdfDocument({
                     { color: ragColor(question.isCompliant) },
                   ]}
                 >
-                  {question.isNa
-                    ? t("common.na")
-                    : question.isCompliant === true
-                      ? t("common.yes")
-                      : question.isCompliant === false
-                        ? t("common.no")
-                        : t("common.none")}
+                  {complianceLabel(translations, question)}
                 </Text>
                 <Text
                   style={[
@@ -285,7 +307,7 @@ function AssessmentPdfDocument({
                     { color: ragColor(question.isCompliant) },
                   ]}
                 >
-                  {ragLabel(question.scorePct)}
+                  {ragLabel(question.scorePercent)}
                 </Text>
               </View>
             ))}
@@ -296,13 +318,15 @@ function AssessmentPdfDocument({
         {data.findings.length > 0 ? (
           <View style={styles.section} wrap={false}>
             <Text style={styles.sectionTitle}>
-              {t("assessment.findings", { count: data.findings.length })}
+              {translations("assessment.findings", {
+                count: data.findings.length,
+              })}
             </Text>
             {data.findings.map((finding, i) => (
               <View key={i} style={styles.findingRow}>
                 <Text style={styles.findingTitle}>
                   {translateOrRaw(
-                    t,
+                    translations,
                     `tiers.${finding.severity}`,
                     finding.severity,
                   )}
@@ -332,7 +356,10 @@ function AssessmentPdfDocument({
         <Text
           style={styles.footer}
           render={({ pageNumber, totalPages }) =>
-            t("common.pageOf", { page: pageNumber, total: totalPages })
+            translations("common.pageOf", {
+              page: pageNumber,
+              total: totalPages,
+            })
           }
           fixed
         />
@@ -344,19 +371,20 @@ function AssessmentPdfDocument({
 export async function generateAssessmentPdf(
   assessmentId: string,
 ): Promise<Buffer> {
-  const t = await getTranslations("Pdf");
+  const translations = await getTranslations("Pdf");
   const formatter = await getFormatter();
   const translate: PdfTranslate = Object.assign(
-    (key: string, values?: Record<string, string | number>) => t(key, values),
-    { has: (key: string) => t.has(key) },
+    (key: string, values?: Record<string, string | number>) =>
+      translations(key, values),
+    { has: (key: string) => translations.has(key) },
   );
-  const format: PdfFormatter = {
+  const dateFormatter: PdfFormatter = {
     dateTime: (value, options) => formatter.dateTime(value, options),
   };
   const { getAssessment } = await import("@/lib/db/assessments");
   const { getOrganizationSettings } = await import("@/lib/settings");
 
-  const [assessment, org] = await Promise.all([
+  const [assessment, organization] = await Promise.all([
     getAssessment(assessmentId),
     getOrganizationSettings(),
   ]);
@@ -367,7 +395,7 @@ export async function generateAssessmentPdf(
 
   const questions = assessment.questions.map((question) => {
     const response = assessment.responses.find(
-      (res) => res.assessmentQuestionId === question.id,
+      (response) => response.assessmentQuestionId === question.id,
     );
     const answer = response?.isNotApplicable
       ? "N/A"
@@ -382,13 +410,13 @@ export async function generateAssessmentPdf(
       MEDIUM: 3,
       LOW: 1,
     };
-    const max = maxScoreMap[weight] ?? 0;
-    const weighted = response?.weightedScore ?? 0;
-    const scorePct =
+    const maxScore = maxScoreMap[weight] ?? 0;
+    const weightedScore = response?.weightedScore ?? 0;
+    const scorePercent =
       response?.isNotApplicable || response?.isCompliant === null
         ? null
-        : max > 0
-          ? weighted / max
+        : maxScore > 0
+          ? weightedScore / maxScore
           : null;
 
     return {
@@ -400,7 +428,7 @@ export async function generateAssessmentPdf(
       answer,
       isNa: response?.isNotApplicable ?? false,
       isCompliant: response?.isCompliant ?? null,
-      scorePct,
+      scorePercent,
     };
   });
 
@@ -413,7 +441,7 @@ export async function generateAssessmentPdf(
 
   const data: AssessmentPdfData = {
     title: assessment.title,
-    organizationName: org.name,
+    organizationName: organization.name,
     vendorName: assessment.vendor.name,
     vendorContact: assessment.vendor.contactEmail,
     vendorTier: assessment.vendor.tier,
@@ -431,7 +459,11 @@ export async function generateAssessmentPdf(
   };
 
   const pdfBuffer = await renderToBuffer(
-    <AssessmentPdfDocument data={data} t={translate} format={format} />,
+    <AssessmentPdfDocument
+      data={data}
+      translations={translate}
+      dateFormatter={dateFormatter}
+    />,
   );
 
   return pdfBuffer;

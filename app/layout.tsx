@@ -19,26 +19,26 @@ const geistMono = Geist_Mono({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const [org, appearance] = await Promise.all([
+  const [organization, appearance] = await Promise.all([
     getOrganizationSettings(),
     getAppearanceSettings(),
-  ]).catch((err) => {
+  ]).catch((error) => {
     console.error(
       "Failed to load settings for metadata:",
-      err instanceof Error ? err.message : String(err),
+      error instanceof Error ? error.message : String(error),
     );
     return [{ name: "mitch-risk" }, { logoKey: "" }] as const;
   });
 
-  const t = await getTranslations("Metadata");
-  const orgName = org.name || "mitch-risk";
+  const translations = await getTranslations("Metadata");
+  const organizationName = organization.name || "mitch-risk";
   const icons = appearance.logoKey
     ? [{ url: `/api/brand/logo?v=${appearance.logoKey}` }]
     : [{ url: "/favicon.ico" }];
 
   return {
-    title: { template: `%s — ${orgName}`, default: orgName },
-    description: t("description"),
+    title: { template: `%s — ${organizationName}`, default: organizationName },
+    description: translations("description"),
     icons,
   };
 }
@@ -51,7 +51,7 @@ export default async function RootLayout({
   const nonce = (await headers()).get("x-nonce") ?? undefined;
   const locale = await getLocale();
   const messages = await getMessages();
-  const t = await getTranslations("Common");
+  const translations = await getTranslations("Common");
 
   return (
     <html
@@ -65,7 +65,7 @@ export default async function RootLayout({
             href="#main-content"
             className="bg-primary text-primary-foreground sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:px-4 focus:py-2"
           >
-            {t("skipToContent")}
+            {translations("skipToContent")}
           </a>
           <ThemeProvider
             attribute="class"

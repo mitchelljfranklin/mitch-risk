@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function ThemeToggle() {
-  const t = useTranslations("Shell.header");
+  const translations = useTranslations("Shell.header");
   const { setTheme } = useTheme();
 
   return (
@@ -23,22 +23,22 @@ export function ThemeToggle() {
           variant="outline"
           size="icon"
           type="button"
-          aria-label={t("toggleTheme")}
+          aria-label={translations("toggleTheme")}
         >
           <Sun className="size-4 dark:hidden" />
           <Moon className="hidden size-4 dark:block" />
-          <span className="sr-only">{t("toggleTheme")}</span>
+          <span className="sr-only">{translations("toggleTheme")}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
-          {t("themeLight")}
+          {translations("themeLight")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
-          {t("themeDark")}
+          {translations("themeDark")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
-          {t("themeSystem")}
+          {translations("themeSystem")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

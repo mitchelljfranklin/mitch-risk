@@ -17,8 +17,8 @@ import { ResetPasswordForm } from "./reset-password-form";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("Auth.reset");
-  return { title: t("title") };
+  const translations = await getTranslations("Auth.reset");
+  return { title: translations("title") };
 }
 
 type ResetPageProps = {
@@ -35,21 +35,21 @@ export default async function ResetPasswordPage({
     redirect("/dashboard");
   }
 
-  const t = await getTranslations("Auth.reset");
+  const translations = await getTranslations("Auth.reset");
   const { token } = await searchParams;
 
   if (!token) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t("title")}</CardTitle>
-          <CardDescription>{t("description")}</CardDescription>
+          <CardTitle>{translations("title")}</CardTitle>
+          <CardDescription>{translations("description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground text-sm">
-            {t("missing")}{" "}
+            {translations("missing")}{" "}
             <Link href="/forgot-password" className="hover:underline">
-              {t("forgotLink")}
+              {translations("forgotLink")}
             </Link>
             .
           </p>
@@ -64,14 +64,14 @@ export default async function ResetPasswordPage({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t("title")}</CardTitle>
-          <CardDescription>{t("description")}</CardDescription>
+          <CardTitle>{translations("title")}</CardTitle>
+          <CardDescription>{translations("description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground text-sm">
-            {t("expired")}{" "}
+            {translations("expired")}{" "}
             <Link href="/forgot-password" className="hover:underline">
-              {t("forgotLink")}
+              {translations("forgotLink")}
             </Link>
             .
           </p>
@@ -83,12 +83,12 @@ export default async function ResetPasswordPage({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
-        <CardDescription>{t("description")}</CardDescription>
+        <CardTitle>{translations("title")}</CardTitle>
+        <CardDescription>{translations("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <p className="text-muted-foreground mb-4 text-sm">
-          {t("forUser", { email: user.email })}
+          {translations("forUser", { email: user.email })}
         </p>
         <ResetPasswordForm token={token} />
       </CardContent>

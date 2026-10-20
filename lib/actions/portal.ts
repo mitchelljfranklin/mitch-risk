@@ -67,10 +67,10 @@ function sanitizeFileName(name: string): string {
 export async function uploadEvidenceAction(
   formData: FormData,
 ): Promise<UploadResult> {
-  const t = await getTranslations("Portal.upload");
+  const translations = await getTranslations("Portal.upload");
   const { portalUploadsPerMin } = await getAssessmentSettings();
   if (!rateLimit("upload", await clientIp(), portalUploadsPerMin)) {
-    return { ok: false, error: t("tooMany") };
+    return { ok: false, error: translations("tooMany") };
   }
 
   const token = String(formData.get("token") ?? "");
@@ -84,15 +84,15 @@ export async function uploadEvidenceAction(
     !assessment ||
     !isPortalEditable(assessment.status, assessment.tokenExpiresAt)
   ) {
-    return { ok: false, error: t("linkInvalid") };
+    return { ok: false, error: translations("linkInvalid") };
   }
   if (!(file instanceof File) || file.size === 0) {
-    return { ok: false, error: t("noFile") };
+    return { ok: false, error: translations("noFile") };
   }
 
   const question = await getAssessmentQuestion(assessmentQuestionId);
   if (!question || question.assessmentId !== assessment.id) {
-    return { ok: false, error: t("invalidQuestion") };
+    return { ok: false, error: translations("invalidQuestion") };
   }
 
   const fileSettings = await getFileSettings();
@@ -100,7 +100,7 @@ export async function uploadEvidenceAction(
   if (file.size > maxBytes) {
     return {
       ok: false,
-      error: t("tooLarge", { max: fileSettings.maxUploadMb }),
+      error: translations("tooLarge", { max: fileSettings.maxUploadMb }),
     };
   }
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
@@ -108,17 +108,17 @@ export async function uploadEvidenceAction(
     fileSettings.allowedExtensions.length > 0 &&
     !fileSettings.allowedExtensions.includes(extension)
   ) {
-    return { ok: false, error: t("badType", { ext: extension }) };
+    return { ok: false, error: translations("badType", { ext: extension }) };
   }
   if (isDangerousUploadMime(file.type)) {
-    return { ok: false, error: t("dangerousType") };
+    return { ok: false, error: translations("dangerousType") };
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
   if (!validateMagicBytes(extension, buffer)) {
     return {
       ok: false,
-      error: t("mismatch", { ext: extension }),
+      error: translations("mismatch", { ext: extension }),
     };
   }
 

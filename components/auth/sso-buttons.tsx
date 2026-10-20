@@ -10,11 +10,13 @@ type SsoButtonsProps = {
 };
 
 export function SsoButtons({ providers }: SsoButtonsProps) {
-  const t = useTranslations("Auth.sso");
+  const translations = useTranslations("Auth.sso");
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-muted-foreground text-xs">{t("orSignInWith")}</p>
+      <p className="text-muted-foreground text-xs">
+        {translations("orSignInWith")}
+      </p>
       <div className="flex flex-col gap-2">
         {providers.map((provider) => (
           <Button
