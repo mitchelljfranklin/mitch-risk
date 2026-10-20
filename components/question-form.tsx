@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, useActionState } from "react";
+import { useTranslations } from "next-intl";
 import MDEditor, { commands } from "@uiw/react-md-editor";
 
 import { ConditionalRulesEditor } from "@/components/conditional-rules-editor";
@@ -20,9 +21,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { type FormState, saveQuestionAction } from "@/lib/actions/templates";
 import {
-  QUESTION_TYPE_LABELS,
   QUESTION_TYPES,
-  RISK_WEIGHT_LABELS,
   RISK_WEIGHTS,
   type QuestionType,
 } from "@/lib/schemas/template";
@@ -117,6 +116,9 @@ export function QuestionForm({
   otherQuestions,
   defaults,
 }: QuestionFormProps) {
+  const translations = useTranslations("Templates.question");
+  const questionTypes = useTranslations("Common.questionTypes");
+  const riskWeights = useTranslations("Common.tiers");
   const [state, formAction, isPending] = useActionState(
     saveQuestionAction,
     initialState,
@@ -173,16 +175,15 @@ export function QuestionForm({
       ) : null}
 
       <div className="grid gap-2">
-        <Label htmlFor="text">Question text</Label>
+        <Label htmlFor="text">{translations("text")}</Label>
         <Input id="text" name="text" defaultValue={defaults?.text} required />
       </div>
 
       <div className="grid gap-2">
-        <Label htmlFor="helpText">Help text</Label>
+        <Label htmlFor="helpText">{translations("help")}</Label>
         <input type="hidden" name="helpText" value={liveHelpText} />
         <p className="text-muted-foreground text-xs">
-          Markdown formatting is supported — use **bold**, *italic*, lists, and
-          links.
+          {translations("helpHint")}
         </p>
         <MDEditor
           value={liveHelpText}
@@ -206,7 +207,7 @@ export function QuestionForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="grid gap-2">
-          <Label htmlFor="type">Answer type</Label>
+          <Label htmlFor="type">{translations("answerType")}</Label>
           <Select
             name="type"
             value={type}
@@ -242,14 +243,14 @@ export function QuestionForm({
             <SelectContent>
               {QUESTION_TYPES.map((value) => (
                 <SelectItem key={value} value={value}>
-                  {QUESTION_TYPE_LABELS[value]}
+                  {questionTypes.has(value) ? questionTypes(value) : value}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="riskWeight">Risk weight</Label>
+          <Label htmlFor="riskWeight">{translations("riskWeight")}</Label>
           <Select
             name="riskWeight"
             defaultValue={defaults?.riskWeight ?? "MEDIUM"}
@@ -260,7 +261,7 @@ export function QuestionForm({
             <SelectContent>
               {RISK_WEIGHTS.map((value) => (
                 <SelectItem key={value} value={value}>
-                  {RISK_WEIGHT_LABELS[value]}
+                  {riskWeights.has(value) ? riskWeights(value) : value}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -270,14 +271,14 @@ export function QuestionForm({
 
       <label className="flex items-center gap-2 text-sm">
         <Checkbox name="required" defaultChecked={defaults?.required ?? true} />
-        Required
+        {translations("required")}
       </label>
 
       {type === "MULTIPLE_CHOICE" ||
       type === "COMBOBOX" ||
       type === "MULTI_SELECT" ? (
         <div className="grid gap-2">
-          <Label htmlFor="options">Options (one per line)</Label>
+          <Label htmlFor="options">{translations("options")}</Label>
           <Textarea
             id="options"
             name="options"
@@ -290,7 +291,9 @@ export function QuestionForm({
 
       {type === "YES_NO" ? (
         <div className="grid gap-2">
-          <Label htmlFor="expectedAnswer">Expected answer</Label>
+          <Label htmlFor="expectedAnswer">
+            {translations("expectedAnswer")}
+          </Label>
           <Select
             name="expectedAnswer"
             defaultValue={
@@ -300,12 +303,14 @@ export function QuestionForm({
             }
           >
             <SelectTrigger id="expectedAnswer">
-              <SelectValue placeholder="No expected answer" />
+              <SelectValue placeholder={translations("noExpectedAnswer")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">No expected answer</SelectItem>
-              <SelectItem value="YES">Yes</SelectItem>
-              <SelectItem value="NO">No</SelectItem>
+              <SelectItem value="">
+                {translations("noExpectedAnswer")}
+              </SelectItem>
+              <SelectItem value="YES">{translations("yes")}</SelectItem>
+              <SelectItem value="NO">{translations("no")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -313,9 +318,9 @@ export function QuestionForm({
 
       {type === "MULTIPLE_CHOICE" || type === "COMBOBOX" ? (
         <div className="grid gap-2">
-          <Label>Accepted answers</Label>
+          <Label>{translations("acceptedAnswers")}</Label>
           <p className="text-muted-foreground text-xs">
-            Tick every answer that should score as compliant.
+            {translations("acceptedHint")}
           </p>
           <input
             type="hidden"
@@ -328,19 +333,21 @@ export function QuestionForm({
             onToggle={(option) =>
               setAcceptedAnswers((current) => toggleListEntry(current, option))
             }
-            emptyMessage="Add options above to choose which answers are acceptable."
+            emptyMessage={translations("acceptedEmpty")}
           />
         </div>
       ) : null}
 
       {type === "NUMERIC" || type === "RATING" ? (
         <div className="grid gap-2">
-          <Label htmlFor="expectedAnswer">Expected answer</Label>
+          <Label htmlFor="expectedAnswer">
+            {translations("expectedAnswer")}
+          </Label>
           <Input
             id="expectedAnswer"
             name="expectedAnswer"
             type="number"
-            placeholder="Expected number"
+            placeholder={translations("expectedNumber")}
             defaultValue={
               typeof defaults?.expectedAnswer === "string" ||
               typeof defaults?.expectedAnswer === "number"
@@ -353,9 +360,9 @@ export function QuestionForm({
 
       {type === "MULTI_SELECT" ? (
         <div className="grid gap-2">
-          <Label>Expected selections</Label>
+          <Label>{translations("expectedSelections")}</Label>
           <p className="text-muted-foreground text-xs">
-            Tick the exact set the vendor must select to score compliant.
+            {translations("selectionsHint")}
           </p>
           <input
             type="hidden"
@@ -370,7 +377,7 @@ export function QuestionForm({
                 toggleListEntry(current, option),
               )
             }
-            emptyMessage="Add options above to choose the required selections."
+            emptyMessage={translations("selectionsEmpty")}
           />
         </div>
       ) : null}
@@ -381,13 +388,15 @@ export function QuestionForm({
       type === "URL" ||
       type === "EMAIL" ? (
         <p className="text-muted-foreground text-sm">
-          This answer type is scored manually during review.
+          {translations("manualScoring")}
         </p>
       ) : null}
 
       {type === "CHECKBOX" ? (
         <div className="grid gap-2">
-          <Label htmlFor="expectedAnswer">Expected answer</Label>
+          <Label htmlFor="expectedAnswer">
+            {translations("expectedAnswer")}
+          </Label>
           <Select
             name="expectedAnswer"
             defaultValue={
@@ -395,18 +404,18 @@ export function QuestionForm({
             }
           >
             <SelectTrigger id="expectedAnswer">
-              <SelectValue placeholder="Should be checked?" />
+              <SelectValue placeholder={translations("checked")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="true">Checked</SelectItem>
-              <SelectItem value="false">Unchecked</SelectItem>
+              <SelectItem value="true">{translations("checked")}</SelectItem>
+              <SelectItem value="false">{translations("unchecked")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
       ) : null}
 
       <fieldset>
-        <legend className="sr-only">Conditional visibility rules</legend>
+        <legend className="sr-only">{translations("conditionalLegend")}</legend>
         <ConditionalRulesEditor
           questions={otherQuestions}
           defaultMatch={defaults?.conditionMatch ?? "all"}
@@ -415,7 +424,7 @@ export function QuestionForm({
       </fieldset>
 
       <fieldset>
-        <legend className="sr-only">Mapped compliance controls</legend>
+        <legend className="sr-only">{translations("controlsLegend")}</legend>
         <ControlMultiSelect
           controls={controls}
           selectedIds={selectedControlIds}
@@ -430,10 +439,12 @@ export function QuestionForm({
 
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending}>
-          {isPending ? "Saving..." : "Save question"}
+          {isPending ? translations("saving") : translations("save")}
         </Button>
         <Button asChild variant="outline">
-          <Link href={`/templates/${templateId}`}>Cancel</Link>
+          <Link href={`/templates/${templateId}`}>
+            {translations("cancel")}
+          </Link>
         </Button>
       </div>
     </form>

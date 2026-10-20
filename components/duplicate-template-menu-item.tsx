@@ -1,8 +1,12 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 export function DuplicateTemplateMenuItem() {
+  const translations = useTranslations("Templates.builder.actions");
+
   return (
     <DropdownMenuItem
       onClick={() => {
@@ -12,7 +16,7 @@ export function DuplicateTemplateMenuItem() {
         form?.requestSubmit();
       }}
     >
-      Duplicate
+      {translations("duplicate")}
     </DropdownMenuItem>
   );
 }

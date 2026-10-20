@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +15,6 @@ import {
 } from "@/components/ui/select";
 import {
   CONDITION_OPERATORS,
-  CONDITION_OPERATOR_LABELS,
   VALUELESS_OPERATORS,
   type ConditionOperator,
 } from "@/lib/portal";
@@ -30,15 +30,7 @@ type ControllingQuestion = {
 
 type ValueChoice = { value: string; label: string };
 
-const YES_NO_CHOICES: ValueChoice[] = [
-  { value: "YES", label: "Yes" },
-  { value: "NO", label: "No" },
-];
-
-const CHECKBOX_CHOICES: ValueChoice[] = [
-  { value: "true", label: "Checked" },
-  { value: "false", label: "Unchecked" },
-];
+type ConditionalEditorTranslate = (key: string) => string;
 
 // For choice-type controlling questions the answer tokens are fixed by the
 // portal (YES/NO, the declared options, …), so offer them instead of letting
@@ -46,14 +38,21 @@ const CHECKBOX_CHOICES: ValueChoice[] = [
 function valueChoicesFor(
   question: ControllingQuestion | undefined,
   operator: ConditionOperator,
+  translations: ConditionalEditorTranslate,
 ): ValueChoice[] | null {
   if (!question?.type) return null;
   if (operator !== "equals" && operator !== "notEquals") return null;
   switch (question.type) {
     case "YES_NO":
-      return YES_NO_CHOICES;
+      return [
+        { value: "YES", label: translations("yes") },
+        { value: "NO", label: translations("no") },
+      ];
     case "CHECKBOX":
-      return CHECKBOX_CHOICES;
+      return [
+        { value: "true", label: translations("checked") },
+        { value: "false", label: translations("unchecked") },
+      ];
     case "MULTIPLE_CHOICE":
     case "COMBOBOX":
       return (question.options ?? []).map((option) => ({
@@ -76,6 +75,8 @@ export function ConditionalRulesEditor({
   defaultMatch,
   defaultRules,
 }: ConditionalRulesEditorProps) {
+  const translations = useTranslations("Templates.conditions.editing");
+  const operators = useTranslations("Templates.conditions.operators");
   const [match, setMatch] = useState<"all" | "any">(defaultMatch);
   const [rules, setRules] = useState<Rule[]>(defaultRules);
 
@@ -105,10 +106,10 @@ export function ConditionalRulesEditor({
     <div className="grid gap-3 rounded-md border p-3">
       <input type="hidden" name="conditionalLogic" value={serialized} />
       <div className="flex items-center justify-between gap-2">
-        <p className="text-sm font-medium">Conditional visibility</p>
+        <p className="text-sm font-medium">{translations("title")}</p>
         {rules.length > 1 ? (
           <label className="flex items-center gap-2 text-xs">
-            Match
+            {translations("match")}
             <Select
               value={match}
               onValueChange={(value) => setMatch(value as "all" | "any")}
@@ -117,8 +118,8 @@ export function ConditionalRulesEditor({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All (AND)</SelectItem>
-                <SelectItem value="any">Any (OR)</SelectItem>
+                <SelectItem value="all">{translations("all")}</SelectItem>
+                <SelectItem value="any">{translations("any")}</SelectItem>
               </SelectContent>
             </Select>
           </label>
@@ -127,12 +128,11 @@ export function ConditionalRulesEditor({
 
       {questions.length === 0 ? (
         <p className="text-muted-foreground text-xs">
-          Add other questions first to make this one conditional.
+          {translations("noQuestions")}
         </p>
       ) : rules.length === 0 ? (
         <p className="text-muted-foreground text-xs">
-          Always shown. Add a rule to show this question only when other answers
-          match.
+          {translations("alwaysShown")}
         </p>
       ) : (
         <div className="grid gap-2">
@@ -143,7 +143,11 @@ export function ConditionalRulesEditor({
             );
             const valueChoices =
               needsValue && controllingQuestion
-                ? valueChoicesFor(controllingQuestion, rule.operator)
+                ? valueChoicesFor(
+                    controllingQuestion,
+                    rule.operator,
+                    translations,
+                  )
                 : null;
             return (
               <div key={index} className="flex flex-wrap items-center gap-2">
@@ -154,7 +158,7 @@ export function ConditionalRulesEditor({
                   }
                 >
                   <SelectTrigger className="h-8 w-full text-xs sm:w-56">
-                    <SelectValue placeholder="Select a question" />
+                    <SelectValue placeholder={translations("selectQuestion")} />
                   </SelectTrigger>
                   <SelectContent>
                     {questions.map((question) => (
@@ -176,7 +180,7 @@ export function ConditionalRulesEditor({
                   <SelectContent>
                     {CONDITION_OPERATORS.map((operator) => (
                       <SelectItem key={operator} value={operator}>
-                        {CONDITION_OPERATOR_LABELS[operator]}
+                        {operators(operator)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -188,7 +192,7 @@ export function ConditionalRulesEditor({
                       onValueChange={(value) => updateRule(index, { value })}
                     >
                       <SelectTrigger className="h-8 w-full text-xs sm:w-36">
-                        <SelectValue placeholder="Value" />
+                        <SelectValue placeholder={translations("value")} />
                       </SelectTrigger>
                       <SelectContent>
                         {valueChoices.map((choice) => (
@@ -204,7 +208,7 @@ export function ConditionalRulesEditor({
                       onChange={(event) =>
                         updateRule(index, { value: event.target.value })
                       }
-                      placeholder="Value"
+                      placeholder={translations("value")}
                       className="h-8 w-full text-xs sm:w-32"
                     />
                   )
@@ -215,7 +219,7 @@ export function ConditionalRulesEditor({
                   variant="ghost"
                   onClick={() => removeRule(index)}
                 >
-                  Remove
+                  {translations("remove")}
                 </Button>
               </div>
             );
@@ -226,11 +230,11 @@ export function ConditionalRulesEditor({
       {questions.length > 0 ? (
         <div>
           <Button type="button" size="sm" variant="outline" onClick={addRule}>
-            Add rule
+            {translations("addRule")}
           </Button>
         </div>
       ) : null}
-      <Label className="sr-only">Conditional logic</Label>
+      <Label className="sr-only">{translations("legend")}</Label>
     </div>
   );
 }

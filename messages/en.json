@@ -636,6 +636,188 @@
       "missingReviews": "{count, plural, one {# response still needs to be reviewed.} other {# responses still need to be reviewed.}}"
     }
   },
+  "Templates": {
+    "list": {
+      "title": "Templates",
+      "subtitle": "Build and version security questionnaires.",
+      "new": "New template",
+      "import": "Import",
+      "emptyTitle": "No templates yet",
+      "emptyDescription": "Create your first assessment template.",
+      "sections": "{count, plural, one {# section} other {# sections}}"
+    },
+    "statuses": {
+      "DRAFT": "Draft",
+      "PUBLISHED": "Published",
+      "ARCHIVED": "Archived"
+    },
+    "new": {
+      "breadcrumb": "New",
+      "title": "New template",
+      "cardTitle": "Template details",
+      "form": {
+        "name": "Name",
+        "description": "Description",
+        "creating": "Creating…",
+        "create": "Create template",
+        "cancel": "Cancel"
+      }
+    },
+    "builder": {
+      "notFound": "Template not found",
+      "breadcrumbs": {
+        "templates": "Templates"
+      },
+      "actions": {
+        "publish": "Publish",
+        "newVersion": "Create new version",
+        "unpublish": "Unpublish",
+        "delete": "Delete",
+        "deleteTitle": "Delete template?",
+        "deleteDescription": "This will permanently delete \"{name}\" and all its sections and questions. Assessments using this template will lose the template link. This action cannot be undone.",
+        "menuAriaLabel": "Template actions",
+        "preview": "Preview",
+        "duplicate": "Duplicate",
+        "export": "Export"
+      },
+      "versionHistory": "Version history",
+      "details": "Template details",
+      "name": "Name",
+      "description": "Description",
+      "saveDetails": "Save details",
+      "readOnly": "This version is published and read-only. Create a new version to make changes.",
+      "jumpToSection": "Jump to section",
+      "section": {
+        "rename": "Rename",
+        "moveUp": "Move section up",
+        "moveDown": "Move section down",
+        "deleteTitle": "Delete section?",
+        "deleteDescription": "This will permanently delete \"{title}\" and all questions within it.",
+        "delete": "Delete section",
+        "noQuestionsTitle": "No questions",
+        "noQuestionsDescription": "Add a question to get started with this section.",
+        "showQuestions": "Show {count, plural, one {# question} other {# questions}}",
+        "hideQuestions": "Hide {count, plural, one {# question} other {# questions}}",
+        "required": "Required",
+        "moveQuestionUp": "Move question up",
+        "moveQuestionDown": "Move question down",
+        "editQuestion": "Edit",
+        "deleteQuestionTitle": "Delete question?",
+        "deleteQuestionDescription": "This will permanently delete \"{text}\".",
+        "deleteQuestion": "Delete",
+        "addQuestion": "Add question"
+      },
+      "addSection": {
+        "title": "Add section",
+        "placeholder": "Section title",
+        "button": "Add section"
+      }
+    },
+    "question": {
+      "text": "Question text",
+      "help": "Help text",
+      "helpHint": "Markdown formatting is supported — use **bold**, *italic*, lists, and links.",
+      "answerType": "Answer type",
+      "riskWeight": "Risk weight",
+      "required": "Required",
+      "options": "Options (one per line)",
+      "expectedAnswer": "Expected answer",
+      "noExpectedAnswer": "No expected answer",
+      "yes": "Yes",
+      "no": "No",
+      "acceptedAnswers": "Accepted answers",
+      "acceptedHint": "Tick every answer that should score as compliant.",
+      "acceptedEmpty": "Add options above to choose which answers are acceptable.",
+      "expectedNumber": "Expected number",
+      "expectedSelections": "Expected selections",
+      "selectionsHint": "Tick the exact set the vendor must select to score compliant.",
+      "selectionsEmpty": "Add options above to choose the required selections.",
+      "manualScoring": "This answer type is scored manually during review.",
+      "checked": "Checked",
+      "unchecked": "Unchecked",
+      "conditionalLegend": "Conditional visibility rules",
+      "controlsLegend": "Mapped compliance controls",
+      "saving": "Saving...",
+      "save": "Save question",
+      "cancel": "Cancel"
+    },
+    "conditions": {
+      "questionFallback": "a question",
+      "shownIf": "Shown if",
+      "and": "AND",
+      "or": "OR",
+      "editing": {
+        "title": "Conditional visibility",
+        "match": "Match",
+        "all": "All (AND)",
+        "any": "Any (OR)",
+        "noQuestions": "Add other questions first to make this one conditional.",
+        "alwaysShown": "Always shown. Add a rule to show this question only when other answers match.",
+        "selectQuestion": "Select a question",
+        "value": "Value",
+        "remove": "Remove",
+        "addRule": "Add rule",
+        "legend": "Conditional logic",
+        "yes": "Yes",
+        "no": "No",
+        "checked": "Checked",
+        "unchecked": "Unchecked"
+      },
+      "operators": {
+        "equals": "equals",
+        "notEquals": "does not equal",
+        "contains": "contains",
+        "notContains": "does not contain",
+        "gt": "greater than",
+        "lt": "less than",
+        "gte": "greater than or equal to",
+        "lte": "less than or equal to",
+        "answered": "is answered",
+        "notAnswered": "is not answered"
+      }
+    },
+    "controls": {
+      "mappedControls": "Mapped controls",
+      "selectedCount": "{count} selected",
+      "hint": "Tick a framework heading to map every one of its controls — useful for “are you certified?” questions where a compliant answer should satisfy the whole framework.",
+      "allFrameworks": "All frameworks",
+      "filterPlaceholder": "Filter controls…",
+      "noMatch": "No controls match the current filter."
+    },
+    "preview": {
+      "notFound": "Template not found",
+      "breadcrumb": "Preview",
+      "title": "Preview — {name}",
+      "description": "Read-only preview of how this questionnaire appears to a vendor. Conditional questions are all shown here with their rule noted.",
+      "noSectionsTitle": "No sections yet",
+      "noQuestionsTitle": "No questions.",
+      "yes": "Yes",
+      "no": "No",
+      "select": "Select…",
+      "freeTextPlaceholder": "Free-text answer",
+      "attachmentUpload": "Attachment upload",
+      "numberPlaceholder": "Number",
+      "acknowledge": "I acknowledge"
+    },
+    "questionPages": {
+      "editTitle": "Edit question",
+      "editBreadcrumb": "Edit question",
+      "addTitle": "Add question",
+      "addBreadcrumb": "Add question"
+    },
+    "error": {
+      "title": "Failed to load template",
+      "description": "An error occurred while loading this template. Please try again.",
+      "retry": "Try again"
+    },
+    "errors": {
+      "invalidInput": "Invalid input.",
+      "nameRequired": "Template name is required",
+      "questionTextRequired": "Question text is required",
+      "conditionalTooLarge": "Conditional logic payload is too large.",
+      "conditionalInvalid": "Invalid conditional logic."
+    }
+  },
   "Shell": {
     "workspace": {
       "dashboard": "Dashboard",

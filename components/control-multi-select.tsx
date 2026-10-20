@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,7 @@ export function ControlMultiSelect({
   controls,
   selectedIds,
 }: ControlMultiSelectProps) {
+  const translations = useTranslations("Templates.controls");
   const [filter, setFilter] = useState("");
   const [frameworkFilter, setFrameworkFilter] = useState("");
   const [selected, setSelected] = useState(() => new Set(selectedIds));
@@ -45,9 +47,9 @@ export function ControlMultiSelect({
   const frameworkControlIds = useMemo(() => {
     const map = new Map<string, string[]>();
     for (const control of controls) {
-      const list = map.get(control.frameworkName) ?? [];
-      list.push(control.id);
-      map.set(control.frameworkName, list);
+      const controlIds = map.get(control.frameworkName) ?? [];
+      controlIds.push(control.id);
+      map.set(control.frameworkName, controlIds);
     }
     return map;
   }, [controls]);
@@ -58,9 +60,9 @@ export function ControlMultiSelect({
       if (frameworkFilter && control.frameworkName !== frameworkFilter) {
         continue;
       }
-      const list = map.get(control.frameworkName) ?? [];
-      list.push(control);
-      map.set(control.frameworkName, list);
+      const groupedControls = map.get(control.frameworkName) ?? [];
+      groupedControls.push(control);
+      map.set(control.frameworkName, groupedControls);
     }
     return [...map.entries()];
   }, [controls, frameworkFilter]);
@@ -95,23 +97,19 @@ export function ControlMultiSelect({
   return (
     <div className="grid gap-2">
       <div className="flex items-center justify-between">
-        <Label>Mapped controls</Label>
+        <Label>{translations("mappedControls")}</Label>
         <span className="text-muted-foreground text-xs">
-          {selected.size} selected
+          {translations("selectedCount", { count: selected.size })}
         </span>
       </div>
-      <p className="text-muted-foreground text-xs">
-        Tick a framework heading to map every one of its controls — useful for
-        &ldquo;are you certified?&rdquo; questions where a compliant answer
-        should satisfy the whole framework.
-      </p>
+      <p className="text-muted-foreground text-xs">{translations("hint")}</p>
       <div className="flex flex-col gap-2 sm:flex-row">
         <Select
           value={frameworkFilter || ""}
           onValueChange={(value) => setFrameworkFilter(value)}
         >
           <SelectTrigger className="w-full text-xs sm:w-48">
-            <SelectValue placeholder="All frameworks" />
+            <SelectValue placeholder={translations("allFrameworks")} />
           </SelectTrigger>
           <SelectContent>
             {frameworks.map((name) => (
@@ -122,7 +120,7 @@ export function ControlMultiSelect({
           </SelectContent>
         </Select>
         <Input
-          placeholder="Filter controls…"
+          placeholder={translations("filterPlaceholder")}
           value={filter}
           onChange={(event) => setFilter(event.target.value)}
           className="flex-1"
@@ -131,7 +129,7 @@ export function ControlMultiSelect({
       <div className="max-h-64 overflow-y-auto rounded-md border p-2">
         {grouped.length === 0 ? (
           <p className="text-muted-foreground p-2 text-sm">
-            No controls match the current filter.
+            {translations("noMatch")}
           </p>
         ) : (
           grouped.map(([frameworkName, frameworkControls]) => {

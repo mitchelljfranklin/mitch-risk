@@ -300,4 +300,83 @@ test.describe("internal shell", () => {
     ).toBeVisible();
     await expect(page.getByText("Respuestas", { exact: true })).toBeVisible();
   });
+
+  test("translates the templates list and new template page", async ({
+    page,
+  }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto("/templates");
+
+    await expect(
+      page.getByRole("heading", { name: "Plantillas" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Crea y versiona cuestionarios de seguridad."),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Nueva plantilla" }),
+    ).toBeVisible();
+    await expect(page.getByRole("link", { name: "Importar" })).toBeVisible();
+
+    await page.goto("/templates/new");
+
+    await expect(
+      page.getByRole("heading", { name: "Nueva plantilla" }),
+    ).toBeVisible();
+    await expect(page.getByLabel("Nombre")).toBeVisible();
+    await expect(page.getByLabel("Descripción")).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Crear plantilla" }),
+    ).toBeVisible();
+  });
+
+  test("translates the template builder and preview", async ({ page }) => {
+    const template = await prisma.template.findFirst({
+      where: { name: "E2E Template" },
+    });
+    if (!template) {
+      throw new Error("The e2e template fixture was not created.");
+    }
+
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto(`/templates/${template.id}`);
+
+    await expect(page.locator("h1")).toContainText("Publicada");
+    await expect(
+      page.getByRole("button", { name: "Crear nueva versión" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        "Esta versión está publicada y es de solo lectura. Crea una nueva versión para hacer cambios.",
+      ),
+    ).toBeVisible();
+    await expect(page.getByText("Ocultar 3 preguntas")).toBeVisible();
+    await expect(page.getByText("Sí / No", { exact: true })).toBeVisible();
+    await expect(page.getByText("Obligatoria").first()).toBeVisible();
+
+    await page.goto(`/templates/${template.id}/preview`);
+
+    await expect(page.getByText(/Vista previa de solo lectura/)).toBeVisible();
+    await expect(page.getByText("Sí", { exact: true }).first()).toBeVisible();
+    await expect(
+      page.getByPlaceholder("Respuesta de texto libre"),
+    ).toBeVisible();
+    await expect(page.getByText("Carga de archivo adjunto")).toBeVisible();
+  });
 });

@@ -6,6 +6,7 @@ import {
   isQuestionVisible,
   parseConditionalLogic,
   remapConditionalLogic,
+  summarizeConditionalLogic,
   type PortalAnswers,
 } from "@/lib/portal";
 
@@ -175,5 +176,35 @@ describe("findMissingRequiredQuestions", () => {
       q1: { value: "NO", isNotApplicable: false },
     };
     expect(findMissingRequiredQuestions(questions, answers)).toEqual([]);
+  });
+});
+
+describe("summarizeConditionalLogic", () => {
+  const questionText = new Map([["q1", "Do you enforce MFA?"]]);
+  const logic = {
+    match: "all",
+    rules: [{ questionId: "q1", operator: "equals", value: "YES" }],
+  };
+
+  it("summarises rules in English by default", () => {
+    expect(summarizeConditionalLogic(logic, questionText)).toBe(
+      "Shown if “Do you enforce MFA?” equals YES",
+    );
+  });
+
+  it("uses an injected translator for the summary", () => {
+    const translate = (key: string) => {
+      const labels: Record<string, string> = {
+        questionFallback: "una pregunta",
+        shownIf: "Se muestra si",
+        and: "Y",
+        or: "O",
+        "operators.equals": "es igual a",
+      };
+      return labels[key] ?? key;
+    };
+    expect(summarizeConditionalLogic(logic, questionText, translate)).toBe(
+      "Se muestra si “Do you enforce MFA?” es igual a YES",
+    );
   });
 });

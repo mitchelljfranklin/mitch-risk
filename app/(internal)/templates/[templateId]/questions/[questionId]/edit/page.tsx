@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { QuestionForm } from "@/components/question-form";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -15,7 +16,10 @@ import { normalizeExpectedAnswerForEditor } from "@/lib/schemas/template";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Edit question" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Templates.questionPages");
+  return { title: translations("editTitle") };
+}
 
 type EditQuestionPageProps = {
   params: Promise<{ templateId: string; questionId: string }>;
@@ -25,6 +29,8 @@ export default async function EditQuestionPage({
   params,
 }: EditQuestionPageProps) {
   await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
+  const translations = await getTranslations("Templates.questionPages");
+  const builderTranslations = await getTranslations("Templates.builder");
   const { templateId, questionId } = await params;
 
   const [template, question] = await Promise.all([
@@ -59,15 +65,20 @@ export default async function EditQuestionPage({
     <div className="flex max-w-4xl flex-col gap-6">
       <Breadcrumbs
         segments={[
-          { label: "Templates", href: "/templates" },
+          {
+            label: builderTranslations("breadcrumbs.templates"),
+            href: "/templates",
+          },
           {
             label: template!.name,
             href: `/templates/${templateId}`,
           },
-          { label: "Edit question" },
+          { label: translations("editBreadcrumb") },
         ]}
       />
-      <h1 className="text-2xl font-semibold tracking-tight">Edit question</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">
+        {translations("editTitle")}
+      </h1>
       <QuestionForm
         templateId={templateId}
         sectionId={question.sectionId}

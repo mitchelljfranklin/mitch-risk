@@ -2,8 +2,33 @@ import { describe, expect, it } from "vitest";
 
 import {
   normalizeExpectedAnswerForEditor,
+  questionSchema,
+  templateSchema,
+  templateValidationErrorKey,
   validateExpectedAnswer,
 } from "@/lib/schemas/template";
+
+describe("templateValidationErrorKey", () => {
+  it("maps template and question issues to their message keys", () => {
+    const missingName = templateSchema.safeParse({ name: "", description: "" });
+    if (missingName.success) {
+      throw new Error("Expected template validation to fail.");
+    }
+    expect(templateValidationErrorKey(missingName.error)).toBe("nameRequired");
+
+    const missingText = questionSchema.safeParse({
+      text: "",
+      type: "YES_NO",
+      riskWeight: "MEDIUM",
+    });
+    if (missingText.success) {
+      throw new Error("Expected question validation to fail.");
+    }
+    expect(templateValidationErrorKey(missingText.error)).toBe(
+      "questionTextRequired",
+    );
+  });
+});
 
 describe("normalizeExpectedAnswerForEditor", () => {
   it("returns an empty string for null or undefined", () => {

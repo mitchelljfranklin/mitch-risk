@@ -636,6 +636,188 @@
       "missingReviews": "{count, plural, one {Queda # respuesta por revisar.} other {Quedan # respuestas por revisar.}}"
     }
   },
+  "Templates": {
+    "list": {
+      "title": "Plantillas",
+      "subtitle": "Crea y versiona cuestionarios de seguridad.",
+      "new": "Nueva plantilla",
+      "import": "Importar",
+      "emptyTitle": "Todavía no hay plantillas",
+      "emptyDescription": "Crea tu primera plantilla de evaluación.",
+      "sections": "{count, plural, one {# sección} other {# secciones}}"
+    },
+    "statuses": {
+      "DRAFT": "Borrador",
+      "PUBLISHED": "Publicada",
+      "ARCHIVED": "Archivada"
+    },
+    "new": {
+      "breadcrumb": "Nueva",
+      "title": "Nueva plantilla",
+      "cardTitle": "Detalles de la plantilla",
+      "form": {
+        "name": "Nombre",
+        "description": "Descripción",
+        "creating": "Creando…",
+        "create": "Crear plantilla",
+        "cancel": "Cancelar"
+      }
+    },
+    "builder": {
+      "notFound": "Plantilla no encontrada",
+      "breadcrumbs": {
+        "templates": "Plantillas"
+      },
+      "actions": {
+        "publish": "Publicar",
+        "newVersion": "Crear nueva versión",
+        "unpublish": "Despublicar",
+        "delete": "Eliminar",
+        "deleteTitle": "¿Eliminar plantilla?",
+        "deleteDescription": "Esto eliminará permanentemente «{name}» y todas sus secciones y preguntas. Las evaluaciones que usan esta plantilla perderán el vínculo con ella. Esta acción no se puede deshacer.",
+        "menuAriaLabel": "Acciones de la plantilla",
+        "preview": "Vista previa",
+        "duplicate": "Duplicar",
+        "export": "Exportar"
+      },
+      "versionHistory": "Historial de versiones",
+      "details": "Detalles de la plantilla",
+      "name": "Nombre",
+      "description": "Descripción",
+      "saveDetails": "Guardar detalles",
+      "readOnly": "Esta versión está publicada y es de solo lectura. Crea una nueva versión para hacer cambios.",
+      "jumpToSection": "Ir a la sección",
+      "section": {
+        "rename": "Renombrar",
+        "moveUp": "Subir sección",
+        "moveDown": "Bajar sección",
+        "deleteTitle": "¿Eliminar sección?",
+        "deleteDescription": "Esto eliminará permanentemente «{title}» y todas las preguntas que contiene.",
+        "delete": "Eliminar sección",
+        "noQuestionsTitle": "No hay preguntas",
+        "noQuestionsDescription": "Añade una pregunta para empezar con esta sección.",
+        "showQuestions": "Mostrar {count, plural, one {# pregunta} other {# preguntas}}",
+        "hideQuestions": "Ocultar {count, plural, one {# pregunta} other {# preguntas}}",
+        "required": "Obligatoria",
+        "moveQuestionUp": "Subir pregunta",
+        "moveQuestionDown": "Bajar pregunta",
+        "editQuestion": "Editar",
+        "deleteQuestionTitle": "¿Eliminar pregunta?",
+        "deleteQuestionDescription": "Esto eliminará permanentemente «{text}».",
+        "deleteQuestion": "Eliminar",
+        "addQuestion": "Añadir pregunta"
+      },
+      "addSection": {
+        "title": "Añadir sección",
+        "placeholder": "Título de la sección",
+        "button": "Añadir sección"
+      }
+    },
+    "question": {
+      "text": "Texto de la pregunta",
+      "help": "Texto de ayuda",
+      "helpHint": "Se admite formato Markdown: usa **negrita**, *cursiva*, listas y enlaces.",
+      "answerType": "Tipo de respuesta",
+      "riskWeight": "Peso del riesgo",
+      "required": "Obligatoria",
+      "options": "Opciones (una por línea)",
+      "expectedAnswer": "Respuesta esperada",
+      "noExpectedAnswer": "Sin respuesta esperada",
+      "yes": "Sí",
+      "no": "No",
+      "acceptedAnswers": "Respuestas aceptadas",
+      "acceptedHint": "Marca todas las respuestas que deben puntuar como conformes.",
+      "acceptedEmpty": "Añade opciones arriba para elegir qué respuestas son aceptables.",
+      "expectedNumber": "Número esperado",
+      "expectedSelections": "Selecciones esperadas",
+      "selectionsHint": "Marca el conjunto exacto que el proveedor debe seleccionar para puntuar como conforme.",
+      "selectionsEmpty": "Añade opciones arriba para elegir las selecciones requeridas.",
+      "manualScoring": "Este tipo de respuesta se puntúa manualmente durante la revisión.",
+      "checked": "Marcada",
+      "unchecked": "Sin marcar",
+      "conditionalLegend": "Reglas de visibilidad condicional",
+      "controlsLegend": "Controles de cumplimiento asignados",
+      "saving": "Guardando...",
+      "save": "Guardar pregunta",
+      "cancel": "Cancelar"
+    },
+    "conditions": {
+      "questionFallback": "una pregunta",
+      "shownIf": "Se muestra si",
+      "and": "Y",
+      "or": "O",
+      "editing": {
+        "title": "Visibilidad condicional",
+        "match": "Coincidir",
+        "all": "Todas (Y)",
+        "any": "Cualquiera (O)",
+        "noQuestions": "Añade primero otras preguntas para hacer que esta sea condicional.",
+        "alwaysShown": "Siempre visible. Añade una regla para mostrar esta pregunta solo cuando coincidan otras respuestas.",
+        "selectQuestion": "Selecciona una pregunta",
+        "value": "Valor",
+        "remove": "Quitar",
+        "addRule": "Añadir regla",
+        "legend": "Lógica condicional",
+        "yes": "Sí",
+        "no": "No",
+        "checked": "Marcada",
+        "unchecked": "Sin marcar"
+      },
+      "operators": {
+        "equals": "es igual a",
+        "notEquals": "no es igual a",
+        "contains": "contiene",
+        "notContains": "no contiene",
+        "gt": "mayor que",
+        "lt": "menor que",
+        "gte": "mayor o igual que",
+        "lte": "menor o igual que",
+        "answered": "tiene respuesta",
+        "notAnswered": "no tiene respuesta"
+      }
+    },
+    "controls": {
+      "mappedControls": "Controles asignados",
+      "selectedCount": "{count} seleccionados",
+      "hint": "Marca el encabezado de un marco para asignar todos sus controles; útil para preguntas del tipo «¿estás certificado?» donde una respuesta conforme debe satisfacer todo el marco.",
+      "allFrameworks": "Todos los marcos",
+      "filterPlaceholder": "Filtrar controles…",
+      "noMatch": "Ningún control coincide con el filtro actual."
+    },
+    "preview": {
+      "notFound": "Plantilla no encontrada",
+      "breadcrumb": "Vista previa",
+      "title": "Vista previa — {name}",
+      "description": "Vista previa de solo lectura de cómo aparece este cuestionario al proveedor. Las preguntas condicionales se muestran aquí con su regla indicada.",
+      "noSectionsTitle": "Todavía no hay secciones",
+      "noQuestionsTitle": "No hay preguntas.",
+      "yes": "Sí",
+      "no": "No",
+      "select": "Selecciona…",
+      "freeTextPlaceholder": "Respuesta de texto libre",
+      "attachmentUpload": "Carga de archivo adjunto",
+      "numberPlaceholder": "Número",
+      "acknowledge": "Lo confirmo"
+    },
+    "questionPages": {
+      "editTitle": "Editar pregunta",
+      "editBreadcrumb": "Editar pregunta",
+      "addTitle": "Añadir pregunta",
+      "addBreadcrumb": "Añadir pregunta"
+    },
+    "error": {
+      "title": "No se pudo cargar la plantilla",
+      "description": "Se produjo un error al cargar esta plantilla. Inténtalo de nuevo.",
+      "retry": "Reintentar"
+    },
+    "errors": {
+      "invalidInput": "Entrada no válida.",
+      "nameRequired": "El nombre de la plantilla es obligatorio",
+      "questionTextRequired": "El texto de la pregunta es obligatorio",
+      "conditionalTooLarge": "La carga de lógica condicional es demasiado grande.",
+      "conditionalInvalid": "Lógica condicional no válida."
+    }
+  },
   "Shell": {
     "workspace": {
       "dashboard": "Panel",

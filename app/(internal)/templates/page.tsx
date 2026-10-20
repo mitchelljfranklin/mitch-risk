@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,10 @@ import { listTemplates } from "@/lib/db/templates";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Templates" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Templates.list");
+  return { title: translations("title") };
+}
 
 const STATUS_VARIANT = {
   DRAFT: "secondary",
@@ -25,6 +29,8 @@ const STATUS_VARIANT = {
 
 export default async function TemplatesPage() {
   const user = await requirePermission(PERMISSIONS.TEMPLATES_VIEW);
+  const translations = await getTranslations("Templates.list");
+  const statusTranslations = await getTranslations("Templates.statuses");
   const canCreateTemplate = hasPermission(
     user.permissions,
     PERMISSIONS.TEMPLATES_CREATE,
@@ -35,18 +41,20 @@ export default async function TemplatesPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Templates</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {translations("title")}
+          </h1>
           <p className="text-muted-foreground text-sm">
-            Build and version security questionnaires.
+            {translations("subtitle")}
           </p>
         </div>
         {canCreateTemplate ? (
           <>
             <Button asChild>
-              <Link href="/templates/new">New template</Link>
+              <Link href="/templates/new">{translations("new")}</Link>
             </Button>
             <Button asChild variant="outline">
-              <Link href="/templates/import">Import</Link>
+              <Link href="/templates/import">{translations("import")}</Link>
             </Button>
           </>
         ) : null}
@@ -55,8 +63,8 @@ export default async function TemplatesPage() {
       {templates.length === 0 ? (
         <EmptyState
           icon="templates"
-          title="No templates yet"
-          description="Create your first assessment template."
+          title={translations("emptyTitle")}
+          description={translations("emptyDescription")}
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
@@ -69,7 +77,9 @@ export default async function TemplatesPage() {
                     <div className="flex items-center gap-2">
                       <Badge variant="outline">v{template.version}</Badge>
                       <Badge variant={STATUS_VARIANT[template.status]}>
-                        {template.status.toLowerCase()}
+                        {statusTranslations.has(template.status)
+                          ? statusTranslations(template.status)
+                          : template.status.toLowerCase()}
                       </Badge>
                     </div>
                   </div>
@@ -77,7 +87,9 @@ export default async function TemplatesPage() {
                     <CardDescription>{template.description}</CardDescription>
                   ) : null}
                   <p className="text-muted-foreground text-sm">
-                    {template._count.sections} sections
+                    {translations("sections", {
+                      count: template._count.sections,
+                    })}
                   </p>
                 </CardHeader>
               </Card>

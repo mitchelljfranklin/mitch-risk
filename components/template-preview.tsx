@@ -1,11 +1,13 @@
+import { getTranslations } from "next-intl/server";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { EmptyState } from "@/components/empty-state";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { summarizeConditionalLogic } from "@/lib/portal";
 import { type TemplateForBuilder } from "@/lib/db/templates";
 import ReactMarkdown from "react-markdown";
-import { summarizeConditionalLogic } from "@/lib/portal";
 
 type PreviewQuestion =
   TemplateForBuilder["sections"][number]["questions"][number];
@@ -14,14 +16,15 @@ function toOptions(value: unknown): string[] {
   return Array.isArray(value) ? value.map(String) : [];
 }
 
-function QuestionPreview({ question }: { question: PreviewQuestion }) {
+async function QuestionPreview({ question }: { question: PreviewQuestion }) {
+  const translations = await getTranslations("Templates.preview");
   const options = toOptions(question.options);
 
   switch (question.type) {
     case "YES_NO":
       return (
         <div className="flex gap-4">
-          {["Yes", "No"].map((label) => (
+          {[translations("yes"), translations("no")].map((label) => (
             <label
               key={label}
               className="text-muted-foreground flex items-center gap-2 text-sm"
@@ -63,18 +66,24 @@ function QuestionPreview({ question }: { question: PreviewQuestion }) {
           disabled
           className="border-input bg-muted/40 h-9 w-full max-w-sm rounded-md border px-2 text-sm"
         >
-          <option>Select…</option>
+          <option>{translations("select")}</option>
           {options.map((option) => (
             <option key={option}>{option}</option>
           ))}
         </select>
       );
     case "FREE_TEXT":
-      return <Textarea disabled rows={3} placeholder="Free-text answer" />;
+      return (
+        <Textarea
+          disabled
+          rows={3}
+          placeholder={translations("freeTextPlaceholder")}
+        />
+      );
     case "FILE_UPLOAD":
       return (
         <div className="border-input text-muted-foreground rounded-md border border-dashed p-3 text-sm">
-          Attachment upload
+          {translations("attachmentUpload")}
         </div>
       );
     case "DATE":
@@ -85,7 +94,11 @@ function QuestionPreview({ question }: { question: PreviewQuestion }) {
         <Input
           type="number"
           disabled
-          placeholder={question.type === "RATING" ? "1–5" : "Number"}
+          placeholder={
+            question.type === "RATING"
+              ? "1–5"
+              : translations("numberPlaceholder")
+          }
           className="max-w-xs"
         />
       );
@@ -110,7 +123,7 @@ function QuestionPreview({ question }: { question: PreviewQuestion }) {
     case "CHECKBOX":
       return (
         <label className="text-muted-foreground flex items-center gap-2 text-sm">
-          <Checkbox disabled /> I acknowledge
+          <Checkbox disabled /> {translations("acknowledge")}
         </label>
       );
     default:
@@ -118,11 +131,13 @@ function QuestionPreview({ question }: { question: PreviewQuestion }) {
   }
 }
 
-export function TemplatePreview({
+export async function TemplatePreview({
   template,
 }: {
   template: TemplateForBuilder;
 }) {
+  const translations = await getTranslations("Templates.preview");
+  const conditionTranslations = await getTranslations("Templates.conditions");
   const questionText = new Map<string, string>();
   for (const section of template.sections) {
     for (const question of section.questions) {
@@ -135,7 +150,7 @@ export function TemplatePreview({
       <EmptyState
         compact
         icon="templates"
-        title="No sections yet"
+        title={translations("noSectionsTitle")}
         description=""
       />
     );
@@ -153,7 +168,7 @@ export function TemplatePreview({
               <EmptyState
                 compact
                 icon="templates"
-                title="No questions."
+                title={translations("noQuestionsTitle")}
                 description=""
               />
             ) : (
@@ -161,6 +176,7 @@ export function TemplatePreview({
                 const condition = summarizeConditionalLogic(
                   question.conditionalLogic,
                   questionText,
+                  conditionTranslations,
                 );
                 return (
                   <div key={question.id} className="flex flex-col gap-2">

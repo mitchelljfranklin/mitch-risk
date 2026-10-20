@@ -51,6 +51,25 @@ export const templateSchema = z.object({
 });
 export type TemplateInput = z.infer<typeof templateSchema>;
 
+export type TemplateValidationErrorKey =
+  "invalidInput" | "nameRequired" | "questionTextRequired";
+
+export function templateValidationErrorKey(
+  error: z.ZodError,
+): TemplateValidationErrorKey {
+  const firstIssue = error.issues[0];
+  if (!firstIssue) {
+    return "invalidInput";
+  }
+  if (firstIssue.path[0] === "name") {
+    return "nameRequired";
+  }
+  if (firstIssue.path[0] === "text") {
+    return "questionTextRequired";
+  }
+  return "invalidInput";
+}
+
 export const sectionSchema = z.object({
   title: z.string().min(1, "Section title is required"),
 });
