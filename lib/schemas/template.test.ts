@@ -1,12 +1,27 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  expectedAnswerErrorKey,
   normalizeExpectedAnswerForEditor,
   questionSchema,
   templateSchema,
   templateValidationErrorKey,
   validateExpectedAnswer,
 } from "@/lib/schemas/template";
+
+describe("expectedAnswerErrorKey", () => {
+  it("maps each invalid expected-answer shape to its message key", () => {
+    expect(expectedAnswerErrorKey("MULTI_SELECT", "A")).toBe(
+      "multiSelectArray",
+    );
+    expect(expectedAnswerErrorKey("MULTIPLE_CHOICE", 4)).toBe(
+      "choiceStringOrArray",
+    );
+    expect(expectedAnswerErrorKey("NUMERIC", "4")).toBe("numeric");
+    expect(expectedAnswerErrorKey("YES_NO", true)).toBe("yesNoCheckboxString");
+    expect(expectedAnswerErrorKey("YES_NO", "YES")).toBeNull();
+  });
+});
 
 describe("templateValidationErrorKey", () => {
   it("maps template and question issues to their message keys", () => {

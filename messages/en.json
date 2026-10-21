@@ -784,6 +784,69 @@
       "filterPlaceholder": "Filter controls…",
       "noMatch": "No controls match the current filter."
     },
+    "import": {
+      "metadataTitle": "Import template",
+      "title": "Import template",
+      "subtitle": "Upload a JSON file to create a new template.",
+      "breadcrumb": "Import",
+      "cardTitle": "Import template from JSON",
+      "steps": {
+        "upload": "Upload",
+        "review": "Review"
+      },
+      "file": {
+        "label": "JSON file",
+        "downloadTemplate": "Template",
+        "hint": "Upload a valid JSON template file. Export an existing template from the template builder (Actions → Export) to see the expected structure."
+      },
+      "parse": {
+        "invalidStructure": "Invalid template structure. Expected name and sections array.",
+        "invalidJson": "Invalid JSON file."
+      },
+      "summary": {
+        "sections": "{count, plural, one {# section} other {# sections}}",
+        "questions": "{count, plural, one {# question} other {# questions}}",
+        "controlCodes": "{count, plural, one {# control code} other {# control codes}}"
+      },
+      "table": {
+        "section": "Section",
+        "questions": "Questions"
+      },
+      "review": {
+        "introPrefix": "You are about to import template"
+      },
+      "next": "Next →",
+      "back": "← Back",
+      "importing": "Importing…",
+      "import": "Import template",
+      "success": "Imported \"{name}\" as a new DRAFT.",
+      "errors": {
+        "noFile": "No file selected.",
+        "fileTooLarge": "File is too large (max 1 MB).",
+        "invalidJson": "Invalid JSON file.",
+        "importFailed": "Import failed — the file structure could not be processed. Check it against the downloadable template and try again.",
+        "nameRequired": "Template name is required.",
+        "sectionsRequired": "Template must contain at least one section.",
+        "sectionTitleRequired": "Section {number}: title is required.",
+        "questionsArray": "Section \"{title}\": questions must be an array.",
+        "textRequired": "{where}: text is required.",
+        "helpTextType": "{where}: helpText must be a string when provided.",
+        "unknownType": "{where}: unknown type \"{type}\".",
+        "unknownRiskWeight": "{where}: unknown risk weight \"{weight}\".",
+        "requiredType": "{where}: required must be a boolean when provided.",
+        "optionsType": "{where}: options must be an array of strings.",
+        "controlCodesType": "{where}: controlCodes must be an array of strings.",
+        "expectedAnswerType": "{where}: expectedAnswer must be a string, number, or array of strings.",
+        "expectedAnswer": {
+          "multiSelectArray": "{where}: expectedAnswer must be an array of strings.",
+          "choiceStringOrArray": "{where}: expectedAnswer must be a string or an array of strings.",
+          "numeric": "{where}: expectedAnswer must be a number.",
+          "yesNoCheckboxString": "{where}: expectedAnswer must be a string."
+        },
+        "controlAmbiguous": "Control codes {codes} are ambiguous — the same code exists in multiple frameworks. Remove the duplicate or rename one of the controls.",
+        "controlNotFound": "Control code not found: {code}"
+      }
+    },
     "preview": {
       "notFound": "Template not found",
       "breadcrumb": "Preview",

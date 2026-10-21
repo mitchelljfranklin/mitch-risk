@@ -379,4 +379,67 @@ test.describe("internal shell", () => {
     ).toBeVisible();
     await expect(page.getByText("Carga de archivo adjunto")).toBeVisible();
   });
+
+  test("translates the template import flow", async ({ page }) => {
+    const templateJson = JSON.stringify({
+      name: "Plantilla E2E",
+      description: "Prueba de importación",
+      sections: [
+        {
+          title: "Acceso",
+          questions: [
+            {
+              text: "¿Se exige MFA?",
+              type: "YES_NO",
+              riskWeight: "HIGH",
+              required: true,
+            },
+            {
+              text: "¿Existe una política?",
+              type: "FREE_TEXT",
+              riskWeight: "LOW",
+              required: false,
+            },
+          ],
+        },
+      ],
+    });
+
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto("/templates/import");
+
+    await expect(
+      page.getByRole("heading", { name: "Importar plantilla" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Sube un archivo JSON para crear una nueva plantilla."),
+    ).toBeVisible();
+    await expect(page.getByText("Importar plantilla desde JSON")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Plantilla" })).toBeVisible();
+
+    await page.setInputFiles('input[type="file"]', {
+      name: "template.json",
+      mimeType: "application/json",
+      buffer: Buffer.from(templateJson),
+    });
+
+    await expect(page.getByText("1 sección")).toBeVisible();
+    await expect(page.getByText("2 preguntas")).toBeVisible();
+    await expect(page.getByText("Sección", { exact: true })).toBeVisible();
+
+    await page.getByRole("button", { name: "Siguiente →" }).click();
+
+    await expect(page.getByText(/Vas a importar la plantilla/)).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Importar plantilla" }),
+    ).toBeVisible();
+  });
 });

@@ -784,6 +784,69 @@
       "filterPlaceholder": "Filtrar controles…",
       "noMatch": "Ningún control coincide con el filtro actual."
     },
+    "import": {
+      "metadataTitle": "Importar plantilla",
+      "title": "Importar plantilla",
+      "subtitle": "Sube un archivo JSON para crear una nueva plantilla.",
+      "breadcrumb": "Importar",
+      "cardTitle": "Importar plantilla desde JSON",
+      "steps": {
+        "upload": "Subir",
+        "review": "Revisar"
+      },
+      "file": {
+        "label": "Archivo JSON",
+        "downloadTemplate": "Plantilla",
+        "hint": "Sube un archivo JSON de plantilla válido. Exporta una plantilla existente desde el creador (Acciones → Exportar) para ver la estructura esperada."
+      },
+      "parse": {
+        "invalidStructure": "Estructura de plantilla no válida. Se esperaban name y un array de sections.",
+        "invalidJson": "Archivo JSON no válido."
+      },
+      "summary": {
+        "sections": "{count, plural, one {# sección} other {# secciones}}",
+        "questions": "{count, plural, one {# pregunta} other {# preguntas}}",
+        "controlCodes": "{count, plural, one {# código de control} other {# códigos de control}}"
+      },
+      "table": {
+        "section": "Sección",
+        "questions": "Preguntas"
+      },
+      "review": {
+        "introPrefix": "Vas a importar la plantilla"
+      },
+      "next": "Siguiente →",
+      "back": "← Atrás",
+      "importing": "Importando…",
+      "import": "Importar plantilla",
+      "success": "Se importó «{name}» como nuevo BORRADOR.",
+      "errors": {
+        "noFile": "No se seleccionó ningún archivo.",
+        "fileTooLarge": "El archivo es demasiado grande (máximo 1 MB).",
+        "invalidJson": "Archivo JSON no válido.",
+        "importFailed": "La importación falló: no se pudo procesar la estructura del archivo. Compruébala con la plantilla descargable e inténtalo de nuevo.",
+        "nameRequired": "El nombre de la plantilla es obligatorio.",
+        "sectionsRequired": "La plantilla debe contener al menos una sección.",
+        "sectionTitleRequired": "Sección {number}: el título es obligatorio.",
+        "questionsArray": "Sección «{title}»: las preguntas deben ser un array.",
+        "textRequired": "{where}: el texto es obligatorio.",
+        "helpTextType": "{where}: helpText debe ser una cadena cuando se proporciona.",
+        "unknownType": "{where}: tipo desconocido «{type}».",
+        "unknownRiskWeight": "{where}: peso de riesgo desconocido «{weight}».",
+        "requiredType": "{where}: required debe ser un booleano cuando se proporciona.",
+        "optionsType": "{where}: options debe ser un array de cadenas.",
+        "controlCodesType": "{where}: controlCodes debe ser un array de cadenas.",
+        "expectedAnswerType": "{where}: expectedAnswer debe ser una cadena, un número o un array de cadenas.",
+        "expectedAnswer": {
+          "multiSelectArray": "{where}: expectedAnswer debe ser un array de cadenas.",
+          "choiceStringOrArray": "{where}: expectedAnswer debe ser una cadena o un array de cadenas.",
+          "numeric": "{where}: expectedAnswer debe ser un número.",
+          "yesNoCheckboxString": "{where}: expectedAnswer debe ser una cadena."
+        },
+        "controlAmbiguous": "Los códigos de control {codes} son ambiguos: el mismo código existe en varios marcos. Elimina el duplicado o cambia el nombre de uno de los controles.",
+        "controlNotFound": "Código de control no encontrado: {code}"
+      }
+    },
     "preview": {
       "notFound": "Plantilla no encontrada",
       "breadcrumb": "Vista previa",

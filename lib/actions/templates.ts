@@ -395,14 +395,16 @@ export async function importTemplateAction(
   formData: FormData,
 ): Promise<TemplateImportState> {
   await requirePermission(PERMISSIONS.TEMPLATES_CREATE);
+  const translations = await getTranslations("Templates.import");
+  const errors = await getTranslations("Templates.import.errors");
 
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {
-    return { ok: false, error: "No file selected." };
+    return { ok: false, error: errors("noFile") };
   }
 
   if (file.size > 1_000_000) {
-    return { ok: false, error: "File is too large (max 1 MB)." };
+    return { ok: false, error: errors("fileTooLarge") };
   }
 
   let data: TemplateImportJson;
@@ -413,11 +415,11 @@ export async function importTemplateAction(
       "Failed to parse import JSON:",
       error instanceof Error ? error.message : String(error),
     );
-    return { ok: false, error: "Invalid JSON file." };
+    return { ok: false, error: errors("invalidJson") };
   }
 
   try {
-    const result = await importTemplateFromJson(data);
+    const result = await importTemplateFromJson(data, errors);
     if (!result.ok) {
       return { ok: false, error: result.error };
     }
@@ -431,7 +433,10 @@ export async function importTemplateAction(
         result.templateId,
       );
     }
-    return { ok: true, message: `Imported "${result.name}" as a new DRAFT.` };
+    return {
+      ok: true,
+      message: translations("success", { name: result.name }),
+    };
   } catch (error: unknown) {
     // Validation above catches known shapes; anything reaching here is a
     // malformed payload our checks missed or an unexpected persistence error.
@@ -441,8 +446,7 @@ export async function importTemplateAction(
     );
     return {
       ok: false,
-      error:
-        "Import failed — the file structure could not be processed. Check it against the downloadable template and try again.",
+      error: errors("importFailed"),
     };
   }
 }
