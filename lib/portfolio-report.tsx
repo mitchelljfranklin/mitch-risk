@@ -6,9 +6,15 @@ import {
   StyleSheet,
   renderToBuffer,
 } from "@react-pdf/renderer";
-import { getFormatter, getTranslations } from "next-intl/server";
+import { getFormatter, getLocale, getTranslations } from "next-intl/server";
 
 import { formatPercent } from "@/lib/utils";
+import { localeDirection } from "@/lib/i18n/config";
+import {
+  pdfFontFamily,
+  registerPdfFonts,
+  type PdfFontFamily,
+} from "@/lib/pdf/fonts";
 import {
   type PdfFormatter,
   type PdfTranslate,
@@ -346,15 +352,27 @@ function PortfolioPdfDocument({
   data,
   translations,
   dateFormatter,
+  fontFamily,
+  direction,
 }: {
   data: PortfolioPdfData;
   translations: PdfTranslate;
   dateFormatter: PdfFormatter;
+  fontFamily: PdfFontFamily;
+  direction: "ltr" | "rtl";
 }) {
+  const pageStyle = [styles.page, { fontFamily, direction }];
+
   return (
     <Document>
       {/* Cover page */}
-      <Page size="A4" style={[styles.page, { justifyContent: "center" }]}>
+      <Page
+        size="A4"
+        style={[
+          styles.page,
+          { fontFamily, direction, justifyContent: "center" },
+        ]}
+      >
         <Text style={styles.orgName}>{data.organizationName}</Text>
         <Text style={styles.coverTitle}>{translations("portfolio.title")}</Text>
         <Text style={styles.coverSubtitle}>
@@ -381,7 +399,7 @@ function PortfolioPdfDocument({
       </Page>
 
       {/* Distribution page */}
-      <Page size="A4" style={styles.page}>
+      <Page size="A4" style={pageStyle}>
         <Text style={styles.sectionTitle}>
           {translations("portfolio.scoreDistribution")}
         </Text>
@@ -430,7 +448,7 @@ function PortfolioPdfDocument({
       </Page>
 
       {/* Vendor table (may span multiple pages) */}
-      <Page size="A4" style={styles.page}>
+      <Page size="A4" style={pageStyle}>
         <Text style={styles.sectionTitle}>
           {translations("portfolio.vendorsCount", { count: data.vendorCount })}
         </Text>
@@ -454,7 +472,7 @@ function PortfolioPdfDocument({
 
       {/* Top deficient controls */}
       {data.topControls.length > 0 ? (
-        <Page size="A4" style={styles.page}>
+        <Page size="A4" style={pageStyle}>
           <Text style={styles.sectionTitle}>
             {translations("portfolio.topDeficientControls", {
               count: data.topControls.length,
@@ -564,6 +582,10 @@ export function buildPortfolioPdfData(
 
 export async function generatePortfolioPdf(): Promise<Buffer> {
   const translations = await getTranslations("Pdf");
+  const locale = await getLocale();
+  const fontFamily = pdfFontFamily(locale);
+  const direction = localeDirection(locale);
+  registerPdfFonts();
   const formatter = await getFormatter();
   const translate: PdfTranslate = Object.assign(
     (key: string, values?: Record<string, string | number>) =>
@@ -589,6 +611,8 @@ export async function generatePortfolioPdf(): Promise<Buffer> {
       data={data}
       translations={translate}
       dateFormatter={dateFormatter}
+      fontFamily={fontFamily}
+      direction={direction}
     />,
   );
 }

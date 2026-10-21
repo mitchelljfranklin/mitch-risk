@@ -1,0 +1,2681 @@
+{
+  "Common": {
+    "changeLanguage": "تغيير اللغة",
+    "skipToContent": "انتقل إلى المحتوى",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "close": "إغلاق",
+    "sidebar": "الشريط الجانبي",
+    "sidebarDescription": "يعرض الشريط الجانبي للجوال.",
+    "toggleSidebar": "تبديل الشريط الجانبي",
+    "step": "خطوة {number}:",
+    "tiers": {
+      "CRITICAL": "شديد الأهمية",
+      "HIGH": "عالي",
+      "MEDIUM": "واسطة",
+      "LOW": "قليل"
+    },
+    "pagination": {
+      "pageOf": "الصفحة {page} من {totalPages} · {totalCount} {itemLabel}",
+      "previous": "سابق",
+      "next": "التالي"
+    },
+    "viewToggle": {
+      "rows": "عرض الصف",
+      "cards": "عرض البطاقة"
+    },
+    "assessmentStatuses": {
+      "DRAFT": "مسودة",
+      "SENT": "مرسل",
+      "IN_PROGRESS": "في تَقَدم",
+      "SUBMITTED": "مُقَدَّم",
+      "UNDER_REVIEW": "قيد المراجعة",
+      "COMPLETED": "مكتمل"
+    },
+    "findingStatuses": {
+      "OPEN": "يفتح",
+      "REMEDIATED": "تم علاجه",
+      "RISK_ACCEPTED": "تم قبول المخاطر"
+    },
+    "copyLink": {
+      "copy": "ينسخ",
+      "copied": "منقول"
+    },
+    "pendingLink": {
+      "preparing": "جارٍ التحضير…"
+    },
+    "evidencePreview": {
+      "preview": "معاينة {fileName}"
+    },
+    "questionTypes": {
+      "YES_NO": "نعم / لا",
+      "MULTIPLE_CHOICE": "اختيار واحد (اختر واحدا)",
+      "FREE_TEXT": "نص مجاني",
+      "FILE_UPLOAD": "تحميل الملف",
+      "DATE": "تاريخ",
+      "NUMERIC": "رقمي",
+      "COMBOBOX": "كومبوبوكس",
+      "MULTI_SELECT": "التحديد المتعدد (اختيار العديد)",
+      "RATING": "التقييم (1-5)",
+      "URL": "عنوان URL",
+      "EMAIL": "بريد إلكتروني",
+      "CHECKBOX": "خانة الاختيار (الاعتراف)"
+    },
+    "controlCodes": {
+      "showMore": "{count,plural,one{يعرض # المزيد من السيطرة} other{يعرض # المزيد من الضوابط}}",
+      "showLess": "عرض أقل"
+    },
+    "search": {
+      "placeholder": "يبحث…"
+    }
+  },
+  "Metadata": {
+    "description": "حل إدارة مخاطر موردي الطرف الثالث ذو العلامة البيضاء"
+  },
+  "Dashboard": {
+    "metaTitle": "لوحة القيادة",
+    "title": "نظرة عامة على مخاطر المورد",
+    "tracked": "{count,plural,one{# تتبع المورد} other{# تتبع الموردين}}",
+    "newVendor": "مورد جديد",
+    "assessments": "التقييمات",
+    "portfolioReport": "تقرير المحفظة",
+    "emptyTitle": "لا يوجد موردين حتى الآن",
+    "emptyCanCreate": "أضف موردك الأول لبدء تتبع مخاطره.",
+    "emptyReadOnly": "لا يتم تعقب أي موردين حتى الآن.",
+    "addVendor": "إضافة مورد →",
+    "stats": {
+      "vendors": "تتبع الموردين",
+      "averageScore": "متوسط ​​النتيجة",
+      "openFindings": "النتائج المفتوحة",
+      "needsAttention": "يحتاج إلى اهتمام"
+    },
+    "topControls": "أعلى الضوابط الناقصة",
+    "viewRiskRegister": "عرض سجل المخاطر →",
+    "highestRisk": "الموردين الأكثر خطورة",
+    "viewAllVendors": "عرض جميع الموردين →",
+    "noAssessments": "لا التقييمات",
+    "overdue": "{count} تأخرت",
+    "attention": {
+      "title": "يحتاج إلى اهتمام",
+      "allClear": "كل شيء واضح، لا شيء يحتاج إلى الاهتمام الآن.",
+      "titleWithCount": "يحتاج إلى الاهتمام ({count})",
+      "unreviewed": "لم تتم مراجعته",
+      "clarification": "إيضاح",
+      "clarifications": "توضيحات",
+      "failedEmail": "البريد الإلكتروني الفاشل (24 ساعة)",
+      "failedEmails": "رسائل البريد الإلكتروني الفاشلة (24 ساعة)",
+      "groups": {
+        "overdue": "التقييمات المتأخرة",
+        "belowThreshold": "تحت عتبة النتيجة",
+        "keyDates": "التواريخ الرئيسية (60 يومًا)"
+      },
+      "overdueAssessment": "{count,plural,one{# التقييم المتأخر} other{# التقييمات المتأخرة}}",
+      "oldestSince": "الأقدم منذ ذلك الحين {date}",
+      "belowThreshold": "أقل {percent}٪ عتبة",
+      "contractRenewal": "تجديد العقد",
+      "daysOverdue": "{days}د متأخرة",
+      "inDays": "في {days}د"
+    },
+    "charts": {
+      "portfolioHealth": "صحة المحفظة",
+      "openFindingsBySeverity": "فتح النتائج حسب الخطورة",
+      "assessmentStatus": "حالة التقييم",
+      "riskByTier": "المخاطر حسب الطبقة",
+      "vendors": "الموردين",
+      "assessments": "التقييمات",
+      "openFindings": "النتائج المفتوحة",
+      "ragShort": {
+        "green": "أخضر",
+        "amber": "العنبر",
+        "red": "أحمر",
+        "unscored": "غير مسجل"
+      },
+      "rag": {
+        "green": "أخضر (≥85%)",
+        "amber": "العنبر (60-84%)",
+        "red": "أحمر (<60%)",
+        "unscored": "غير مسجل"
+      },
+      "severity": {
+        "CRITICAL": "شديد الأهمية",
+        "HIGH": "عالي",
+        "MEDIUM": "واسطة",
+        "LOW": "قليل"
+      },
+      "status": {
+        "DRAFT": "مسودة",
+        "SENT": "مرسل",
+        "IN_PROGRESS": "في تَقَدم",
+        "SUBMITTED": "مُقَدَّم",
+        "UNDER_REVIEW": "قيد المراجعة",
+        "COMPLETED": "مكتمل",
+        "OVERDUE": "تأخرت"
+      },
+      "tier": {
+        "CRITICAL": "شديد الأهمية",
+        "HIGH": "عالي",
+        "MEDIUM": "واسطة",
+        "LOW": "قليل",
+        "Unspecified": "غير محدد"
+      },
+      "activity": {
+        "title": "نشاط التقييم",
+        "noActivity": "لا يوجد نشاط في هذه الفترة",
+        "timeRange": "حدد نطاقًا زمنيًا",
+        "ranges": {
+          "90d": "آخر 3 أشهر",
+          "30d": "آخر 30 يومًا",
+          "7d": "آخر 7 أيام"
+        },
+        "assessments": "التقييمات"
+      }
+    }
+  },
+  "Vendors": {
+    "metaTitle": "الموردون",
+    "title": "الموردون",
+    "subtitle": "الموردين الذين تقوم بتقييمهم للمخاطر الأمنية.",
+    "compare": "يقارن",
+    "import": "استيراد",
+    "bulkSend": "إرسال بالجملة",
+    "newVendor": "مورد جديد",
+    "search": "يبحث",
+    "searchPlaceholder": "الاسم أو البريد الإلكتروني…",
+    "tier": "الطبقة",
+    "anyTier": "أي طبقة",
+    "filterTierAria": "تصفية الموردين حسب الطبقة",
+    "sort": "نوع",
+    "sortAria": "فرز الموردين",
+    "filter": "فلتر",
+    "clear": "واضح",
+    "viewAria": "عرض قائمة الموردين",
+    "noMatches": "لا يوجد موردون يطابقون عوامل التصفية المحددة.",
+    "emptyTitle": "لا يوجد موردين حتى الآن",
+    "emptyDescription": "أضف موردًا لبدء تتبع المخاطر الأمنية الخاصة به.",
+    "assessed": "تم تقييمه {date}",
+    "notAssessed": "لم يتم تقييمها",
+    "assessmentCount": "{count,plural,one{# تقدير} other{# التقييمات}}",
+    "openFindingCount": "{count,plural,one{# اكتشاف مفتوح} other{# النتائج المفتوحة}}",
+    "list": {
+      "vendor": "مورد",
+      "tier": "المستوى",
+      "score": "الدرجة",
+      "items": "الموردون"
+    },
+    "sorts": {
+      "name": "الاسم (أ–ي)",
+      "name-desc": "الاسم (ي–أ)",
+      "score-asc": "النتيجة (منخفضة → عالية)",
+      "score-desc": "النتيجة (عالية → منخفضة)",
+      "tier": "الطبقة (أ–ي)",
+      "tier-desc": "الطبقة (Z–A)",
+      "last-assessed": "آخر تقييم",
+      "assessments": "معظم التقييمات"
+    },
+    "form": {
+      "vendorName": "اسم المورد",
+      "externalId": "معرف خارجي",
+      "externalIdPlaceholder": "على سبيل المثال تخطيط موارد المؤسسات-V-001",
+      "externalIdHint": "مرجع اختياري لهذا المورد في نظام آخر",
+      "contactName": "اسم جهة الاتصال",
+      "contactEmail": "البريد الإلكتروني للاتصال",
+      "tier": "الطبقة",
+      "website": "موقع إلكتروني",
+      "riskOwner": "صاحب المخاطرة",
+      "dataSensitivity": "حساسية البيانات",
+      "contractValue": "قيمة العقد",
+      "geographicRisk": "المخاطر الجغرافية",
+      "tags": "العلامات",
+      "tagsPlaceholder": "على سبيل المثال Saas، الحرجة، المالية",
+      "tagsHint": "تسميات مفصولة بفواصل للتجميع والتصفية",
+      "serviceProvided": "الخدمة المقدمة",
+      "servicePlaceholder": "على سبيل المثال استضافة البريد الإلكتروني السحابية",
+      "contractRenewalDate": "تاريخ تجديد العقد",
+      "notes": "ملحوظات",
+      "saving": "توفير...",
+      "saveChanges": "حفظ التغييرات",
+      "create": "إنشاء مورد",
+      "cancel": "يلغي",
+      "unspecified": "غير محدد",
+      "unassigned": "غير معين",
+      "levels": {
+        "NONE": "لا أحد",
+        "LOW": "قليل",
+        "MEDIUM": "واسطة",
+        "HIGH": "عالي"
+      },
+      "dataSensitivities": {
+        "PUBLIC": "عام",
+        "INTERNAL": "داخلي",
+        "CONFIDENTIAL": "مؤتمن",
+        "RESTRICTED": "مقيد"
+      }
+    },
+    "new": {
+      "title": "مورد جديد",
+      "cardTitle": "تفاصيل المورد",
+      "cardDescription": "إضافة مورد جديد لتتبعه.",
+      "breadcrumb": "جديد"
+    },
+    "edit": {
+      "title": "تحرير المورد",
+      "cardTitle": "تفاصيل المورد",
+      "cardDescription": "تحديث تفاصيل المورد.",
+      "breadcrumb": "يحرر"
+    },
+    "attachments": {
+      "title": "المرفقات",
+      "emptyTitle": "لا توجد مرفقات حتى الآن",
+      "emptyDescription": "تحميل العقود أو الرسائل أو المستندات الأخرى.",
+      "removeAria": "إزالة المرفق",
+      "dropHint": "قم بإسقاط ملف أو انقر للتصفح",
+      "uploading": "جارٍ التحميل…",
+      "upload": "رفع"
+    },
+    "export": {
+      "button": "تصدير CSV",
+      "all": "جميع الموردين",
+      "currentPage": "الصفحة الحالية"
+    },
+    "errors": {
+      "invalidInput": "إدخال غير صالح.",
+      "duplicateExternalId": "يوجد بالفعل مورد بهذا المعرف الخارجي.",
+      "vendorCreated": "تم إنشاء المورد.",
+      "vendorUpdated": "تم تحديث المورد.",
+      "noFile": "لم يتم تحديد أي ملف.",
+      "fileTypeNotAllowed": "نوع الملف غير مسموح به.",
+      "fileTypeNotAccepted": "هذا النوع من الملفات غير مقبول.",
+      "fileTooLarge": "الملف كبير جدًا (الحد الأقصى {max} ميغابايت).",
+      "fileUploaded": "تم تحميل الملف.",
+      "fileAttached": "الملف مرفق مع المورد"
+    },
+    "detail": {
+      "notFound": "لم يتم العثور على المورد",
+      "errorTitle": "فشل تحميل المورد",
+      "errorDescription": "حدث خطأ أثناء تحميل تفاصيل هذا المورد. يرجى المحاولة مرة أخرى.",
+      "created": "تم إنشاء المورد.",
+      "breadcrumbs": {
+        "riskRegister": "سجل المخاطر",
+        "vendors": "الموردون"
+      },
+      "edit": "يحرر",
+      "exportCsv": "تصدير CSV",
+      "delete": "يمسح",
+      "deleteTitle": "هل تريد حذف المورد؟",
+      "deleteDescription": "سيتم حذف هذا نهائيًا {vendorName} وجميع {count,plural,one{# تقدير} other{# التقييمات}}. لا يمكن التراجع عن هذا الإجراء.",
+      "tabs": {
+        "overview": "ملخص",
+        "compliance": "امتثال",
+        "findings": "النتائج",
+        "assessments": "التقييمات"
+      },
+      "overview": {
+        "title": "ملخص",
+        "serviceProvided": "الخدمة المقدمة",
+        "riskOwner": "صاحب المخاطرة",
+        "unassigned": "غير معين",
+        "externalId": "معرف خارجي",
+        "dataSensitivity": "حساسية البيانات",
+        "unspecified": "غير محدد",
+        "website": "موقع إلكتروني",
+        "contractRenewal": "تجديد العقد",
+        "overdue": " · تأخرت",
+        "attachments": "المرفقات",
+        "emptyTitle": "لا توجد تفاصيل نظرة عامة",
+        "emptyDescription": "قم بتحرير هذا المورد لإضافة تفاصيل الخدمة ومالك المخاطر ومعلومات الملف الشخصي الأخرى."
+      },
+      "riskProfile": {
+        "title": "ملف تعريف المخاطر",
+        "inherent": "متأصل (التقييم المسبق)",
+        "residual": "المتبقي (المقرر)",
+        "trendingUp": "تتجه نحو الأعلى ↑",
+        "trendingDown": "تتجه نحو الانخفاض ↓",
+        "stable": "مستقر →",
+        "noScore": "لا يوجد نتيجة حتى الآن — إرسال تقييم",
+        "trend": "اتجاه",
+        "compareLastTwo": "قارن الأخيرين →"
+      },
+      "certifications": "الشهادات والشهادات",
+      "compliance": {
+        "vendorCompliance": "امتثال المورد",
+        "yourCompliance": "امتثالك",
+        "domainCompliance": "الامتثال للمجال",
+        "noDataTitle": "لا توجد بيانات الامتثال",
+        "noDataDescription": "أكمل التقييم لرؤية درجات الامتثال للنطاق.",
+        "frameworkHeatmaps": "خرائط الحرارة الإطارية",
+        "noAssessmentData": "لا توجد بيانات التقييم",
+        "noFrameworksTitle": "لا توجد أطر متاحة",
+        "noFrameworksDescription": "قم باستيراد أو إنشاء مكتبات إطار العمل لتعيين عناصر التحكم لأسئلة التقييم."
+      },
+      "findings": {
+        "title": "النتائج",
+        "openCount": "{count, plural, one {# مفتوح} other {# مفتوحة}}",
+        "viewAll": "{count,plural,one{عرض النتيجة في سجل المخاطر →} other{عرض الكل # النتائج في سجل المخاطر →}}",
+        "emptyTitle": "لا توجد نتائج",
+        "emptyDescription": "يتم إنشاء النتائج عندما تكون إجابات التقييم غير متوافقة. أكمل التقييم لرؤية النتائج هنا."
+      },
+      "assessments": {
+        "title": "التقييمات",
+        "new": "تقييم جديد",
+        "emptyTitle": "لا التقييمات",
+        "emptyDescription": "لم يتم إنشاء أي تقييمات لهذا المورد حتى الآن.",
+        "noTemplate": "لا يوجد قالب",
+        "due": " · حق {date}",
+        "viewAll": "{count,plural,one{عرض التقييم →} other{عرض الكل # التقييمات →}}",
+        "activity": "نشاط"
+      }
+    },
+    "timeline": {
+      "empty": "لم يتم تسجيل أي نشاط حتى الآن.",
+      "assessmentCreated": "تم إنشاء التقييم",
+      "assessmentSent": "تم إرسال التقييم",
+      "assessmentSubmitted": "تم تقديم التقييم",
+      "findingOpened": "تم فتح البحث",
+      "remediated": "تم علاجه",
+      "riskAccepted": "تم قبول المخاطر",
+      "certificationAdded": "تمت إضافة الشهادة",
+      "certificationExpiring": "انتهاء صلاحية الشهادة",
+      "certificationExpiringDescription": "{name} - تنتهي {date}"
+    },
+    "certifications": {
+      "empty": "لم يتم تتبع أي شهادات حتى الآن.",
+      "expires": "تنتهي {date}",
+      "statuses": {
+        "valid": "صالح",
+        "expiring": "تنتهي قريبا",
+        "expired": "منتهي الصلاحية"
+      },
+      "add": "إضافة شهادة",
+      "edit": "يحرر",
+      "delete": "يمسح",
+      "deleteTitle": "هل تريد حذف الشهادة؟",
+      "deleteDescription": "\"{name}\"ستتم إزالته نهائيًا.",
+      "editor": {
+        "addTitle": "إضافة شهادة",
+        "description": "تتبع الشهادة (SOC 2، ISO 27001، ...) وانتهائها.",
+        "name": "اسم",
+        "namePlaceholder": "على سبيل المثال SOC 2 النوع الثاني",
+        "issuer": "المُصدر (اختياري)",
+        "issuerPlaceholder": "على سبيل المثال مدقق الحسابات / هيئة إصدار الشهادات",
+        "issued": "صدر (اختياري)",
+        "expires": "تنتهي",
+        "notes": "ملاحظات (اختياري)",
+        "complianceActions": "إجراءات الامتثال المطلوبة",
+        "selectFramework": "حدد الإطار...",
+        "attachment": "مرفق (اختياري)",
+        "attachmentHint": "تحميل شهادة أو تقرير أو عقد. الحد الأقصى 20 ميجابايت.",
+        "attachments": "المرفقات",
+        "saving": "توفير...",
+        "save": "حفظ الشهادة",
+        "cancel": "يلغي"
+      },
+      "errors": {
+        "missingVendor": "مورد مفقود.",
+        "invalidInput": "إدخال غير صالح.",
+        "wrongVendor": "الشهادة لا تنتمي إلى هذا المورد.",
+        "saved": "تم حفظ الشهادة.",
+        "attachmentFailed": " فشل المرفق: {reason}",
+        "fileType": "نوع الملف غير مسموح به.",
+        "fileTooLarge": "الملف كبير جدًا (الحد الأقصى {max} ميغابايت).",
+        "fileInvalid": "هذا النوع من الملفات غير مقبول.",
+        "fileRecordFailed": "فشل في حفظ سجل الملف.",
+        "fileUploaded": "تم تحميل الملف.",
+        "nameRequired": "اسم الشهادة مطلوب.",
+        "expiryRequired": "تاريخ انتهاء الصلاحية مطلوب.",
+        "invalidExpiry": "أدخل تاريخ انتهاء صلاحية صالحًا.",
+        "added": "شهادة \"{name}\"أضيف مع المرفقات.",
+        "missingEvidence": "أدلة مفقودة.",
+        "evidenceNotFound": "لم يتم العثور على أدلة."
+      }
+    },
+    "customerResponsibility": {
+      "title": "مسؤولية العملاء",
+      "collapse": "ينهار",
+      "expand": "يوسع",
+      "progress": "{completed} من {total} · {percent}%",
+      "empty": "لا توجد ضوابط المسؤولية المشتركة لهذه الشهادة.",
+      "assignedTo": "المخصصة ل {name}",
+      "fileCount": "{count,plural,one{# ملف} other{# ملفات}}",
+      "status": "حالة",
+      "statuses": {
+        "PENDING": "قيد الانتظار",
+        "IN_PROGRESS": "في تَقَدم",
+        "COMPLETED": "مكتمل",
+        "NOT_APPLICABLE": "غير قابل للتطبيق"
+      },
+      "assignedToLabel": "المخصصة ل",
+      "assignedToPlaceholder": "معرف المستخدم (اختياري)",
+      "attachment": "مرفق",
+      "notes": "ملحوظات",
+      "notesPlaceholder": "إضافة ملاحظات حول التنفيذ...",
+      "files": "ملفات",
+      "saving": "توفير...",
+      "save": "يحفظ",
+      "cancel": "يلغي",
+      "errors": {
+        "missingFields": "الحقول المطلوبة مفقودة.",
+        "invalidStatus": "الحالة غير صالحة.",
+        "noChanges": "لم يتم تقديم أي تغييرات.",
+        "saved": "أنقذ."
+      }
+    }
+  },
+  "Assessments": {
+    "list": {
+      "title": "التقييمات",
+      "subtitle": "التقييمات المرسلة إلى الموردين.",
+      "subtitleForVendor": "التقييمات ل {vendorName}.",
+      "filters": {
+        "search": "يبحث",
+        "searchPlaceholder": "عنوان أو مورد...",
+        "status": "حالة",
+        "allStatuses": "جميع الحالات",
+        "statusAriaLabel": "تصفية التقييمات حسب الحالة",
+        "from": "من",
+        "to": "ل",
+        "sort": "نوع",
+        "sortAriaLabel": "فرز التقييمات",
+        "overdueOnly": "المتأخرة فقط",
+        "apply": "فلتر",
+        "clear": "واضح"
+      },
+      "sorts": {
+        "created": "الأحدث أولاً",
+        "created-asc": "الأقدم أولاً",
+        "due-asc": "تاريخ الاستحقاق (أقرب)",
+        "due-desc": "تاريخ الاستحقاق (الأحدث)",
+        "score-asc": "النتيجة (منخفضة → عالية)",
+        "score-desc": "النتيجة (عالية → منخفضة)",
+        "vendor": "المورد (أ–ي)",
+        "status": "الحالة (أ–ي)",
+        "status-desc": "الحالة (ي – أ)"
+      },
+      "emptyFiltered": "لا توجد تقييمات تتطابق مع عوامل التصفية المحددة.",
+      "emptyTitle": "لا التقييمات حتى الآن",
+      "emptyDescription": "قم بإنشاء تقييم وأرسل للمورد الرابط الخاص به لإكماله.",
+      "items": "التقييمات",
+      "columns": {
+        "assessmentVendor": "التقييم · المورد",
+        "score": "نتيجة",
+        "status": "حالة",
+        "due": "حق"
+      },
+      "overdue": "تأخرت",
+      "due": " · حق {date}"
+    },
+    "new": {
+      "title": "تقييم جديد ل {vendorName}",
+      "breadcrumb": "تقييم جديد",
+      "cardTitle": "تفاصيل التقييم",
+      "form": {
+        "title": "عنوان",
+        "titlePlaceholder": "على سبيل المثال المراجعة الأمنية السنوية",
+        "template": "قالب الاستبيان",
+        "templatePlaceholder": "حدد قالبًا منشورًا",
+        "noTemplates": "لم يتم العثور على قوالب.",
+        "dueDate": "تاريخ الاستحقاق",
+        "reviewer": "المراجع",
+        "unassigned": "غير معين",
+        "publishFirst": "قم بنشر القالب أولاً لإنشاء تقييم.",
+        "creating": "جارٍ الإنشاء...",
+        "create": "إنشاء التقييم",
+        "cancel": "يلغي"
+      }
+    },
+    "detail": {
+      "notFound": "لم يتم العثور على التقييم",
+      "breadcrumbs": {
+        "assessments": "التقييمات",
+        "vendors": "الموردون"
+      },
+      "actions": {
+        "reopen": "إعادة فتح المراجعة",
+        "exportCsv": "تصدير CSV",
+        "downloadPdf": "تحميل قوات الدفاع الشعبي",
+        "preparingReport": "جارٍ إعداد التقرير…",
+        "finalize": "وضع اللمسات الأخيرة",
+        "finalizing": "جارٍ الانتهاء…",
+        "delete": "يمسح",
+        "deleteTitle": "هل تريد حذف التقييم؟",
+        "deleteDescription": "سيؤدي هذا إلى حذف \"{title}\" وجميع الاستجابات والنتائج والأدلة. ولا يمكن التراجع عن هذا الإجراء."
+      },
+      "meta": {
+        "due": " · حق {date}",
+        "reviewer": " · المراجع {name}"
+      },
+      "draft": {
+        "createLinkTitle": "إنشاء رابط المورد",
+        "createLinkDescription": "قم بإنشاء رابط مورد بدون تسجيل الدخول للتقييم. اختياريا قم بتعيين كلمة مرور لحماية الوصول.",
+        "settingsTitle": "إعدادات المسودة",
+        "title": "عنوان",
+        "dueDate": "تاريخ الاستحقاق",
+        "saving": "توفير…",
+        "save": "حفظ التغييرات"
+      },
+      "link": {
+        "title": "رابط المورد (لا يلزم تسجيل الدخول)",
+        "expires": "تنتهي {date}",
+        "noExpiry": "لا انتهاء الصلاحية",
+        "passwordProtected": "محمية بكلمة مرور",
+        "extend": "تمديد 30 يوما",
+        "regenerate": "إعادة إنشاء الرابط",
+        "revoke": "إبطال",
+        "revokeTitle": "هل تريد إلغاء رابط المورد؟",
+        "revokeDescription": "لن يتمكن المورد بعد الآن من الوصول إلى الاستبيان. يمكنك إعادة إنشاء الرابط لاحقًا إذا لزم الأمر.",
+        "revokedTitle": "رابط المورد",
+        "revokedDescription": "لقد تم إبطال الرابط."
+      },
+      "score": {
+        "title": "نتيجة",
+        "low": "مخاطر منخفضة",
+        "moderate": "خطر معتدل",
+        "high": "مخاطر عالية"
+      },
+      "findings": {
+        "summary": "النتائج ({count} · {open,plural,one{# يفتح} other{# يفتح}})",
+        "deletedUser": "المستخدم المحذوف",
+        "noneTitle": "النتائج",
+        "allCompliant": "جميع الإجابات متوافقة - لا توجد نتائج.",
+        "automatedDescription": "لم تلبي إجابة المورد الاستجابة المتوقعة."
+      },
+      "responses": {
+        "title": "الردود",
+        "summary": "{approved} ل {total} موافقة · {pending} قيد الانتظار",
+        "summaryClarifications": " · {count,plural,one{# إيضاح} other{# توضيحات}}",
+        "filters": {
+          "all": "الجميع",
+          "pending": "قيد الانتظار ({count})",
+          "approved": "موافقة ({count})",
+          "clarification": "إيضاح ({count})"
+        },
+        "notApplicable": "لا يوجد",
+        "evidenceAlt": "ملف الأدلة: {fileName}",
+        "viewPdf": "عرض ملف PDF: {fileName} ↗",
+        "attachToVendor": "نعلق على المورد"
+      },
+      "sender": {
+        "password": "كلمة مرور البوابة (اختياري)",
+        "passwordPlaceholder": "مطالبة المورد بإدخال كلمة المرور",
+        "passwordHint": "إذا تم تعيينها، فيجب على الموردين إدخال كلمة المرور هذه قبل الوصول إلى الاستبيان.",
+        "sendToVendor": "إرسال إلى المورد",
+        "generateOnly": "إنشاء رابط فقط",
+        "customEmailPlaceholder": "custom@example.com",
+        "sendTo": "أرسل إلى"
+      },
+      "sendBack": {
+        "trigger": "أرسل مرة أخرى إلى المورد",
+        "title": "إرسال مرة أخرى إلى المورد؟",
+        "description": "سيكون المورد قادرًا على تعديل إجاباته وإعادة إرسالها، وسيتلقى بريدًا إلكترونيًا يتضمن رسالتك. يتم الاحتفاظ بإجاباتهم الحالية.",
+        "messageLabel": "رسالة إلى المورد (اختياري)",
+        "messagePlaceholder": "اشرح ما هي المعلومات الإضافية المطلوبة...",
+        "cancel": "يلغي",
+        "confirm": "أرسل مرة أخرى",
+        "emailFallback": "يرجى مراجعة وإعادة إرسال الاستبيان الخاص بك."
+      },
+      "review": {
+        "approved": "موافقة",
+        "clarificationRequested": "طلب التوضيح",
+        "noReviewYet": "لا يوجد مراجعة بعد",
+        "collapse": "ينهار",
+        "expand": "يوسع",
+        "reviewPlaceholder": "مراجعة",
+        "approve": "يعتمد",
+        "requestClarification": "طلب التوضيح",
+        "notePlaceholder": "ملاحظة اختيارية (مرئية للمورد في حالة طلب التوضيح)",
+        "save": "يحفظ",
+        "vendor": "مورد",
+        "internal": "داخلي",
+        "replyPlaceholder": "رد",
+        "internalOption": "داخلي",
+        "vendorOption": "مرئية للمورد",
+        "reply": "رد",
+        "commentPlaceholder": "أضف تعليقا",
+        "comment": "تعليق",
+        "commentCount": "{count,plural,one{# تعليق} other{# تعليقات}}",
+        "previousReview": "المراجعة السابقة ({decision}): {note}"
+      },
+      "findingStatus": {
+        "resolutionNotePlaceholder": "مذكرة القرار (اختياري)",
+        "save": "يحفظ"
+      },
+      "attachEvidence": {
+        "trigger": "نعلق",
+        "refreshing": "{message}. منعش…",
+        "attachAs": "إرفاق كما",
+        "certificationOption": "شهادة / شهادة",
+        "generalOption": "ملحق عام",
+        "certificationName": "اسم الشهادة",
+        "namePlaceholder": "على سبيل المثال SOC 2 النوع الثاني",
+        "issuer": "المُصدر (اختياري)",
+        "issuerPlaceholder": "على سبيل المثال شركة التدقيق",
+        "expiryDate": "تاريخ انتهاء الصلاحية",
+        "displayNameForFile": "اسم العرض للملف",
+        "notes": "ملاحظات (اختياري)",
+        "notesPlaceholder": "سياق إضافي…",
+        "complianceActions": "إجراءات الامتثال المطلوبة",
+        "selectFramework": "حدد الإطار...",
+        "displayName": "اسم العرض",
+        "generalNotesPlaceholder": "لماذا تم إرفاق هذا...",
+        "adding": "جارٍ الإضافة…",
+        "addCertification": "إضافة شهادة",
+        "attachToVendor": "نعلق على المورد",
+        "cancel": "يلغي"
+      },
+      "error": {
+        "title": "فشل تحميل التقييم",
+        "description": "حدث خطأ أثناء تحميل هذا التقييم. يرجى المحاولة مرة أخرى.",
+        "retry": "حاول ثانية"
+      }
+    },
+    "errors": {
+      "invalidInput": "إدخال غير صالح.",
+      "titleRequired": "العنوان مطلوب",
+      "titleTooLong": "يجب أن يكون العنوان 200 حرفًا أو أقل",
+      "templateRequired": "حدد قالبًا",
+      "invalidDueDate": "أدخل تاريخ استحقاق صالحًا",
+      "saved": "أنقذ.",
+      "started": "بدأ التقييم.",
+      "portalLinkFailed": "تم إنشاء التقييم ولكن تعذر إنشاء رابط البوابة الإلكترونية.",
+      "missingReviews": "{count,plural,one{# الاستجابة لا تزال بحاجة إلى مراجعة.} other{# لا تزال الردود بحاجة إلى مراجعة.}}"
+    }
+  },
+  "Templates": {
+    "list": {
+      "title": "قوالب",
+      "subtitle": "بناء وإصدار الاستبيانات الأمنية.",
+      "new": "قالب جديد",
+      "import": "استيراد",
+      "emptyTitle": "لا توجد قوالب حتى الآن",
+      "emptyDescription": "قم بإنشاء قالب التقييم الأول الخاص بك.",
+      "sections": "{count,plural,one{# قسم} other{# أقسام}}"
+    },
+    "statuses": {
+      "DRAFT": "مسودة",
+      "PUBLISHED": "تم النشر",
+      "ARCHIVED": "مؤرشف"
+    },
+    "new": {
+      "breadcrumb": "جديد",
+      "title": "قالب جديد",
+      "cardTitle": "تفاصيل القالب",
+      "form": {
+        "name": "اسم",
+        "description": "وصف",
+        "creating": "جارٍ الإنشاء…",
+        "create": "إنشاء قالب",
+        "cancel": "يلغي"
+      }
+    },
+    "builder": {
+      "notFound": "لم يتم العثور على القالب",
+      "breadcrumbs": {
+        "templates": "قوالب"
+      },
+      "actions": {
+        "publish": "نشر",
+        "newVersion": "إنشاء نسخة جديدة",
+        "unpublish": "إلغاء النشر",
+        "delete": "يمسح",
+        "deleteTitle": "هل تريد حذف النموذج؟",
+        "deleteDescription": "سيؤدي هذا إلى حذف \"{name}\" وجميع أقسامه وأسئلته. ستفقد التقييمات التي تستخدم هذا القالب رابط القالب. ولا يمكن التراجع عن هذا الإجراء.",
+        "menuAriaLabel": "إجراءات القالب",
+        "preview": "معاينة",
+        "duplicate": "ينسخ",
+        "export": "يصدّر"
+      },
+      "versionHistory": "تاريخ الإصدار",
+      "details": "تفاصيل القالب",
+      "name": "اسم",
+      "description": "وصف",
+      "saveDetails": "حفظ التفاصيل",
+      "readOnly": "يتم نشر هذا الإصدار للقراءة فقط. قم بإنشاء إصدار جديد لإجراء التغييرات.",
+      "jumpToSection": "انتقل إلى القسم",
+      "section": {
+        "rename": "إعادة تسمية",
+        "moveUp": "نقل القسم لأعلى",
+        "moveDown": "نقل القسم إلى الأسفل",
+        "deleteTitle": "هل تريد حذف القسم؟",
+        "deleteDescription": "سيؤدي هذا إلى حذف \"{title}\"وجميع الأسئلة بداخله.",
+        "delete": "حذف القسم",
+        "noQuestionsTitle": "لا توجد أسئلة",
+        "noQuestionsDescription": "أضف سؤالاً للبدء في هذا القسم.",
+        "showQuestions": "يعرض {count,plural,one{# سؤال} other{# أسئلة}}",
+        "hideQuestions": "يخفي {count,plural,one{# سؤال} other{# أسئلة}}",
+        "required": "مطلوب",
+        "moveQuestionUp": "انقل السؤال للأعلى",
+        "moveQuestionDown": "انقل السؤال إلى الأسفل",
+        "editQuestion": "يحرر",
+        "deleteQuestionTitle": "هل تريد حذف السؤال؟",
+        "deleteQuestionDescription": "سيؤدي هذا إلى حذف \"{text}\".",
+        "deleteQuestion": "يمسح",
+        "addQuestion": "أضف سؤالا"
+      },
+      "addSection": {
+        "title": "إضافة قسم",
+        "placeholder": "عنوان القسم",
+        "button": "إضافة قسم"
+      }
+    },
+    "question": {
+      "text": "نص السؤال",
+      "help": "نص المساعدة",
+      "helpHint": "يتم دعم تنسيق Markdown — استخدم **غامق**، *مائل*، والقوائم، والروابط.",
+      "answerType": "نوع الإجابة",
+      "riskWeight": "وزن المخاطرة",
+      "required": "مطلوب",
+      "options": "الخيارات (واحد لكل سطر)",
+      "expectedAnswer": "الإجابة المتوقعة",
+      "noExpectedAnswer": "لا توجد إجابة متوقعة",
+      "yes": "نعم",
+      "no": "لا",
+      "acceptedAnswers": "الإجابات المقبولة",
+      "acceptedHint": "ضع علامة على كل إجابة يجب أن تكون متوافقة.",
+      "acceptedEmpty": "أضف الخيارات أعلاه لاختيار الإجابات المقبولة.",
+      "expectedNumber": "العدد المتوقع",
+      "expectedSelections": "الاختيارات المتوقعة",
+      "selectionsHint": "حدد المجموعة المحددة التي يجب على المورد تحديدها لتكون متوافقة مع النتيجة.",
+      "selectionsEmpty": "قم بإضافة الخيارات أعلاه لاختيار التحديدات المطلوبة.",
+      "manualScoring": "يتم تسجيل نوع الإجابة هذا يدويًا أثناء المراجعة.",
+      "checked": "تم الفحص",
+      "unchecked": "غير محدد",
+      "conditionalLegend": "قواعد الرؤية المشروطة",
+      "controlsLegend": "ضوابط الامتثال المعينة",
+      "saving": "توفير...",
+      "save": "حفظ السؤال",
+      "cancel": "يلغي"
+    },
+    "conditions": {
+      "questionFallback": "سؤال",
+      "shownIf": "يظهر إذا",
+      "and": "و",
+      "or": "أو",
+      "editing": {
+        "title": "الرؤية المشروطة",
+        "match": "مباراة",
+        "all": "الكل (و)",
+        "any": "أي (أو)",
+        "noQuestions": "أضف أسئلة أخرى أولاً لجعل هذا السؤال مشروطًا.",
+        "alwaysShown": "تظهر دائما. أضف قاعدة لإظهار هذا السؤال فقط عند تطابق الإجابات الأخرى.",
+        "selectQuestion": "حدد سؤالاً",
+        "value": "قيمة",
+        "remove": "يزيل",
+        "addRule": "أضف القاعدة",
+        "legend": "المنطق الشرطي",
+        "yes": "نعم",
+        "no": "لا",
+        "checked": "تم الفحص",
+        "unchecked": "غير محدد"
+      },
+      "operators": {
+        "equals": "يساوي",
+        "notEquals": "لا يساوي",
+        "contains": "يتضمن",
+        "notContains": "لا يحتوي",
+        "gt": "أكبر من",
+        "lt": "أقل من",
+        "gte": "أكبر من أو يساوي",
+        "lte": "أقل من أو يساوي",
+        "answered": "يتم الرد",
+        "notAnswered": "لم يتم الرد"
+      }
+    },
+    "controls": {
+      "mappedControls": "الضوابط المعينة",
+      "selectedCount": "{count} مختارة",
+      "hint": "حدد عنوان إطار العمل لتعيين كل عنصر من عناصر التحكم فيه - وهو مفيد لسؤال \"هل أنت معتمد؟\" الأسئلة التي يجب أن تلبي الإجابة المتوافقة الإطار بأكمله.",
+      "allFrameworks": "جميع الأطر",
+      "filterPlaceholder": "ضوابط التصفية...",
+      "noMatch": "لا توجد عناصر تحكم تتطابق مع عامل التصفية الحالي."
+    },
+    "import": {
+      "metadataTitle": "استيراد القالب",
+      "title": "استيراد القالب",
+      "subtitle": "قم بتحميل ملف JSON لإنشاء قالب جديد.",
+      "breadcrumb": "استيراد",
+      "cardTitle": "استيراد القالب من JSON",
+      "steps": {
+        "upload": "رفع",
+        "review": "مراجعة"
+      },
+      "file": {
+        "label": "ملف JSON",
+        "downloadTemplate": "نموذج",
+        "hint": "قم بتحميل ملف قالب JSON صالح. قم بتصدير قالب موجود من أداة إنشاء القوالب (الإجراءات → التصدير) لرؤية البنية المتوقعة."
+      },
+      "parse": {
+        "invalidStructure": "بنية القالب غير صالحة. الاسم المتوقع ومصفوفة الأقسام.",
+        "invalidJson": "ملف JSON غير صالح."
+      },
+      "summary": {
+        "sections": "{count,plural,one{# قسم} other{# أقسام}}",
+        "questions": "{count,plural,one{# سؤال} other{# أسئلة}}",
+        "controlCodes": "{count,plural,one{# رمز التحكم} other{# رموز التحكم}}"
+      },
+      "table": {
+        "section": "قسم",
+        "questions": "أسئلة"
+      },
+      "review": {
+        "introPrefix": "أنت على وشك استيراد القالب"
+      },
+      "next": "التالي →",
+      "back": "← العودة",
+      "importing": "جارٍ الاستيراد...",
+      "import": "استيراد القالب",
+      "success": "مستورد \"{name}\" كمسودة جديدة.",
+      "errors": {
+        "noFile": "لم يتم تحديد أي ملف.",
+        "fileTooLarge": "الملف كبير جدًا (بحد أقصى 1 ميجابايت).",
+        "invalidJson": "ملف JSON غير صالح.",
+        "importFailed": "فشل الاستيراد — تعذرت معالجة بنية الملف. قم بفحصه مقابل القالب القابل للتنزيل ثم حاول مرة أخرى.",
+        "nameRequired": "اسم القالب مطلوب.",
+        "sectionsRequired": "يجب أن يحتوي القالب على قسم واحد على الأقل.",
+        "sectionTitleRequired": "قسم {number}: العنوان مطلوب.",
+        "questionsArray": "قسم \"{title}\": يجب أن تكون الأسئلة مصفوفة.",
+        "textRequired": "{where}: النص مطلوب.",
+        "helpTextType": "{where}: يجب أن يكون نص المساعدة عبارة عن سلسلة عند تقديمه.",
+        "unknownType": "{where}:نوع غير معروف\"{type}\".",
+        "unknownRiskWeight": "{where}: وزن خطر غير معروف \"{weight}\".",
+        "requiredType": "{where}: مطلوب يجب أن يكون منطقيًا عند تقديمه.",
+        "optionsType": "{where}: يجب أن تكون الخيارات عبارة عن مجموعة من السلاسل.",
+        "controlCodesType": "{where}: يجب أن تكون رموز التحكم عبارة عن مجموعة من السلاسل.",
+        "expectedAnswerType": "{where}: يجب أن تكون الإجابة المتوقعة عبارة عن سلسلة أو رقم أو مجموعة من السلاسل.",
+        "expectedAnswer": {
+          "multiSelectArray": "{where}: يجب أن تكون الإجابة المتوقعة عبارة عن مجموعة من السلاسل.",
+          "choiceStringOrArray": "{where}: يجب أن تكون الإجابة المتوقعة عبارة عن سلسلة أو مجموعة من السلاسل.",
+          "numeric": "{where}: يجب أن تكون الإجابة المتوقعة رقمًا.",
+          "yesNoCheckboxString": "{where}: يجب أن تكون الإجابة المتوقعة سلسلة."
+        },
+        "controlAmbiguous": "رموز التحكم {codes} غامضة - نفس الكود موجود في أطر عمل متعددة. قم بإزالة التكرار أو إعادة تسمية أحد عناصر التحكم.",
+        "controlNotFound": "لم يتم العثور على رمز التحكم: {code}"
+      }
+    },
+    "preview": {
+      "notFound": "لم يتم العثور على القالب",
+      "breadcrumb": "معاينة",
+      "title": "معاينة — {name}",
+      "description": "معاينة للقراءة فقط لكيفية ظهور هذا الاستبيان للمورد. يتم عرض جميع الأسئلة الشرطية هنا مع ملاحظة القاعدة الخاصة بها.",
+      "noSectionsTitle": "لا توجد أقسام بعد",
+      "noQuestionsTitle": "لا توجد أسئلة.",
+      "yes": "نعم",
+      "no": "لا",
+      "select": "يختار…",
+      "freeTextPlaceholder": "إجابة النص الحر",
+      "attachmentUpload": "تحميل المرفقات",
+      "numberPlaceholder": "رقم",
+      "acknowledge": "أنا أعترف"
+    },
+    "questionPages": {
+      "editTitle": "تحرير السؤال",
+      "editBreadcrumb": "تحرير السؤال",
+      "addTitle": "أضف سؤالا",
+      "addBreadcrumb": "أضف سؤالا"
+    },
+    "error": {
+      "title": "فشل تحميل القالب",
+      "description": "حدث خطأ أثناء تحميل هذا القالب. يرجى المحاولة مرة أخرى.",
+      "retry": "حاول ثانية"
+    },
+    "errors": {
+      "invalidInput": "إدخال غير صالح.",
+      "nameRequired": "اسم القالب مطلوب",
+      "questionTextRequired": "نص السؤال مطلوب",
+      "conditionalTooLarge": "الحمولة المنطقية الشرطية كبيرة جدًا.",
+      "conditionalInvalid": "المنطق الشرطي غير صالح."
+    }
+  },
+  "Frameworks": {
+    "list": {
+      "title": "الأطر",
+      "subtitle": "مكتبات التحكم المستخدمة لتعيين إجابات الاستبيان للمتطلبات.",
+      "import": "إطار الاستيراد",
+      "gaps": "فجوات التغطية",
+      "deleteBlocked": "{count,plural,one{لا يمكن حذف: # لا يزال يتم تعيين السيطرة على أسئلة الاستبيان. قم بإلغاء تحديده أولاً.} other{لا يمكن حذف: # لا تزال الضوابط يتم تعيينها لأسئلة الاستبيان. قم بإلغاء تحديدها أولاً.}}",
+      "emptyTitle": "لا أطر",
+      "emptyDescription": "لا يمكن تحميل بيانات الإطار.",
+      "controls": "{count,plural,one{# يتحكم} other{# الضوابط}}",
+      "deleteTitle": "حذف الإطار \"{name} ضد{version}\"?",
+      "deleteDescription": "سيؤدي هذا إلى حذف هذا الإطار نهائيًا و {count,plural,one{# يتحكم} other{# الضوابط}}. ستفقد أسئلة القالب المعينة لعناصر التحكم هذه مهامها. ولا تتأثر التقييمات والنتائج الحالية.",
+      "delete": "يمسح"
+    },
+    "detail": {
+      "notFound": "لم يتم العثور على الإطار",
+      "breadcrumbs": "الأطر",
+      "deleteFramework": "حذف الإطار",
+      "searchPlaceholder": "ضوابط البحث...",
+      "noControlsTitle": "لا توجد ضوابط مطابقة",
+      "noControlsDescription": "حاول استخدام مصطلح بحث مختلف."
+    },
+    "control": {
+      "notFound": "لم يتم العثور على عنصر التحكم",
+      "breadcrumbs": "الأطر",
+      "guidance": "إرشاد",
+      "mappedQuestions": "الأسئلة المعينة ({count})",
+      "noMappedTitle": "لا توجد أسئلة محددة",
+      "noMappedDescription": "لا توجد أسئلة استبيان تم تعيينها لعنصر التحكم هذا حتى الآن."
+    },
+    "gaps": {
+      "title": "السيطرة على فجوات التغطية",
+      "subtitle": "عناصر التحكم التي لا تحتوي على أسئلة معينة عبر أي قالب. استخدم هذا لتحديد النقاط العمياء في تغطية التقييم الخاص بك.",
+      "emptyTitle": "لم يتم العثور على ثغرات",
+      "emptyDescription": "يحتوي كل عنصر تحكم في كل إطار على سؤال واحد على الأقل يتم تعيينه له.",
+      "covered": "{mapped}/{total} مغطاة",
+      "allCovered": "الجميع {count,plural,one{# يتحكم} other{# الضوابط}} لديك سؤال واحد على الأقل المعينة.",
+      "errorTitle": "حدث خطأ ما",
+      "errorDescription": "لا يمكن تحميل طريقة عرض فجوة الامتثال. يرجى المحاولة مرة أخرى.",
+      "retry": "حاول ثانية"
+    },
+    "import": {
+      "metadataTitle": "إطار الاستيراد",
+      "title": "إطار الاستيراد",
+      "subtitle": "قم بتحميل ملف CSV مع عناصر التحكم لإنشاء إطار عمل جديد.",
+      "breadcrumb": "استيراد",
+      "cardTitle": "إطار الاستيراد من CSV",
+      "steps": {
+        "setup": "الإعداد والتحميل",
+        "review": "مراجعة"
+      },
+      "form": {
+        "name": "اسم الإطار",
+        "namePlaceholder": "على سبيل المثال بي سي آي دي إس إس",
+        "version": "إصدار",
+        "versionPlaceholder": "على سبيل المثال 4.0",
+        "description": "الوصف (اختياري)",
+        "descriptionPlaceholder": "وصف موجز للإطار",
+        "csvFile": "ملف CSV",
+        "downloadTemplate": "نموذج",
+        "csvHint": "يجب أن يحتوي ملف CSV على أعمدة: المجال، والرمز، والعنوان، والإرشادات (التوجيه اختياري). اختياري: is_shared_responsibility (صواب/خطأ، القيمة الافتراضية خطأ). الحد الأقصى 1 ميجابايت.",
+        "controlsFound": "{count,plural,one{# تم العثور على السيطرة} other{# تم العثور على الضوابط}}",
+        "domain": "اِختِصاص",
+        "code": "شفرة",
+        "titleColumn": "عنوان",
+        "showingFirst": "تظهر أولا {shown} ل {total} صفوف",
+        "next": "التالي →",
+        "back": "← العودة",
+        "importing": "جارٍ الاستيراد...",
+        "import": "إطار الاستيراد",
+        "reviewIntro": "أنت على وشك إنشاء الإطار {name} ضد{version} مع {count,plural,one{# يتحكم} other{# الضوابط}}.",
+        "success": "تم استيراد \"{name} v{version}\" مع {count, plural, one {# عنصر تحكم} other {# عناصر تحكم}}."
+      },
+      "errors": {
+        "noFile": "مطلوب ملف CSV.",
+        "invalidFileType": "يجب أن يكون الملف بتنسيق ‎.csv.",
+        "tooLarge": "ملف CSV كبير جدًا (بحد أقصى 1 ميجابايت).",
+        "noRows": "لا يحتوي ملف CSV على صفوف بيانات.",
+        "missingColumns": "أعمدة CSV مفقودة: {columns}. مُتوقع: {expected}",
+        "invalidInput": "إدخال غير صالح.",
+        "nameRequired": "اسم الإطار مطلوب",
+        "nameTooLong": "يجب أن يكون اسم الإطار 200 حرفًا أو أقل",
+        "versionRequired": "الإصدار مطلوب",
+        "versionTooLong": "يجب أن يكون الإصدار 50 حرفًا أو أقل",
+        "descriptionTooLong": "يجب أن يكون الوصف 500 حرف أو أقل",
+        "rowDomainRequired": "صف {row}: المجال مطلوب",
+        "rowCodeRequired": "صف {row}: مطلوب رمز التحكم",
+        "rowTitleRequired": "صف {row}: عنوان التحكم مطلوب",
+        "rowInvalid": "صف {row}: إدخال غير صالح.",
+        "duplicateCode": "صف {row}: رمز التحكم مكرر \"{code}\".",
+        "duplicateFramework": "إطار اسمه \"{name}\" إصدار \"{version}\"موجود بالفعل."
+      }
+    },
+    "shared": "مشترك",
+    "error": {
+      "title": "حدث خطأ ما",
+      "description": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى أو الاتصال بالدعم.",
+      "retry": "حاول ثانية"
+    },
+    "radar": {
+      "title": "رادار الامتثال المجال",
+      "current": "التقييم الحالي",
+      "previous": "التقييم السابق",
+      "ariaLabel": "رادار الامتثال للمجال: {values}",
+      "tableCaption": "الامتثال المجال بالنسبة المئوية",
+      "domain": "اِختِصاص",
+      "currentShort": "حاضِر",
+      "previousShort": "سابق",
+      "noPrevious": "تقييم واحد مكتمل فقط - لا توجد بيانات سابقة للمقارنة."
+    },
+    "heatmap": {
+      "metadataNotFound": "لم يتم العثور على المورد",
+      "metadataTitle": "الخريطة الحرارية — {name}",
+      "breadcrumbs": "الموردون",
+      "subtitle": "رادار امتثال المجال وخريطة الحرارة على مستوى التحكم من التقييمات الأخيرة.",
+      "downloadReport": "تحميل التقرير بصيغة PDF",
+      "preparingReport": "جارٍ إعداد التقرير…",
+      "emptyTitle": "لا توجد بيانات متاحة",
+      "emptyDescription": "لا توجد بيانات تقييم متاحة لهذا الإطار حتى الآن."
+    }
+  },
+  "RiskRegister": {
+    "metaTitle": "سجل المخاطر",
+    "title": "سجل المخاطر",
+    "subtitle": "كل النتائج عبر الموردين الخاص بك في مكان واحد.",
+    "stats": {
+      "open": "النتائج المفتوحة",
+      "criticalOpen": "حرجة مفتوحة",
+      "remediated": "تم علاجه",
+      "riskAccepted": "تم قبول المخاطر"
+    },
+    "filters": {
+      "status": "حالة",
+      "allFindings": "جميع النتائج",
+      "statusAriaLabel": "تصفية النتائج حسب الحالة",
+      "severity": "خطورة",
+      "anySeverity": "أي شدة",
+      "severityAriaLabel": "تصفية النتائج حسب الخطورة",
+      "vendor": "مورد",
+      "allVendors": "جميع الموردين",
+      "vendorAriaLabel": "تصفية النتائج حسب المورد",
+      "sort": "نوع",
+      "sortAriaLabel": "فرز النتائج",
+      "show": "يعرض",
+      "findingsOnly": "النتائج فقط",
+      "responsibilityAriaLabel": "تصفية حسب المسؤولية",
+      "customerResponsibility": "مسؤولية العملاء",
+      "apply": "فلتر",
+      "clear": "واضح",
+      "sorts": {
+        "priority": "أولوية",
+        "newest": "الأحدث",
+        "severity": "خطورة"
+      }
+    },
+    "emptyFiltered": "لا توجد نتائج تتطابق مع عوامل التصفية المحددة.",
+    "emptyTitle": "لا توجد نتائج حتى الآن",
+    "emptyDescription": "يتم رفع النتائج تلقائيًا عندما يرسل الموردون تقييمات بإجابات ناقصة.",
+    "items": "النتائج",
+    "responsibility": {
+      "title": "مسؤولية العملاء",
+      "noMatch": "لا توجد عناصر مسؤولية العميل تتطابق مع عوامل التصفية المحددة.",
+      "vendorFallback": "مورد",
+      "assignedTo": "المخصصة ل {name}"
+    },
+    "bulk": {
+      "selected": "{count} مختارة",
+      "statusRemediated": "تم علاجه",
+      "statusRiskAccepted": "تم قبول المخاطر",
+      "statusReopen": "إعادة فتح",
+      "updateTitle": "{count,plural,one{تحديث # العثور؟} other{تحديث # النتائج؟}}",
+      "updateDescription": "{count, plural, one {تعيين # نتيجة إلى \"{status}\".} other {تعيين # نتائج إلى \"{status}\".}}",
+      "apply": "يتقدم",
+      "applying": "جارٍ التقديم...",
+      "clearSelection": "مسح التحديد",
+      "note": "ملحوظة: {note}",
+      "automatedDescription": "لم تلبي إجابة المورد الاستجابة المتوقعة.",
+      "errors": {
+        "invalidStatus": "الحالة غير صالحة.",
+        "invalidSelection": "بيانات التحديد غير صالحة.",
+        "noFindings": "لم يتم تحديد أي نتائج.",
+        "updated": "{count,plural,one{# العثور على تحديث} other{# تم تحديث النتائج}}",
+        "alreadyRemoved": "({count} تمت إزالتها بالفعل)."
+      }
+    },
+    "error": {
+      "title": "حدث خطأ ما",
+      "description": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى أو الاتصال بالدعم.",
+      "retry": "حاول ثانية"
+    }
+  },
+  "SelfAssessment": {
+    "metaTitle": "التقييم الذاتي",
+    "title": "التقييم الذاتي",
+    "subtitle": "قم بتقييم مؤسستك مقابل أطر الامتثال باستخدام بوابة الاستبيان نفسها التي يستخدمها الموردون لديك.",
+    "start": "ابدأ تقييمًا جديدًا",
+    "emptyTitle": "لا يوجد تقييمات ذاتية حتى الآن",
+    "emptyDescription": "ابدأ أول تقييم ذاتي لتقييم مؤسستك وفقًا لمعايير ISO 27001 أو SOC 2 أو أطر العمل الأخرى.",
+    "noTemplate": "لا يوجد قالب",
+    "new": {
+      "metaTitle": "التقييم الذاتي الجديد",
+      "breadcrumb": "جديد",
+      "title": "التقييم الذاتي الجديد",
+      "cardTitle": "تفاصيل التقييم",
+      "form": {
+        "title": "عنوان",
+        "titlePlaceholder": "على سبيل المثال التقييم الذاتي ISO 27001:2022",
+        "template": "قالب الاستبيان",
+        "templatePlaceholder": "حدد قالبًا منشورًا",
+        "noTemplates": "لم يتم العثور على قوالب.",
+        "dueDate": "تاريخ الاستحقاق (اختياري)",
+        "publishFirst": "انشر النموذج أولاً لبدء التقييم الذاتي.",
+        "starting": "جارٍ البدء...",
+        "start": "ابدأ التقييم"
+      }
+    }
+  },
+  "Admin": {
+    "metaTitle": "مسؤل",
+    "general": {
+      "metaTitle": "المشرف – العام",
+      "title": "عام",
+      "subtitle": "هوية المنظمة تظهر عبر التطبيق.",
+      "cardTitle": "منظمة",
+      "cardDescription": "الاسم والبريد الإلكتروني للدعم واللغة الافتراضية التي تظهر في رسائل البريد الإلكتروني والواجهة.",
+      "form": {
+        "name": "اسم المنظمة",
+        "supportEmail": "دعم البريد الإلكتروني",
+        "defaultLanguage": "اللغة الافتراضية",
+        "defaultLanguageHint": "يتم استخدامه عندما لا يقوم الزائر باختيار اللغة. الاختيارات الفردية تتجاوز ذلك.",
+        "saving": "توفير...",
+        "save": "يحفظ"
+      },
+      "success": "تم حفظ إعدادات المؤسسة.",
+      "errors": {
+        "nameRequired": "اسم المنظمة مطلوب",
+        "invalidEmail": "أدخل عنوان بريد إلكتروني صالحًا",
+        "invalidInput": "إدخال غير صالح."
+      }
+    },
+    "appearance": {
+      "metaTitle": "المشرف – المظهر",
+      "title": "مظهر",
+      "subtitle": "العلامة التجارية عبر التطبيق - الشعار والألوان والتصميم.",
+      "cardTitle": "مظهر",
+      "cardDescription": "تخصيص الشعار واللون الأساسي (الأزرار) واللون الثانوي (العلامات/الحبوب). اترك حقلا فارغا لاستخدام الافتراضي.",
+      "logo": "الشعار",
+      "currentLogoAlt": "الشعار الحالي",
+      "removeLogoTitle": "هل تريد إزالة الشعار؟",
+      "removeLogoDescription": "ستتم إزالة الشعار الحالي من جميع الصفحات. يمكنك تحميل شعار جديد في أي وقت.",
+      "remove": "يزيل",
+      "removeLogo": "إزالة الشعار",
+      "noLogo": "لم يتم تحميل أي شعار. قم بتحميل PNG أو JPG (بحد أقصى 2 ميجابايت).",
+      "primaryColour": "اللون الأساسي",
+      "primaryColourHint": "يستخدم للأزرار الرئيسية والروابط والحالات النشطة.",
+      "secondaryColour": "اللون الثانوي",
+      "secondaryColourHint": "تستخدم للعلامات والحبوب والشارات والعناصر الثانوية.",
+      "reset": "إعادة ضبط",
+      "ragTitle": "ألوان مؤشر RAG",
+      "ragHint": "يُستخدم لمؤشرات النتيجة وأشرطة التقدم والخريطة الحرارية لمخاطر المورد.",
+      "ragGreen": "أخضر (متوافق)",
+      "ragGreenHint": "النتيجة ≥ 85%",
+      "ragAmber": "العنبر (يحتاج إلى الاهتمام)",
+      "ragAmberHint": "النتيجة 60-84%",
+      "ragRed": "الأحمر (ناقص)",
+      "ragRedHint": "النتيجة < 60%",
+      "ragUnscored": "غير مسجل (محايد)",
+      "ragUnscoredHint": "لم يتم تقييمها بعد",
+      "layoutTitle": "تَخطِيط",
+      "layoutHint": "اضبط الشكل والمظهر العام للمنصة.",
+      "borderRadius": "نصف قطر الحدود (بكسل)",
+      "borderRadiusHint": "يتحكم في كيفية تقريب الزوايا عبر التطبيق.",
+      "pageWidth": "عرض الصفحة",
+      "pageWidthHint": "قم بتقييد المحتوى بعرض قابل للقراءة أو استخدم ملء الشاشة.",
+      "constrained": "مقيدة",
+      "full": "العرض الكامل",
+      "saving": "توفير...",
+      "save": "حفظ المظهر",
+      "success": "تم حفظ إعدادات المظهر.",
+      "errors": {
+        "primaryHex": "يجب أن يكون اللون الأساسي لونًا سداسيًا عشريًا صالحًا (على سبيل المثال #3b82f6).",
+        "secondaryHex": "يجب أن يكون اللون الثانوي لونًا سداسيًا عشريًا صالحًا (على سبيل المثال #f59e0b).",
+        "ragGreen": "يجب أن يكون اللون الأخضر RAG لونًا سداسيًا صالحًا.",
+        "ragAmber": "يجب أن يكون RAG amber بلون سداسي عشري صالح.",
+        "ragRed": "يجب أن يكون RAG red لونًا سداسيًا صالحًا.",
+        "ragUnscored": "يجب أن يكون لون RAG غير المسجل لونًا سداسيًا صالحًا.",
+        "logoTooLarge": "يجب أن يكون حجم الشعار أقل من 2 ميجابايت.",
+        "logoImage": "يجب أن يكون الشعار ملف صورة.",
+        "logoFormat": "يجب أن يكون الشعار صورة PNG أو JPG أو GIF أو WEBP.",
+        "logoContent": "محتوى ملف الشعار لا يتطابق مع امتداده.",
+        "invalidInput": "إدخال غير صالح."
+      }
+    },
+    "error": {
+      "title": "حدث خطأ ما",
+      "description": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى أو الاتصال بالدعم.",
+      "retry": "حاول ثانية"
+    },
+    "email": {
+      "metaTitle": "المشرف - البريد الإلكتروني",
+      "title": "بريد إلكتروني",
+      "subtitle": "تسليم SMTP والقوالب المستخدمة لرسائل البريد الإلكتروني الخاصة بالموردين والمراجعين.",
+      "smtpTitle": "SMTP",
+      "smtpDescription": "يستخدم لإرسال دعوات الموردين والتذكيرات. يتم تشفير كلمة المرور أثناء الراحة.",
+      "form": {
+        "host": "مضيف SMTP",
+        "port": "منفذ SMTP",
+        "username": "اسم مستخدم SMTP",
+        "password": "كلمة مرور SMTP",
+        "passwordKeep": "اتركه فارغًا للاحتفاظ بكلمة المرور الحالية",
+        "passwordEnter": "أدخل كلمة مرور SMTP",
+        "passwordHint": "يتم تخزينها بشكل مشفر في حالة الراحة ولا يتم عرضها مطلقًا.",
+        "fromAddress": "من العنوان",
+        "fromName": "من الاسم",
+        "saving": "توفير...",
+        "save": "يحفظ"
+      },
+      "test": {
+        "label": "أرسل بريدًا إلكترونيًا للاختبار إلى",
+        "placeholder": "you@company.com",
+        "sending": "إرسال...",
+        "send": "إرسال الاختبار",
+        "hint": "يتم الإرسال باستخدام إعدادات SMTP المحفوظة. احفظ أي تغييرات أولاً."
+      },
+      "templatesTitle": "قوالب البريد الإلكتروني",
+      "templatesDescription": "حدد قالبًا لتحرير موضوعه ونصه. تستخدم القيم الديناميكية الرموز المميزة ذات الأقواس المزدوجة.",
+      "subject": "موضوع",
+      "body": "جسم",
+      "editorHint": "يتم دعم تنسيق Markdown — استخدم **غامق**، *مائل*، والقوائم، والروابط. الرموز: {tokens}.",
+      "savingChanges": "توفير...",
+      "saveChanges": "حفظ التغييرات",
+      "resetTitle": "إعادة التعيين إلى الوضع الافتراضي؟",
+      "resetDescription": "ال \"{name}\" سيتم استبدال الموضوع والنص بالإعداد الافتراضي المضمن. سيتم فقدان أي تخصيص.",
+      "reset": "إعادة ضبط",
+      "resetting": "إعادة الضبط...",
+      "resetToDefault": "إعادة التعيين إلى الوضع الافتراضي",
+      "cancel": "يلغي",
+      "preview": "معاينة",
+      "templateTypes": {
+        "invite": {
+          "label": "دعوة البريد الإلكتروني",
+          "description": "يتم إرساله إلى المورد عند مشاركة الاستبيان لأول مرة."
+        },
+        "invite-password": {
+          "label": "دعوة البريد الإلكتروني (محمية بكلمة مرور)",
+          "description": "متغير الدعوة الذي يتضمن كلمة مرور الوصول إلى البوابة الإلكترونية."
+        },
+        "reminder": {
+          "label": "تذكير البريد الإلكتروني",
+          "description": "يتم إرسال دفعة إلى المورد مع اقتراب تاريخ الاستحقاق."
+        },
+        "escalation": {
+          "label": "البريد الإلكتروني التصعيد",
+          "description": "يتم إرساله إلى المراجع عندما يصبح الاستبيان متأخراً."
+        },
+        "submission": {
+          "label": "تم استلام التقديم عبر البريد الإلكتروني",
+          "description": "يخطر المراجع بأن المورد قد أرسل الإجابات."
+        },
+        "clarification": {
+          "label": "تم إرساله مرة أخرى للتوضيح بالبريد الإلكتروني",
+          "description": "يتم إرساله إلى المورد عند إعادة فتح التقييم لمزيد من المعلومات."
+        },
+        "reset": {
+          "label": "البريد الإلكتروني لإعادة تعيين كلمة المرور",
+          "description": "يتم إرساله إلى الموظفين الداخليين الذين يطلبون إعادة تعيين كلمة المرور."
+        },
+        "expiry": {
+          "label": "انتهاء صلاحية البريد الإلكتروني للتذكير",
+          "description": "يتم إرسالها إلى مالك المخاطر الخاص بالمورد عندما تقترب الشهادة أو العقد من انتهاء الصلاحية."
+        }
+      },
+      "success": "تم حفظ إعدادات البريد الإلكتروني.",
+      "testSuccess": "تم إرسال البريد الإلكتروني التجريبي إلى {email}.",
+      "templateSaved": "{name} أنقذ.",
+      "templateReset": "{name} إعادة تعيين إلى الافتراضي.",
+      "errors": {
+        "invalidInput": "إدخال غير صالح.",
+        "invalidEmail": "أدخل عنوان بريد إلكتروني صالحًا",
+        "invalidPort": "يجب أن يكون منفذ SMTP بين 1 و65535",
+        "invalidRecipient": "مستلم غير صالح.",
+        "smtpNotConfigured": "احفظ إعدادات SMTP قبل إرسال بريد إلكتروني تجريبي.",
+        "unknownTemplate": "قالب بريد إلكتروني غير معروف.",
+        "subjectRequired": "الموضوع مطلوب.",
+        "bodyRequired": "الجسم مطلوب ."
+      }
+    },
+    "emailTracking": {
+      "metaTitle": "المشرف - تتبع البريد الإلكتروني",
+      "title": "تتبع البريد الإلكتروني",
+      "subtitle": "حالة التسليم لكل بريد إلكتروني أرسلته المنصة.",
+      "retentionTitle": "حفظ",
+      "retentionDescription": "يتم تنقيح سجلات إرسال البريد الإلكتروني الأقدم من هذه الأيام العديدة تلقائيًا من خلال عملية التنظيف المجدولة. اضبط على 0 للاحتفاظ به لأجل غير مسمى.",
+      "retentionLabel": "الاحتفاظ بسجل البريد الإلكتروني (أيام)",
+      "retentionHelp": "ينطبق على التشغيل المقرر التالي.",
+      "cardTitle": "تتبع البريد الإلكتروني",
+      "cardDescription": "عرض حالة كل بريد إلكتروني مرسل من قبل المنصة. يتم الاحتفاظ بالإدخالات وفقًا لسياسة الاستبقاء التي تم تكوينها.",
+      "description": "تتبع كل بريد إلكتروني يرسله النظام الأساسي - الدعوات والتذكيرات والتصعيد والرسائل الاختبارية. يؤكد خادم SMTP القبول؛ وهذا لا يضمن تسليم البريد الوارد. يتم الاحتفاظ بالسجلات وفقًا لسياسة الاحتفاظ التي تم تكوينها.",
+      "filters": {
+        "status": "حالة",
+        "allStatuses": "جميع الحالات",
+        "statusAria": "تصفية رسائل البريد الإلكتروني حسب الحالة",
+        "type": "يكتب",
+        "allTypes": "جميع الأنواع",
+        "typeAria": "تصفية رسائل البريد الإلكتروني حسب النوع",
+        "recipient": "متلقي",
+        "recipientPlaceholder": "email@example.com",
+        "from": "من",
+        "to": "ل",
+        "rows": "الصفوف",
+        "pageSizeAria": "حجم صفحة سجل البريد الإلكتروني",
+        "filter": "فلتر",
+        "clear": "واضح"
+      },
+      "statuses": {
+        "SENT": "مرسل",
+        "FAILED": "فشل"
+      },
+      "types": {
+        "INVITE": "يدعو",
+        "INVITE-PASSWORD": "دعوة (محمية بكلمة مرور)",
+        "REMINDER": "تذكير",
+        "ESCALATION": "التصعيد",
+        "SUBMISSION": "استسلام",
+        "CLARIFICATION": "إيضاح",
+        "RESET": "إعادة تعيين كلمة المرور",
+        "EXPIRY": "انتهاء الصلاحية",
+        "TEST": "امتحان"
+      },
+      "table": {
+        "date": "تاريخ",
+        "recipient": "متلقي",
+        "subject": "موضوع",
+        "type": "يكتب",
+        "status": "حالة",
+        "detail": "التفاصيل",
+        "assessment": "تقدير",
+        "sentBy": "أرسلت بواسطة"
+      },
+      "noLogs": "لم يتم العثور على سجلات البريد الإلكتروني.",
+      "pagination": "الصفحة {page} من {totalPages} ({total} إدخال)",
+      "previous": "سابق",
+      "next": "التالي",
+      "accepted": "تم قبوله بواسطة خادم SMTP",
+      "system": "نظام",
+      "retry": "أعد المحاولة",
+      "retrying": "جارٍ إعادة المحاولة...",
+      "retrySuccess": "تمت إعادة إرسال البريد الإلكتروني بنجاح.",
+      "testResent": "اختبار إعادة إرسال البريد الإلكتروني.",
+      "errors": {
+        "missingLog": "إدخال سجل البريد الإلكتروني مفقود.",
+        "notFound": "لم يتم العثور على إدخال سجل البريد الإلكتروني.",
+        "onlyFailed": "يمكن إعادة محاولة رسائل البريد الإلكتروني الفاشلة فقط.",
+        "resetSingleUse": "روابط إعادة التعيين تستخدم لمرة واحدة ولا يمكن إعادة إرسالها. اطلب من المستخدم أن يطلب إعادة تعيين جديدة.",
+        "resendFailed": "فشل في إعادة إرسال البريد الإلكتروني. تحقق من علامة تبويب التتبع للحصول على التفاصيل.",
+        "retentionInvalid": "يجب أن يكون الاحتفاظ بسجل البريد الإلكتروني 0 أو رقمًا موجبًا.",
+        "retentionSaved": "تم حفظ الاحتفاظ بسجل البريد الإلكتروني."
+      }
+    },
+    "scoring": {
+      "metaTitle": "المشرف - التهديف",
+      "title": "التهديف",
+      "subtitle": "أوزان المخاطر وحدود RAG لملفات تعريف الموردين والخريطة الحرارية.",
+      "cardTitle": "التهديف",
+      "cardDescription": "أوزان المخاطر والحدود الفاصلة باللون الأحمر/الأصفر/الأخضر المستخدمة في ملفات تعريف الموردين وخريطة التمثيل اللوني للفجوة.",
+      "riskWeights": "أوزان المخاطر (رقمية)",
+      "ragThresholds": "عتبات RAG",
+      "ragHint": "أخضر عند أو أعلى، كهرماني عند أو أعلى، أحمر أدناه.",
+      "green": "الأخضر ≥",
+      "amber": "العنبر ≥",
+      "saving": "توفير...",
+      "save": "حفظ التهديف",
+      "success": "تم حفظ إعدادات التسجيل.",
+      "errors": {
+        "invalidInput": "إدخال غير صالح."
+      }
+    },
+    "scheduling": {
+      "metaTitle": "المشرف - الجدولة",
+      "title": "الجدولة",
+      "subtitle": "التذكيرات والتصعيد والمجدول المدمج.",
+      "cardTitle": "الجدولة",
+      "cardDescription": "تذكيرات تلقائية قبل تاريخ الاستحقاق وتصعيد المراجع للتقييمات المتأخرة.",
+      "reminderLabel": "تذكير تعويض الأيام",
+      "reminderHint": "قائمة مفصولة بفواصل بالأيام السابقة للموعد المحدد لإرسال التذكيرات. مثال: 7، 1 يرسل رسائل تذكير قبل 7 أيام ويوم واحد من الموعد المحدد.",
+      "reminderPlaceholder": "7, 1",
+      "escalationLabel": "التصعيد بعد (أيام)",
+      "escalationHint": "بعد أيام من تاريخ الاستحقاق قبل أن يتلقى المراجع رسالة بريد إلكتروني للتصعيد.",
+      "defaultDueLabel": "التقييم الافتراضي المستحق (أيام)",
+      "defaultDueHint": "تتخلف التقييمات الجديدة عن هذه الأيام العديدة حتى تاريخ الاستحقاق.",
+      "schedulerLabel": "تشغيل المهام المجدولة داخل التطبيق",
+      "schedulerHint": "عند التمكين، يتحقق التطبيق كل خمس دقائق من التذكيرات المستحقة وعمليات التصعيد وإشعارات انتهاء الصلاحية والتقييمات المتكررة وتنقيح السجل وتنظيف الملفات المعزولة - لا حاجة إلى وظيفة كرون خارجية أو جدولة. قم بتعطيل هذا فقط إذا قمت بتشغيله {endpoint} بنفسك (على سبيل المثال من crontab للنظام أو وظيفة Azure).",
+      "saving": "توفير...",
+      "save": "حفظ الجدولة",
+      "lastRun": "آخر تشغيل مجدول: {when}",
+      "never": "أبداً",
+      "justNow": "الآن",
+      "lessThanMinute": "منذ أقل من دقيقة",
+      "minuteAgo": "منذ دقيقة واحدة",
+      "minutesAgo": "{count} قبل دقائق",
+      "hourAgo": "منذ ساعة واحدة",
+      "hoursAgo": "{count} منذ ساعات",
+      "dayAgo": "منذ يوم واحد",
+      "daysAgo": "{count} منذ أيام",
+      "success": "تم حفظ التكوين.",
+      "errors": {
+        "escalationInvalid": "يجب أن تكون أيام التصعيد 1 على الأقل.",
+        "defaultDueInvalid": "يجب أن تكون أيام الاستحقاق الافتراضية 1 على الأقل."
+      }
+    },
+    "retention": {
+      "saving": "توفير...",
+      "save": "يحفظ"
+    },
+    "storage": {
+      "metaTitle": "المشرف - التخزين",
+      "title": "تخزين",
+      "subtitle": "أين توجد ملفات الأدلة، وما يمكن للموردين تحميله.",
+      "fileStorageTitle": "تخزين الملفات",
+      "fileStorageDescription": "تحديد مكان تخزين ملفات الأدلة والمرفقات. لا يؤدي تغيير الموفرين إلى ترحيل الملفات الموجودة.",
+      "uploadConstraintsTitle": "قيود التحميل",
+      "uploadConstraintsDescription": "يتم تطبيق حدود الحجم ونوع الملف على تحميلات أدلة المورد.",
+      "form": {
+        "provider": "مزود",
+        "providerHint": "لا يؤدي تغيير الموفرين إلى ترحيل الملفات الموجودة. تظل الملفات المخزنة لدى الموفر السابق قابلة للوصول فقط في حالة التبديل مرة أخرى.",
+        "local": "القرص المحلي",
+        "s3": "أمازون إس 3",
+        "azure": "أزور بلوب",
+        "s3Title": "أمازون إس 3",
+        "bucket": "دلو",
+        "region": "منطقة",
+        "regionPlaceholder": "على سبيل المثال لنا-الشرق-1",
+        "accessKeyId": "معرف مفتاح الوصول",
+        "secretAccessKey": "مفتاح الوصول السري",
+        "secretHint": "مخزنة مشفرة في بقية. اتركه فارغًا للاحتفاظ بالقيمة الحالية.",
+        "azureTitle": "أزور بلوب",
+        "containerName": "اسم الحاوية",
+        "connectionString": "سلسلة الاتصال",
+        "saving": "توفير…",
+        "save": "حفظ إعدادات التخزين"
+      },
+      "uploads": {
+        "maxSize": "الحد الأقصى لحجم تحميل الملف (ميجابايت)",
+        "maxSizeHint": "يتم رفض ملفات الأدلة الأكبر من هذا الحد أثناء التحميل.",
+        "allowedExtensions": "ملحقات الملفات المسموح بها",
+        "allowedHint": "يمكن لموردي أنواع الملفات تحميلها كدليل. حدد واحدًا على الأقل.",
+        "saving": "توفير...",
+        "save": "يحفظ"
+      },
+      "success": "تم حفظ إعدادات التخزين.",
+      "uploadsSuccess": "تم حفظ قيود التحميل.",
+      "errors": {
+        "invalidInput": "إدخال غير صالح.",
+        "maxUploadInvalid": "يجب أن يكون الحد الأقصى لحجم التحميل 1 ميغابايت على الأقل."
+      }
+    },
+    "signIn": {
+      "metaTitle": "المشرف - تسجيل الدخول",
+      "title": "تسجيل الدخول",
+      "subtitle": "كيفية مصادقة الموظفين، ومدة بقائهم في تسجيل الدخول.",
+      "ssoTitle": "تسجيل الدخول الموحد",
+      "ssoDescription": "السماح للموظفين بتسجيل الدخول باستخدام معرف Microsoft Entra أو Google Workspace أو موفر OIDC مخصص. يتم تشفير بيانات اعتماد العميل أثناء الراحة.",
+      "sessionsTitle": "الجلسات",
+      "sessionsDescription": "تقييد تسجيل الدخول وتسجيل الخروج التلقائي للجلسات الخاملة.",
+      "sso": {
+        "entraId": "معرف مايكروسوفت إنترا",
+        "google": "مساحة عمل جوجل",
+        "oidc": "مخصص OIDC",
+        "enabled": "ممكّن",
+        "clientId": "معرف العميل",
+        "clientSecret": "سر العميل",
+        "secretKeep": "اتركه فارغا للحفاظ على التيار",
+        "secretEnter": "سر العميل",
+        "secretHint": "يتم تخزينها بشكل مشفر في حالة الراحة ولا يتم عرضها مطلقًا.",
+        "displayName": "اسم عرض الموفر",
+        "displayNamePlaceholder": "اوكتا / Auth0 / Keycloak",
+        "issuerUrl": "عنوان URL للمصدر",
+        "issuerPlaceholder": "https://example.okta.com",
+        "defaultRole": "الدور الافتراضي لمستخدمي SSO الجدد",
+        "allowedDomain": "التقييد بالمجال (اختياري)",
+        "allowedDomainPlaceholder": "@company.com",
+        "disableLocalAuth": "تعطيل تسجيل الدخول بالبريد الإلكتروني/كلمة المرور (SSO فقط)",
+        "disableLocalAuthHint": "يخفي نموذج تسجيل الدخول المحلي بحيث لا يتمكن الموظفون من تسجيل الدخول إلا عبر الدخول الموحد (SSO). يتم التجاهل ما لم يتم تمكين موفر تسجيل الدخول الموحّد (SSO) واحد على الأقل، لذلك لا يمكن للتكوين الخاطئ أن يمنع الجميع من الدخول. استخدم عنوان URL الخاص بكسر الزجاج أدناه للوصول في حالات الطوارئ.",
+        "saving": "توفير...",
+        "save": "حفظ الدخول الموحّد (SSO)."
+      },
+      "breakGlass": {
+        "title": "الوصول إلى كسر الزجاج",
+        "description": "عند تعطيل تسجيل الدخول المحلي، يظل عنوان URL السري هذا يعرض نموذج البريد الإلكتروني/كلمة المرور حتى يتمكن المسؤول من تسجيل الدخول في حالة عدم توفر الدخول الموحّد (SSO). يؤدي إنشاء عنوان URL جديد إلى إلغاء العنوان السابق على الفور.",
+        "configured": "تم حاليًا تكوين عنوان URL للكسر الزجاجي.",
+        "notConfigured": "لم يتم تكوين عنوان URL للكسر الزجاجي حتى الآن.",
+        "generating": "جارٍ الإنشاء...",
+        "regenerate": "إعادة إنشاء عنوان URL لكسر الزجاج",
+        "generate": "إنشاء عنوان URL لكسر الزجاج",
+        "success": "تم إنشاء عنوان URL لكسر الزجاج. انسخه الآن، فلن يتم عرضه مرة أخرى."
+      },
+      "security": {
+        "loginRateLimit": "حد معدل تسجيل الدخول (في الدقيقة)",
+        "loginRateLimitHint": "الحد الأقصى لمحاولات تسجيل الدخول لكل عنوان IP في الدقيقة. زيادة في بيئات المكاتب المشتركة خلف عنوان IP عام واحد.",
+        "autoLogout": "تسجيل الخروج التلقائي (بالدقائق)",
+        "autoLogoutHint": "قم بتسجيل الخروج تلقائيًا بعد هذه الدقائق العديدة من عدم النشاط. اضبط على 0 للتعطيل. الحد الأدنى 5 دقائق عند التمكين.",
+        "saving": "توفير...",
+        "save": "يحفظ"
+      },
+      "success": "تم حفظ إعدادات الدخول الموحّد (SSO).",
+      "securitySuccess": "تم حفظ إعدادات تسجيل الدخول.",
+      "errors": {
+        "invalidInput": "إدخال غير صالح.",
+        "loginRateInvalid": "يجب أن يكون حد معدل تسجيل الدخول 1 على الأقل في الدقيقة.",
+        "autoLogoutInvalid": "يجب أن يكون تسجيل الخروج التلقائي 0 (معطل) أو 5 دقائق على الأقل."
+      }
+    },
+    "rateLimits": {
+      "metaTitle": "المشرف - حدود الأسعار",
+      "title": "حدود المعدل",
+      "subtitle": "الحماية من إساءة استخدام بوابة المورد واسترداد الحساب.",
+      "cardTitle": "حدود السعر (للدقيقة)",
+      "cardDescription": "قم برفعها للموردين المشغولين أو عناوين IP للمكاتب المشتركة؛ الإعدادات الافتراضية تناسب معظم عمليات النشر.",
+      "fields": {
+        "portalPageLoadsPerMin": {
+          "label": "عدد مرات تحميل صفحة البوابة / الدقيقة (لكل زائر)",
+          "help": "عدد المرات التي يستطيع فيها متصفح المورد تحميل رابط المورد. حراس ضد تعداد الارتباط."
+        },
+        "portalUploadsPerMin": {
+          "label": "تحميلات أدلة البوابة / دقيقة (لكل زائر)",
+          "help": "الحد الأقصى لتحميلات ملفات الأدلة التي يمكن للمورد إجراؤها في الدقيقة."
+        },
+        "portalSubmitPerMin": {
+          "label": "عمليات إرسال البوابة / الدقيقة (لكل رابط)",
+          "help": "الحد الأقصى لمحاولات الإرسال لرابط مورد واحد."
+        },
+        "portalCommentPerMin": {
+          "label": "تعليقات البوابة / دقيقة (لكل رابط)",
+          "help": "الحد الأقصى للتعليقات التي يمكن للمورد نشرها على رابط مورد واحد."
+        },
+        "portalPasswordAttemptsPerMin": {
+          "label": "محاولات كلمة مرور البوابة الإلكترونية / دقيقة (لكل رابط)",
+          "help": "حراسة استبيان محمي بكلمة مرور ضد القوة الغاشمة."
+        },
+        "passwordResetPerMin": {
+          "label": "طلبات إعادة تعيين كلمة المرور / الدقيقة (لكل بريد إلكتروني)",
+          "help": "يحد من رسائل البريد الإلكتروني الخاصة بإعادة تعيين كلمة المرور للموظفين لعنوان معين."
+        },
+        "breakGlassPerMin": {
+          "label": "محاولات كسر الزجاج / الدقيقة (لكل IP)",
+          "help": "يحد من التحقق من صحة رابط استرداد كسر الزجاج الموحَّد (SSO)."
+        }
+      },
+      "saving": "توفير...",
+      "save": "حفظ حدود المعدل",
+      "success": "تم حفظ حدود السعر.",
+      "errors": {
+        "minimum": "{field} يجب أن يكون على الأقل 1 في الدقيقة."
+      }
+    },
+    "api": {
+      "metaTitle": "المشرف - API",
+      "title": "واجهة برمجة التطبيقات",
+      "subtitle": "الوصول البرمجي إلى REST API.",
+      "cardTitle": "الوصول إلى واجهة برمجة التطبيقات",
+      "cardDescription": "قم بإنشاء مفاتيح API للوصول البرمجي إلى REST API. تستخدم المفاتيح مصادقة Bearer ويمكن تقييدها بواسطة عنوان IP. تظهر المفاتيح مرة واحدة فقط عند إنشائها.",
+      "enabled": "تمكين مصادقة مفتاح API",
+      "enabledHint": "تسمح مفاتيح API للأدوات الخارجية باستدعاء REST API دون تسجيل الدخول إلى المتصفح. تتمتع المفاتيح بإمكانية الوصول الكامل إلى كل نقطة نهاية وتظل صالحة بشكل مستقل عن الحساب الذي أنشأها. يتم عرض المفاتيح مرة واحدة فقط ولا يمكن استرجاعها لاحقًا. تم تعطيل المفاتيح التي تم إنشاؤها قبل تحديث بادئة البحث لأسباب أمنية ويجب إعادة إنشائها.",
+      "saving": "توفير...",
+      "save": "يحفظ",
+      "docs": "وثائق واجهة برمجة التطبيقات →",
+      "keysTitle": "مفاتيح واجهة برمجة التطبيقات ({count})",
+      "keyCreatedTitle": "تم إنشاء المفتاح - انسخه الآن",
+      "keyCreatedHint": "لن يتم عرض هذا المفتاح مرة أخرى. قم بتخزينه بشكل آمن.",
+      "copy": "ينسخ",
+      "done": "منتهي",
+      "createTitle": "إنشاء مفتاح جديد",
+      "name": "اسم",
+      "namePlaceholder": "على سبيل المثال خط أنابيب سي آي",
+      "expiry": "انتهاء الصلاحية",
+      "expiryOptions": {
+        "30": "30 يوما",
+        "90": "90 يوما",
+        "180": "180 يوما",
+        "365": "1 سنة",
+        "permanent": "دائم"
+      },
+      "allowedIps": "عناوين IP المسموح بها (اختياري)",
+      "allowedIpsPlaceholder": "192.168.1.0/24",
+      "rateLimit": "الحد الأقصى للسعر/الدقيقة",
+      "rateLimitPlaceholder": "تقصير",
+      "creating": "جارٍ الإنشاء...",
+      "create": "إنشاء مفتاح",
+      "empty": "لم يتم إنشاء مفاتيح API حتى الآن.",
+      "permissionCount": "{count,plural,one{# إذن} other{# الأذونات}}",
+      "fullAccess": "الوصول الكامل",
+      "revoked": "تم إبطاله",
+      "expired": "منتهي الصلاحية",
+      "lastUsed": "آخر استخدام {date}",
+      "neverUsed": "لم تستخدم قط",
+      "requestCount": "{count,plural,one{# طلب} other{# طلبات}}",
+      "ips": "عناوين IP: {ips}",
+      "rateLimitSuffix": "حد السعر: {value}/دقيقة",
+      "enable": "يُمكَِن",
+      "revokeTitle": "هل تريد إلغاء مفتاح واجهة برمجة التطبيقات؟",
+      "revokeDescription": "أي عمليات تكامل باستخدام \"{name}\" سيتوقف عن العمل فورًا. ويمكن إعادة تمكينه لاحقًا.",
+      "revoke": "إبطال",
+      "deleteTitle": "هل تريد حذف مفتاح واجهة برمجة التطبيقات؟",
+      "deleteDescription": "\"{name}\" سيتم حذفه نهائيًا. أي عمليات تكامل تستخدم هذا المفتاح سوف تنقطع نهائيًا. لا يمكن التراجع عن هذا.",
+      "delete": "يمسح",
+      "keyCreatedMessage": "تم إنشاء المفتاح: {prefix}. انسخ المفتاح أدناه — لن يتم عرضه مرة أخرى.",
+      "success": "تم حفظ إعدادات واجهة برمجة التطبيقات.",
+      "errors": {
+        "nameRequired": "اسم المفتاح مطلوب.",
+        "permissionsRequired": "حدد إذنًا واحدًا على الأقل أو قم بتمكين الوصول الكامل.",
+        "invalidInput": "إدخال غير صالح."
+      }
+    },
+    "webhooks": {
+      "metaTitle": "المشرف - خطافات الويب",
+      "title": "خطافات الويب",
+      "subtitle": "تم دفع إشعارات الأحداث إلى نقاط النهاية الخاصة بك.",
+      "cardTitle": "خطافات الويب",
+      "cardDescription": "قم بتكوين نقاط النهاية لتلقي إعلامات الأحداث عند إرسال التقييمات أو تغيير النتائج أو انتهاء صلاحية الشهادات.",
+      "endpointsTitle": "نقاط نهاية خطاف الويب ({count})",
+      "add": "أضف نقطة النهاية",
+      "newTitle": "خطاف ويب جديد",
+      "name": "اسم",
+      "namePlaceholder": "على سبيل المثال تنبيهات الركود، وامتثال الفرق",
+      "url": "عنوان URL",
+      "urlPlaceholder": "https://example.com/webhooks/mitch-risk",
+      "platform": "منصة",
+      "platformPlaceholder": "حدد النظام الأساسي",
+      "platforms": {
+        "GENERIC": "عام (HTTP)",
+        "SLACK": "سلاك",
+        "MICROSOFT_TEAMS": "فرق مايكروسوفت",
+        "DISCORD": "الفتنة"
+      },
+      "events": "الأحداث",
+      "eventLabels": {
+        "ASSESSMENT_SUBMITTED": "تم تقديم التقييم",
+        "ASSESSMENT_OVERDUE": "تأخر التقييم",
+        "FINDING_CREATED": "العثور على خلق",
+        "FINDING_RESOLVED": "العثور على حلها",
+        "CERTIFICATION_EXPIRING": "انتهاء صلاحية الشهادة"
+      },
+      "creating": "جارٍ الإنشاء...",
+      "create": "يخلق",
+      "cancel": "يلغي",
+      "empty": "لم يتم تكوين خطافات الويب. أضف نقطة نهاية لتلقي إشعارات الأحداث.",
+      "active": "نشيط",
+      "disabled": "عاجز",
+      "disable": "إبطال",
+      "enable": "يُمكَِن",
+      "deleteTitle": "هل تريد حذف الردّ التلقائي على الويب؟",
+      "deleteDescription": "ستتوقف نقطة النهاية هذه عن تلقي الأحداث: {url}",
+      "delete": "يمسح",
+      "success": "تم إنشاء نقطة نهاية Webhook.",
+      "errors": {
+        "urlRequired": "عنوان URL مطلوب.",
+        "urlTooLong": "يجب أن يكون عنوان URL 500 حرفًا أو أقل.",
+        "nameTooLong": "يجب أن يكون الاسم 100 حرف أو أقل.",
+        "invalidUrl": "أدخل عنوان URL صالحًا.",
+        "httpsRequired": "يجب أن تستخدم عناوين URL للخطاف عبر الويب HTTPS.",
+        "publicOnly": "يجب أن تشير عناوين URL الخاصة بخطاف الويب إلى عنوان عام — ولا يُسمح بالمضيفين الداخليين ومضيفي الاسترجاع.",
+        "unknownPlatform": "منصة غير معروفة.",
+        "eventRequired": "يجب تحديد حدث واحد على الأقل."
+      }
+    },
+    "trustCenter": {
+      "metaTitle": "المشرف - مركز التوثيق",
+      "title": "مركز الثقة",
+      "subtitle": "تكوين صفحة الامتثال التي تواجه الجمهور.",
+      "cardTitle": "مركز الثقة",
+      "cardDescription": "صفحة عامة على / شارات الامتثال لمشاركة الثقة والمستندات الأمنية والمعالجات الفرعية والأقسام السردية مع الموردين والشركاء. قم بتنظيم المحتوى ضمن إدارة → مركز التوثيق.",
+      "enabled": "تمكين مركز الثقة",
+      "enabledHint": "أثناء التعطيل، يعرض /trust رسالة لم يتم العثور عليها ولا يتم عرض أي محتوى بشكل عام.",
+      "intro": "مقدمة (تخفيض)",
+      "introHint": "فقرة قصيرة تظهر تحت اسم المنظمة في الصفحة العامة.",
+      "introPlaceholder": "التزامنا بالأمن والخصوصية…",
+      "contactEmail": "البريد الإلكتروني للاتصال",
+      "contactEmailHint": "يظهر في أسفل الصفحة العامة. يعود إلى البريد الإلكتروني لدعم المؤسسة عندما يكون فارغًا.",
+      "contactEmailPlaceholder": "الأمن@example.com",
+      "includeInInvites": "رابط إلى مركز الثقة في رسائل البريد الإلكتروني الخاصة بدعوة المورد",
+      "includeInInvitesHint": "يضيف سطر تذييل لدعوة رسائل البريد الإلكتروني التي تشير إلى /trust. لا يتم تعديل القوالب — تتم إضافة الرابط في وقت الإرسال.",
+      "pageLoads": "عدد مرات تحميل الصفحة العامة / الدقيقة (لكل عنوان IP)",
+      "downloads": "تنزيلات المستندات / الدقيقة (لكل عنوان IP)",
+      "saving": "توفير...",
+      "save": "حفظ مركز الثقة",
+      "success": "تم حفظ إعدادات مركز الثقة.",
+      "errors": {
+        "invalidInput": "إدخال غير صالح.",
+        "invalidEmail": "أدخل عنوان بريد إلكتروني صالحًا."
+      }
+    },
+    "permissions": {
+      "fullAccess": "الوصول الكامل",
+      "fullAccessHint": "عند تحديده، يمنح المفتاح جميع الأذونات. قم بإلغاء التحديد لتقييد المفتاح لمجموعة محددة من الأذونات.",
+      "selectAll": "حدد كافة الأذونات",
+      "permissionCount": "{granted} / {total} الأذونات",
+      "groups": {
+        "vendors": "الموردون",
+        "assessments": "التقييمات",
+        "templates": "قوالب",
+        "frameworks": "الأطر",
+        "administration": "إدارة",
+        "webhooks": "خطافات الويب",
+        "trustcenter": "مركز الثقة",
+        "profile": "حساب تعريفي"
+      },
+      "items": {
+        "vendors_view": "عرض الموردين",
+        "vendors_create": "إنشاء الموردين",
+        "vendors_edit": "تحرير الموردين",
+        "vendors_delete": "حذف الموردين",
+        "assessments_view": "عرض التقييمات",
+        "assessments_create": "إنشاء وإرسال التقييمات",
+        "assessments_edit": "تحرير وإدارة الروابط",
+        "assessments_review": "المراجعة ووضع اللمسات النهائية",
+        "assessments_delete": "حذف التقييمات",
+        "templates_view": "عرض القوالب",
+        "templates_create": "إنشاء قوالب",
+        "templates_edit": "تحرير ونشر القوالب",
+        "templates_delete": "حذف القوالب",
+        "frameworks_view": "عرض الأطر",
+        "frameworks_edit": "تحرير الأطر",
+        "frameworks_delete": "حذف الأطر",
+        "audit_view": "عرض سجلات التدقيق والبريد الإلكتروني",
+        "users_manage": "إدارة المستخدمين",
+        "roles_manage": "إدارة الأدوار",
+        "settings_manage": "إدارة الإعدادات",
+        "api_manage": "إدارة الوصول إلى واجهة برمجة التطبيقات",
+        "webhooks_manage": "إدارة خطافات الويب",
+        "trustcenter_manage": "إدارة محتوى مركز الثقة",
+        "profile_view": "عرض وتحرير الملف الشخصي الخاص"
+      }
+    },
+    "users": {
+      "metaTitle": "المشرف – المستخدمين",
+      "title": "المستخدمين",
+      "subtitle": "حسابات الموظفين والوصول إليها.",
+      "cardTitle": "حسابات الموظفين",
+      "cardDescription": "إنشاء حسابات الموظفين وإدارة دورهم، والوصول، وكلمة المرور.",
+      "searchLabel": "البحث عن الموظفين",
+      "searchPlaceholder": "البحث عن الموظفين...",
+      "newUser": "مستخدم جديد",
+      "empty": "لا يوجد مستخدمين حتى الآن.",
+      "noMatch": "لا يوجد موظفين يطابقون بحثك.",
+      "added": "تمت الإضافة {date}",
+      "sso": "الدخول الموحد",
+      "local": "محلي",
+      "disabled": "عاجز",
+      "addTitle": "إضافة مستخدم",
+      "addDescription": "أنشئ حسابًا للموظفين بدور البداية وكلمة المرور.",
+      "name": "اسم",
+      "email": "بريد إلكتروني",
+      "password": "كلمة المرور",
+      "role": "دور",
+      "creating": "جارٍ الإنشاء...",
+      "create": "إنشاء مستخدم",
+      "cancel": "يلغي",
+      "save": "يحفظ",
+      "access": "وصول",
+      "enableSignIn": "تمكين تسجيل الدخول",
+      "disableSignIn": "تعطيل تسجيل الدخول",
+      "disableTitle": "هل تريد تعطيل المستخدم؟",
+      "disableDescription": "{name} لن يكون بمقدورهم تسجيل الدخول بعد الآن. ويتم الاحتفاظ ببياناتهم.",
+      "disable": "إبطال",
+      "newPasswordPlaceholder": "كلمة المرور الجديدة",
+      "resetTitle": "إعادة تعيين كلمة المرور؟",
+      "resetDescription": "هذا يكتب فوق {name}كلمة المرور الحالية. ويجب عليهم استخدام كلمة المرور الجديدة لتسجيل الدخول.",
+      "reset": "إعادة ضبط",
+      "ssoPassword": "يقوم هذا الحساب بتسجيل الدخول عبر الدخول الموحد (SSO) - تتم إدارة كلمة المرور الخاصة به بواسطة موفر الهوية.",
+      "dangerZone": "منطقة الخطر",
+      "deleteTitle": "هل تريد حذف المستخدم؟",
+      "deleteDescription": "{name} سيتم إزالتها نهائيا. لا يمكن التراجع عن هذا.",
+      "ownedVendors": "{count,plural,one{# سوف يفقد المورد تعيين مالكه} other{# سيفقد الموردون تعيين مالكهم}}",
+      "reviewingAssessments": "{count,plural,one{# سوف يفقد التقييم مراجعه} other{# ستفقد التقييمات مراجعها}}",
+      "resolvedFindings": "{count,plural,one{# سيتم مسح الاكتشاف الخاص به} other{# سيتم مسح النتائج محللها}}",
+      "answerReviews": "{count,plural,one{# ستكون مراجعة الإجابات مجهولة المصدر} other{# سيتم إخفاء هوية مراجعات الإجابات}}",
+      "createdApiKeys": "{count,plural,one{# سيفقد مفتاح API مرجع المنشئ الخاص به} other{# ستفقد مفاتيح API مرجع المنشئ الخاص بها}}",
+      "auditPreserved": "يتم الاحتفاظ بسجل التدقيق (يظهر باسم \"المستخدم المحذوف\").",
+      "delete": "يمسح",
+      "deleteUser": "حذف المستخدم",
+      "loading": "تحميل...",
+      "success": "تم إنشاء المستخدم.",
+      "errors": {
+        "nameRequired": "الاسم مطلوب.",
+        "emailInvalid": "أدخل عنوان بريد إلكتروني صالحًا.",
+        "passwordTooShort": "استخدم 12 حرفًا على الأقل.",
+        "roleRequired": "الدور مطلوب.",
+        "invalidInput": "إدخال غير صالح.",
+        "roleNotFound": "الدور المحدد غير موجود.",
+        "emailExists": "يوجد مستخدم لديه هذا البريد الإلكتروني بالفعل.",
+        "createFailed": "لا يمكن إنشاء المستخدم. يرجى المحاولة مرة أخرى."
+      }
+    },
+    "roles": {
+      "metaTitle": "المشرف – الأدوار",
+      "title": "الأدوار",
+      "subtitle": "مجموعات الأذونات المخصصة لحسابات الموظفين.",
+      "cardTitle": "الأدوار",
+      "cardDescription": "تحديد مجموعات الأذونات وتعيينها لحسابات الموظفين.",
+      "searchPlaceholder": "بحث في الأدوار...",
+      "newRole": "دور جديد",
+      "noMatch": "لا توجد أدوار تطابق بحثك.",
+      "system": "نظام",
+      "userCount": "{count,plural,one{# مستخدم} other{# المستخدمين}}",
+      "edit": "يحرر",
+      "duplicate": "ينسخ",
+      "deleteTitle": "هل تريد حذف الدور؟",
+      "deleteDescription": "ال \"{name}\" ستتم إزالة الدور نهائيًا. وهذا ممكن فقط في حالة عدم تعيين أي مستخدمين له.",
+      "delete": "يمسح",
+      "createTitle": "إنشاء دور",
+      "adminLocked": "يتمتع دور المسؤول دائمًا بكل الأذونات ولا يمكن تغييره.",
+      "editorDescription": "اختر الأذونات التي يمنحها هذا الدور. يحصل المستخدمون المعينون لهذا الدور على هذه الأذونات بالضبط.",
+      "name": "اسم",
+      "description": "وصف",
+      "saving": "توفير...",
+      "create": "إنشاء دور",
+      "saveChanges": "حفظ التغييرات",
+      "cancel": "يلغي",
+      "success": "تم إنشاء الدور.",
+      "updated": "تم تحديث الدور.",
+      "errors": {
+        "nameRequired": "اسم الدور مطلوب.",
+        "nameTooLong": "يجب أن يكون اسم الدور 50 حرفًا أو أقل.",
+        "descriptionTooLong": "يجب أن يكون الوصف 200 حرف أو أقل.",
+        "invalidInput": "إدخال غير صالح.",
+        "roleExists": "يوجد دور بهذا الاسم بالفعل.",
+        "createFailed": "تعذر إنشاء الدور. يرجى المحاولة مرة أخرى.",
+        "missingRole": "الدور المفقود.",
+        "notFound": "لم يتم العثور على الدور.",
+        "adminLocked": "لا يمكن تغيير أذونات دور المسؤول.",
+        "updateFailed": "لا يمكن تحديث الدور. يرجى المحاولة مرة أخرى.",
+        "duplicateFailed": "لا يمكن تكرار الدور: {reason}",
+        "deleteFailed": "لا يمكن حذف الدور: {reason}",
+        "systemCannotDelete": "لا يمكن حذف أدوار النظام.",
+        "assignedUsers": "يتم تعيين هذا الدور لمستخدم واحد أو أكثر. إعادة تعيينها قبل الحذف."
+      }
+    },
+    "audit": {
+      "metaTitle": "المشرف - سجل التدقيق",
+      "title": "سجل التدقيق",
+      "subtitle": "النشاط الإداري والنظامي عبر المنصة.",
+      "retentionTitle": "حفظ",
+      "retentionDescription": "يتم تنقيح إدخالات التدقيق الأقدم من هذه الأيام العديدة تلقائيًا بواسطة عملية التنظيف المجدولة. اضبط على 0 للاحتفاظ به لأجل غير مسمى.",
+      "retentionLabel": "الاحتفاظ بسجل التدقيق (أيام)",
+      "retentionHelp": "ينطبق على التشغيل المقرر التالي.",
+      "cardTitle": "سجل التدقيق",
+      "cardDescription": "تتبع النشاط الإداري ونشاط النظام عبر النظام الأساسي.",
+      "action": "فعل",
+      "user": "مستخدم",
+      "from": "من",
+      "to": "ل",
+      "rows": "الصفوف",
+      "allActions": "جميع الإجراءات",
+      "allUsers": "كافة المستخدمين",
+      "actionFilterLabel": "تصفية سجل التدقيق حسب الإجراء",
+      "userFilterLabel": "تصفية سجل التدقيق حسب المستخدم",
+      "pageSizeLabel": "حجم صفحة سجل التدقيق",
+      "filter": "فلتر",
+      "clear": "واضح",
+      "export": "يصدّر",
+      "allResults": "جميع النتائج",
+      "currentPage": "الصفحة الحالية",
+      "empty": "لم يتم العثور على إدخالات التدقيق.",
+      "date": "تاريخ",
+      "entity": "كيان",
+      "deleted": "تم الحذف",
+      "pageSummary": "الصفحة {page} من {totalPages} ({totalCount, plural, one {# إدخال} other {# إدخالات}})",
+      "previous": "سابق",
+      "next": "التالي",
+      "csvHeader": "التاريخ، المستخدم، الإجراء، الكيان، المعرف",
+      "success": "تم حفظ الاحتفاظ بالتدقيق.",
+      "clarificationRequested": "طلب التوضيح",
+      "errors": {
+        "retentionInvalid": "يجب أن يكون الاحتفاظ بالتدقيق 0 أو رقمًا موجبًا.",
+        "invalidInput": "إدخال غير صالح."
+      },
+      "actions": {
+        "LOGIN": "تسجيل الدخول",
+        "CREATE_ASSESSMENT": "التقييم الذي تم إنشاؤه",
+        "DELETE_ASSESSMENT": "التقييم المحذوف",
+        "SEND_ASSESSMENT": "أرسلت التقييم",
+        "REVOKE_ASSESSMENT": "تم إبطال رابط التقييم",
+        "EXTEND_ASSESSMENT": "رابط التقييم الموسع",
+        "REGENERATE_ASSESSMENT": "رابط التقييم المتجدد",
+        "SUBMIT_ASSESSMENT": "التقييم المقدم",
+        "REVIEW_DECISION": "مراجعة القرار",
+        "SEND_BACK_TO_VENDOR": "تم إعادتها إلى المورد",
+        "REOPEN_REVIEW": "أعيد فتح المراجعة",
+        "UPDATE_FINDING": "تم تحديث النتيجة",
+        "ADD_COMMENT": "تمت إضافة تعليق",
+        "REOPEN_ASSESSMENT": "أعيد فتح التقييم",
+        "FINALIZE_ASSESSMENT": "التقييم النهائي",
+        "CREATE_VENDOR": "المورد الذي تم إنشاؤه",
+        "UPDATE_VENDOR": "المورد المحدث",
+        "DELETE_VENDOR": "المورد المحذوف",
+        "IMPORT_VENDOR": "مورد مستورد",
+        "CREATE_TEMPLATE": "القالب الذي تم إنشاؤه",
+        "UPDATE_TEMPLATE": "قالب محدث",
+        "DELETE_TEMPLATE": "القالب المحذوف",
+        "PUBLISH_TEMPLATE": "القالب المنشور",
+        "UNPUBLISH_TEMPLATE": "قالب غير منشور",
+        "CREATE_TEMPLATE_VERSION": "نسخة القالب التي تم إنشاؤها",
+        "DUPLICATE_TEMPLATE": "قالب مكرر",
+        "IMPORT_TEMPLATE": "القالب المستورد",
+        "CREATE_USER": "المستخدم الذي تم إنشاؤه",
+        "DELETE_USER": "المستخدم المحذوف",
+        "DISABLE_USER": "مستخدم معطل",
+        "ENABLE_USER": "مستخدم ممكّن",
+        "CHANGE_ROLE": "تم تغيير الدور",
+        "CREATE_ROLE": "الدور الذي تم إنشاؤه",
+        "UPDATE_ROLE": "تم تحديث الدور",
+        "UPDATE_PROFILE": "تحديث الملف الشخصي",
+        "DELETE_ROLE": "الدور المحذوف",
+        "DUPLICATE_ROLE": "دور مكرر",
+        "RESET_PASSWORD": "إعادة تعيين كلمة المرور",
+        "UPDATE_SETTINGS": "الإعدادات المحدثة",
+        "API_KEY_CREATED": "تم إنشاء مفتاح API",
+        "API_KEY_REVOKED": "تم إبطال مفتاح API",
+        "API_KEY_ENABLED": "تمكين مفتاح API",
+        "API_KEY_DELETED": "مفتاح API المحذوف",
+        "CREATE_CERTIFICATION": "تمت إضافة الشهادة",
+        "UPDATE_CERTIFICATION": "شهادة محدثة",
+        "DELETE_CERTIFICATION": "الشهادة المحذوفة",
+        "CREATE_FRAMEWORK": "الإطار المستورد",
+        "DELETE_FRAMEWORK": "الإطار المحذوف",
+        "UPDATE_RESPONSIBILITY_ACTION": "تحديث إجراءات المسؤولية",
+        "MARK_CONTROL_SHARED": "تم وضع علامة على السيطرة على أنها مسؤولية مشتركة",
+        "UNMARK_CONTROL_SHARED": "السيطرة غير المميزة كمسؤولية مشتركة",
+        "RETRY_EMAIL_SEND": "إعادة محاولة إرسال البريد الإلكتروني",
+        "CREATE_WEBHOOK": "تم إنشاء خطاف ويب",
+        "DELETE_WEBHOOK": "تم حذف الرد التلقائي على الويب",
+        "ENABLE_WEBHOOK": "تم تفعيل الرد التلقائي على الويب",
+        "DISABLE_WEBHOOK": "تم تعطيل الرد التلقائي على الويب",
+        "UPDATE_TRUST_CENTER": "تحديث مركز الثقة"
+      }
+    },
+    "health": {
+      "metaTitle": "الإدارة – الصحة",
+      "title": "صحة",
+      "subtitle": "تشخيصات النظام وحالة المهمة المجدولة.",
+      "application": "طلب",
+      "status": "حالة",
+      "running": "جري",
+      "version": "إصدار",
+      "commit": "يقترف",
+      "buildTime": "بناء الوقت",
+      "uptime": "الجهوزية",
+      "memory": "الذاكرة (الكومة)",
+      "lessThanMinute": "أقل من 1M",
+      "database": "قاعدة البيانات",
+      "connection": "اتصال",
+      "connected": "متصل",
+      "error": "خطأ"
+    }
+  },
+  "NotFound": {
+    "description": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+    "backToDashboard": "العودة إلى لوحة القيادة"
+  },
+  "BulkSend": {
+    "metaTitle": "إرسال بالجملة",
+    "title": "إرسال بالجملة",
+    "subtitle": "أرسل نفس الاستبيان إلى عدة موردين في وقت واحد.",
+    "breadcrumb": "إرسال بالجملة",
+    "steps": {
+      "configure": "تكوين",
+      "vendors": "الموردون",
+      "send": "يرسل"
+    },
+    "template": "نموذج",
+    "selectTemplate": "حدد القالب",
+    "dueDate": "تاريخ الاستحقاق",
+    "reviewer": "المراجع",
+    "unassigned": "غير معين",
+    "portalPassword": "كلمة مرور البوابة (اختياري)",
+    "portalPasswordPlaceholder": "كلمة المرور المشتركة لجميع الموردين",
+    "next": "التالي →",
+    "back": "← العودة",
+    "filterPlaceholder": "تصفية الموردين...",
+    "selectAll": "حدد الكل",
+    "selectedCount": "{count} مختارة",
+    "noMatch": "لا يوجد موردون مطابقون لبحثك.",
+    "noEmail": "لا يوجد بريد إلكتروني",
+    "sendingTo": "إرسال {template} ل {count,plural,one{# مورد} other{# الموردين}}",
+    "due": "حق: {date}",
+    "reviewerLabel": "المراجع: {name}",
+    "portalPasswordSet": "تم تعيين كلمة مرور البوابة",
+    "sending": "إرسال...",
+    "sendTo": "أرسل إلى {count,plural,one{# مورد} other{# الموردين}}",
+    "sentCount": "{count,plural,one{مرسل # تقدير} other{مرسل # التقييمات}}",
+    "skippedCount": "{count,plural,one{# لا يمكن إرسالها} other{# لا يمكن إرسالها}}",
+    "emailFailedCount": "{count,plural,one{# فشل تسليم البريد الإلكتروني} other{# فشل تسليم رسائل البريد الإلكتروني}}",
+    "errors": {
+      "noTemplate": "لم يتم تحديد أي قالب.",
+      "noVendors": "لم يتم تحديد أي موردين."
+    }
+  },
+  "VendorImport": {
+    "metaTitle": "استيراد الموردين",
+    "title": "استيراد الموردين",
+    "subtitle": "قم بتحميل ملف CSV لإنشاء الموردين بشكل مجمّع.",
+    "breadcrumb": "استيراد",
+    "cardTitle": "استيراد الموردين من CSV",
+    "steps": {
+      "upload": "رفع",
+      "review": "مراجعة"
+    },
+    "csvFile": "ملف CSV",
+    "template": "نموذج",
+    "columnsHelp": "يجب أن يحتوي ملف CSV على أعمدة: المعرف (اختياري)، الاسم، البريد الإلكتروني لجهة الاتصال، بالإضافة إلى اختياري: المعرف الخارجي، اسم جهة الاتصال، الطبقة، موقع الويب، الملاحظات، وصف الخدمة، حساسية البيانات، تجديد العقد، قيمة العقد، المخاطر الجغرافية، العلامات. مطلوب فقط الاسم والبريد الإلكتروني للاتصال. الحد الأقصى 1 ميجابايت. قم بتضمين معرف المورد أو المعرف الخارجي لتحديث مورد موجود بدلاً من إنشاء مورد جديد.",
+    "found": "{count,plural,one{# تم العثور على المورد} other{# تم العثور على الموردين}}",
+    "showingFirst": "عرض أول 10 من {count} صفوف",
+    "next": "التالي →",
+    "back": "← العودة",
+    "aboutToImport": "أنت على وشك الاستيراد {count,plural,one{# مورد} other{# الموردين}}.",
+    "skippedNote": "قد يتم تخطي بعض الصفوف إذا فشلت في التحقق من الصحة (رسائل البريد الإلكتروني المكررة، والحقول المطلوبة المفقودة).",
+    "importing": "جارٍ الاستيراد...",
+    "importVendors": "استيراد الموردين",
+    "errors": {
+      "noFile": "لم يتم تحديد أي ملف.",
+      "fileTooLarge": "الملف كبير جدًا (بحد أقصى 1 ميجابايت).",
+      "noRows": "لم يتم العثور على صفوف في ملف CSV. يجب أن يكون الصف الأول رأسًا.",
+      "noValidVendors": "لم يتم العثور على موردين صالحين. الخطأ الأول: {reason}",
+      "rowInvalid": "صف {row}: إدخال غير صالح.",
+      "rowNameRequired": "صف {row}: اسم المورد مطلوب.",
+      "rowContactEmailRequired": "صف {row}: مطلوب البريد الإلكتروني للاتصال.",
+      "duplicateExternalId": "{name}: معرف خارجي مكرر",
+      "rowFailed": "{name}: {reason}",
+      "updateRequiresEdit": "سيؤدي هذا الاستيراد إلى تحديث الموردين الحاليين. يتطلب التحديث إذن تحرير المورد.",
+      "unknown": "مجهول",
+      "importComplete": "اكتمل الاستيراد: {summary}.",
+      "created": "{count} مخلوق",
+      "updated": "{count} محدث",
+      "skipped": "{count,plural,one{# تم تخطي الصف} other{# تم تخطي الصفوف}}"
+    }
+  },
+  "CompareVendors": {
+    "metaTitle": "قارن الموردين",
+    "title": "قارن الموردين",
+    "subtitle": "اختر اثنين من الموردين لمقارنة أحدث تقييماتهم المكتملة جنبًا إلى جنب.",
+    "breadcrumb": "يقارن",
+    "notEnoughVendorsTitle": "لا يوجد ما يكفي من الموردين",
+    "notEnoughVendorsDescription": "أنت بحاجة إلى موردين اثنين على الأقل للمقارنة. قم بإنشاء المزيد من الموردين أولاً.",
+    "vendorA": "المورد أ",
+    "vendorB": "المورد ب",
+    "selectVendor": "حدد موردًا",
+    "compare": "يقارن",
+    "notEnoughAssessmentsTitle": "ليس هناك تقييمات كافية",
+    "notEnoughAssessmentsDescription": "يجب أن يكون لدى كلا الموردين تقييم واحد مكتمل أو قيد المراجعة على الأقل للمقارنة.",
+    "comparisonSubtitle": "{vendorA} مقابل {vendorB}",
+    "statusLabel": "{title} · {status}",
+    "question": "سؤال",
+    "changed": "تغير",
+    "notApplicable": "لا يوجد"
+  },
+  "ApiDocs": {
+    "metaTitle": "وثائق واجهة برمجة التطبيقات",
+    "loading": "جارٍ تحميل وثائق واجهة برمجة التطبيقات...",
+    "loadFailed": "فشل تحميل واجهة مستخدم Swagger."
+  },
+  "CompareAssessments": {
+    "metaTitle": "قارن التقييمات",
+    "metadataTitle": "مقارنة التقييمات — {vendorName}",
+    "notFound": "لم يتم العثور على المورد",
+    "title": "قارن التقييمات",
+    "breadcrumb": "قارن التقييمات",
+    "instructions": "حدد تقييمين من صفحة المورد لمقارنتهما جنبًا إلى جنب. بعد فتح صفحتين، قم بوضع إشارة مرجعية على هذه الصفحة باستخدام ?left=[id]&right=[id].",
+    "comparisonSubtitle": "{leftTitle} ({leftStatus}) مقابل {rightTitle} ({rightStatus})",
+    "question": "سؤال",
+    "changed": "تغير",
+    "notApplicable": "لا يوجد"
+  },
+  "Profile": {
+    "metaTitle": "حساب تعريفي",
+    "title": "حساب تعريفي",
+    "subtitle": "إدارة تفاصيل حسابك.",
+    "accountDetails": "تفاصيل الحساب",
+    "ssoDescription": "قمت بتسجيل الدخول عبر تسجيل الدخول الموحد. تتم إدارة بريدك الإلكتروني بواسطة موفر الهوية الخاص بك.",
+    "localDescription": "اسمك والبريد الإلكتروني لتسجيل الدخول.",
+    "name": "اسم",
+    "email": "بريد إلكتروني",
+    "passwordTitle": "كلمة المرور",
+    "passwordDescription": "يجب عليك إدخال كلمة المرور الحالية لإجراء أية تغييرات.",
+    "currentPassword": "كلمة المرور الحالية",
+    "newPassword": "كلمة المرور الجديدة",
+    "optional": "(خياري)",
+    "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+    "ssoPasswordNote": "تتم إدارة كلمة المرور الخاصة بك بواسطة موفر الهوية (SSO)، لذلك لا يوجد شيء لتغييره هنا.",
+    "saving": "توفير...",
+    "saveChanges": "حفظ التغييرات",
+    "errorDescription": "لا يمكن تحميل ملف التعريف الخاص بك. يرجى المحاولة مرة أخرى أو الاتصال بالدعم.",
+    "errors": {
+      "notAuthenticated": "لم تتم المصادقة عليها.",
+      "accountNotFound": "لم يتم العثور على الحساب.",
+      "currentPasswordIncorrect": "كلمة المرور الحالية غير صحيحة.",
+      "emailTaken": "هذا البريد الإلكتروني مأخوذ بالفعل.",
+      "nameRequired": "الاسم مطلوب.",
+      "emailInvalid": "أدخل عنوان بريد إلكتروني صالحًا.",
+      "currentPasswordRequired": "كلمة المرور الحالية مطلوبة.",
+      "passwordTooShort": "يجب أن تتكون كلمة المرور الجديدة من 12 حرفًا على الأقل.",
+      "passwordMismatch": "كلمات المرور غير متطابقة.",
+      "invalidInput": "إدخال غير صالح.",
+      "success": "تم تحديث الملف الشخصي."
+    }
+  },
+  "TrustCenterManager": {
+    "metaTitle": "مركز الثقة",
+    "title": "مركز الثقة",
+    "subtitle": "انشر شارات الامتثال ومستندات الأمان والمعالجات الفرعية والأقسام السردية على صفحة مركز الثقة العام لديك.",
+    "viewPublic": "عرض الصفحة العامة",
+    "disabledBanner": "مركز الثقة معطل حاليًا. قم بتمكينه في الإعدادات → مركز التوثيق — حتى تظهر الصفحة العامة رسالة لم يتم العثور عليها.",
+    "errorDescription": "تعذر تحميل مدير مركز الثقة. يرجى المحاولة مرة أخرى.",
+    "common": {
+      "edit": "يحرر",
+      "draft": "مسودة",
+      "published": "تم النشر",
+      "saving": "توفير...",
+      "cancel": "يلغي",
+      "moveUp": "يتحرك {name} أعلى",
+      "moveDown": "يتحرك {name} تحت",
+      "deleteNamed": "يمسح {name}"
+    },
+    "badges": {
+      "cardTitle": "شارات الامتثال",
+      "add": "أضف شارة",
+      "empty": "لم يتم تكوين أي شارات. أضف شهادات مثل SOC 2 أو ISO 27001 لعرضها على الصفحة العامة.",
+      "verificationLink": "رابط التحقق",
+      "deleteTitle": "هل تريد حذف الشارة؟",
+      "deleteDescription": "ال \"{name}\"ستتم إزالة الشارة من مركز التوثيق.",
+      "addTitle": "أضف شارة",
+      "editTitle": "تعديل الشارة",
+      "editorDescription": "تظهر كإطار متجانب للشهادة في صفحة مركز الثقة العام.",
+      "titleLabel": "عنوان",
+      "issuer": "المصدر",
+      "issuerPlaceholder": "على سبيل المثال أيكبا، بي إس آي",
+      "description": "وصف",
+      "descriptionPlaceholder": "على سبيل المثال تتم مراجعة SOC 2 Type II سنويًا",
+      "verificationUrl": "عنوان URL للتحقق",
+      "image": "صورة الشارة",
+      "imageHint": "PNG أو JPG أو GIF أو WebP. الحد الأقصى 2 ميجا بايت. SVG غير مسموح به.",
+      "imageHintKeep": " اتركه فارغًا للاحتفاظ بالصورة الحالية.",
+      "save": "حفظ الشارة"
+    },
+    "documents": {
+      "cardTitle": "وثائق أمنية",
+      "add": "أضف وثيقة",
+      "empty": "لم يتم تكوين أي مستندات. قم بتحميل السياسات أو تقارير الأمان أو عناصر الامتثال للتنزيل العام.",
+      "noFile": "لم يتم تحميل أي ملف",
+      "deleteTitle": "هل تريد حذف المستند؟",
+      "deleteDescription": "\"{name}\" وسيتم إزالة ملفه من مركز التوثيق.",
+      "addTitle": "أضف وثيقة",
+      "editTitle": "تحرير المستند",
+      "editorDescription": "يمكن تنزيل المستندات المنشورة من صفحة مركز الثقة العام.",
+      "titleLabel": "عنوان",
+      "description": "وصف",
+      "descriptionPlaceholder": "ما تغطيه هذه الوثيقة",
+      "category": "فئة",
+      "file": "ملف",
+      "replaceFile": "استبدال الملف",
+      "fileHint": "PDF أو PNG أو JPG أو DOCX أو XLSX. الحد الأقصى 20 ميجابايت.",
+      "fileHintCurrent": " حاضِر: {fileName}. استبدال يحذف الملف القديم.",
+      "save": "حفظ المستند",
+      "categories": {
+        "POLICY": "سياسة",
+        "SECURITY": "تقرير أمني",
+        "COMPLIANCE": "امتثال",
+        "PRIVACY": "خصوصية",
+        "OTHER": "آخر"
+      }
+    },
+    "sections": {
+      "cardTitle": "أقسام مخصصة",
+      "add": "إضافة قسم",
+      "empty": "لا توجد أقسام مخصصة. أضف كتل تخفيض السعر للحصول على نظرة عامة أو الأسئلة الشائعة أو أي شيء آخر لا تغطيه الأنواع المنظمة.",
+      "deleteTitle": "هل تريد حذف القسم؟",
+      "deleteDescription": "\"{name}\" ستتم إزالته من مركز التوثيق.",
+      "addTitle": "إضافة قسم",
+      "editTitle": "تحرير القسم",
+      "editorDescription": "يتم عرض كتل تخفيض السعر المجانية على صفحة مركز الثقة العام.",
+      "titleLabel": "عنوان",
+      "body": "الجسم (تخفيض السعر)",
+      "bodyPlaceholder": "يدعم تنسيق تخفيض السعر.",
+      "save": "حفظ القسم"
+    },
+    "subprocessors": {
+      "cardTitle": "المعالجات الفرعية",
+      "add": "إضافة المعالج الفرعي",
+      "empty": "لم يتم تكوين معالجات فرعية. قم بإدراج الجهات الخارجية التي تقوم بمعالجة البيانات نيابة عنك.",
+      "deleteTitle": "هل تريد حذف المعالج الفرعي؟",
+      "deleteDescription": "\"{name}\" ستتم إزالته من مركز التوثيق.",
+      "addTitle": "إضافة المعالج الفرعي",
+      "editTitle": "تحرير المعالج الفرعي",
+      "editorDescription": "الجهات الخارجية التي تعالج البيانات نيابة عنك، مدرجة في صفحة مركز الثقة العام.",
+      "name": "اسم",
+      "purpose": "غاية",
+      "purposePlaceholder": "على سبيل المثال الاستضافة السحابية لبيانات التطبيق",
+      "location": "موقع البيانات",
+      "locationPlaceholder": "على سبيل المثال أستراليا (سيدني)",
+      "website": "موقع إلكتروني",
+      "websitePlaceholder": "https://…",
+      "logo": "صورة الشعار",
+      "logoHint": "PNG أو JPG أو GIF أو WebP. الحد الأقصى 2 ميجا بايت. SVG غير مسموح به.",
+      "logoHintKeep": " اتركه فارغًا للاحتفاظ بالشعار الحالي.",
+      "logoUrl": "…أو جلب شعار من عنوان URL",
+      "logoUrlPlaceholder": "https://example.com/logo.png",
+      "logoUrlHint": "يتم تنزيل الصورة وتخزينها مع ملفات مركز الثقة الأخرى — لا تقوم الصفحة العامة أبدًا بتحميل مضيفين خارجيين. الملف الذي تم تحميله له الأولوية على عنوان URL.",
+      "save": "حفظ المعالج الفرعي"
+    },
+    "errors": {
+      "invalidInput": "إدخال غير صالح.",
+      "titleRequired": "العنوان مطلوب.",
+      "nameRequired": "الاسم مطلوب.",
+      "invalidUrl": "أدخل عنوان URL صالحًا.",
+      "sectionTooLong": "نص القسم طويل جدًا (الحد الأقصى 10000 حرف).",
+      "badgeNotFound": "لم يتم العثور على الشارة.",
+      "documentFileRequired": "مطلوب ملف الوثيقة.",
+      "saveFailed": "فشل الحفظ.",
+      "badgeSaved": "تم حفظ الشارة.",
+      "documentSaved": "تم حفظ المستند.",
+      "sectionSaved": "تم حفظ القسم.",
+      "subprocessorSaved": "تم حفظ المعالج الفرعي.",
+      "imageType": "يجب أن تكون الصور PNG أو JPG أو GIF أو WebP (غير مسموح بـ SVG).",
+      "imageInvalid": "هذه الصورة غير صالحة.",
+      "imageTooLarge": "الصورة كبيرة جدًا (الحد الأقصى {max} ميغابايت).",
+      "fileTooLarge": "الملف كبير جدًا (الحد الأقصى {max} ميغابايت).",
+      "fileInvalid": "محتوى الملف لا يتطابق مع امتداده.",
+      "fileType": "هذا النوع من الملفات غير مقبول.",
+      "imageFetchFailed": "تعذر جلب عنوان URL للصورة.",
+      "imageContent": "يجب أن يعرض عنوان URL للصورة محتوى PNG أو JPG أو GIF أو WebP."
+    }
+  },
+  "Shell": {
+    "workspace": {
+      "dashboard": "لوحة القيادة",
+      "vendors": "الموردون",
+      "assessments": "التقييمات",
+      "riskRegister": "سجل المخاطر",
+      "selfAssessment": "التقييم الذاتي",
+      "frameworks": "الأطر",
+      "templates": "قوالب",
+      "trustCenter": "مركز الثقة",
+      "admin": "مسؤل",
+      "groups": {
+        "risk": "مخاطرة",
+        "frameworks": "الأطر",
+        "manage": "يدير"
+      }
+    },
+    "admin": {
+      "backToWorkspace": "العودة إلى مساحة العمل",
+      "groups": {
+        "workspace": "مساحة العمل",
+        "email": "بريد إلكتروني",
+        "assessments": "التقييمات",
+        "files": "ملفات",
+        "accessSecurity": "الوصول والأمن",
+        "integrations": "التكامل",
+        "platform": "منصة"
+      },
+      "sections": {
+        "general": "عام",
+        "appearance": "مظهر",
+        "email": "بريد إلكتروني",
+        "emailTracking": "تتبع البريد الإلكتروني",
+        "scoring": "التهديف",
+        "scheduling": "الجدولة",
+        "storage": "تخزين",
+        "users": "المستخدمين",
+        "roles": "الأدوار",
+        "signIn": "تسجيل الدخول",
+        "rateLimits": "حدود المعدل",
+        "api": "واجهة برمجة التطبيقات",
+        "webhooks": "خطافات الويب",
+        "trustCenter": "مركز الثقة",
+        "auditLog": "سجل التدقيق",
+        "health": "صحة"
+      }
+    },
+    "header": {
+      "admin": "مسؤل",
+      "toggleTheme": "تبديل الموضوع",
+      "themeLight": "ضوء",
+      "themeDark": "مظلم",
+      "themeSystem": "نظام",
+      "profile": "حساب تعريفي",
+      "language": "لغة",
+      "signOut": "تسجيل الخروج"
+    },
+    "sidebar": {
+      "toggle": "تبديل الشريط الجانبي"
+    },
+    "breadcrumbs": {
+      "label": "مسار التنقل",
+      "dashboard": "لوحة القيادة"
+    },
+    "commandPalette": {
+      "label": "لوحة الأوامر",
+      "searchPlaceholder": "صفحات البحث...",
+      "noResults": "لا توجد نتائج.",
+      "navigate": "التنقل",
+      "open": "يفتح",
+      "close": "يغلق",
+      "or": "أو",
+      "items": {
+        "dashboard": {
+          "label": "لوحة القيادة",
+          "subtitle": "نظرة عامة على مخاطر المورد"
+        },
+        "vendors": {
+          "label": "الموردون",
+          "subtitle": "إدارة الموردين"
+        },
+        "assessments": {
+          "label": "التقييمات",
+          "subtitle": "الاستبيانات"
+        },
+        "frameworks": {
+          "label": "الأطر",
+          "subtitle": "ضوابط الامتثال"
+        },
+        "templates": {
+          "label": "قوالب",
+          "subtitle": "منشئ الاستبيان"
+        },
+        "profile": {
+          "label": "الملف الشخصي",
+          "subtitle": "حسابك"
+        },
+        "adminGeneral": {
+          "label": "المشرف · عام",
+          "subtitle": "منظمة"
+        },
+        "adminUsers": {
+          "label": "المشرف · المستخدمون",
+          "subtitle": "حسابات الموظفين"
+        },
+        "adminRoles": {
+          "label": "المشرف · الأدوار",
+          "subtitle": "الأذونات"
+        },
+        "adminApi": {
+          "label": "المشرف · واجهة برمجة التطبيقات",
+          "subtitle": "الوصول إلى واجهة برمجة التطبيقات"
+        },
+        "adminAudit": {
+          "label": "المشرف · سجل التدقيق",
+          "subtitle": "سجل النشاط"
+        },
+        "apiDocs": {
+          "label": "مستندات API",
+          "subtitle": "OpenAPI / Swagger"
+        }
+      }
+    },
+    "idle": {
+      "title": "انتهاء الجلسة",
+      "description": "سيتم تسجيل خروجك {countdown,plural,one{# ثانية} other{# ثواني}} بسبب عدم النشاط. حرك الماوس أو اضغط على أي مفتاح لتظل مسجلاً للدخول.",
+      "staySignedIn": "البقاء مسجلا الدخول"
+    },
+    "scrollToTop": "قم بالتمرير إلى الأعلى",
+    "error": {
+      "title": "حدث خطأ ما",
+      "description": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى أو الاتصال بالدعم.",
+      "retry": "حاول ثانية"
+    }
+  },
+  "Trust": {
+    "title": "{orgName} مركز الثقة",
+    "compliance": "الامتثال والشهادات",
+    "expired": "منتهي الصلاحية",
+    "expiringSoon": "تنتهي قريبا",
+    "verify": "يؤكد",
+    "documents": "وثائق أمنية",
+    "download": "تحميل",
+    "subprocessors": "المعالجات الفرعية",
+    "name": "اسم",
+    "purpose": "غاية",
+    "location": "موقع",
+    "contactPrompt": "أسئلة حول وضعنا الأمني؟",
+    "categories": {
+      "POLICY": "سياسة",
+      "SECURITY": "تقرير أمني",
+      "COMPLIANCE": "امتثال",
+      "PRIVACY": "خصوصية",
+      "OTHER": "آخر"
+    }
+  },
+  "Portal": {
+    "metaTitle": "استبيان المورد",
+    "noscript": "مطلوب جافا سكريبت لإكمال هذا الاستبيان. الرجاء تمكين JavaScript في إعدادات المتصفح الخاص بك.",
+    "logoAlt": "الشعار",
+    "linkNotFound": "لم يتم العثور على الرابط",
+    "linkInvalid": "رابط الاستبيان هذا غير صالح.",
+    "linkExpiredTitle": "انتهت صلاحية الرابط",
+    "linkExpiredBody": "انتهت صلاحية رابط الاستبيان هذا. يرجى الاتصال بالطالب للحصول على رابط جديد.",
+    "submittedTitle": "{title} - مُقَدَّم",
+    "submittedBanner": "✓ تم إرسال ردودك.",
+    "submittedBody": "سيقوم مقدم الطلب بمراجعة إجاباتك وقد يطلب توضيحات. يمكنك العودة إلى هذا الرابط لرؤية أي تحديثات.",
+    "notApplicableShort": "لا يوجد",
+    "decisions": {
+      "APPROVED": "موافقة",
+      "CLARIFICATION_REQUESTED": "طلب التوضيح"
+    },
+    "notAvailableTitle": "غير متوفر",
+    "notAvailableBody": "هذا الاستبيان غير متوفر حاليا.",
+    "additionalInfoTitle": "لقد تم طلب معلومات إضافية.",
+    "additionalInfoBody": "يرجى مراجعة الأسئلة التي تم وضع علامة عليها وإعادة إرسالها عندما تصبح جاهزة.",
+    "password": {
+      "title": "كلمة المرور مطلوبة",
+      "description": "هذا الاستبيان محمي بكلمة مرور. أدخل كلمة المرور المقدمة من مقدم الطلب للمتابعة.",
+      "label": "كلمة المرور",
+      "placeholder": "أدخل كلمة المرور",
+      "verifying": "جارٍ التحقق...",
+      "continue": "يكمل",
+      "tooMany": "محاولات كثيرة جدًا. من فضلك انتظر دقيقة.",
+      "notSet": "لم يتم تعيين كلمة مرور لهذا الارتباط.",
+      "incorrect": "كلمة مرور غير صحيحة."
+    },
+    "error": {
+      "title": "حدث خطأ ما",
+      "description": "حدث خطأ غير متوقع أثناء تحميل الاستبيان. يرجى الاتصال بالمنظمة التي أرسلت لك هذا الرابط للحصول على المساعدة.",
+      "retry": "حاول ثانية"
+    },
+    "loading": "جارٍ تحميل الاستبيان…",
+    "upload": {
+      "tooMany": "عدد كبير جدًا من التحميلات. من فضلك انتظر لحظة.",
+      "linkInvalid": "هذا الرابط لم يعد صالحا.",
+      "noFile": "لم يتم تحديد أي ملف.",
+      "invalidQuestion": "سؤال غير صالح.",
+      "tooLarge": "يتجاوز الملف {max} حد ميغابايت.",
+      "badType": "ملفات من النوع .{ext} غير مسموح بها.",
+      "dangerousType": "هذا النوع من الملفات غير مسموح به.",
+      "mismatch": "محتوى الملف لا يتطابق مع ملف .{ext} ملف."
+    },
+    "questionnaire": {
+      "yes": "نعم",
+      "no": "لا",
+      "maxUpload": "الحد الأقصى {maxUploadMb} ميغابايت. المسموح: {extensions}.",
+      "uploading": " جارٍ التحميل…",
+      "uploaded": "تم الرفع: {fileName}",
+      "remove": "يزيل",
+      "selectPlaceholder": "يختار…",
+      "confirmStatement": "أؤكد هذا البيان",
+      "clarification": "طلب المراجع توضيحًا لهذه الإجابة.",
+      "notApplicable": "لا ينطبق",
+      "commentPlaceholder": "إضافة تعليق…",
+      "send": "يرسل",
+      "autosaveHint": "يتم حفظ إجاباتك تلقائيًا — ويمكنك إغلاق هذه الصفحة والعودة باستخدام نفس الرابط في أي وقت.",
+      "saveExpired": "انتهت صلاحية هذا الرابط — تعذر حفظ التغييرات الأخيرة.",
+      "saveError": "لم نتمكن من حفظ التغييرات الأخيرة. تحقق من اتصالك وأعد المحاولة.",
+      "retrySave": "أعد محاولة الحفظ",
+      "expiry": {
+        "expired": "انتهت صلاحية هذا الرابط.",
+        "hours": "تنتهي صلاحية هذا الرابط في {hours,plural,one{# ساعة} other{# ساعات}}.",
+        "minutes": "تنتهي صلاحية هذا الرابط في {minutes,plural,one{# دقيقة} other{# دقائق}}."
+      },
+      "sectionCounter": "· قسم {current} ل {total}",
+      "saving": "توفير…",
+      "saveFailed": "فشل الحفظ",
+      "savedAt": "تم الحفظ في {time}",
+      "lastSavedAt": "تم الحفظ آخر مرة في {time}",
+      "expires": "تنتهي {date}",
+      "back": "خلف",
+      "continue": "يكمل",
+      "reviewAnswers": "قم بمراجعة الإجابات",
+      "continueWarning": "{count,plural,one{# السؤال المطلوب في هذا القسم لا يزال يحتاج إلى إجابة.} other{# الأسئلة المطلوبة في هذا القسم لا تزال بحاجة إلى إجابات.}} يمكنك الاستمرار والعودة.",
+      "reviewHeading": "راجع إجاباتك",
+      "reviewAnswered": "{answered}/{total} أجاب",
+      "reviewMissing": "{count} مطلوب مفقود",
+      "openSection": "فتح القسم",
+      "submitting": "تقديم…",
+      "submit": "إرسال الاستبيان",
+      "submitTitle": "إرسال الاستبيان؟",
+      "submitDescription": "لن تتمكن من تعديل إجاباتك بعد الإرسال. هل أنت متأكد من أنك على استعداد لتقديم؟",
+      "cancel": "يلغي",
+      "submitConfirm": "يُقدِّم",
+      "missingRequired": "{count,plural,one{الرجاء الإجابة # السؤال المطلوب قبل التقديم.} other{الرجاء الإجابة # الأسئلة المطلوبة قبل التقديم.}}",
+      "linkInvalid": "هذا الرابط لم يعد صالحا.",
+      "vendorAuthor": "مورد"
+    }
+  },
+  "Pdf": {
+    "common": {
+      "pageOf": "الصفحة {page} من {total}",
+      "na": "لا يوجد",
+      "none": "--",
+      "yes": "نعم",
+      "no": "لا",
+      "notScored": "لم يسجل",
+      "tier": "الطبقة: {tier}",
+      "template": "نموذج: {name} ضد{version}",
+      "reviewer": "المراجع: {name}",
+      "generated": "تم إنشاؤها {date}",
+      "due": "حق: {date}",
+      "completed": "مكتمل: {date}",
+      "automatedFindingDescription": "لم تلبي إجابة المورد الاستجابة المتوقعة."
+    },
+    "tiers": {
+      "CRITICAL": "شديد الأهمية",
+      "HIGH": "عالي",
+      "MEDIUM": "واسطة",
+      "LOW": "قليل"
+    },
+    "questionTypes": {
+      "YES_NO": "نعم / لا",
+      "MULTIPLE_CHOICE": "اختيار واحد",
+      "FREE_TEXT": "نص مجاني",
+      "FILE_UPLOAD": "تحميل الملف",
+      "DATE": "تاريخ",
+      "NUMERIC": "رقمي",
+      "COMBOBOX": "كومبوبوكس",
+      "MULTI_SELECT": "تحديد متعدد",
+      "RATING": "تصنيف",
+      "URL": "عنوان URL",
+      "EMAIL": "بريد إلكتروني",
+      "CHECKBOX": "خانة الاختيار"
+    },
+    "statuses": {
+      "DRAFT": "مسودة",
+      "SENT": "مرسل",
+      "IN_PROGRESS": "في تَقَدم",
+      "SUBMITTED": "مُقَدَّم",
+      "UNDER_REVIEW": "قيد المراجعة",
+      "COMPLETED": "مكتمل"
+    },
+    "assessment": {
+      "score": "نتيجة",
+      "customerResponsibility": "مسؤولية العملاء: {percent}% ({completed}/{total} مكتمل)",
+      "responses": "الردود ({count})",
+      "question": "سؤال",
+      "answer": "إجابة",
+      "type": "يكتب",
+      "weight": "وزن",
+      "compliant": "متوافق",
+      "scoreColumn": "نتيجة",
+      "findings": "النتائج ({count})"
+    },
+    "framework": {
+      "complianceReport": "{frameworkName} {version} — تقرير الامتثال",
+      "summary": "ملخص",
+      "overallScore": "النتيجة الإجمالية:",
+      "domainsAssessed": "المجالات التي تم تقييمها:",
+      "controlsMapped": "الضوابط المعينة:",
+      "domainCompliance": "الامتثال للمجال",
+      "domain": "اِختِصاص",
+      "current": "حاضِر",
+      "previous": "سابق",
+      "change": "يتغير",
+      "controlHeatmap": "السيطرة على خريطة الحرارة",
+      "control": "يتحكم",
+      "title": "عنوان",
+      "compliance": "امتثال",
+      "status": "حالة",
+      "ragGreen": "أخضر",
+      "ragAmber": "العنبر",
+      "ragRed": "أحمر",
+      "ragNone": "لم يتم تقييمها"
+    },
+    "portfolio": {
+      "title": "عنوان",
+      "vendors": "الموردون",
+      "averageScore": "متوسط ​​النتيجة",
+      "openFindings": "النتائج المفتوحة",
+      "needsAttention": "يحتاج إلى اهتمام",
+      "scoreDistribution": "توزيع النتيجة",
+      "green": "أخضر (≥85%)",
+      "amber": "العنبر (60-84%)",
+      "red": "أحمر (<60%)",
+      "unscored": "غير مسجل",
+      "vendorsByTier": "الموردين حسب الطبقة",
+      "assessmentsByStatus": "التقييمات حسب الحالة",
+      "vendorsCount": "الموردين ({count})",
+      "vendor": "مورد",
+      "tier": "الطبقة",
+      "score": "نتيجة",
+      "lastAssessed": "آخر تقييم",
+      "assessments": "التقييمات",
+      "notAssessed": "لم يتم تقييمها",
+      "topDeficientControls": "أعلى الضوابط الناقصة ({count})",
+      "control": "يتحكم",
+      "vendorsAffected": "الموردين المتضررة"
+    }
+  },
+  "Email": {
+    "footer": "تم إرسال هذا البريد الإلكتروني بواسطة {appName}. إذا لم يعمل الزر، انسخ الرابط والصقه في متصفحك.",
+    "trustFooter": "تعرف على المزيد حول وضعنا الأمني: {url}",
+    "testSubject": "{appName} - اختبار SMTP",
+    "testBody": "إعدادات SMTP الخاصة بك تعمل بشكل صحيح.",
+    "testSent": "تم إرسال البريد الإلكتروني التجريبي.",
+    "smtpNotConfigured": "لم يتم تكوين SMTP.",
+    "transporterFailed": "فشل في إنشاء الناقل.",
+    "sendFailed": "فشل الإرسال: {reason}",
+    "retryMessage": "يرجى مراجعة وإعادة إرسال الاستبيان الخاص بك."
+  },
+  "Auth": {
+    "tagline": "إدارة مخاطر الموردين",
+    "login": {
+      "title": "تسجيل الدخول",
+      "description": "قم بتسجيل الدخول إلى حسابك.",
+      "email": "بريد إلكتروني",
+      "password": "كلمة المرور",
+      "submit": "تسجيل الدخول",
+      "submitting": "تسجيل الدخول...",
+      "forgot": "هل نسيت كلمة السر؟",
+      "or": "أو",
+      "invalid": "البريد الإلكتروني أو كلمة المرور غير صالحة.",
+      "tooMany": "محاولات كثيرة جدًا. الرجاء الانتظار لحظة وحاول مرة أخرى."
+    },
+    "forgot": {
+      "title": "هل نسيت كلمة السر",
+      "description": "أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة التعيين.",
+      "email": "بريد إلكتروني",
+      "submit": "إرسال رابط إعادة التعيين",
+      "submitting": "إرسال...",
+      "back": "العودة لتسجيل الدخول",
+      "invalidEmail": "أدخل عنوان بريد إلكتروني صالحًا.",
+      "rateLimited": "في حالة وجود حساب بهذا البريد الإلكتروني، فهذا يعني أنه قد تم بالفعل إرسال رابط إعادة التعيين مؤخرًا.",
+      "sent": "في حالة وجود حساب بهذا البريد الإلكتروني، فقد تم إرسال رابط إعادة التعيين."
+    },
+    "reset": {
+      "title": "إعادة تعيين كلمة المرور",
+      "description": "اختر كلمة مرور جديدة لحسابك.",
+      "missing": "رابط إعادة التعيين هذا مفقود أو غير صالح. اطلب واحدة جديدة على",
+      "expired": "انتهت صلاحية رابط إعادة التعيين هذا أو تم استخدامه بالفعل. اطلب واحدة جديدة على",
+      "forgotLink": "صفحة نسيت كلمة المرور",
+      "forUser": "اختر كلمة مرور جديدة ل {email}.",
+      "newPassword": "كلمة المرور الجديدة",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "submit": "إعادة تعيين كلمة المرور",
+      "submitting": "إعادة الضبط...",
+      "back": "العودة لتسجيل الدخول",
+      "invalidLink": "رابط إعادة التعيين غير صالح.",
+      "invalidPassword": "استخدم كلمة مرور تتوافق مع المتطلبات.",
+      "expiredToken": "رابط إعادة التعيين هذا غير صالح أو انتهت صلاحيته."
+    },
+    "setup": {
+      "title": "إنشاء المشرف",
+      "cardTitle": "إنشاء المسؤول الأول",
+      "description": "قم بإعداد حساب المسؤول الأولي لبدء إدارة مخاطر المورد.",
+      "fullName": "الاسم الكامل",
+      "email": "بريد إلكتروني",
+      "password": "كلمة المرور",
+      "passwordHint": "ما لا يقل عن 12 حرفا.",
+      "submit": "إنشاء المشرف",
+      "submitting": "جارٍ الإنشاء…",
+      "alreadyDone": "تم بالفعل الانتهاء من الإعداد.",
+      "invalid": "تحقق من الاسم والبريد الإلكتروني وكلمة المرور (12 حرفًا على الأقل).",
+      "roleError": "تعذر تهيئة دور المسؤول. يرجى المحاولة مرة أخرى.",
+      "createdSignIn": "تم إنشاء الحساب. الرجاء تسجيل الدخول."
+    },
+    "sso": {
+      "orSignInWith": "أو قم بتسجيل الدخول باستخدام"
+    }
+  }
+}

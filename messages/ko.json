@@ -1,0 +1,2681 @@
+{
+  "Common": {
+    "changeLanguage": "언어 변경",
+    "skipToContent": "콘텐츠로 건너뛰기",
+    "cancel": "취소",
+    "delete": "삭제",
+    "close": "닫기",
+    "sidebar": "사이드바",
+    "sidebarDescription": "모바일 사이드바를 표시합니다.",
+    "toggleSidebar": "사이드바 전환",
+    "step": "단계 {number}:",
+    "tiers": {
+      "CRITICAL": "비판적인",
+      "HIGH": "높은",
+      "MEDIUM": "중간",
+      "LOW": "낮은"
+    },
+    "pagination": {
+      "pageOf": "{totalPages}페이지 중 {page}페이지 · {totalCount} {itemLabel}",
+      "previous": "이전의",
+      "next": "다음"
+    },
+    "viewToggle": {
+      "rows": "행 보기",
+      "cards": "카드 보기"
+    },
+    "assessmentStatuses": {
+      "DRAFT": "초안",
+      "SENT": "전송된",
+      "IN_PROGRESS": "진행 중",
+      "SUBMITTED": "제출된",
+      "UNDER_REVIEW": "검토중",
+      "COMPLETED": "완전한"
+    },
+    "findingStatuses": {
+      "OPEN": "열려 있는",
+      "REMEDIATED": "해결됨",
+      "RISK_ACCEPTED": "위험 감수"
+    },
+    "copyLink": {
+      "copy": "복사",
+      "copied": "복사됨"
+    },
+    "pendingLink": {
+      "preparing": "준비 중…"
+    },
+    "evidencePreview": {
+      "preview": "시사 {fileName}"
+    },
+    "questionTypes": {
+      "YES_NO": "예 / 아니오",
+      "MULTIPLE_CHOICE": "단일 선택(하나 선택)",
+      "FREE_TEXT": "자유 문자",
+      "FILE_UPLOAD": "파일 업로드",
+      "DATE": "날짜",
+      "NUMERIC": "숫자",
+      "COMBOBOX": "콤보박스",
+      "MULTI_SELECT": "다중 선택(여러 개 선택)",
+      "RATING": "등급(1-5)",
+      "URL": "URL",
+      "EMAIL": "이메일",
+      "CHECKBOX": "체크박스(승인)"
+    },
+    "controlCodes": {
+      "showMore": "{count,plural,one{보여주다 # 더 많은 제어} other{보여주다 # 더 많은 컨트롤}}",
+      "showLess": "간략히 보기"
+    },
+    "search": {
+      "placeholder": "찾다…"
+    }
+  },
+  "Metadata": {
+    "description": "화이트 라벨 타사 공급업체 위험 관리 솔루션"
+  },
+  "Dashboard": {
+    "metaTitle": "계기반",
+    "title": "공급업체 위험 개요",
+    "tracked": "{count,plural,one{# 공급업체 추적} other{# 추적된 공급업체}}",
+    "newVendor": "새로운 공급업체",
+    "assessments": "평가",
+    "portfolioReport": "포트폴리오 보고서",
+    "emptyTitle": "아직 공급업체가 없습니다.",
+    "emptyCanCreate": "위험 추적을 시작하려면 첫 번째 공급업체를 추가하세요.",
+    "emptyReadOnly": "아직 추적 중인 공급업체가 없습니다.",
+    "addVendor": "공급업체 추가 →",
+    "stats": {
+      "vendors": "추적된 공급업체",
+      "averageScore": "평균 점수",
+      "openFindings": "발견 항목 열기",
+      "needsAttention": "주의가 필요함"
+    },
+    "topControls": "최고 결핍 통제",
+    "viewRiskRegister": "위험등록부 보기 →",
+    "highestRisk": "위험성이 가장 높은 공급업체",
+    "viewAllVendors": "모든 공급업체 보기 →",
+    "noAssessments": "평가 없음",
+    "overdue": "{count} 기한이 지난",
+    "attention": {
+      "title": "주의가 필요함",
+      "allClear": "모든 것이 명확합니다. 지금은 주의가 필요한 것이 없습니다.",
+      "titleWithCount": "주의가 필요합니다({count})",
+      "unreviewed": "검토되지 않은",
+      "clarification": "설명",
+      "clarifications": "설명",
+      "failedEmail": "실패한 이메일(24시간)",
+      "failedEmails": "실패한 이메일(24시간)",
+      "groups": {
+        "overdue": "기한이 지난 평가",
+        "belowThreshold": "점수 기준점 미만",
+        "keyDates": "주요 날짜(60일)"
+      },
+      "overdueAssessment": "{count,plural,one{# 기한이 지난 평가} other{# 기한이 지난 평가}}",
+      "oldestSince": "이후로 가장 오래된 {date}",
+      "belowThreshold": "아래에 {percent}% 한계점",
+      "contractRenewal": "계약갱신",
+      "daysOverdue": "{days}d 연체",
+      "inDays": "~에 {days}디"
+    },
+    "charts": {
+      "portfolioHealth": "포트폴리오 상태",
+      "openFindingsBySeverity": "심각도별 발견 항목 열기",
+      "assessmentStatus": "평가현황",
+      "riskByTier": "계층별 위험",
+      "vendors": "공급 업체",
+      "assessments": "평가",
+      "openFindings": "발견 항목 열기",
+      "ragShort": {
+        "green": "녹색",
+        "amber": "호박색",
+        "red": "빨간색",
+        "unscored": "점수가 매겨지지 않은"
+      },
+      "rag": {
+        "green": "녹색(≥85%)",
+        "amber": "호박색(60~84%)",
+        "red": "빨간색(<60%)",
+        "unscored": "점수가 매겨지지 않은"
+      },
+      "severity": {
+        "CRITICAL": "비판적인",
+        "HIGH": "높은",
+        "MEDIUM": "중간",
+        "LOW": "낮은"
+      },
+      "status": {
+        "DRAFT": "초안",
+        "SENT": "전송된",
+        "IN_PROGRESS": "진행 중",
+        "SUBMITTED": "제출된",
+        "UNDER_REVIEW": "검토중",
+        "COMPLETED": "완전한",
+        "OVERDUE": "연체"
+      },
+      "tier": {
+        "CRITICAL": "비판적인",
+        "HIGH": "높은",
+        "MEDIUM": "중간",
+        "LOW": "낮은",
+        "Unspecified": "지정되지 않음"
+      },
+      "activity": {
+        "title": "평가 활동",
+        "noActivity": "이 기간에는 활동이 없습니다.",
+        "timeRange": "기간을 선택하세요.",
+        "ranges": {
+          "90d": "지난 3개월",
+          "30d": "지난 30일",
+          "7d": "지난 7일"
+        },
+        "assessments": "평가"
+      }
+    }
+  },
+  "Vendors": {
+    "metaTitle": "공급업체",
+    "title": "공급업체",
+    "subtitle": "보안 위험을 평가하는 공급업체.",
+    "compare": "비교하다",
+    "import": "가져오기",
+    "bulkSend": "대량보내기",
+    "newVendor": "새로운 공급업체",
+    "search": "찾다",
+    "searchPlaceholder": "이름이나 이메일…",
+    "tier": "층",
+    "anyTier": "모든 등급",
+    "filterTierAria": "계층별로 공급업체 필터링",
+    "sort": "종류",
+    "sortAria": "공급업체 정렬",
+    "filter": "필터",
+    "clear": "분명한",
+    "viewAria": "공급업체 목록 보기",
+    "noMatches": "선택한 필터와 일치하는 공급업체가 없습니다.",
+    "emptyTitle": "아직 공급업체가 없습니다.",
+    "emptyDescription": "보안 위험 추적을 시작하려면 공급업체를 추가하세요.",
+    "assessed": "평가됨 {date}",
+    "notAssessed": "평가되지 않음",
+    "assessmentCount": "{count,plural,one{# 평가} other{# 평가}}",
+    "openFindingCount": "{count,plural,one{# 발견 항목 공개} other{# 공개 결과}}",
+    "list": {
+      "vendor": "공급업체",
+      "tier": "등급",
+      "score": "점수",
+      "items": "공급업체"
+    },
+    "sorts": {
+      "name": "이름(A~Z)",
+      "name-desc": "이름(Z–A)",
+      "score-asc": "점수(낮음 → 높음)",
+      "score-desc": "점수(높음 → 낮음)",
+      "tier": "계층(A~Z)",
+      "tier-desc": "계층(Z~A)",
+      "last-assessed": "마지막 평가",
+      "assessments": "대부분의 평가"
+    },
+    "form": {
+      "vendorName": "공급업체 이름",
+      "externalId": "외부 ID",
+      "externalIdPlaceholder": "예를 들어 ERP-V-001",
+      "externalIdHint": "다른 시스템의 이 공급업체에 대한 선택적 참조",
+      "contactName": "담당자 이름",
+      "contactEmail": "연락처 이메일",
+      "tier": "층",
+      "website": "웹사이트",
+      "riskOwner": "위험 소유자",
+      "dataSensitivity": "데이터 민감도",
+      "contractValue": "계약 가치",
+      "geographicRisk": "지리적 위험",
+      "tags": "태그",
+      "tagsPlaceholder": "예를 들어 SaaS, 중요, 금융",
+      "tagsHint": "그룹화 및 필터링을 위한 쉼표로 구분된 라벨",
+      "serviceProvided": "제공되는 서비스",
+      "servicePlaceholder": "예를 들어 클라우드 이메일 호스팅",
+      "contractRenewalDate": "계약갱신일",
+      "notes": "메모",
+      "saving": "절약...",
+      "saveChanges": "변경사항 저장",
+      "create": "공급업체 생성",
+      "cancel": "취소",
+      "unspecified": "지정되지 않음",
+      "unassigned": "할당되지 않음",
+      "levels": {
+        "NONE": "없음",
+        "LOW": "낮은",
+        "MEDIUM": "중간",
+        "HIGH": "높은"
+      },
+      "dataSensitivities": {
+        "PUBLIC": "공공의",
+        "INTERNAL": "내부",
+        "CONFIDENTIAL": "비밀의",
+        "RESTRICTED": "제한된"
+      }
+    },
+    "new": {
+      "title": "새로운 공급업체",
+      "cardTitle": "공급업체 세부정보",
+      "cardDescription": "추적할 새 공급업체를 추가하세요.",
+      "breadcrumb": "새로운"
+    },
+    "edit": {
+      "title": "공급업체 수정",
+      "cardTitle": "공급업체 세부정보",
+      "cardDescription": "공급업체 세부정보를 업데이트하세요.",
+      "breadcrumb": "편집하다"
+    },
+    "attachments": {
+      "title": "첨부파일",
+      "emptyTitle": "아직 첨부파일이 없습니다.",
+      "emptyDescription": "계약서, 편지 또는 기타 문서를 업로드하세요.",
+      "removeAria": "첨부파일 삭제",
+      "dropHint": "파일을 삭제하거나 클릭하여 찾아보세요.",
+      "uploading": "업로드 중…",
+      "upload": "업로드"
+    },
+    "export": {
+      "button": "CSV 내보내기",
+      "all": "모든 공급업체",
+      "currentPage": "현재 페이지"
+    },
+    "errors": {
+      "invalidInput": "입력이 잘못되었습니다.",
+      "duplicateExternalId": "이 외부 ID를 가진 공급업체가 이미 존재합니다.",
+      "vendorCreated": "공급업체가 생성되었습니다.",
+      "vendorUpdated": "공급업체가 업데이트되었습니다.",
+      "noFile": "선택한 파일이 없습니다.",
+      "fileTypeNotAllowed": "파일 형식이 허용되지 않습니다.",
+      "fileTypeNotAccepted": "이 파일 형식은 허용되지 않습니다.",
+      "fileTooLarge": "파일이 너무 큽니다(최대 {max} MB).",
+      "fileUploaded": "파일이 업로드되었습니다.",
+      "fileAttached": "판매업체에 파일이 첨부되었습니다."
+    },
+    "detail": {
+      "notFound": "공급업체를 찾을 수 없습니다.",
+      "errorTitle": "공급업체를 로드하지 못했습니다.",
+      "errorDescription": "이 공급업체의 세부정보를 로드하는 중에 오류가 발생했습니다. 다시 시도해 주세요.",
+      "created": "공급업체가 생성되었습니다.",
+      "breadcrumbs": {
+        "riskRegister": "위험 등록부",
+        "vendors": "공급업체"
+      },
+      "edit": "편집하다",
+      "exportCsv": "CSV 내보내기",
+      "delete": "삭제",
+      "deleteTitle": "공급업체를 삭제하시겠습니까?",
+      "deleteDescription": "영구적으로 삭제됩니다. {vendorName} 그리고 모두 {count,plural,one{# 평가} other{# 평가}}. 이 작업은 취소할 수 없습니다.",
+      "tabs": {
+        "overview": "개요",
+        "compliance": "규정 준수",
+        "findings": "조사 결과",
+        "assessments": "평가"
+      },
+      "overview": {
+        "title": "개요",
+        "serviceProvided": "제공되는 서비스",
+        "riskOwner": "위험 소유자",
+        "unassigned": "할당되지 않음",
+        "externalId": "외부 ID",
+        "dataSensitivity": "데이터 민감도",
+        "unspecified": "지정되지 않음",
+        "website": "웹사이트",
+        "contractRenewal": "계약갱신",
+        "overdue": " · 기한이 지난",
+        "attachments": "첨부파일",
+        "emptyTitle": "개요 세부정보 없음",
+        "emptyDescription": "서비스 세부 정보, 위험 소유자 및 기타 프로필 정보를 추가하려면 이 공급업체를 편집하세요."
+      },
+      "riskProfile": {
+        "title": "위험 프로필",
+        "inherent": "본질적인 (사전 평가)",
+        "residual": "잔여(평가됨)",
+        "trendingUp": "상승 추세 ↑",
+        "trendingDown": "하락 추세 ↓",
+        "stable": "안정 →",
+        "noScore": "아직 점수가 없습니다. 평가를 제출하세요.",
+        "trend": "경향",
+        "compareLastTwo": "마지막 두 개 비교 →"
+      },
+      "certifications": "인증 및 증명",
+      "compliance": {
+        "vendorCompliance": "공급업체 규정 준수",
+        "yourCompliance": "귀하의 규정 준수",
+        "domainCompliance": "도메인 규정 준수",
+        "noDataTitle": "규정 준수 데이터 없음",
+        "noDataDescription": "도메인 규정 준수 점수를 보려면 평가를 완료하세요.",
+        "frameworkHeatmaps": "프레임워크 히트맵",
+        "noAssessmentData": "평가 데이터 없음",
+        "noFrameworksTitle": "사용 가능한 프레임워크가 없습니다.",
+        "noFrameworksDescription": "컨트롤을 평가 질문에 매핑하기 위해 프레임워크 라이브러리를 가져오거나 시드합니다."
+      },
+      "findings": {
+        "title": "조사 결과",
+        "openCount": "{count, plural, one {#개 미해결} other {#개 미해결}}",
+        "viewAll": "{count,plural,one{위험 등록부에서 결과 보기 →} other{모두 보기 # 위험 등록부 결과 →}}",
+        "emptyTitle": "발견 항목 없음",
+        "emptyDescription": "평가 답변이 규정을 준수하지 않는 경우 조사 결과가 생성됩니다. 여기에서 결과를 보려면 평가를 완료하세요."
+      },
+      "assessments": {
+        "title": "평가",
+        "new": "새로운 평가",
+        "emptyTitle": "평가 없음",
+        "emptyDescription": "이 공급업체에 대한 평가가 아직 생성되지 않았습니다.",
+        "noTemplate": "템플릿 없음",
+        "due": " · 로 인한 {date}",
+        "viewAll": "{count,plural,one{평가 보기 →} other{모두 보기 # 평가 →}}",
+        "activity": "활동"
+      }
+    },
+    "timeline": {
+      "empty": "아직 기록된 활동이 없습니다.",
+      "assessmentCreated": "평가가 생성되었습니다.",
+      "assessmentSent": "평가 전송됨",
+      "assessmentSubmitted": "평가가 제출됨",
+      "findingOpened": "발견 항목이 열렸습니다.",
+      "remediated": "해결됨",
+      "riskAccepted": "위험 감수",
+      "certificationAdded": "인증이 추가되었습니다",
+      "certificationExpiring": "인증 만료",
+      "certificationExpiringDescription": "{name} — 만료 {date}"
+    },
+    "certifications": {
+      "empty": "아직 추적된 인증이 없습니다.",
+      "expires": "만료 {date}",
+      "statuses": {
+        "valid": "유효한",
+        "expiring": "곧 만료됨",
+        "expired": "만료됨"
+      },
+      "add": "인증 추가",
+      "edit": "편집하다",
+      "delete": "삭제",
+      "deleteTitle": "인증을 삭제하시겠습니까?",
+      "deleteDescription": "\"{name}\"가 영구적으로 제거됩니다.",
+      "editor": {
+        "addTitle": "인증 추가",
+        "description": "증명(SOC 2, ISO 27001 등) 및 만료를 추적합니다.",
+        "name": "이름",
+        "namePlaceholder": "예를 들어 SOC 2 유형 II",
+        "issuer": "발급자(선택사항)",
+        "issuerPlaceholder": "예를 들어 심사원/인증기관",
+        "issued": "발급됨(선택사항)",
+        "expires": "만료",
+        "notes": "메모(선택사항)",
+        "complianceActions": "규정 준수 조치 필요",
+        "selectFramework": "프레임워크를 선택하세요...",
+        "attachment": "첨부파일(선택사항)",
+        "attachmentHint": "인증서, 보고서 또는 계약서를 업로드하세요. 최대 20MB.",
+        "attachments": "첨부파일",
+        "saving": "절약...",
+        "save": "인증 저장",
+        "cancel": "취소"
+      },
+      "errors": {
+        "missingVendor": "공급업체가 누락되었습니다.",
+        "invalidInput": "입력이 잘못되었습니다.",
+        "wrongVendor": "인증은 이 공급업체에 속하지 않습니다.",
+        "saved": "인증이 저장되었습니다.",
+        "attachmentFailed": " 첨부 실패: {reason}",
+        "fileType": "파일 형식이 허용되지 않습니다.",
+        "fileTooLarge": "파일이 너무 큽니다(최대 {max} MB).",
+        "fileInvalid": "이 파일 형식은 허용되지 않습니다.",
+        "fileRecordFailed": "파일 기록을 저장하지 못했습니다.",
+        "fileUploaded": "파일이 업로드되었습니다.",
+        "nameRequired": "인증 이름이 필요합니다.",
+        "expiryRequired": "만료일은 필수입니다.",
+        "invalidExpiry": "유효한 만료일을 입력하세요.",
+        "added": "인증 \"{name}\"라는 내용이 첨부파일로 추가되었습니다.",
+        "missingEvidence": "증거가 누락되었습니다.",
+        "evidenceNotFound": "증거를 찾을 수 없습니다."
+      }
+    },
+    "customerResponsibility": {
+      "title": "고객의 책임",
+      "collapse": "무너지다",
+      "expand": "확장하다",
+      "progress": "{total}개 중 {completed}개 · {percent}%",
+      "empty": "이 인증에는 책임 공유 통제가 없습니다.",
+      "assignedTo": "할당됨 {name}",
+      "fileCount": "{count,plural,one{# 파일} other{# 파일}}",
+      "status": "상태",
+      "statuses": {
+        "PENDING": "보류 중",
+        "IN_PROGRESS": "진행 중",
+        "COMPLETED": "완전한",
+        "NOT_APPLICABLE": "해당사항 없음"
+      },
+      "assignedToLabel": "할당됨",
+      "assignedToPlaceholder": "사용자 ID(선택사항)",
+      "attachment": "부착",
+      "notes": "메모",
+      "notesPlaceholder": "구현에 대한 참고사항 추가...",
+      "files": "파일",
+      "saving": "절약...",
+      "save": "구하다",
+      "cancel": "취소",
+      "errors": {
+        "missingFields": "필수 입력란이 누락되었습니다.",
+        "invalidStatus": "상태가 잘못되었습니다.",
+        "noChanges": "제공된 변경사항이 없습니다.",
+        "saved": "저장되었습니다."
+      }
+    }
+  },
+  "Assessments": {
+    "list": {
+      "title": "평가",
+      "subtitle": "공급업체에 평가가 전송되었습니다.",
+      "subtitleForVendor": "다음에 대한 평가 {vendorName}.",
+      "filters": {
+        "search": "찾다",
+        "searchPlaceholder": "제목이나 판매처...",
+        "status": "상태",
+        "allStatuses": "모든 상태",
+        "statusAriaLabel": "상태별로 평가 필터링",
+        "from": "에서",
+        "to": "에게",
+        "sort": "종류",
+        "sortAriaLabel": "평가 정렬",
+        "overdueOnly": "연체만 가능",
+        "apply": "필터",
+        "clear": "분명한"
+      },
+      "sorts": {
+        "created": "최신순",
+        "created-asc": "오래된 것부터",
+        "due-asc": "마감일(가장 빠름)",
+        "due-desc": "마감일(최신)",
+        "score-asc": "점수(낮음 → 높음)",
+        "score-desc": "점수(높음 → 낮음)",
+        "vendor": "공급업체(A~Z)",
+        "status": "상태(A~Z)",
+        "status-desc": "상태(Z–A)"
+      },
+      "emptyFiltered": "선택한 필터와 일치하는 평가가 없습니다.",
+      "emptyTitle": "아직 평가가 없습니다.",
+      "emptyDescription": "평가를 작성하고 공급업체에 링크를 보내 완료하세요.",
+      "items": "평가",
+      "columns": {
+        "assessmentVendor": "평가 · 공급업체",
+        "score": "점수",
+        "status": "상태",
+        "due": "로 인한"
+      },
+      "overdue": "연체",
+      "due": " · 로 인한 {date}"
+    },
+    "new": {
+      "title": "다음에 대한 새로운 평가 {vendorName}",
+      "breadcrumb": "새로운 평가",
+      "cardTitle": "평가 세부정보",
+      "form": {
+        "title": "제목",
+        "titlePlaceholder": "예를 들어 연간 보안 검토",
+        "template": "설문지 템플릿",
+        "templatePlaceholder": "게시된 템플릿 선택",
+        "noTemplates": "템플릿을 찾을 수 없습니다.",
+        "dueDate": "마감일",
+        "reviewer": "리뷰어",
+        "unassigned": "할당되지 않음",
+        "publishFirst": "평가를 생성하려면 먼저 템플릿을 게시하세요.",
+        "creating": "만드는 중...",
+        "create": "평가 만들기",
+        "cancel": "취소"
+      }
+    },
+    "detail": {
+      "notFound": "평가를 찾을 수 없습니다.",
+      "breadcrumbs": {
+        "assessments": "평가",
+        "vendors": "공급업체"
+      },
+      "actions": {
+        "reopen": "리뷰 다시 열기",
+        "exportCsv": "CSV 내보내기",
+        "downloadPdf": "PDF 다운로드",
+        "preparingReport": "보고서 준비 중…",
+        "finalize": "마무리",
+        "finalizing": "마무리 중…",
+        "delete": "삭제",
+        "deleteTitle": "평가를 삭제하시겠습니까?",
+        "deleteDescription": "'이 영구적으로 삭제됩니다.{title}'' 및 모든 답변, 조사 결과, 증거가 포함됩니다. 이 작업은 취소할 수 없습니다."
+      },
+      "meta": {
+        "due": " · 로 인한 {date}",
+        "reviewer": " · 리뷰어 {name}"
+      },
+      "draft": {
+        "createLinkTitle": "공급업체 링크 생성",
+        "createLinkDescription": "평가를 위해 로그인이 필요 없는 공급업체 링크를 생성합니다. 선택적으로 액세스를 보호하기 위해 비밀번호를 설정하십시오.",
+        "settingsTitle": "초안 설정",
+        "title": "제목",
+        "dueDate": "마감일",
+        "saving": "절약…",
+        "save": "변경사항 저장"
+      },
+      "link": {
+        "title": "공급업체 링크(로그인 필요 없음)",
+        "expires": "만료 {date}",
+        "noExpiry": "만료 없음",
+        "passwordProtected": "비밀번호로 보호됨",
+        "extend": "30일 연장",
+        "regenerate": "링크 재생성",
+        "revoke": "취소",
+        "revokeTitle": "공급업체 링크를 취소하시겠습니까?",
+        "revokeDescription": "공급업체는 더 이상 설문지에 액세스할 수 없습니다. 필요한 경우 나중에 링크를 다시 생성할 수 있습니다.",
+        "revokedTitle": "공급업체 링크",
+        "revokedDescription": "링크가 취소되었습니다."
+      },
+      "score": {
+        "title": "점수",
+        "low": "낮은 위험",
+        "moderate": "보통 위험",
+        "high": "위험"
+      },
+      "findings": {
+        "summary": "조사 결과({count} · {open,plural,one{# 열려 있는} other{# 열려 있는}})",
+        "deletedUser": "삭제된 사용자",
+        "noneTitle": "조사 결과",
+        "allCompliant": "모든 답변이 규정을 준수합니다. 결과가 없습니다.",
+        "automatedDescription": "공급업체의 답변이 예상한 답변을 충족하지 못했습니다."
+      },
+      "responses": {
+        "title": "응답",
+        "summary": "{approved} ~의 {total} 승인됨 · {pending} 보류 중",
+        "summaryClarifications": " · {count,plural,one{# 설명} other{# 설명}}",
+        "filters": {
+          "all": "모두",
+          "pending": "보류 중 ({count})",
+          "approved": "승인됨({count})",
+          "clarification": "설명 ({count})"
+        },
+        "notApplicable": "해당 없음",
+        "evidenceAlt": "증거 파일: {fileName}",
+        "viewPdf": "PDF 보기: {fileName} ↗",
+        "attachToVendor": "공급업체에 연결"
+      },
+      "sender": {
+        "password": "포털 비밀번호(선택사항)",
+        "passwordPlaceholder": "공급업체에 비밀번호 입력 요구",
+        "passwordHint": "설정된 경우 공급업체는 설문지에 액세스하기 전에 이 비밀번호를 입력해야 합니다.",
+        "sendToVendor": "공급업체에 보내기",
+        "generateOnly": "링크만 생성",
+        "customEmailPlaceholder": "custom@example.com",
+        "sendTo": "다음으로 보내기"
+      },
+      "sendBack": {
+        "trigger": "공급업체에 다시 보내기",
+        "title": "공급업체에 다시 보내시겠습니까?",
+        "description": "공급업체는 답변을 편집하고 다시 제출할 수 있으며 귀하의 메시지가 포함된 이메일을 받게 됩니다. 기존 답변은 유지됩니다.",
+        "messageLabel": "공급업체에 보내는 메시지(선택사항)",
+        "messagePlaceholder": "어떤 추가 정보가 필요한지 설명하세요…",
+        "cancel": "취소",
+        "confirm": "반송",
+        "emailFallback": "설문지를 검토한 후 다시 제출해 주세요."
+      },
+      "review": {
+        "approved": "승인됨",
+        "clarificationRequested": "설명이 요청됨",
+        "noReviewYet": "아직 리뷰가 없습니다",
+        "collapse": "무너지다",
+        "expand": "확장하다",
+        "reviewPlaceholder": "검토",
+        "approve": "승인하다",
+        "requestClarification": "설명 요청",
+        "notePlaceholder": "선택적 메모(설명이 요청된 경우 공급업체에 표시됨)",
+        "save": "구하다",
+        "vendor": "공급업체",
+        "internal": "내부",
+        "replyPlaceholder": "회신하다",
+        "internalOption": "내부",
+        "vendorOption": "공급업체에 표시",
+        "reply": "회신하다",
+        "commentPlaceholder": "댓글 추가",
+        "comment": "논평",
+        "commentCount": "{count,plural,one{# 논평} other{# 댓글}}",
+        "previousReview": "이전 리뷰({decision}): {note}"
+      },
+      "findingStatus": {
+        "resolutionNotePlaceholder": "해결 참고사항(선택사항)",
+        "save": "구하다"
+      },
+      "attachEvidence": {
+        "trigger": "붙이다",
+        "refreshing": "{message}. 상쾌하다…",
+        "attachAs": "다음으로 첨부",
+        "certificationOption": "인증/증명",
+        "generalOption": "일반첨부",
+        "certificationName": "인증명",
+        "namePlaceholder": "예를 들어 SOC 2 유형 II",
+        "issuer": "발급자(선택사항)",
+        "issuerPlaceholder": "예를 들어 감사회사",
+        "expiryDate": "만료일",
+        "displayNameForFile": "파일의 표시 이름",
+        "notes": "메모(선택사항)",
+        "notesPlaceholder": "추가 컨텍스트…",
+        "complianceActions": "규정 준수 조치 필요",
+        "selectFramework": "프레임워크를 선택하세요...",
+        "displayName": "표시 이름",
+        "generalNotesPlaceholder": "이걸 왜 첨부했는지...",
+        "adding": "첨가…",
+        "addCertification": "인증 추가",
+        "attachToVendor": "공급업체에 연결",
+        "cancel": "취소"
+      },
+      "error": {
+        "title": "평가를 로드하지 못했습니다.",
+        "description": "이 평가를 로드하는 동안 오류가 발생했습니다. 다시 시도해 주세요.",
+        "retry": "다시 시도하세요"
+      }
+    },
+    "errors": {
+      "invalidInput": "입력이 잘못되었습니다.",
+      "titleRequired": "제목은 필수 항목입니다.",
+      "titleTooLong": "제목은 200자 이하여야 합니다.",
+      "templateRequired": "템플릿 선택",
+      "invalidDueDate": "유효한 마감일을 입력하세요.",
+      "saved": "저장되었습니다.",
+      "started": "평가가 시작되었습니다.",
+      "portalLinkFailed": "평가가 생성되었지만 포털 링크를 생성할 수 없습니다.",
+      "missingReviews": "{count,plural,one{# 응답을 아직 검토해야 합니다.} other{# 응답을 아직 검토해야 합니다.}}"
+    }
+  },
+  "Templates": {
+    "list": {
+      "title": "템플릿",
+      "subtitle": "보안 질문지를 작성하고 버전을 지정합니다.",
+      "new": "새 템플릿",
+      "import": "가져오기",
+      "emptyTitle": "아직 템플릿이 없습니다.",
+      "emptyDescription": "첫 번째 평가 템플릿을 만드세요.",
+      "sections": "{count,plural,one{# 부분} other{# 섹션}}"
+    },
+    "statuses": {
+      "DRAFT": "초안",
+      "PUBLISHED": "게시됨",
+      "ARCHIVED": "보관됨"
+    },
+    "new": {
+      "breadcrumb": "새로운",
+      "title": "새 템플릿",
+      "cardTitle": "템플릿 세부정보",
+      "form": {
+        "name": "이름",
+        "description": "설명",
+        "creating": "만드는 중…",
+        "create": "템플릿 만들기",
+        "cancel": "취소"
+      }
+    },
+    "builder": {
+      "notFound": "템플릿을 찾을 수 없습니다.",
+      "breadcrumbs": {
+        "templates": "템플릿"
+      },
+      "actions": {
+        "publish": "게시",
+        "newVersion": "새 버전 만들기",
+        "unpublish": "게시 취소",
+        "delete": "삭제",
+        "deleteTitle": "템플릿을 삭제하시겠습니까?",
+        "deleteDescription": "'이 영구적으로 삭제됩니다.{name}\" 및 모든 섹션과 질문. 이 템플릿을 사용하는 평가에서는 템플릿 링크가 손실됩니다. 이 작업은 취소할 수 없습니다.",
+        "menuAriaLabel": "템플릿 작업",
+        "preview": "시사",
+        "duplicate": "복제하다",
+        "export": "내보내다"
+      },
+      "versionHistory": "버전 기록",
+      "details": "템플릿 세부정보",
+      "name": "이름",
+      "description": "설명",
+      "saveDetails": "세부정보 저장",
+      "readOnly": "이 버전은 게시되었으며 읽기 전용입니다. 변경하려면 새 버전을 만드세요.",
+      "jumpToSection": "섹션으로 이동",
+      "section": {
+        "rename": "이름 바꾸기",
+        "moveUp": "섹션을 위로 이동",
+        "moveDown": "섹션을 아래로 이동",
+        "deleteTitle": "섹션을 삭제하시겠습니까?",
+        "deleteDescription": "'이 영구적으로 삭제됩니다.{title}\" 그리고 그 안의 모든 질문.",
+        "delete": "섹션 삭제",
+        "noQuestionsTitle": "질문 없음",
+        "noQuestionsDescription": "이 섹션을 시작하려면 질문을 추가하세요.",
+        "showQuestions": "보여주다 {count,plural,one{# 질문} other{# 질문}}",
+        "hideQuestions": "숨다 {count,plural,one{# 질문} other{# 질문}}",
+        "required": "필수의",
+        "moveQuestionUp": "질문을 위로 이동",
+        "moveQuestionDown": "질문을 아래로 이동",
+        "editQuestion": "편집하다",
+        "deleteQuestionTitle": "질문을 삭제하시겠습니까?",
+        "deleteQuestionDescription": "'이 영구적으로 삭제됩니다.{text}\".",
+        "deleteQuestion": "삭제",
+        "addQuestion": "질문 추가"
+      },
+      "addSection": {
+        "title": "섹션 추가",
+        "placeholder": "섹션 제목",
+        "button": "섹션 추가"
+      }
+    },
+    "question": {
+      "text": "질문 텍스트",
+      "help": "도움말 텍스트",
+      "helpHint": "마크다운 형식이 지원됩니다. **굵게**, *기울임꼴*, 목록 및 링크를 사용하세요.",
+      "answerType": "답변 유형",
+      "riskWeight": "위험 가중치",
+      "required": "필수의",
+      "options": "옵션(한 줄에 하나씩)",
+      "expectedAnswer": "예상 답변",
+      "noExpectedAnswer": "예상 답변 없음",
+      "yes": "예",
+      "no": "아니요",
+      "acceptedAnswers": "채택된 답변",
+      "acceptedHint": "규정을 준수하는 것으로 점수를 매겨야 하는 모든 답변을 선택하세요.",
+      "acceptedEmpty": "위에 옵션을 추가하여 어떤 답변이 허용되는지 선택하세요.",
+      "expectedNumber": "예상 숫자",
+      "expectedSelections": "예상되는 선택",
+      "selectionsHint": "공급업체가 규정 준수 점수를 얻기 위해 선택해야 하는 정확한 세트를 선택하세요.",
+      "selectionsEmpty": "위에 옵션을 추가하여 필수 항목을 선택하세요.",
+      "manualScoring": "이 답변 유형은 검토 중에 수동으로 채점됩니다.",
+      "checked": "체크됨",
+      "unchecked": "선택 해제됨",
+      "conditionalLegend": "조건부 공개 규칙",
+      "controlsLegend": "매핑된 규정 준수 제어",
+      "saving": "절약...",
+      "save": "질문 저장",
+      "cancel": "취소"
+    },
+    "conditions": {
+      "questionFallback": "질문",
+      "shownIf": "다음과 같은 경우에 표시됩니다.",
+      "and": "그리고",
+      "or": "또는",
+      "editing": {
+        "title": "조건부 가시성",
+        "match": "성냥",
+        "all": "모두(AND)",
+        "any": "모두(또는)",
+        "noQuestions": "이 질문을 조건부로 만들려면 먼저 다른 질문을 추가하세요.",
+        "alwaysShown": "항상 표시됩니다. 다른 답변이 일치하는 경우에만 이 질문을 표시하는 규칙을 추가하세요.",
+        "selectQuestion": "질문을 선택하세요",
+        "value": "값",
+        "remove": "제거하다",
+        "addRule": "규칙 추가",
+        "legend": "조건부 논리",
+        "yes": "예",
+        "no": "아니요",
+        "checked": "체크됨",
+        "unchecked": "선택 해제됨"
+      },
+      "operators": {
+        "equals": "같음",
+        "notEquals": "같지 않다",
+        "contains": "포함",
+        "notContains": "포함하지 않습니다",
+        "gt": "보다 큼",
+        "lt": "미만",
+        "gte": "보다 크거나 같음",
+        "lte": "보다 작거나 같음",
+        "answered": "대답된다",
+        "notAnswered": "대답하지 않는다"
+      }
+    },
+    "controls": {
+      "mappedControls": "매핑된 컨트롤",
+      "selectedCount": "{count} 선택된",
+      "hint": "프레임워크 제목을 선택하여 모든 컨트롤을 매핑합니다. \"인증을 받았습니까?\"에 유용합니다. 규정을 준수하는 답변이 전체 프레임워크를 충족해야 하는 질문입니다.",
+      "allFrameworks": "모든 프레임워크",
+      "filterPlaceholder": "필터 컨트롤…",
+      "noMatch": "현재 필터와 일치하는 컨트롤이 없습니다."
+    },
+    "import": {
+      "metadataTitle": "템플릿 가져오기",
+      "title": "템플릿 가져오기",
+      "subtitle": "새 템플릿을 만들려면 JSON 파일을 업로드하세요.",
+      "breadcrumb": "가져오기",
+      "cardTitle": "JSON에서 템플릿 가져오기",
+      "steps": {
+        "upload": "업로드",
+        "review": "검토"
+      },
+      "file": {
+        "label": "JSON 파일",
+        "downloadTemplate": "주형",
+        "hint": "유효한 JSON 템플릿 파일을 업로드하세요. 템플릿 빌더에서 기존 템플릿을 내보내(작업 → 내보내기) 예상 구조를 확인합니다."
+      },
+      "parse": {
+        "invalidStructure": "잘못된 템플릿 구조입니다. 예상되는 이름과 섹션 배열입니다.",
+        "invalidJson": "JSON 파일이 잘못되었습니다."
+      },
+      "summary": {
+        "sections": "{count,plural,one{# 부분} other{# 섹션}}",
+        "questions": "{count,plural,one{# 질문} other{# 질문}}",
+        "controlCodes": "{count,plural,one{# 제어 코드} other{# 제어 코드}}"
+      },
+      "table": {
+        "section": "부분",
+        "questions": "질문"
+      },
+      "review": {
+        "introPrefix": "템플릿을 가져오려고 합니다."
+      },
+      "next": "다음 →",
+      "back": "← 뒤로",
+      "importing": "가져오는 중…",
+      "import": "템플릿 가져오기",
+      "success": "\"{name}\"을(를) 새 초안으로 가져왔습니다.",
+      "errors": {
+        "noFile": "선택한 파일이 없습니다.",
+        "fileTooLarge": "파일이 너무 큽니다(최대 1MB).",
+        "invalidJson": "JSON 파일이 잘못되었습니다.",
+        "importFailed": "가져오기 실패 — 파일 구조를 처리할 수 없습니다. 다운로드 가능한 템플릿과 비교하여 확인한 후 다시 시도하세요.",
+        "nameRequired": "템플릿 이름이 필요합니다.",
+        "sectionsRequired": "템플릿에는 섹션이 하나 이상 포함되어 있어야 합니다.",
+        "sectionTitleRequired": "부분 {number}: 제목이 필요합니다.",
+        "questionsArray": "부분 \"{title}\": 질문은 배열이어야 합니다.",
+        "textRequired": "{where}: 텍스트가 필요합니다.",
+        "helpTextType": "{where}: helpText는 제공되는 경우 문자열이어야 합니다.",
+        "unknownType": "{where}: 알 수 없는 유형 \"{type}\".",
+        "unknownRiskWeight": "{where}: 알 수 없는 위험 가중치 \"{weight}\".",
+        "requiredType": "{where}: 필수는 제공되는 경우 부울이어야 합니다.",
+        "optionsType": "{where}: 옵션은 문자열 배열이어야 합니다.",
+        "controlCodesType": "{where}: controlCodes는 문자열 배열이어야 합니다.",
+        "expectedAnswerType": "{where}: 예상 답변은 문자열, 숫자 또는 문자열 배열이어야 합니다.",
+        "expectedAnswer": {
+          "multiSelectArray": "{where}: ExpectAnswer는 문자열 배열이어야 합니다.",
+          "choiceStringOrArray": "{where}: ExpectAnswer는 문자열이거나 문자열 배열이어야 합니다.",
+          "numeric": "{where}: 예상 답변은 숫자여야 합니다.",
+          "yesNoCheckboxString": "{where}: ExpectAnswer는 문자열이어야 합니다."
+        },
+        "controlAmbiguous": "제어 코드 {codes} 모호합니다. 동일한 코드가 여러 프레임워크에 존재합니다. 중복된 항목을 제거하거나 컨트롤 중 하나의 이름을 바꾸십시오.",
+        "controlNotFound": "제어 코드를 찾을 수 없습니다: {code}"
+      }
+    },
+    "preview": {
+      "notFound": "템플릿을 찾을 수 없습니다.",
+      "breadcrumb": "시사",
+      "title": "미리보기 — {name}",
+      "description": "이 설문지가 공급업체에 어떻게 표시되는지에 대한 읽기 전용 미리보기입니다. 조건부 질문은 모두 해당 규칙과 함께 여기에 표시됩니다.",
+      "noSectionsTitle": "아직 섹션이 없습니다.",
+      "noQuestionsTitle": "질문이 없습니다.",
+      "yes": "예",
+      "no": "아니요",
+      "select": "선택하다…",
+      "freeTextPlaceholder": "자유 텍스트 답변",
+      "attachmentUpload": "첨부파일 업로드",
+      "numberPlaceholder": "숫자",
+      "acknowledge": "나는 인정한다"
+    },
+    "questionPages": {
+      "editTitle": "질문 수정",
+      "editBreadcrumb": "질문 수정",
+      "addTitle": "질문 추가",
+      "addBreadcrumb": "질문 추가"
+    },
+    "error": {
+      "title": "템플릿을 로드하지 못했습니다.",
+      "description": "이 템플릿을 로드하는 중에 오류가 발생했습니다. 다시 시도해 주세요.",
+      "retry": "다시 시도하세요"
+    },
+    "errors": {
+      "invalidInput": "입력이 잘못되었습니다.",
+      "nameRequired": "템플릿 이름은 필수 항목입니다.",
+      "questionTextRequired": "질문 텍스트가 필요합니다.",
+      "conditionalTooLarge": "조건부 논리 페이로드가 너무 큽니다.",
+      "conditionalInvalid": "조건부 논리가 잘못되었습니다."
+    }
+  },
+  "Frameworks": {
+    "list": {
+      "title": "프레임워크",
+      "subtitle": "설문지 답변을 요구 사항에 매핑하는 데 사용되는 제어 라이브러리입니다.",
+      "import": "프레임워크 가져오기",
+      "gaps": "보장 공백",
+      "deleteBlocked": "{count,plural,one{삭제할 수 없음: # 통제는 여전히 설문지 질문에 매핑됩니다. 먼저 매핑을 해제하세요.} other{삭제할 수 없음: # 컨트롤은 여전히 ​​설문지 질문에 매핑됩니다. 먼저 매핑을 해제하세요.}}",
+      "emptyTitle": "프레임워크 없음",
+      "emptyDescription": "프레임워크 데이터를 로드할 수 없습니다.",
+      "controls": "{count,plural,one{# 제어} other{# 통제 수단}}",
+      "deleteTitle": "프레임워크 삭제 \"{name} 다섯{version}\"?",
+      "deleteDescription": "이 프레임워크와 해당 프레임워크가 영구적으로 삭제됩니다. {count,plural,one{# 제어} other{# 통제 수단}}. 이러한 컨트롤에 매핑된 템플릿 질문은 할당을 잃게 됩니다. 기존 평가 및 조사 결과는 영향을 받지 않습니다.",
+      "delete": "삭제"
+    },
+    "detail": {
+      "notFound": "프레임워크를 찾을 수 없습니다.",
+      "breadcrumbs": "프레임워크",
+      "deleteFramework": "프레임워크 삭제",
+      "searchPlaceholder": "검색 제어…",
+      "noControlsTitle": "일치하는 컨트롤이 없습니다.",
+      "noControlsDescription": "다른 검색어를 사용해 보세요."
+    },
+    "control": {
+      "notFound": "컨트롤을 찾을 수 없습니다",
+      "breadcrumbs": "프레임워크",
+      "guidance": "안내",
+      "mappedQuestions": "매핑된 질문({count})",
+      "noMappedTitle": "매핑된 질문이 없습니다.",
+      "noMappedDescription": "아직 이 컨트롤에 매핑된 설문지 질문이 없습니다."
+    },
+    "gaps": {
+      "title": "보장 격차 통제",
+      "subtitle": "어떤 템플릿에도 매핑된 질문이 없는 컨트롤입니다. 이를 사용하여 평가 범위의 사각지대를 식별합니다.",
+      "emptyTitle": "공백이 발견되지 않았습니다.",
+      "emptyDescription": "모든 프레임워크의 모든 컨트롤에는 매핑된 질문이 하나 이상 있습니다.",
+      "covered": "{mapped}/{total} 덮여",
+      "allCovered": "모두 {count,plural,one{# 제어} other{# 통제 수단}} 적어도 하나의 질문이 매핑되어 있어야 합니다.",
+      "errorTitle": "문제가 발생했습니다.",
+      "errorDescription": "규정 준수 격차 보기를 로드할 수 없습니다. 다시 시도해 주세요.",
+      "retry": "다시 시도하세요"
+    },
+    "import": {
+      "metadataTitle": "프레임워크 가져오기",
+      "title": "프레임워크 가져오기",
+      "subtitle": "새 프레임워크를 만들려면 컨트롤이 포함된 CSV 파일을 업로드하세요.",
+      "breadcrumb": "가져오기",
+      "cardTitle": "CSV에서 프레임워크 가져오기",
+      "steps": {
+        "setup": "설정 및 업로드",
+        "review": "검토"
+      },
+      "form": {
+        "name": "프레임워크 이름",
+        "namePlaceholder": "예를 들어 PCI DSS",
+        "version": "버전",
+        "versionPlaceholder": "예를 들어 4.0",
+        "description": "설명(선택사항)",
+        "descriptionPlaceholder": "프레임워크에 대한 간략한 설명",
+        "csvFile": "CSV 파일",
+        "downloadTemplate": "주형",
+        "csvHint": "CSV에는 도메인, 코드, 제목, 지침 열이 있어야 합니다(지침은 선택 사항). 선택사항: is_shared_responsibility(true/false, 기본값은 false). 최대 1MB.",
+        "controlsFound": "{count,plural,one{# 컨트롤이 발견되었습니다} other{# 컨트롤을 찾았습니다.}}",
+        "domain": "도메인",
+        "code": "암호",
+        "titleColumn": "제목",
+        "showingFirst": "먼저 표시 {shown} ~의 {total} 행",
+        "next": "다음 →",
+        "back": "← 뒤로",
+        "importing": "가져오는 중…",
+        "import": "프레임워크 가져오기",
+        "reviewIntro": "프레임워크를 생성하려고 합니다. {name} 다섯{version} ~와 함께 {count,plural,one{# 제어} other{# 통제 수단}}.",
+        "success": "\"{name} v{version}\" 및 {count, plural, one {#개 제어} other {#개 제어}}를 가져왔습니다."
+      },
+      "errors": {
+        "noFile": "CSV 파일이 필요합니다.",
+        "invalidFileType": "파일은 .csv 파일이어야 합니다.",
+        "tooLarge": "CSV 파일이 너무 큽니다(최대 1MB).",
+        "noRows": "CSV 파일에는 데이터 행이 없습니다.",
+        "missingColumns": "누락된 CSV 열: {columns}. 예상되는: {expected}",
+        "invalidInput": "입력이 잘못되었습니다.",
+        "nameRequired": "프레임워크 이름은 필수 항목입니다.",
+        "nameTooLong": "프레임워크 이름은 200자 이하여야 합니다.",
+        "versionRequired": "버전이 필요합니다",
+        "versionTooLong": "버전은 50자 이하여야 합니다.",
+        "descriptionTooLong": "설명은 500자 이하여야 합니다.",
+        "rowDomainRequired": "열 {row}: 도메인이 필요합니다",
+        "rowCodeRequired": "열 {row}: 제어 코드가 필요합니다",
+        "rowTitleRequired": "열 {row}: 컨트롤 제목이 필요합니다",
+        "rowInvalid": "열 {row}: 입력이 잘못되었습니다.",
+        "duplicateCode": "열 {row}: 중복 제어 코드 \"{code}\".",
+        "duplicateFramework": "\"라는 프레임워크{name}\" 버전 \"{version}\"이미 존재합니다."
+      }
+    },
+    "shared": "공유됨",
+    "error": {
+      "title": "문제가 발생했습니다.",
+      "description": "예상치 못한 오류가 발생했습니다. 다시 시도하거나 지원팀에 문의하세요.",
+      "retry": "다시 시도하세요"
+    },
+    "radar": {
+      "title": "도메인 규정 준수 레이더",
+      "current": "현재 평가",
+      "previous": "이전 평가",
+      "ariaLabel": "도메인 규정 준수 레이더: {values}",
+      "tableCaption": "도메인 준수율(%)",
+      "domain": "도메인",
+      "currentShort": "현재의",
+      "previousShort": "이전의",
+      "noPrevious": "단 한 번의 평가만 완료되었으며 비교할 이전 데이터가 없습니다."
+    },
+    "heatmap": {
+      "metadataNotFound": "공급업체를 찾을 수 없습니다.",
+      "metadataTitle": "히트맵 — {name}",
+      "breadcrumbs": "공급업체",
+      "subtitle": "최근 평가에서 얻은 도메인 규정 준수 레이더 및 제어 수준 히트맵입니다.",
+      "downloadReport": "PDF 보고서 다운로드",
+      "preparingReport": "보고서 준비 중…",
+      "emptyTitle": "사용 가능한 데이터가 없습니다.",
+      "emptyDescription": "아직 이 프레임워크에 대한 평가 데이터가 없습니다."
+    }
+  },
+  "RiskRegister": {
+    "metaTitle": "위험 등록부",
+    "title": "위험 등록부",
+    "subtitle": "공급업체에 대한 모든 결과를 한 곳에서 확인하세요.",
+    "stats": {
+      "open": "발견 항목 열기",
+      "criticalOpen": "크리티컬 오픈",
+      "remediated": "해결됨",
+      "riskAccepted": "위험 감수"
+    },
+    "filters": {
+      "status": "상태",
+      "allFindings": "모든 발견 항목",
+      "statusAriaLabel": "상태별로 발견 항목 필터링",
+      "severity": "심각성",
+      "anySeverity": "모든 심각도",
+      "severityAriaLabel": "심각도별로 발견 항목 필터링",
+      "vendor": "공급업체",
+      "allVendors": "모든 공급업체",
+      "vendorAriaLabel": "공급업체별로 발견 항목 필터링",
+      "sort": "종류",
+      "sortAriaLabel": "발견 항목 정렬",
+      "show": "보여주다",
+      "findingsOnly": "발견 항목만",
+      "responsibilityAriaLabel": "책임별로 필터링",
+      "customerResponsibility": "고객의 책임",
+      "apply": "필터",
+      "clear": "분명한",
+      "sorts": {
+        "priority": "우선 사항",
+        "newest": "최신",
+        "severity": "심각성"
+      }
+    },
+    "emptyFiltered": "선택한 필터와 일치하는 발견 항목이 없습니다.",
+    "emptyTitle": "아직 발견된 항목이 없습니다.",
+    "emptyDescription": "공급업체가 답변이 부족한 평가를 제출하면 결과가 자동으로 제기됩니다.",
+    "items": "조사 결과",
+    "responsibility": {
+      "title": "고객의 책임",
+      "noMatch": "선택한 필터와 일치하는 고객 책임 항목이 없습니다.",
+      "vendorFallback": "공급업체",
+      "assignedTo": "할당됨 {name}"
+    },
+    "bulk": {
+      "selected": "{count} 선택된",
+      "statusRemediated": "해결됨",
+      "statusRiskAccepted": "위험 감수",
+      "statusReopen": "다시 열다",
+      "updateTitle": "{count,plural,one{업데이트 # 발견?} other{업데이트 # 발견?}}",
+      "updateDescription": "{count, plural, one {#개 발견 사항을 \"{status}\"(으)로 설정합니다.} other {#개 발견 사항을 \"{status}\"(으)로 설정합니다.}}",
+      "apply": "적용하다",
+      "applying": "신청 중...",
+      "clearSelection": "선택 취소",
+      "note": "메모: {note}",
+      "automatedDescription": "공급업체의 답변이 예상한 답변을 충족하지 못했습니다.",
+      "errors": {
+        "invalidStatus": "상태가 잘못되었습니다.",
+        "invalidSelection": "선택 데이터가 잘못되었습니다.",
+        "noFindings": "선택된 발견 항목이 없습니다.",
+        "updated": "{count,plural,one{# 업데이트된 발견 항목} other{# 발견 항목이 업데이트되었습니다.}}",
+        "alreadyRemoved": "({count} 이미 제거되었습니다)."
+      }
+    },
+    "error": {
+      "title": "문제가 발생했습니다.",
+      "description": "예상치 못한 오류가 발생했습니다. 다시 시도하거나 지원팀에 문의하세요.",
+      "retry": "다시 시도하세요"
+    }
+  },
+  "SelfAssessment": {
+    "metaTitle": "자기평가",
+    "title": "자기평가",
+    "subtitle": "공급업체가 사용하는 것과 동일한 설문지 포털을 사용하여 규정 준수 프레임워크에 대해 조직을 평가합니다.",
+    "start": "새 평가 시작",
+    "emptyTitle": "아직 자체 평가가 없습니다.",
+    "emptyDescription": "ISO 27001, SOC 2 또는 기타 프레임워크를 기준으로 조직을 평가하기 위한 첫 번째 자체 평가를 시작하세요.",
+    "noTemplate": "템플릿 없음",
+    "new": {
+      "metaTitle": "새로운 자기평가",
+      "breadcrumb": "새로운",
+      "title": "새로운 자기평가",
+      "cardTitle": "평가 세부정보",
+      "form": {
+        "title": "제목",
+        "titlePlaceholder": "예를 들어 ISO 27001:2022 자체 평가",
+        "template": "설문지 템플릿",
+        "templatePlaceholder": "게시된 템플릿 선택",
+        "noTemplates": "템플릿을 찾을 수 없습니다.",
+        "dueDate": "마감일(선택사항)",
+        "publishFirst": "자체 평가를 시작하려면 먼저 템플릿을 게시하세요.",
+        "starting": "시작 중...",
+        "start": "평가 시작"
+      }
+    }
+  },
+  "Admin": {
+    "metaTitle": "관리자",
+    "general": {
+      "metaTitle": "관리자 - 일반",
+      "title": "일반적인",
+      "subtitle": "앱 전체에 조직 ID가 표시됩니다.",
+      "cardTitle": "조직",
+      "cardDescription": "이메일과 인터페이스에 표시되는 이름, 지원 이메일, 기본 언어입니다.",
+      "form": {
+        "name": "조직 이름",
+        "supportEmail": "지원 이메일",
+        "defaultLanguage": "기본 언어",
+        "defaultLanguageHint": "방문자가 언어를 선택하지 않았을 때 사용됩니다. 개인의 선택이 이를 무시합니다.",
+        "saving": "절약...",
+        "save": "구하다"
+      },
+      "success": "조직 설정이 저장되었습니다.",
+      "errors": {
+        "nameRequired": "조직 이름은 필수 항목입니다.",
+        "invalidEmail": "유효한 이메일 주소를 입력하세요.",
+        "invalidInput": "입력이 잘못되었습니다."
+      }
+    },
+    "appearance": {
+      "metaTitle": "관리자 — 모양",
+      "title": "모습",
+      "subtitle": "로고, 색상, 레이아웃 등 앱 전반에 걸친 브랜딩.",
+      "cardTitle": "모습",
+      "cardDescription": "로고, 기본 색상(버튼) 및 보조 색상(태그/알약)을 사용자 정의합니다. 기본값을 사용하려면 필드를 비워 두세요.",
+      "logo": "심벌 마크",
+      "currentLogoAlt": "현재 로고",
+      "removeLogoTitle": "로고를 삭제하시겠습니까?",
+      "removeLogoDescription": "현재 로고가 모든 페이지에서 제거됩니다. 언제든지 새 로고를 업로드할 수 있습니다.",
+      "remove": "제거하다",
+      "removeLogo": "로고 제거",
+      "noLogo": "업로드된 로고가 없습니다. PNG 또는 JPG(최대 2MB)를 업로드하세요.",
+      "primaryColour": "기본 색상",
+      "primaryColourHint": "기본 버튼, 링크 및 활성 상태에 사용됩니다.",
+      "secondaryColour": "보조 색상",
+      "secondaryColourHint": "태그, 알약, 배지 및 보조 요소에 사용됩니다.",
+      "reset": "다시 놓기",
+      "ragTitle": "RAG 표시기 색상",
+      "ragHint": "점수 표시기, 진행률 표시줄, 공급업체 위험 히트맵에 사용됩니다.",
+      "ragGreen": "녹색(준수)",
+      "ragGreenHint": "점수 ≥ 85%",
+      "ragAmber": "황색(주의가 필요함)",
+      "ragAmberHint": "점수 60~84%",
+      "ragRed": "빨간색(부족)",
+      "ragRedHint": "점수 < 60%",
+      "ragUnscored": "무득점(중립)",
+      "ragUnscoredHint": "아직 평가되지 않음",
+      "layoutTitle": "공들여 나열한 것",
+      "layoutHint": "플랫폼의 전체적인 모양과 느낌을 조정합니다.",
+      "borderRadius": "테두리 반경(px)",
+      "borderRadiusHint": "앱 전체에서 모서리가 둥근 정도를 제어합니다.",
+      "pageWidth": "페이지 너비",
+      "pageWidthHint": "콘텐츠를 읽을 수 있는 너비로 제한하거나 전체 화면을 사용하세요.",
+      "constrained": "제약됨",
+      "full": "전폭",
+      "saving": "절약...",
+      "save": "외모 저장",
+      "success": "외모 설정이 저장되었습니다.",
+      "errors": {
+        "primaryHex": "기본 색상은 유효한 16진수 색상이어야 합니다(예: #3b82f6).",
+        "secondaryHex": "보조 색상은 유효한 16진수 색상이어야 합니다(예: #f59e0b).",
+        "ragGreen": "RAG 녹색은 유효한 16진수 색상이어야 합니다.",
+        "ragAmber": "RAG 황색은 유효한 16진수 색상이어야 합니다.",
+        "ragRed": "RAG 빨간색은 유효한 16진수 색상이어야 합니다.",
+        "ragUnscored": "점수가 매겨지지 않은 RAG는 유효한 16진수 색상이어야 합니다.",
+        "logoTooLarge": "로고는 2MB 미만이어야 합니다.",
+        "logoImage": "로고는 이미지 파일이어야 합니다.",
+        "logoFormat": "로고는 PNG, JPG, GIF 또는 WEBP 이미지여야 합니다.",
+        "logoContent": "로고 파일 내용이 확장자와 일치하지 않습니다.",
+        "invalidInput": "입력이 잘못되었습니다."
+      }
+    },
+    "error": {
+      "title": "문제가 발생했습니다.",
+      "description": "예상치 못한 오류가 발생했습니다. 다시 시도하거나 지원팀에 문의하세요.",
+      "retry": "다시 시도하세요"
+    },
+    "email": {
+      "metaTitle": "관리자 — 이메일",
+      "title": "이메일",
+      "subtitle": "공급업체 및 검토자 이메일에 사용되는 SMTP 전달 및 템플릿입니다.",
+      "smtpTitle": "SMTP",
+      "smtpDescription": "공급업체 초대 및 알림을 보내는 데 사용됩니다. 비밀번호는 저장 시 암호화됩니다.",
+      "form": {
+        "host": "SMTP 호스트",
+        "port": "SMTP 포트",
+        "username": "SMTP 사용자 이름",
+        "password": "SMTP 비밀번호",
+        "passwordKeep": "현재 비밀번호를 유지하려면 비워두세요.",
+        "passwordEnter": "SMTP 비밀번호를 입력하세요",
+        "passwordHint": "미사용 시 암호화되어 저장되며 표시되지 않습니다.",
+        "fromAddress": "발신지 주소",
+        "fromName": "이름에서",
+        "saving": "절약...",
+        "save": "구하다"
+      },
+      "test": {
+        "label": "테스트 이메일 보내기",
+        "placeholder": "you@company.com",
+        "sending": "배상...",
+        "send": "테스트 보내기",
+        "hint": "저장된 SMTP 설정을 사용하여 보냅니다. 먼저 변경사항을 저장하세요."
+      },
+      "templatesTitle": "이메일 템플릿",
+      "templatesDescription": "제목과 본문을 편집할 템플릿을 선택하세요. 동적 값은 이중 중괄호 토큰을 사용합니다.",
+      "subject": "주제",
+      "body": "몸",
+      "editorHint": "마크다운 형식이 지원됩니다. **굵게**, *기울임꼴*, 목록 및 링크를 사용하세요. 토큰: {tokens}.",
+      "savingChanges": "절약...",
+      "saveChanges": "변경사항 저장",
+      "resetTitle": "기본값으로 재설정하시겠습니까?",
+      "resetDescription": "\"{name}\"제목과 본문은 기본 제공 기본값으로 대체됩니다. 모든 맞춤설정은 손실됩니다.",
+      "reset": "다시 놓기",
+      "resetting": "재설정 중...",
+      "resetToDefault": "기본값으로 재설정",
+      "cancel": "취소",
+      "preview": "시사",
+      "templateTypes": {
+        "invite": {
+          "label": "이메일 초대",
+          "description": "설문지가 처음 공유될 때 공급업체에 전송됩니다."
+        },
+        "invite-password": {
+          "label": "이메일 초대(비밀번호로 보호됨)",
+          "description": "포털 액세스 비밀번호가 포함된 변형을 초대합니다."
+        },
+        "reminder": {
+          "label": "알림 이메일",
+          "description": "마감일이 가까워지면 공급업체에 넛지가 전송됩니다."
+        },
+        "escalation": {
+          "label": "에스컬레이션 이메일",
+          "description": "설문지 기한이 지난 경우 검토자에게 전송됩니다."
+        },
+        "submission": {
+          "label": "제출물 수신 이메일",
+          "description": "공급업체가 답변을 제출했음을 검토자에게 알립니다."
+        },
+        "clarification": {
+          "label": "설명 이메일을 위해 반송됨",
+          "description": "자세한 내용을 확인하기 위해 평가가 다시 열리면 공급업체에 전송됩니다."
+        },
+        "reset": {
+          "label": "비밀번호 재설정 이메일",
+          "description": "비밀번호 재설정을 요청한 내부 직원에게 전송됩니다."
+        },
+        "expiry": {
+          "label": "만료 알림 이메일",
+          "description": "인증 또는 계약 만료가 가까워지면 공급업체의 위험 소유자에게 전송됩니다."
+        }
+      },
+      "success": "이메일 설정이 저장되었습니다.",
+      "testSuccess": "테스트 이메일을 다음 주소로 보냈습니다. {email}.",
+      "templateSaved": "{name} 저장되었습니다.",
+      "templateReset": "{name} 기본값으로 재설정합니다.",
+      "errors": {
+        "invalidInput": "입력이 잘못되었습니다.",
+        "invalidEmail": "유효한 이메일 주소를 입력하세요.",
+        "invalidPort": "SMTP 포트는 1에서 65535 사이여야 합니다.",
+        "invalidRecipient": "수신자가 잘못되었습니다.",
+        "smtpNotConfigured": "테스트 이메일을 보내기 전에 SMTP 설정을 저장하세요.",
+        "unknownTemplate": "알 수 없는 이메일 템플릿입니다.",
+        "subjectRequired": "제목은 필수입니다.",
+        "bodyRequired": "본체가 필요합니다."
+      }
+    },
+    "emailTracking": {
+      "metaTitle": "관리자 — 이메일 추적",
+      "title": "이메일 추적",
+      "subtitle": "플랫폼이 보낸 모든 이메일의 전송 상태입니다.",
+      "retentionTitle": "보유",
+      "retentionDescription": "이 기간보다 오래된 이메일 전송 기록은 예약된 정리에 의해 자동으로 정리됩니다. 0으로 설정하면 무기한 유지됩니다.",
+      "retentionLabel": "이메일 로그 보관(일)",
+      "retentionHelp": "다음 예약된 실행에 적용됩니다.",
+      "cardTitle": "이메일 추적",
+      "cardDescription": "플랫폼에서 보낸 모든 이메일의 상태를 확인하세요. 항목은 구성된 보존 정책에 따라 보존됩니다.",
+      "description": "초대, 알림, 에스컬레이션, 테스트 메시지 등 플랫폼에서 보낸 모든 이메일을 추적하세요. SMTP 서버가 수락을 확인합니다. 이는 받은 편지함 배달을 보장하지 않습니다. 구성된 보존 정책에 따라 로그가 보존됩니다.",
+      "filters": {
+        "status": "상태",
+        "allStatuses": "모든 상태",
+        "statusAria": "상태별로 이메일 필터링",
+        "type": "유형",
+        "allTypes": "모든 유형",
+        "typeAria": "유형별로 이메일 필터링",
+        "recipient": "받는 사람",
+        "recipientPlaceholder": "이메일@example.com",
+        "from": "에서",
+        "to": "에게",
+        "rows": "행",
+        "pageSizeAria": "이메일 로그 페이지 크기",
+        "filter": "필터",
+        "clear": "분명한"
+      },
+      "statuses": {
+        "SENT": "전송된",
+        "FAILED": "실패한"
+      },
+      "types": {
+        "INVITE": "초대하다",
+        "INVITE-PASSWORD": "초대(비밀번호로 보호됨)",
+        "REMINDER": "알림",
+        "ESCALATION": "단계적 확대",
+        "SUBMISSION": "제출",
+        "CLARIFICATION": "설명",
+        "RESET": "비밀번호 재설정",
+        "EXPIRY": "만료",
+        "TEST": "시험"
+      },
+      "table": {
+        "date": "날짜",
+        "recipient": "받는 사람",
+        "subject": "주제",
+        "type": "유형",
+        "status": "상태",
+        "detail": "세부 사항",
+        "assessment": "평가",
+        "sentBy": "보낸 사람"
+      },
+      "noLogs": "이메일 로그를 찾을 수 없습니다.",
+      "pagination": "{totalPages}페이지 중 {page}페이지 ({total}개 항목)",
+      "previous": "이전의",
+      "next": "다음",
+      "accepted": "SMTP 서버에서 승인됨",
+      "system": "체계",
+      "retry": "다시 해 보다",
+      "retrying": "재시도 중...",
+      "retrySuccess": "이메일이 성공적으로 재전송되었습니다.",
+      "testResent": "테스트 이메일을 다시 보냈습니다.",
+      "errors": {
+        "missingLog": "이메일 로그 항목이 누락되었습니다.",
+        "notFound": "이메일 로그 항목을 찾을 수 없습니다.",
+        "onlyFailed": "실패한 이메일만 재시도할 수 있습니다.",
+        "resetSingleUse": "재설정 링크는 일회용이며 다시 보낼 수 없습니다. 사용자에게 새로 재설정을 요청하도록 요청하세요.",
+        "resendFailed": "이메일을 다시 보내지 못했습니다. 자세한 내용은 추적 탭을 확인하세요.",
+        "retentionInvalid": "이메일 로그 보존은 0 또는 양수여야 합니다.",
+        "retentionSaved": "이메일 로그 보관이 저장되었습니다."
+      }
+    },
+    "scoring": {
+      "metaTitle": "관리 — 채점",
+      "title": "채점",
+      "subtitle": "공급업체 프로필 및 히트맵에 대한 위험 가중치 및 RAG 컷오프.",
+      "cardTitle": "채점",
+      "cardDescription": "벤더 프로필과 갭 히트맵에 사용되는 위험 가중치와 빨간색/황색/녹색 구분선입니다.",
+      "riskWeights": "위험 가중치(숫자)",
+      "ragThresholds": "RAG 임계값",
+      "ragHint": "녹색 이상, 황색 이상, 빨간색 이하.",
+      "green": "녹색 ≥",
+      "amber": "호박색 ≥",
+      "saving": "절약...",
+      "save": "점수 저장",
+      "success": "점수 설정이 저장되었습니다.",
+      "errors": {
+        "invalidInput": "입력이 잘못되었습니다."
+      }
+    },
+    "scheduling": {
+      "metaTitle": "관리자 — 일정 예약",
+      "title": "스케줄링",
+      "subtitle": "알림, 에스컬레이션 및 내장된 스케줄러.",
+      "cardTitle": "스케줄링",
+      "cardDescription": "기한이 지난 평가에 대한 기한 및 검토자 에스컬레이션 이전에 자동으로 알림을 보냅니다.",
+      "reminderLabel": "알림 오프셋 날짜",
+      "reminderHint": "알림을 보낼 마감일 이전의 일수를 쉼표로 구분한 목록입니다. 예: 7, 1은 마감일 7일 및 1일 전에 미리 알림을 보냅니다.",
+      "reminderPlaceholder": "7, 1",
+      "escalationLabel": "(일) 이후 에스컬레이션",
+      "escalationHint": "검토자가 에스컬레이션 이메일을 받기 전 마감일로부터 며칠 후입니다.",
+      "defaultDueLabel": "기본 평가 마감일(일)",
+      "defaultDueHint": "새 평가는 기본적으로 마감일까지 남은 일수로 설정됩니다.",
+      "schedulerLabel": "앱 내에서 예약된 작업 실행",
+      "schedulerHint": "활성화되면 애플리케이션은 기한 알림, 에스컬레이션, 만료 알림, 반복 평가, 로그 정리 및 고아 파일 정리를 확인하기 위해 5분마다 확인합니다. 외부 cron 작업이나 스케줄러가 필요하지 않습니다. 트리거하는 경우에만 이 기능을 비활성화하십시오. {endpoint} (예: 시스템 crontab 또는 Azure 함수에서)",
+      "saving": "절약...",
+      "save": "일정 저장",
+      "lastRun": "마지막 예약 실행: {when}",
+      "never": "절대",
+      "justNow": "방금",
+      "lessThanMinute": "1분도 채 지나지 않아",
+      "minuteAgo": "1분 전",
+      "minutesAgo": "{count} 몇 분 전",
+      "hourAgo": "1시간 전",
+      "hoursAgo": "{count} 몇 시간 전",
+      "dayAgo": "1일 전",
+      "daysAgo": "{count} 며칠 전",
+      "success": "구성이 저장되었습니다.",
+      "errors": {
+        "escalationInvalid": "에스컬레이션 일수는 1 이상이어야 합니다.",
+        "defaultDueInvalid": "기본 마감일은 1 이상이어야 합니다."
+      }
+    },
+    "retention": {
+      "saving": "절약...",
+      "save": "구하다"
+    },
+    "storage": {
+      "metaTitle": "관리자 — 저장소",
+      "title": "저장",
+      "subtitle": "증거 파일이 있는 위치 및 공급업체가 업로드할 수 있는 항목.",
+      "fileStorageTitle": "파일 저장",
+      "fileStorageDescription": "증거 파일 및 첨부 파일이 저장되는 위치를 구성합니다. 공급자를 변경해도 기존 파일은 마이그레이션되지 않습니다.",
+      "uploadConstraintsTitle": "업로드 제약",
+      "uploadConstraintsDescription": "공급업체 증거물 업로드에 적용되는 크기 및 파일 형식 제한입니다.",
+      "form": {
+        "provider": "공급자",
+        "providerHint": "공급자를 변경해도 기존 파일은 마이그레이션되지 않습니다. 이전 공급자로 저장된 파일은 다시 전환하는 경우에만 액세스할 수 있습니다.",
+        "local": "로컬 디스크",
+        "s3": "아마존 S3",
+        "azure": "Azure 블롭",
+        "s3Title": "아마존 S3",
+        "bucket": "버킷",
+        "region": "지역",
+        "regionPlaceholder": "예를 들어 미국-동부-1",
+        "accessKeyId": "액세스 키 ID",
+        "secretAccessKey": "비밀 액세스 키",
+        "secretHint": "암호화된 상태로 저장됩니다. 기존 값을 유지하려면 비워 두세요.",
+        "azureTitle": "Azure 블롭",
+        "containerName": "컨테이너 이름",
+        "connectionString": "연결 문자열",
+        "saving": "절약…",
+        "save": "저장용량 설정 저장"
+      },
+      "uploads": {
+        "maxSize": "최대 파일 업로드 크기(MB)",
+        "maxSizeHint": "이 제한보다 큰 증거 파일은 업로드 중에 거부됩니다.",
+        "allowedExtensions": "허용되는 파일 확장자",
+        "allowedHint": "파일 형식 공급업체는 증거로 업로드할 수 있습니다. 하나 이상을 선택하세요.",
+        "saving": "절약...",
+        "save": "구하다"
+      },
+      "success": "저장소 설정이 저장되었습니다.",
+      "uploadsSuccess": "업로드 제약조건이 저장되었습니다.",
+      "errors": {
+        "invalidInput": "입력이 잘못되었습니다.",
+        "maxUploadInvalid": "최대 업로드 크기는 1MB 이상이어야 합니다."
+      }
+    },
+    "signIn": {
+      "metaTitle": "관리자 — 로그인",
+      "title": "로그인",
+      "subtitle": "직원이 인증하는 방법 및 로그인 상태를 유지하는 기간입니다.",
+      "ssoTitle": "싱글 사인온(SSO)",
+      "ssoDescription": "직원이 Microsoft Entra ID, Google Workspace 또는 맞춤 OIDC 공급자를 사용하여 로그인할 수 있도록 허용합니다. 클라이언트 자격 증명은 저장 시 암호화됩니다.",
+      "sessionsTitle": "세션",
+      "sessionsDescription": "유휴 세션에 대한 로그인 제한 및 자동 로그아웃.",
+      "sso": {
+        "entraId": "마이크로소프트 엔트라 아이디",
+        "google": "Google 작업공간",
+        "oidc": "맞춤형 OIDC",
+        "enabled": "활성화됨",
+        "clientId": "클라이언트 ID",
+        "clientSecret": "클라이언트 비밀번호",
+        "secretKeep": "최신 상태로 유지하려면 비워두세요.",
+        "secretEnter": "클라이언트 비밀번호",
+        "secretHint": "미사용 시 암호화되어 저장되며 표시되지 않습니다.",
+        "displayName": "공급자 표시 이름",
+        "displayNamePlaceholder": "Okta / Auth0 / 키클로크",
+        "issuerUrl": "발급자 URL",
+        "issuerPlaceholder": "https://example.okta.com",
+        "defaultRole": "새 SSO 사용자의 기본 역할",
+        "allowedDomain": "도메인으로 제한(선택사항)",
+        "allowedDomainPlaceholder": "@company.com",
+        "disableLocalAuth": "이메일/비밀번호 로그인 비활성화(SSO에만 해당)",
+        "disableLocalAuthHint": "직원이 SSO를 통해서만 로그인할 수 있도록 로컬 로그인 양식을 숨깁니다. 하나 이상의 SSO 공급자가 활성화되어 있지 않으면 무시되므로 구성이 잘못되어도 모든 사람이 잠길 수는 없습니다. 긴급 액세스를 위해서는 아래의 Break Glass URL을 사용하세요.",
+        "saving": "절약...",
+        "save": "SSO 저장"
+      },
+      "breakGlass": {
+        "title": "깨진 유리 액세스",
+        "description": "로컬 로그인이 비활성화된 경우에도 이 비밀 URL에는 이메일/비밀번호 양식이 계속 표시되므로 SSO를 사용할 수 없는 경우 관리자가 로그인할 수 있습니다. 새 URL을 생성하면 이전 URL이 즉시 취소됩니다.",
+        "configured": "현재 Break Glass URL이 구성되어 있습니다.",
+        "notConfigured": "아직 Break Glass URL이 구성되지 않았습니다.",
+        "generating": "생성 중...",
+        "regenerate": "Break Glass URL 재생성",
+        "generate": "Break Glass URL 생성",
+        "success": "Break Glass URL이 생성되었습니다. 지금 복사하세요. 다시 표시되지 않습니다."
+      },
+      "security": {
+        "loginRateLimit": "로그인 속도 제한(분당)",
+        "loginRateLimitHint": "분당 IP 주소당 최대 로그인 시도 횟수입니다. 단일 공용 IP 뒤에 있는 공유 사무실 환경의 경우 증가합니다.",
+        "autoLogout": "자동 로그아웃(분)",
+        "autoLogoutHint": "몇 분 동안 활동이 없으면 자동으로 로그아웃됩니다. 비활성화하려면 0으로 설정합니다. 활성화된 경우 최소 5분.",
+        "saving": "절약...",
+        "save": "구하다"
+      },
+      "success": "SSO 설정이 저장되었습니다.",
+      "securitySuccess": "로그인 설정이 저장되었습니다.",
+      "errors": {
+        "invalidInput": "입력이 잘못되었습니다.",
+        "loginRateInvalid": "로그인 속도 제한은 분당 1회 이상이어야 합니다.",
+        "autoLogoutInvalid": "자동 로그아웃은 0(비활성화)이거나 최소 5분 이상이어야 합니다."
+      }
+    },
+    "rateLimits": {
+      "metaTitle": "관리자 — 비율 제한",
+      "title": "비율 제한",
+      "subtitle": "벤더 포털 및 계정 복구를 위한 남용 방지.",
+      "cardTitle": "속도 제한(분당)",
+      "cardDescription": "바쁜 벤더나 공유 오피스 IP를 위해 이를 높이십시오. 기본값은 대부분의 배포에 적합합니다.",
+      "fields": {
+        "portalPageLoadsPerMin": {
+          "label": "포털 페이지 로드/분(방문자당)",
+          "help": "공급업체의 브라우저가 공급업체 링크를 로드할 수 있는 빈도입니다. 링크 열거를 방지합니다."
+        },
+        "portalUploadsPerMin": {
+          "label": "포털 증거 업로드/분(방문자당)",
+          "help": "공급업체가 분당 만들 수 있는 최대 증거 파일 업로드 수입니다."
+        },
+        "portalSubmitPerMin": {
+          "label": "포털 제출/분(링크당)",
+          "help": "단일 공급업체 링크에 대한 최대 제출 시도 횟수입니다."
+        },
+        "portalCommentPerMin": {
+          "label": "포털 댓글/분(링크당)",
+          "help": "공급업체가 단일 공급업체 링크에 게시할 수 있는 최대 댓글 수입니다."
+        },
+        "portalPasswordAttemptsPerMin": {
+          "label": "포털 비밀번호 시도 횟수/분(링크당)",
+          "help": "무차별 공격으로부터 비밀번호로 보호된 설문지를 보호합니다."
+        },
+        "passwordResetPerMin": {
+          "label": "비밀번호 재설정 요청/분(이메일당)",
+          "help": "특정 주소에 대한 직원 비밀번호 재설정 이메일을 제한합니다."
+        },
+        "breakGlassPerMin": {
+          "label": "Break Glass 시도 횟수/분(IP당)",
+          "help": "SSO Break Glass 복구 링크의 유효성 검사를 제한합니다."
+        }
+      },
+      "saving": "절약...",
+      "save": "저장 비율 제한",
+      "success": "비율 제한이 저장되었습니다.",
+      "errors": {
+        "minimum": "{field} 분당 1개 이상이어야 합니다."
+      }
+    },
+    "api": {
+      "metaTitle": "관리자 — API",
+      "title": "API",
+      "subtitle": "REST API에 프로그래밍 방식으로 액세스합니다.",
+      "cardTitle": "API 액세스",
+      "cardDescription": "REST API에 프로그래밍 방식으로 액세스하기 위한 API 키를 생성합니다. 키는 Bearer 인증을 사용하며 IP 주소로 제한될 수 있습니다. 키는 생성 시 한 번만 표시됩니다.",
+      "enabled": "API 키 인증 활성화",
+      "enabledHint": "API 키를 사용하면 외부 도구가 브라우저 로그인 없이 REST API를 호출할 수 있습니다. 키는 모든 엔드포인트에 대한 전체 액세스 권한을 가지며 이를 생성한 계정과 관계없이 유효한 상태를 유지합니다. 키는 한 번만 표시되며 나중에 검색할 수 없습니다. 조회 접두사 업데이트 전에 생성된 키는 보안을 위해 비활성화되었으므로 다시 생성해야 합니다.",
+      "saving": "절약...",
+      "save": "구하다",
+      "docs": "API 문서 →",
+      "keysTitle": "API 키({count})",
+      "keyCreatedTitle": "키가 생성되었습니다. 지금 복사하세요",
+      "keyCreatedHint": "이 키는 다시 표시되지 않습니다. 안전하게 보관하세요.",
+      "copy": "복사",
+      "done": "완료",
+      "createTitle": "새 키 만들기",
+      "name": "이름",
+      "namePlaceholder": "예를 들어 CI 파이프라인",
+      "expiry": "만료",
+      "expiryOptions": {
+        "30": "30일",
+        "90": "90일",
+        "180": "180일",
+        "365": "1년",
+        "permanent": "영구적인"
+      },
+      "allowedIps": "허용된 IP(선택사항)",
+      "allowedIpsPlaceholder": "192.168.1.0/24",
+      "rateLimit": "속도 제한/분",
+      "rateLimitPlaceholder": "기본",
+      "creating": "만드는 중...",
+      "create": "키 생성",
+      "empty": "아직 생성된 API 키가 없습니다.",
+      "permissionCount": "{count,plural,one{# 허가} other{# 권한}}",
+      "fullAccess": "전체 액세스",
+      "revoked": "취소됨",
+      "expired": "만료됨",
+      "lastUsed": "마지막으로 사용됨 {date}",
+      "neverUsed": "한번도 사용하지 않음",
+      "requestCount": "{count,plural,one{# 요구} other{# 요청}}",
+      "ips": "IP: {ips}",
+      "rateLimitSuffix": "비율 제한: {value}/분",
+      "enable": "할 수 있게 하다",
+      "revokeTitle": "API 키를 취소하시겠습니까?",
+      "revokeDescription": "'를 사용하는 모든 통합{name}\"는 즉시 작동을 중지합니다. 이 기능은 나중에 다시 활성화할 수 있습니다.",
+      "revoke": "취소",
+      "deleteTitle": "API 키를 삭제하시겠습니까?",
+      "deleteDescription": "\"{name}\"이 영구적으로 삭제됩니다. 이 키를 사용하는 모든 통합은 영구적으로 중단됩니다. 이 작업은 취소할 수 없습니다.",
+      "delete": "삭제",
+      "keyCreatedMessage": "생성된 키: {prefix}. 아래 키를 복사하세요. 다시 표시되지 않습니다.",
+      "success": "API 설정이 저장되었습니다.",
+      "errors": {
+        "nameRequired": "키 이름이 필요합니다.",
+        "permissionsRequired": "권한을 하나 이상 선택하거나 전체 액세스를 활성화하세요.",
+        "invalidInput": "입력이 잘못되었습니다."
+      }
+    },
+    "webhooks": {
+      "metaTitle": "관리자 — 웹훅",
+      "title": "웹훅",
+      "subtitle": "엔드포인트에 이벤트 알림이 푸시됩니다.",
+      "cardTitle": "웹훅",
+      "cardDescription": "평가가 제출되거나 결과가 변경되거나 인증이 만료될 때 이벤트 알림을 받도록 엔드포인트를 구성합니다.",
+      "endpointsTitle": "웹훅 엔드포인트({count})",
+      "add": "엔드포인트 추가",
+      "newTitle": "새로운 웹훅",
+      "name": "이름",
+      "namePlaceholder": "예를 들어 Slack 경고, Teams 규정 준수",
+      "url": "URL",
+      "urlPlaceholder": "https://example.com/webhooks/mitch-risk",
+      "platform": "플랫폼",
+      "platformPlaceholder": "플랫폼 선택",
+      "platforms": {
+        "GENERIC": "일반(HTTP)",
+        "SLACK": "느슨하게",
+        "MICROSOFT_TEAMS": "마이크로소프트 팀즈",
+        "DISCORD": "불화"
+      },
+      "events": "이벤트",
+      "eventLabels": {
+        "ASSESSMENT_SUBMITTED": "평가가 제출됨",
+        "ASSESSMENT_OVERDUE": "평가 기한이 지났습니다",
+        "FINDING_CREATED": "발견 항목이 생성되었습니다.",
+        "FINDING_RESOLVED": "해결된 발견 항목",
+        "CERTIFICATION_EXPIRING": "인증 만료"
+      },
+      "creating": "만드는 중...",
+      "create": "만들다",
+      "cancel": "취소",
+      "empty": "구성된 웹훅이 없습니다. 이벤트 알림을 수신하려면 엔드포인트를 추가하세요.",
+      "active": "활동적인",
+      "disabled": "장애가 있는",
+      "disable": "장애를 입히다",
+      "enable": "할 수 있게 하다",
+      "deleteTitle": "웹훅을 삭제하시겠습니까?",
+      "deleteDescription": "이 엔드포인트는 이벤트 수신을 중지합니다. {url}",
+      "delete": "삭제",
+      "success": "웹훅 엔드포인트가 생성되었습니다.",
+      "errors": {
+        "urlRequired": "URL이 필요합니다.",
+        "urlTooLong": "URL은 500자 이하여야 합니다.",
+        "nameTooLong": "이름은 100자 이하여야 합니다.",
+        "invalidUrl": "유효한 URL을 입력하세요.",
+        "httpsRequired": "웹훅 URL은 HTTPS를 사용해야 합니다.",
+        "publicOnly": "웹훅 URL은 공개 주소를 가리켜야 합니다. 내부 및 루프백 호스트는 허용되지 않습니다.",
+        "unknownPlatform": "알 수 없는 플랫폼입니다.",
+        "eventRequired": "이벤트를 하나 이상 선택해야 합니다."
+      }
+    },
+    "trustCenter": {
+      "metaTitle": "관리자 — 보안 센터",
+      "title": "신뢰 센터",
+      "subtitle": "공개 규정 준수 페이지 구성.",
+      "cardTitle": "신뢰 센터",
+      "cardDescription": "공급업체 및 파트너와 규정 준수 배지, 보안 문서, 하위 프로세서 및 설명 섹션을 공유하는 /trust의 공개 페이지입니다. 관리 → 보안 센터에서 콘텐츠를 관리하세요.",
+      "enabled": "신뢰 센터 활성화",
+      "enabledHint": "비활성화된 동안 /trust는 찾을 수 없음 메시지를 표시하고 콘텐츠가 공개적으로 제공되지 않습니다.",
+      "intro": "소개(마크다운)",
+      "introHint": "공개 페이지의 조직 이름 아래에 짧은 단락이 표시됩니다.",
+      "introPlaceholder": "보안 및 개인 정보 보호에 대한 우리의 약속…",
+      "contactEmail": "연락처 이메일",
+      "contactEmailHint": "공개 페이지 하단에 표시됩니다. 비어 있으면 조직의 지원 이메일로 돌아갑니다.",
+      "contactEmailPlaceholder": "security@example.com",
+      "includeInInvites": "공급업체 초대 이메일의 신뢰 센터 링크",
+      "includeInInvitesHint": "/trust를 가리키는 이메일을 초대하기 위해 바닥글 줄을 추가합니다. 템플릿은 수정되지 않습니다. 전송 시 링크가 추가됩니다.",
+      "pageLoads": "공개 페이지 로드/분(IP당)",
+      "downloads": "문서 다운로드/분(IP당)",
+      "saving": "절약...",
+      "save": "신뢰 센터 저장",
+      "success": "보안 센터 설정이 저장되었습니다.",
+      "errors": {
+        "invalidInput": "입력이 잘못되었습니다.",
+        "invalidEmail": "유효한 이메일 주소를 입력하세요."
+      }
+    },
+    "permissions": {
+      "fullAccess": "전체 액세스",
+      "fullAccessHint": "선택하면 키가 모든 권한을 부여합니다. 특정 권한 집합으로 키를 제한하려면 선택을 취소하세요.",
+      "selectAll": "모든 권한 선택",
+      "permissionCount": "{granted} / {total} 권한",
+      "groups": {
+        "vendors": "공급업체",
+        "assessments": "평가",
+        "templates": "템플릿",
+        "frameworks": "프레임워크",
+        "administration": "관리",
+        "webhooks": "웹훅",
+        "trustcenter": "신뢰 센터",
+        "profile": "윤곽"
+      },
+      "items": {
+        "vendors_view": "공급업체 보기",
+        "vendors_create": "공급업체 생성",
+        "vendors_edit": "공급업체 편집",
+        "vendors_delete": "공급업체 삭제",
+        "assessments_view": "평가 보기",
+        "assessments_create": "평가 작성 및 보내기",
+        "assessments_edit": "링크 편집 및 관리",
+        "assessments_review": "검토 및 마무리",
+        "assessments_delete": "평가 삭제",
+        "templates_view": "템플릿 보기",
+        "templates_create": "템플릿 만들기",
+        "templates_edit": "템플릿 편집 및 게시",
+        "templates_delete": "템플릿 삭제",
+        "frameworks_view": "프레임워크 보기",
+        "frameworks_edit": "프레임워크 편집",
+        "frameworks_delete": "프레임워크 삭제",
+        "audit_view": "감사 및 이메일 로그 보기",
+        "users_manage": "사용자 관리",
+        "roles_manage": "역할 관리",
+        "settings_manage": "설정 관리",
+        "api_manage": "API 액세스 관리",
+        "webhooks_manage": "웹훅 관리",
+        "trustcenter_manage": "신뢰 센터 콘텐츠 관리",
+        "profile_view": "자신의 프로필 보기 및 편집"
+      }
+    },
+    "users": {
+      "metaTitle": "관리자 — 사용자",
+      "title": "사용자",
+      "subtitle": "직원 계정 및 해당 액세스.",
+      "cardTitle": "직원 계정",
+      "cardDescription": "직원 계정을 만들고 직원의 역할, 액세스 및 비밀번호를 관리하세요.",
+      "searchLabel": "직원 검색",
+      "searchPlaceholder": "직원 검색…",
+      "newUser": "신규 사용자",
+      "empty": "아직 사용자가 없습니다.",
+      "noMatch": "검색어와 일치하는 직원이 없습니다.",
+      "added": "추가됨 {date}",
+      "sso": "SSO",
+      "local": "현지의",
+      "disabled": "장애가 있는",
+      "addTitle": "사용자 추가",
+      "addDescription": "시작 역할과 비밀번호를 사용하여 직원 계정을 만듭니다.",
+      "name": "이름",
+      "email": "이메일",
+      "password": "비밀번호",
+      "role": "역할",
+      "creating": "만드는 중...",
+      "create": "사용자 생성",
+      "cancel": "취소",
+      "save": "구하다",
+      "access": "입장",
+      "enableSignIn": "로그인 활성화",
+      "disableSignIn": "로그인 비활성화",
+      "disableTitle": "사용자를 비활성화하시겠습니까?",
+      "disableDescription": "{name} 더 이상 로그인할 수 없습니다. 해당 데이터는 보존됩니다.",
+      "disable": "장애를 입히다",
+      "newPasswordPlaceholder": "새 비밀번호",
+      "resetTitle": "비밀번호를 재설정하시겠습니까?",
+      "resetDescription": "덮어쓰게 됩니다 {name}의 현재 비밀번호입니다. 로그인하려면 새 비밀번호를 사용해야 합니다.",
+      "reset": "다시 놓기",
+      "ssoPassword": "이 계정은 SSO를 통해 로그인합니다. 해당 비밀번호는 ID 공급자가 관리합니다.",
+      "dangerZone": "위험지대",
+      "deleteTitle": "사용자를 삭제하시겠습니까?",
+      "deleteDescription": "{name} 영구적으로 제거됩니다. 이 작업은 취소할 수 없습니다.",
+      "ownedVendors": "{count,plural,one{# 공급업체는 소유자 할당을 잃게 됩니다.} other{# 공급업체는 소유자 할당을 잃게 됩니다.}}",
+      "reviewingAssessments": "{count,plural,one{# 평가가 검토자를 잃게 됩니다.} other{# 평가는 검토자를 잃게 됩니다.}}",
+      "resolvedFindings": "{count,plural,one{# 발견 항목에 대한 해결 프로그램이 지워집니다.} other{# 발견 항목의 해결 프로그램이 지워집니다.}}",
+      "answerReviews": "{count,plural,one{# 답변 검토는 익명으로 처리됩니다.} other{# 답변 리뷰는 익명으로 처리됩니다}}",
+      "createdApiKeys": "{count,plural,one{# API 키는 작성자 참조를 잃게 됩니다.} other{# API 키는 작성자 참조를 잃게 됩니다.}}",
+      "auditPreserved": "감사 기록은 보존됩니다(\"삭제된 사용자\"로 표시됨).",
+      "delete": "삭제",
+      "deleteUser": "사용자 삭제",
+      "loading": "로드 중...",
+      "success": "사용자가 생성되었습니다.",
+      "errors": {
+        "nameRequired": "이름은 필수입니다.",
+        "emailInvalid": "유효한 이메일 주소를 입력하세요.",
+        "passwordTooShort": "12자 이상을 사용하세요.",
+        "roleRequired": "역할은 필수입니다.",
+        "invalidInput": "입력이 잘못되었습니다.",
+        "roleNotFound": "선택한 역할이 존재하지 않습니다.",
+        "emailExists": "이 이메일을 사용하는 사용자가 이미 존재합니다.",
+        "createFailed": "사용자를 생성할 수 없습니다. 다시 시도해 주세요."
+      }
+    },
+    "roles": {
+      "metaTitle": "관리자 - 역할",
+      "title": "역할",
+      "subtitle": "직원 계정에 할당된 권한 집합입니다.",
+      "cardTitle": "역할",
+      "cardDescription": "권한 집합을 정의하고 이를 직원 계정에 할당합니다.",
+      "searchPlaceholder": "역할 검색…",
+      "newRole": "새로운 역할",
+      "noMatch": "검색과 일치하는 역할이 없습니다.",
+      "system": "체계",
+      "userCount": "{count,plural,one{# 사용자} other{# 사용자}}",
+      "edit": "편집하다",
+      "duplicate": "복제하다",
+      "deleteTitle": "역할을 삭제하시겠습니까?",
+      "deleteDescription": "\"{name}\" 역할이 영구적으로 제거됩니다. 이 작업은 할당된 사용자가 없는 경우에만 가능합니다.",
+      "delete": "삭제",
+      "createTitle": "역할 만들기",
+      "adminLocked": "관리자 역할은 항상 모든 권한을 가지며 변경할 수 없습니다.",
+      "editorDescription": "이 역할이 부여하는 권한을 선택하세요. 이 역할에 할당된 사용자는 정확히 이러한 권한을 얻습니다.",
+      "name": "이름",
+      "description": "설명",
+      "saving": "절약...",
+      "create": "역할 만들기",
+      "saveChanges": "변경사항 저장",
+      "cancel": "취소",
+      "success": "역할이 생성되었습니다.",
+      "updated": "역할이 업데이트되었습니다.",
+      "errors": {
+        "nameRequired": "역할 이름이 필요합니다.",
+        "nameTooLong": "역할 이름은 50자 이하여야 합니다.",
+        "descriptionTooLong": "설명은 200자 이하여야 합니다.",
+        "invalidInput": "입력이 잘못되었습니다.",
+        "roleExists": "이 이름을 가진 역할이 이미 존재합니다.",
+        "createFailed": "역할을 생성할 수 없습니다. 다시 시도해 주세요.",
+        "missingRole": "역할이 누락되었습니다.",
+        "notFound": "역할을 찾을 수 없습니다.",
+        "adminLocked": "관리자 역할 권한은 변경할 수 없습니다.",
+        "updateFailed": "역할을 업데이트할 수 없습니다. 다시 시도해 주세요.",
+        "duplicateFailed": "역할을 복제할 수 없습니다. {reason}",
+        "deleteFailed": "역할을 삭제할 수 없습니다. {reason}",
+        "systemCannotDelete": "시스템 역할은 삭제할 수 없습니다.",
+        "assignedUsers": "이 역할은 한 명 이상의 사용자에게 할당됩니다. 삭제하기 전에 다시 할당하세요."
+      }
+    },
+    "audit": {
+      "metaTitle": "관리자 — 감사 로그",
+      "title": "감사 로그",
+      "subtitle": "플랫폼 전반에 걸친 관리 및 시스템 활동.",
+      "retentionTitle": "보유",
+      "retentionDescription": "이 기간보다 오래된 감사 항목은 예약된 정리에 의해 자동으로 정리됩니다. 0으로 설정하면 무기한 유지됩니다.",
+      "retentionLabel": "감사 로그 보관(일)",
+      "retentionHelp": "다음 예약된 실행에 적용됩니다.",
+      "cardTitle": "감사 로그",
+      "cardDescription": "플랫폼 전체에서 관리 및 시스템 활동을 추적합니다.",
+      "action": "행동",
+      "user": "사용자",
+      "from": "에서",
+      "to": "에게",
+      "rows": "행",
+      "allActions": "모든 작업",
+      "allUsers": "모든 사용자",
+      "actionFilterLabel": "작업별로 감사 로그 필터링",
+      "userFilterLabel": "사용자별로 감사 로그 필터링",
+      "pageSizeLabel": "감사 로그 페이지 크기",
+      "filter": "필터",
+      "clear": "분명한",
+      "export": "내보내다",
+      "allResults": "모든 결과",
+      "currentPage": "현재 페이지",
+      "empty": "감사 항목을 찾을 수 없습니다.",
+      "date": "날짜",
+      "entity": "실재",
+      "deleted": "삭제됨",
+      "pageSummary": "{totalPages}페이지 중 {page}페이지 ({totalCount, plural, one {#개 항목} other {#개 항목}})",
+      "previous": "이전의",
+      "next": "다음",
+      "csvHeader": "날짜,사용자,작업,엔티티,ID",
+      "success": "감사 보존이 저장되었습니다.",
+      "clarificationRequested": "설명이 요청됨",
+      "errors": {
+        "retentionInvalid": "감사 보존은 0 또는 양수여야 합니다.",
+        "invalidInput": "입력이 잘못되었습니다."
+      },
+      "actions": {
+        "LOGIN": "로그인",
+        "CREATE_ASSESSMENT": "평가가 생성됨",
+        "DELETE_ASSESSMENT": "삭제된 평가",
+        "SEND_ASSESSMENT": "보낸 평가",
+        "REVOKE_ASSESSMENT": "취소된 평가 링크",
+        "EXTEND_ASSESSMENT": "확장된 평가 링크",
+        "REGENERATE_ASSESSMENT": "재생성된 평가 링크",
+        "SUBMIT_ASSESSMENT": "제출된 평가",
+        "REVIEW_DECISION": "결정 검토",
+        "SEND_BACK_TO_VENDOR": "판매업체로 다시 보냈습니다",
+        "REOPEN_REVIEW": "다시 열린 리뷰",
+        "UPDATE_FINDING": "업데이트된 발견 항목",
+        "ADD_COMMENT": "댓글을 추가했습니다.",
+        "REOPEN_ASSESSMENT": "재개된 평가",
+        "FINALIZE_ASSESSMENT": "최종 평가",
+        "CREATE_VENDOR": "생성된 공급업체",
+        "UPDATE_VENDOR": "업데이트된 공급업체",
+        "DELETE_VENDOR": "삭제된 공급업체",
+        "IMPORT_VENDOR": "공급업체를 가져왔습니다",
+        "CREATE_TEMPLATE": "템플릿이 생성되었습니다.",
+        "UPDATE_TEMPLATE": "업데이트된 템플릿",
+        "DELETE_TEMPLATE": "삭제된 템플릿",
+        "PUBLISH_TEMPLATE": "게시된 템플릿",
+        "UNPUBLISH_TEMPLATE": "게시되지 않은 템플릿",
+        "CREATE_TEMPLATE_VERSION": "생성된 템플릿 버전",
+        "DUPLICATE_TEMPLATE": "중복된 템플릿",
+        "IMPORT_TEMPLATE": "가져온 템플릿",
+        "CREATE_USER": "생성된 사용자",
+        "DELETE_USER": "삭제된 사용자",
+        "DISABLE_USER": "비활성화된 사용자",
+        "ENABLE_USER": "활성화된 사용자",
+        "CHANGE_ROLE": "역할이 변경됨",
+        "CREATE_ROLE": "생성된 역할",
+        "UPDATE_ROLE": "업데이트된 역할",
+        "UPDATE_PROFILE": "업데이트된 프로필",
+        "DELETE_ROLE": "삭제된 역할",
+        "DUPLICATE_ROLE": "중복된 역할",
+        "RESET_PASSWORD": "비밀번호 재설정",
+        "UPDATE_SETTINGS": "업데이트된 설정",
+        "API_KEY_CREATED": "생성된 API 키",
+        "API_KEY_REVOKED": "취소된 API 키",
+        "API_KEY_ENABLED": "활성화된 API 키",
+        "API_KEY_DELETED": "삭제된 API 키",
+        "CREATE_CERTIFICATION": "인증 추가",
+        "UPDATE_CERTIFICATION": "업데이트된 인증",
+        "DELETE_CERTIFICATION": "삭제된 인증",
+        "CREATE_FRAMEWORK": "가져온 프레임워크",
+        "DELETE_FRAMEWORK": "삭제된 프레임워크",
+        "UPDATE_RESPONSIBILITY_ACTION": "업데이트된 책임 조치",
+        "MARK_CONTROL_SHARED": "제어를 공동 책임으로 표시",
+        "UNMARK_CONTROL_SHARED": "공동 책임으로 표시되지 않은 제어",
+        "RETRY_EMAIL_SEND": "이메일 전송을 다시 시도했습니다.",
+        "CREATE_WEBHOOK": "웹훅이 생성되었습니다.",
+        "DELETE_WEBHOOK": "삭제된 웹훅",
+        "ENABLE_WEBHOOK": "활성화된 웹훅",
+        "DISABLE_WEBHOOK": "비활성화된 웹훅",
+        "UPDATE_TRUST_CENTER": "업데이트된 신뢰 센터"
+      }
+    },
+    "health": {
+      "metaTitle": "관리자 — 건강",
+      "title": "건강",
+      "subtitle": "시스템 진단 및 예약된 작업 상태.",
+      "application": "애플리케이션",
+      "status": "상태",
+      "running": "달리기",
+      "version": "버전",
+      "commit": "저지르다",
+      "buildTime": "빌드 시간",
+      "uptime": "가동 시간",
+      "memory": "메모리(힙)",
+      "lessThanMinute": "1m 미만",
+      "database": "데이터 베이스",
+      "connection": "연결",
+      "connected": "연결됨",
+      "error": "오류"
+    }
+  },
+  "NotFound": {
+    "description": "찾으시는 페이지가 존재하지 않거나 이동되었습니다.",
+    "backToDashboard": "대시보드로 돌아가기"
+  },
+  "BulkSend": {
+    "metaTitle": "대량보내기",
+    "title": "대량보내기",
+    "subtitle": "동일한 설문지를 여러 공급업체에 동시에 보냅니다.",
+    "breadcrumb": "대량보내기",
+    "steps": {
+      "configure": "구성",
+      "vendors": "공급업체",
+      "send": "보내다"
+    },
+    "template": "주형",
+    "selectTemplate": "템플릿 선택",
+    "dueDate": "마감일",
+    "reviewer": "리뷰어",
+    "unassigned": "할당되지 않음",
+    "portalPassword": "포털 비밀번호(선택사항)",
+    "portalPasswordPlaceholder": "모든 공급업체의 공유 비밀번호",
+    "next": "다음 →",
+    "back": "← 뒤로",
+    "filterPlaceholder": "공급업체 필터링...",
+    "selectAll": "모두 선택",
+    "selectedCount": "{count} 선택된",
+    "noMatch": "검색과 일치하는 공급업체가 없습니다.",
+    "noEmail": "이메일 없음",
+    "sendingTo": "배상 {template} 에게 {count,plural,one{# 공급업체} other{# 공급 업체}}",
+    "due": "로 인한: {date}",
+    "reviewerLabel": "검토자: {name}",
+    "portalPasswordSet": "포털 비밀번호 설정",
+    "sending": "배상...",
+    "sendTo": "다음으로 보내기 {count,plural,one{# 공급업체} other{# 공급 업체}}",
+    "sentCount": "{count,plural,one{전송된 # 평가} other{전송된 # 평가}}",
+    "skippedCount": "{count,plural,one{# 보낼 수 없었습니다} other{# 보낼 수 없었습니다}}",
+    "emailFailedCount": "{count,plural,one{# 이메일이 전달되지 않았습니다} other{# 이메일이 전달되지 않았습니다}}",
+    "errors": {
+      "noTemplate": "선택한 템플릿이 없습니다.",
+      "noVendors": "선택한 공급업체가 없습니다."
+    }
+  },
+  "VendorImport": {
+    "metaTitle": "공급업체 가져오기",
+    "title": "공급업체 가져오기",
+    "subtitle": "공급업체를 대량 생성하려면 CSV 파일을 업로드하세요.",
+    "breadcrumb": "가져오기",
+    "cardTitle": "CSV에서 공급업체 가져오기",
+    "steps": {
+      "upload": "업로드",
+      "review": "검토"
+    },
+    "csvFile": "CSV 파일",
+    "template": "주형",
+    "columnsHelp": "CSV에는 ID(선택 사항), 이름, 연락처 이메일 및 선택 사항: 외부 ID, 연락처 이름, 계층, 웹 사이트, 메모, 서비스 설명, 데이터 민감도, 계약 갱신 날짜, 계약 값, 지리적 위험, 태그 열이 있어야 합니다. 이름과 연락처 이메일만 필수입니다. 최대 1MB. 새 공급업체를 만드는 대신 기존 공급업체를 업데이트하려면 공급업체 ID 또는 externalid를 포함하세요.",
+    "found": "{count,plural,one{# 공급업체를 찾았습니다.} other{# 발견된 공급업체}}",
+    "showingFirst": "다음 중 처음 10개 표시 {count} 행",
+    "next": "다음 →",
+    "back": "← 뒤로",
+    "aboutToImport": "{count, plural, one {#개 공급업체} other {#개 공급업체}}를 가져오려고 합니다.",
+    "skippedNote": "유효성 검사에 실패하면 일부 행을 건너뛸 수 있습니다(이메일 중복, 필수 필드 누락).",
+    "importing": "가져오는 중…",
+    "importVendors": "공급업체 가져오기",
+    "errors": {
+      "noFile": "선택한 파일이 없습니다.",
+      "fileTooLarge": "파일이 너무 큽니다(최대 1MB).",
+      "noRows": "CSV에 행이 없습니다. 첫 번째 행은 헤더여야 합니다.",
+      "noValidVendors": "유효한 공급업체를 찾을 수 없습니다. 첫 번째 오류: {reason}",
+      "rowInvalid": "열 {row}: 입력이 잘못되었습니다.",
+      "rowNameRequired": "열 {row}: 공급업체 이름이 필요합니다.",
+      "rowContactEmailRequired": "열 {row}: 연락처 이메일이 필요합니다.",
+      "duplicateExternalId": "{name}: 외부 ID 중복",
+      "rowFailed": "{name}: {reason}",
+      "updateRequiresEdit": "이 가져오기는 기존 공급업체를 업데이트합니다. 업데이트하려면 공급업체 편집 권한이 필요합니다.",
+      "unknown": "알려지지 않은",
+      "importComplete": "가져오기 완료: {summary}.",
+      "created": "{count} 생성됨",
+      "updated": "{count} 업데이트됨",
+      "skipped": "{count,plural,one{# 행을 건너뛰었습니다.} other{# 건너뛴 행}}"
+    }
+  },
+  "CompareVendors": {
+    "metaTitle": "공급업체 비교",
+    "title": "공급업체 비교",
+    "subtitle": "두 공급업체를 선택하여 최근 완료된 평가를 나란히 비교해 보세요.",
+    "breadcrumb": "비교하다",
+    "notEnoughVendorsTitle": "공급업체가 충분하지 않음",
+    "notEnoughVendorsDescription": "비교하려면 최소 두 개의 공급업체가 필요합니다. 먼저 공급업체를 더 많이 만드세요.",
+    "vendorA": "공급업체 A",
+    "vendorB": "공급업체 B",
+    "selectVendor": "공급업체 선택",
+    "compare": "비교하다",
+    "notEnoughAssessmentsTitle": "평가가 충분하지 않음",
+    "notEnoughAssessmentsDescription": "두 공급업체 모두 비교할 평가를 하나 이상 완료했거나 검토 중이어야 합니다.",
+    "comparisonSubtitle": "{vendorA} 대 {vendorB}",
+    "statusLabel": "{title} · {status}",
+    "question": "질문",
+    "changed": "변경됨",
+    "notApplicable": "해당 없음"
+  },
+  "ApiDocs": {
+    "metaTitle": "API 문서",
+    "loading": "API 문서 로드 중...",
+    "loadFailed": "Swagger UI를 로드하지 못했습니다."
+  },
+  "CompareAssessments": {
+    "metaTitle": "평가 비교",
+    "metadataTitle": "평가 비교 — {vendorName}",
+    "notFound": "공급업체를 찾을 수 없습니다.",
+    "title": "평가 비교",
+    "breadcrumb": "평가 비교",
+    "instructions": "공급업체 페이지에서 두 가지 평가를 선택하여 나란히 비교해 보세요. 두 개를 연 후 이 페이지를 ?left=[id]&right=[id]로 북마크에 추가하세요.",
+    "comparisonSubtitle": "{leftTitle} ({leftStatus}) 대 {rightTitle} ({rightStatus})",
+    "question": "질문",
+    "changed": "변경됨",
+    "notApplicable": "해당 없음"
+  },
+  "Profile": {
+    "metaTitle": "윤곽",
+    "title": "윤곽",
+    "subtitle": "계정 세부정보를 관리하세요.",
+    "accountDetails": "계정 세부정보",
+    "ssoDescription": "Single Sign-On을 통해 로그인합니다. 귀하의 이메일은 귀하의 ID 제공업체에 의해 관리됩니다.",
+    "localDescription": "귀하의 이름과 로그인 이메일입니다.",
+    "name": "이름",
+    "email": "이메일",
+    "passwordTitle": "비밀번호",
+    "passwordDescription": "변경하려면 현재 비밀번호를 입력해야 합니다.",
+    "currentPassword": "현재 비밀번호",
+    "newPassword": "새 비밀번호",
+    "optional": "(선택 과목)",
+    "confirmNewPassword": "새 비밀번호 확인",
+    "ssoPasswordNote": "귀하의 비밀번호는 귀하의 ID 공급자(SSO)에 의해 관리되므로 여기서 변경할 사항이 없습니다.",
+    "saving": "절약...",
+    "saveChanges": "변경사항 저장",
+    "errorDescription": "프로필을 로드할 수 없습니다. 다시 시도하거나 지원팀에 문의하세요.",
+    "errors": {
+      "notAuthenticated": "인증되지 않았습니다.",
+      "accountNotFound": "계정을 찾을 수 없습니다.",
+      "currentPasswordIncorrect": "현재 비밀번호가 올바르지 않습니다.",
+      "emailTaken": "이 이메일은 이미 사용되었습니다.",
+      "nameRequired": "이름은 필수입니다.",
+      "emailInvalid": "유효한 이메일 주소를 입력하세요.",
+      "currentPasswordRequired": "현재 비밀번호가 필요합니다.",
+      "passwordTooShort": "새 비밀번호는 12자 이상이어야 합니다.",
+      "passwordMismatch": "비밀번호가 일치하지 않습니다.",
+      "invalidInput": "입력이 잘못되었습니다.",
+      "success": "프로필이 업데이트되었습니다."
+    }
+  },
+  "TrustCenterManager": {
+    "metaTitle": "신뢰 센터",
+    "title": "신뢰 센터",
+    "subtitle": "규정 준수 배지, 보안 문서, 하위 처리자 및 설명 섹션을 공공 신뢰 센터 페이지에 게시하세요.",
+    "viewPublic": "공개 페이지 보기",
+    "disabledBanner": "현재 신뢰 센터가 비활성화되어 있습니다. 설정 → 보안 센터에서 활성화하세요. 그때까지 공개 페이지에 찾을 수 없다는 메시지가 표시됩니다.",
+    "errorDescription": "보안 센터 관리자를 로드할 수 없습니다. 다시 시도해 주세요.",
+    "common": {
+      "edit": "편집하다",
+      "draft": "초안",
+      "published": "게시됨",
+      "saving": "절약...",
+      "cancel": "취소",
+      "moveUp": "이동하다 {name} 위로",
+      "moveDown": "이동하다 {name} 아래에",
+      "deleteNamed": "삭제 {name}"
+    },
+    "badges": {
+      "cardTitle": "규정 준수 배지",
+      "add": "배지 추가",
+      "empty": "구성된 배지가 없습니다. SOC 2 또는 ISO 27001과 같은 인증을 추가하여 공개 페이지에 표시하세요.",
+      "verificationLink": "확인링크",
+      "deleteTitle": "배지를 삭제하시겠습니까?",
+      "deleteDescription": "\"{name}'' 배지가 신뢰 센터에서 제거됩니다.",
+      "addTitle": "배지 추가",
+      "editTitle": "배지 수정",
+      "editorDescription": "공공신뢰센터 페이지에 인증 타일로 표시됩니다.",
+      "titleLabel": "제목",
+      "issuer": "발급자",
+      "issuerPlaceholder": "예를 들어 AICPA, BSI",
+      "description": "설명",
+      "descriptionPlaceholder": "예를 들어 SOC 2 Type II는 매년 감사를 받습니다.",
+      "verificationUrl": "확인 URL",
+      "image": "배지 이미지",
+      "imageHint": "PNG, JPG, GIF 또는 WebP. 최대 2MB. SVG는 허용되지 않습니다.",
+      "imageHintKeep": " 현재 이미지를 유지하려면 비워 두세요.",
+      "save": "배지 저장"
+    },
+    "documents": {
+      "cardTitle": "보안 문서",
+      "add": "문서 추가",
+      "empty": "구성된 문서가 없습니다. 공개 다운로드를 위해 정책, 보안 보고서 또는 규정 준수 아티팩트를 업로드하세요.",
+      "noFile": "업로드된 파일이 없습니다.",
+      "deleteTitle": "문서를 삭제하시겠습니까?",
+      "deleteDescription": "\"{name}\" 및 해당 파일이 보안 센터에서 제거됩니다.",
+      "addTitle": "문서 추가",
+      "editTitle": "문서 편집",
+      "editorDescription": "공개된 문서는 공공신뢰센터 페이지에서 다운로드 가능합니다.",
+      "titleLabel": "제목",
+      "description": "설명",
+      "descriptionPlaceholder": "이 문서에서 다루는 내용",
+      "category": "범주",
+      "file": "파일",
+      "replaceFile": "파일 교체",
+      "fileHint": "PDF, PNG, JPG, DOCX 또는 XLSX. 최대 20MB.",
+      "fileHintCurrent": " 현재의: {fileName}. 교체하면 이전 파일이 삭제됩니다.",
+      "save": "문서 저장",
+      "categories": {
+        "POLICY": "정책",
+        "SECURITY": "보안 보고서",
+        "COMPLIANCE": "규정 준수",
+        "PRIVACY": "은둔",
+        "OTHER": "다른"
+      }
+    },
+    "sections": {
+      "cardTitle": "맞춤 섹션",
+      "add": "섹션 추가",
+      "empty": "맞춤 섹션이 없습니다. 개요, FAQ 또는 구조화된 유형에서 다루지 않는 기타 항목에 대한 마크다운 블록을 추가하세요.",
+      "deleteTitle": "섹션을 삭제하시겠습니까?",
+      "deleteDescription": "\"{name}\"가 신뢰 센터에서 제거됩니다.",
+      "addTitle": "섹션 추가",
+      "editTitle": "섹션 편집",
+      "editorDescription": "공공 신뢰 센터 페이지에 렌더링된 무료 마크다운 블록입니다.",
+      "titleLabel": "제목",
+      "body": "본문(마크다운)",
+      "bodyPlaceholder": "마크다운 형식을 지원합니다.",
+      "save": "섹션 저장"
+    },
+    "subprocessors": {
+      "cardTitle": "하위 프로세서",
+      "add": "하위 프로세서 추가",
+      "empty": "구성된 하위 프로세서가 없습니다. 귀하를 대신하여 데이터를 처리하는 제3자를 나열하십시오.",
+      "deleteTitle": "하위 프로세서를 삭제하시겠습니까?",
+      "deleteDescription": "\"{name}\"가 신뢰 센터에서 제거됩니다.",
+      "addTitle": "하위 프로세서 추가",
+      "editTitle": "하위 프로세서 편집",
+      "editorDescription": "공공 신뢰 센터 페이지에 나열된 귀하를 대신하여 데이터를 처리하는 제3자.",
+      "name": "이름",
+      "purpose": "목적",
+      "purposePlaceholder": "예를 들어 애플리케이션 데이터의 클라우드 호스팅",
+      "location": "데이터 위치",
+      "locationPlaceholder": "예를 들어 호주(시드니)",
+      "website": "웹사이트",
+      "websitePlaceholder": "https://…",
+      "logo": "로고 이미지",
+      "logoHint": "PNG, JPG, GIF 또는 WebP. 최대 2MB. SVG는 허용되지 않습니다.",
+      "logoHintKeep": " 현재 로고를 유지하려면 비워 두세요.",
+      "logoUrl": "...또는 URL에서 로고를 가져옵니다.",
+      "logoUrlPlaceholder": "https://example.com/logo.png",
+      "logoUrlHint": "이미지는 다른 신뢰 센터 파일과 함께 다운로드되고 저장됩니다. 공개 페이지는 외부 호스트를 로드하지 않습니다. 업로드된 파일은 URL보다 우선합니다.",
+      "save": "하위 프로세서 저장"
+    },
+    "errors": {
+      "invalidInput": "입력이 잘못되었습니다.",
+      "titleRequired": "제목이 필요합니다.",
+      "nameRequired": "이름은 필수입니다.",
+      "invalidUrl": "유효한 URL을 입력하세요.",
+      "sectionTooLong": "섹션 본문이 너무 깁니다(최대 10,000자).",
+      "badgeNotFound": "배지를 찾을 수 없습니다.",
+      "documentFileRequired": "문서 파일이 필요합니다.",
+      "saveFailed": "저장에 실패했습니다.",
+      "badgeSaved": "배지가 저장되었습니다.",
+      "documentSaved": "문서가 저장되었습니다.",
+      "sectionSaved": "섹션이 저장되었습니다.",
+      "subprocessorSaved": "보조 프로세서가 저장되었습니다.",
+      "imageType": "이미지는 PNG, JPG, GIF 또는 WebP여야 합니다(SVG는 허용되지 않음).",
+      "imageInvalid": "이 이미지는 유효하지 않습니다.",
+      "imageTooLarge": "이미지가 너무 큽니다(최대 {max} MB).",
+      "fileTooLarge": "파일이 너무 큽니다(최대 {max} MB).",
+      "fileInvalid": "파일 내용이 확장자와 일치하지 않습니다.",
+      "fileType": "이 파일 형식은 허용되지 않습니다.",
+      "imageFetchFailed": "이미지 URL을 가져올 수 없습니다.",
+      "imageContent": "이미지 URL은 PNG, JPG, GIF 또는 WebP 콘텐츠를 반환해야 합니다."
+    }
+  },
+  "Shell": {
+    "workspace": {
+      "dashboard": "계기반",
+      "vendors": "공급업체",
+      "assessments": "평가",
+      "riskRegister": "위험 등록부",
+      "selfAssessment": "자기평가",
+      "frameworks": "프레임워크",
+      "templates": "템플릿",
+      "trustCenter": "신뢰 센터",
+      "admin": "관리자",
+      "groups": {
+        "risk": "위험",
+        "frameworks": "프레임워크",
+        "manage": "관리하다"
+      }
+    },
+    "admin": {
+      "backToWorkspace": "작업공간으로 돌아가기",
+      "groups": {
+        "workspace": "작업공간",
+        "email": "이메일",
+        "assessments": "평가",
+        "files": "파일",
+        "accessSecurity": "액세스 및 보안",
+        "integrations": "통합",
+        "platform": "플랫폼"
+      },
+      "sections": {
+        "general": "일반적인",
+        "appearance": "모습",
+        "email": "이메일",
+        "emailTracking": "이메일 추적",
+        "scoring": "채점",
+        "scheduling": "스케줄링",
+        "storage": "저장",
+        "users": "사용자",
+        "roles": "역할",
+        "signIn": "로그인",
+        "rateLimits": "비율 제한",
+        "api": "API",
+        "webhooks": "웹훅",
+        "trustCenter": "신뢰 센터",
+        "auditLog": "감사 로그",
+        "health": "건강"
+      }
+    },
+    "header": {
+      "admin": "관리자",
+      "toggleTheme": "테마 전환",
+      "themeLight": "빛",
+      "themeDark": "어두운",
+      "themeSystem": "체계",
+      "profile": "윤곽",
+      "language": "언어",
+      "signOut": "로그아웃"
+    },
+    "sidebar": {
+      "toggle": "사이드바 전환"
+    },
+    "breadcrumbs": {
+      "label": "탐색경로",
+      "dashboard": "계기반"
+    },
+    "commandPalette": {
+      "label": "명령 팔레트",
+      "searchPlaceholder": "페이지 검색...",
+      "noResults": "결과가 없습니다.",
+      "navigate": "항해하다",
+      "open": "열려 있는",
+      "close": "닫다",
+      "or": "또는",
+      "items": {
+        "dashboard": {
+          "label": "대시보드",
+          "subtitle": "공급업체 위험 개요"
+        },
+        "vendors": {
+          "label": "공급업체",
+          "subtitle": "공급업체 관리"
+        },
+        "assessments": {
+          "label": "평가",
+          "subtitle": "설문지"
+        },
+        "frameworks": {
+          "label": "프레임워크",
+          "subtitle": "규정 준수 제어"
+        },
+        "templates": {
+          "label": "템플릿",
+          "subtitle": "설문지 빌더"
+        },
+        "profile": {
+          "label": "프로필",
+          "subtitle": "귀하의 계정"
+        },
+        "adminGeneral": {
+          "label": "관리자 · 일반",
+          "subtitle": "조직"
+        },
+        "adminUsers": {
+          "label": "관리자 · 사용자",
+          "subtitle": "직원 계정"
+        },
+        "adminRoles": {
+          "label": "관리자 · 역할",
+          "subtitle": "권한"
+        },
+        "adminApi": {
+          "label": "관리자 · API",
+          "subtitle": "API 액세스"
+        },
+        "adminAudit": {
+          "label": "관리자 · 감사 로그",
+          "subtitle": "활동 기록"
+        },
+        "apiDocs": {
+          "label": "API 문서",
+          "subtitle": "OpenAPI / Swagger"
+        }
+      }
+    },
+    "idle": {
+      "title": "세션 만료",
+      "description": "다음 시간에 로그아웃됩니다. {countdown,plural,one{# 두번째} other{# 초}} 활동이 없어서. 로그인 상태를 유지하려면 마우스를 움직이거나 아무 키나 누르세요.",
+      "staySignedIn": "로그인 상태 유지"
+    },
+    "scrollToTop": "맨 위로 스크롤",
+    "error": {
+      "title": "문제가 발생했습니다.",
+      "description": "예상치 못한 오류가 발생했습니다. 다시 시도하거나 지원팀에 문의하세요.",
+      "retry": "다시 시도하세요"
+    }
+  },
+  "Trust": {
+    "title": "{orgName} 신뢰 센터",
+    "compliance": "규정 준수 및 인증",
+    "expired": "만료됨",
+    "expiringSoon": "곧 만료됨",
+    "verify": "확인하다",
+    "documents": "보안 문서",
+    "download": "다운로드",
+    "subprocessors": "하위 프로세서",
+    "name": "이름",
+    "purpose": "목적",
+    "location": "위치",
+    "contactPrompt": "우리의 보안 태세에 대해 질문이 있으신가요?",
+    "categories": {
+      "POLICY": "정책",
+      "SECURITY": "보안 보고서",
+      "COMPLIANCE": "규정 준수",
+      "PRIVACY": "은둔",
+      "OTHER": "다른"
+    }
+  },
+  "Portal": {
+    "metaTitle": "공급업체 설문지",
+    "noscript": "이 설문지를 작성하려면 JavaScript가 필요합니다. 브라우저 설정에서 JavaScript를 활성화하십시오.",
+    "logoAlt": "심벌 마크",
+    "linkNotFound": "링크를 찾을 수 없습니다",
+    "linkInvalid": "이 설문지 링크가 잘못되었습니다.",
+    "linkExpiredTitle": "링크가 만료되었습니다",
+    "linkExpiredBody": "이 설문지 링크는 만료되었습니다. 새 링크를 요청하려면 요청자에게 문의하세요.",
+    "submittedTitle": "{title} - 제출된",
+    "submittedBanner": "✓ 귀하의 답변이 제출되었습니다.",
+    "submittedBody": "요청자는 귀하의 답변을 검토하고 설명을 요청할 수 있습니다. 이 링크로 돌아가서 업데이트를 확인할 수 있습니다.",
+    "notApplicableShort": "해당 없음",
+    "decisions": {
+      "APPROVED": "승인됨",
+      "CLARIFICATION_REQUESTED": "설명이 요청됨"
+    },
+    "notAvailableTitle": "사용할 수 없음",
+    "notAvailableBody": "이 설문지는 현재 제공되지 않습니다.",
+    "additionalInfoTitle": "추가 정보가 요청되었습니다.",
+    "additionalInfoBody": "표시된 질문을 검토하고 준비가 되면 다시 제출해 주세요.",
+    "password": {
+      "title": "비밀번호가 필요합니다",
+      "description": "본 설문지는 비밀번호로 보호되어 있습니다. 계속하려면 요청자가 제공한 비밀번호를 입력하세요.",
+      "label": "비밀번호",
+      "placeholder": "비밀번호를 입력하세요",
+      "verifying": "확인 중...",
+      "continue": "계속하다",
+      "tooMany": "시도 횟수가 너무 많습니다. 잠시만 기다려주세요.",
+      "notSet": "이 링크에는 비밀번호가 설정되어 있지 않습니다.",
+      "incorrect": "비밀번호가 잘못되었습니다."
+    },
+    "error": {
+      "title": "문제가 발생했습니다.",
+      "description": "설문지를 로드하는 동안 예상치 못한 오류가 발생했습니다. 도움이 필요하면 이 링크를 보낸 조직에 문의하세요.",
+      "retry": "다시 시도하세요"
+    },
+    "loading": "설문지 로드 중…",
+    "upload": {
+      "tooMany": "업로드가 너무 많습니다. 잠시만 기다려주세요.",
+      "linkInvalid": "이 링크는 더 이상 유효하지 않습니다.",
+      "noFile": "선택한 파일이 없습니다.",
+      "invalidQuestion": "질문이 잘못되었습니다.",
+      "tooLarge": "파일이 다음을 초과합니다. {max} MB 제한.",
+      "badType": "유형의 파일.{ext} 허용되지 않습니다.",
+      "dangerousType": "이 파일 형식은 허용되지 않습니다.",
+      "mismatch": "파일 내용이 .{ext} 파일."
+    },
+    "questionnaire": {
+      "yes": "예",
+      "no": "아니요",
+      "maxUpload": "최대 {maxUploadMb} MB. 허용됨: {extensions}.",
+      "uploading": " 업로드 중…",
+      "uploaded": "업로드된 날짜: {fileName}",
+      "remove": "제거하다",
+      "selectPlaceholder": "선택하다…",
+      "confirmStatement": "나는 이 진술을 확인합니다",
+      "clarification": "검토자는 이 답변에 대한 설명을 요청했습니다.",
+      "notApplicable": "해당 없음",
+      "commentPlaceholder": "댓글 추가…",
+      "send": "보내다",
+      "autosaveHint": "답변은 자동으로 저장됩니다. 언제든지 이 페이지를 닫고 동일한 링크를 사용하여 돌아올 수 있습니다.",
+      "saveExpired": "이 링크는 만료되었습니다. 최근 변경사항을 저장할 수 없습니다.",
+      "saveError": "최근 변경사항을 저장할 수 없습니다. 연결을 확인하고 다시 시도하세요.",
+      "retrySave": "저장 다시 시도",
+      "expiry": {
+        "expired": "이 링크는 만료되었습니다.",
+        "hours": "이 링크는 다음 날짜에 만료됩니다. {hours,plural,one{# 시간} other{# 시간}}.",
+        "minutes": "이 링크는 다음 날짜에 만료됩니다. {minutes,plural,one{# 분} other{# 분}}."
+      },
+      "sectionCounter": "· 부분 {current} ~의 {total}",
+      "saving": "절약…",
+      "saveFailed": "저장 실패",
+      "savedAt": "저장 위치 {time}",
+      "lastSavedAt": "마지막 저장 시간: {time}",
+      "expires": "만료 {date}",
+      "back": "뒤쪽에",
+      "continue": "계속하다",
+      "reviewAnswers": "답변 검토",
+      "continueWarning": "{count,plural,one{# 이 섹션의 필수 질문에는 여전히 답변이 필요합니다.} other{# 이 섹션의 필수 질문에는 여전히 답변이 필요합니다.}} 계속해서 돌아올 수 있습니다.",
+      "reviewHeading": "답변을 검토하세요",
+      "reviewAnswered": "{answered}/{total} 대답했다",
+      "reviewMissing": "{count} 필수 누락",
+      "openSection": "섹션 열기",
+      "submitting": "제출 중…",
+      "submit": "설문지 제출",
+      "submitTitle": "설문지를 제출하시겠습니까?",
+      "submitDescription": "제출 후에는 답변을 수정할 수 없습니다. 제출할 준비가 되셨나요?",
+      "cancel": "취소",
+      "submitConfirm": "제출하다",
+      "missingRequired": "{count,plural,one{답변해주세요 # 제출하기 전에 필수 질문입니다.} other{답변해주세요 # 제출하기 전에 필수 질문이 있습니다.}}",
+      "linkInvalid": "이 링크는 더 이상 유효하지 않습니다.",
+      "vendorAuthor": "공급업체"
+    }
+  },
+  "Pdf": {
+    "common": {
+      "pageOf": "{total}페이지 중 {page}페이지",
+      "na": "해당 없음",
+      "none": "--",
+      "yes": "예",
+      "no": "아니요",
+      "notScored": "득점되지 않음",
+      "tier": "층: {tier}",
+      "template": "주형: {name} 다섯{version}",
+      "reviewer": "검토자: {name}",
+      "generated": "생성됨 {date}",
+      "due": "로 인한: {date}",
+      "completed": "완전한: {date}",
+      "automatedFindingDescription": "공급업체의 답변이 예상한 답변을 충족하지 못했습니다."
+    },
+    "tiers": {
+      "CRITICAL": "비판적인",
+      "HIGH": "높은",
+      "MEDIUM": "중간",
+      "LOW": "낮은"
+    },
+    "questionTypes": {
+      "YES_NO": "예 / 아니오",
+      "MULTIPLE_CHOICE": "단일 선택",
+      "FREE_TEXT": "자유 문자",
+      "FILE_UPLOAD": "파일 업로드",
+      "DATE": "날짜",
+      "NUMERIC": "숫자",
+      "COMBOBOX": "콤보박스",
+      "MULTI_SELECT": "다중 선택",
+      "RATING": "평가",
+      "URL": "URL",
+      "EMAIL": "이메일",
+      "CHECKBOX": "체크박스"
+    },
+    "statuses": {
+      "DRAFT": "초안",
+      "SENT": "전송된",
+      "IN_PROGRESS": "진행 중",
+      "SUBMITTED": "제출된",
+      "UNDER_REVIEW": "검토중",
+      "COMPLETED": "완전한"
+    },
+    "assessment": {
+      "score": "점수",
+      "customerResponsibility": "고객 책임: {percent}% ({completed}/{total} 완전한)",
+      "responses": "응답({count})",
+      "question": "질문",
+      "answer": "답변",
+      "type": "유형",
+      "weight": "무게",
+      "compliant": "준수",
+      "scoreColumn": "점수",
+      "findings": "조사 결과({count})"
+    },
+    "framework": {
+      "complianceReport": "{frameworkName} {version} — 규정 준수 보고서",
+      "summary": "요약",
+      "overallScore": "총점:",
+      "domainsAssessed": "평가된 도메인:",
+      "controlsMapped": "매핑된 컨트롤:",
+      "domainCompliance": "도메인 규정 준수",
+      "domain": "도메인",
+      "current": "현재의",
+      "previous": "이전의",
+      "change": "변화",
+      "controlHeatmap": "히트맵 제어",
+      "control": "제어",
+      "title": "제목",
+      "compliance": "규정 준수",
+      "status": "상태",
+      "ragGreen": "녹색",
+      "ragAmber": "호박색",
+      "ragRed": "빨간색",
+      "ragNone": "평가되지 않음"
+    },
+    "portfolio": {
+      "title": "제목",
+      "vendors": "공급업체",
+      "averageScore": "평균 점수",
+      "openFindings": "발견 항목 열기",
+      "needsAttention": "주의가 필요함",
+      "scoreDistribution": "점수 분포",
+      "green": "녹색(≥85%)",
+      "amber": "호박색(60~84%)",
+      "red": "빨간색(<60%)",
+      "unscored": "점수가 매겨지지 않은",
+      "vendorsByTier": "계층별 공급업체",
+      "assessmentsByStatus": "상태별 평가",
+      "vendorsCount": "공급업체({count})",
+      "vendor": "공급업체",
+      "tier": "층",
+      "score": "점수",
+      "lastAssessed": "마지막 평가",
+      "assessments": "평가",
+      "notAssessed": "평가되지 않음",
+      "topDeficientControls": "상위 결핍 통제({count})",
+      "control": "제어",
+      "vendorsAffected": "영향을 받는 공급업체"
+    }
+  },
+  "Email": {
+    "footer": "이 이메일을 보낸 사람은 다음과 같습니다. {appName}. 버튼이 작동하지 않으면 링크를 복사하여 브라우저에 붙여넣으세요.",
+    "trustFooter": "보안 태세에 대해 자세히 알아보세요. {url}",
+    "testSubject": "{appName} — SMTP 테스트",
+    "testBody": "SMTP 설정이 올바르게 작동하고 있습니다.",
+    "testSent": "테스트 이메일을 보냈습니다.",
+    "smtpNotConfigured": "SMTP가 구성되지 않았습니다.",
+    "transporterFailed": "운송업체를 생성하지 못했습니다.",
+    "sendFailed": "전송 실패: {reason}",
+    "retryMessage": "설문지를 검토한 후 다시 제출해 주세요."
+  },
+  "Auth": {
+    "tagline": "공급업체 위험 관리",
+    "login": {
+      "title": "로그인",
+      "description": "귀하의 계정에 로그인하십시오.",
+      "email": "이메일",
+      "password": "비밀번호",
+      "submit": "로그인",
+      "submitting": "로그인 중…",
+      "forgot": "비밀번호를 잊으셨나요?",
+      "or": "또는",
+      "invalid": "이메일이나 비밀번호가 잘못되었습니다.",
+      "tooMany": "시도 횟수가 너무 많습니다. 잠시 후에 다시 시도해 주세요."
+    },
+    "forgot": {
+      "title": "비밀번호를 잊으셨나요?",
+      "description": "이메일을 입력하시면 재설정 링크를 보내드립니다.",
+      "email": "이메일",
+      "submit": "재설정 링크 보내기",
+      "submitting": "배상...",
+      "back": "로그인으로 돌아가기",
+      "invalidEmail": "유효한 이메일 주소를 입력하세요.",
+      "rateLimited": "해당 이메일을 사용하는 계정이 존재한다면 재설정 링크가 최근에 이미 전송된 것입니다.",
+      "sent": "해당 이메일을 사용하는 계정이 존재하는 경우 재설정 링크가 전송되었습니다."
+    },
+    "reset": {
+      "title": "비밀번호 재설정",
+      "description": "귀하의 계정에 대한 새로운 비밀번호를 선택하십시오.",
+      "missing": "이 재설정 링크가 누락되었거나 유효하지 않습니다. 에서 새로운 것을 요청하세요.",
+      "expired": "이 재설정 링크는 만료되었거나 이미 사용되었습니다. 에서 새로운 것을 요청하세요.",
+      "forgotLink": "비밀번호 찾기 페이지",
+      "forUser": "다음에 대한 새 비밀번호를 선택하세요. {email}.",
+      "newPassword": "새 비밀번호",
+      "confirmPassword": "비밀번호 확인",
+      "submit": "비밀번호 재설정",
+      "submitting": "재설정 중...",
+      "back": "로그인으로 돌아가기",
+      "invalidLink": "재설정 링크가 잘못되었습니다.",
+      "invalidPassword": "요구 사항을 충족하는 비밀번호를 사용하세요.",
+      "expiredToken": "이 재설정 링크는 유효하지 않거나 만료되었습니다."
+    },
+    "setup": {
+      "title": "관리자 만들기",
+      "cardTitle": "첫 번째 관리자 만들기",
+      "description": "공급업체 위험 관리를 시작하려면 초기 관리자 계정을 설정하세요.",
+      "fullName": "이름",
+      "email": "이메일",
+      "password": "비밀번호",
+      "passwordHint": "12자 이상입니다.",
+      "submit": "관리자 만들기",
+      "submitting": "만드는 중…",
+      "alreadyDone": "설정이 이미 완료되었습니다.",
+      "invalid": "이름, 이메일, 비밀번호(12자 이상)를 확인하세요.",
+      "roleError": "관리자 역할을 초기화할 수 없습니다. 다시 시도해 주세요.",
+      "createdSignIn": "계정이 생성되었습니다. 로그인하세요."
+    },
+    "sso": {
+      "orSignInWith": "또는 다음 계정으로 로그인하세요."
+    }
+  }
+}

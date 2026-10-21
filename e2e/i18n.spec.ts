@@ -165,6 +165,42 @@ test.describe("internal shell", () => {
     expect(response.headers()["content-type"]).toContain("application/pdf");
   });
 
+  test("supports Japanese and bundled CJK PDF fonts", async ({ page }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "日本語" }).click();
+
+    await expect(page.locator("html")).toHaveAttribute("lang", "ja");
+    await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
+    await expect(
+      page.getByRole("heading", { name: "ベンダーリスクの概要" }),
+    ).toBeVisible();
+
+    const response = await page.request.get("/api/dashboard/report");
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-type"]).toContain("application/pdf");
+  });
+
+  test("sets right-to-left direction for Arabic", async ({ page }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "العربية" }).click();
+
+    await expect(page.locator("html")).toHaveAttribute("lang", "ar");
+    await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+    await expect(
+      page.getByRole("heading", { name: "نظرة عامة على مخاطر المورد" }),
+    ).toBeVisible();
+
+    const response = await page.request.get("/api/dashboard/report");
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-type"]).toContain("application/pdf");
+  });
+
   test("translates the dashboard", async ({ page }) => {
     await signInAsAdmin(page);
 

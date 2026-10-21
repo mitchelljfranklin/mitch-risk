@@ -60,6 +60,7 @@ lib/                 cross-cutting logic
   storage/             storage interface + local-disk/s3/azure + orphan-sweep
   email/               Nodemailer mailer + token replacer
   i18n/                cookie-based locale config, resolver, and request config
+  pdf/                 PDF font registration + bundled Noto fonts (per-locale families)
   permissions.ts       PERMISSIONS catalog, SYSTEM_ROLE_DEFINITIONS/NAMES, hasPermission()
   auth.ts              Auth.js config + requirePermission()
   prisma.ts            shared Prisma client instance
@@ -282,11 +283,12 @@ UI hiding is cosmetic; the server guard is the real control — **both are alway
 - **i18n is cookie-based** (`NEXT_LOCALE`): there are no `/[locale]/` URL segments and no
   next-intl middleware. Server components/actions use `getTranslations`; client components use
   `useTranslations`. Name the translator `translations`, **never `t`** — the repo bans
-  single-letter variables. Keep `messages/en.json` and `messages/es.json` key-identical — a unit
+  single-letter variables. Keep every `messages/*.json` catalog key-identical — a unit
   test enforces it. Resolution is cookie → org default (Admin → General) → `Accept-Language` →
   `en`. `setLocaleAction` only writes the cookie; the switcher calls `router.refresh()` (never
-  `revalidatePath`). Translated: auth screens; internal shell (sidebar, user menu, command palette,
-  breadcrumbs, idle timeout, scroll-to-top); dashboard; vendors
+  `revalidatePath`). Translated into English, Spanish, French, German, Portuguese (Brazil), Italian,
+  Dutch, Japanese, Korean, Simplified Chinese, Arabic, and Hindi: auth screens; internal shell
+  (sidebar, user menu, command palette, breadcrumbs, idle timeout, scroll-to-top); dashboard; vendors
   list/create/edit/detail/import/compare/bulk-send; assessments list/create/detail/review; templates
   list/builder/preview/import; frameworks list/detail/controls/gaps/import; risk register;
   self-assessment; profile; Trust Center manager and public page; vendor portal; emails; PDFs;
@@ -295,7 +297,9 @@ UI hiding is cosmetic; the server guard is the real control — **both are alway
   the built-in defaults are translated (`lib/settings/email-template-defaults.ts`) — customized
   templates are sent as written. Emails render in the organization's default language (cron has no
   request locale); PDFs follow the request locale via `getTranslations`/`getFormatter`; use those
-  (not `formatDate()`, which is fixed to en-GB) for dates on translated surfaces.
+  (not `formatDate()`, which is fixed to en-GB) for dates on translated surfaces. PDFs use the
+  bundled Noto families in `lib/pdf/fonts/`; keep `outputFileTracingIncludes` in `next.config.ts` so
+  standalone builds include them. Arabic sets `dir="rtl"`, but the layout is only RTL best-effort.
 
 ## Windows / PowerShell tooling notes
 

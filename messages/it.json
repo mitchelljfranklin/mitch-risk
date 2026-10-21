@@ -1,0 +1,2681 @@
+{
+  "Common": {
+    "changeLanguage": "Cambia lingua",
+    "skipToContent": "Vai al contenuto",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "close": "Chiudi",
+    "sidebar": "Barra laterale",
+    "sidebarDescription": "Visualizza la barra laterale mobile.",
+    "toggleSidebar": "Attiva/disattiva la barra laterale",
+    "step": "Passo {number}:",
+    "tiers": {
+      "CRITICAL": "Critico",
+      "HIGH": "Alto",
+      "MEDIUM": "Medio",
+      "LOW": "Basso"
+    },
+    "pagination": {
+      "pageOf": "Pagina {page} di {totalPages} · {totalCount} {itemLabel}",
+      "previous": "Precedente",
+      "next": "Prossimo"
+    },
+    "viewToggle": {
+      "rows": "Visualizzazione riga",
+      "cards": "Visualizzazione della scheda"
+    },
+    "assessmentStatuses": {
+      "DRAFT": "Bozza",
+      "SENT": "Inviato",
+      "IN_PROGRESS": "In corso",
+      "SUBMITTED": "Inviato",
+      "UNDER_REVIEW": "In corso di revisione",
+      "COMPLETED": "Completato"
+    },
+    "findingStatuses": {
+      "OPEN": "Aprire",
+      "REMEDIATED": "Rimediato",
+      "RISK_ACCEPTED": "Rischio accettato"
+    },
+    "copyLink": {
+      "copy": "Copia",
+      "copied": "Copiato"
+    },
+    "pendingLink": {
+      "preparing": "Preparazione…"
+    },
+    "evidencePreview": {
+      "preview": "Anteprima {fileName}"
+    },
+    "questionTypes": {
+      "YES_NO": "Sì/no",
+      "MULTIPLE_CHOICE": "Scelta singola (scegline una)",
+      "FREE_TEXT": "Testo libero",
+      "FILE_UPLOAD": "Caricamento file",
+      "DATE": "Data",
+      "NUMERIC": "Numerico",
+      "COMBOBOX": "Casella combinata",
+      "MULTI_SELECT": "Selezione multipla (scegli molti)",
+      "RATING": "Valutazione (1‑5)",
+      "URL": "URL",
+      "EMAIL": "E-mail",
+      "CHECKBOX": "Casella di controllo (conferma)"
+    },
+    "controlCodes": {
+      "showMore": "{count,plural,one{Spettacolo # maggiore controllo} other{Spettacolo # più controlli}}",
+      "showLess": "Mostra meno"
+    },
+    "search": {
+      "placeholder": "Ricerca…"
+    }
+  },
+  "Metadata": {
+    "description": "Soluzione di gestione del rischio di fornitori terzi white label"
+  },
+  "Dashboard": {
+    "metaTitle": "Pannello di controllo",
+    "title": "Panoramica del rischio del fornitore",
+    "tracked": "{count,plural,one{# fornitore monitorato} other{# fornitori monitorati}}",
+    "newVendor": "Nuovo fornitore",
+    "assessments": "Valutazioni",
+    "portfolioReport": "Rapporto sul portafoglio",
+    "emptyTitle": "Nessun fornitore ancora",
+    "emptyCanCreate": "Aggiungi il tuo primo fornitore per iniziare a monitorare il rischio.",
+    "emptyReadOnly": "Nessun fornitore viene ancora monitorato.",
+    "addVendor": "Aggiungi un fornitore →",
+    "stats": {
+      "vendors": "Fornitori monitorati",
+      "averageScore": "Punteggio medio",
+      "openFindings": "Risultati aperti",
+      "needsAttention": "Ha bisogno di attenzione"
+    },
+    "topControls": "Controlli carenti",
+    "viewRiskRegister": "Visualizza il registro dei rischi →",
+    "highestRisk": "Fornitori a più alto rischio",
+    "viewAllVendors": "Visualizza tutti i fornitori →",
+    "noAssessments": "Nessuna valutazione",
+    "overdue": "{count} in ritardo",
+    "attention": {
+      "title": "Ha bisogno di attenzione",
+      "allClear": "Tutto chiaro: niente ha bisogno di attenzione in questo momento.",
+      "titleWithCount": "Ha bisogno di attenzione ({count})",
+      "unreviewed": "non revisionato",
+      "clarification": "chiarimento",
+      "clarifications": "chiarimenti",
+      "failedEmail": "e-mail non riuscita (24 ore)",
+      "failedEmails": "e-mail non riuscite (24 ore)",
+      "groups": {
+        "overdue": "Valutazioni scadute",
+        "belowThreshold": "Sotto la soglia del punteggio",
+        "keyDates": "Date chiave (60 giorni)"
+      },
+      "overdueAssessment": "{count,plural,one{# valutazione in ritardo} other{# valutazioni scadute}}",
+      "oldestSince": "più vecchio da allora {date}",
+      "belowThreshold": "sotto {percent}% soglia",
+      "contractRenewal": "Rinnovo contrattuale",
+      "daysOverdue": "{days}d in ritardo",
+      "inDays": "In {days}D"
+    },
+    "charts": {
+      "portfolioHealth": "Salute del portafoglio",
+      "openFindingsBySeverity": "Risultati aperti per gravità",
+      "assessmentStatus": "Stato della valutazione",
+      "riskByTier": "Rischio per livello",
+      "vendors": "fornitori",
+      "assessments": "Valutazioni",
+      "openFindings": "Risultati aperti",
+      "ragShort": {
+        "green": "Verde",
+        "amber": "Ambra",
+        "red": "Rosso",
+        "unscored": "Senza punteggio"
+      },
+      "rag": {
+        "green": "Verde (≥85%)",
+        "amber": "Ambra (60-84%)",
+        "red": "Rosso (<60%)",
+        "unscored": "Senza punteggio"
+      },
+      "severity": {
+        "CRITICAL": "Critico",
+        "HIGH": "Alto",
+        "MEDIUM": "Medio",
+        "LOW": "Basso"
+      },
+      "status": {
+        "DRAFT": "Bozza",
+        "SENT": "Inviato",
+        "IN_PROGRESS": "In corso",
+        "SUBMITTED": "Inviato",
+        "UNDER_REVIEW": "In corso di revisione",
+        "COMPLETED": "Completato",
+        "OVERDUE": "In ritardo"
+      },
+      "tier": {
+        "CRITICAL": "Critico",
+        "HIGH": "Alto",
+        "MEDIUM": "Medio",
+        "LOW": "Basso",
+        "Unspecified": "Non specificato"
+      },
+      "activity": {
+        "title": "Attività di valutazione",
+        "noActivity": "Nessuna attività in questo periodo",
+        "timeRange": "Seleziona un intervallo di tempo",
+        "ranges": {
+          "90d": "Ultimi 3 mesi",
+          "30d": "Ultimi 30 giorni",
+          "7d": "Ultimi 7 giorni"
+        },
+        "assessments": "Valutazioni"
+      }
+    }
+  },
+  "Vendors": {
+    "metaTitle": "Fornitori",
+    "title": "Fornitori",
+    "subtitle": "Fornitori valutati per il rischio per la sicurezza.",
+    "compare": "Confrontare",
+    "import": "Importa",
+    "bulkSend": "Invio in blocco",
+    "newVendor": "Nuovo fornitore",
+    "search": "Ricerca",
+    "searchPlaceholder": "Nome o e-mail...",
+    "tier": "Livello",
+    "anyTier": "Qualsiasi livello",
+    "filterTierAria": "Filtra i fornitori per livello",
+    "sort": "Ordinare",
+    "sortAria": "Ordina i fornitori",
+    "filter": "Filtro",
+    "clear": "Chiaro",
+    "viewAria": "Visualizzazione dell'elenco dei fornitori",
+    "noMatches": "Nessun fornitore corrisponde ai filtri selezionati.",
+    "emptyTitle": "Nessun fornitore ancora",
+    "emptyDescription": "Aggiungi un fornitore per iniziare a monitorare il rischio per la sicurezza.",
+    "assessed": "Valutato {date}",
+    "notAssessed": "Non valutato",
+    "assessmentCount": "{count,plural,one{# valutazione} other{# valutazioni}}",
+    "openFindingCount": "{count,plural,one{# scoperta aperta} other{# risultati aperti}}",
+    "list": {
+      "vendor": "Fornitore",
+      "tier": "Livello",
+      "score": "Punteggio",
+      "items": "fornitori"
+    },
+    "sorts": {
+      "name": "Nome (A–Z)",
+      "name-desc": "Nome (Z–A)",
+      "score-asc": "Punteggio (basso → alto)",
+      "score-desc": "Punteggio (alto → basso)",
+      "tier": "Livello (A–Z)",
+      "tier-desc": "Livello (Z–A)",
+      "last-assessed": "Ultimo valutato",
+      "assessments": "La maggior parte delle valutazioni"
+    },
+    "form": {
+      "vendorName": "Nome del fornitore",
+      "externalId": "ID esterno",
+      "externalIdPlaceholder": "per esempio. ERP-V-001",
+      "externalIdHint": "Riferimento facoltativo a questo fornitore in un altro sistema",
+      "contactName": "Nome del contatto",
+      "contactEmail": "Contatto e-mail",
+      "tier": "Livello",
+      "website": "Sito web",
+      "riskOwner": "Proprietario del rischio",
+      "dataSensitivity": "Sensibilità dei dati",
+      "contractValue": "Valore del contratto",
+      "geographicRisk": "Rischio geografico",
+      "tags": "Tag",
+      "tagsPlaceholder": "per esempio. saas, critico, finanziario",
+      "tagsHint": "Etichette separate da virgole per raggruppare e filtrare",
+      "serviceProvided": "Servizio fornito",
+      "servicePlaceholder": "per esempio. Hosting della posta elettronica nel cloud",
+      "contractRenewalDate": "Data di rinnovo del contratto",
+      "notes": "Note",
+      "saving": "Risparmio...",
+      "saveChanges": "Salva modifiche",
+      "create": "Crea fornitore",
+      "cancel": "Cancellare",
+      "unspecified": "Non specificato",
+      "unassigned": "Non assegnato",
+      "levels": {
+        "NONE": "Nessuno",
+        "LOW": "Basso",
+        "MEDIUM": "Medio",
+        "HIGH": "Alto"
+      },
+      "dataSensitivities": {
+        "PUBLIC": "Pubblico",
+        "INTERNAL": "Interno",
+        "CONFIDENTIAL": "Confidenziale",
+        "RESTRICTED": "Limitato"
+      }
+    },
+    "new": {
+      "title": "Nuovo fornitore",
+      "cardTitle": "Dettagli del fornitore",
+      "cardDescription": "Aggiungi un nuovo fornitore da monitorare.",
+      "breadcrumb": "Nuovo"
+    },
+    "edit": {
+      "title": "Modifica fornitore",
+      "cardTitle": "Dettagli del fornitore",
+      "cardDescription": "Aggiorna i dettagli del fornitore.",
+      "breadcrumb": "Modificare"
+    },
+    "attachments": {
+      "title": "Allegati",
+      "emptyTitle": "Nessun allegato ancora",
+      "emptyDescription": "Carica contratti, lettere o altri documenti.",
+      "removeAria": "Rimuovi l'allegato",
+      "dropHint": "Rilascia un file o fai clic per sfogliarlo",
+      "uploading": "Caricamento…",
+      "upload": "Caricamento"
+    },
+    "export": {
+      "button": "Esporta CSV",
+      "all": "Tutti i fornitori",
+      "currentPage": "Pagina corrente"
+    },
+    "errors": {
+      "invalidInput": "Immissione non valida.",
+      "duplicateExternalId": "Esiste già un fornitore con questo ID esterno.",
+      "vendorCreated": "Fornitore creato.",
+      "vendorUpdated": "Fornitore aggiornato.",
+      "noFile": "Nessun file selezionato.",
+      "fileTypeNotAllowed": "Tipo di file non consentito.",
+      "fileTypeNotAccepted": "Questo tipo di file non è accettato.",
+      "fileTooLarge": "Il file è troppo grande (max {max} MB).",
+      "fileUploaded": "File caricato.",
+      "fileAttached": "File allegato al fornitore."
+    },
+    "detail": {
+      "notFound": "Fornitore non trovato",
+      "errorTitle": "Impossibile caricare il fornitore",
+      "errorDescription": "Si è verificato un errore durante il caricamento dei dettagli di questo fornitore. Per favore riprova.",
+      "created": "Fornitore creato.",
+      "breadcrumbs": {
+        "riskRegister": "Registro dei rischi",
+        "vendors": "Fornitori"
+      },
+      "edit": "Modificare",
+      "exportCsv": "Esporta CSV",
+      "delete": "Eliminare",
+      "deleteTitle": "Eliminare il fornitore?",
+      "deleteDescription": "Questo verrà eliminato definitivamente {vendorName} e tutto {count,plural,one{# valutazione} other{# valutazioni}}. Questa azione non può essere annullata.",
+      "tabs": {
+        "overview": "Panoramica",
+        "compliance": "Conformità",
+        "findings": "Risultati",
+        "assessments": "Valutazioni"
+      },
+      "overview": {
+        "title": "Panoramica",
+        "serviceProvided": "Servizio fornito",
+        "riskOwner": "Proprietario del rischio",
+        "unassigned": "Non assegnato",
+        "externalId": "ID esterno",
+        "dataSensitivity": "Sensibilità dei dati",
+        "unspecified": "Non specificato",
+        "website": "Sito web",
+        "contractRenewal": "Rinnovo contrattuale",
+        "overdue": " · in ritardo",
+        "attachments": "Allegati",
+        "emptyTitle": "Nessun dettaglio generale",
+        "emptyDescription": "Modifica questo fornitore per aggiungere dettagli del servizio, un proprietario del rischio e altre informazioni sul profilo."
+      },
+      "riskProfile": {
+        "title": "Profilo di rischio",
+        "inherent": "Intrinseco (pre-valutazione)",
+        "residual": "Residuo (valutato)",
+        "trendingUp": "Tendenza in aumento ↑",
+        "trendingDown": "Tendenza al ribasso ↓",
+        "stable": "Stabile →",
+        "noScore": "Nessun punteggio ancora: invia una valutazione",
+        "trend": "Tendenza",
+        "compareLastTwo": "Confronta gli ultimi due →"
+      },
+      "certifications": "Certificazioni e attestati",
+      "compliance": {
+        "vendorCompliance": "Conformità del fornitore",
+        "yourCompliance": "La tua conformità",
+        "domainCompliance": "Conformità del dominio",
+        "noDataTitle": "Nessun dato di conformità",
+        "noDataDescription": "Completa una valutazione per visualizzare i punteggi di conformità del dominio.",
+        "frameworkHeatmaps": "Mappe di calore del quadro",
+        "noAssessmentData": "Nessun dato di valutazione",
+        "noFrameworksTitle": "Nessun framework disponibile",
+        "noFrameworksDescription": "Importa o semina librerie di framework per mappare i controlli alle domande di valutazione."
+      },
+      "findings": {
+        "title": "Risultati",
+        "openCount": "{count, plural, one {# aperto} other {# aperti}}",
+        "viewAll": "{count,plural,one{Visualizza il riscontro nel registro dei rischi →} other{Visualizza tutto # risultati del registro dei rischi →}}",
+        "emptyTitle": "Nessun risultato",
+        "emptyDescription": "I risultati vengono generati quando le risposte alla valutazione non sono conformi. Completa una valutazione per visualizzare i risultati qui."
+      },
+      "assessments": {
+        "title": "Valutazioni",
+        "new": "Nuova valutazione",
+        "emptyTitle": "Nessuna valutazione",
+        "emptyDescription": "Non è stata ancora creata alcuna valutazione per questo fornitore.",
+        "noTemplate": "Nessun modello",
+        "due": " · dovuto {date}",
+        "viewAll": "{count,plural,one{Visualizza la valutazione →} other{Visualizza tutto # valutazioni →}}",
+        "activity": "Attività"
+      }
+    },
+    "timeline": {
+      "empty": "Nessuna attività ancora registrata.",
+      "assessmentCreated": "Valutazione creata",
+      "assessmentSent": "Valutazione inviata",
+      "assessmentSubmitted": "Valutazione inviata",
+      "findingOpened": "Ritrovamento aperto",
+      "remediated": "Rimediato",
+      "riskAccepted": "Rischio accettato",
+      "certificationAdded": "Aggiunta certificazione",
+      "certificationExpiring": "Certificazione in scadenza",
+      "certificationExpiringDescription": "{name} - scade {date}"
+    },
+    "certifications": {
+      "empty": "Nessuna certificazione ancora tracciata.",
+      "expires": "Scade {date}",
+      "statuses": {
+        "valid": "Valido",
+        "expiring": "In scadenza a breve",
+        "expired": "Scaduto"
+      },
+      "add": "Aggiungi certificazione",
+      "edit": "Modificare",
+      "delete": "Eliminare",
+      "deleteTitle": "Eliminare la certificazione?",
+      "deleteDescription": "\"{name}\" verrà rimosso definitivamente.",
+      "editor": {
+        "addTitle": "Aggiungi certificazione",
+        "description": "Tieni traccia di un attestato (SOC 2, ISO 27001, …) e della sua scadenza.",
+        "name": "Nome",
+        "namePlaceholder": "per esempio. SOC2 Tipo II",
+        "issuer": "Emittente (facoltativo)",
+        "issuerPlaceholder": "per esempio. Revisore/organismo di certificazione",
+        "issued": "Emesso (facoltativo)",
+        "expires": "Scade",
+        "notes": "Note (facoltativo)",
+        "complianceActions": "Sono necessarie azioni di conformità",
+        "selectFramework": "Seleziona un quadro...",
+        "attachment": "Allegato (facoltativo)",
+        "attachmentHint": "Carica un certificato, un rapporto o un contratto. Massimo 20 MB.",
+        "attachments": "Allegati",
+        "saving": "Risparmio...",
+        "save": "Salva certificazione",
+        "cancel": "Cancellare"
+      },
+      "errors": {
+        "missingVendor": "Fornitore mancante.",
+        "invalidInput": "Immissione non valida.",
+        "wrongVendor": "La certificazione non appartiene a questo fornitore.",
+        "saved": "Certificazione salvata.",
+        "attachmentFailed": " Allegato non riuscito: {reason}",
+        "fileType": "Tipo di file non consentito.",
+        "fileTooLarge": "Il file è troppo grande (max {max} MB).",
+        "fileInvalid": "Questo tipo di file non è accettato.",
+        "fileRecordFailed": "Impossibile salvare il record del file.",
+        "fileUploaded": "File caricato.",
+        "nameRequired": "Il nome della certificazione è obbligatorio.",
+        "expiryRequired": "La data di scadenza è obbligatoria.",
+        "invalidExpiry": "Inserisci una data di scadenza valida.",
+        "added": "Certificazione\"{name}\" aggiunto con allegato.",
+        "missingEvidence": "Prove mancanti.",
+        "evidenceNotFound": "Prove non trovate."
+      }
+    },
+    "customerResponsibility": {
+      "title": "Responsabilità del cliente",
+      "collapse": "Crollo",
+      "expand": "Espandere",
+      "progress": "{completed} di {total} · {percent}%",
+      "empty": "Nessun controllo di responsabilità condivisa per questa certificazione.",
+      "assignedTo": "Assegnato a {name}",
+      "fileCount": "{count,plural,one{# file} other{# file}}",
+      "status": "Stato",
+      "statuses": {
+        "PENDING": "In attesa di",
+        "IN_PROGRESS": "In corso",
+        "COMPLETED": "Completato",
+        "NOT_APPLICABLE": "Non applicabile"
+      },
+      "assignedToLabel": "Assegnato a",
+      "assignedToPlaceholder": "ID utente (facoltativo)",
+      "attachment": "Allegato",
+      "notes": "Note",
+      "notesPlaceholder": "Aggiungi note sull'implementazione...",
+      "files": "File",
+      "saving": "Risparmio...",
+      "save": "Salva",
+      "cancel": "Cancellare",
+      "errors": {
+        "missingFields": "Campi obbligatori mancanti.",
+        "invalidStatus": "Stato non valido.",
+        "noChanges": "Nessuna modifica prevista.",
+        "saved": "Salvato."
+      }
+    }
+  },
+  "Assessments": {
+    "list": {
+      "title": "Valutazioni",
+      "subtitle": "Valutazioni inviate ai fornitori.",
+      "subtitleForVendor": "Valutazioni per {vendorName}.",
+      "filters": {
+        "search": "Ricerca",
+        "searchPlaceholder": "Titolo o fornitore...",
+        "status": "Stato",
+        "allStatuses": "Tutti gli stati",
+        "statusAriaLabel": "Filtra le valutazioni per stato",
+        "from": "Da",
+        "to": "A",
+        "sort": "Ordinare",
+        "sortAriaLabel": "Ordina le valutazioni",
+        "overdueOnly": "Solo in ritardo",
+        "apply": "Filtro",
+        "clear": "Chiaro"
+      },
+      "sorts": {
+        "created": "Prima il più recente",
+        "created-asc": "Prima il più vecchio",
+        "due-asc": "Data di scadenza (la prima)",
+        "due-desc": "Data di scadenza (ultima)",
+        "score-asc": "Punteggio (basso → alto)",
+        "score-desc": "Punteggio (alto → basso)",
+        "vendor": "Fornitore (A–Z)",
+        "status": "Stato (A–Z)",
+        "status-desc": "Stato (Z–A)"
+      },
+      "emptyFiltered": "Nessuna valutazione corrisponde ai filtri selezionati.",
+      "emptyTitle": "Nessuna valutazione ancora",
+      "emptyDescription": "Crea una valutazione e invia al fornitore il collegamento per completarla.",
+      "items": "valutazioni",
+      "columns": {
+        "assessmentVendor": "Valutazione · Fornitore",
+        "score": "Punto",
+        "status": "Stato",
+        "due": "Dovuto"
+      },
+      "overdue": "In ritardo",
+      "due": " · dovuto {date}"
+    },
+    "new": {
+      "title": "Nuova valutazione per {vendorName}",
+      "breadcrumb": "Nuova valutazione",
+      "cardTitle": "Dettagli della valutazione",
+      "form": {
+        "title": "Titolo",
+        "titlePlaceholder": "per esempio. Revisione annuale della sicurezza",
+        "template": "Modello di questionario",
+        "templatePlaceholder": "Seleziona un modello pubblicato",
+        "noTemplates": "Nessun modello trovato.",
+        "dueDate": "Scadenza",
+        "reviewer": "Recensore",
+        "unassigned": "Non assegnato",
+        "publishFirst": "Pubblica prima un modello per creare una valutazione.",
+        "creating": "Creazione...",
+        "create": "Creare una valutazione",
+        "cancel": "Cancellare"
+      }
+    },
+    "detail": {
+      "notFound": "Valutazione non trovata",
+      "breadcrumbs": {
+        "assessments": "Valutazioni",
+        "vendors": "Fornitori"
+      },
+      "actions": {
+        "reopen": "Riapri la recensione",
+        "exportCsv": "Esporta CSV",
+        "downloadPdf": "Scarica PDF",
+        "preparingReport": "Preparazione del rapporto...",
+        "finalize": "Finalizzare",
+        "finalizing": "Finalizzazione…",
+        "delete": "Eliminare",
+        "deleteTitle": "Eliminare la valutazione?",
+        "deleteDescription": "Questo eliminerà definitivamente \"{title}\" e tutte le risposte, i risultati e le prove. Questa azione non può essere annullata."
+      },
+      "meta": {
+        "due": " · dovuto {date}",
+        "reviewer": " · revisore {name}"
+      },
+      "draft": {
+        "createLinkTitle": "Crea collegamento al fornitore",
+        "createLinkDescription": "Genera un collegamento al fornitore senza accesso per la valutazione. Facoltativamente impostare una password per proteggere l'accesso.",
+        "settingsTitle": "Bozze di impostazioni",
+        "title": "Titolo",
+        "dueDate": "Scadenza",
+        "saving": "Risparmio…",
+        "save": "Salva modifiche"
+      },
+      "link": {
+        "title": "Collegamento al fornitore (non è richiesto l'accesso)",
+        "expires": "Scade {date}",
+        "noExpiry": "Nessuna scadenza",
+        "passwordProtected": "Protetto da password",
+        "extend": "Prolungare 30 giorni",
+        "regenerate": "Rigenera collegamento",
+        "revoke": "Revocare",
+        "revokeTitle": "Revocare il collegamento al fornitore?",
+        "revokeDescription": "Il fornitore non sarà più in grado di accedere al questionario. Se necessario, è possibile rigenerare il collegamento in un secondo momento.",
+        "revokedTitle": "Collegamento del fornitore",
+        "revokedDescription": "Il collegamento è stato revocato."
+      },
+      "score": {
+        "title": "Punto",
+        "low": "Basso rischio",
+        "moderate": "Rischio moderato",
+        "high": "Alto rischio"
+      },
+      "findings": {
+        "summary": "Risultati ({count} · {open,plural,one{# aprire} other{# aprire}})",
+        "deletedUser": "Utente eliminato",
+        "noneTitle": "Risultati",
+        "allCompliant": "Tutte le risposte sono conformi: nessun risultato.",
+        "automatedDescription": "La risposta del fornitore non ha soddisfatto la risposta prevista."
+      },
+      "responses": {
+        "title": "Risposte",
+        "summary": "{approved} Di {total} approvato · {pending} in attesa di",
+        "summaryClarifications": " · {count,plural,one{# chiarimento} other{# chiarimenti}}",
+        "filters": {
+          "all": "Tutto",
+          "pending": "In attesa di ({count})",
+          "approved": "Approvato ({count})",
+          "clarification": "Chiarimento ({count})"
+        },
+        "notApplicable": "N / A",
+        "evidenceAlt": "File di prova: {fileName}",
+        "viewPdf": "Visualizza PDF: {fileName} ↗",
+        "attachToVendor": "Allega al fornitore"
+      },
+      "sender": {
+        "password": "Password del portale (facoltativa)",
+        "passwordPlaceholder": "Richiedere al fornitore di inserire una password",
+        "passwordHint": "Se impostata, i fornitori devono inserire questa password prima di accedere al questionario.",
+        "sendToVendor": "Invia al fornitore",
+        "generateOnly": "Genera solo collegamento",
+        "customEmailPlaceholder": "personalizzato@esempio.com",
+        "sendTo": "Invia a"
+      },
+      "sendBack": {
+        "trigger": "Rispedire al fornitore",
+        "title": "Rispedire al fornitore?",
+        "description": "Il fornitore potrà modificare e inviare nuovamente le proprie risposte e riceverà un'e-mail con il tuo messaggio. Le loro risposte esistenti vengono mantenute.",
+        "messageLabel": "Messaggio al fornitore (facoltativo)",
+        "messagePlaceholder": "Spiega quali informazioni aggiuntive sono necessarie...",
+        "cancel": "Cancellare",
+        "confirm": "Rimandare indietro",
+        "emailFallback": "Si prega di rivedere e inviare nuovamente il questionario."
+      },
+      "review": {
+        "approved": "Approvato",
+        "clarificationRequested": "Richiesto chiarimento",
+        "noReviewYet": "Nessuna recensione ancora",
+        "collapse": "Crollo",
+        "expand": "Espandere",
+        "reviewPlaceholder": "Revisione",
+        "approve": "Approvare",
+        "requestClarification": "Richiedi chiarimenti",
+        "notePlaceholder": "Nota facoltativa (visibile al fornitore se richiesto chiarimento)",
+        "save": "Salva",
+        "vendor": "fornitore",
+        "internal": "interno",
+        "replyPlaceholder": "Rispondere",
+        "internalOption": "Interno",
+        "vendorOption": "Visibile al fornitore",
+        "reply": "Rispondere",
+        "commentPlaceholder": "Aggiungi un commento",
+        "comment": "Commento",
+        "commentCount": "{count,plural,one{# commento} other{# commenti}}",
+        "previousReview": "Recensione precedente ({decision}): {note}"
+      },
+      "findingStatus": {
+        "resolutionNotePlaceholder": "Nota di risoluzione (facoltativa)",
+        "save": "Salva"
+      },
+      "attachEvidence": {
+        "trigger": "Allegare",
+        "refreshing": "{message}. Rinfrescante…",
+        "attachAs": "Allega come",
+        "certificationOption": "Certificazione/attestazione",
+        "generalOption": "Attaccamento generale",
+        "certificationName": "Nome della certificazione",
+        "namePlaceholder": "per esempio. SOC2 Tipo II",
+        "issuer": "Emittente (facoltativo)",
+        "issuerPlaceholder": "per esempio. Società di revisione",
+        "expiryDate": "Data di scadenza",
+        "displayNameForFile": "Visualizza il nome del file",
+        "notes": "Note (facoltativo)",
+        "notesPlaceholder": "Contesto aggiuntivo...",
+        "complianceActions": "Sono necessarie azioni di conformità",
+        "selectFramework": "Seleziona un quadro...",
+        "displayName": "Nome da visualizzare",
+        "generalNotesPlaceholder": "Perché questo è stato allegato...",
+        "adding": "Aggiunta…",
+        "addCertification": "Aggiungi certificazione",
+        "attachToVendor": "Allega al fornitore",
+        "cancel": "Cancellare"
+      },
+      "error": {
+        "title": "Impossibile caricare la valutazione",
+        "description": "Si è verificato un errore durante il caricamento di questa valutazione. Per favore riprova.",
+        "retry": "Riprova"
+      }
+    },
+    "errors": {
+      "invalidInput": "Immissione non valida.",
+      "titleRequired": "Il titolo è obbligatorio",
+      "titleTooLong": "Il titolo deve contenere massimo 200 caratteri",
+      "templateRequired": "Seleziona un modello",
+      "invalidDueDate": "Inserisci una data di scadenza valida",
+      "saved": "Salvato.",
+      "started": "Iniziata la valutazione.",
+      "portalLinkFailed": "Valutazione creata ma non è stato possibile generare il collegamento al portale.",
+      "missingReviews": "{count,plural,one{# la risposta deve ancora essere rivista.} other{# le risposte devono ancora essere riviste.}}"
+    }
+  },
+  "Templates": {
+    "list": {
+      "title": "Modelli",
+      "subtitle": "Compilare e creare versioni di questionari sulla sicurezza.",
+      "new": "Nuovo modello",
+      "import": "Importa",
+      "emptyTitle": "Nessun modello ancora",
+      "emptyDescription": "Crea il tuo primo modello di valutazione.",
+      "sections": "{count,plural,one{# sezione} other{# sezioni}}"
+    },
+    "statuses": {
+      "DRAFT": "Bozza",
+      "PUBLISHED": "Pubblicato",
+      "ARCHIVED": "Archiviato"
+    },
+    "new": {
+      "breadcrumb": "Nuovo",
+      "title": "Nuovo modello",
+      "cardTitle": "Dettagli del modello",
+      "form": {
+        "name": "Nome",
+        "description": "Descrizione",
+        "creating": "Creazione…",
+        "create": "Crea modello",
+        "cancel": "Cancellare"
+      }
+    },
+    "builder": {
+      "notFound": "Modello non trovato",
+      "breadcrumbs": {
+        "templates": "Modelli"
+      },
+      "actions": {
+        "publish": "Pubblicare",
+        "newVersion": "Crea nuova versione",
+        "unpublish": "Annulla pubblicazione",
+        "delete": "Eliminare",
+        "deleteTitle": "Eliminare il modello?",
+        "deleteDescription": "Questo eliminerà definitivamente \"{name}\" e tutte le relative sezioni e domande. Le valutazioni che utilizzano questo modello perderanno il collegamento al modello. Questa azione non può essere annullata.",
+        "menuAriaLabel": "Azioni del modello",
+        "preview": "Anteprima",
+        "duplicate": "Duplicato",
+        "export": "Esportare"
+      },
+      "versionHistory": "Cronologia delle versioni",
+      "details": "Dettagli del modello",
+      "name": "Nome",
+      "description": "Descrizione",
+      "saveDetails": "Salva i dettagli",
+      "readOnly": "Questa versione è pubblicata e di sola lettura. Crea una nuova versione per apportare modifiche.",
+      "jumpToSection": "Vai alla sezione",
+      "section": {
+        "rename": "Rinominare",
+        "moveUp": "Sposta la sezione in alto",
+        "moveDown": "Sposta la sezione verso il basso",
+        "deleteTitle": "Eliminare la sezione?",
+        "deleteDescription": "Questo eliminerà definitivamente \"{title}\" e tutte le domande al suo interno.",
+        "delete": "Elimina sezione",
+        "noQuestionsTitle": "Nessuna domanda",
+        "noQuestionsDescription": "Aggiungi una domanda per iniziare con questa sezione.",
+        "showQuestions": "Spettacolo {count,plural,one{# domanda} other{# domande}}",
+        "hideQuestions": "Nascondere {count,plural,one{# domanda} other{# domande}}",
+        "required": "Necessario",
+        "moveQuestionUp": "Sposta la domanda in alto",
+        "moveQuestionDown": "Sposta la domanda in basso",
+        "editQuestion": "Modificare",
+        "deleteQuestionTitle": "Eliminare la domanda?",
+        "deleteQuestionDescription": "Questo eliminerà definitivamente \"{text}\".",
+        "deleteQuestion": "Eliminare",
+        "addQuestion": "Aggiungi domanda"
+      },
+      "addSection": {
+        "title": "Aggiungi sezione",
+        "placeholder": "Titolo della sezione",
+        "button": "Aggiungi sezione"
+      }
+    },
+    "question": {
+      "text": "Testo della domanda",
+      "help": "Testo di aiuto",
+      "helpHint": "È supportata la formattazione Markdown: utilizza **grassetto**, *corsivo*, elenchi e collegamenti.",
+      "answerType": "Tipo di risposta",
+      "riskWeight": "Peso del rischio",
+      "required": "Necessario",
+      "options": "Opzioni (una per riga)",
+      "expectedAnswer": "Risposta attesa",
+      "noExpectedAnswer": "Nessuna risposta prevista",
+      "yes": "SÌ",
+      "no": "NO",
+      "acceptedAnswers": "Risposte accettate",
+      "acceptedHint": "Seleziona ogni risposta che dovrebbe essere considerata conforme.",
+      "acceptedEmpty": "Aggiungi le opzioni qui sopra per scegliere quali risposte sono accettabili.",
+      "expectedNumber": "Numero previsto",
+      "expectedSelections": "Selezioni previste",
+      "selectionsHint": "Seleziona l'insieme esatto che il fornitore deve selezionare per ottenere il punteggio di conformità.",
+      "selectionsEmpty": "Aggiungi le opzioni qui sopra per scegliere le selezioni richieste.",
+      "manualScoring": "Questo tipo di risposta viene valutato manualmente durante la revisione.",
+      "checked": "Controllato",
+      "unchecked": "Non controllato",
+      "conditionalLegend": "Regole di visibilità condizionale",
+      "controlsLegend": "Controlli di conformità mappati",
+      "saving": "Risparmio...",
+      "save": "Salva domanda",
+      "cancel": "Cancellare"
+    },
+    "conditions": {
+      "questionFallback": "una domanda",
+      "shownIf": "Mostrato se",
+      "and": "E",
+      "or": "O",
+      "editing": {
+        "title": "Visibilità condizionata",
+        "match": "Incontro",
+        "all": "Tutti (E)",
+        "any": "Qualsiasi (OR)",
+        "noQuestions": "Aggiungi prima altre domande per rendere questa condizionale.",
+        "alwaysShown": "Sempre mostrato. Aggiungi una regola per mostrare questa domanda solo quando corrispondono altre risposte.",
+        "selectQuestion": "Seleziona una domanda",
+        "value": "Valore",
+        "remove": "Rimuovere",
+        "addRule": "Aggiungi regola",
+        "legend": "Logica condizionale",
+        "yes": "SÌ",
+        "no": "NO",
+        "checked": "Controllato",
+        "unchecked": "Non controllato"
+      },
+      "operators": {
+        "equals": "è uguale",
+        "notEquals": "non è uguale",
+        "contains": "contiene",
+        "notContains": "non contiene",
+        "gt": "maggiore di",
+        "lt": "meno di",
+        "gte": "maggiore o uguale a",
+        "lte": "inferiore o uguale a",
+        "answered": "viene risposto",
+        "notAnswered": "non viene data risposta"
+      }
+    },
+    "controls": {
+      "mappedControls": "Controlli mappati",
+      "selectedCount": "{count} selezionato",
+      "hint": "Seleziona un'intestazione del framework per mappare tutti i suoi controlli, utile per \"sei certificato?\" domande in cui una risposta conforme dovrebbe soddisfare l'intero quadro.",
+      "allFrameworks": "Tutti i quadri",
+      "filterPlaceholder": "Controlli filtro...",
+      "noMatch": "Nessun controllo corrisponde al filtro corrente."
+    },
+    "import": {
+      "metadataTitle": "Importa modello",
+      "title": "Importa modello",
+      "subtitle": "Carica un file JSON per creare un nuovo modello.",
+      "breadcrumb": "Importa",
+      "cardTitle": "Importa modello da JSON",
+      "steps": {
+        "upload": "Caricamento",
+        "review": "Revisione"
+      },
+      "file": {
+        "label": "JSON",
+        "downloadTemplate": "Modello",
+        "hint": "Carica un file modello JSON valido. Esporta un modello esistente dal generatore di modelli (Azioni → Esporta) per vedere la struttura prevista."
+      },
+      "parse": {
+        "invalidStructure": "Struttura del modello non valida. Nome previsto e array di sezioni.",
+        "invalidJson": "File JSON non valido."
+      },
+      "summary": {
+        "sections": "{count,plural,one{# sezione} other{# sezioni}}",
+        "questions": "{count,plural,one{# domanda} other{# domande}}",
+        "controlCodes": "{count,plural,one{# codice di controllo} other{# codici di controllo}}"
+      },
+      "table": {
+        "section": "Sezione",
+        "questions": "Domande"
+      },
+      "review": {
+        "introPrefix": "Stai per importare il modello"
+      },
+      "next": "Avanti →",
+      "back": "← Indietro",
+      "importing": "Importazione…",
+      "import": "Importa modello",
+      "success": "Importato \"{name}\" come una nuova BOZZA.",
+      "errors": {
+        "noFile": "Nessun file selezionato.",
+        "fileTooLarge": "Il file è troppo grande (max 1 MB).",
+        "invalidJson": "File JSON non valido.",
+        "importFailed": "Importazione non riuscita: non è stato possibile elaborare la struttura del file. Confrontalo con il modello scaricabile e riprova.",
+        "nameRequired": "Il nome del modello è obbligatorio.",
+        "sectionsRequired": "Il modello deve contenere almeno una sezione.",
+        "sectionTitleRequired": "Sezione {number}: il titolo è obbligatorio.",
+        "questionsArray": "Sezione \"{title}\": le domande devono essere un array.",
+        "textRequired": "{where}: il testo è obbligatorio.",
+        "helpTextType": "{where}: helpText deve essere una stringa quando fornita.",
+        "unknownType": "{where}: tipo sconosciuto \"{type}\".",
+        "unknownRiskWeight": "{where}: peso del rischio sconosciuto \"{weight}\".",
+        "requiredType": "{where}: obbligatorio deve essere un valore booleano quando fornito.",
+        "optionsType": "{where}: le opzioni devono essere un array di stringhe.",
+        "controlCodesType": "{where}: controlCodes deve essere un array di stringhe.",
+        "expectedAnswerType": "{where}: previstaLa risposta deve essere una stringa, un numero o un array di stringhe.",
+        "expectedAnswer": {
+          "multiSelectArray": "{where}: la risposta attesa deve essere un array di stringhe.",
+          "choiceStringOrArray": "{where}: previstaLa risposta deve essere una stringa o un array di stringhe.",
+          "numeric": "{where}: previstaLa risposta deve essere un numero.",
+          "yesNoCheckboxString": "{where}: previstaLa risposta deve essere una stringa."
+        },
+        "controlAmbiguous": "Codici di controllo {codes} sono ambigui: lo stesso codice esiste in più framework. Rimuovi il duplicato o rinomina uno dei controlli.",
+        "controlNotFound": "Codice di controllo non trovato: {code}"
+      }
+    },
+    "preview": {
+      "notFound": "Modello non trovato",
+      "breadcrumb": "Anteprima",
+      "title": "Anteprima — {name}",
+      "description": "Anteprima di sola lettura di come questo questionario appare a un fornitore. Le domande condizionali vengono tutte mostrate qui con la loro regola annotata.",
+      "noSectionsTitle": "Nessuna sezione ancora",
+      "noQuestionsTitle": "Nessuna domanda.",
+      "yes": "SÌ",
+      "no": "NO",
+      "select": "Selezionare…",
+      "freeTextPlaceholder": "Risposta a testo libero",
+      "attachmentUpload": "Caricamento dell'allegato",
+      "numberPlaceholder": "Numero",
+      "acknowledge": "Lo riconosco"
+    },
+    "questionPages": {
+      "editTitle": "Modifica domanda",
+      "editBreadcrumb": "Modifica domanda",
+      "addTitle": "Aggiungi domanda",
+      "addBreadcrumb": "Aggiungi domanda"
+    },
+    "error": {
+      "title": "Impossibile caricare il modello",
+      "description": "Si è verificato un errore durante il caricamento di questo modello. Per favore riprova.",
+      "retry": "Riprova"
+    },
+    "errors": {
+      "invalidInput": "Immissione non valida.",
+      "nameRequired": "Il nome del modello è obbligatorio",
+      "questionTextRequired": "Il testo della domanda è obbligatorio",
+      "conditionalTooLarge": "Il carico utile della logica condizionale è troppo grande.",
+      "conditionalInvalid": "Logica condizionale non valida."
+    }
+  },
+  "Frameworks": {
+    "list": {
+      "title": "Quadri",
+      "subtitle": "Librerie di controllo utilizzate per mappare le risposte ai questionari ai requisiti.",
+      "import": "Importa quadro",
+      "gaps": "Lacune di copertura",
+      "deleteBlocked": "{count,plural,one{Impossibile eliminare: # il controllo è ancora mappato sulle domande del questionario. Prima annulla la mappatura.} other{Impossibile eliminare: # i controlli sono ancora mappati sulle domande del questionario. Prima annulla la mappatura.}}",
+      "emptyTitle": "Nessun quadro",
+      "emptyDescription": "Impossibile caricare i dati framework.",
+      "controls": "{count,plural,one{# controllare} other{# controlli}}",
+      "deleteTitle": "Elimina quadro \"{name} v{version}\"?",
+      "deleteDescription": "Ciò eliminerà permanentemente questo framework e i suoi file {count,plural,one{# controllare} other{# controlli}}. Le domande modello mappate a questi controlli perderanno le loro assegnazioni. Le valutazioni e i risultati esistenti non sono interessati.",
+      "delete": "Eliminare"
+    },
+    "detail": {
+      "notFound": "Quadro non trovato",
+      "breadcrumbs": "Quadri",
+      "deleteFramework": "Elimina quadro",
+      "searchPlaceholder": "Controlli di ricerca...",
+      "noControlsTitle": "Nessun controllo corrispondente",
+      "noControlsDescription": "Prova un termine di ricerca diverso."
+    },
+    "control": {
+      "notFound": "Controllo non trovato",
+      "breadcrumbs": "Quadri",
+      "guidance": "Guida",
+      "mappedQuestions": "Domande mappate ({count})",
+      "noMappedTitle": "Nessuna domanda mappata",
+      "noMappedDescription": "Nessuna domanda del questionario è ancora associata a questo controllo."
+    },
+    "gaps": {
+      "title": "Controllare le lacune di copertura",
+      "subtitle": "Controlli che non hanno domande mappate su nessun modello. Utilizzalo per identificare i punti ciechi nella copertura della valutazione.",
+      "emptyTitle": "Nessuna lacuna trovata",
+      "emptyDescription": "A ogni controllo in ogni framework è associata almeno una domanda.",
+      "covered": "{mapped}/{total} coperto",
+      "allCovered": "Tutto {count,plural,one{# controllare} other{# controlli}} avere almeno una domanda mappata.",
+      "errorTitle": "Qualcosa è andato storto",
+      "errorDescription": "Non è stato possibile caricare la visualizzazione del divario di conformità. Per favore riprova.",
+      "retry": "Riprova"
+    },
+    "import": {
+      "metadataTitle": "Importa quadro",
+      "title": "Importa quadro",
+      "subtitle": "Carica un file CSV con i controlli per creare un nuovo framework.",
+      "breadcrumb": "Importa",
+      "cardTitle": "Importa framework da CSV",
+      "steps": {
+        "setup": "Configurazione e caricamento",
+        "review": "Revisione"
+      },
+      "form": {
+        "name": "Nome del quadro",
+        "namePlaceholder": "per esempio. PCIDSS",
+        "version": "Versione",
+        "versionPlaceholder": "per esempio. 4.0",
+        "description": "Descrizione (facoltativa)",
+        "descriptionPlaceholder": "Breve descrizione del quadro",
+        "csvFile": "File CSV",
+        "downloadTemplate": "Modello",
+        "csvHint": "Il CSV deve contenere colonne: dominio, codice, titolo, guida (la guida è facoltativa). Facoltativo: is_shared_responsibility (vero/falso, il valore predefinito è falso). Massimo 1 MB.",
+        "controlsFound": "{count,plural,one{# controllo trovato} other{# controlli trovati}}",
+        "domain": "Dominio",
+        "code": "Codice",
+        "titleColumn": "Titolo",
+        "showingFirst": "Mostrato per primo {shown} Di {total} righe",
+        "next": "Avanti →",
+        "back": "← Indietro",
+        "importing": "Importazione…",
+        "import": "Importa quadro",
+        "reviewIntro": "Stai per creare un framework {name} v{version} con {count,plural,one{# controllare} other{# controlli}}.",
+        "success": "Importato \"{name} v{version}\" con {count, plural, one {# controllo} other {# controlli}}."
+      },
+      "errors": {
+        "noFile": "È richiesto un file CSV.",
+        "invalidFileType": "Il file deve essere un file .csv.",
+        "tooLarge": "Il file CSV è troppo grande (max 1 MB).",
+        "noRows": "Il file CSV non contiene righe di dati.",
+        "missingColumns": "Colonne CSV mancanti: {columns}. Previsto: {expected}",
+        "invalidInput": "Immissione non valida.",
+        "nameRequired": "Il nome del framework è obbligatorio",
+        "nameTooLong": "Il nome del framework deve contenere al massimo 200 caratteri",
+        "versionRequired": "La versione è richiesta",
+        "versionTooLong": "La versione deve contenere massimo 50 caratteri",
+        "descriptionTooLong": "La descrizione deve contenere massimo 500 caratteri",
+        "rowDomainRequired": "Riga {row}: il dominio è obbligatorio",
+        "rowCodeRequired": "Riga {row}: è richiesto il codice di controllo",
+        "rowTitleRequired": "Riga {row}: il titolo del controllo è obbligatorio",
+        "rowInvalid": "Riga {row}: input non valido.",
+        "duplicateCode": "Riga {row}: codice di controllo duplicato \"{code}\".",
+        "duplicateFramework": "Un quadro denominato \"{name}\"versione\"{version}\"esiste già."
+      }
+    },
+    "shared": "Condiviso",
+    "error": {
+      "title": "Qualcosa è andato storto",
+      "description": "Si è verificato un errore imprevisto. Riprova o contatta l'assistenza.",
+      "retry": "Riprova"
+    },
+    "radar": {
+      "title": "Radar di conformità del dominio",
+      "current": "Valutazione attuale",
+      "previous": "Valutazione precedente",
+      "ariaLabel": "Radar di conformità del dominio: {values}",
+      "tableCaption": "Conformità del dominio in percentuale",
+      "domain": "Dominio",
+      "currentShort": "Attuale",
+      "previousShort": "Precedente",
+      "noPrevious": "Solo una valutazione completata: nessun dato precedente da confrontare."
+    },
+    "heatmap": {
+      "metadataNotFound": "Fornitore non trovato",
+      "metadataTitle": "Mappa termica — {name}",
+      "breadcrumbs": "Fornitori",
+      "subtitle": "Radar di conformità del dominio e mappa termica a livello di controllo da valutazioni recenti.",
+      "downloadReport": "Scarica il rapporto in formato PDF",
+      "preparingReport": "Preparazione del rapporto...",
+      "emptyTitle": "Nessun dato disponibile",
+      "emptyDescription": "Non sono ancora disponibili dati di valutazione per questo quadro."
+    }
+  },
+  "RiskRegister": {
+    "metaTitle": "Registro dei rischi",
+    "title": "Registro dei rischi",
+    "subtitle": "Tutti i risultati dei tuoi fornitori in un unico posto.",
+    "stats": {
+      "open": "Risultati aperti",
+      "criticalOpen": "Apertura critica",
+      "remediated": "Rimediato",
+      "riskAccepted": "Rischio accettato"
+    },
+    "filters": {
+      "status": "Stato",
+      "allFindings": "Tutti i risultati",
+      "statusAriaLabel": "Filtra i risultati per stato",
+      "severity": "Gravità",
+      "anySeverity": "Qualsiasi gravità",
+      "severityAriaLabel": "Filtra i risultati per gravità",
+      "vendor": "Fornitore",
+      "allVendors": "Tutti i fornitori",
+      "vendorAriaLabel": "Filtra i risultati per fornitore",
+      "sort": "Ordinare",
+      "sortAriaLabel": "Ordina i risultati",
+      "show": "Spettacolo",
+      "findingsOnly": "Solo risultati",
+      "responsibilityAriaLabel": "Filtra per responsabilità",
+      "customerResponsibility": "Responsabilità del cliente",
+      "apply": "Filtro",
+      "clear": "Chiaro",
+      "sorts": {
+        "priority": "Priorità",
+        "newest": "Più recente",
+        "severity": "Gravità"
+      }
+    },
+    "emptyFiltered": "Nessun risultato corrisponde ai filtri selezionati.",
+    "emptyTitle": "Nessun risultato ancora",
+    "emptyDescription": "I risultati vengono generati automaticamente quando i fornitori inviano valutazioni con risposte carenti.",
+    "items": "risultati",
+    "responsibility": {
+      "title": "Responsabilità del cliente",
+      "noMatch": "Nessun elemento di responsabilità del cliente corrisponde ai filtri selezionati.",
+      "vendorFallback": "Fornitore",
+      "assignedTo": "Assegnato a {name}"
+    },
+    "bulk": {
+      "selected": "{count} selezionato",
+      "statusRemediated": "Rimediato",
+      "statusRiskAccepted": "Rischio accettato",
+      "statusReopen": "Riaprire",
+      "updateTitle": "{count,plural,one{Aggiornamento # trovare?} other{Aggiornamento # risultati?}}",
+      "updateDescription": "{count, plural, one {Imposta # constatazione su \"{status}\".} other {Imposta # constatazioni su \"{status}\".}}",
+      "apply": "Fare domanda a",
+      "applying": "Applicazione...",
+      "clearSelection": "Cancella selezione",
+      "note": "Nota: {note}",
+      "automatedDescription": "La risposta del fornitore non ha soddisfatto la risposta prevista.",
+      "errors": {
+        "invalidStatus": "Stato non valido.",
+        "invalidSelection": "Dati di selezione non validi.",
+        "noFindings": "Nessun risultato selezionato.",
+        "updated": "{count,plural,one{# trovando aggiornato} other{# risultati aggiornati}}",
+        "alreadyRemoved": "({count} già rimosso)."
+      }
+    },
+    "error": {
+      "title": "Qualcosa è andato storto",
+      "description": "Si è verificato un errore imprevisto. Riprova o contatta l'assistenza.",
+      "retry": "Riprova"
+    }
+  },
+  "SelfAssessment": {
+    "metaTitle": "Autovalutazione",
+    "title": "Autovalutazione",
+    "subtitle": "Valuta la tua organizzazione rispetto ai quadri di conformità utilizzando lo stesso portale di questionari utilizzato dai tuoi fornitori.",
+    "start": "Inizia una nuova valutazione",
+    "emptyTitle": "Nessuna autovalutazione ancora",
+    "emptyDescription": "Inizia la tua prima autovalutazione per valutare la tua organizzazione rispetto a ISO 27001, SOC 2 o altri framework.",
+    "noTemplate": "Nessun modello",
+    "new": {
+      "metaTitle": "Nuova autovalutazione",
+      "breadcrumb": "Nuovo",
+      "title": "Nuova autovalutazione",
+      "cardTitle": "Dettagli della valutazione",
+      "form": {
+        "title": "Titolo",
+        "titlePlaceholder": "per esempio. Autovalutazione ISO 27001:2022",
+        "template": "Modello di questionario",
+        "templatePlaceholder": "Seleziona un modello pubblicato",
+        "noTemplates": "Nessun modello trovato.",
+        "dueDate": "Data di scadenza (facoltativa)",
+        "publishFirst": "Pubblica prima un modello per avviare un'autovalutazione.",
+        "starting": "Di partenza...",
+        "start": "Inizia la valutazione"
+      }
+    }
+  },
+  "Admin": {
+    "metaTitle": "Ammin",
+    "general": {
+      "metaTitle": "Amministratore – Generale",
+      "title": "Generale",
+      "subtitle": "Identità dell'organizzazione mostrata nell'app.",
+      "cardTitle": "Organizzazione",
+      "cardDescription": "Il nome, l'e-mail di supporto e la lingua predefinita mostrati nelle e-mail e nell'interfaccia.",
+      "form": {
+        "name": "Nome dell'organizzazione",
+        "supportEmail": "E-mail di supporto",
+        "defaultLanguage": "Lingua predefinita",
+        "defaultLanguageHint": "Utilizzato quando un visitatore non ha scelto una lingua. Le scelte individuali lo prevalgono.",
+        "saving": "Risparmio...",
+        "save": "Salva"
+      },
+      "success": "Impostazioni dell'organizzazione salvate.",
+      "errors": {
+        "nameRequired": "Il nome dell'organizzazione è obbligatorio",
+        "invalidEmail": "Inserisci un indirizzo email valido",
+        "invalidInput": "Immissione non valida."
+      }
+    },
+    "appearance": {
+      "metaTitle": "Amministratore: aspetto",
+      "title": "Aspetto",
+      "subtitle": "Branding nell'app: logo, colori e layout.",
+      "cardTitle": "Aspetto",
+      "cardDescription": "Personalizza il logo, il colore primario (pulsanti) e il colore secondario (tag/pillole). Lascia un campo vuoto per utilizzare il valore predefinito.",
+      "logo": "Logo",
+      "currentLogoAlt": "Marchio attuale",
+      "removeLogoTitle": "Rimuovere il logo?",
+      "removeLogoDescription": "Il logo attuale verrà rimosso da tutte le pagine. Puoi caricare un nuovo logo in qualsiasi momento.",
+      "remove": "Rimuovere",
+      "removeLogo": "Rimuovi logo",
+      "noLogo": "Nessun logo caricato. Carica un PNG o JPG (max 2 MB).",
+      "primaryColour": "Colore primario",
+      "primaryColourHint": "Utilizzato per i pulsanti principali, i collegamenti e gli stati attivi.",
+      "secondaryColour": "Colore secondario",
+      "secondaryColourHint": "Utilizzato per tag, pillole, badge ed elementi secondari.",
+      "reset": "Reset",
+      "ragTitle": "Colori degli indicatori RAG",
+      "ragHint": "Utilizzato per indicatori di punteggio, barre di avanzamento e mappa termica dei rischi del fornitore.",
+      "ragGreen": "Verde (conforme)",
+      "ragGreenHint": "Punteggio ≥ 85%",
+      "ragAmber": "Ambra (richiede attenzione)",
+      "ragAmberHint": "Punteggio 60–84%",
+      "ragRed": "Rosso (carente)",
+      "ragRedHint": "Punteggio < 60%",
+      "ragUnscored": "Senza punteggio (neutrale)",
+      "ragUnscoredHint": "Non ancora valutato",
+      "layoutTitle": "Disposizione",
+      "layoutHint": "Modifica l'aspetto generale della piattaforma.",
+      "borderRadius": "Raggio del bordo (px)",
+      "borderRadiusHint": "Controlla la modalità di arrotondamento degli angoli nell'app.",
+      "pageWidth": "Larghezza della pagina",
+      "pageWidthHint": "Limita il contenuto a una larghezza leggibile o utilizza lo schermo intero.",
+      "constrained": "Costretto",
+      "full": "Tutta la larghezza",
+      "saving": "Risparmio...",
+      "save": "Salva l'aspetto",
+      "success": "Impostazioni di aspetto salvate.",
+      "errors": {
+        "primaryHex": "Il colore primario deve essere un colore esadecimale valido (ad esempio #3b82f6).",
+        "secondaryHex": "Il colore secondario deve essere un colore esadecimale valido (ad esempio #f59e0b).",
+        "ragGreen": "Il verde RAG deve essere un colore esadecimale valido.",
+        "ragAmber": "L'ambra RAG deve essere un colore esadecimale valido.",
+        "ragRed": "Il rosso RAG deve essere un colore esadecimale valido.",
+        "ragUnscored": "Il RAG senza punteggio deve essere un colore esadecimale valido.",
+        "logoTooLarge": "Il logo deve essere inferiore a 2 MB.",
+        "logoImage": "Il logo deve essere un file immagine.",
+        "logoFormat": "Il logo deve essere un'immagine PNG, JPG, GIF o WEBP.",
+        "logoContent": "Il contenuto del file del logo non corrisponde alla sua estensione.",
+        "invalidInput": "Immissione non valida."
+      }
+    },
+    "error": {
+      "title": "Qualcosa è andato storto",
+      "description": "Si è verificato un errore imprevisto. Riprova o contatta l'assistenza.",
+      "retry": "Riprova"
+    },
+    "email": {
+      "metaTitle": "Amministratore: e-mail",
+      "title": "E-mail",
+      "subtitle": "Consegna SMTP e modelli utilizzati per le e-mail di fornitori e revisori.",
+      "smtpTitle": "SMTP",
+      "smtpDescription": "Utilizzato per inviare inviti e promemoria ai fornitori. La password è crittografata quando è inattiva.",
+      "form": {
+        "host": "Ospite SMTP",
+        "port": "Porta SMTP",
+        "username": "Nome utente SMTP",
+        "password": "Password SMTP",
+        "passwordKeep": "Lascia vuoto per mantenere la password corrente",
+        "passwordEnter": "Inserisci la password SMTP",
+        "passwordHint": "Memorizzato crittografato a riposo e mai visualizzato.",
+        "fromAddress": "Dall'indirizzo",
+        "fromName": "Dal nome",
+        "saving": "Risparmio...",
+        "save": "Salva"
+      },
+      "test": {
+        "label": "Invia un'e-mail di prova a",
+        "placeholder": "tu@azienda.com",
+        "sending": "Invio...",
+        "send": "Invia prova",
+        "hint": "Invia utilizzando le impostazioni SMTP salvate. Salva prima eventuali modifiche."
+      },
+      "templatesTitle": "Modelli di posta elettronica",
+      "templatesDescription": "Seleziona un modello per modificarne l'oggetto e il corpo. I valori dinamici utilizzano token a doppia parentesi graffa.",
+      "subject": "Soggetto",
+      "body": "Corpo",
+      "editorHint": "È supportata la formattazione Markdown: utilizza **grassetto**, *corsivo*, elenchi e collegamenti. Gettoni: {tokens}.",
+      "savingChanges": "Risparmio...",
+      "saveChanges": "Salva modifiche",
+      "resetTitle": "Ripristinare le impostazioni predefinite?",
+      "resetDescription": "IL \"{name}\" l'oggetto e il corpo verranno sostituiti con quelli predefiniti integrati. Qualsiasi personalizzazione andrà persa.",
+      "reset": "Reset",
+      "resetting": "Reimpostazione...",
+      "resetToDefault": "Ripristina le impostazioni predefinite",
+      "cancel": "Cancellare",
+      "preview": "Anteprima",
+      "templateTypes": {
+        "invite": {
+          "label": "Invita e-mail",
+          "description": "Inviato a un fornitore quando un questionario viene condiviso per la prima volta."
+        },
+        "invite-password": {
+          "label": "Email di invito (protetto da password)",
+          "description": "Variante di invito che include la password di accesso al portale."
+        },
+        "reminder": {
+          "label": "E-mail di promemoria",
+          "description": "Sollecito inviato a un fornitore all'avvicinarsi della data di scadenza."
+        },
+        "escalation": {
+          "label": "E-mail di escalation",
+          "description": "Inviato al revisore quando un questionario scade."
+        },
+        "submission": {
+          "label": "Invio ricevuto via e-mail",
+          "description": "Notifica al revisore che un fornitore ha inviato risposte."
+        },
+        "clarification": {
+          "label": "Rimandato per email di chiarimento",
+          "description": "Inviato a un fornitore alla riapertura della valutazione per ulteriori informazioni."
+        },
+        "reset": {
+          "label": "E-mail di reimpostazione della password",
+          "description": "Inviato al personale interno che richiede la reimpostazione della password."
+        },
+        "expiry": {
+          "label": "E-mail di promemoria scadenza",
+          "description": "Inviato al responsabile del rischio di un fornitore quando una certificazione o un contratto è prossimo alla scadenza."
+        }
+      },
+      "success": "Impostazioni e-mail salvate.",
+      "testSuccess": "E-mail di prova inviata a {email}.",
+      "templateSaved": "{name} salvato.",
+      "templateReset": "{name} ripristinare le impostazioni predefinite.",
+      "errors": {
+        "invalidInput": "Immissione non valida.",
+        "invalidEmail": "Inserisci un indirizzo email valido",
+        "invalidPort": "La porta SMTP deve essere compresa tra 1 e 65535",
+        "invalidRecipient": "Destinatario non valido.",
+        "smtpNotConfigured": "Salva le tue impostazioni SMTP prima di inviare un'e-mail di prova.",
+        "unknownTemplate": "Modello email sconosciuto.",
+        "subjectRequired": "L'oggetto è obbligatorio.",
+        "bodyRequired": "È richiesto il corpo."
+      }
+    },
+    "emailTracking": {
+      "metaTitle": "Amministratore: monitoraggio della posta elettronica",
+      "title": "Monitoraggio della posta elettronica",
+      "subtitle": "Stato di consegna per ogni email inviata dalla piattaforma.",
+      "retentionTitle": "Conservazione",
+      "retentionDescription": "I record di invio di posta elettronica più vecchi di questi giorni vengono automaticamente eliminati dalla pulizia pianificata. Impostato su 0 per mantenerlo a tempo indeterminato.",
+      "retentionLabel": "Conservazione del registro email (giorni)",
+      "retentionHelp": "Si applica alla prossima corsa programmata.",
+      "cardTitle": "Monitoraggio della posta elettronica",
+      "cardDescription": "Visualizza lo stato di ogni email inviata dalla piattaforma. Le voci vengono conservate in base ai criteri di conservazione configurati.",
+      "description": "Tieni traccia di ogni email inviata dalla piattaforma: inviti, promemoria, escalation e messaggi di prova. Il server SMTP conferma l'accettazione; ciò non garantisce la consegna della posta in arrivo. I registri vengono conservati in base ai criteri di conservazione configurati.",
+      "filters": {
+        "status": "Stato",
+        "allStatuses": "Tutti gli stati",
+        "statusAria": "Filtra le email per stato",
+        "type": "Tipo",
+        "allTypes": "Tutti i tipi",
+        "typeAria": "Filtra le email per tipo",
+        "recipient": "Destinatario",
+        "recipientPlaceholder": "email@esempio.com",
+        "from": "Da",
+        "to": "A",
+        "rows": "Righe",
+        "pageSizeAria": "Dimensioni della pagina di registro e-mail",
+        "filter": "Filtro",
+        "clear": "Chiaro"
+      },
+      "statuses": {
+        "SENT": "Inviato",
+        "FAILED": "Fallito"
+      },
+      "types": {
+        "INVITE": "Invitare",
+        "INVITE-PASSWORD": "Invito (protetto da password)",
+        "REMINDER": "Promemoria",
+        "ESCALATION": "Escalation",
+        "SUBMISSION": "Sottomissione",
+        "CLARIFICATION": "Chiarimento",
+        "RESET": "Reimpostazione della password",
+        "EXPIRY": "Scadenza",
+        "TEST": "Test"
+      },
+      "table": {
+        "date": "Data",
+        "recipient": "Destinatario",
+        "subject": "Soggetto",
+        "type": "Tipo",
+        "status": "Stato",
+        "detail": "Dettaglio",
+        "assessment": "Valutazione",
+        "sentBy": "Inviato da"
+      },
+      "noLogs": "Nessun registro email trovato.",
+      "pagination": "Pagina {page} di {totalPages} ({total} voci)",
+      "previous": "Precedente",
+      "next": "Prossimo",
+      "accepted": "Accettato dal server SMTP",
+      "system": "Sistema",
+      "retry": "Riprova",
+      "retrying": "Nuovo tentativo...",
+      "retrySuccess": "L'email è stata reinviata con successo.",
+      "testResent": "Prova a inviare nuovamente l'e-mail.",
+      "errors": {
+        "missingLog": "Voce del registro e-mail mancante.",
+        "notFound": "Voce del registro email non trovata.",
+        "onlyFailed": "È possibile ritentare solo le e-mail non riuscite.",
+        "resetSingleUse": "I collegamenti di reimpostazione sono monouso e non possono essere inviati nuovamente. Chiedere all'utente di richiedere un nuovo ripristino.",
+        "resendFailed": "Impossibile inviare nuovamente l'e-mail. Controlla la scheda di monitoraggio per i dettagli.",
+        "retentionInvalid": "La conservazione del registro email deve essere 0 o un numero positivo.",
+        "retentionSaved": "Conservazione del registro email salvata."
+      }
+    },
+    "scoring": {
+      "metaTitle": "Amministrazione: punteggio",
+      "title": "Punteggio",
+      "subtitle": "Ponderazioni del rischio e limiti RAG per i profili dei fornitori e la mappa di calore.",
+      "cardTitle": "Punteggio",
+      "cardDescription": "Ponderazioni del rischio e cut-off rosso/ambra/verde utilizzati per i profili dei fornitori e la mappa termica del gap.",
+      "riskWeights": "Ponderazioni del rischio (numeriche)",
+      "ragThresholds": "Soglie RAG",
+      "ragHint": "Verde in corrispondenza o sopra, ambra in corrispondenza o sopra, rosso sotto.",
+      "green": "Verde ≥",
+      "amber": "Ambra ≥",
+      "saving": "Risparmio...",
+      "save": "Salva il punteggio",
+      "success": "Impostazioni del punteggio salvate.",
+      "errors": {
+        "invalidInput": "Immissione non valida."
+      }
+    },
+    "scheduling": {
+      "metaTitle": "Amministrazione: pianificazione",
+      "title": "Pianificazione",
+      "subtitle": "Promemoria, escalation e pianificazione integrata.",
+      "cardTitle": "Pianificazione",
+      "cardDescription": "Promemoria automatici prima della data di scadenza ed escalation dei revisori per le valutazioni scadute.",
+      "reminderLabel": "Giorni di compensazione del sollecito",
+      "reminderHint": "Elenco separato da virgole dei giorni prima della data di scadenza per l'invio dei promemoria. Esempio: 7, 1 invia promemoria 7 giorni e 1 giorno prima della data di scadenza.",
+      "reminderPlaceholder": "7, 1",
+      "escalationLabel": "Escalation dopo (giorni)",
+      "escalationHint": "Giorni dopo la data di scadenza prima che il revisore riceva un'e-mail di riassegnazione.",
+      "defaultDueLabel": "Valutazione predefinita dovuta (giorni)",
+      "defaultDueHint": "Le nuove valutazioni vengono impostate per impostazione predefinita su questo numero di giorni fino alla data di scadenza.",
+      "schedulerLabel": "Esegui lavori pianificati all'interno dell'app",
+      "schedulerHint": "Se abilitata, l'applicazione controlla ogni cinque minuti la presenza di promemoria dovuti, escalation, avvisi di scadenza, valutazioni ricorrenti, eliminazione dei log e pulizia di file orfani: non sono necessari processi cron o pianificatori esterni. Disabilitalo solo se esegui l'attivazione {endpoint} te stesso (ad esempio da un crontab di sistema o da una funzione di Azure).",
+      "saving": "Risparmio...",
+      "save": "Salva la pianificazione",
+      "lastRun": "Ultima corsa programmata: {when}",
+      "never": "Mai",
+      "justNow": "proprio adesso",
+      "lessThanMinute": "meno di un minuto fa",
+      "minuteAgo": "1 minuto fa",
+      "minutesAgo": "{count} minuti fa",
+      "hourAgo": "1 ora fa",
+      "hoursAgo": "{count} ore fa",
+      "dayAgo": "1 giorno fa",
+      "daysAgo": "{count} giorni fa",
+      "success": "Configurazione salvata.",
+      "errors": {
+        "escalationInvalid": "I giorni di escalation devono essere almeno 1.",
+        "defaultDueInvalid": "I giorni di scadenza predefiniti devono essere almeno 1."
+      }
+    },
+    "retention": {
+      "saving": "Risparmio...",
+      "save": "Salva"
+    },
+    "storage": {
+      "metaTitle": "Amministrazione: archiviazione",
+      "title": "Magazzinaggio",
+      "subtitle": "Dove risiedono i file delle prove e cosa possono caricare i fornitori.",
+      "fileStorageTitle": "Archiviazione di file",
+      "fileStorageDescription": "Configurare dove vengono archiviati i file delle prove e gli allegati. La modifica del provider non comporta la migrazione dei file esistenti.",
+      "uploadConstraintsTitle": "Carica vincoli",
+      "uploadConstraintsDescription": "Limiti di dimensioni e tipo di file applicati ai caricamenti delle prove del fornitore.",
+      "form": {
+        "provider": "Fornitore",
+        "providerHint": "La modifica del provider non comporta la migrazione dei file esistenti. I file archiviati presso il provider precedente rimangono accessibili solo se si torna indietro.",
+        "local": "Disco locale",
+        "s3": "Amazon S3",
+        "azure": "Blob azzurro",
+        "s3Title": "Amazon S3",
+        "bucket": "Secchio",
+        "region": "Regione",
+        "regionPlaceholder": "per esempio. noi-est-1",
+        "accessKeyId": "ID chiave di accesso",
+        "secretAccessKey": "Chiave di accesso segreta",
+        "secretHint": "Memorizzato crittografato a riposo. Lasciare vuoto per mantenere il valore esistente.",
+        "azureTitle": "Blob azzurro",
+        "containerName": "Nome del contenitore",
+        "connectionString": "Stringa di connessione",
+        "saving": "Risparmio…",
+        "save": "Salva le impostazioni di archiviazione"
+      },
+      "uploads": {
+        "maxSize": "Dimensione massima del caricamento del file (MB)",
+        "maxSizeHint": "I file di prova più grandi di questo limite vengono rifiutati durante il caricamento.",
+        "allowedExtensions": "Estensioni di file consentite",
+        "allowedHint": "Tipi di file che i fornitori possono caricare come prova. Selezionane almeno uno.",
+        "saving": "Risparmio...",
+        "save": "Salva"
+      },
+      "success": "Impostazioni di archiviazione salvate.",
+      "uploadsSuccess": "Vincoli di caricamento salvati.",
+      "errors": {
+        "invalidInput": "Immissione non valida.",
+        "maxUploadInvalid": "La dimensione massima del caricamento deve essere almeno 1 MB."
+      }
+    },
+    "signIn": {
+      "metaTitle": "Amministratore: accedi",
+      "title": "Registrazione",
+      "subtitle": "Come il personale esegue l'autenticazione e per quanto tempo rimane connesso.",
+      "ssoTitle": "Accesso singolo",
+      "ssoDescription": "Consenti al personale di accedere con l'ID Microsoft Entra, Google Workspace o un provider OIDC personalizzato. Le credenziali del client vengono crittografate quando sono inattive.",
+      "sessionsTitle": "Sessioni",
+      "sessionsDescription": "Limitazione dell'accesso e disconnessione automatica per le sessioni inattive.",
+      "sso": {
+        "entraId": "ID Microsoft Entra",
+        "google": "Google Workspace",
+        "oidc": "OIDC personalizzato",
+        "enabled": "Abilitato",
+        "clientId": "ID cliente",
+        "clientSecret": "Segreto del cliente",
+        "secretKeep": "Lascia vuoto per restare aggiornato",
+        "secretEnter": "Segreto del cliente",
+        "secretHint": "Memorizzato crittografato a riposo e mai visualizzato.",
+        "displayName": "Nome visualizzato del fornitore",
+        "displayNamePlaceholder": "Okta / Auth0 / Keycloak",
+        "issuerUrl": "URL dell'emittente",
+        "issuerPlaceholder": "https://esempio.okta.com",
+        "defaultRole": "Ruolo predefinito per i nuovi utenti SSO",
+        "allowedDomain": "Limita al dominio (facoltativo)",
+        "allowedDomainPlaceholder": "@azienda.com",
+        "disableLocalAuth": "Disattiva l'accesso tramite email/password (solo SSO)",
+        "disableLocalAuthHint": "Nasconde il modulo di accesso locale in modo che il personale possa accedere solo tramite SSO. Ignorato a meno che almeno un provider SSO non sia abilitato, quindi una configurazione errata non può bloccare tutti. Utilizza l'URL break-glass riportato di seguito per l'accesso di emergenza.",
+        "saving": "Risparmio...",
+        "save": "Salva SSO"
+      },
+      "breakGlass": {
+        "title": "Accesso antirottura",
+        "description": "Quando l'accesso locale è disabilitato, questo URL segreto mostra ancora il modulo email/password in modo che un amministratore possa accedere se SSO non è disponibile. La generazione di un nuovo URL revoca immediatamente quello precedente.",
+        "configured": "Attualmente è configurato un URL break-glass.",
+        "notConfigured": "Nessun URL break-glass è stato ancora configurato.",
+        "generating": "Generazione...",
+        "regenerate": "Rigenera l'URL break-glass",
+        "generate": "Genera URL break-glass",
+        "success": "URL del break-glass generato. Copialo adesso: non verrà più mostrato."
+      },
+      "security": {
+        "loginRateLimit": "Limite di velocità di accesso (al minuto)",
+        "loginRateLimitHint": "Numero massimo di tentativi di accesso per indirizzo IP al minuto. Aumento per gli ambienti con uffici condivisi dietro un singolo IP pubblico.",
+        "autoLogout": "Disconnessione automatica (minuti)",
+        "autoLogoutHint": "Esci automaticamente dopo questi minuti di inattività. Impostare su 0 per disabilitare. Minimo 5 minuti quando abilitato.",
+        "saving": "Risparmio...",
+        "save": "Salva"
+      },
+      "success": "Impostazioni SSO salvate.",
+      "securitySuccess": "Impostazioni di accesso salvate.",
+      "errors": {
+        "invalidInput": "Immissione non valida.",
+        "loginRateInvalid": "Il limite della velocità di accesso deve essere almeno 1 al minuto.",
+        "autoLogoutInvalid": "Il logout automatico deve essere 0 (disabilitato) o almeno 5 minuti."
+      }
+    },
+    "rateLimits": {
+      "metaTitle": "Amministratore: limiti di tariffa",
+      "title": "Limiti di tariffa",
+      "subtitle": "Protezione dagli abusi per il portale fornitori e recupero dell'account.",
+      "cardTitle": "Limiti di velocità (al minuto)",
+      "cardDescription": "Aumentali per fornitori impegnati o IP con uffici condivisi; le impostazioni predefinite si adattano alla maggior parte delle distribuzioni.",
+      "fields": {
+        "portalPageLoadsPerMin": {
+          "label": "Caricamenti di pagine del portale/min (per visitatore)",
+          "help": "La frequenza con cui il browser di un fornitore può caricare il collegamento del fornitore. Protegge dall'enumerazione dei collegamenti."
+        },
+        "portalUploadsPerMin": {
+          "label": "Caricamenti prove portale/min (per visitatore)",
+          "help": "Numero massimo di caricamenti di file di prove che un fornitore può effettuare al minuto."
+        },
+        "portalSubmitPerMin": {
+          "label": "Invii al portale/min (per collegamento)",
+          "help": "Numero massimo di tentativi di invio per un collegamento a un singolo fornitore."
+        },
+        "portalCommentPerMin": {
+          "label": "Commenti al portale/min (per collegamento)",
+          "help": "Numero massimo di commenti che un fornitore può pubblicare su un singolo collegamento del fornitore."
+        },
+        "portalPasswordAttemptsPerMin": {
+          "label": "Tentativi di password del portale/min (per collegamento)",
+          "help": "Protegge un questionario protetto da password dalla forza bruta."
+        },
+        "passwordResetPerMin": {
+          "label": "Richieste di reimpostazione password/min (per email)",
+          "help": "Limita le e-mail di reimpostazione della password del personale per un determinato indirizzo."
+        },
+        "breakGlassPerMin": {
+          "label": "Tentativi di rottura vetro/min (per IP)",
+          "help": "Limita la convalida del collegamento di ripristino break-glass SSO."
+        }
+      },
+      "saving": "Risparmio...",
+      "save": "Salva i limiti di velocità",
+      "success": "Limiti di tariffa salvati.",
+      "errors": {
+        "minimum": "{field} deve essere almeno 1 al minuto."
+      }
+    },
+    "api": {
+      "metaTitle": "Amministrazione: API",
+      "title": "API",
+      "subtitle": "Accesso programmatico all'API REST.",
+      "cardTitle": "Accesso all'API",
+      "cardDescription": "Genera chiavi API per l'accesso programmatico all'API REST. Le chiavi utilizzano l'autenticazione al portatore e possono essere limitate dall'indirizzo IP. Le chiavi vengono visualizzate solo una volta al momento della creazione.",
+      "enabled": "Abilita l'autenticazione della chiave API",
+      "enabledHint": "Le chiavi API consentono agli strumenti esterni di chiamare l'API REST senza effettuare l'accesso al browser. Le chiavi hanno accesso completo a ogni endpoint e rimangono valide indipendentemente dall'account che le ha create. Le chiavi vengono visualizzate solo una volta e non possono essere recuperate in seguito. Le chiavi create prima dell'aggiornamento del prefisso di ricerca sono state disabilitate per motivi di sicurezza e devono essere rigenerate.",
+      "saving": "Risparmio...",
+      "save": "Salva",
+      "docs": "Documentazione API →",
+      "keysTitle": "Chiavi API ({count})",
+      "keyCreatedTitle": "Chiave creata: copiala ora",
+      "keyCreatedHint": "Questa chiave non verrà più visualizzata. Conservalo in modo sicuro.",
+      "copy": "Copia",
+      "done": "Fatto",
+      "createTitle": "Crea nuova chiave",
+      "name": "Nome",
+      "namePlaceholder": "per esempio. Conduttura CI",
+      "expiry": "Scadenza",
+      "expiryOptions": {
+        "30": "30 giorni",
+        "90": "90 giorni",
+        "180": "180 giorni",
+        "365": "1 anno",
+        "permanent": "Permanente"
+      },
+      "allowedIps": "IP consentiti (facoltativo)",
+      "allowedIpsPlaceholder": "192.168.1.0/24",
+      "rateLimit": "Limite di velocità/min",
+      "rateLimitPlaceholder": "Predefinito",
+      "creating": "Creazione...",
+      "create": "Crea chiave",
+      "empty": "Nessuna chiave API ancora creata.",
+      "permissionCount": "{count,plural,one{# permesso} other{# autorizzazioni}}",
+      "fullAccess": "Accesso completo",
+      "revoked": "Revocato",
+      "expired": "Scaduto",
+      "lastUsed": "Ultimo usato {date}",
+      "neverUsed": "Mai usato",
+      "requestCount": "{count,plural,one{# richiesta} other{# richieste}}",
+      "ips": "IP: {ips}",
+      "rateLimitSuffix": "Limite di tariffa: {value}/min",
+      "enable": "Abilitare",
+      "revokeTitle": "Revocare la chiave API?",
+      "revokeDescription": "Eventuali integrazioni utilizzando \"{name}\" smetterà di funzionare immediatamente. Questo può essere riattivato in seguito.",
+      "revoke": "Revocare",
+      "deleteTitle": "Eliminare la chiave API?",
+      "deleteDescription": "\"{name}\" verrà eliminato definitivamente. Tutte le integrazioni che utilizzano questa chiave verranno interrotte in modo permanente. L'operazione non può essere annullata.",
+      "delete": "Eliminare",
+      "keyCreatedMessage": "Chiave creata: {prefix}. Copia la chiave qui sotto: non verrà più mostrata.",
+      "success": "Impostazioni API salvate.",
+      "errors": {
+        "nameRequired": "Il nome della chiave è obbligatorio.",
+        "permissionsRequired": "Seleziona almeno un'autorizzazione o abilita l'accesso completo.",
+        "invalidInput": "Immissione non valida."
+      }
+    },
+    "webhooks": {
+      "metaTitle": "Amministrazione: webhook",
+      "title": "Webhook",
+      "subtitle": "Notifiche degli eventi inviate ai tuoi endpoint.",
+      "cardTitle": "Webhook",
+      "cardDescription": "Configura gli endpoint per ricevere notifiche di eventi quando vengono inviate valutazioni, i risultati cambiano o le certificazioni scadono.",
+      "endpointsTitle": "Endpoint webhook ({count})",
+      "add": "Aggiungi punto finale",
+      "newTitle": "Nuovo webhook",
+      "name": "Nome",
+      "namePlaceholder": "per esempio. Avvisi Slack, conformità Teams",
+      "url": "URL",
+      "urlPlaceholder": "https://example.com/webhooks/mitch-risk",
+      "platform": "Piattaforma",
+      "platformPlaceholder": "Seleziona la piattaforma",
+      "platforms": {
+        "GENERIC": "Generico (HTTP)",
+        "SLACK": "Lento",
+        "MICROSOFT_TEAMS": "Microsoft Teams",
+        "DISCORD": "Discordia"
+      },
+      "events": "Eventi",
+      "eventLabels": {
+        "ASSESSMENT_SUBMITTED": "Valutazione inviata",
+        "ASSESSMENT_OVERDUE": "Valutazione in ritardo",
+        "FINDING_CREATED": "Trovata creata",
+        "FINDING_RESOLVED": "Risultato risolto",
+        "CERTIFICATION_EXPIRING": "Certificazione in scadenza"
+      },
+      "creating": "Creazione...",
+      "create": "Creare",
+      "cancel": "Cancellare",
+      "empty": "Nessun webhook configurato. Aggiungi un endpoint per ricevere notifiche di eventi.",
+      "active": "Attivo",
+      "disabled": "Disabilitato",
+      "disable": "Disabilita",
+      "enable": "Abilitare",
+      "deleteTitle": "Eliminare il webhook?",
+      "deleteDescription": "Questo endpoint smetterà di ricevere eventi: {url}",
+      "delete": "Eliminare",
+      "success": "Endpoint webhook creato.",
+      "errors": {
+        "urlRequired": "L'URL è obbligatorio.",
+        "urlTooLong": "L'URL deve contenere massimo 500 caratteri.",
+        "nameTooLong": "Il nome deve contenere massimo 100 caratteri.",
+        "invalidUrl": "Inserisci un URL valido.",
+        "httpsRequired": "Gli URL webhook devono utilizzare HTTPS.",
+        "publicOnly": "Gli URL webhook devono puntare a un indirizzo pubblico: non sono consentiti host interni e di loopback.",
+        "unknownPlatform": "Piattaforma sconosciuta.",
+        "eventRequired": "È necessario selezionare almeno un evento."
+      }
+    },
+    "trustCenter": {
+      "metaTitle": "Amministratore: Centro protezione",
+      "title": "Centro fiducia",
+      "subtitle": "Configurazione della pagina di conformità rivolta al pubblico.",
+      "cardTitle": "Centro fiducia",
+      "cardDescription": "Pagina pubblica su /trust che condivide badge di conformità, documenti di sicurezza, subresponsabili e sezioni narrative con fornitori e partner. Cura il contenuto in Gestisci → Centro protezione.",
+      "enabled": "Abilita il centro fiducia",
+      "enabledHint": "Quando è disabilitato, /trust mostra un messaggio di non trovato e nessun contenuto viene offerto pubblicamente.",
+      "intro": "Introduzione (ribasso)",
+      "introHint": "Breve paragrafo mostrato sotto il nome dell'organizzazione nella pagina pubblica.",
+      "introPlaceholder": "Il nostro impegno per la sicurezza e la privacy...",
+      "contactEmail": "Contatto e-mail",
+      "contactEmailHint": "Mostrato in fondo alla pagina pubblica. Ritorna all'e-mail di supporto dell'organizzazione quando è vuoto.",
+      "contactEmailPlaceholder": "sicurezza@esempio.com",
+      "includeInInvites": "Collegamento al centro fiducia nelle e-mail di invito del fornitore",
+      "includeInInvitesHint": "Aggiunge una riga a piè di pagina per invitare le email che puntano a /trust. I modelli non vengono modificati: il collegamento viene aggiunto al momento dell'invio.",
+      "pageLoads": "Caricamenti di pagine pubbliche/min (per IP)",
+      "downloads": "Download di documenti/min (per IP)",
+      "saving": "Risparmio...",
+      "save": "Salva il centro di fiducia",
+      "success": "Impostazioni del Centro protezione salvate.",
+      "errors": {
+        "invalidInput": "Immissione non valida.",
+        "invalidEmail": "Inserisci un indirizzo email valido."
+      }
+    },
+    "permissions": {
+      "fullAccess": "Accesso completo",
+      "fullAccessHint": "Quando selezionata, la chiave concede tutte le autorizzazioni. Deseleziona per limitare la chiave a un insieme specifico di autorizzazioni.",
+      "selectAll": "Seleziona tutte le autorizzazioni",
+      "permissionCount": "{granted} / {total} autorizzazioni",
+      "groups": {
+        "vendors": "Fornitori",
+        "assessments": "Valutazioni",
+        "templates": "Modelli",
+        "frameworks": "Quadri",
+        "administration": "Amministrazione",
+        "webhooks": "Webhook",
+        "trustcenter": "Centro fiducia",
+        "profile": "Profilo"
+      },
+      "items": {
+        "vendors_view": "Visualizza i fornitori",
+        "vendors_create": "Crea fornitori",
+        "vendors_edit": "Modifica fornitori",
+        "vendors_delete": "Elimina fornitori",
+        "assessments_view": "Visualizza le valutazioni",
+        "assessments_create": "Crea e invia valutazioni",
+        "assessments_edit": "Modifica e gestisci i collegamenti",
+        "assessments_review": "Rivedi e finalizza",
+        "assessments_delete": "Elimina valutazioni",
+        "templates_view": "Visualizza modelli",
+        "templates_create": "Crea modelli",
+        "templates_edit": "Modifica e pubblica modelli",
+        "templates_delete": "Elimina modelli",
+        "frameworks_view": "Visualizza i framework",
+        "frameworks_edit": "Modifica framework",
+        "frameworks_delete": "Elimina i framework",
+        "audit_view": "Visualizza i registri di controllo e di posta elettronica",
+        "users_manage": "Gestisci gli utenti",
+        "roles_manage": "Gestire i ruoli",
+        "settings_manage": "Gestisci le impostazioni",
+        "api_manage": "Gestisci l'accesso all'API",
+        "webhooks_manage": "Gestisci webhook",
+        "trustcenter_manage": "Gestisci i contenuti del centro fiducia",
+        "profile_view": "Visualizza e modifica il proprio profilo"
+      }
+    },
+    "users": {
+      "metaTitle": "Amministratore: utenti",
+      "title": "Utenti",
+      "subtitle": "Conti del personale e loro accesso.",
+      "cardTitle": "Conti del personale",
+      "cardDescription": "Crea account del personale e gestisci il loro ruolo, accesso e password.",
+      "searchLabel": "Cerca personale",
+      "searchPlaceholder": "Cerca personale…",
+      "newUser": "Nuovo utente",
+      "empty": "Nessun utente ancora.",
+      "noMatch": "Nessuno staff corrisponde alla tua ricerca.",
+      "added": "Aggiunto {date}",
+      "sso": "SSO",
+      "local": "Locale",
+      "disabled": "Disabilitato",
+      "addTitle": "Aggiungi utente",
+      "addDescription": "Crea un account staff con un ruolo iniziale e una password.",
+      "name": "Nome",
+      "email": "E-mail",
+      "password": "Password",
+      "role": "Ruolo",
+      "creating": "Creazione...",
+      "create": "Crea utente",
+      "cancel": "Cancellare",
+      "save": "Salva",
+      "access": "Accesso",
+      "enableSignIn": "Abilita l'accesso",
+      "disableSignIn": "Disabilita l'accesso",
+      "disableTitle": "Disabilitare l'utente?",
+      "disableDescription": "{name} non sarà più in grado di accedere. I loro dati verranno conservati.",
+      "disable": "Disabilita",
+      "newPasswordPlaceholder": "Nuova password",
+      "resetTitle": "Reimpostare la password?",
+      "resetDescription": "Questo sovrascrive {name}la password attuale di. Devono utilizzare la nuova password per accedere.",
+      "reset": "Reset",
+      "ssoPassword": "Questo account accede tramite SSO: la sua password è gestita dal provider di identità.",
+      "dangerZone": "Zona pericolosa",
+      "deleteTitle": "Eliminare l'utente?",
+      "deleteDescription": "{name} verranno rimossi definitivamente. Questa operazione non può essere annullata.",
+      "ownedVendors": "{count,plural,one{# il fornitore perderà l'assegnazione del proprietario} other{# i fornitori perderanno l'assegnazione del proprietario}}",
+      "reviewingAssessments": "{count,plural,one{# la valutazione perderà il suo revisore} other{# le valutazioni perderanno il loro revisore}}",
+      "resolvedFindings": "{count,plural,one{# il risultato della ricerca avrà il relativo risolutore cancellato} other{# i risultati avranno il loro risolutore cancellato}}",
+      "answerReviews": "{count,plural,one{# la revisione delle risposte sarà anonima} other{# le recensioni delle risposte saranno rese anonime}}",
+      "createdApiKeys": "{count,plural,one{# La chiave API perderà il riferimento al creatore} other{# Le chiavi API perderanno il riferimento al creatore}}",
+      "auditPreserved": "La cronologia di controllo viene conservata (mostrata come \"Utente eliminato\").",
+      "delete": "Eliminare",
+      "deleteUser": "Elimina utente",
+      "loading": "Caricamento...",
+      "success": "Utente creato.",
+      "errors": {
+        "nameRequired": "Il nome è obbligatorio.",
+        "emailInvalid": "Inserisci un indirizzo email valido.",
+        "passwordTooShort": "Utilizza almeno 12 caratteri.",
+        "roleRequired": "Il ruolo è obbligatorio.",
+        "invalidInput": "Immissione non valida.",
+        "roleNotFound": "Il ruolo selezionato non esiste.",
+        "emailExists": "Esiste già un utente con questa email.",
+        "createFailed": "Impossibile creare l'utente. Per favore riprova."
+      }
+    },
+    "roles": {
+      "metaTitle": "Amministratore: ruoli",
+      "title": "Ruoli",
+      "subtitle": "Insiemi di autorizzazioni assegnati agli account del personale.",
+      "cardTitle": "Ruoli",
+      "cardDescription": "Definisci gli insiemi di autorizzazioni e assegnali agli account del personale.",
+      "searchPlaceholder": "Cerca ruoli...",
+      "newRole": "Nuovo ruolo",
+      "noMatch": "Nessun ruolo corrisponde alla tua ricerca.",
+      "system": "Sistema",
+      "userCount": "{count,plural,one{# utente} other{# utenti}}",
+      "edit": "Modificare",
+      "duplicate": "Duplicato",
+      "deleteTitle": "Eliminare il ruolo?",
+      "deleteDescription": "IL \"{name}\" il ruolo verrà rimosso definitivamente. Ciò è possibile solo quando non gli è assegnato alcun utente.",
+      "delete": "Eliminare",
+      "createTitle": "Crea ruolo",
+      "adminLocked": "Il ruolo Admin ha sempre tutte le autorizzazioni e non può essere modificato.",
+      "editorDescription": "Scegli le autorizzazioni concesse da questo ruolo. Gli utenti assegnati a questo ruolo ottengono esattamente queste autorizzazioni.",
+      "name": "Nome",
+      "description": "Descrizione",
+      "saving": "Risparmio...",
+      "create": "Crea ruolo",
+      "saveChanges": "Salva modifiche",
+      "cancel": "Cancellare",
+      "success": "Ruolo creato.",
+      "updated": "Ruolo aggiornato.",
+      "errors": {
+        "nameRequired": "Il nome del ruolo è obbligatorio.",
+        "nameTooLong": "Il nome del ruolo deve contenere al massimo 50 caratteri.",
+        "descriptionTooLong": "La descrizione deve contenere massimo 200 caratteri.",
+        "invalidInput": "Immissione non valida.",
+        "roleExists": "Esiste già un ruolo con questo nome.",
+        "createFailed": "Impossibile creare il ruolo. Per favore riprova.",
+        "missingRole": "Ruolo mancante.",
+        "notFound": "Ruolo non trovato.",
+        "adminLocked": "Le autorizzazioni del ruolo Amministratore non possono essere modificate.",
+        "updateFailed": "Impossibile aggiornare il ruolo. Per favore riprova.",
+        "duplicateFailed": "Impossibile duplicare il ruolo: {reason}",
+        "deleteFailed": "Impossibile eliminare il ruolo: {reason}",
+        "systemCannotDelete": "I ruoli di sistema non possono essere eliminati.",
+        "assignedUsers": "Questo ruolo è assegnato a uno o più utenti. Riassegnarli prima di eliminarli."
+      }
+    },
+    "audit": {
+      "metaTitle": "Amministratore: registro di controllo",
+      "title": "Registro di controllo",
+      "subtitle": "Attività amministrativa e di sistema su tutta la piattaforma.",
+      "retentionTitle": "Conservazione",
+      "retentionDescription": "Le voci di controllo più vecchie di questi giorni vengono automaticamente eliminate dalla pulizia pianificata. Impostato su 0 per mantenerlo a tempo indeterminato.",
+      "retentionLabel": "Conservazione del registro di controllo (giorni)",
+      "retentionHelp": "Si applica alla prossima corsa programmata.",
+      "cardTitle": "Registro di controllo",
+      "cardDescription": "Tieni traccia delle attività amministrative e di sistema sulla piattaforma.",
+      "action": "Azione",
+      "user": "Utente",
+      "from": "Da",
+      "to": "A",
+      "rows": "Righe",
+      "allActions": "Tutte le azioni",
+      "allUsers": "Tutti gli utenti",
+      "actionFilterLabel": "Filtra il registro di controllo per azione",
+      "userFilterLabel": "Filtra il registro di controllo per utente",
+      "pageSizeLabel": "Dimensioni della pagina del registro di controllo",
+      "filter": "Filtro",
+      "clear": "Chiaro",
+      "export": "Esportare",
+      "allResults": "Tutti i risultati",
+      "currentPage": "Pagina corrente",
+      "empty": "Nessuna voce di controllo trovata.",
+      "date": "Data",
+      "entity": "Entità",
+      "deleted": "Eliminato",
+      "pageSummary": "Pagina {page} di {totalPages} ({totalCount, plural, one {# voce} other {# voci}})",
+      "previous": "Precedente",
+      "next": "Prossimo",
+      "csvHeader": "Data, Utente, Azione, Entità, ID",
+      "success": "Conservazione del controllo salvata.",
+      "clarificationRequested": "richiesto chiarimento",
+      "errors": {
+        "retentionInvalid": "La conservazione del controllo deve essere 0 o un numero positivo.",
+        "invalidInput": "Immissione non valida."
+      },
+      "actions": {
+        "LOGIN": "Login",
+        "CREATE_ASSESSMENT": "Valutazione creata",
+        "DELETE_ASSESSMENT": "Valutazione eliminata",
+        "SEND_ASSESSMENT": "Valutazione inviata",
+        "REVOKE_ASSESSMENT": "Link di valutazione revocato",
+        "EXTEND_ASSESSMENT": "Collegamento alla valutazione estesa",
+        "REGENERATE_ASSESSMENT": "Collegamento di valutazione rigenerato",
+        "SUBMIT_ASSESSMENT": "Valutazione inviata",
+        "REVIEW_DECISION": "Rivedere la decisione",
+        "SEND_BACK_TO_VENDOR": "Rispedito al fornitore",
+        "REOPEN_REVIEW": "Recensione riaperta",
+        "UPDATE_FINDING": "Risultato aggiornato",
+        "ADD_COMMENT": "Aggiunto commento",
+        "REOPEN_ASSESSMENT": "Valutazione riaperta",
+        "FINALIZE_ASSESSMENT": "Valutazione definitiva",
+        "CREATE_VENDOR": "Fornitore creato",
+        "UPDATE_VENDOR": "Fornitore aggiornato",
+        "DELETE_VENDOR": "Fornitore eliminato",
+        "IMPORT_VENDOR": "Fornitore importato",
+        "CREATE_TEMPLATE": "Modello creato",
+        "UPDATE_TEMPLATE": "Modello aggiornato",
+        "DELETE_TEMPLATE": "Modello eliminato",
+        "PUBLISH_TEMPLATE": "Modello pubblicato",
+        "UNPUBLISH_TEMPLATE": "Modello non pubblicato",
+        "CREATE_TEMPLATE_VERSION": "Versione modello creata",
+        "DUPLICATE_TEMPLATE": "Modello duplicato",
+        "IMPORT_TEMPLATE": "Modello importato",
+        "CREATE_USER": "Utente creato",
+        "DELETE_USER": "Utente eliminato",
+        "DISABLE_USER": "Utente disabile",
+        "ENABLE_USER": "Utente abilitato",
+        "CHANGE_ROLE": "Ruolo cambiato",
+        "CREATE_ROLE": "Ruolo creato",
+        "UPDATE_ROLE": "Ruolo aggiornato",
+        "UPDATE_PROFILE": "Profilo aggiornato",
+        "DELETE_ROLE": "Ruolo eliminato",
+        "DUPLICATE_ROLE": "Ruolo duplicato",
+        "RESET_PASSWORD": "Reimposta la password",
+        "UPDATE_SETTINGS": "Impostazioni aggiornate",
+        "API_KEY_CREATED": "Chiave API creata",
+        "API_KEY_REVOKED": "Chiave API revocata",
+        "API_KEY_ENABLED": "Chiave API abilitata",
+        "API_KEY_DELETED": "Chiave API eliminata",
+        "CREATE_CERTIFICATION": "Aggiunta certificazione",
+        "UPDATE_CERTIFICATION": "Certificazione aggiornata",
+        "DELETE_CERTIFICATION": "Certificazione eliminata",
+        "CREATE_FRAMEWORK": "Quadro importato",
+        "DELETE_FRAMEWORK": "Quadro eliminato",
+        "UPDATE_RESPONSIBILITY_ACTION": "Azione di responsabilità aggiornata",
+        "MARK_CONTROL_SHARED": "Controllo contrassegnato come responsabilità condivisa",
+        "UNMARK_CONTROL_SHARED": "Controllo non contrassegnato come responsabilità condivisa",
+        "RETRY_EMAIL_SEND": "Nuovo tentativo di invio email",
+        "CREATE_WEBHOOK": "Webhook creato",
+        "DELETE_WEBHOOK": "Webhook eliminato",
+        "ENABLE_WEBHOOK": "Webhook abilitato",
+        "DISABLE_WEBHOOK": "Webhook disabilitato",
+        "UPDATE_TRUST_CENTER": "Centro fiducia aggiornato"
+      }
+    },
+    "health": {
+      "metaTitle": "Amministrazione – Salute",
+      "title": "Salute",
+      "subtitle": "Diagnostica del sistema e stato del lavoro pianificato.",
+      "application": "Applicazione",
+      "status": "Stato",
+      "running": "Corsa",
+      "version": "Versione",
+      "commit": "Impegnarsi",
+      "buildTime": "Costruisci tempo",
+      "uptime": "Tempo di attività",
+      "memory": "Memoria (heap)",
+      "lessThanMinute": "meno di 1 m",
+      "database": "Banca dati",
+      "connection": "Connessione",
+      "connected": "Collegato",
+      "error": "Errore"
+    }
+  },
+  "NotFound": {
+    "description": "La pagina che stai cercando non esiste o è stata spostata.",
+    "backToDashboard": "Torna al cruscotto"
+  },
+  "BulkSend": {
+    "metaTitle": "Invio in blocco",
+    "title": "Invio in blocco",
+    "subtitle": "Invia lo stesso questionario a più fornitori contemporaneamente.",
+    "breadcrumb": "Invio in blocco",
+    "steps": {
+      "configure": "Configura",
+      "vendors": "Fornitori",
+      "send": "Inviare"
+    },
+    "template": "Modello",
+    "selectTemplate": "Seleziona modello",
+    "dueDate": "Scadenza",
+    "reviewer": "Recensore",
+    "unassigned": "Non assegnato",
+    "portalPassword": "Password del portale (facoltativa)",
+    "portalPasswordPlaceholder": "Password condivisa per tutti i fornitori",
+    "next": "Avanti →",
+    "back": "← Indietro",
+    "filterPlaceholder": "Filtra fornitori...",
+    "selectAll": "Seleziona tutto",
+    "selectedCount": "{count} selezionato",
+    "noMatch": "Nessun fornitore corrisponde alla tua ricerca.",
+    "noEmail": "Nessuna e-mail",
+    "sendingTo": "Invio {template} A {count,plural,one{# fornitore} other{# fornitori}}",
+    "due": "Dovuto: {date}",
+    "reviewerLabel": "Recensore: {name}",
+    "portalPasswordSet": "Password del portale impostata",
+    "sending": "Invio...",
+    "sendTo": "Invia a {count,plural,one{# fornitore} other{# fornitori}}",
+    "sentCount": "{count,plural,one{Inviato # valutazione} other{Inviato # valutazioni}}",
+    "skippedCount": "{count,plural,one{# non è stato possibile inviarlo} other{# non è stato possibile inviarlo}}",
+    "emailFailedCount": "{count,plural,one{# l'e-mail non è stata recapitata} other{# le email non sono state recapitate}}",
+    "errors": {
+      "noTemplate": "Nessun modello selezionato.",
+      "noVendors": "Nessun fornitore selezionato."
+    }
+  },
+  "VendorImport": {
+    "metaTitle": "Importa fornitori",
+    "title": "Importa fornitori",
+    "subtitle": "Carica un file CSV per creare fornitori in blocco.",
+    "breadcrumb": "Importa",
+    "cardTitle": "Importa fornitori da CSV",
+    "steps": {
+      "upload": "Caricamento",
+      "review": "Revisione"
+    },
+    "csvFile": "File CSV",
+    "template": "Modello",
+    "columnsHelp": "Il CSV deve contenere colonne: id (facoltativo), nome, contactemail, più facoltativo: externalid, contactname, tier, website, notes, servicedescription, datasensitivity, contractrenewaldate, contractvalue, Geographicrisk, tags. Sono richiesti solo il nome e l'e-mail di contatto. Massimo 1 MB. Includi un ID fornitore o un ID esterno per aggiornare un fornitore esistente invece di crearne uno nuovo.",
+    "found": "{count,plural,one{# fornitore trovato} other{# fornitori trovati}}",
+    "showingFirst": "Mostrando i primi 10 di {count} righe",
+    "next": "Avanti →",
+    "back": "← Indietro",
+    "aboutToImport": "Stai per importare {count,plural,one{# fornitore} other{# fornitori}}.",
+    "skippedNote": "Alcune righe potrebbero essere saltate se non superano la convalida (e-mail duplicate, campi obbligatori mancanti).",
+    "importing": "Importazione…",
+    "importVendors": "Importa fornitori",
+    "errors": {
+      "noFile": "Nessun file selezionato.",
+      "fileTooLarge": "Il file è troppo grande (max 1 MB).",
+      "noRows": "Nessuna riga trovata nel CSV. La prima riga deve essere un'intestazione.",
+      "noValidVendors": "Nessun fornitore valido trovato. Primo errore: {reason}",
+      "rowInvalid": "Riga {row}: input non valido.",
+      "rowNameRequired": "Riga {row}: il nome del fornitore è obbligatorio.",
+      "rowContactEmailRequired": "Riga {row}: è richiesta l'e-mail di contatto.",
+      "duplicateExternalId": "{name}: duplicato ID esterno",
+      "rowFailed": "{name}: {reason}",
+      "updateRequiresEdit": "Questa importazione aggiornerebbe i fornitori esistenti. L'aggiornamento richiede l'autorizzazione di modifica del fornitore.",
+      "unknown": "sconosciuto",
+      "importComplete": "Importazione completata: {summary}.",
+      "created": "{count} creato",
+      "updated": "{count} aggiornato",
+      "skipped": "{count,plural,one{# riga saltata} other{# righe saltate}}"
+    }
+  },
+  "CompareVendors": {
+    "metaTitle": "Confronta i fornitori",
+    "title": "Confronta i fornitori",
+    "subtitle": "Scegli due fornitori per confrontare fianco a fianco le ultime valutazioni completate.",
+    "breadcrumb": "Confrontare",
+    "notEnoughVendorsTitle": "Non abbastanza fornitori",
+    "notEnoughVendorsDescription": "Sono necessari almeno due fornitori da confrontare. Crea prima più fornitori.",
+    "vendorA": "Fornitore A",
+    "vendorB": "Fornitore B",
+    "selectVendor": "Seleziona un fornitore",
+    "compare": "Confrontare",
+    "notEnoughAssessmentsTitle": "Valutazioni insufficienti",
+    "notEnoughAssessmentsDescription": "Entrambi i fornitori devono avere almeno una valutazione completata o in fase di revisione da confrontare.",
+    "comparisonSubtitle": "{vendorA} contro {vendorB}",
+    "statusLabel": "{title} · {status}",
+    "question": "Domanda",
+    "changed": "cambiato",
+    "notApplicable": "N / A"
+  },
+  "ApiDocs": {
+    "metaTitle": "Documentazione dell'API",
+    "loading": "Caricamento della documentazione API...",
+    "loadFailed": "Impossibile caricare l'interfaccia utente di Swagger."
+  },
+  "CompareAssessments": {
+    "metaTitle": "Confronta le valutazioni",
+    "metadataTitle": "Confronta le valutazioni — {vendorName}",
+    "notFound": "Fornitore non trovato",
+    "title": "Confronta le valutazioni",
+    "breadcrumb": "Confronta le valutazioni",
+    "instructions": "Seleziona due valutazioni dalla pagina del fornitore per confrontarle fianco a fianco. Dopo averne aperti due, aggiungi questa pagina ai segnalibri con ?left=[id]&right=[id].",
+    "comparisonSubtitle": "{leftTitle} ({leftStatus}) contro {rightTitle} ({rightStatus})",
+    "question": "Domanda",
+    "changed": "cambiato",
+    "notApplicable": "N / A"
+  },
+  "Profile": {
+    "metaTitle": "Profilo",
+    "title": "Profilo",
+    "subtitle": "Gestisci i dettagli del tuo account.",
+    "accountDetails": "Dettagli del conto",
+    "ssoDescription": "Accedi tramite Single Sign-On. La tua email è gestita dal tuo provider di identità.",
+    "localDescription": "Il tuo nome e l'e-mail di accesso.",
+    "name": "Nome",
+    "email": "E-mail",
+    "passwordTitle": "Password",
+    "passwordDescription": "È necessario inserire la password attuale per apportare eventuali modifiche.",
+    "currentPassword": "Password attuale",
+    "newPassword": "Nuova password",
+    "optional": "(opzionale)",
+    "confirmNewPassword": "Conferma la nuova password",
+    "ssoPasswordNote": "La tua password è gestita dal tuo provider di identità (SSO), quindi non c'è nulla da modificare qui.",
+    "saving": "Risparmio...",
+    "saveChanges": "Salva modifiche",
+    "errorDescription": "Impossibile caricare il tuo profilo. Riprova o contatta l'assistenza.",
+    "errors": {
+      "notAuthenticated": "Non autenticato.",
+      "accountNotFound": "Conto non trovato.",
+      "currentPasswordIncorrect": "La password attuale non è corretta.",
+      "emailTaken": "Questa email è già occupata.",
+      "nameRequired": "Il nome è obbligatorio.",
+      "emailInvalid": "Inserisci un indirizzo email valido.",
+      "currentPasswordRequired": "È richiesta la password attuale.",
+      "passwordTooShort": "La nuova password deve contenere almeno 12 caratteri.",
+      "passwordMismatch": "Le password non corrispondono.",
+      "invalidInput": "Immissione non valida.",
+      "success": "Profilo aggiornato."
+    }
+  },
+  "TrustCenterManager": {
+    "metaTitle": "Centro fiducia",
+    "title": "Centro fiducia",
+    "subtitle": "Pubblica badge di conformità, documenti di sicurezza, sub-responsabili e sezioni narrative sulla tua pagina pubblica del Centro fiducia.",
+    "viewPublic": "Visualizza la pagina pubblica",
+    "disabledBanner": "Il centro fiducia è attualmente disabilitato. Abilitalo in Impostazioni → Centro protezione: fino ad allora la pagina pubblica mostra un messaggio di non trovato.",
+    "errorDescription": "Impossibile caricare il gestore del Trust Center. Per favore riprova.",
+    "common": {
+      "edit": "Modificare",
+      "draft": "Bozza",
+      "published": "Pubblicato",
+      "saving": "Risparmio...",
+      "cancel": "Cancellare",
+      "moveUp": "Mossa {name} su",
+      "moveDown": "Mossa {name} giù",
+      "deleteNamed": "Eliminare {name}"
+    },
+    "badges": {
+      "cardTitle": "Badge di conformità",
+      "add": "Aggiungi distintivo",
+      "empty": "Nessun badge configurato. Aggiungi certificazioni come SOC 2 o ISO 27001 per visualizzarle nella pagina pubblica.",
+      "verificationLink": "Collegamento di verifica",
+      "deleteTitle": "Eliminare il badge?",
+      "deleteDescription": "IL \"{name}\" Il badge verrà rimosso dal Trust Center.",
+      "addTitle": "Aggiungi distintivo",
+      "editTitle": "Modifica distintivo",
+      "editorDescription": "Visualizzato come riquadro di certificazione nella pagina del Centro protezione pubblica.",
+      "titleLabel": "Titolo",
+      "issuer": "Emittente",
+      "issuerPlaceholder": "per esempio. AICPA, BSI",
+      "description": "Descrizione",
+      "descriptionPlaceholder": "per esempio. SOC 2 Tipo II sottoposto a verifica annuale",
+      "verificationUrl": "URL di verifica",
+      "image": "Immagine del distintivo",
+      "imageHint": "PNG, JPG, GIF o WebP. Massimo 2 MB. SVG non è consentito.",
+      "imageHintKeep": " Lascia vuoto per mantenere l'immagine corrente.",
+      "save": "Salva distintivo"
+    },
+    "documents": {
+      "cardTitle": "Documenti di sicurezza",
+      "add": "Aggiungi documento",
+      "empty": "Nessun documento configurato. Carica policy, report sulla sicurezza o elementi di conformità per il download pubblico.",
+      "noFile": "Nessun file caricato",
+      "deleteTitle": "Eliminare il documento?",
+      "deleteDescription": "\"{name}\" e il relativo file verrà rimosso dal centro protezione.",
+      "addTitle": "Aggiungi documento",
+      "editTitle": "Modifica documento",
+      "editorDescription": "I documenti pubblicati sono scaricabili dalla pagina pubblica del Centro fiducia.",
+      "titleLabel": "Titolo",
+      "description": "Descrizione",
+      "descriptionPlaceholder": "Cosa copre questo documento",
+      "category": "Categoria",
+      "file": "File",
+      "replaceFile": "Sostituisci file",
+      "fileHint": "PDF, PNG, JPG, DOCX o XLSX. Massimo 20 MB.",
+      "fileHintCurrent": " Attuale: {fileName}. La sostituzione elimina il vecchio file.",
+      "save": "Salva documento",
+      "categories": {
+        "POLICY": "Politica",
+        "SECURITY": "Rapporto sulla sicurezza",
+        "COMPLIANCE": "Conformità",
+        "PRIVACY": "Privacy",
+        "OTHER": "Altro"
+      }
+    },
+    "sections": {
+      "cardTitle": "Sezioni personalizzate",
+      "add": "Aggiungi sezione",
+      "empty": "Nessuna sezione personalizzata. Aggiungi blocchi di ribasso per una panoramica, domande frequenti o qualsiasi altra cosa non coperta dai tipi strutturati.",
+      "deleteTitle": "Eliminare la sezione?",
+      "deleteDescription": "\"{name}\" verrà rimosso dal centro protezione.",
+      "addTitle": "Aggiungi sezione",
+      "editTitle": "Modifica sezione",
+      "editorDescription": "Blocchi di ribasso gratuiti visualizzati nella pagina pubblica del Centro fiducia.",
+      "titleLabel": "Titolo",
+      "body": "Corpo (ribasso)",
+      "bodyPlaceholder": "Supporta la formattazione del markdown.",
+      "save": "Sezione Salva"
+    },
+    "subprocessors": {
+      "cardTitle": "Subresponsabili del trattamento",
+      "add": "Aggiungi sottoprocessore",
+      "empty": "Nessun sottoprocessore configurato. Elenca le terze parti che trattano i dati per tuo conto.",
+      "deleteTitle": "Eliminare il sub-responsabile?",
+      "deleteDescription": "\"{name}\" verrà rimosso dal centro protezione.",
+      "addTitle": "Aggiungi sottoprocessore",
+      "editTitle": "Modifica sub-responsabile",
+      "editorDescription": "Terze parti che elaborano i dati per tuo conto, elencate nella pagina pubblica del Centro fiducia.",
+      "name": "Nome",
+      "purpose": "Scopo",
+      "purposePlaceholder": "per esempio. Hosting nel cloud dei dati dell'applicazione",
+      "location": "Posizione dei dati",
+      "locationPlaceholder": "per esempio. Australia (Sydney)",
+      "website": "Sito web",
+      "websitePlaceholder": "https://…",
+      "logo": "Immagine del logo",
+      "logoHint": "PNG, JPG, GIF o WebP. Massimo 2 MB. SVG non è consentito.",
+      "logoHintKeep": " Lascia vuoto per mantenere il logo attuale.",
+      "logoUrl": "…o recupera un logo da un URL",
+      "logoUrlPlaceholder": "https://esempio.com/logo.png",
+      "logoUrlHint": "L'immagine viene scaricata e archiviata con gli altri file del centro fiducia: la pagina pubblica non carica mai host esterni. Un file caricato ha la priorità su un URL.",
+      "save": "Salva subprocessore"
+    },
+    "errors": {
+      "invalidInput": "Immissione non valida.",
+      "titleRequired": "Il titolo è obbligatorio.",
+      "nameRequired": "Il nome è obbligatorio.",
+      "invalidUrl": "Inserisci un URL valido.",
+      "sectionTooLong": "Il corpo della sezione è troppo lungo (massimo 10.000 caratteri).",
+      "badgeNotFound": "Distintivo non trovato.",
+      "documentFileRequired": "È richiesto un file di documento.",
+      "saveFailed": "Salvataggio non riuscito.",
+      "badgeSaved": "Distintivo salvato.",
+      "documentSaved": "Documento salvato.",
+      "sectionSaved": "Sezione salvata.",
+      "subprocessorSaved": "Sub-responsabile salvato.",
+      "imageType": "Le immagini devono essere PNG, JPG, GIF o WebP (non è consentito SVG).",
+      "imageInvalid": "Questa immagine non è valida.",
+      "imageTooLarge": "L'immagine è troppo grande (max {max} MB).",
+      "fileTooLarge": "Il file è troppo grande (max {max} MB).",
+      "fileInvalid": "Il contenuto del file non corrisponde alla sua estensione.",
+      "fileType": "Questo tipo di file non è accettato.",
+      "imageFetchFailed": "Impossibile recuperare l'URL dell'immagine.",
+      "imageContent": "L'URL dell'immagine deve restituire contenuti PNG, JPG, GIF o WebP."
+    }
+  },
+  "Shell": {
+    "workspace": {
+      "dashboard": "Pannello di controllo",
+      "vendors": "Fornitori",
+      "assessments": "Valutazioni",
+      "riskRegister": "Registro dei rischi",
+      "selfAssessment": "Autovalutazione",
+      "frameworks": "Quadri",
+      "templates": "Modelli",
+      "trustCenter": "Centro fiducia",
+      "admin": "Ammin",
+      "groups": {
+        "risk": "Rischio",
+        "frameworks": "Quadri",
+        "manage": "Maneggio"
+      }
+    },
+    "admin": {
+      "backToWorkspace": "Ritorno allo spazio di lavoro",
+      "groups": {
+        "workspace": "Spazio di lavoro",
+        "email": "E-mail",
+        "assessments": "Valutazioni",
+        "files": "File",
+        "accessSecurity": "Accesso e sicurezza",
+        "integrations": "Integrazioni",
+        "platform": "Piattaforma"
+      },
+      "sections": {
+        "general": "Generale",
+        "appearance": "Aspetto",
+        "email": "E-mail",
+        "emailTracking": "Monitoraggio della posta elettronica",
+        "scoring": "Punteggio",
+        "scheduling": "Pianificazione",
+        "storage": "Magazzinaggio",
+        "users": "Utenti",
+        "roles": "Ruoli",
+        "signIn": "Registrazione",
+        "rateLimits": "Limiti di tariffa",
+        "api": "API",
+        "webhooks": "Webhook",
+        "trustCenter": "Centro fiducia",
+        "auditLog": "Registro di controllo",
+        "health": "Salute"
+      }
+    },
+    "header": {
+      "admin": "Ammin",
+      "toggleTheme": "Cambia tema",
+      "themeLight": "Leggero",
+      "themeDark": "Buio",
+      "themeSystem": "Sistema",
+      "profile": "Profilo",
+      "language": "Lingua",
+      "signOut": "disconnessione"
+    },
+    "sidebar": {
+      "toggle": "Attiva/disattiva la barra laterale"
+    },
+    "breadcrumbs": {
+      "label": "Pangrattato",
+      "dashboard": "Pannello di controllo"
+    },
+    "commandPalette": {
+      "label": "Tavolozza dei comandi",
+      "searchPlaceholder": "Cerca pagine...",
+      "noResults": "Nessun risultato.",
+      "navigate": "navigare",
+      "open": "aprire",
+      "close": "vicino",
+      "or": "O",
+      "items": {
+        "dashboard": {
+          "label": "Pannello di controllo",
+          "subtitle": "Panoramica del rischio del fornitore"
+        },
+        "vendors": {
+          "label": "Fornitori",
+          "subtitle": "Gestisci i fornitori"
+        },
+        "assessments": {
+          "label": "Valutazioni",
+          "subtitle": "Questionari"
+        },
+        "frameworks": {
+          "label": "Framework",
+          "subtitle": "Controlli di conformità"
+        },
+        "templates": {
+          "label": "Modelli",
+          "subtitle": "Costruttore di questionari"
+        },
+        "profile": {
+          "label": "Profilo",
+          "subtitle": "Il tuo conto"
+        },
+        "adminGeneral": {
+          "label": "Amministratore · Generale",
+          "subtitle": "Organizzazione"
+        },
+        "adminUsers": {
+          "label": "Amministratore · Utenti",
+          "subtitle": "Conti del personale"
+        },
+        "adminRoles": {
+          "label": "Amministratore · Ruoli",
+          "subtitle": "Autorizzazioni"
+        },
+        "adminApi": {
+          "label": "Amministratore · API",
+          "subtitle": "Accesso all'API"
+        },
+        "adminAudit": {
+          "label": "Amministratore · Registro di controllo",
+          "subtitle": "Percorso attività"
+        },
+        "apiDocs": {
+          "label": "Documenti API",
+          "subtitle": "OpenAPI / Swagger"
+        }
+      }
+    },
+    "idle": {
+      "title": "Sessione in scadenza",
+      "description": "Verrai disconnesso {countdown,plural,one{# secondo} other{# secondi}} per inattività. Muovi il mouse o premi un tasto qualsiasi per rimanere connesso.",
+      "staySignedIn": "Rimani connesso"
+    },
+    "scrollToTop": "Scorri verso l'alto",
+    "error": {
+      "title": "Qualcosa è andato storto",
+      "description": "Si è verificato un errore imprevisto. Riprova o contatta l'assistenza.",
+      "retry": "Riprova"
+    }
+  },
+  "Trust": {
+    "title": "{orgName} Centro fiducia",
+    "compliance": "Conformità e certificazioni",
+    "expired": "Scaduto",
+    "expiringSoon": "In scadenza a breve",
+    "verify": "Verificare",
+    "documents": "Documenti di sicurezza",
+    "download": "Scaricamento",
+    "subprocessors": "Subresponsabili del trattamento",
+    "name": "Nome",
+    "purpose": "Scopo",
+    "location": "Posizione",
+    "contactPrompt": "Domande sulla nostra strategia di sicurezza?",
+    "categories": {
+      "POLICY": "Politica",
+      "SECURITY": "Rapporto sulla sicurezza",
+      "COMPLIANCE": "Conformità",
+      "PRIVACY": "Privacy",
+      "OTHER": "Altro"
+    }
+  },
+  "Portal": {
+    "metaTitle": "Questionario del fornitore",
+    "noscript": "Per completare questo questionario è necessario JavaScript. Si prega di abilitare JavaScript nelle impostazioni del browser.",
+    "logoAlt": "Logo",
+    "linkNotFound": "Collegamento non trovato",
+    "linkInvalid": "Questo collegamento al questionario non è valido.",
+    "linkExpiredTitle": "Collegamento scaduto",
+    "linkExpiredBody": "Questo link al questionario è scaduto. Si prega di contattare il richiedente per un nuovo collegamento.",
+    "submittedTitle": "{title} - presentato",
+    "submittedBanner": "✓ Le tue risposte sono state inviate.",
+    "submittedBody": "Il richiedente esaminerà le tue risposte e potrebbe richiedere chiarimenti. Puoi tornare a questo link per vedere eventuali aggiornamenti.",
+    "notApplicableShort": "N / A",
+    "decisions": {
+      "APPROVED": "Approvato",
+      "CLARIFICATION_REQUESTED": "Richiesto chiarimento"
+    },
+    "notAvailableTitle": "Non disponibile",
+    "notAvailableBody": "Questo questionario non è attualmente disponibile.",
+    "additionalInfoTitle": "Sono state richieste ulteriori informazioni.",
+    "additionalInfoBody": "Rivedi le domande contrassegnate e inviale nuovamente quando sei pronto.",
+    "password": {
+      "title": "È richiesta la password",
+      "description": "Questo questionario è protetto da password. Immettere la password fornita dal richiedente per continuare.",
+      "label": "Password",
+      "placeholder": "Inserisci la password",
+      "verifying": "Verifica...",
+      "continue": "Continuare",
+      "tooMany": "Troppi tentativi. Per favore aspetta un minuto.",
+      "notSet": "Per questo collegamento non è impostata alcuna password.",
+      "incorrect": "Password errata."
+    },
+    "error": {
+      "title": "Qualcosa è andato storto",
+      "description": "Si è verificato un errore imprevisto durante il caricamento del questionario. Per assistenza, contatta l'organizzazione che ti ha inviato questo collegamento.",
+      "retry": "Riprova"
+    },
+    "loading": "Caricamento questionario...",
+    "upload": {
+      "tooMany": "Troppi caricamenti. Per favore aspetta un attimo.",
+      "linkInvalid": "Questo collegamento non è più valido.",
+      "noFile": "Nessun file selezionato.",
+      "invalidQuestion": "Domanda non valida.",
+      "tooLarge": "Il file supera il {max} Limite di MB.",
+      "badType": "File di tipo .{ext} non sono ammessi.",
+      "dangerousType": "Questo tipo di file non è consentito.",
+      "mismatch": "Il contenuto del file non corrisponde a un file .{ext} file."
+    },
+    "questionnaire": {
+      "yes": "SÌ",
+      "no": "NO",
+      "maxUpload": "Massimo {maxUploadMb} MB. Consentito: {extensions}.",
+      "uploading": " Caricamento…",
+      "uploaded": "Caricato: {fileName}",
+      "remove": "Rimuovere",
+      "selectPlaceholder": "Selezionare…",
+      "confirmStatement": "Confermo questa affermazione",
+      "clarification": "Il revisore ha chiesto chiarimenti su questa risposta.",
+      "notApplicable": "Non applicabile",
+      "commentPlaceholder": "Aggiungi un commento...",
+      "send": "Inviare",
+      "autosaveHint": "Le tue risposte vengono salvate automaticamente: puoi chiudere questa pagina e tornare utilizzando lo stesso collegamento in qualsiasi momento.",
+      "saveExpired": "Questo collegamento è scaduto: non è stato possibile salvare le modifiche recenti.",
+      "saveError": "Non è stato possibile salvare le ultime modifiche. Controlla la connessione e riprova.",
+      "retrySave": "Riprova a salvare",
+      "expiry": {
+        "expired": "Questo collegamento è scaduto.",
+        "hours": "Questo collegamento scade tra {hours,plural,one{# ora} other{# ore}}.",
+        "minutes": "Questo collegamento scade tra {minutes,plural,one{# minuto} other{# minuti}}."
+      },
+      "sectionCounter": "· Sezione {current} Di {total}",
+      "saving": "Risparmio…",
+      "saveFailed": "Salvataggio non riuscito",
+      "savedAt": "Salvato a {time}",
+      "lastSavedAt": "Ultimo salvataggio in {time}",
+      "expires": "Scade {date}",
+      "back": "Indietro",
+      "continue": "Continuare",
+      "reviewAnswers": "Rivedi le risposte",
+      "continueWarning": "{count,plural,one{# la domanda obbligatoria in questa sezione necessita ancora di una risposta.} other{# le domande obbligatorie in questa sezione necessitano ancora di risposte.}} Puoi continuare e tornare indietro.",
+      "reviewHeading": "Rivedi le tue risposte",
+      "reviewAnswered": "{answered}/{total} rispose",
+      "reviewMissing": "{count} obbligatorio mancante",
+      "openSection": "Sezione aperta",
+      "submitting": "Invio…",
+      "submit": "Invia questionario",
+      "submitTitle": "Inviare un questionario?",
+      "submitDescription": "Non potrai modificare le tue risposte dopo l'invio. Sei sicuro di essere pronto per l'invio?",
+      "cancel": "Cancellare",
+      "submitConfirm": "Invia",
+      "missingRequired": "{count,plural,one{Per favore rispondi # domanda obbligatoria prima di inviare.} other{Per favore rispondi # domande obbligatorie prima dell'invio.}}",
+      "linkInvalid": "Questo collegamento non è più valido.",
+      "vendorAuthor": "Fornitore"
+    }
+  },
+  "Pdf": {
+    "common": {
+      "pageOf": "Pagina {page} di {total}",
+      "na": "N / A",
+      "none": "--",
+      "yes": "SÌ",
+      "no": "NO",
+      "notScored": "Non segnato",
+      "tier": "Livello: {tier}",
+      "template": "Modello: {name} v{version}",
+      "reviewer": "Recensore: {name}",
+      "generated": "Generato {date}",
+      "due": "Dovuto: {date}",
+      "completed": "Completato: {date}",
+      "automatedFindingDescription": "La risposta del fornitore non ha soddisfatto la risposta prevista."
+    },
+    "tiers": {
+      "CRITICAL": "Critico",
+      "HIGH": "Alto",
+      "MEDIUM": "Medio",
+      "LOW": "Basso"
+    },
+    "questionTypes": {
+      "YES_NO": "Sì/no",
+      "MULTIPLE_CHOICE": "Scelta unica",
+      "FREE_TEXT": "Testo libero",
+      "FILE_UPLOAD": "Caricamento file",
+      "DATE": "Data",
+      "NUMERIC": "Numerico",
+      "COMBOBOX": "Casella combinata",
+      "MULTI_SELECT": "Selezione multipla",
+      "RATING": "Valutazione",
+      "URL": "URL",
+      "EMAIL": "E-mail",
+      "CHECKBOX": "Casella di controllo"
+    },
+    "statuses": {
+      "DRAFT": "Bozza",
+      "SENT": "Inviato",
+      "IN_PROGRESS": "In corso",
+      "SUBMITTED": "Inviato",
+      "UNDER_REVIEW": "In corso di revisione",
+      "COMPLETED": "Completato"
+    },
+    "assessment": {
+      "score": "Punto",
+      "customerResponsibility": "Responsabilità del cliente: {percent}% ({completed}/{total} completato)",
+      "responses": "Risposte ({count})",
+      "question": "Domanda",
+      "answer": "Risposta",
+      "type": "Tipo",
+      "weight": "Peso",
+      "compliant": "Compiacente",
+      "scoreColumn": "Punto",
+      "findings": "Risultati ({count})"
+    },
+    "framework": {
+      "complianceReport": "{frameworkName} {version} — Rapporto di conformità",
+      "summary": "Riepilogo",
+      "overallScore": "Punteggio complessivo:",
+      "domainsAssessed": "Domini valutati:",
+      "controlsMapped": "Controlli mappati:",
+      "domainCompliance": "Conformità del dominio",
+      "domain": "Dominio",
+      "current": "Attuale",
+      "previous": "Precedente",
+      "change": "Modifica",
+      "controlHeatmap": "Controlla la mappa termica",
+      "control": "Controllare",
+      "title": "Titolo",
+      "compliance": "Conformità",
+      "status": "Stato",
+      "ragGreen": "Verde",
+      "ragAmber": "Ambra",
+      "ragRed": "Rosso",
+      "ragNone": "Non valutato"
+    },
+    "portfolio": {
+      "title": "Titolo",
+      "vendors": "Fornitori",
+      "averageScore": "Punteggio medio",
+      "openFindings": "Risultati aperti",
+      "needsAttention": "Ha bisogno di attenzione",
+      "scoreDistribution": "Distribuzione del punteggio",
+      "green": "Verde (≥85%)",
+      "amber": "Ambra (60-84%)",
+      "red": "Rosso (<60%)",
+      "unscored": "Senza punteggio",
+      "vendorsByTier": "Fornitori per livello",
+      "assessmentsByStatus": "Valutazioni per stato",
+      "vendorsCount": "Fornitori ({count})",
+      "vendor": "Fornitore",
+      "tier": "Livello",
+      "score": "Punto",
+      "lastAssessed": "Ultimo valutato",
+      "assessments": "Valutazioni",
+      "notAssessed": "Non valutato",
+      "topDeficientControls": "Controlli carenti ({count})",
+      "control": "Controllare",
+      "vendorsAffected": "Fornitori colpiti"
+    }
+  },
+  "Email": {
+    "footer": "Questa email è stata inviata da {appName}. Se il pulsante non funziona, copia e incolla il collegamento nel tuo browser.",
+    "trustFooter": "Ulteriori informazioni sulla nostra strategia di sicurezza: {url}",
+    "testSubject": "{appName} — Prova SMTP",
+    "testBody": "Le tue impostazioni SMTP funzionano correttamente.",
+    "testSent": "E-mail di prova inviata.",
+    "smtpNotConfigured": "SMTP non è configurato.",
+    "transporterFailed": "Impossibile creare il trasportatore.",
+    "sendFailed": "Impossibile inviare: {reason}",
+    "retryMessage": "Si prega di rivedere e inviare nuovamente il questionario."
+  },
+  "Auth": {
+    "tagline": "Gestione del rischio del fornitore",
+    "login": {
+      "title": "Registrazione",
+      "description": "Accedi al tuo account.",
+      "email": "E-mail",
+      "password": "Password",
+      "submit": "Registrazione",
+      "submitting": "Accesso…",
+      "forgot": "Ha dimenticato la password?",
+      "or": "O",
+      "invalid": "E-mail o password non valide.",
+      "tooMany": "Troppi tentativi. Attendi un attimo e riprova."
+    },
+    "forgot": {
+      "title": "Ha dimenticato la password",
+      "description": "Inserisci la tua email e ti invieremo un collegamento per il ripristino.",
+      "email": "E-mail",
+      "submit": "Invia collegamento di reimpostazione",
+      "submitting": "Invio...",
+      "back": "Torna per accedere",
+      "invalidEmail": "Inserisci un indirizzo email valido.",
+      "rateLimited": "Se esiste un account con quell'e-mail, un collegamento di reimpostazione è già stato inviato di recente.",
+      "sent": "Se esiste un account con quell'e-mail, è stato inviato un collegamento di reimpostazione."
+    },
+    "reset": {
+      "title": "Reimposta la password",
+      "description": "Scegli una nuova password per il tuo account.",
+      "missing": "Questo collegamento di reimpostazione è mancante o non valido. Richiedine uno nuovo su",
+      "expired": "Questo collegamento di reimpostazione è scaduto o è già stato utilizzato. Richiedine uno nuovo su",
+      "forgotLink": "pagina password dimenticata",
+      "forUser": "Scegli una nuova password per {email}.",
+      "newPassword": "Nuova password",
+      "confirmPassword": "Conferma password",
+      "submit": "Reimposta la password",
+      "submitting": "Reimpostazione...",
+      "back": "Torna per accedere",
+      "invalidLink": "Collegamento di reimpostazione non valido.",
+      "invalidPassword": "Utilizzare una password che soddisfi i requisiti.",
+      "expiredToken": "Questo collegamento di reimpostazione non è valido o è scaduto."
+    },
+    "setup": {
+      "title": "Crea amministratore",
+      "cardTitle": "Crea il primo amministratore",
+      "description": "Configura l'account amministratore iniziale per iniziare a gestire il rischio del fornitore.",
+      "fullName": "Nome e cognome",
+      "email": "E-mail",
+      "password": "Password",
+      "passwordHint": "Almeno 12 caratteri.",
+      "submit": "Crea amministratore",
+      "submitting": "Creazione…",
+      "alreadyDone": "La configurazione è già stata completata.",
+      "invalid": "Controlla il nome, l'e-mail e la password (almeno 12 caratteri).",
+      "roleError": "Impossibile inizializzare il ruolo di amministratore. Per favore riprova.",
+      "createdSignIn": "Conto creato. Per favore accedi."
+    },
+    "sso": {
+      "orSignInWith": "o accedi con"
+    }
+  }
+}

@@ -1,0 +1,2681 @@
+{
+  "Common": {
+    "changeLanguage": "भाषा बदलें",
+    "skipToContent": "सामग्री पर जाएं",
+    "cancel": "रद्द करें",
+    "delete": "हटाएँ",
+    "close": "बंद करें",
+    "sidebar": "साइड बार",
+    "sidebarDescription": "मोबाइल साइडबार प्रदर्शित करता है.",
+    "toggleSidebar": "साइडबार टॉगल करें",
+    "step": "चरण {number}:",
+    "tiers": {
+      "CRITICAL": "गंभीर",
+      "HIGH": "उच्च",
+      "MEDIUM": "मध्यम",
+      "LOW": "कम"
+    },
+    "pagination": {
+      "pageOf": "पृष्ठ {page} / {totalPages} · {totalCount} {itemLabel}",
+      "previous": "पहले का",
+      "next": "अगला"
+    },
+    "viewToggle": {
+      "rows": "पंक्ति दृश्य",
+      "cards": "कार्ड दृश्य"
+    },
+    "assessmentStatuses": {
+      "DRAFT": "मसौदा",
+      "SENT": "भेजा",
+      "IN_PROGRESS": "प्रगति पर है",
+      "SUBMITTED": "प्रस्तुत किया गया",
+      "UNDER_REVIEW": "समीक्षा के अंतर्गत",
+      "COMPLETED": "पुरा होना।"
+    },
+    "findingStatuses": {
+      "OPEN": "खुला",
+      "REMEDIATED": "सुलझाया",
+      "RISK_ACCEPTED": "जोखिम स्वीकार किया गया"
+    },
+    "copyLink": {
+      "copy": "प्रतिलिपि",
+      "copied": "कॉपी किया गया"
+    },
+    "pendingLink": {
+      "preparing": "तैयारी हो रही है..."
+    },
+    "evidencePreview": {
+      "preview": "पूर्व दर्शन {fileName}"
+    },
+    "questionTypes": {
+      "YES_NO": "हां नहीं",
+      "MULTIPLE_CHOICE": "एकल विकल्प (एक चुनें)",
+      "FREE_TEXT": "फ्री टेक्स्ट",
+      "FILE_UPLOAD": "फ़ाइल अपलोड करें",
+      "DATE": "तारीख",
+      "NUMERIC": "संख्यात्मक",
+      "COMBOBOX": "सम्मिश्रण पटी",
+      "MULTI_SELECT": "बहु-चयन (कई चुनें)",
+      "RATING": "रेटिंग (1‑5)",
+      "URL": "यूआरएल",
+      "EMAIL": "ईमेल",
+      "CHECKBOX": "चेकबॉक्स (पावती)"
+    },
+    "controlCodes": {
+      "showMore": "{count,plural,one{दिखाओ # अधिक नियंत्रण} other{दिखाओ # अधिक नियंत्रण}}",
+      "showLess": "कम दिखाओ"
+    },
+    "search": {
+      "placeholder": "खोजना…"
+    }
+  },
+  "Metadata": {
+    "description": "व्हाइट-लेबल तृतीय पक्ष विक्रेता जोखिम प्रबंधन समाधान"
+  },
+  "Dashboard": {
+    "metaTitle": "डैशबोर्ड",
+    "title": "विक्रेता जोखिम अवलोकन",
+    "tracked": "{count,plural,one{# विक्रेता को ट्रैक किया गया} other{# विक्रेताओं पर नज़र रखी गई}}",
+    "newVendor": "नया विक्रेता",
+    "assessments": "आकलन",
+    "portfolioReport": "पोर्टफोलियो रिपोर्ट",
+    "emptyTitle": "अभी तक कोई विक्रेता नहीं",
+    "emptyCanCreate": "उनके जोखिम पर नज़र रखना शुरू करने के लिए अपना पहला विक्रेता जोड़ें।",
+    "emptyReadOnly": "अभी तक किसी भी विक्रेता को ट्रैक नहीं किया जा रहा है।",
+    "addVendor": "एक विक्रेता जोड़ें →",
+    "stats": {
+      "vendors": "विक्रेताओं पर नज़र रखी गई",
+      "averageScore": "औसत स्कोर",
+      "openFindings": "खुले निष्कर्ष",
+      "needsAttention": "ध्यान देने की जरूरत है"
+    },
+    "topControls": "शीर्ष अपूर्ण नियंत्रण",
+    "viewRiskRegister": "जोखिम रजिस्टर देखें →",
+    "highestRisk": "सबसे अधिक जोखिम वाले विक्रेता",
+    "viewAllVendors": "सभी विक्रेताओं को देखें →",
+    "noAssessments": "कोई आकलन नहीं",
+    "overdue": "{count} अतिदेय",
+    "attention": {
+      "title": "ध्यान देने की जरूरत है",
+      "allClear": "सब कुछ स्पष्ट - अभी किसी भी चीज़ पर ध्यान देने की आवश्यकता नहीं है।",
+      "titleWithCount": "ध्यान देने की जरूरत है ({count})",
+      "unreviewed": "समीक्षा न किए गए",
+      "clarification": "स्पष्टीकरण",
+      "clarifications": "स्पष्टीकरण",
+      "failedEmail": "विफल ईमेल (24 घंटे)",
+      "failedEmails": "विफल ईमेल (24 घंटे)",
+      "groups": {
+        "overdue": "अतिदेय मूल्यांकन",
+        "belowThreshold": "स्कोर सीमा से नीचे",
+        "keyDates": "प्रमुख तिथियाँ (60 दिन)"
+      },
+      "overdueAssessment": "{count,plural,one{# अतिदेय मूल्यांकन} other{# अतिदेय मूल्यांकन}}",
+      "oldestSince": "तब से सबसे पुराना {date}",
+      "belowThreshold": "नीचे {percent}% सीमा",
+      "contractRenewal": "संविदा नवीनीकरण",
+      "daysOverdue": "{days}घ अतिदेय",
+      "inDays": "में {days}डी"
+    },
+    "charts": {
+      "portfolioHealth": "पोर्टफोलियो स्वास्थ्य",
+      "openFindingsBySeverity": "गंभीरता से निष्कर्ष खोलें",
+      "assessmentStatus": "मूल्यांकन की स्थिति",
+      "riskByTier": "स्तर के अनुसार जोखिम",
+      "vendors": "विक्रेताओं",
+      "assessments": "आकलन",
+      "openFindings": "खुले निष्कर्ष",
+      "ragShort": {
+        "green": "हरा",
+        "amber": "अंबर",
+        "red": "लाल",
+        "unscored": "स्कोर नहीं किया गया"
+      },
+      "rag": {
+        "green": "हरा (≥85%)",
+        "amber": "एम्बर (60-84%)",
+        "red": "लाल (<60%)",
+        "unscored": "स्कोर नहीं किया गया"
+      },
+      "severity": {
+        "CRITICAL": "गंभीर",
+        "HIGH": "उच्च",
+        "MEDIUM": "मध्यम",
+        "LOW": "कम"
+      },
+      "status": {
+        "DRAFT": "मसौदा",
+        "SENT": "भेजा",
+        "IN_PROGRESS": "प्रगति पर है",
+        "SUBMITTED": "प्रस्तुत किया गया",
+        "UNDER_REVIEW": "समीक्षा के अंतर्गत",
+        "COMPLETED": "पुरा होना।",
+        "OVERDUE": "अतिदेय"
+      },
+      "tier": {
+        "CRITICAL": "गंभीर",
+        "HIGH": "उच्च",
+        "MEDIUM": "मध्यम",
+        "LOW": "कम",
+        "Unspecified": "अनिर्दिष्ट"
+      },
+      "activity": {
+        "title": "मूल्यांकन गतिविधि",
+        "noActivity": "इस अवधि में कोई गतिविधि नहीं",
+        "timeRange": "एक समय सीमा चुनें",
+        "ranges": {
+          "90d": "पिछले 3 महीने",
+          "30d": "पिछले 30 दिन",
+          "7d": "पिछले 7 दिन"
+        },
+        "assessments": "आकलन"
+      }
+    }
+  },
+  "Vendors": {
+    "metaTitle": "विक्रेता",
+    "title": "विक्रेता",
+    "subtitle": "जिन विक्रेताओं का आप सुरक्षा जोखिम के लिए मूल्यांकन करते हैं।",
+    "compare": "तुलना करना",
+    "import": "आयात करें",
+    "bulkSend": "थोक में भेजें",
+    "newVendor": "नया विक्रेता",
+    "search": "खोज",
+    "searchPlaceholder": "नाम या ईमेल...",
+    "tier": "टीयर",
+    "anyTier": "कोई भी स्तर",
+    "filterTierAria": "विक्रेताओं को स्तर के अनुसार फ़िल्टर करें",
+    "sort": "क्रम से लगाना",
+    "sortAria": "विक्रेताओं को क्रमबद्ध करें",
+    "filter": "फ़िल्टर",
+    "clear": "स्पष्ट",
+    "viewAria": "विक्रेता सूची दृश्य",
+    "noMatches": "कोई भी विक्रेता चयनित फ़िल्टर से मेल नहीं खाता।",
+    "emptyTitle": "अभी तक कोई विक्रेता नहीं",
+    "emptyDescription": "उनके सुरक्षा जोखिम पर नज़र रखना शुरू करने के लिए एक विक्रेता जोड़ें।",
+    "assessed": "आकलन किया {date}",
+    "notAssessed": "मूल्यांकन नहीं किया गया",
+    "assessmentCount": "{count,plural,one{# आकलन} other{# आकलन}}",
+    "openFindingCount": "{count,plural,one{# खुली खोज} other{# खुले निष्कर्ष}}",
+    "list": {
+      "vendor": "विक्रेता",
+      "tier": "स्तर",
+      "score": "स्कोर",
+      "items": "विक्रेताओं"
+    },
+    "sorts": {
+      "name": "नाम (ए-जेड)",
+      "name-desc": "नाम (जेड-ए)",
+      "score-asc": "स्कोर (कम → उच्च)",
+      "score-desc": "स्कोर (उच्च → निम्न)",
+      "tier": "टियर (ए-जेड)",
+      "tier-desc": "टियर (जेड-ए)",
+      "last-assessed": "अंतिम बार मूल्यांकन किया गया",
+      "assessments": "अधिकांश आकलन"
+    },
+    "form": {
+      "vendorName": "विक्रेता का नाम",
+      "externalId": "बाहरी आईडी",
+      "externalIdPlaceholder": "जैसे ईआरपी-V-001",
+      "externalIdHint": "किसी अन्य सिस्टम में इस विक्रेता का वैकल्पिक संदर्भ",
+      "contactName": "संपर्क नाम",
+      "contactEmail": "ई - मेल से संपर्क करे",
+      "tier": "टीयर",
+      "website": "वेबसाइट",
+      "riskOwner": "जोखिम स्वामी",
+      "dataSensitivity": "डेटा संवेदनशीलता",
+      "contractValue": "अनुबंध मूल्य",
+      "geographicRisk": "भौगोलिक जोखिम",
+      "tags": "टैग",
+      "tagsPlaceholder": "जैसे सास, क्रिटिकल, फाइनेंस",
+      "tagsHint": "समूहीकरण और फ़िल्टरिंग के लिए अल्पविराम से अलग किए गए लेबल",
+      "serviceProvided": "सेवा प्रदान की गई",
+      "servicePlaceholder": "जैसे क्लाउड ईमेल होस्टिंग",
+      "contractRenewalDate": "अनुबंध नवीनीकरण की तारीख",
+      "notes": "टिप्पणियाँ",
+      "saving": "सहेजा जा रहा है...",
+      "saveChanges": "परिवर्तनों को सुरक्षित करें",
+      "create": "विक्रेता बनाएँ",
+      "cancel": "रद्द करना",
+      "unspecified": "अनिर्दिष्ट",
+      "unassigned": "सौंपे नहीं गए",
+      "levels": {
+        "NONE": "कोई नहीं",
+        "LOW": "कम",
+        "MEDIUM": "मध्यम",
+        "HIGH": "उच्च"
+      },
+      "dataSensitivities": {
+        "PUBLIC": "जनता",
+        "INTERNAL": "आंतरिक",
+        "CONFIDENTIAL": "गोपनीय",
+        "RESTRICTED": "वर्जित"
+      }
+    },
+    "new": {
+      "title": "नया विक्रेता",
+      "cardTitle": "विक्रेता विवरण",
+      "cardDescription": "ट्रैक करने के लिए एक नया विक्रेता जोड़ें.",
+      "breadcrumb": "नया"
+    },
+    "edit": {
+      "title": "विक्रेता संपादित करें",
+      "cardTitle": "विक्रेता विवरण",
+      "cardDescription": "विक्रेता विवरण अद्यतन करें.",
+      "breadcrumb": "संपादन करना"
+    },
+    "attachments": {
+      "title": "संलग्नक",
+      "emptyTitle": "अभी तक कोई अनुलग्नक नहीं",
+      "emptyDescription": "अनुबंध, पत्र, या अन्य दस्तावेज़ अपलोड करें।",
+      "removeAria": "अनुलग्नक हटाएँ",
+      "dropHint": "कोई फ़ाइल छोड़ें या ब्राउज़ करने के लिए क्लिक करें",
+      "uploading": "अपलोड हो रहा है...",
+      "upload": "अपलोड करें"
+    },
+    "export": {
+      "button": "सीएसवी निर्यात करें",
+      "all": "सभी विक्रेता",
+      "currentPage": "वर्तमान पृष्ठ"
+    },
+    "errors": {
+      "invalidInput": "अमान्य निवेश।",
+      "duplicateExternalId": "इस बाहरी आईडी वाला एक विक्रेता पहले से मौजूद है।",
+      "vendorCreated": "विक्रेता बनाया गया.",
+      "vendorUpdated": "विक्रेता अद्यतन किया गया.",
+      "noFile": "कोई फ़ाइल चयनित नहीं।",
+      "fileTypeNotAllowed": "फ़ाइल प्रकार की अनुमति नहीं है.",
+      "fileTypeNotAccepted": "यह फ़ाइल प्रकार स्वीकृत नहीं है.",
+      "fileTooLarge": "फ़ाइल बहुत बड़ी है (अधिकतम) {max} एमबी).",
+      "fileUploaded": "फ़ाइल अपलोड की गई.",
+      "fileAttached": "फ़ाइल विक्रेता से संलग्न है."
+    },
+    "detail": {
+      "notFound": "विक्रेता नहीं मिला",
+      "errorTitle": "विक्रेता को लोड करने में विफल",
+      "errorDescription": "इस विक्रेता का विवरण लोड करते समय एक त्रुटि उत्पन्न हुई. कृपया पुन: प्रयास करें।",
+      "created": "विक्रेता बनाया गया.",
+      "breadcrumbs": {
+        "riskRegister": "जोखिम रजिस्टर",
+        "vendors": "विक्रेता"
+      },
+      "edit": "संपादन करना",
+      "exportCsv": "सीएसवी निर्यात करें",
+      "delete": "मिटाना",
+      "deleteTitle": "विक्रेता हटाएं?",
+      "deleteDescription": "यह स्थायी रूप से हटा दिया जाएगा {vendorName} और सब {count,plural,one{# आकलन} other{# आकलन}}. इस एक्शन को वापस नहीं किया जा सकता।",
+      "tabs": {
+        "overview": "सिंहावलोकन",
+        "compliance": "अनुपालन",
+        "findings": "निष्कर्ष",
+        "assessments": "आकलन"
+      },
+      "overview": {
+        "title": "सिंहावलोकन",
+        "serviceProvided": "सेवा प्रदान की गई",
+        "riskOwner": "जोखिम स्वामी",
+        "unassigned": "सौंपे नहीं गए",
+        "externalId": "बाहरी आईडी",
+        "dataSensitivity": "डेटा संवेदनशीलता",
+        "unspecified": "अनिर्दिष्ट",
+        "website": "वेबसाइट",
+        "contractRenewal": "संविदा नवीनीकरण",
+        "overdue": " · अतिदेय",
+        "attachments": "संलग्नक",
+        "emptyTitle": "कोई सिंहावलोकन विवरण नहीं",
+        "emptyDescription": "सेवा विवरण, जोखिम स्वामी और अन्य प्रोफ़ाइल जानकारी जोड़ने के लिए इस विक्रेता को संपादित करें।"
+      },
+      "riskProfile": {
+        "title": "जोखिम प्रोफ़ाइल",
+        "inherent": "अंतर्निहित (पूर्व-मूल्यांकन)",
+        "residual": "अवशिष्ट (मूल्यांकन)",
+        "trendingUp": "रुझान बढ़ रहा है ↑",
+        "trendingDown": "नीचे की ओर रुझान ↓",
+        "stable": "स्थिर →",
+        "noScore": "अभी तक कोई अंक नहीं - एक मूल्यांकन सबमिट करें",
+        "trend": "रुझान",
+        "compareLastTwo": "पिछले दो की तुलना करें →"
+      },
+      "certifications": "प्रमाणपत्र एवं सत्यापन",
+      "compliance": {
+        "vendorCompliance": "विक्रेता अनुपालन",
+        "yourCompliance": "आपका अनुपालन",
+        "domainCompliance": "डोमेन अनुपालन",
+        "noDataTitle": "कोई अनुपालन डेटा नहीं",
+        "noDataDescription": "डोमेन अनुपालन स्कोर देखने के लिए एक मूल्यांकन पूरा करें।",
+        "frameworkHeatmaps": "फ़्रेमवर्क हीटमैप",
+        "noAssessmentData": "कोई मूल्यांकन डेटा नहीं",
+        "noFrameworksTitle": "कोई रूपरेखा उपलब्ध नहीं है",
+        "noFrameworksDescription": "मूल्यांकन प्रश्नों पर नियंत्रण मैप करने के लिए फ़्रेमवर्क लाइब्रेरी आयात या सीड करें।"
+      },
+      "findings": {
+        "title": "निष्कर्ष",
+        "openCount": "{count, plural, one {# खुला} other {# खुले}}",
+        "viewAll": "{count,plural,one{जोखिम रजिस्टर में निष्कर्ष देखें →} other{सभी को देखें # जोखिम रजिस्टर में निष्कर्ष →}}",
+        "emptyTitle": "कोई निष्कर्ष नहीं",
+        "emptyDescription": "जब मूल्यांकन उत्तर गैर-अनुपालक होते हैं तो निष्कर्ष उत्पन्न होते हैं। यहां निष्कर्ष देखने के लिए एक मूल्यांकन पूरा करें।"
+      },
+      "assessments": {
+        "title": "आकलन",
+        "new": "नया आकलन",
+        "emptyTitle": "कोई आकलन नहीं",
+        "emptyDescription": "इस विक्रेता के लिए अभी तक कोई आकलन नहीं बनाया गया है।",
+        "noTemplate": "कोई टेम्पलेट नहीं",
+        "due": " · देय {date}",
+        "viewAll": "{count,plural,one{मूल्यांकन देखें →} other{सभी को देखें # आकलन →}}",
+        "activity": "गतिविधि"
+      }
+    },
+    "timeline": {
+      "empty": "अभी तक कोई गतिविधि दर्ज नहीं की गई.",
+      "assessmentCreated": "मूल्यांकन बनाया गया",
+      "assessmentSent": "मूल्यांकन भेजा गया",
+      "assessmentSubmitted": "मूल्यांकन प्रस्तुत किया गया",
+      "findingOpened": "ढूँढना खुला",
+      "remediated": "सुलझाया",
+      "riskAccepted": "जोखिम स्वीकार किया गया",
+      "certificationAdded": "प्रमाणीकरण जोड़ा गया",
+      "certificationExpiring": "प्रमाणीकरण समाप्त हो रहा है",
+      "certificationExpiringDescription": "{name} - समाप्त हो जाता है {date}"
+    },
+    "certifications": {
+      "empty": "अभी तक कोई प्रमाणपत्र ट्रैक नहीं किया गया.",
+      "expires": "समय-सीमा समाप्त {date}",
+      "statuses": {
+        "valid": "वैध",
+        "expiring": "जल्द ही समाप्त हो रहा है",
+        "expired": "खत्म हो चुका"
+      },
+      "add": "प्रमाणीकरण जोड़ें",
+      "edit": "संपादन करना",
+      "delete": "मिटाना",
+      "deleteTitle": "प्रमाणीकरण हटाएं?",
+      "deleteDescription": "\"{name}\"स्थायी रूप से हटा दिया जाएगा.",
+      "editor": {
+        "addTitle": "प्रमाणीकरण जोड़ें",
+        "description": "सत्यापन (एसओसी 2, आईएसओ 27001,…) और उसकी समाप्ति को ट्रैक करें।",
+        "name": "नाम",
+        "namePlaceholder": "जैसे एसओसी 2 प्रकार II",
+        "issuer": "जारीकर्ता (वैकल्पिक)",
+        "issuerPlaceholder": "जैसे लेखापरीक्षक/प्रमाणन निकाय",
+        "issued": "जारी (वैकल्पिक)",
+        "expires": "समय-सीमा समाप्त",
+        "notes": "नोट्स (वैकल्पिक)",
+        "complianceActions": "अनुपालन कार्रवाई आवश्यक है",
+        "selectFramework": "एक ढाँचा चुनें...",
+        "attachment": "अनुलग्नक (वैकल्पिक)",
+        "attachmentHint": "कोई प्रमाणपत्र, रिपोर्ट या अनुबंध अपलोड करें. अधिकतम 20 एमबी.",
+        "attachments": "संलग्नक",
+        "saving": "सहेजा जा रहा है...",
+        "save": "प्रमाणीकरण सहेजें",
+        "cancel": "रद्द करना"
+      },
+      "errors": {
+        "missingVendor": "विक्रेता लापता.",
+        "invalidInput": "अमान्य निवेश।",
+        "wrongVendor": "प्रमाणीकरण इस विक्रेता का नहीं है.",
+        "saved": "प्रमाणीकरण सहेजा गया.",
+        "attachmentFailed": " अनुलग्नक विफल: {reason}",
+        "fileType": "फ़ाइल प्रकार की अनुमति नहीं है.",
+        "fileTooLarge": "फ़ाइल बहुत बड़ी है (अधिकतम) {max} एमबी).",
+        "fileInvalid": "यह फ़ाइल प्रकार स्वीकृत नहीं है.",
+        "fileRecordFailed": "फ़ाइल रिकॉर्ड सहेजने में विफल.",
+        "fileUploaded": "फ़ाइल अपलोड की गई.",
+        "nameRequired": "प्रमाणीकरण नाम आवश्यक है.",
+        "expiryRequired": "समाप्ति तिथि आवश्यक है.",
+        "invalidExpiry": "एक वैध समाप्ति तिथि दर्ज करें.",
+        "added": "प्रमाणीकरण \"{name}\" अनुलग्नक के साथ जोड़ा गया।",
+        "missingEvidence": "सबूत गायब.",
+        "evidenceNotFound": "साक्ष्य नहीं मिला."
+      }
+    },
+    "customerResponsibility": {
+      "title": "ग्राहक उत्तरदायित्व",
+      "collapse": "गिर जाना",
+      "expand": "बढ़ाना",
+      "progress": "{completed} / {total} · {percent}%",
+      "empty": "इस प्रमाणीकरण के लिए कोई साझा-जिम्मेदारी नियंत्रण नहीं है।",
+      "assignedTo": "को सौंपना {name}",
+      "fileCount": "{count,plural,one{# फ़ाइल} other{# फ़ाइलें}}",
+      "status": "स्थिति",
+      "statuses": {
+        "PENDING": "लंबित",
+        "IN_PROGRESS": "प्रगति पर है",
+        "COMPLETED": "पुरा होना।",
+        "NOT_APPLICABLE": "लागू नहीं"
+      },
+      "assignedToLabel": "को सौंपना",
+      "assignedToPlaceholder": "उपयोगकर्ता आईडी (वैकल्पिक)",
+      "attachment": "लगाव",
+      "notes": "टिप्पणियाँ",
+      "notesPlaceholder": "कार्यान्वयन के बारे में नोट्स जोड़ें...",
+      "files": "फ़ाइलें",
+      "saving": "सहेजा जा रहा है...",
+      "save": "बचाना",
+      "cancel": "रद्द करना",
+      "errors": {
+        "missingFields": "आवश्यक फ़ील्ड गुम हैं.",
+        "invalidStatus": "अमान्य स्थिति.",
+        "noChanges": "कोई परिवर्तन प्रदान नहीं किया गया.",
+        "saved": "सहेजा गया."
+      }
+    }
+  },
+  "Assessments": {
+    "list": {
+      "title": "आकलन",
+      "subtitle": "विक्रेताओं को आकलन भेजा गया।",
+      "subtitleForVendor": "के लिए आकलन {vendorName}.",
+      "filters": {
+        "search": "खोज",
+        "searchPlaceholder": "शीर्षक या विक्रेता...",
+        "status": "स्थिति",
+        "allStatuses": "सभी स्थितियाँ",
+        "statusAriaLabel": "स्थिति के आधार पर आकलन फ़िल्टर करें",
+        "from": "से",
+        "to": "को",
+        "sort": "क्रम से लगाना",
+        "sortAriaLabel": "आकलन क्रमबद्ध करें",
+        "overdueOnly": "केवल अतिदेय",
+        "apply": "फ़िल्टर",
+        "clear": "स्पष्ट"
+      },
+      "sorts": {
+        "created": "सबसे पहले नवीनतम",
+        "created-asc": "सबसे पुराना पहले",
+        "due-asc": "नियत तिथि (जल्द से जल्द)",
+        "due-desc": "नियत तिथि (नवीनतम)",
+        "score-asc": "स्कोर (कम → उच्च)",
+        "score-desc": "स्कोर (उच्च → निम्न)",
+        "vendor": "विक्रेता (ए-जेड)",
+        "status": "स्थिति (ए-जेड)",
+        "status-desc": "स्थिति (जेड-ए)"
+      },
+      "emptyFiltered": "कोई भी आकलन चयनित फ़िल्टर से मेल नहीं खाता.",
+      "emptyTitle": "अभी तक कोई आकलन नहीं",
+      "emptyDescription": "एक मूल्यांकन बनाएं और इसे पूरा करने के लिए विक्रेता को इसका लिंक भेजें।",
+      "items": "आकलन",
+      "columns": {
+        "assessmentVendor": "मूल्यांकन · विक्रेता",
+        "score": "अंक",
+        "status": "स्थिति",
+        "due": "देय"
+      },
+      "overdue": "अतिदेय",
+      "due": " · देय {date}"
+    },
+    "new": {
+      "title": "के लिए नया मूल्यांकन {vendorName}",
+      "breadcrumb": "नया आकलन",
+      "cardTitle": "मूल्यांकन विवरण",
+      "form": {
+        "title": "शीर्षक",
+        "titlePlaceholder": "जैसे वार्षिक सुरक्षा समीक्षा",
+        "template": "प्रश्नावली टेम्पलेट",
+        "templatePlaceholder": "एक प्रकाशित टेम्पलेट चुनें",
+        "noTemplates": "कोई टेम्पलेट नहीं मिला.",
+        "dueDate": "नियत तारीख",
+        "reviewer": "आलोचक",
+        "unassigned": "सौंपे नहीं गए",
+        "publishFirst": "मूल्यांकन बनाने के लिए पहले एक टेम्पलेट प्रकाशित करें।",
+        "creating": "बनाया जा रहा है...",
+        "create": "मूल्यांकन बनाएं",
+        "cancel": "रद्द करना"
+      }
+    },
+    "detail": {
+      "notFound": "मूल्यांकन नहीं मिला",
+      "breadcrumbs": {
+        "assessments": "आकलन",
+        "vendors": "विक्रेता"
+      },
+      "actions": {
+        "reopen": "समीक्षा पुनः खोलें",
+        "exportCsv": "सीएसवी निर्यात करें",
+        "downloadPdf": "पीडीएफ डाउनलोड करें",
+        "preparingReport": "रिपोर्ट तैयार की जा रही है...",
+        "finalize": "अंतिम रूप",
+        "finalizing": "अंतिम रूप दिया जा रहा है...",
+        "delete": "मिटाना",
+        "deleteTitle": "मूल्यांकन हटाएं?",
+        "deleteDescription": "यह स्थायी रूप से हटा दिया जाएगा\"{title}\" और सभी प्रतिक्रियाएँ, निष्कर्ष और साक्ष्य। इस कार्रवाई को पूर्ववत नहीं किया जा सकता।"
+      },
+      "meta": {
+        "due": " · देय {date}",
+        "reviewer": " · समीक्षक {name}"
+      },
+      "draft": {
+        "createLinkTitle": "विक्रेता लिंक बनाएं",
+        "createLinkDescription": "मूल्यांकन के लिए एक नो-लॉगिन विक्रेता लिंक जेनरेट करें। पहुंच की सुरक्षा के लिए वैकल्पिक रूप से एक पासवर्ड सेट करें।",
+        "settingsTitle": "ड्राफ्ट सेटिंग्स",
+        "title": "शीर्षक",
+        "dueDate": "नियत तारीख",
+        "saving": "सहेजा जा रहा है...",
+        "save": "परिवर्तनों को सुरक्षित करें"
+      },
+      "link": {
+        "title": "विक्रेता लिंक (कोई लॉगिन आवश्यक नहीं)",
+        "expires": "समय-सीमा समाप्त {date}",
+        "noExpiry": "कोई समाप्ति नहीं",
+        "passwordProtected": "पासवर्ड सुरक्षित",
+        "extend": "30 दिन बढ़ाएँ",
+        "regenerate": "लिंक पुनः जनरेट करें",
+        "revoke": "रद्द करना",
+        "revokeTitle": "विक्रेता लिंक निरस्त करें?",
+        "revokeDescription": "विक्रेता अब प्रश्नावली तक नहीं पहुंच पाएगा। जरूरत पड़ने पर आप बाद में लिंक को दोबारा जनरेट कर सकते हैं।",
+        "revokedTitle": "विक्रेता लिंक",
+        "revokedDescription": "लिंक निरस्त कर दिया गया है."
+      },
+      "score": {
+        "title": "अंक",
+        "low": "कम जोखिम",
+        "moderate": "मध्यम जोखिम",
+        "high": "भारी जोखिम"
+      },
+      "findings": {
+        "summary": "निष्कर्ष ({count} · {open,plural,one{# खुला} other{# खुला}})",
+        "deletedUser": "उपयोगकर्ता हटा दिया गया",
+        "noneTitle": "निष्कर्ष",
+        "allCompliant": "सभी उत्तर अनुकूल - कोई निष्कर्ष नहीं।",
+        "automatedDescription": "विक्रेता का उत्तर अपेक्षित प्रतिक्रिया के अनुरूप नहीं था।"
+      },
+      "responses": {
+        "title": "जवाब",
+        "summary": "{approved} का {total} अनुमत · {pending} लंबित",
+        "summaryClarifications": " · {count,plural,one{# स्पष्टीकरण} other{# स्पष्टीकरण}}",
+        "filters": {
+          "all": "सभी",
+          "pending": "लंबित ({count})",
+          "approved": "अनुमत ({count})",
+          "clarification": "स्पष्टीकरण ({count})"
+        },
+        "notApplicable": "एन/ए",
+        "evidenceAlt": "साक्ष्य फ़ाइल: {fileName}",
+        "viewPdf": "पीडीएफ देखें: {fileName} ↗",
+        "attachToVendor": "विक्रेता से संलग्न करें"
+      },
+      "sender": {
+        "password": "पोर्टल पासवर्ड (वैकल्पिक)",
+        "passwordPlaceholder": "विक्रेता को पासवर्ड दर्ज करने की आवश्यकता है",
+        "passwordHint": "यदि सेट किया गया है, तो विक्रेताओं को प्रश्नावली तक पहुंचने से पहले यह पासवर्ड दर्ज करना होगा।",
+        "sendToVendor": "विक्रेता को भेजें",
+        "generateOnly": "केवल लिंक जनरेट करें",
+        "customEmailPlaceholder": "Custom@example.com",
+        "sendTo": "भेजना"
+      },
+      "sendBack": {
+        "trigger": "विक्रेता को वापस भेजें",
+        "title": "विक्रेता को वापस भेजें?",
+        "description": "विक्रेता अपने उत्तरों को संपादित और पुनः सबमिट करने में सक्षम होंगे, और आपके संदेश के साथ एक ईमेल प्राप्त करेंगे। उनके मौजूदा उत्तर रखे गए हैं.",
+        "messageLabel": "विक्रेता को संदेश (वैकल्पिक)",
+        "messagePlaceholder": "बताएं कि किस अतिरिक्त जानकारी की आवश्यकता है...",
+        "cancel": "रद्द करना",
+        "confirm": "वापस भेजे",
+        "emailFallback": "कृपया अपनी प्रश्नावली की समीक्षा करें और पुनः सबमिट करें।"
+      },
+      "review": {
+        "approved": "अनुमत",
+        "clarificationRequested": "स्पष्टीकरण का अनुरोध किया गया",
+        "noReviewYet": "अभी तक कोई समीक्षा नहीं",
+        "collapse": "गिर जाना",
+        "expand": "बढ़ाना",
+        "reviewPlaceholder": "समीक्षा",
+        "approve": "मंज़ूरी देना",
+        "requestClarification": "स्पष्टीकरण का अनुरोध करें",
+        "notePlaceholder": "वैकल्पिक नोट (यदि स्पष्टीकरण का अनुरोध किया गया है तो विक्रेता को दिखाई देगा)",
+        "save": "बचाना",
+        "vendor": "विक्रेता",
+        "internal": "आंतरिक",
+        "replyPlaceholder": "जवाब",
+        "internalOption": "आंतरिक",
+        "vendorOption": "विक्रेता को दृश्यमान",
+        "reply": "जवाब",
+        "commentPlaceholder": "एक टिप्पणी जोड़ने",
+        "comment": "टिप्पणी",
+        "commentCount": "{count,plural,one{# टिप्पणी} other{# टिप्पणियाँ}}",
+        "previousReview": "पिछली समीक्षा ({decision}): {note}"
+      },
+      "findingStatus": {
+        "resolutionNotePlaceholder": "संकल्प नोट (वैकल्पिक)",
+        "save": "बचाना"
+      },
+      "attachEvidence": {
+        "trigger": "संलग्न करना",
+        "refreshing": "{message}. ताज़ा…",
+        "attachAs": "के रूप में संलग्न करें",
+        "certificationOption": "प्रमाणन/सत्यापन",
+        "generalOption": "सामान्य लगाव",
+        "certificationName": "प्रमाणीकरण नाम",
+        "namePlaceholder": "जैसे एसओसी 2 प्रकार II",
+        "issuer": "जारीकर्ता (वैकल्पिक)",
+        "issuerPlaceholder": "जैसे ऑडिट फर्म",
+        "expiryDate": "समाप्ति तिथि",
+        "displayNameForFile": "फ़ाइल के लिए प्रदर्शन नाम",
+        "notes": "नोट्स (वैकल्पिक)",
+        "notesPlaceholder": "अतिरिक्त प्रसंग...",
+        "complianceActions": "अनुपालन कार्रवाई आवश्यक है",
+        "selectFramework": "एक ढाँचा चुनें...",
+        "displayName": "प्रदर्शित होने वाला नाम",
+        "generalNotesPlaceholder": "इसे क्यों संलग्न किया गया...",
+        "adding": "जोड़ा जा रहा है...",
+        "addCertification": "प्रमाणीकरण जोड़ें",
+        "attachToVendor": "विक्रेता से संलग्न करें",
+        "cancel": "रद्द करना"
+      },
+      "error": {
+        "title": "मूल्यांकन लोड करने में विफल",
+        "description": "इस मूल्यांकन को लोड करते समय एक त्रुटि उत्पन्न हुई. कृपया पुन: प्रयास करें।",
+        "retry": "पुनः प्रयास करें"
+      }
+    },
+    "errors": {
+      "invalidInput": "अमान्य निवेश।",
+      "titleRequired": "शीर्षक आवश्यक है",
+      "titleTooLong": "शीर्षक 200 अक्षर या उससे कम होना चाहिए",
+      "templateRequired": "एक टेम्पलेट चुनें",
+      "invalidDueDate": "एक वैध देय तिथि दर्ज करें",
+      "saved": "सहेजा गया.",
+      "started": "मूल्यांकन शुरू हुआ.",
+      "portalLinkFailed": "मूल्यांकन बनाया गया लेकिन पोर्टल लिंक उत्पन्न नहीं किया जा सका।",
+      "missingReviews": "{count,plural,one{# प्रतिक्रिया की अभी भी समीक्षा करने की आवश्यकता है।} other{# प्रतिक्रियाओं की अभी भी समीक्षा करने की आवश्यकता है।}}"
+    }
+  },
+  "Templates": {
+    "list": {
+      "title": "टेम्पलेट्स",
+      "subtitle": "सुरक्षा प्रश्नावली बनाएँ और संस्करण बनाएँ।",
+      "new": "नया टेम्पलेट",
+      "import": "आयात करें",
+      "emptyTitle": "अभी तक कोई टेम्पलेट नहीं",
+      "emptyDescription": "अपना पहला मूल्यांकन टेम्पलेट बनाएं.",
+      "sections": "{count,plural,one{# अनुभाग} other{# धारा}}"
+    },
+    "statuses": {
+      "DRAFT": "मसौदा",
+      "PUBLISHED": "प्रकाशित",
+      "ARCHIVED": "संग्रहीत"
+    },
+    "new": {
+      "breadcrumb": "नया",
+      "title": "नया टेम्पलेट",
+      "cardTitle": "टेम्पलेट विवरण",
+      "form": {
+        "name": "नाम",
+        "description": "विवरण",
+        "creating": "बनाया जा रहा है...",
+        "create": "टेम्पलेट बनाएं",
+        "cancel": "रद्द करना"
+      }
+    },
+    "builder": {
+      "notFound": "टेम्पलेट नहीं मिला",
+      "breadcrumbs": {
+        "templates": "टेम्पलेट्स"
+      },
+      "actions": {
+        "publish": "प्रकाशित करना",
+        "newVersion": "नया संस्करण बनाएं",
+        "unpublish": "अप्रकाशित करें",
+        "delete": "मिटाना",
+        "deleteTitle": "टेम्प्लेट हटाएं?",
+        "deleteDescription": "यह स्थायी रूप से हटा दिया जाएगा\"{name}\" और इसके सभी अनुभाग और प्रश्न। इस टेम्पलेट का उपयोग करने वाले मूल्यांकन टेम्पलेट लिंक खो देंगे। इस क्रिया को पूर्ववत नहीं किया जा सकता है।",
+        "menuAriaLabel": "टेम्पलेट क्रियाएँ",
+        "preview": "पूर्व दर्शन",
+        "duplicate": "डुप्लिकेट",
+        "export": "निर्यात"
+      },
+      "versionHistory": "संस्करण इतिहास",
+      "details": "टेम्पलेट विवरण",
+      "name": "नाम",
+      "description": "विवरण",
+      "saveDetails": "विवरण सहेजें",
+      "readOnly": "यह संस्करण प्रकाशित और केवल पढ़ने योग्य है। परिवर्तन करने के लिए एक नया संस्करण बनाएं.",
+      "jumpToSection": "अनुभाग पर जाएँ",
+      "section": {
+        "rename": "नाम बदलें",
+        "moveUp": "अनुभाग को ऊपर ले जाएँ",
+        "moveDown": "अनुभाग को नीचे ले जाएँ",
+        "deleteTitle": "अनुभाग हटाएं?",
+        "deleteDescription": "यह स्थायी रूप से हटा दिया जाएगा\"{title}\"और इसके भीतर सभी प्रश्न।",
+        "delete": "अनुभाग हटाएँ",
+        "noQuestionsTitle": "कोई प्रश्न नहीं",
+        "noQuestionsDescription": "इस अनुभाग से आरंभ करने के लिए एक प्रश्न जोड़ें.",
+        "showQuestions": "दिखाओ {count,plural,one{# सवाल} other{# प्रश्न}}",
+        "hideQuestions": "छिपाना {count,plural,one{# सवाल} other{# प्रश्न}}",
+        "required": "आवश्यक",
+        "moveQuestionUp": "प्रश्न ऊपर ले जाएँ",
+        "moveQuestionDown": "प्रश्न को नीचे ले जाएँ",
+        "editQuestion": "संपादन करना",
+        "deleteQuestionTitle": "प्रश्न हटाएँ?",
+        "deleteQuestionDescription": "यह स्थायी रूप से हटा दिया जाएगा\"{text}\".",
+        "deleteQuestion": "मिटाना",
+        "addQuestion": "प्रश्न जोड़ें"
+      },
+      "addSection": {
+        "title": "अनुभाग जोड़ें",
+        "placeholder": "अनुभाग शीर्षक",
+        "button": "अनुभाग जोड़ें"
+      }
+    },
+    "question": {
+      "text": "प्रश्न पाठ",
+      "help": "सहायता पाठ",
+      "helpHint": "मार्कडाउन फ़ॉर्मेटिंग समर्थित है - **बोल्ड**, *इटैलिक*, सूचियाँ और लिंक का उपयोग करें।",
+      "answerType": "उत्तर प्रकार",
+      "riskWeight": "जोखिम भार",
+      "required": "आवश्यक",
+      "options": "विकल्प (प्रति पंक्ति एक)",
+      "expectedAnswer": "अपेक्षित उत्तर",
+      "noExpectedAnswer": "कोई अपेक्षित उत्तर नहीं",
+      "yes": "हाँ",
+      "no": "नहीं",
+      "acceptedAnswers": "स्वीकृत उत्तर",
+      "acceptedHint": "हर उस उत्तर पर निशान लगाएं जिसे अनुपालन के रूप में अंक मिलना चाहिए।",
+      "acceptedEmpty": "कौन से उत्तर स्वीकार्य हैं यह चुनने के लिए ऊपर विकल्प जोड़ें।",
+      "expectedNumber": "अपेक्षित संख्या",
+      "expectedSelections": "अपेक्षित चयन",
+      "selectionsHint": "उस सटीक सेट पर निशान लगाएं जिसे विक्रेता को अनुपालन स्कोर के लिए चुनना होगा।",
+      "selectionsEmpty": "आवश्यक चयन चुनने के लिए ऊपर विकल्प जोड़ें।",
+      "manualScoring": "इस उत्तर प्रकार को समीक्षा के दौरान मैन्युअल रूप से स्कोर किया जाता है।",
+      "checked": "चेक किए गए",
+      "unchecked": "अनियंत्रित",
+      "conditionalLegend": "सशर्त दृश्यता नियम",
+      "controlsLegend": "मैप किए गए अनुपालन नियंत्रण",
+      "saving": "सहेजा जा रहा है...",
+      "save": "प्रश्न सहेजें",
+      "cancel": "रद्द करना"
+    },
+    "conditions": {
+      "questionFallback": "एक प्रश्न",
+      "shownIf": "यदि दिखाया गया है",
+      "and": "और",
+      "or": "या",
+      "editing": {
+        "title": "सशर्त दृश्यता",
+        "match": "मिलान",
+        "all": "सभी (और)",
+        "any": "कोई भी (या)",
+        "noQuestions": "इसे सशर्त बनाने के लिए पहले अन्य प्रश्न जोड़ें।",
+        "alwaysShown": "हमेशा दिखाया गया. इस प्रश्न को केवल तभी दिखाने के लिए एक नियम जोड़ें जब अन्य उत्तर मेल खाते हों।",
+        "selectQuestion": "एक प्रश्न चुनें",
+        "value": "कीमत",
+        "remove": "निकालना",
+        "addRule": "नियम जोड़ें",
+        "legend": "सशर्त तर्क",
+        "yes": "हाँ",
+        "no": "नहीं",
+        "checked": "चेक किए गए",
+        "unchecked": "अनियंत्रित"
+      },
+      "operators": {
+        "equals": "के बराबर होती है",
+        "notEquals": "बराबर नहीं करते",
+        "contains": "रोकना",
+        "notContains": "शामिल नहीं है",
+        "gt": "से अधिक",
+        "lt": "से कम",
+        "gte": "से अधिक या उसके बराबर",
+        "lte": "से कम या बराबर",
+        "answered": "उत्तर दिया गया है",
+        "notAnswered": "उत्तर नहीं दिया गया है"
+      }
+    },
+    "controls": {
+      "mappedControls": "मैप किए गए नियंत्रण",
+      "selectedCount": "{count} चयनित",
+      "hint": "इसके सभी नियंत्रणों को मैप करने के लिए एक फ्रेमवर्क शीर्षक पर निशान लगाएं - \"क्या आप प्रमाणित हैं?\" के लिए उपयोगी है। ऐसे प्रश्न जहां एक अनुपालन उत्तर को संपूर्ण ढांचे को संतुष्ट करना चाहिए।",
+      "allFrameworks": "सभी ढाँचे",
+      "filterPlaceholder": "फ़िल्टर नियंत्रण…",
+      "noMatch": "कोई भी नियंत्रण वर्तमान फ़िल्टर से मेल नहीं खाता."
+    },
+    "import": {
+      "metadataTitle": "टेम्पलेट आयात करें",
+      "title": "टेम्पलेट आयात करें",
+      "subtitle": "नया टेम्प्लेट बनाने के लिए JSON फ़ाइल अपलोड करें।",
+      "breadcrumb": "आयात",
+      "cardTitle": "JSON से टेम्पलेट आयात करें",
+      "steps": {
+        "upload": "अपलोड करें",
+        "review": "समीक्षा"
+      },
+      "file": {
+        "label": "JSON फ़ाइल",
+        "downloadTemplate": "खाका",
+        "hint": "एक वैध JSON टेम्प्लेट फ़ाइल अपलोड करें. अपेक्षित संरचना देखने के लिए टेम्पलेट बिल्डर (क्रियाएँ → निर्यात) से मौजूदा टेम्पलेट निर्यात करें।"
+      },
+      "parse": {
+        "invalidStructure": "अमान्य टेम्पलेट संरचना. अपेक्षित नाम और अनुभाग सरणी.",
+        "invalidJson": "अमान्य JSON फ़ाइल."
+      },
+      "summary": {
+        "sections": "{count,plural,one{# अनुभाग} other{# धारा}}",
+        "questions": "{count,plural,one{# सवाल} other{# प्रश्न}}",
+        "controlCodes": "{count,plural,one{# नियंत्रण कोड} other{# नियंत्रण कोड}}"
+      },
+      "table": {
+        "section": "अनुभाग",
+        "questions": "प्रश्न"
+      },
+      "review": {
+        "introPrefix": "आप टेम्पलेट आयात करने वाले हैं"
+      },
+      "next": "अगला →",
+      "back": "← वापस",
+      "importing": "आयात किया जा रहा है...",
+      "import": "टेम्पलेट आयात करें",
+      "success": "\"{name}\" को नए मसौदे के रूप में आयात किया गया।",
+      "errors": {
+        "noFile": "कोई फ़ाइल चयनित नहीं।",
+        "fileTooLarge": "फ़ाइल बहुत बड़ी है (अधिकतम 1 एमबी)।",
+        "invalidJson": "अमान्य JSON फ़ाइल.",
+        "importFailed": "आयात विफल - फ़ाइल संरचना संसाधित नहीं की जा सकी. इसे डाउनलोड करने योग्य टेम्पलेट से जांचें और पुनः प्रयास करें।",
+        "nameRequired": "टेम्प्लेट नाम आवश्यक है.",
+        "sectionsRequired": "टेम्पलेट में कम से कम एक अनुभाग अवश्य होना चाहिए.",
+        "sectionTitleRequired": "अनुभाग {number}: शीर्षक आवश्यक है.",
+        "questionsArray": "अनुभाग \"{title}\": प्रश्नों की एक श्रृंखला होनी चाहिए।",
+        "textRequired": "{where}: पाठ आवश्यक है.",
+        "helpTextType": "{where}:helpText प्रदान करते समय एक स्ट्रिंग होना चाहिए।",
+        "unknownType": "{where}: अज्ञात प्रकार \"{type}\".",
+        "unknownRiskWeight": "{where}: अज्ञात जोखिम भार \"{weight}\".",
+        "requiredType": "{where}: प्रदान किए जाने पर आवश्यक एक बूलियन होना चाहिए।",
+        "optionsType": "{where}: विकल्प स्ट्रिंग्स की एक सरणी होनी चाहिए।",
+        "controlCodesType": "{where}: कंट्रोलकोड स्ट्रिंग्स की एक सरणी होनी चाहिए।",
+        "expectedAnswerType": "{where}: अपेक्षित उत्तर एक स्ट्रिंग, संख्या या स्ट्रिंग की सरणी होनी चाहिए।",
+        "expectedAnswer": {
+          "multiSelectArray": "{where}: अपेक्षित उत्तर स्ट्रिंग्स की एक सरणी होनी चाहिए।",
+          "choiceStringOrArray": "{where}: अपेक्षितउत्तर एक स्ट्रिंग या स्ट्रिंग्स की एक सरणी होनी चाहिए।",
+          "numeric": "{where}: अपेक्षितउत्तर एक संख्या होनी चाहिए।",
+          "yesNoCheckboxString": "{where}: अपेक्षितउत्तर एक स्ट्रिंग होना चाहिए।"
+        },
+        "controlAmbiguous": "नियंत्रण कोड {codes} अस्पष्ट हैं - एक ही कोड कई ढाँचों में मौजूद है। डुप्लिकेट हटाएं या नियंत्रणों में से किसी एक का नाम बदलें।",
+        "controlNotFound": "नियंत्रण कोड नहीं मिला: {code}"
+      }
+    },
+    "preview": {
+      "notFound": "टेम्पलेट नहीं मिला",
+      "breadcrumb": "पूर्व दर्शन",
+      "title": "पूर्व दर्शन - {name}",
+      "description": "किसी विक्रेता को यह प्रश्नावली कैसी दिखाई देती है, इसका केवल पढ़ने योग्य पूर्वावलोकन। सभी सशर्त प्रश्न यहां उनके नियम के साथ दर्शाए गए हैं।",
+      "noSectionsTitle": "अभी तक कोई अनुभाग नहीं",
+      "noQuestionsTitle": "कोई प्रश्न नहीं.",
+      "yes": "हाँ",
+      "no": "नहीं",
+      "select": "चुनना…",
+      "freeTextPlaceholder": "मुफ़्त-पाठ उत्तर",
+      "attachmentUpload": "अनुलग्नक अपलोड करें",
+      "numberPlaceholder": "संख्या",
+      "acknowledge": "मैं स्वीकार करता हूँ"
+    },
+    "questionPages": {
+      "editTitle": "प्रश्न संपादित करें",
+      "editBreadcrumb": "प्रश्न संपादित करें",
+      "addTitle": "प्रश्न जोड़ें",
+      "addBreadcrumb": "प्रश्न जोड़ें"
+    },
+    "error": {
+      "title": "टेम्प्लेट लोड करने में विफल",
+      "description": "इस टेम्पलेट को लोड करते समय एक त्रुटि उत्पन्न हुई. कृपया पुन: प्रयास करें।",
+      "retry": "पुनः प्रयास करें"
+    },
+    "errors": {
+      "invalidInput": "अमान्य निवेश।",
+      "nameRequired": "टेम्प्लेट नाम आवश्यक है",
+      "questionTextRequired": "प्रश्न पाठ आवश्यक है",
+      "conditionalTooLarge": "सशर्त तर्क पेलोड बहुत बड़ा है.",
+      "conditionalInvalid": "अमान्य सशर्त तर्क."
+    }
+  },
+  "Frameworks": {
+    "list": {
+      "title": "फ़्रेमवर्क",
+      "subtitle": "आवश्यकताओं के अनुरूप प्रश्नावली उत्तरों को मैप करने के लिए नियंत्रण पुस्तकालयों का उपयोग किया जाता है।",
+      "import": "आयात ढाँचा",
+      "gaps": "कवरेज अंतराल",
+      "deleteBlocked": "{count,plural,one{हटा नहीं सकते: # नियंत्रण अभी भी प्रश्नावली प्रश्नों पर मैप किया गया है। पहले इसे अनमैप करें.} other{हटा नहीं सकते: # नियंत्रण अभी भी प्रश्नावली प्रश्नों पर मैप किए गए हैं। पहले उन्हें अनमैप करें.}}",
+      "emptyTitle": "कोई ढाँचा नहीं",
+      "emptyDescription": "फ़्रेमवर्क डेटा लोड नहीं किया जा सका.",
+      "controls": "{count,plural,one{# नियंत्रण} other{# को नियंत्रित करता है}}",
+      "deleteTitle": "ढाँचा हटाएँ\"{name} वी{version}\"?",
+      "deleteDescription": "इससे यह ढाँचा और इसकी संरचना स्थायी रूप से हट जाएगी {count,plural,one{# नियंत्रण} other{# को नियंत्रित करता है}}. इन नियंत्रणों पर मैप किए गए टेम्पलेट प्रश्न अपना असाइनमेंट खो देंगे। मौजूदा आकलन और निष्कर्ष प्रभावित नहीं होते हैं।",
+      "delete": "मिटाना"
+    },
+    "detail": {
+      "notFound": "फ़्रेमवर्क नहीं मिला",
+      "breadcrumbs": "फ़्रेमवर्क",
+      "deleteFramework": "ढाँचा हटाएँ",
+      "searchPlaceholder": "खोज नियंत्रण...",
+      "noControlsTitle": "कोई मिलान नियंत्रण नहीं",
+      "noControlsDescription": "कोई भिन्न खोज शब्द आज़माएँ."
+    },
+    "control": {
+      "notFound": "नियंत्रण नहीं मिला",
+      "breadcrumbs": "फ़्रेमवर्क",
+      "guidance": "मार्गदर्शन",
+      "mappedQuestions": "मैप किए गए प्रश्न ({count})",
+      "noMappedTitle": "कोई मैप किए गए प्रश्न नहीं",
+      "noMappedDescription": "अभी तक कोई प्रश्नावली प्रश्न इस नियंत्रण से संबंधित नहीं है।"
+    },
+    "gaps": {
+      "title": "कवरेज अंतराल को नियंत्रित करें",
+      "subtitle": "ऐसे नियंत्रण जिनमें कोई प्रश्न नहीं है, किसी भी टेम्पलेट में मैप किए गए हैं। अपने मूल्यांकन कवरेज में अंध स्थानों की पहचान करने के लिए इसका उपयोग करें।",
+      "emptyTitle": "कोई अंतराल नहीं मिला",
+      "emptyDescription": "प्रत्येक ढांचे में प्रत्येक नियंत्रण में कम से कम एक प्रश्न मैप किया गया है।",
+      "covered": "{mapped}/{total} ढका हुआ",
+      "allCovered": "सभी {count,plural,one{# नियंत्रण} other{# को नियंत्रित करता है}} कम से कम एक प्रश्न मैप करें।",
+      "errorTitle": "कुछ गलत हो गया",
+      "errorDescription": "अनुपालन अंतराल दृश्य लोड नहीं किया जा सका. कृपया पुन: प्रयास करें।",
+      "retry": "पुनः प्रयास करें"
+    },
+    "import": {
+      "metadataTitle": "आयात ढाँचा",
+      "title": "आयात ढाँचा",
+      "subtitle": "नया फ्रेमवर्क बनाने के लिए नियंत्रणों के साथ एक CSV फ़ाइल अपलोड करें।",
+      "breadcrumb": "आयात",
+      "cardTitle": "सीएसवी से ढांचा आयात करें",
+      "steps": {
+        "setup": "सेटअप और अपलोड करें",
+        "review": "समीक्षा"
+      },
+      "form": {
+        "name": "फ़्रेमवर्क का नाम",
+        "namePlaceholder": "जैसे पीसीआई डीएसएस",
+        "version": "संस्करण",
+        "versionPlaceholder": "जैसे 4.0",
+        "description": "विवरण (वैकल्पिक)",
+        "descriptionPlaceholder": "रूपरेखा का संक्षिप्त विवरण",
+        "csvFile": "सीएसवी फ़ाइल",
+        "downloadTemplate": "खाका",
+        "csvHint": "सीएसवी में कॉलम होने चाहिए: डोमेन, कोड, शीर्षक, मार्गदर्शन (मार्गदर्शन वैकल्पिक है)। वैकल्पिक: is_shared_responsibility (सत्य/गलत, डिफ़ॉल्ट से असत्य)। अधिकतम 1 एमबी.",
+        "controlsFound": "{count,plural,one{# नियंत्रण पाया गया} other{# नियंत्रण मिले}}",
+        "domain": "कार्यक्षेत्र",
+        "code": "कोड",
+        "titleColumn": "शीर्षक",
+        "showingFirst": "पहले दिखा रहा हूँ {shown} का {total} पंक्तियों",
+        "next": "अगला →",
+        "back": "← वापस",
+        "importing": "आयात किया जा रहा है...",
+        "import": "आयात ढाँचा",
+        "reviewIntro": "आप रूपरेखा तैयार करने वाले हैं {name} वी{version} साथ {count,plural,one{# नियंत्रण} other{# को नियंत्रित करता है}}.",
+        "success": "\"{name} v{version}\" को {count, plural, one {# नियंत्रण} other {# नियंत्रण}} के साथ आयात किया गया।"
+      },
+      "errors": {
+        "noFile": "एक CSV फ़ाइल आवश्यक है.",
+        "invalidFileType": "फ़ाइल एक .csv फ़ाइल होनी चाहिए.",
+        "tooLarge": "सीएसवी फ़ाइल बहुत बड़ी है (अधिकतम 1 एमबी)।",
+        "noRows": "CSV फ़ाइल में कोई डेटा पंक्तियाँ नहीं हैं.",
+        "missingColumns": "गुम सीएसवी कॉलम: {columns}. अपेक्षित: {expected}",
+        "invalidInput": "अमान्य निवेश।",
+        "nameRequired": "फ़्रेमवर्क नाम आवश्यक है",
+        "nameTooLong": "फ़्रेमवर्क का नाम 200 वर्ण या उससे कम होना चाहिए",
+        "versionRequired": "संस्करण आवश्यक है",
+        "versionTooLong": "संस्करण 50 अक्षर या उससे कम होना चाहिए",
+        "descriptionTooLong": "विवरण 500 वर्ण या उससे कम होना चाहिए",
+        "rowDomainRequired": "पंक्ति {row}:डोमेन आवश्यक है",
+        "rowCodeRequired": "पंक्ति {row}: नियंत्रण कोड आवश्यक है",
+        "rowTitleRequired": "पंक्ति {row}: नियंत्रण शीर्षक आवश्यक है",
+        "rowInvalid": "पंक्ति {row}: अमान्य निवेश।",
+        "duplicateCode": "पंक्ति {row}: डुप्लिकेट नियंत्रण कोड \"{code}\".",
+        "duplicateFramework": "एक ढाँचा जिसका नाम है \"{name}\" संस्करण \"{version}\" पहले से ही मौजूद है।"
+      }
+    },
+    "shared": "साझा",
+    "error": {
+      "title": "कुछ गलत हो गया",
+      "description": "एक अप्रत्याशित त्रुटि हुई। कृपया पुनः प्रयास करें या सहायता से संपर्क करें।",
+      "retry": "पुनः प्रयास करें"
+    },
+    "radar": {
+      "title": "डोमेन अनुपालन रडार",
+      "current": "वर्तमान मूल्यांकन",
+      "previous": "पिछला मूल्यांकन",
+      "ariaLabel": "डोमेन अनुपालन रडार: {values}",
+      "tableCaption": "प्रतिशत के अनुसार डोमेन अनुपालन",
+      "domain": "कार्यक्षेत्र",
+      "currentShort": "मौजूदा",
+      "previousShort": "पहले का",
+      "noPrevious": "केवल एक पूर्ण मूल्यांकन - तुलना के लिए कोई पिछला डेटा नहीं।"
+    },
+    "heatmap": {
+      "metadataNotFound": "विक्रेता नहीं मिला",
+      "metadataTitle": "हीटमैप - {name}",
+      "breadcrumbs": "विक्रेता",
+      "subtitle": "हाल के आकलन से डोमेन अनुपालन रडार और नियंत्रण-स्तर हीटमैप।",
+      "downloadReport": "पीडीएफ रिपोर्ट डाउनलोड करें",
+      "preparingReport": "रिपोर्ट तैयार की जा रही है...",
+      "emptyTitle": "कोई डेटा मौजूद नहीं",
+      "emptyDescription": "इस ढांचे के लिए अभी तक कोई मूल्यांकन डेटा उपलब्ध नहीं है।"
+    }
+  },
+  "RiskRegister": {
+    "metaTitle": "जोखिम रजिस्टर",
+    "title": "जोखिम रजिस्टर",
+    "subtitle": "आपके विक्रेताओं की प्रत्येक खोज एक ही स्थान पर।",
+    "stats": {
+      "open": "खुले निष्कर्ष",
+      "criticalOpen": "गंभीर खुला",
+      "remediated": "सुलझाया",
+      "riskAccepted": "जोखिम स्वीकार किया गया"
+    },
+    "filters": {
+      "status": "स्थिति",
+      "allFindings": "सभी निष्कर्ष",
+      "statusAriaLabel": "स्थिति के आधार पर निष्कर्षों को फ़िल्टर करें",
+      "severity": "गंभीरता",
+      "anySeverity": "कोई भी गंभीरता",
+      "severityAriaLabel": "गंभीरता के आधार पर निष्कर्षों को फ़िल्टर करें",
+      "vendor": "विक्रेता",
+      "allVendors": "सभी विक्रेता",
+      "vendorAriaLabel": "विक्रेता द्वारा निष्कर्षों को फ़िल्टर करें",
+      "sort": "क्रम से लगाना",
+      "sortAriaLabel": "निष्कर्षों को क्रमबद्ध करें",
+      "show": "दिखाओ",
+      "findingsOnly": "केवल निष्कर्ष",
+      "responsibilityAriaLabel": "जिम्मेदारी के अनुसार फ़िल्टर करें",
+      "customerResponsibility": "ग्राहक जिम्मेदारी",
+      "apply": "फ़िल्टर",
+      "clear": "स्पष्ट",
+      "sorts": {
+        "priority": "प्राथमिकता",
+        "newest": "नवीनतम",
+        "severity": "गंभीरता"
+      }
+    },
+    "emptyFiltered": "कोई भी निष्कर्ष चयनित फ़िल्टर से मेल नहीं खाता।",
+    "emptyTitle": "अभी तक कोई निष्कर्ष नहीं निकला",
+    "emptyDescription": "जब विक्रेता अपर्याप्त उत्तरों के साथ मूल्यांकन प्रस्तुत करते हैं तो निष्कर्ष स्वचालित रूप से सामने आते हैं।",
+    "items": "निष्कर्ष",
+    "responsibility": {
+      "title": "ग्राहक उत्तरदायित्व",
+      "noMatch": "कोई भी ग्राहक उत्तरदायित्व आइटम चयनित फ़िल्टर से मेल नहीं खाता।",
+      "vendorFallback": "विक्रेता",
+      "assignedTo": "को सौंपना {name}"
+    },
+    "bulk": {
+      "selected": "{count} चयनित",
+      "statusRemediated": "सुलझाया",
+      "statusRiskAccepted": "जोखिम स्वीकार किया गया",
+      "statusReopen": "फिर से खोलना",
+      "updateTitle": "{count,plural,one{अद्यतन # ढूंढ रहे हैं?} other{अद्यतन # निष्कर्ष?}}",
+      "updateDescription": "{count, plural, one {# निष्कर्ष को \"{status}\" पर सेट करें।} other {# निष्कर्षों को \"{status}\" पर सेट करें।}}",
+      "apply": "आवेदन करना",
+      "applying": "आवेदन कर रहा हूँ...",
+      "clearSelection": "स्पष्ट चयन",
+      "note": "टिप्पणी: {note}",
+      "automatedDescription": "विक्रेता का उत्तर अपेक्षित प्रतिक्रिया के अनुरूप नहीं था।",
+      "errors": {
+        "invalidStatus": "अमान्य स्थिति.",
+        "invalidSelection": "अमान्य चयन डेटा.",
+        "noFindings": "कोई निष्कर्ष चयनित नहीं.",
+        "updated": "{count,plural,one{# अद्यतन पाया जा रहा है} other{# निष्कर्ष अद्यतन किये गये}}",
+        "alreadyRemoved": "({count} पहले ही हटा दिया गया है)।"
+      }
+    },
+    "error": {
+      "title": "कुछ गलत हो गया",
+      "description": "एक अप्रत्याशित त्रुटि हुई। कृपया पुनः प्रयास करें या सहायता से संपर्क करें।",
+      "retry": "पुनः प्रयास करें"
+    }
+  },
+  "SelfAssessment": {
+    "metaTitle": "आत्म मूल्यांकन",
+    "title": "आत्म मूल्यांकन",
+    "subtitle": "आपके विक्रेता जिस प्रश्नावली पोर्टल का उपयोग करते हैं, उसी प्रश्नावली पोर्टल का उपयोग करके अनुपालन ढांचे के विरुद्ध अपने संगठन का आकलन करें।",
+    "start": "नया मूल्यांकन प्रारंभ करें",
+    "emptyTitle": "अभी तक कोई आत्म-मूल्यांकन नहीं",
+    "emptyDescription": "ISO 27001, SOC 2, या अन्य ढाँचों के विरुद्ध अपने संगठन का मूल्यांकन करने के लिए अपना पहला स्व-मूल्यांकन शुरू करें।",
+    "noTemplate": "कोई टेम्पलेट नहीं",
+    "new": {
+      "metaTitle": "नया आत्म-मूल्यांकन",
+      "breadcrumb": "नया",
+      "title": "नया आत्म-मूल्यांकन",
+      "cardTitle": "मूल्यांकन विवरण",
+      "form": {
+        "title": "शीर्षक",
+        "titlePlaceholder": "जैसे आईएसओ 27001:2022 स्व-मूल्यांकन",
+        "template": "प्रश्नावली टेम्पलेट",
+        "templatePlaceholder": "एक प्रकाशित टेम्पलेट चुनें",
+        "noTemplates": "कोई टेम्पलेट नहीं मिला.",
+        "dueDate": "नियत तिथि (वैकल्पिक)",
+        "publishFirst": "स्व-मूल्यांकन शुरू करने के लिए पहले एक टेम्पलेट प्रकाशित करें।",
+        "starting": "प्रारंभ...",
+        "start": "मूल्यांकन प्रारंभ करें"
+      }
+    }
+  },
+  "Admin": {
+    "metaTitle": "व्यवस्थापक",
+    "general": {
+      "metaTitle": "व्यवस्थापक - सामान्य",
+      "title": "सामान्य",
+      "subtitle": "संगठन की पहचान ऐप पर दिखाई गई है।",
+      "cardTitle": "संगठन",
+      "cardDescription": "ईमेल और इंटरफ़ेस में दिखाया गया नाम, समर्थन ईमेल और डिफ़ॉल्ट भाषा।",
+      "form": {
+        "name": "संगठन का नाम",
+        "supportEmail": "समर्थन ईमेल",
+        "defaultLanguage": "डिफ़ॉल्ट भाषा",
+        "defaultLanguageHint": "इसका उपयोग तब किया जाता है जब किसी आगंतुक ने कोई भाषा नहीं चुनी हो। व्यक्तिगत विकल्प इस पर हावी हो जाते हैं।",
+        "saving": "सहेजा जा रहा है...",
+        "save": "बचाना"
+      },
+      "success": "संगठन सेटिंग सहेजी गईं.",
+      "errors": {
+        "nameRequired": "संगठन का नाम आवश्यक है",
+        "invalidEmail": "एक मान्य ईमेल पता दर्ज करें",
+        "invalidInput": "अमान्य निवेश।"
+      }
+    },
+    "appearance": {
+      "metaTitle": "व्यवस्थापक - उपस्थिति",
+      "title": "उपस्थिति",
+      "subtitle": "पूरे ऐप में ब्रांडिंग - लोगो, रंग और लेआउट।",
+      "cardTitle": "उपस्थिति",
+      "cardDescription": "लोगो, प्राथमिक रंग (बटन), और द्वितीयक रंग (टैग/गोलियाँ) को अनुकूलित करें। डिफ़ॉल्ट का उपयोग करने के लिए फ़ील्ड को खाली छोड़ दें.",
+      "logo": "प्रतीक चिन्ह",
+      "currentLogoAlt": "वर्तमान लोगो",
+      "removeLogoTitle": "लोगो हटाएँ?",
+      "removeLogoDescription": "वर्तमान लोगो को सभी पेजों से हटा दिया जाएगा. आप किसी भी समय नया लोगो अपलोड कर सकते हैं.",
+      "remove": "निकालना",
+      "removeLogo": "लोगो हटाएँ",
+      "noLogo": "कोई लोगो अपलोड नहीं किया गया. पीएनजी या जेपीजी (अधिकतम 2 एमबी) अपलोड करें।",
+      "primaryColour": "प्राथमिक रंग",
+      "primaryColourHint": "मुख्य बटन, लिंक और सक्रिय स्थितियों के लिए उपयोग किया जाता है।",
+      "secondaryColour": "द्वितीयक रंग",
+      "secondaryColourHint": "टैग, पिल्स, बैज और द्वितीयक तत्वों के लिए उपयोग किया जाता है।",
+      "reset": "रीसेट करें",
+      "ragTitle": "आरएजी सूचक रंग",
+      "ragHint": "स्कोर संकेतक, प्रगति बार और विक्रेता जोखिम हीटमैप के लिए उपयोग किया जाता है।",
+      "ragGreen": "हरा (अनुपालक)",
+      "ragGreenHint": "स्कोर ≥ 85%",
+      "ragAmber": "एम्बर (ध्यान की जरूरत)",
+      "ragAmberHint": "स्कोर 60-84%",
+      "ragRed": "लाल (कमी)",
+      "ragRedHint": "स्कोर <60%",
+      "ragUnscored": "अचिह्नित (तटस्थ)",
+      "ragUnscoredHint": "अभी तक मूल्यांकन नहीं किया गया है",
+      "layoutTitle": "लेआउट",
+      "layoutHint": "प्लेटफ़ॉर्म के समग्र स्वरूप और अनुभव को समायोजित करें।",
+      "borderRadius": "सीमा त्रिज्या (पीएक्स)",
+      "borderRadiusHint": "यह नियंत्रित करता है कि ऐप में कोने कितने गोल हैं।",
+      "pageWidth": "पृष्ठ की चौड़ाई",
+      "pageWidthHint": "सामग्री को पढ़ने योग्य चौड़ाई तक सीमित रखें या पूर्ण स्क्रीन का उपयोग करें।",
+      "constrained": "विवश",
+      "full": "पूरी चौड़ाई",
+      "saving": "सहेजा जा रहा है...",
+      "save": "उपस्थिति सहेजें",
+      "success": "उपस्थिति सेटिंग सहेजी गईं.",
+      "errors": {
+        "primaryHex": "प्राथमिक रंग एक वैध हेक्स रंग होना चाहिए (जैसे #3b82f6)।",
+        "secondaryHex": "द्वितीयक रंग वैध हेक्स रंग होना चाहिए (उदा. #f59e0b).",
+        "ragGreen": "RAG हरा एक वैध हेक्स रंग होना चाहिए।",
+        "ragAmber": "आरएजी एम्बर एक वैध हेक्स रंग होना चाहिए।",
+        "ragRed": "RAG लाल एक वैध हेक्स रंग होना चाहिए।",
+        "ragUnscored": "बिना अंक वाला आरएजी वैध हेक्स रंग होना चाहिए।",
+        "logoTooLarge": "लोगो 2 एमबी से कम का होना चाहिए.",
+        "logoImage": "लोगो एक छवि फ़ाइल होनी चाहिए.",
+        "logoFormat": "लोगो PNG, JPG, GIF या WEBP छवि होना चाहिए।",
+        "logoContent": "लोगो फ़ाइल की सामग्री उसके एक्सटेंशन से मेल नहीं खाती.",
+        "invalidInput": "अमान्य निवेश।"
+      }
+    },
+    "error": {
+      "title": "कुछ गलत हो गया",
+      "description": "एक अप्रत्याशित त्रुटि हुई। कृपया पुनः प्रयास करें या सहायता से संपर्क करें।",
+      "retry": "पुनः प्रयास करें"
+    },
+    "email": {
+      "metaTitle": "व्यवस्थापक - ईमेल",
+      "title": "ईमेल",
+      "subtitle": "एसएमटीपी डिलीवरी और विक्रेता और समीक्षक ईमेल के लिए उपयोग किए जाने वाले टेम्पलेट।",
+      "smtpTitle": "एसएमटीपी",
+      "smtpDescription": "विक्रेता को आमंत्रण और अनुस्मारक भेजने के लिए उपयोग किया जाता है। बाकी समय पासवर्ड एन्क्रिप्ट किया गया है.",
+      "form": {
+        "host": "एसएमटीपी होस्ट",
+        "port": "एसएमटीपी पोर्ट",
+        "username": "एसएमटीपी उपयोगकर्ता नाम",
+        "password": "एसएमटीपी पासवर्ड",
+        "passwordKeep": "वर्तमान पासवर्ड रखने के लिए खाली छोड़ दें",
+        "passwordEnter": "एसएमटीपी पासवर्ड दर्ज करें",
+        "passwordHint": "आराम से एन्क्रिप्टेड संग्रहीत और कभी प्रदर्शित नहीं।",
+        "fromAddress": "इस पते से",
+        "fromName": "नाम से",
+        "saving": "सहेजा जा रहा है...",
+        "save": "बचाना"
+      },
+      "test": {
+        "label": "परीक्षण ईमेल भेजें",
+        "placeholder": "you@company.com",
+        "sending": "भेजा जा रहा है...",
+        "send": "परीक्षण भेजें",
+        "hint": "आपकी सहेजी गई एसएमटीपी सेटिंग्स का उपयोग करके भेजता है। पहले कोई भी परिवर्तन सहेजें."
+      },
+      "templatesTitle": "ईमेल टेम्प्लेट",
+      "templatesDescription": "इसके विषय और मुख्य भाग को संपादित करने के लिए एक टेम्पलेट का चयन करें। गतिशील मान डबल-ब्रेस टोकन का उपयोग करते हैं।",
+      "subject": "विषय",
+      "body": "शरीर",
+      "editorHint": "मार्कडाउन फ़ॉर्मेटिंग समर्थित है - **बोल्ड**, *इटैलिक*, सूचियाँ और लिंक का उपयोग करें। टोकन: {tokens}.",
+      "savingChanges": "सहेजा जा रहा है...",
+      "saveChanges": "परिवर्तनों को सुरक्षित करें",
+      "resetTitle": "वितथ पर ले जाएं?",
+      "resetDescription": "\"{name}\"विषय और मुख्य भाग को अंतर्निहित डिफ़ॉल्ट से बदल दिया जाएगा। कोई भी अनुकूलन खो जाएगा।",
+      "reset": "रीसेट करें",
+      "resetting": "रीसेट किया जा रहा है...",
+      "resetToDefault": "वितथ पर ले जाएं",
+      "cancel": "रद्द करना",
+      "preview": "पूर्व दर्शन",
+      "templateTypes": {
+        "invite": {
+          "label": "ईमेल आमंत्रित करें",
+          "description": "जब कोई प्रश्नावली पहली बार साझा की जाती है तो उसे विक्रेता को भेजा जाता है।"
+        },
+        "invite-password": {
+          "label": "ईमेल आमंत्रित करें (पासवर्ड सुरक्षित)",
+          "description": "आमंत्रण संस्करण जिसमें पोर्टल एक्सेस पासवर्ड शामिल है।"
+        },
+        "reminder": {
+          "label": "अनुस्मारक ईमेल",
+          "description": "नियत तारीख नजदीक आते ही विक्रेता को नज भेजा जाता है।"
+        },
+        "escalation": {
+          "label": "एस्केलेशन ईमेल",
+          "description": "जब प्रश्नावली अतिदेय हो जाती है तो समीक्षक को भेजी जाती है।"
+        },
+        "submission": {
+          "label": "सबमिशन प्राप्त ईमेल",
+          "description": "समीक्षक को सूचित करता है कि विक्रेता ने उत्तर प्रस्तुत कर दिए हैं।"
+        },
+        "clarification": {
+          "label": "स्पष्टीकरण ईमेल के लिए वापस भेजा गया",
+          "description": "अधिक जानकारी के लिए मूल्यांकन दोबारा खोले जाने पर विक्रेता को भेजा जाता है।"
+        },
+        "reset": {
+          "label": "पासवर्ड रीसेट ईमेल",
+          "description": "आंतरिक स्टाफ को भेजा गया जो पासवर्ड रीसेट का अनुरोध करता है।"
+        },
+        "expiry": {
+          "label": "समाप्ति अनुस्मारक ईमेल",
+          "description": "जब कोई प्रमाणीकरण या अनुबंध समाप्त होने वाला हो तो विक्रेता के जोखिम स्वामी को भेजा जाता है।"
+        }
+      },
+      "success": "ईमेल सेटिंग सहेजी गईं.",
+      "testSuccess": "परीक्षण ईमेल भेजा गया {email}.",
+      "templateSaved": "{name} बचाया.",
+      "templateReset": "{name} वितथ पर ले जाएं।",
+      "errors": {
+        "invalidInput": "अमान्य निवेश।",
+        "invalidEmail": "एक मान्य ईमेल पता दर्ज करें",
+        "invalidPort": "SMTP पोर्ट 1 और 65535 के बीच होना चाहिए",
+        "invalidRecipient": "अमान्य प्राप्तकर्ता.",
+        "smtpNotConfigured": "परीक्षण ईमेल भेजने से पहले अपनी एसएमटीपी सेटिंग्स सहेजें।",
+        "unknownTemplate": "अज्ञात ईमेल टेम्पलेट.",
+        "subjectRequired": "विषय आवश्यक है.",
+        "bodyRequired": "शरीर चाहिए."
+      }
+    },
+    "emailTracking": {
+      "metaTitle": "व्यवस्थापक - ईमेल ट्रैकिंग",
+      "title": "ईमेल ट्रैकिंग",
+      "subtitle": "प्लेटफ़ॉर्म द्वारा भेजे गए प्रत्येक ईमेल की डिलीवरी स्थिति।",
+      "retentionTitle": "अवधारण",
+      "retentionDescription": "इतने दिनों से अधिक पुराने ईमेल भेजने के रिकॉर्ड को निर्धारित सफ़ाई द्वारा स्वचालित रूप से काट दिया जाता है। अनिश्चित काल तक रखने के लिए 0 पर सेट करें।",
+      "retentionLabel": "ईमेल लॉग प्रतिधारण (दिन)",
+      "retentionHelp": "अगले निर्धारित रन पर लागू होता है।",
+      "cardTitle": "ईमेल ट्रैकिंग",
+      "cardDescription": "प्लेटफ़ॉर्म द्वारा भेजे गए प्रत्येक ईमेल की स्थिति देखें। प्रविष्टियाँ कॉन्फ़िगर की गई अवधारण नीति के अनुसार रखी जाती हैं।",
+      "description": "प्लेटफ़ॉर्म द्वारा भेजे गए प्रत्येक ईमेल को ट्रैक करें - आमंत्रण, अनुस्मारक, एस्केलेशन और परीक्षण संदेश। एसएमटीपी सर्वर स्वीकृति की पुष्टि करता है; यह इनबॉक्स डिलीवरी की गारंटी नहीं देता है. लॉग को कॉन्फ़िगर की गई अवधारण नीति के अनुसार बनाए रखा जाता है।",
+      "filters": {
+        "status": "स्थिति",
+        "allStatuses": "सभी स्थितियाँ",
+        "statusAria": "ईमेल को स्थिति के अनुसार फ़िल्टर करें",
+        "type": "प्रकार",
+        "allTypes": "सभी प्रकार के",
+        "typeAria": "ईमेल को प्रकार के अनुसार फ़िल्टर करें",
+        "recipient": "प्राप्तकर्ता",
+        "recipientPlaceholder": "email@example.com",
+        "from": "से",
+        "to": "को",
+        "rows": "पंक्तियों",
+        "pageSizeAria": "ईमेल लॉग पेज का आकार",
+        "filter": "फ़िल्टर",
+        "clear": "स्पष्ट"
+      },
+      "statuses": {
+        "SENT": "भेजा",
+        "FAILED": "असफल"
+      },
+      "types": {
+        "INVITE": "आमंत्रित करना",
+        "INVITE-PASSWORD": "आमंत्रित करें (पासवर्ड सुरक्षित)",
+        "REMINDER": "अनुस्मारक",
+        "ESCALATION": "वृद्धि",
+        "SUBMISSION": "जमा करना",
+        "CLARIFICATION": "स्पष्टीकरण",
+        "RESET": "पासवर्ड रीसेट",
+        "EXPIRY": "समाप्ति",
+        "TEST": "परीक्षा"
+      },
+      "table": {
+        "date": "तारीख",
+        "recipient": "प्राप्तकर्ता",
+        "subject": "विषय",
+        "type": "प्रकार",
+        "status": "स्थिति",
+        "detail": "विवरण",
+        "assessment": "आकलन",
+        "sentBy": "के द्वारा भेजा गया"
+      },
+      "noLogs": "कोई ईमेल लॉग नहीं मिला.",
+      "pagination": "पृष्ठ {page} / {totalPages} ({total} प्रविष्टियाँ)",
+      "previous": "पहले का",
+      "next": "अगला",
+      "accepted": "एसएमटीपी सर्वर द्वारा स्वीकृत",
+      "system": "प्रणाली",
+      "retry": "पुन: प्रयास करें",
+      "retrying": "पुनः प्रयास कर रहा हूँ...",
+      "retrySuccess": "ईमेल सफलतापूर्वक पुनः भेजा गया.",
+      "testResent": "परीक्षण ईमेल पुनः भेजा गया.",
+      "errors": {
+        "missingLog": "ईमेल लॉग प्रविष्टि गुम है.",
+        "notFound": "ईमेल लॉग प्रविष्टि नहीं मिली.",
+        "onlyFailed": "केवल विफल ईमेल का पुनः प्रयास किया जा सकता है।",
+        "resetSingleUse": "रीसेट लिंक एकल-उपयोग हैं और दोबारा नहीं भेजे जा सकते। उपयोगकर्ता से नए रीसेट का अनुरोध करने के लिए कहें।",
+        "resendFailed": "ईमेल पुनः भेजने में विफल. विवरण के लिए ट्रैकिंग टैब जांचें।",
+        "retentionInvalid": "ईमेल लॉग प्रतिधारण 0 या धनात्मक संख्या होनी चाहिए.",
+        "retentionSaved": "ईमेल लॉग प्रतिधारण सहेजा गया."
+      }
+    },
+    "scoring": {
+      "metaTitle": "व्यवस्थापक - स्कोरिंग",
+      "title": "स्कोरिंग",
+      "subtitle": "विक्रेता प्रोफाइल और हीटमैप के लिए जोखिम भार और आरएजी कट-ऑफ।",
+      "cardTitle": "स्कोरिंग",
+      "cardDescription": "विक्रेता प्रोफाइल और गैप हीटमैप के लिए उपयोग किए जाने वाले जोखिम भार और लाल/एम्बर/हरा कट-ऑफ।",
+      "riskWeights": "जोखिम भार (संख्यात्मक)",
+      "ragThresholds": "आरएजी सीमाएँ",
+      "ragHint": "ऊपर या नीचे हरा, नीचे या ऊपर एम्बर, नीचे लाल।",
+      "green": "हरा ≥",
+      "amber": "अंबर ≥",
+      "saving": "सहेजा जा रहा है...",
+      "save": "स्कोरिंग सहेजें",
+      "success": "स्कोरिंग सेटिंग सहेजी गईं.",
+      "errors": {
+        "invalidInput": "अमान्य निवेश।"
+      }
+    },
+    "scheduling": {
+      "metaTitle": "व्यवस्थापक - शेड्यूलिंग",
+      "title": "निर्धारण",
+      "subtitle": "अनुस्मारक, एस्केलेशन और अंतर्निहित शेड्यूलर।",
+      "cardTitle": "निर्धारण",
+      "cardDescription": "नियत तारीख से पहले स्वचालित अनुस्मारक और अतिदेय मूल्यांकन के लिए समीक्षक एस्केलेशन।",
+      "reminderLabel": "अनुस्मारक ऑफसेट दिन",
+      "reminderHint": "अनुस्मारक भेजने की नियत तारीख से पहले के दिनों की अल्पविराम से अलग की गई सूची। उदाहरण: 7, 1 नियत तारीख से 7 दिन और 1 दिन पहले अनुस्मारक भेजता है।",
+      "reminderPlaceholder": "7, 1",
+      "escalationLabel": "(दिनों) के बाद वृद्धि",
+      "escalationHint": "नियत तिथि के कुछ दिन पहले समीक्षक को एक एस्केलेशन ईमेल प्राप्त होता है।",
+      "defaultDueLabel": "डिफ़ॉल्ट मूल्यांकन देय (दिन)",
+      "defaultDueHint": "नए मूल्यांकन में नियत तारीख तक इतने दिनों का समय लगता है।",
+      "schedulerLabel": "ऐप के अंदर निर्धारित कार्य चलाएँ",
+      "schedulerHint": "सक्षम होने पर, एप्लिकेशन उचित अनुस्मारक, एस्केलेशन, समाप्ति नोटिस, आवर्ती मूल्यांकन, लॉग प्रूनिंग और अनाथ फ़ाइल क्लीनअप के लिए हर पांच मिनट में जांच करता है - किसी बाहरी क्रॉन जॉब या शेड्यूलर की आवश्यकता नहीं है। यदि आप ट्रिगर करते हैं तो ही इसे अक्षम करें {endpoint} स्वयं (उदाहरण के लिए सिस्टम क्रोंटैब या एज़्योर फ़ंक्शन से)।",
+      "saving": "सहेजा जा रहा है...",
+      "save": "शेड्यूलिंग सहेजें",
+      "lastRun": "अंतिम निर्धारित रन: {when}",
+      "never": "कभी नहीं",
+      "justNow": "बस अब",
+      "lessThanMinute": "कम से कम एक मिनट पहले",
+      "minuteAgo": "1 मिनट पहले",
+      "minutesAgo": "{count} कुछ मिनट पहले",
+      "hourAgo": "1 घंटा पहले",
+      "hoursAgo": "{count} घंंटों पहले",
+      "dayAgo": "1 दिन पहले",
+      "daysAgo": "{count} दिन पहले",
+      "success": "कॉन्फ़िगरेशन सहेजा गया.",
+      "errors": {
+        "escalationInvalid": "वृद्धि दिवस कम से कम 1 होना चाहिए।",
+        "defaultDueInvalid": "डिफ़ॉल्ट देय दिन कम से कम 1 होना चाहिए।"
+      }
+    },
+    "retention": {
+      "saving": "सहेजा जा रहा है...",
+      "save": "बचाना"
+    },
+    "storage": {
+      "metaTitle": "व्यवस्थापक - भंडारण",
+      "title": "भंडारण",
+      "subtitle": "साक्ष्य फ़ाइलें कहां रहती हैं, और विक्रेता क्या अपलोड कर सकते हैं।",
+      "fileStorageTitle": "फ़ाइल भंडारण",
+      "fileStorageDescription": "कॉन्फ़िगर करें जहां साक्ष्य फ़ाइलें और अनुलग्नक संग्रहीत हैं। प्रदाता बदलने से मौजूदा फ़ाइलें माइग्रेट नहीं होती हैं.",
+      "uploadConstraintsTitle": "अपलोड बाधाएँ",
+      "uploadConstraintsDescription": "विक्रेता साक्ष्य अपलोड पर आकार और फ़ाइल-प्रकार की सीमाएँ लागू होती हैं।",
+      "form": {
+        "provider": "प्रदाता",
+        "providerHint": "प्रदाता बदलने से मौजूदा फ़ाइलें माइग्रेट नहीं होती हैं. पिछले प्रदाता के पास संग्रहीत फ़ाइलें केवल तभी पहुंच योग्य रहती हैं जब आप वापस स्विच करते हैं।",
+        "local": "स्थानीय डिस्क",
+        "s3": "अमेज़न S3",
+        "azure": "नीला बूँद",
+        "s3Title": "अमेज़न S3",
+        "bucket": "बाल्टी",
+        "region": "क्षेत्र",
+        "regionPlaceholder": "जैसे हमें-पूर्व-1",
+        "accessKeyId": "प्रवेश कुंजी आईडी",
+        "secretAccessKey": "गुप्त पहुंच कुंजी",
+        "secretHint": "आराम से एन्क्रिप्टेड संग्रहीत। मौजूदा मान रखने के लिए खाली छोड़ दें.",
+        "azureTitle": "नीला बूँद",
+        "containerName": "कंटेनर का नाम",
+        "connectionString": "कनेक्शन स्ट्रिंग",
+        "saving": "सहेजा जा रहा है...",
+        "save": "भंडारण सेटिंग्स सहेजें"
+      },
+      "uploads": {
+        "maxSize": "अधिकतम फ़ाइल अपलोड आकार (एमबी)",
+        "maxSizeHint": "इस सीमा से बड़ी साक्ष्य फ़ाइलें अपलोड के दौरान अस्वीकार कर दी जाती हैं।",
+        "allowedExtensions": "अनुमत फ़ाइल एक्सटेंशन",
+        "allowedHint": "फ़ाइल प्रकार विक्रेता साक्ष्य के रूप में अपलोड कर सकते हैं। कम से कम एक का चयन करें.",
+        "saving": "सहेजा जा रहा है...",
+        "save": "बचाना"
+      },
+      "success": "संग्रहण सेटिंग सहेजी गईं.",
+      "uploadsSuccess": "अपलोड बाधाएं सहेजी गईं.",
+      "errors": {
+        "invalidInput": "अमान्य निवेश।",
+        "maxUploadInvalid": "अधिकतम अपलोड आकार कम से कम 1 एमबी होना चाहिए।"
+      }
+    },
+    "signIn": {
+      "metaTitle": "एडमिन - साइन-इन करें",
+      "title": "दाखिल करना",
+      "subtitle": "कर्मचारी कैसे प्रमाणित करते हैं, और वे कितने समय तक साइन इन रहते हैं।",
+      "ssoTitle": "केवल हस्ताक्षर के ऊपर",
+      "ssoDescription": "कर्मचारियों को Microsoft Entra ID, Google Workspace, या कस्टम OIDC प्रदाता के साथ साइन इन करने की अनुमति दें। क्लाइंट क्रेडेंशियल बाकी समय में एन्क्रिप्टेड होते हैं।",
+      "sessionsTitle": "सत्र",
+      "sessionsDescription": "निष्क्रिय सत्रों के लिए साइन-इन थ्रॉटलिंग और स्वचालित लॉगआउट।",
+      "sso": {
+        "entraId": "माइक्रोसॉफ्ट एंट्रा आईडी",
+        "google": "गूगल कार्यक्षेत्र",
+        "oidc": "कस्टम ओआईडीसी",
+        "enabled": "सक्रिय",
+        "clientId": "ग्राहक आईडी",
+        "clientSecret": "ग्राहक रहस्य",
+        "secretKeep": "चालू रखने के लिए खाली छोड़ें",
+        "secretEnter": "ग्राहक रहस्य",
+        "secretHint": "आराम से एन्क्रिप्टेड संग्रहीत और कभी प्रदर्शित नहीं।",
+        "displayName": "प्रदाता प्रदर्शन नाम",
+        "displayNamePlaceholder": "ओक्टा / ऑथ0 / कीक्लोक",
+        "issuerUrl": "जारीकर्ता यूआरएल",
+        "issuerPlaceholder": "https://example.okta.com",
+        "defaultRole": "नए SSO उपयोगकर्ताओं के लिए डिफ़ॉल्ट भूमिका",
+        "allowedDomain": "डोमेन तक सीमित (वैकल्पिक)",
+        "allowedDomainPlaceholder": "@company.com",
+        "disableLocalAuth": "ईमेल/पासवर्ड साइन-इन अक्षम करें (केवल एसएसओ)",
+        "disableLocalAuthHint": "स्थानीय लॉगिन फॉर्म छुपाता है ताकि कर्मचारी केवल एसएसओ के माध्यम से साइन इन कर सकें। जब तक कम से कम एक एसएसओ प्रदाता सक्षम न हो तब तक इसे नजरअंदाज कर दिया जाता है, इसलिए गलत कॉन्फ़िगरेशन से सभी को लॉक नहीं किया जा सकता है। आपातकालीन पहुंच के लिए नीचे दिए गए ब्रेक-ग्लास URL का उपयोग करें।",
+        "saving": "सहेजा जा रहा है...",
+        "save": "एसएसओ सहेजें"
+      },
+      "breakGlass": {
+        "title": "कांच तोड़ने की पहुंच",
+        "description": "जब स्थानीय साइन-इन अक्षम हो जाता है, तब भी यह गुप्त यूआरएल ईमेल/पासवर्ड फॉर्म दिखाता है ताकि एसएसओ अनुपलब्ध होने पर व्यवस्थापक साइन इन कर सके। नया यूआरएल जनरेट करने से पिछला यूआरएल तुरंत निरस्त हो जाता है।",
+        "configured": "एक ब्रेक-ग्लास यूआरएल वर्तमान में कॉन्फ़िगर किया गया है।",
+        "notConfigured": "अभी तक कोई ब्रेक-ग्लास यूआरएल कॉन्फ़िगर नहीं किया गया है।",
+        "generating": "उत्पन्न हो रहा है...",
+        "regenerate": "ब्रेक-ग्लास URL पुन: उत्पन्न करें",
+        "generate": "ब्रेक-ग्लास URL जनरेट करें",
+        "success": "ब्रेक-ग्लास यूआरएल उत्पन्न हुआ। इसे अभी कॉपी करें - यह दोबारा नहीं दिखाया जाएगा।"
+      },
+      "security": {
+        "loginRateLimit": "लॉगिन दर सीमा (प्रति मिनट)",
+        "loginRateLimitHint": "प्रति मिनट प्रति आईपी पते पर अधिकतम साइन-इन प्रयास। एकल सार्वजनिक आईपी के पीछे साझा-कार्यालय वातावरण के लिए वृद्धि।",
+        "autoLogout": "ऑटो-लॉगआउट (मिनट)",
+        "autoLogoutHint": "इतने मिनटों की निष्क्रियता के बाद स्वचालित रूप से साइन आउट हो जाएं। अक्षम करने के लिए 0 पर सेट करें. सक्षम होने पर न्यूनतम 5 मिनट।",
+        "saving": "सहेजा जा रहा है...",
+        "save": "बचाना"
+      },
+      "success": "SSO सेटिंग्स सहेजी गईं.",
+      "securitySuccess": "साइन-इन सेटिंग सहेजी गईं.",
+      "errors": {
+        "invalidInput": "अमान्य निवेश।",
+        "loginRateInvalid": "लॉगिन दर सीमा कम से कम 1 प्रति मिनट होनी चाहिए.",
+        "autoLogoutInvalid": "ऑटो-लॉगआउट 0 (अक्षम) या कम से कम 5 मिनट का होना चाहिए।"
+      }
+    },
+    "rateLimits": {
+      "metaTitle": "व्यवस्थापक - दर सीमा",
+      "title": "दर सीमा",
+      "subtitle": "विक्रेता पोर्टल और खाता पुनर्प्राप्ति के लिए दुरुपयोग संरक्षण।",
+      "cardTitle": "दर सीमा (प्रति मिनट)",
+      "cardDescription": "व्यस्त विक्रेताओं या साझा-कार्यालय आईपी के लिए इन्हें जुटाएं; डिफ़ॉल्ट अधिकांश परिनियोजन के लिए उपयुक्त होते हैं.",
+      "fields": {
+        "portalPageLoadsPerMin": {
+          "label": "पोर्टल पृष्ठ लोड/मिनट (प्रति आगंतुक)",
+          "help": "किसी विक्रेता का ब्राउज़र कितनी बार विक्रेता लिंक लोड कर सकता है। लिंक-गणना के विरुद्ध सुरक्षा करता है।"
+        },
+        "portalUploadsPerMin": {
+          "label": "पोर्टल साक्ष्य अपलोड/मिनट (प्रति आगंतुक)",
+          "help": "एक विक्रेता प्रति मिनट अधिकतम साक्ष्य फ़ाइल अपलोड कर सकता है।"
+        },
+        "portalSubmitPerMin": {
+          "label": "पोर्टल सबमिशन/मिनट (प्रति लिंक)",
+          "help": "एकल विक्रेता लिंक के लिए अधिकतम सबमिट प्रयास।"
+        },
+        "portalCommentPerMin": {
+          "label": "पोर्टल टिप्पणियाँ/मिनट (प्रति लिंक)",
+          "help": "एक विक्रेता एकल विक्रेता लिंक पर अधिकतम टिप्पणियाँ पोस्ट कर सकता है।"
+        },
+        "portalPasswordAttemptsPerMin": {
+          "label": "पोर्टल पासवर्ड प्रयास/मिनट (प्रति लिंक)",
+          "help": "पासवर्ड से सुरक्षित प्रश्नावली को पाशविक बल से बचाता है।"
+        },
+        "passwordResetPerMin": {
+          "label": "पासवर्ड रीसेट अनुरोध/मिनट (प्रति ईमेल)",
+          "help": "किसी दिए गए पते के लिए स्टाफ पासवर्ड-रीसेट ईमेल को सीमित करता है।"
+        },
+        "breakGlassPerMin": {
+          "label": "कांच तोड़ने के प्रयास/मिनट (प्रति आईपी)",
+          "help": "एसएसओ ब्रेक-ग्लास रिकवरी लिंक के सत्यापन को सीमित करता है।"
+        }
+      },
+      "saving": "सहेजा जा रहा है...",
+      "save": "दर सीमा सहेजें",
+      "success": "दर सीमा सहेजी गई.",
+      "errors": {
+        "minimum": "{field} प्रति मिनट कम से कम 1 होना चाहिए."
+      }
+    },
+    "api": {
+      "metaTitle": "व्यवस्थापक - एपीआई",
+      "title": "एपीआई",
+      "subtitle": "REST API तक प्रोग्रामेटिक पहुंच।",
+      "cardTitle": "एपीआई पहुंच",
+      "cardDescription": "REST API तक प्रोग्रामेटिक एक्सेस के लिए API कुंजी जेनरेट करें। कुंजियाँ बियरर प्रमाणीकरण का उपयोग करती हैं और आईपी पते द्वारा प्रतिबंधित की जा सकती हैं। कुंजियाँ बनाते समय केवल एक बार दिखाई जाती हैं।",
+      "enabled": "एपीआई कुंजी प्रमाणीकरण सक्षम करें",
+      "enabledHint": "एपीआई कुंजियाँ बाहरी टूल को ब्राउज़र लॉगिन के बिना REST API को कॉल करने की अनुमति देती हैं। कुंजियों के पास प्रत्येक समापन बिंदु तक पूर्ण पहुंच होती है और वे उस खाते से स्वतंत्र रूप से वैध रहते हैं जिसने उन्हें बनाया है। कुंजियाँ केवल एक बार दिखाई जाती हैं और बाद में पुनर्प्राप्त नहीं की जा सकतीं। लुकअप उपसर्ग अद्यतन से पहले बनाई गई कुंजियाँ सुरक्षा के लिए अक्षम कर दी गई थीं और उन्हें पुनर्जीवित किया जाना चाहिए।",
+      "saving": "सहेजा जा रहा है...",
+      "save": "बचाना",
+      "docs": "एपीआई दस्तावेज़ →",
+      "keysTitle": "एपीआई कुंजियाँ ({count})",
+      "keyCreatedTitle": "कुंजी बनाई गई - इसे अभी कॉपी करें",
+      "keyCreatedHint": "यह कुंजी दोबारा नहीं दिखाई जाएगी. इसे सुरक्षित रूप से संग्रहित करें.",
+      "copy": "प्रतिलिपि",
+      "done": "हो गया",
+      "createTitle": "नई कुंजी बनाएं",
+      "name": "नाम",
+      "namePlaceholder": "जैसे सीआई पाइपलाइन",
+      "expiry": "समाप्ति",
+      "expiryOptions": {
+        "30": "30 दिन",
+        "90": "90 दिन",
+        "180": "180 दिन",
+        "365": "1 वर्ष",
+        "permanent": "स्थायी"
+      },
+      "allowedIps": "अनुमत आईपी (वैकल्पिक)",
+      "allowedIpsPlaceholder": "192.168.1.0/24",
+      "rateLimit": "दर सीमा/मिनट",
+      "rateLimitPlaceholder": "गलती करना",
+      "creating": "बनाया जा रहा है...",
+      "create": "कुंजी बनाएं",
+      "empty": "अभी तक कोई API कुंजी नहीं बनाई गई है.",
+      "permissionCount": "{count,plural,one{# अनुमति} other{# अनुमति}}",
+      "fullAccess": "पूर्ण पहुँच",
+      "revoked": "निरस्त किया गया",
+      "expired": "खत्म हो चुका",
+      "lastUsed": "अंतिम समय प्रयोग हुआ {date}",
+      "neverUsed": "कभी भी इस्तेमाल नहीं किया",
+      "requestCount": "{count,plural,one{# अनुरोध} other{# अनुरोध}}",
+      "ips": "आईपी: {ips}",
+      "rateLimitSuffix": "दर सीमा: {value}/मिनट",
+      "enable": "सक्षम",
+      "revokeTitle": "एपीआई कुंजी निरस्त करें?",
+      "revokeDescription": "\"का उपयोग करते हुए कोई भी एकीकरण{name}\"तुरंत काम करना बंद कर देगा। इसे बाद में पुनः सक्षम किया जा सकता है।",
+      "revoke": "रद्द करना",
+      "deleteTitle": "एपीआई कुंजी हटाएं?",
+      "deleteDescription": "\"{name}\"स्थायी रूप से हटा दिया जाएगा। इस कुंजी का उपयोग करने वाला कोई भी एकीकरण स्थायी रूप से टूट जाएगा। इसे पूर्ववत नहीं किया जा सकता है।",
+      "delete": "मिटाना",
+      "keyCreatedMessage": "कुंजी बनाई गई: {prefix}. नीचे दी गई कुंजी को कॉपी करें - इसे दोबारा नहीं दिखाया जाएगा।",
+      "success": "एपीआई सेटिंग्स सहेजी गईं.",
+      "errors": {
+        "nameRequired": "कुंजी नाम आवश्यक है.",
+        "permissionsRequired": "कम से कम एक अनुमति चुनें या पूर्ण पहुंच सक्षम करें।",
+        "invalidInput": "अमान्य निवेश।"
+      }
+    },
+    "webhooks": {
+      "metaTitle": "व्यवस्थापक - वेबहुक",
+      "title": "वेबहुक",
+      "subtitle": "ईवेंट सूचनाएं आपके अंतिम बिंदुओं पर भेजी गईं।",
+      "cardTitle": "वेबहुक",
+      "cardDescription": "मूल्यांकन प्रस्तुत किए जाने, निष्कर्ष बदलने, या प्रमाणपत्र समाप्त होने पर ईवेंट सूचनाएं प्राप्त करने के लिए समापन बिंदु कॉन्फ़िगर करें।",
+      "endpointsTitle": "वेबहुक समापनबिंदु ({count})",
+      "add": "समापनबिंदु जोड़ें",
+      "newTitle": "नया वेबहुक",
+      "name": "नाम",
+      "namePlaceholder": "जैसे सुस्त अलर्ट, टीमों का अनुपालन",
+      "url": "यूआरएल",
+      "urlPlaceholder": "https://example.com/webhooks/mitch-risk",
+      "platform": "प्लैटफ़ॉर्म",
+      "platformPlaceholder": "प्लेटफ़ॉर्म चुनें",
+      "platforms": {
+        "GENERIC": "जेनेरिक (HTTP)",
+        "SLACK": "ढीला",
+        "MICROSOFT_TEAMS": "माइक्रोसॉफ्ट टीमें",
+        "DISCORD": "कलह"
+      },
+      "events": "घटनाएँ",
+      "eventLabels": {
+        "ASSESSMENT_SUBMITTED": "मूल्यांकन प्रस्तुत किया गया",
+        "ASSESSMENT_OVERDUE": "मूल्यांकन अतिदेय",
+        "FINDING_CREATED": "खोज बनाई गई",
+        "FINDING_RESOLVED": "समाधान ढूंढा जा रहा है",
+        "CERTIFICATION_EXPIRING": "प्रमाणीकरण समाप्त हो रहा है"
+      },
+      "creating": "बनाया जा रहा है...",
+      "create": "बनाएं",
+      "cancel": "रद्द करना",
+      "empty": "कोई वेबहुक कॉन्फ़िगर नहीं किया गया. ईवेंट सूचनाएं प्राप्त करने के लिए एक समापन बिंदु जोड़ें।",
+      "active": "सक्रिय",
+      "disabled": "अक्षम",
+      "disable": "अक्षम करना",
+      "enable": "सक्षम",
+      "deleteTitle": "वेबहुक हटाएं?",
+      "deleteDescription": "यह समापन बिंदु ईवेंट प्राप्त करना बंद कर देगा: {url}",
+      "delete": "मिटाना",
+      "success": "वेबहुक एंडपॉइंट बनाया गया.",
+      "errors": {
+        "urlRequired": "यूआरएल आवश्यक है.",
+        "urlTooLong": "यूआरएल 500 अक्षर या उससे कम होना चाहिए।",
+        "nameTooLong": "नाम 100 अक्षर या उससे कम होना चाहिए।",
+        "invalidUrl": "एक मान्य यूआरएल दर्ज करें.",
+        "httpsRequired": "वेबहुक यूआरएल को HTTPS का उपयोग करना चाहिए।",
+        "publicOnly": "वेबहुक यूआरएल को एक सार्वजनिक पते की ओर इंगित करना चाहिए - आंतरिक और लूपबैक होस्ट की अनुमति नहीं है।",
+        "unknownPlatform": "अज्ञात मंच.",
+        "eventRequired": "कम से कम एक ईवेंट अवश्य चुना जाना चाहिए."
+      }
+    },
+    "trustCenter": {
+      "metaTitle": "एडमिन - ट्रस्ट सेंटर",
+      "title": "ट्रस्ट केंद्र",
+      "subtitle": "सार्वजनिक-सामना अनुपालन पृष्ठ कॉन्फ़िगरेशन।",
+      "cardTitle": "ट्रस्ट केंद्र",
+      "cardDescription": "/ट्रस्ट पर सार्वजनिक पृष्ठ विक्रेताओं और भागीदारों के साथ अनुपालन बैज, सुरक्षा दस्तावेज़, उपप्रोसेसर और कथा अनुभाग साझा करता है। प्रबंधन → विश्वास केंद्र के अंतर्गत सामग्री को क्यूरेट करें।",
+      "enabled": "विश्वास केंद्र सक्षम करें",
+      "enabledHint": "अक्षम होने पर, /ट्रस्ट एक नहीं मिला संदेश दिखाता है और कोई भी सामग्री सार्वजनिक रूप से नहीं परोसी जाती है।",
+      "intro": "परिचय (मार्कडाउन)",
+      "introHint": "सार्वजनिक पृष्ठ पर संगठन के नाम के अंतर्गत लघु अनुच्छेद दिखाया गया है।",
+      "introPlaceholder": "सुरक्षा और गोपनीयता के प्रति हमारी प्रतिबद्धता…",
+      "contactEmail": "ई - मेल से संपर्क करे",
+      "contactEmailHint": "सार्वजनिक पृष्ठ के नीचे दिखाया गया है। खाली होने पर संगठन के समर्थन ईमेल पर वापस आ जाता है।",
+      "contactEmailPlaceholder": "Security@example.com",
+      "includeInInvites": "विक्रेता आमंत्रण ईमेल में विश्वास केंद्र से लिंक करें",
+      "includeInInvitesHint": "/ट्रस्ट की ओर इशारा करने वाले ईमेल को आमंत्रित करने के लिए एक पाद लेख पंक्ति जोड़ता है। टेम्प्लेट संशोधित नहीं किए गए हैं - लिंक भेजने के समय जोड़ा जाता है।",
+      "pageLoads": "सार्वजनिक पेज लोड/मिनट (प्रति आईपी)",
+      "downloads": "दस्तावेज़ डाउनलोड/मिनट (प्रति आईपी)",
+      "saving": "सहेजा जा रहा है...",
+      "save": "विश्वास केंद्र सहेजें",
+      "success": "विश्वास केंद्र सेटिंग सहेजी गईं.",
+      "errors": {
+        "invalidInput": "अमान्य निवेश।",
+        "invalidEmail": "एक मान्य ईमेल पता दर्ज करें।"
+      }
+    },
+    "permissions": {
+      "fullAccess": "पूर्ण पहुँच",
+      "fullAccessHint": "चयनित होने पर, कुंजी सभी अनुमतियाँ प्रदान करती है। अनुमतियों के एक विशिष्ट सेट तक कुंजी को प्रतिबंधित करने के लिए अनचेक करें।",
+      "selectAll": "सभी अनुमतियाँ चुनें",
+      "permissionCount": "{granted} / {total} अनुमति",
+      "groups": {
+        "vendors": "विक्रेता",
+        "assessments": "आकलन",
+        "templates": "टेम्पलेट्स",
+        "frameworks": "फ़्रेमवर्क",
+        "administration": "प्रशासन",
+        "webhooks": "वेबहुक",
+        "trustcenter": "ट्रस्ट केंद्र",
+        "profile": "प्रोफ़ाइल"
+      },
+      "items": {
+        "vendors_view": "विक्रेताओं को देखें",
+        "vendors_create": "विक्रेता बनाएँ",
+        "vendors_edit": "विक्रेताओं को संपादित करें",
+        "vendors_delete": "विक्रेताओं को हटाएँ",
+        "assessments_view": "आकलन देखें",
+        "assessments_create": "आकलन बनाएं और भेजें",
+        "assessments_edit": "लिंक संपादित करें और प्रबंधित करें",
+        "assessments_review": "समीक्षा करें और अंतिम रूप दें",
+        "assessments_delete": "मूल्यांकन हटाएँ",
+        "templates_view": "टेम्प्लेट देखें",
+        "templates_create": "टेम्प्लेट बनाएं",
+        "templates_edit": "टेम्प्लेट संपादित करें और प्रकाशित करें",
+        "templates_delete": "टेम्प्लेट हटाएँ",
+        "frameworks_view": "ढाँचे देखें",
+        "frameworks_edit": "ढाँचे संपादित करें",
+        "frameworks_delete": "ढाँचे हटाएँ",
+        "audit_view": "ऑडिट और ईमेल लॉग देखें",
+        "users_manage": "उपयोगकर्ताओं को प्रबंधित करें",
+        "roles_manage": "भूमिकाएँ प्रबंधित करें",
+        "settings_manage": "सेटिंग्स प्रबंधित करें",
+        "api_manage": "एपीआई एक्सेस प्रबंधित करें",
+        "webhooks_manage": "वेबहुक प्रबंधित करें",
+        "trustcenter_manage": "विश्वास केंद्र सामग्री प्रबंधित करें",
+        "profile_view": "स्वयं की प्रोफ़ाइल देखें और संपादित करें"
+      }
+    },
+    "users": {
+      "metaTitle": "व्यवस्थापक - उपयोगकर्ता",
+      "title": "उपयोगकर्ताओं",
+      "subtitle": "स्टाफ खाते और उनकी पहुंच।",
+      "cardTitle": "स्टाफ खाते",
+      "cardDescription": "स्टाफ खाते बनाएं और उनकी भूमिका, पहुंच और पासवर्ड प्रबंधित करें।",
+      "searchLabel": "खोज कर्मचारी",
+      "searchPlaceholder": "कर्मचारी खोजें…",
+      "newUser": "नए उपयोगकर्ता",
+      "empty": "अभी तक कोई उपयोगकर्ता नहीं.",
+      "noMatch": "कोई भी कर्मचारी आपकी खोज से मेल नहीं खाता।",
+      "added": "जोड़ा {date}",
+      "sso": "एसएसओ",
+      "local": "स्थानीय",
+      "disabled": "अक्षम",
+      "addTitle": "उपयोगकर्ता जोड़ें",
+      "addDescription": "प्रारंभिक भूमिका और पासवर्ड के साथ एक स्टाफ खाता बनाएं।",
+      "name": "नाम",
+      "email": "ईमेल",
+      "password": "पासवर्ड",
+      "role": "भूमिका",
+      "creating": "बनाया जा रहा है...",
+      "create": "उपयोगकर्ता बनाएं",
+      "cancel": "रद्द करना",
+      "save": "बचाना",
+      "access": "पहुँच",
+      "enableSignIn": "साइन-इन सक्षम करें",
+      "disableSignIn": "साइन-इन अक्षम करें",
+      "disableTitle": "उपयोगकर्ता अक्षम करें?",
+      "disableDescription": "{name} अब साइन इन नहीं कर पाएंगे। उनका डेटा संरक्षित है।",
+      "disable": "अक्षम करना",
+      "newPasswordPlaceholder": "नया पासवर्ड",
+      "resetTitle": "पासवर्ड रीसेट?",
+      "resetDescription": "यह अधिलेखित हो जाता है {name}का वर्तमान पासवर्ड. साइन इन करने के लिए उन्हें नए पासवर्ड का उपयोग करना होगा।",
+      "reset": "रीसेट करें",
+      "ssoPassword": "यह खाता एसएसओ के माध्यम से साइन इन करता है - इसका पासवर्ड पहचान प्रदाता द्वारा प्रबंधित किया जाता है।",
+      "dangerZone": "खतरा क्षेत्र",
+      "deleteTitle": "उपयोगकर्ता हटाएं?",
+      "deleteDescription": "{name} स्थायी रूप से हटा दिया जाएगा. इसे असंपादित नहीं किया जा सकता है।",
+      "ownedVendors": "{count,plural,one{# विक्रेता अपना स्वामी असाइनमेंट खो देगा} other{# विक्रेता अपना मालिकाना कार्यभार खो देंगे}}",
+      "reviewingAssessments": "{count,plural,one{# मूल्यांकन अपना समीक्षक खो देगा} other{# मूल्यांकन अपना समीक्षक खो देंगे}}",
+      "resolvedFindings": "{count,plural,one{# खोजने से इसका रिज़ॉल्वर साफ़ हो जाएगा} other{# निष्कर्षों से उनका रिज़ॉल्वर साफ़ हो जाएगा}}",
+      "answerReviews": "{count,plural,one{# उत्तर समीक्षा को गुप्त रखा जाएगा} other{# उत्तर समीक्षाओं को अज्ञात रखा जाएगा}}",
+      "createdApiKeys": "{count,plural,one{# एपीआई कुंजी अपना निर्माता संदर्भ खो देगी} other{# एपीआई कुंजियाँ अपना निर्माता संदर्भ खो देंगी}}",
+      "auditPreserved": "ऑडिट इतिहास संरक्षित है (\"हटाए गए उपयोगकर्ता\" के रूप में दिखाया गया है)।",
+      "delete": "मिटाना",
+      "deleteUser": "उपयोगकर्ता हटाएँ",
+      "loading": "लोड हो रहा है...",
+      "success": "उपयोगकर्ता बनाया गया.",
+      "errors": {
+        "nameRequired": "नाम आवश्यक है।",
+        "emailInvalid": "एक मान्य ईमेल पता दर्ज करें।",
+        "passwordTooShort": "कम से कम 12 अक्षरों का प्रयोग करें.",
+        "roleRequired": "भूमिका आवश्यक है.",
+        "invalidInput": "अमान्य निवेश।",
+        "roleNotFound": "चयनित भूमिका मौजूद नहीं है.",
+        "emailExists": "इस ईमेल वाला एक उपयोगकर्ता पहले से मौजूद है।",
+        "createFailed": "उपयोगकर्ता नहीं बनाया जा सका. कृपया पुन: प्रयास करें।"
+      }
+    },
+    "roles": {
+      "metaTitle": "व्यवस्थापक - भूमिकाएँ",
+      "title": "भूमिकाएँ",
+      "subtitle": "कर्मचारियों के खातों को अनुमति सेट सौंपे गए।",
+      "cardTitle": "भूमिकाएँ",
+      "cardDescription": "अनुमति सेट परिभाषित करें और उन्हें स्टाफ खातों में निर्दिष्ट करें।",
+      "searchPlaceholder": "भूमिकाएँ खोजें…",
+      "newRole": "नयी भूमिका",
+      "noMatch": "कोई भी भूमिका आपकी खोज से मेल नहीं खाती.",
+      "system": "प्रणाली",
+      "userCount": "{count,plural,one{# उपयोगकर्ता} other{# उपयोगकर्ताओं}}",
+      "edit": "संपादन करना",
+      "duplicate": "डुप्लिकेट",
+      "deleteTitle": "भूमिका हटाएँ?",
+      "deleteDescription": "\"{name}\"भूमिका स्थायी रूप से हटा दी जाएगी। यह तभी संभव है जब इसे कोई उपयोगकर्ता नहीं सौंपा गया हो।",
+      "delete": "मिटाना",
+      "createTitle": "भूमिका बनाएँ",
+      "adminLocked": "व्यवस्थापक भूमिका के पास हमेशा हर अनुमति होती है और उसे बदला नहीं जा सकता।",
+      "editorDescription": "इस भूमिका द्वारा दी जाने वाली अनुमतियाँ चुनें. इस भूमिका को सौंपे गए उपयोगकर्ताओं को बिल्कुल यही अनुमतियाँ प्राप्त होती हैं।",
+      "name": "नाम",
+      "description": "विवरण",
+      "saving": "सहेजा जा रहा है...",
+      "create": "भूमिका बनाएँ",
+      "saveChanges": "परिवर्तनों को सुरक्षित करें",
+      "cancel": "रद्द करना",
+      "success": "भूमिका बनाई गई.",
+      "updated": "भूमिका अद्यतन की गई.",
+      "errors": {
+        "nameRequired": "भूमिका का नाम आवश्यक है.",
+        "nameTooLong": "भूमिका का नाम 50 अक्षर या उससे कम होना चाहिए.",
+        "descriptionTooLong": "विवरण 200 अक्षर या उससे कम होना चाहिए.",
+        "invalidInput": "अमान्य निवेश।",
+        "roleExists": "इस नाम की एक भूमिका पहले से मौजूद है.",
+        "createFailed": "भूमिका नहीं बनाई जा सकी. कृपया पुन: प्रयास करें।",
+        "missingRole": "गुम भूमिका.",
+        "notFound": "भूमिका नहीं मिली.",
+        "adminLocked": "व्यवस्थापक भूमिका अनुमतियाँ नहीं बदली जा सकतीं.",
+        "updateFailed": "भूमिका अद्यतन नहीं की जा सकी. कृपया पुन: प्रयास करें।",
+        "duplicateFailed": "भूमिका की नकल नहीं की जा सकी: {reason}",
+        "deleteFailed": "भूमिका हटाई नहीं जा सकी: {reason}",
+        "systemCannotDelete": "सिस्टम भूमिकाएँ हटाई नहीं जा सकतीं.",
+        "assignedUsers": "यह भूमिका एक या अधिक उपयोगकर्ताओं को सौंपी गई है. हटाने से पहले उन्हें पुन: असाइन करें."
+      }
+    },
+    "audit": {
+      "metaTitle": "एडमिन - ऑडिट लॉग",
+      "title": "ऑडिट लॉग",
+      "subtitle": "पूरे प्लेटफ़ॉर्म पर प्रशासनिक और सिस्टम गतिविधि।",
+      "retentionTitle": "अवधारण",
+      "retentionDescription": "इतने दिनों से पुरानी ऑडिट प्रविष्टियाँ निर्धारित सफ़ाई द्वारा स्वचालित रूप से काट दी जाती हैं। अनिश्चित काल तक रखने के लिए 0 पर सेट करें।",
+      "retentionLabel": "ऑडिट लॉग प्रतिधारण (दिन)",
+      "retentionHelp": "अगले निर्धारित रन पर लागू होता है।",
+      "cardTitle": "ऑडिट लॉग",
+      "cardDescription": "पूरे प्लेटफ़ॉर्म पर प्रशासनिक और सिस्टम गतिविधि को ट्रैक करें।",
+      "action": "कार्रवाई",
+      "user": "उपयोगकर्ता",
+      "from": "से",
+      "to": "को",
+      "rows": "पंक्तियों",
+      "allActions": "सभी क्रियाएं",
+      "allUsers": "सभी उपयोगकर्ता",
+      "actionFilterLabel": "कार्रवाई के अनुसार ऑडिट लॉग फ़िल्टर करें",
+      "userFilterLabel": "उपयोगकर्ता द्वारा ऑडिट लॉग फ़िल्टर करें",
+      "pageSizeLabel": "ऑडिट लॉग पृष्ठ का आकार",
+      "filter": "फ़िल्टर",
+      "clear": "स्पष्ट",
+      "export": "निर्यात",
+      "allResults": "सभी परिणाम",
+      "currentPage": "वर्तमान पृष्ठ",
+      "empty": "कोई ऑडिट प्रविष्टियाँ नहीं मिलीं.",
+      "date": "तारीख",
+      "entity": "इकाई",
+      "deleted": "हटाए गए",
+      "pageSummary": "पृष्ठ {page} / {totalPages} ({totalCount, plural, one {# प्रविष्टि} other {# प्रविष्टियाँ}})",
+      "previous": "पहले का",
+      "next": "अगला",
+      "csvHeader": "दिनांक, उपयोगकर्ता, क्रिया, इकाई, आईडी",
+      "success": "ऑडिट प्रतिधारण सहेजा गया.",
+      "clarificationRequested": "स्पष्टीकरण का अनुरोध किया गया",
+      "errors": {
+        "retentionInvalid": "ऑडिट प्रतिधारण 0 या सकारात्मक संख्या होनी चाहिए।",
+        "invalidInput": "अमान्य निवेश।"
+      },
+      "actions": {
+        "LOGIN": "लॉग इन करें",
+        "CREATE_ASSESSMENT": "मूल्यांकन बनाया गया",
+        "DELETE_ASSESSMENT": "मूल्यांकन हटा दिया गया",
+        "SEND_ASSESSMENT": "आकलन भेजा",
+        "REVOKE_ASSESSMENT": "मूल्यांकन लिंक रद्द कर दिया गया",
+        "EXTEND_ASSESSMENT": "विस्तारित मूल्यांकन लिंक",
+        "REGENERATE_ASSESSMENT": "पुनर्जीवित मूल्यांकन लिंक",
+        "SUBMIT_ASSESSMENT": "मूल्यांकन प्रस्तुत किया गया",
+        "REVIEW_DECISION": "निर्णय की समीक्षा करें",
+        "SEND_BACK_TO_VENDOR": "विक्रेता को वापस भेज दिया गया",
+        "REOPEN_REVIEW": "समीक्षा पुनः खोली गई",
+        "UPDATE_FINDING": "अद्यतन खोज",
+        "ADD_COMMENT": "टिप्पणी जोड़ी गई",
+        "REOPEN_ASSESSMENT": "पुनः खोला गया मूल्यांकन",
+        "FINALIZE_ASSESSMENT": "अंतिम मूल्यांकन",
+        "CREATE_VENDOR": "विक्रेता बनाया गया",
+        "UPDATE_VENDOR": "अद्यतन विक्रेता",
+        "DELETE_VENDOR": "विक्रेता को हटा दिया गया",
+        "IMPORT_VENDOR": "आयातित विक्रेता",
+        "CREATE_TEMPLATE": "टेम्पलेट बनाया गया",
+        "UPDATE_TEMPLATE": "अद्यतन टेम्पलेट",
+        "DELETE_TEMPLATE": "हटाया गया टेम्प्लेट",
+        "PUBLISH_TEMPLATE": "प्रकाशित टेम्पलेट",
+        "UNPUBLISH_TEMPLATE": "अप्रकाशित टेम्पलेट",
+        "CREATE_TEMPLATE_VERSION": "टेम्पलेट संस्करण बनाया गया",
+        "DUPLICATE_TEMPLATE": "डुप्लिकेट टेम्पलेट",
+        "IMPORT_TEMPLATE": "आयातित टेम्पलेट",
+        "CREATE_USER": "उपयोगकर्ता बनाया गया",
+        "DELETE_USER": "उपयोगकर्ता हटा दिया गया",
+        "DISABLE_USER": "अक्षम उपयोगकर्ता",
+        "ENABLE_USER": "सक्षम उपयोगकर्ता",
+        "CHANGE_ROLE": "भूमिका बदली",
+        "CREATE_ROLE": "भूमिका बनाई गई",
+        "UPDATE_ROLE": "अद्यतन भूमिका",
+        "UPDATE_PROFILE": "अद्यतन प्रोफ़ाइल",
+        "DELETE_ROLE": "भूमिका हटा दी गई",
+        "DUPLICATE_ROLE": "डुप्लीकेट भूमिका",
+        "RESET_PASSWORD": "पासवर्ड रीसेट",
+        "UPDATE_SETTINGS": "अद्यतन सेटिंग्स",
+        "API_KEY_CREATED": "एपीआई कुंजी बनाई गई",
+        "API_KEY_REVOKED": "निरस्त एपीआई कुंजी",
+        "API_KEY_ENABLED": "सक्षम एपीआई कुंजी",
+        "API_KEY_DELETED": "हटाई गई एपीआई कुंजी",
+        "CREATE_CERTIFICATION": "प्रमाणीकरण जोड़ा गया",
+        "UPDATE_CERTIFICATION": "अद्यतन प्रमाणीकरण",
+        "DELETE_CERTIFICATION": "प्रमाणीकरण हटा दिया गया",
+        "CREATE_FRAMEWORK": "आयातित ढाँचा",
+        "DELETE_FRAMEWORK": "हटाया गया ढाँचा",
+        "UPDATE_RESPONSIBILITY_ACTION": "अद्यतन उत्तरदायित्व कार्रवाई",
+        "MARK_CONTROL_SHARED": "नियंत्रण को साझा जिम्मेदारी के रूप में चिह्नित किया गया",
+        "UNMARK_CONTROL_SHARED": "साझा जिम्मेदारी के रूप में अचिह्नित नियंत्रण",
+        "RETRY_EMAIL_SEND": "ईमेल भेजने का पुनः प्रयास किया गया",
+        "CREATE_WEBHOOK": "वेबहुक बनाया गया",
+        "DELETE_WEBHOOK": "वेबहुक हटा दिया गया",
+        "ENABLE_WEBHOOK": "सक्षम वेबहुक",
+        "DISABLE_WEBHOOK": "अक्षम वेबहुक",
+        "UPDATE_TRUST_CENTER": "अद्यतन विश्वास केंद्र"
+      }
+    },
+    "health": {
+      "metaTitle": "व्यवस्थापक - स्वास्थ्य",
+      "title": "स्वास्थ्य",
+      "subtitle": "सिस्टम डायग्नोस्टिक्स और शेड्यूल-नौकरी की स्थिति।",
+      "application": "आवेदन",
+      "status": "स्थिति",
+      "running": "दौड़ना",
+      "version": "संस्करण",
+      "commit": "प्रतिबद्ध",
+      "buildTime": "निर्माण का समय",
+      "uptime": "अपटाइम",
+      "memory": "मेमोरी (ढेर)",
+      "lessThanMinute": "1 मी से कम",
+      "database": "डेटाबेस",
+      "connection": "संबंध",
+      "connected": "जुड़े हुए",
+      "error": "गलती"
+    }
+  },
+  "NotFound": {
+    "description": "आप जिस पृष्ठ की तलाश कर रहे हैं वह मौजूद नहीं है या उसे स्थानांतरित कर दिया गया है।",
+    "backToDashboard": "डैशबोर्ड पर वापस जाएँ"
+  },
+  "BulkSend": {
+    "metaTitle": "थोक में भेजें",
+    "title": "थोक में भेजें",
+    "subtitle": "एक ही प्रश्नावली एक साथ कई विक्रेताओं को भेजें।",
+    "breadcrumb": "थोक में भेजें",
+    "steps": {
+      "configure": "कॉन्फ़िगर",
+      "vendors": "विक्रेता",
+      "send": "भेजना"
+    },
+    "template": "खाका",
+    "selectTemplate": "टेम्प्लेट चुनें",
+    "dueDate": "नियत तारीख",
+    "reviewer": "आलोचक",
+    "unassigned": "सौंपे नहीं गए",
+    "portalPassword": "पोर्टल पासवर्ड (वैकल्पिक)",
+    "portalPasswordPlaceholder": "सभी विक्रेताओं के लिए साझा पासवर्ड",
+    "next": "अगला →",
+    "back": "← वापस",
+    "filterPlaceholder": "विक्रेताओं को फ़िल्टर करें...",
+    "selectAll": "सबका चयन करें",
+    "selectedCount": "{count} चयनित",
+    "noMatch": "कोई भी विक्रेता आपकी खोज से मेल नहीं खाता।",
+    "noEmail": "कोई ईमेल नहीं",
+    "sendingTo": "भेजा जा रहा है {template} को {count,plural,one{# विक्रेता} other{# विक्रेताओं}}",
+    "due": "देय: {date}",
+    "reviewerLabel": "समीक्षक: {name}",
+    "portalPasswordSet": "पोर्टल पासवर्ड सेट",
+    "sending": "भेजा जा रहा है...",
+    "sendTo": "भेजना {count,plural,one{# विक्रेता} other{# विक्रेताओं}}",
+    "sentCount": "{count,plural,one{भेजा # आकलन} other{भेजा # आकलन}}",
+    "skippedCount": "{count,plural,one{# भेजा नहीं जा सका} other{# भेजा नहीं जा सका}}",
+    "emailFailedCount": "{count,plural,one{# ईमेल डिलीवर करने में विफल रहा} other{# ईमेल डिलीवर करने में विफल रहे}}",
+    "errors": {
+      "noTemplate": "कोई टेम्प्लेट चयनित नहीं.",
+      "noVendors": "कोई विक्रेता चयनित नहीं."
+    }
+  },
+  "VendorImport": {
+    "metaTitle": "विक्रेताओं को आयात करें",
+    "title": "विक्रेताओं को आयात करें",
+    "subtitle": "बल्क-क्रिएट विक्रेताओं के लिए एक CSV फ़ाइल अपलोड करें।",
+    "breadcrumb": "आयात",
+    "cardTitle": "सीएसवी से विक्रेताओं को आयात करें",
+    "steps": {
+      "upload": "अपलोड करें",
+      "review": "समीक्षा"
+    },
+    "csvFile": "सीएसवी फ़ाइल",
+    "template": "खाका",
+    "columnsHelp": "सीएसवी में कॉलम होने चाहिए: आईडी (वैकल्पिक), नाम, संपर्क ईमेल, प्लस वैकल्पिक: बाहरी आईडी, संपर्क नाम, स्तर, वेबसाइट, नोट्स, सेवा विवरण, डेटा संवेदनशीलता, अनुबंध नवीनीकरण तिथि, अनुबंध मूल्य, भौगोलिक जोखिम, टैग। केवल नाम और संपर्क ईमेल आवश्यक है। अधिकतम 1 एमबी. नया विक्रेता बनाने के बजाय मौजूदा विक्रेता को अपडेट करने के लिए विक्रेता आईडी या बाहरी आईडी शामिल करें।",
+    "found": "{count,plural,one{# विक्रेता मिल गया} other{# विक्रेता मिल गए}}",
+    "showingFirst": "के पहले 10 दिखा रहा हूँ {count} पंक्तियों",
+    "next": "अगला →",
+    "back": "← वापस",
+    "aboutToImport": "आप {count, plural, one {# विक्रेता} other {# विक्रेताओं}} आयात करने वाले हैं।",
+    "skippedNote": "यदि कुछ पंक्तियाँ सत्यापन में विफल रहती हैं (डुप्लिकेट ईमेल, आवश्यक फ़ील्ड गायब हैं) तो उन्हें छोड़ दिया जा सकता है।",
+    "importing": "आयात किया जा रहा है...",
+    "importVendors": "विक्रेताओं को आयात करें",
+    "errors": {
+      "noFile": "कोई फ़ाइल चयनित नहीं।",
+      "fileTooLarge": "फ़ाइल बहुत बड़ी है (अधिकतम 1 एमबी)।",
+      "noRows": "CSV में कोई पंक्तियाँ नहीं मिलीं. पहली पंक्ति में हेडर होना चाहिए.",
+      "noValidVendors": "कोई वैध विक्रेता नहीं मिला. पहली त्रुटि: {reason}",
+      "rowInvalid": "पंक्ति {row}: अमान्य निवेश।",
+      "rowNameRequired": "पंक्ति {row}:विक्रेता का नाम आवश्यक है.",
+      "rowContactEmailRequired": "पंक्ति {row}: संपर्क ईमेल आवश्यक है.",
+      "duplicateExternalId": "{name}: डुप्लिकेट बाहरी आईडी",
+      "rowFailed": "{name}: {reason}",
+      "updateRequiresEdit": "यह आयात मौजूदा विक्रेताओं को अद्यतन करेगा। अद्यतन करने के लिए विक्रेता की संपादन अनुमति की आवश्यकता होती है।",
+      "unknown": "अज्ञात",
+      "importComplete": "आयात पूर्ण: {summary}.",
+      "created": "{count} बनाया था",
+      "updated": "{count} अद्यतन",
+      "skipped": "{count,plural,one{# पंक्ति छोड़ दी गई} other{# पंक्तियाँ छोड़ दी गईं}}"
+    }
+  },
+  "CompareVendors": {
+    "metaTitle": "विक्रेताओं की तुलना करें",
+    "title": "विक्रेताओं की तुलना करें",
+    "subtitle": "उनके नवीनतम पूर्ण मूल्यांकनों की साथ-साथ तुलना करने के लिए दो विक्रेताओं को चुनें।",
+    "breadcrumb": "तुलना करना",
+    "notEnoughVendorsTitle": "पर्याप्त विक्रेता नहीं",
+    "notEnoughVendorsDescription": "तुलना करने के लिए आपको कम से कम दो विक्रेताओं की आवश्यकता है। पहले अधिक विक्रेता बनाएं.",
+    "vendorA": "विक्रेता ए",
+    "vendorB": "विक्रेता बी",
+    "selectVendor": "एक विक्रेता का चयन करें",
+    "compare": "तुलना करना",
+    "notEnoughAssessmentsTitle": "पर्याप्त आकलन नहीं",
+    "notEnoughAssessmentsDescription": "तुलना करने के लिए दोनों विक्रेताओं के पास कम से कम एक पूर्ण या समीक्षाधीन मूल्यांकन होना चाहिए।",
+    "comparisonSubtitle": "{vendorA} बनाम {vendorB}",
+    "statusLabel": "{title} · {status}",
+    "question": "सवाल",
+    "changed": "बदल गया",
+    "notApplicable": "एन/ए"
+  },
+  "ApiDocs": {
+    "metaTitle": "एपीआई दस्तावेज़ीकरण",
+    "loading": "एपीआई दस्तावेज़ लोड हो रहा है...",
+    "loadFailed": "स्वैगर यूआई लोड करने में विफल रहा।"
+  },
+  "CompareAssessments": {
+    "metaTitle": "आकलन की तुलना करें",
+    "metadataTitle": "आकलन की तुलना करें - {vendorName}",
+    "notFound": "विक्रेता नहीं मिला",
+    "title": "आकलन की तुलना करें",
+    "breadcrumb": "आकलन की तुलना करें",
+    "instructions": "उनकी साथ-साथ तुलना करने के लिए विक्रेता पृष्ठ से दो आकलन चुनें। दो खोलने के बाद, इस पेज को ?left=[id]&right=[id] से बुकमार्क करें।",
+    "comparisonSubtitle": "{leftTitle} ({leftStatus}) बनाम {rightTitle} ({rightStatus})",
+    "question": "सवाल",
+    "changed": "बदल गया",
+    "notApplicable": "एन/ए"
+  },
+  "Profile": {
+    "metaTitle": "प्रोफ़ाइल",
+    "title": "प्रोफ़ाइल",
+    "subtitle": "अपना खाता विवरण प्रबंधित करें.",
+    "accountDetails": "खाता विवरण",
+    "ssoDescription": "आप एकल साइन-ऑन के माध्यम से साइन इन करते हैं। आपका ईमेल आपके पहचान प्रदाता द्वारा प्रबंधित किया जाता है।",
+    "localDescription": "आपका नाम और साइन-इन ईमेल.",
+    "name": "नाम",
+    "email": "ईमेल",
+    "passwordTitle": "पासवर्ड",
+    "passwordDescription": "कोई भी परिवर्तन करने के लिए आपको अपना वर्तमान पासवर्ड दर्ज करना होगा।",
+    "currentPassword": "वर्तमान पासवर्ड",
+    "newPassword": "नया पासवर्ड",
+    "optional": "(वैकल्पिक)",
+    "confirmNewPassword": "नए पासवर्ड की पुष्टि करें",
+    "ssoPasswordNote": "आपका पासवर्ड आपके पहचान प्रदाता (एसएसओ) द्वारा प्रबंधित किया जाता है, इसलिए यहां बदलने के लिए कुछ भी नहीं है।",
+    "saving": "सहेजा जा रहा है...",
+    "saveChanges": "परिवर्तनों को सुरक्षित करें",
+    "errorDescription": "आपकी प्रोफ़ाइल लोड नहीं की जा सकी. कृपया पुनः प्रयास करें या सहायता से संपर्क करें।",
+    "errors": {
+      "notAuthenticated": "प्रमाणित नहीं.",
+      "accountNotFound": "खाता नहीं मिला।",
+      "currentPasswordIncorrect": "मौजूदा पासवर्ड गलत है।",
+      "emailTaken": "इस ई - मेल को पहले से ही लिया गया है।",
+      "nameRequired": "नाम आवश्यक है।",
+      "emailInvalid": "एक मान्य ईमेल पता दर्ज करें।",
+      "currentPasswordRequired": "वर्तमान पासवर्ड आवश्यक है.",
+      "passwordTooShort": "नया पासवर्ड कम से कम 12 अक्षर का होना चाहिए.",
+      "passwordMismatch": "सांकेतिक शब्द मेल नहीं खाते।",
+      "invalidInput": "अमान्य निवेश।",
+      "success": "प्रोफाइल अद्यतन किया गया।"
+    }
+  },
+  "TrustCenterManager": {
+    "metaTitle": "ट्रस्ट केंद्र",
+    "title": "ट्रस्ट केंद्र",
+    "subtitle": "अपने सार्वजनिक ट्रस्ट केंद्र पृष्ठ पर अनुपालन बैज, सुरक्षा दस्तावेज़, उपप्रोसेसर और कथा अनुभाग प्रकाशित करें।",
+    "viewPublic": "सार्वजनिक पृष्ठ देखें",
+    "disabledBanner": "ट्रस्ट केंद्र वर्तमान में अक्षम है. इसे सेटिंग्स → ट्रस्ट सेंटर में सक्षम करें - तब तक सार्वजनिक पृष्ठ एक नहीं मिला संदेश दिखाता है।",
+    "errorDescription": "ट्रस्ट केंद्र प्रबंधक लोड नहीं किया जा सका. कृपया पुन: प्रयास करें।",
+    "common": {
+      "edit": "संपादन करना",
+      "draft": "मसौदा",
+      "published": "प्रकाशित",
+      "saving": "सहेजा जा रहा है...",
+      "cancel": "रद्द करना",
+      "moveUp": "कदम {name} ऊपर",
+      "moveDown": "कदम {name} नीचे",
+      "deleteNamed": "मिटाना {name}"
+    },
+    "badges": {
+      "cardTitle": "अनुपालन बैज",
+      "add": "बैज जोड़ें",
+      "empty": "कोई बैज कॉन्फ़िगर नहीं किया गया. सार्वजनिक पृष्ठ पर प्रदर्शित करने के लिए SOC 2 या ISO 27001 जैसे प्रमाणपत्र जोड़ें।",
+      "verificationLink": "सत्यापन लिंक",
+      "deleteTitle": "बैज हटाएं?",
+      "deleteDescription": "\"{name}\"बैज ट्रस्ट सेंटर से हटा दिया जाएगा।",
+      "addTitle": "बैज जोड़ें",
+      "editTitle": "बैज संपादित करें",
+      "editorDescription": "सार्वजनिक ट्रस्ट केंद्र पृष्ठ पर प्रमाणन टाइल के रूप में दिखाया गया है।",
+      "titleLabel": "शीर्षक",
+      "issuer": "जारीकर्ता",
+      "issuerPlaceholder": "जैसे एआईसीपीए, बीएसआई",
+      "description": "विवरण",
+      "descriptionPlaceholder": "जैसे एसओसी 2 टाइप II का सालाना ऑडिट किया जाता है",
+      "verificationUrl": "सत्यापन यूआरएल",
+      "image": "बैज छवि",
+      "imageHint": "पीएनजी, जेपीजी, जीआईएफ या वेबपी। अधिकतम 2 एमबी. एसवीजी की अनुमति नहीं है.",
+      "imageHintKeep": " वर्तमान छवि को बनाए रखने के लिए खाली छोड़ दें.",
+      "save": "बैज सहेजें"
+    },
+    "documents": {
+      "cardTitle": "सुरक्षा दस्तावेज़",
+      "add": "दस्तावेज़ जोड़ें",
+      "empty": "कोई दस्तावेज़ कॉन्फ़िगर नहीं किया गया. सार्वजनिक डाउनलोड के लिए नीतियां, सुरक्षा रिपोर्ट या अनुपालन कलाकृतियाँ अपलोड करें।",
+      "noFile": "कोई फ़ाइल अपलोड नहीं की गई",
+      "deleteTitle": "दस्तावेज़ हटाएँ?",
+      "deleteDescription": "\"{name}\"और इसकी फ़ाइल ट्रस्ट सेंटर से हटा दी जाएगी।",
+      "addTitle": "दस्तावेज़ जोड़ें",
+      "editTitle": "दस्तावेज़ संपादित करें",
+      "editorDescription": "प्रकाशित दस्तावेज़ सार्वजनिक ट्रस्ट केंद्र पृष्ठ से डाउनलोड किए जा सकते हैं।",
+      "titleLabel": "शीर्षक",
+      "description": "विवरण",
+      "descriptionPlaceholder": "यह दस्तावेज़ क्या शामिल करता है",
+      "category": "वर्ग",
+      "file": "फ़ाइल",
+      "replaceFile": "फ़ाइल बदलें",
+      "fileHint": "पीडीएफ, पीएनजी, जेपीजी, डॉक्स या एक्सएलएसएक्स। अधिकतम 20 एमबी.",
+      "fileHintCurrent": " मौजूदा: {fileName}. बदलने से पुरानी फ़ाइल हट जाती है।",
+      "save": "दस्तावेज़ सहेजें",
+      "categories": {
+        "POLICY": "नीति",
+        "SECURITY": "सुरक्षा रिपोर्ट",
+        "COMPLIANCE": "अनुपालन",
+        "PRIVACY": "गोपनीयता",
+        "OTHER": "अन्य"
+      }
+    },
+    "sections": {
+      "cardTitle": "कस्टम अनुभाग",
+      "add": "अनुभाग जोड़ें",
+      "empty": "कोई कस्टम अनुभाग नहीं. एक सिंहावलोकन, FAQ या किसी अन्य चीज के लिए मार्कडाउन ब्लॉक जोड़ें जो संरचित प्रकारों को कवर नहीं करता है।",
+      "deleteTitle": "अनुभाग हटाएं?",
+      "deleteDescription": "\"{name}\"ट्रस्ट सेंटर से हटा दिया जाएगा.",
+      "addTitle": "अनुभाग जोड़ें",
+      "editTitle": "अनुभाग का संपादन",
+      "editorDescription": "सार्वजनिक ट्रस्ट केंद्र पृष्ठ पर निःशुल्क मार्कडाउन ब्लॉक प्रदान किए गए।",
+      "titleLabel": "शीर्षक",
+      "body": "बॉडी (मार्कडाउन)",
+      "bodyPlaceholder": "मार्कडाउन फ़ॉर्मेटिंग का समर्थन करता है.",
+      "save": "अनुभाग सहेजें"
+    },
+    "subprocessors": {
+      "cardTitle": "सबप्रोसेसर",
+      "add": "सबप्रोसेसर जोड़ें",
+      "empty": "कोई सबप्रोसेसर कॉन्फ़िगर नहीं किया गया. आपकी ओर से डेटा संसाधित करने वाले तृतीय पक्षों की सूची बनाएं।",
+      "deleteTitle": "उपप्रोसेसर हटाएँ?",
+      "deleteDescription": "\"{name}\"ट्रस्ट सेंटर से हटा दिया जाएगा.",
+      "addTitle": "सबप्रोसेसर जोड़ें",
+      "editTitle": "उपप्रोसेसर संपादित करें",
+      "editorDescription": "तृतीय पक्ष जो आपकी ओर से डेटा संसाधित करते हैं, सार्वजनिक ट्रस्ट केंद्र पृष्ठ पर सूचीबद्ध हैं।",
+      "name": "नाम",
+      "purpose": "उद्देश्य",
+      "purposePlaceholder": "जैसे एप्लिकेशन डेटा की क्लाउड होस्टिंग",
+      "location": "डेटा स्थान",
+      "locationPlaceholder": "जैसे ऑस्ट्रेलिया (सिडनी)",
+      "website": "वेबसाइट",
+      "websitePlaceholder": "https://…",
+      "logo": "लोगो छवि",
+      "logoHint": "पीएनजी, जेपीजी, जीआईएफ या वेबपी। अधिकतम 2 एमबी. एसवीजी की अनुमति नहीं है.",
+      "logoHintKeep": " वर्तमान लोगो को बनाए रखने के लिए खाली छोड़ दें.",
+      "logoUrl": "…या किसी URL से लोगो प्राप्त करें",
+      "logoUrlPlaceholder": "https://example.com/logo.png",
+      "logoUrlHint": "छवि को अन्य ट्रस्ट सेंटर फ़ाइलों के साथ डाउनलोड और संग्रहीत किया जाता है - सार्वजनिक पृष्ठ कभी भी बाहरी होस्ट लोड नहीं करता है। अपलोड की गई फ़ाइल को URL पर प्राथमिकता दी जाती है।",
+      "save": "सबप्रोसेसर सहेजें"
+    },
+    "errors": {
+      "invalidInput": "अमान्य निवेश।",
+      "titleRequired": "शीर्षक आवश्यक है.",
+      "nameRequired": "नाम आवश्यक है।",
+      "invalidUrl": "एक मान्य यूआरएल दर्ज करें.",
+      "sectionTooLong": "अनुभाग का मुख्य भाग बहुत लंबा है (अधिकतम 10,000 वर्ण)।",
+      "badgeNotFound": "बैज नहीं मिला.",
+      "documentFileRequired": "एक दस्तावेज़ फ़ाइल आवश्यक है.",
+      "saveFailed": "सहेजना विफल.",
+      "badgeSaved": "बैज सहेजा गया.",
+      "documentSaved": "दस्तावेज़ सहेजा गया.",
+      "sectionSaved": "अनुभाग सहेजा गया.",
+      "subprocessorSaved": "सबप्रोसेसर सहेजा गया.",
+      "imageType": "छवियां पीएनजी, जेपीजी, जीआईएफ या वेबपी होनी चाहिए (एसवीजी की अनुमति नहीं है)।",
+      "imageInvalid": "यह छवि मान्य नहीं है.",
+      "imageTooLarge": "छवि बहुत बड़ी है (अधिकतम) {max} एमबी).",
+      "fileTooLarge": "फ़ाइल बहुत बड़ी है (अधिकतम) {max} एमबी).",
+      "fileInvalid": "फ़ाइल सामग्री उसके एक्सटेंशन से मेल नहीं खाती.",
+      "fileType": "यह फ़ाइल प्रकार स्वीकृत नहीं है.",
+      "imageFetchFailed": "छवि URL प्राप्त नहीं किया जा सका.",
+      "imageContent": "छवि URL को PNG, JPG, GIF या WebP सामग्री लौटानी होगी।"
+    }
+  },
+  "Shell": {
+    "workspace": {
+      "dashboard": "डैशबोर्ड",
+      "vendors": "विक्रेता",
+      "assessments": "आकलन",
+      "riskRegister": "जोखिम रजिस्टर",
+      "selfAssessment": "आत्म मूल्यांकन",
+      "frameworks": "फ़्रेमवर्क",
+      "templates": "टेम्पलेट्स",
+      "trustCenter": "ट्रस्ट केंद्र",
+      "admin": "व्यवस्थापक",
+      "groups": {
+        "risk": "जोखिम",
+        "frameworks": "फ़्रेमवर्क",
+        "manage": "प्रबंधित करना"
+      }
+    },
+    "admin": {
+      "backToWorkspace": "कार्यक्षेत्र पर वापस जाएँ",
+      "groups": {
+        "workspace": "कार्यस्थान",
+        "email": "ईमेल",
+        "assessments": "आकलन",
+        "files": "फ़ाइलें",
+        "accessSecurity": "पहुंच एवं सुरक्षा",
+        "integrations": "एकीकरण",
+        "platform": "प्लैटफ़ॉर्म"
+      },
+      "sections": {
+        "general": "सामान्य",
+        "appearance": "उपस्थिति",
+        "email": "ईमेल",
+        "emailTracking": "ईमेल ट्रैकिंग",
+        "scoring": "स्कोरिंग",
+        "scheduling": "निर्धारण",
+        "storage": "भंडारण",
+        "users": "उपयोगकर्ताओं",
+        "roles": "भूमिकाएँ",
+        "signIn": "दाखिल करना",
+        "rateLimits": "दर सीमा",
+        "api": "एपीआई",
+        "webhooks": "वेबहुक",
+        "trustCenter": "ट्रस्ट केंद्र",
+        "auditLog": "ऑडिट लॉग",
+        "health": "स्वास्थ्य"
+      }
+    },
+    "header": {
+      "admin": "व्यवस्थापक",
+      "toggleTheme": "थीम टॉगल करें",
+      "themeLight": "रोशनी",
+      "themeDark": "अँधेरा",
+      "themeSystem": "प्रणाली",
+      "profile": "प्रोफ़ाइल",
+      "language": "भाषा",
+      "signOut": "साइन आउट"
+    },
+    "sidebar": {
+      "toggle": "साइडबार टॉगल करें"
+    },
+    "breadcrumbs": {
+      "label": "ब्रेडक्रम्ब",
+      "dashboard": "डैशबोर्ड"
+    },
+    "commandPalette": {
+      "label": "कमांड पैलेट",
+      "searchPlaceholder": "पेज खोजें...",
+      "noResults": "कोई परिणाम नहीं.",
+      "navigate": "नेविगेट",
+      "open": "खुला",
+      "close": "बंद करना",
+      "or": "या",
+      "items": {
+        "dashboard": {
+          "label": "डैशबोर्ड",
+          "subtitle": "विक्रेता जोखिम अवलोकन"
+        },
+        "vendors": {
+          "label": "विक्रेता",
+          "subtitle": "विक्रेताओं को प्रबंधित करें"
+        },
+        "assessments": {
+          "label": "आकलन",
+          "subtitle": "प्रश्नावली"
+        },
+        "frameworks": {
+          "label": "फ़्रेमवर्क",
+          "subtitle": "अनुपालन नियंत्रण"
+        },
+        "templates": {
+          "label": "टेम्पलेट्स",
+          "subtitle": "प्रश्नावली निर्माता"
+        },
+        "profile": {
+          "label": "प्रोफ़ाइल",
+          "subtitle": "आपका खाता"
+        },
+        "adminGeneral": {
+          "label": "व्यवस्थापक · सामान्य",
+          "subtitle": "संगठन"
+        },
+        "adminUsers": {
+          "label": "व्यवस्थापक · उपयोगकर्ता",
+          "subtitle": "स्टाफ खाते"
+        },
+        "adminRoles": {
+          "label": "व्यवस्थापक · भूमिकाएँ",
+          "subtitle": "अनुमतियां"
+        },
+        "adminApi": {
+          "label": "व्यवस्थापक · एपीआई",
+          "subtitle": "एपीआई पहुंच"
+        },
+        "adminAudit": {
+          "label": "व्यवस्थापक · ऑडिट लॉग",
+          "subtitle": "गतिविधि लॉग"
+        },
+        "apiDocs": {
+          "label": "एपीआई दस्तावेज़",
+          "subtitle": "OpenAPI / Swagger"
+        }
+      }
+    },
+    "idle": {
+      "title": "सत्र समाप्त हो रहा है",
+      "description": "आपको साइन आउट कर दिया जाएगा {countdown,plural,one{# दूसरा} other{# सेकंड}} निष्क्रियता के कारण. साइन इन रहने के लिए अपना माउस घुमाएँ या कोई भी कुंजी दबाएँ।",
+      "staySignedIn": "साइन इन रहें"
+    },
+    "scrollToTop": "शीर्ष तक स्क्रॉल करें",
+    "error": {
+      "title": "कुछ गलत हो गया",
+      "description": "एक अप्रत्याशित त्रुटि हुई। कृपया पुनः प्रयास करें या सहायता से संपर्क करें।",
+      "retry": "पुनः प्रयास करें"
+    }
+  },
+  "Trust": {
+    "title": "{orgName} ट्रस्ट केंद्र",
+    "compliance": "अनुपालन एवं प्रमाणन",
+    "expired": "खत्म हो चुका",
+    "expiringSoon": "जल्द ही समाप्त हो रहा है",
+    "verify": "सत्यापित करें",
+    "documents": "सुरक्षा दस्तावेज़",
+    "download": "डाउनलोड करना",
+    "subprocessors": "सबप्रोसेसर",
+    "name": "नाम",
+    "purpose": "उद्देश्य",
+    "location": "जगह",
+    "contactPrompt": "हमारी सुरक्षा स्थिति के बारे में प्रश्न?",
+    "categories": {
+      "POLICY": "नीति",
+      "SECURITY": "सुरक्षा रिपोर्ट",
+      "COMPLIANCE": "अनुपालन",
+      "PRIVACY": "गोपनीयता",
+      "OTHER": "अन्य"
+    }
+  },
+  "Portal": {
+    "metaTitle": "विक्रेता प्रश्नावली",
+    "noscript": "इस प्रश्नावली को पूरा करने के लिए जावास्क्रिप्ट आवश्यक है। कृपया अपनी ब्राउज़र सेटिंग में जावास्क्रिप्ट सक्षम करें।",
+    "logoAlt": "प्रतीक चिन्ह",
+    "linkNotFound": "लिंक नहीं मिला",
+    "linkInvalid": "यह प्रश्नावली लिंक अमान्य है.",
+    "linkExpiredTitle": "लिंक की अवधि समाप्त हो",
+    "linkExpiredBody": "यह प्रश्नावली लिंक समाप्त हो गया है. कृपया नए लिंक के लिए अनुरोधकर्ता से संपर्क करें।",
+    "submittedTitle": "{title} - प्रस्तुत किया गया",
+    "submittedBanner": "✓ आपकी प्रतिक्रियाएँ सबमिट कर दी गई हैं।",
+    "submittedBody": "अनुरोधकर्ता आपके उत्तरों की समीक्षा करेगा और स्पष्टीकरण का अनुरोध कर सकता है। कोई भी अपडेट देखने के लिए आप इस लिंक पर वापस लौट सकते हैं।",
+    "notApplicableShort": "एन/ए",
+    "decisions": {
+      "APPROVED": "अनुमत",
+      "CLARIFICATION_REQUESTED": "स्पष्टीकरण का अनुरोध किया गया"
+    },
+    "notAvailableTitle": "उपलब्ध नहीं है",
+    "notAvailableBody": "यह प्रश्नावली फिलहाल उपलब्ध नहीं है.",
+    "additionalInfoTitle": "अतिरिक्त जानकारी का अनुरोध किया गया है।",
+    "additionalInfoBody": "कृपया चिह्नित प्रश्नों की समीक्षा करें और तैयार होने पर पुनः सबमिट करें।",
+    "password": {
+      "title": "पासवर्ड आवश्यक है",
+      "description": "यह प्रश्नावली पासवर्ड से सुरक्षित है. जारी रखने के लिए अनुरोधकर्ता द्वारा प्रदान किया गया पासवर्ड दर्ज करें।",
+      "label": "पासवर्ड",
+      "placeholder": "पास वर्ड दर्ज करें",
+      "verifying": "सत्यापन किया जा रहा है...",
+      "continue": "जारी रखना",
+      "tooMany": "बहुत अधिक प्रयास. कृपया एक मिनट प्रतीक्षा करें।",
+      "notSet": "इस लिंक के लिए कोई पासवर्ड सेट नहीं है.",
+      "incorrect": "गलत पासवर्ड।"
+    },
+    "error": {
+      "title": "कुछ गलत हो गया",
+      "description": "प्रश्नावली लोड करते समय एक अप्रत्याशित त्रुटि उत्पन्न हुई. कृपया उस संगठन से संपर्क करें जिसने आपको सहायता के लिए यह लिंक भेजा है।",
+      "retry": "पुनः प्रयास करें"
+    },
+    "loading": "प्रश्नावली लोड हो रही है...",
+    "upload": {
+      "tooMany": "बहुत सारे अपलोड. कृपया कुछ देर इंतज़ार करें।",
+      "linkInvalid": "यह लिंक अब मान्य नहीं है.",
+      "noFile": "कोई फ़ाइल चयनित नहीं।",
+      "invalidQuestion": "अमान्य प्रश्न.",
+      "tooLarge": "फ़ाइल इससे अधिक है {max} एमबी सीमा.",
+      "badType": "प्रकार की फाइलें ।{ext} की अनुमति नहीं है।",
+      "dangerousType": "इस फ़ाइल प्रकार की अनुमति नहीं है.",
+      "mismatch": "फ़ाइल सामग्री a से मेल नहीं खाती.{ext} फ़ाइल।"
+    },
+    "questionnaire": {
+      "yes": "हाँ",
+      "no": "नहीं",
+      "maxUpload": "अधिकतम {maxUploadMb} एमबी. अनुमत: {extensions}.",
+      "uploading": " अपलोड हो रहा है...",
+      "uploaded": "अपलोड किया गया: {fileName}",
+      "remove": "निकालना",
+      "selectPlaceholder": "चुनना…",
+      "confirmStatement": "मैं इस कथन की पुष्टि करता हूँ",
+      "clarification": "समीक्षक ने इस उत्तर पर स्पष्टीकरण का अनुरोध किया।",
+      "notApplicable": "लागू नहीं",
+      "commentPlaceholder": "एक टिप्पणी जोड़ने…",
+      "send": "भेजना",
+      "autosaveHint": "आपके उत्तर स्वचालित रूप से सहेजे जाते हैं - आप इस पृष्ठ को बंद कर सकते हैं और किसी भी समय उसी लिंक का उपयोग करके वापस लौट सकते हैं।",
+      "saveExpired": "यह लिंक समाप्त हो गया है - आपके हाल के परिवर्तन सहेजे नहीं जा सके।",
+      "saveError": "हम आपके नवीनतम परिवर्तन सहेज नहीं सके. अपना कनेक्शन जांचें और पुनः प्रयास करें.",
+      "retrySave": "सहेजने का पुनः प्रयास करें",
+      "expiry": {
+        "expired": "यह लिंक समाप्त हो गया है.",
+        "hours": "यह लिंक समाप्त हो रहा है {hours,plural,one{# घंटा} other{# घंटे}}.",
+        "minutes": "यह लिंक समाप्त हो रहा है {minutes,plural,one{# मिनट} other{# मिनट}}."
+      },
+      "sectionCounter": "· अनुभाग {current} का {total}",
+      "saving": "सहेजा जा रहा है...",
+      "saveFailed": "सहेजना विफल",
+      "savedAt": "पर सहेजा गया {time}",
+      "lastSavedAt": "अंतिम बार सहेजा गया {time}",
+      "expires": "समय-सीमा समाप्त {date}",
+      "back": "पीछे",
+      "continue": "जारी रखना",
+      "reviewAnswers": "उत्तरों की समीक्षा करें",
+      "continueWarning": "{count,plural,one{# इस खंड पर आवश्यक प्रश्न को अभी भी उत्तर की आवश्यकता है।} other{# इस खंड पर आवश्यक प्रश्नों को अभी भी उत्तर की आवश्यकता है।}} आप जारी रख सकते हैं और वापस आ सकते हैं।",
+      "reviewHeading": "अपने उत्तरों की समीक्षा करें",
+      "reviewAnswered": "{answered}/{total} उत्तर",
+      "reviewMissing": "{count} लापता होना आवश्यक है",
+      "openSection": "अनुभाग खोलें",
+      "submitting": "सबमिट किया जा रहा है...",
+      "submit": "प्रश्नावली जमा करें",
+      "submitTitle": "प्रश्नावली सबमिट करें?",
+      "submitDescription": "सबमिट करने के बाद आप अपने उत्तर संपादित नहीं कर पाएंगे। क्या आप वाकई सबमिट करने के लिए तैयार हैं?",
+      "cancel": "रद्द करना",
+      "submitConfirm": "जमा करना",
+      "missingRequired": "{count,plural,one{कृपया जवाब दे # सबमिट करने से पहले आवश्यक प्रश्न.} other{कृपया जवाब दे # सबमिट करने से पहले आवश्यक प्रश्न.}}",
+      "linkInvalid": "यह लिंक अब मान्य नहीं है.",
+      "vendorAuthor": "विक्रेता"
+    }
+  },
+  "Pdf": {
+    "common": {
+      "pageOf": "पृष्ठ {page} / {total}",
+      "na": "एन/ए",
+      "none": "--",
+      "yes": "हाँ",
+      "no": "नहीं",
+      "notScored": "स्कोर नहीं किया गया",
+      "tier": "स्तर: {tier}",
+      "template": "टेम्पलेट: {name} वी{version}",
+      "reviewer": "समीक्षक: {name}",
+      "generated": "जनरेट किया गया {date}",
+      "due": "देय: {date}",
+      "completed": "पुरा होना: {date}",
+      "automatedFindingDescription": "विक्रेता का उत्तर अपेक्षित प्रतिक्रिया के अनुरूप नहीं था।"
+    },
+    "tiers": {
+      "CRITICAL": "गंभीर",
+      "HIGH": "उच्च",
+      "MEDIUM": "मध्यम",
+      "LOW": "कम"
+    },
+    "questionTypes": {
+      "YES_NO": "हां नहीं",
+      "MULTIPLE_CHOICE": "एकल विकल्प",
+      "FREE_TEXT": "फ्री टेक्स्ट",
+      "FILE_UPLOAD": "फ़ाइल अपलोड करें",
+      "DATE": "तारीख",
+      "NUMERIC": "संख्यात्मक",
+      "COMBOBOX": "सम्मिश्रण पटी",
+      "MULTI_SELECT": "बहु-चयन",
+      "RATING": "रेटिंग",
+      "URL": "यूआरएल",
+      "EMAIL": "ईमेल",
+      "CHECKBOX": "चेक बॉक्स"
+    },
+    "statuses": {
+      "DRAFT": "मसौदा",
+      "SENT": "भेजा",
+      "IN_PROGRESS": "प्रगति पर है",
+      "SUBMITTED": "प्रस्तुत किया गया",
+      "UNDER_REVIEW": "समीक्षा के अंतर्गत",
+      "COMPLETED": "पुरा होना।"
+    },
+    "assessment": {
+      "score": "अंक",
+      "customerResponsibility": "ग्राहक उत्तरदायित्व: {percent}% ({completed}/{total} पुरा होना)",
+      "responses": "प्रतिक्रियाएँ ({count})",
+      "question": "सवाल",
+      "answer": "उत्तर",
+      "type": "प्रकार",
+      "weight": "वज़न",
+      "compliant": "अनुरूप",
+      "scoreColumn": "अंक",
+      "findings": "निष्कर्ष ({count})"
+    },
+    "framework": {
+      "complianceReport": "{frameworkName} {version} - अनुपालन रिपोर्ट",
+      "summary": "सारांश",
+      "overallScore": "समग्र प्राप्तांक:",
+      "domainsAssessed": "डोमेन का मूल्यांकन किया गया:",
+      "controlsMapped": "नियंत्रण मैप किए गए:",
+      "domainCompliance": "डोमेन अनुपालन",
+      "domain": "कार्यक्षेत्र",
+      "current": "मौजूदा",
+      "previous": "पहले का",
+      "change": "परिवर्तन",
+      "controlHeatmap": "हीटमैप को नियंत्रित करें",
+      "control": "नियंत्रण",
+      "title": "शीर्षक",
+      "compliance": "अनुपालन",
+      "status": "स्थिति",
+      "ragGreen": "हरा",
+      "ragAmber": "अंबर",
+      "ragRed": "लाल",
+      "ragNone": "मूल्यांकन नहीं किया गया"
+    },
+    "portfolio": {
+      "title": "शीर्षक",
+      "vendors": "विक्रेता",
+      "averageScore": "औसत स्कोर",
+      "openFindings": "खुले निष्कर्ष",
+      "needsAttention": "ध्यान देने की जरूरत है",
+      "scoreDistribution": "स्कोर वितरण",
+      "green": "हरा (≥85%)",
+      "amber": "एम्बर (60-84%)",
+      "red": "लाल (<60%)",
+      "unscored": "स्कोर नहीं किया गया",
+      "vendorsByTier": "स्तर के अनुसार विक्रेता",
+      "assessmentsByStatus": "स्थिति के अनुसार आकलन",
+      "vendorsCount": "विक्रेता ({count})",
+      "vendor": "विक्रेता",
+      "tier": "टीयर",
+      "score": "अंक",
+      "lastAssessed": "अंतिम बार मूल्यांकन किया गया",
+      "assessments": "आकलन",
+      "notAssessed": "मूल्यांकन नहीं किया गया",
+      "topDeficientControls": "शीर्ष अपूर्ण नियंत्रण ({count})",
+      "control": "नियंत्रण",
+      "vendorsAffected": "विक्रेता प्रभावित"
+    }
+  },
+  "Email": {
+    "footer": "यह ईमेल किसके द्वारा भेजा गया था {appName}. यदि बटन काम नहीं करता है, तो लिंक को कॉपी करके अपने ब्राउज़र में पेस्ट करें।",
+    "trustFooter": "हमारी सुरक्षा स्थिति के बारे में और जानें: {url}",
+    "testSubject": "{appName} - एसएमटीपी परीक्षण",
+    "testBody": "आपकी एसएमटीपी सेटिंग्स सही ढंग से काम कर रही हैं।",
+    "testSent": "परीक्षण ईमेल भेजा गया.",
+    "smtpNotConfigured": "एसएमटीपी कॉन्फ़िगर नहीं है.",
+    "transporterFailed": "ट्रांसपोर्टर बनाने में विफल.",
+    "sendFailed": "भेजने में विफल: {reason}",
+    "retryMessage": "कृपया अपनी प्रश्नावली की समीक्षा करें और पुनः सबमिट करें।"
+  },
+  "Auth": {
+    "tagline": "विक्रेता जोखिम प्रबंधन",
+    "login": {
+      "title": "दाखिल करना",
+      "description": "अपने खाते में साइन इन करें.",
+      "email": "ईमेल",
+      "password": "पासवर्ड",
+      "submit": "दाखिल करना",
+      "submitting": "इन कर रहे हैं…",
+      "forgot": "पासवर्ड भूल गए?",
+      "or": "या",
+      "invalid": "अमान्य ईमेल या पासवर्ड.",
+      "tooMany": "बहुत अधिक प्रयास. कृपया एक क्षण प्रतीक्षा करें और पुनः प्रयास करें।"
+    },
+    "forgot": {
+      "title": "पासवर्ड भूल गए",
+      "description": "अपना ईमेल दर्ज करें और हम आपको एक रीसेट लिंक भेजेंगे।",
+      "email": "ईमेल",
+      "submit": "रीसेट लिंक भेजें",
+      "submitting": "भेजा जा रहा है...",
+      "back": "साइन इन करने के लिए वापस जाएँ",
+      "invalidEmail": "एक मान्य ईमेल पता दर्ज करें।",
+      "rateLimited": "यदि उस ईमेल वाला कोई खाता मौजूद है, तो एक रीसेट लिंक पहले ही भेजा जा चुका है।",
+      "sent": "यदि उस ईमेल वाला कोई खाता मौजूद है, तो एक रीसेट लिंक भेजा गया है।"
+    },
+    "reset": {
+      "title": "पासवर्ड रीसेट",
+      "description": "अपने खाते के लिए एक नया पासवर्ड चुनें.",
+      "missing": "यह रीसेट लिंक गुम या अमान्य है. पर एक नए का अनुरोध करें",
+      "expired": "यह रीसेट लिंक समाप्त हो गया है या पहले ही उपयोग किया जा चुका है। पर एक नए का अनुरोध करें",
+      "forgotLink": "पासवर्ड भूल गए पेज",
+      "forUser": "के लिए एक नया पासवर्ड चुनें {email}.",
+      "newPassword": "नया पासवर्ड",
+      "confirmPassword": "पासवर्ड की पुष्टि कीजिये",
+      "submit": "पासवर्ड रीसेट",
+      "submitting": "रीसेट किया जा रहा है...",
+      "back": "साइन इन करने के लिए वापस जाएँ",
+      "invalidLink": "अमान्य रीसेट लिंक.",
+      "invalidPassword": "ऐसे पासवर्ड का उपयोग करें जो आवश्यकताओं को पूरा करता हो।",
+      "expiredToken": "यह रीसेट लिंक अमान्य है या समाप्त हो चुका है."
+    },
+    "setup": {
+      "title": "व्यवस्थापक बनाएं",
+      "cardTitle": "पहला एडमिन बनाएं",
+      "description": "विक्रेता जोखिम का प्रबंधन शुरू करने के लिए प्रारंभिक व्यवस्थापक खाता सेट करें।",
+      "fullName": "पूरा नाम",
+      "email": "ईमेल",
+      "password": "पासवर्ड",
+      "passwordHint": "कम से कम 12 अक्षर.",
+      "submit": "व्यवस्थापक बनाएं",
+      "submitting": "बनाया जा रहा है...",
+      "alreadyDone": "सेटअप पहले ही पूरा हो चुका है.",
+      "invalid": "नाम, ईमेल और पासवर्ड (कम से कम 12 अक्षर) जांचें।",
+      "roleError": "व्यवस्थापक भूमिका प्रारंभ नहीं की जा सकी. कृपया पुन: प्रयास करें।",
+      "createdSignIn": "खाता बनाया गया. साइन इन करें।"
+    },
+    "sso": {
+      "orSignInWith": "या इसके साथ साइन इन करें"
+    }
+  }
+}

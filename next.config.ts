@@ -3,6 +3,9 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  outputFileTracingIncludes: {
+    "/api/**/*": ["./lib/pdf/fonts/**/*"],
+  },
 };
 
 const withNextIntl = createNextIntlPlugin("./lib/i18n/request.ts");

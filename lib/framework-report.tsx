@@ -6,9 +6,15 @@ import {
   StyleSheet,
   renderToBuffer,
 } from "@react-pdf/renderer";
-import { getFormatter, getTranslations } from "next-intl/server";
+import { getFormatter, getLocale, getTranslations } from "next-intl/server";
 
 import { formatPercent } from "@/lib/utils";
+import { localeDirection } from "@/lib/i18n/config";
+import {
+  pdfFontFamily,
+  registerPdfFonts,
+  type PdfFontFamily,
+} from "@/lib/pdf/fonts";
 import {
   type PdfFormatter,
   type PdfTranslate,
@@ -167,10 +173,14 @@ function FrameworkReportDocument({
   data,
   translations,
   dateFormatter,
+  fontFamily,
+  direction,
 }: {
   data: FrameworkReportData;
   translations: PdfTranslate;
   dateFormatter: PdfFormatter;
+  fontFamily: PdfFontFamily;
+  direction: "ltr" | "rtl";
 }) {
   const controlsByDomain = new Map<string, typeof data.controls>();
   for (const control of data.controls) {
@@ -181,7 +191,7 @@ function FrameworkReportDocument({
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size="A4" style={[styles.page, { fontFamily, direction }]}>
         <View style={styles.header}>
           <Text style={styles.orgName}>{data.organizationName}</Text>
           <Text style={styles.title}>{data.vendorName}</Text>
@@ -382,6 +392,10 @@ export async function generateFrameworkReportPdf(
   frameworkId: string,
 ): Promise<Buffer | null> {
   const translations = await getTranslations("Pdf");
+  const locale = await getLocale();
+  const fontFamily = pdfFontFamily(locale);
+  const direction = localeDirection(locale);
+  registerPdfFonts();
   const formatter = await getFormatter();
   const translate: PdfTranslate = Object.assign(
     (key: string, values?: Record<string, string | number>) =>
@@ -437,6 +451,8 @@ export async function generateFrameworkReportPdf(
       data={data}
       translations={translate}
       dateFormatter={dateFormatter}
+      fontFamily={fontFamily}
+      direction={direction}
     />,
   );
 }

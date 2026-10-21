@@ -178,7 +178,7 @@ docker compose up -d
 
 ## Internationalization
 
-Mitch‑Risk ships in **English** and **Spanish**. The display language is a per-browser preference stored in the `NEXT_LOCALE` cookie — there are no `/[locale]/` URL segments.
+Mitch‑Risk ships in **twelve languages**: English, Spanish, French, German, Portuguese (Brazil), Italian, Dutch, Japanese, Korean, Simplified Chinese, Arabic, and Hindi. The display language is a per-browser preference stored in the `NEXT_LOCALE` cookie — there are no `/[locale]/` URL segments. The non-English/Spanish catalogs are machine-assisted first-pass translations; native review is recommended before treating them as final copy.
 
 - **Default:** the organisation default in **Admin → General → Default language** (English unless changed). New visitors get this language.
 - **Users can switch:** logged-in user menu → **Language**, the selector on auth screens, the trust center header, and the vendor portal header.
@@ -186,6 +186,7 @@ Mitch‑Risk ships in **English** and **Spanish**. The display language is a per
 - **Translated:** all app screens, admin sections, dialogs, validation messages, public trust center, vendor portal, built-in email defaults, and PDF reports.
 - **English by design:** the REST API, OpenAPI/Swagger content, and audit CSV exports. Custom email templates are sent exactly as written.
 - **Emails** use the organisation default language; **PDFs** follow the request locale.
+- **PDF fonts:** bundled Noto families cover Latin, Cyrillic, Arabic, Devanagari, Japanese, Korean, and Simplified Chinese. Arabic sets `dir="rtl"` at the root; RTL layout and complex-script shaping are best-effort and should be visually reviewed.
 
 ### Adding a language
 
@@ -193,9 +194,10 @@ Mitch‑Risk ships in **English** and **Spanish**. The display language is a per
 2. Copy `messages/en.json` to `messages/<code>.json` and translate the values, keeping keys and ICU placeholders unchanged.
 3. Register the catalog in `lib/i18n/messages.ts`.
 4. Add the built-in email defaults in `lib/settings/email-template-defaults.ts`.
-5. Run `npm run precheck`, `npm test`, `npm run build`, and `npm run test:e2e`.
+5. If the language uses a new script, add/select a Noto font in `lib/pdf/fonts.ts` and add the locale to `RTL_LOCALES` when needed.
+6. Run `npm run precheck`, `npm test`, `npm run build`, and `npm run test:e2e`.
 
-See the full [internationalization guide](docs/advanced/internationalization.md) for the detailed checklist, ICU rules, testing, and RTL caveats. The same page is published in the documentation site under **Advanced → Internationalization**.
+See the full [internationalization guide](docs/advanced/internationalization.md) for the detailed checklist, ICU rules, testing, fonts, RTL caveats, and the translation-toolkit workflow. The same page is published in the documentation site under **Advanced → Internationalization**.
 
 ---
 

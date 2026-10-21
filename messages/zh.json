@@ -1,0 +1,2681 @@
+{
+  "Common": {
+    "changeLanguage": "更改语言",
+    "skipToContent": "跳至内容",
+    "cancel": "取消",
+    "delete": "删除",
+    "close": "关闭",
+    "sidebar": "侧边栏",
+    "sidebarDescription": "显示移动侧边栏。",
+    "toggleSidebar": "切换侧边栏",
+    "step": "第 {number} 步：",
+    "tiers": {
+      "CRITICAL": "批判的",
+      "HIGH": "高的",
+      "MEDIUM": "中等的",
+      "LOW": "低的"
+    },
+    "pagination": {
+      "pageOf": "第 {page} 页，共 {totalPages} 页 · {totalCount} {itemLabel}",
+      "previous": "以前的",
+      "next": "下一个"
+    },
+    "viewToggle": {
+      "rows": "行视图",
+      "cards": "卡片视图"
+    },
+    "assessmentStatuses": {
+      "DRAFT": "草稿",
+      "SENT": "发送",
+      "IN_PROGRESS": "进行中",
+      "SUBMITTED": "已提交",
+      "UNDER_REVIEW": "审核中",
+      "COMPLETED": "完全的"
+    },
+    "findingStatuses": {
+      "OPEN": "打开",
+      "REMEDIATED": "已修复",
+      "RISK_ACCEPTED": "接受风险"
+    },
+    "copyLink": {
+      "copy": "复制",
+      "copied": "已复制"
+    },
+    "pendingLink": {
+      "preparing": "正在准备……"
+    },
+    "evidencePreview": {
+      "preview": "预览 {fileName}"
+    },
+    "questionTypes": {
+      "YES_NO": "是/否",
+      "MULTIPLE_CHOICE": "单项选择（任选其一）",
+      "FREE_TEXT": "自由文本",
+      "FILE_UPLOAD": "文件上传",
+      "DATE": "日期",
+      "NUMERIC": "数字",
+      "COMBOBOX": "组合框",
+      "MULTI_SELECT": "多选（选择多个）",
+      "RATING": "评级 (1-5)",
+      "URL": "网址",
+      "EMAIL": "电子邮件",
+      "CHECKBOX": "复选框（确认）"
+    },
+    "controlCodes": {
+      "showMore": "{count,plural,one{展示 # 更多控制} other{展示 # 更多控制}}",
+      "showLess": "显示较少"
+    },
+    "search": {
+      "placeholder": "搜索…"
+    }
+  },
+  "Metadata": {
+    "description": "白标第三方供应商风险管理解决方案"
+  },
+  "Dashboard": {
+    "metaTitle": "仪表板",
+    "title": "供应商风险概述",
+    "tracked": "{count,plural,one{# 供应商跟踪} other{# 供应商追踪}}",
+    "newVendor": "新供应商",
+    "assessments": "评估",
+    "portfolioReport": "投资组合报告",
+    "emptyTitle": "还没有供应商",
+    "emptyCanCreate": "添加您的第一个供应商以开始跟踪他们的风险。",
+    "emptyReadOnly": "目前尚未追踪任何供应商。",
+    "addVendor": "添加供应商 →",
+    "stats": {
+      "vendors": "追踪供应商",
+      "averageScore": "平均分",
+      "openFindings": "开放调查结果",
+      "needsAttention": "需要注意"
+    },
+    "topControls": "最有缺陷的控制措施",
+    "viewRiskRegister": "查看风险登记册 →",
+    "highestRisk": "风险最高的供应商",
+    "viewAllVendors": "查看所有供应商 →",
+    "noAssessments": "没有评估",
+    "overdue": "{count} 逾期的",
+    "attention": {
+      "title": "需要注意",
+      "allClear": "一切都清楚了——现在没有什么需要注意的。",
+      "titleWithCount": "需要注意（{count})",
+      "unreviewed": "未经审查",
+      "clarification": "澄清",
+      "clarifications": "澄清",
+      "failedEmail": "电子邮件发送失败（24 小时）",
+      "failedEmails": "失败的电子邮件（24 小时）",
+      "groups": {
+        "overdue": "逾期评估",
+        "belowThreshold": "低于分数阈值",
+        "keyDates": "关键日期（60 天）"
+      },
+      "overdueAssessment": "{count,plural,one{# 逾期评估} other{# 逾期评估}}",
+      "oldestSince": "最古老的 {date}",
+      "belowThreshold": "以下 {percent}％ 临界点",
+      "contractRenewal": "续约",
+      "daysOverdue": "{days}d 逾期",
+      "inDays": "在 {days}d"
+    },
+    "charts": {
+      "portfolioHealth": "投资组合健康",
+      "openFindingsBySeverity": "按严重程度开放调查结果",
+      "assessmentStatus": "评估状态",
+      "riskByTier": "风险等级",
+      "vendors": "供应商",
+      "assessments": "评估",
+      "openFindings": "开放调查结果",
+      "ragShort": {
+        "green": "绿色的",
+        "amber": "琥珀色",
+        "red": "红色的",
+        "unscored": "未计分"
+      },
+      "rag": {
+        "green": "绿色（≥85%）",
+        "amber": "琥珀色 (60–84%)",
+        "red": "红色（<60%）",
+        "unscored": "未计分"
+      },
+      "severity": {
+        "CRITICAL": "批判的",
+        "HIGH": "高的",
+        "MEDIUM": "中等的",
+        "LOW": "低的"
+      },
+      "status": {
+        "DRAFT": "草稿",
+        "SENT": "发送",
+        "IN_PROGRESS": "进行中",
+        "SUBMITTED": "已提交",
+        "UNDER_REVIEW": "审核中",
+        "COMPLETED": "完全的",
+        "OVERDUE": "逾期"
+      },
+      "tier": {
+        "CRITICAL": "批判的",
+        "HIGH": "高的",
+        "MEDIUM": "中等的",
+        "LOW": "低的",
+        "Unspecified": "未指定"
+      },
+      "activity": {
+        "title": "评估活动",
+        "noActivity": "此期间无活动",
+        "timeRange": "选择时间范围",
+        "ranges": {
+          "90d": "过去 3 个月",
+          "30d": "过去 30 天",
+          "7d": "过去 7 天"
+        },
+        "assessments": "评估"
+      }
+    }
+  },
+  "Vendors": {
+    "metaTitle": "供应商",
+    "title": "供应商",
+    "subtitle": "您评估安全风险的供应商。",
+    "compare": "比较",
+    "import": "导入",
+    "bulkSend": "批量发送",
+    "newVendor": "新供应商",
+    "search": "搜索",
+    "searchPlaceholder": "姓名或电子邮件...",
+    "tier": "等级",
+    "anyTier": "任何级别",
+    "filterTierAria": "按层级过滤供应商",
+    "sort": "种类",
+    "sortAria": "对供应商进行排序",
+    "filter": "筛选",
+    "clear": "清除",
+    "viewAria": "供应商列表视图",
+    "noMatches": "没有供应商与所选过滤器匹配。",
+    "emptyTitle": "还没有供应商",
+    "emptyDescription": "添加供应商以开始跟踪其安全风险。",
+    "assessed": "已评估 {date}",
+    "notAssessed": "未评估",
+    "assessmentCount": "{count,plural,one{# 评估} other{# 评估}}",
+    "openFindingCount": "{count,plural,one{# 开放发现} other{# 开放的调查结果}}",
+    "list": {
+      "vendor": "供应商",
+      "tier": "等级",
+      "score": "分数",
+      "items": "供应商"
+    },
+    "sorts": {
+      "name": "姓名（A-Z）",
+      "name-desc": "姓名（Z-A）",
+      "score-asc": "得分（低→高）",
+      "score-desc": "分数（高→低）",
+      "tier": "等级（A-Z）",
+      "tier-desc": "层（Z-A）",
+      "last-assessed": "最后评估",
+      "assessments": "大多数评估"
+    },
+    "form": {
+      "vendorName": "供应商名称",
+      "externalId": "外部ID",
+      "externalIdPlaceholder": "例如ERP-V-001",
+      "externalIdHint": "在另一个系统中可选地引用该供应商",
+      "contactName": "联系人姓名",
+      "contactEmail": "联系邮箱",
+      "tier": "等级",
+      "website": "网站",
+      "riskOwner": "风险负责人",
+      "dataSensitivity": "数据敏感性",
+      "contractValue": "合同价值",
+      "geographicRisk": "地理风险",
+      "tags": "标签",
+      "tagsPlaceholder": "例如SAAS、关键、财务",
+      "tagsHint": "用于分组和过滤的逗号分隔标签",
+      "serviceProvided": "提供服务",
+      "servicePlaceholder": "例如云电子邮件托管",
+      "contractRenewalDate": "合同续签日期",
+      "notes": "笔记",
+      "saving": "保存...",
+      "saveChanges": "保存更改",
+      "create": "创建供应商",
+      "cancel": "取消",
+      "unspecified": "未指定",
+      "unassigned": "未分配",
+      "levels": {
+        "NONE": "没有任何",
+        "LOW": "低的",
+        "MEDIUM": "中等的",
+        "HIGH": "高的"
+      },
+      "dataSensitivities": {
+        "PUBLIC": "民众",
+        "INTERNAL": "内部的",
+        "CONFIDENTIAL": "机密的",
+        "RESTRICTED": "受限制的"
+      }
+    },
+    "new": {
+      "title": "新供应商",
+      "cardTitle": "供应商详情",
+      "cardDescription": "添加要跟踪的新供应商。",
+      "breadcrumb": "新的"
+    },
+    "edit": {
+      "title": "编辑供应商",
+      "cardTitle": "供应商详情",
+      "cardDescription": "更新供应商详细信息。",
+      "breadcrumb": "编辑"
+    },
+    "attachments": {
+      "title": "附件",
+      "emptyTitle": "还没有附件",
+      "emptyDescription": "上传合同、信件或其他文件。",
+      "removeAria": "删除附件",
+      "dropHint": "拖放文件或单击浏览",
+      "uploading": "正在上传...",
+      "upload": "上传"
+    },
+    "export": {
+      "button": "导出 CSV",
+      "all": "所有供应商",
+      "currentPage": "当前页面"
+    },
+    "errors": {
+      "invalidInput": "输入无效。",
+      "duplicateExternalId": "具有此外部 ID 的供应商已存在。",
+      "vendorCreated": "供应商创建。",
+      "vendorUpdated": "供应商已更新。",
+      "noFile": "未选择文件。",
+      "fileTypeNotAllowed": "不允许的文件类型。",
+      "fileTypeNotAccepted": "不接受此文件类型。",
+      "fileTooLarge": "文件太大（最大 {max} MB）。",
+      "fileUploaded": "文件已上传。",
+      "fileAttached": "文件附加到供应商。"
+    },
+    "detail": {
+      "notFound": "找不到供应商",
+      "errorTitle": "无法加载供应商",
+      "errorDescription": "加载该供应商的详细信息时发生错误。请再试一次。",
+      "created": "供应商创建。",
+      "breadcrumbs": {
+        "riskRegister": "风险登记册",
+        "vendors": "供应商"
+      },
+      "edit": "编辑",
+      "exportCsv": "导出 CSV",
+      "delete": "删除",
+      "deleteTitle": "删除供应商？",
+      "deleteDescription": "这将永久删除 {vendorName} 和所有 {count,plural,one{# 评估} other{# 评估}}。此操作无法撤消。",
+      "tabs": {
+        "overview": "概述",
+        "compliance": "遵守",
+        "findings": "发现",
+        "assessments": "评估"
+      },
+      "overview": {
+        "title": "概述",
+        "serviceProvided": "提供服务",
+        "riskOwner": "风险负责人",
+        "unassigned": "未分配",
+        "externalId": "外部ID",
+        "dataSensitivity": "数据敏感性",
+        "unspecified": "未指定",
+        "website": "网站",
+        "contractRenewal": "续约",
+        "overdue": " · 逾期",
+        "attachments": "附件",
+        "emptyTitle": "没有概述详细信息",
+        "emptyDescription": "编辑此供应商以添加服务详细信息、风险所有者和其他配置文件信息。"
+      },
+      "riskProfile": {
+        "title": "风险状况",
+        "inherent": "固有（预评估）",
+        "residual": "剩余（评估）",
+        "trendingUp": "趋势上升↑",
+        "trendingDown": "趋势下降↓",
+        "stable": "稳定 →",
+        "noScore": "尚未评分 — 提交评估",
+        "trend": "趋势",
+        "compareLastTwo": "比较最后两个 →"
+      },
+      "certifications": "认证和证明",
+      "compliance": {
+        "vendorCompliance": "供应商合规性",
+        "yourCompliance": "您的合规性",
+        "domainCompliance": "域名合规性",
+        "noDataTitle": "无合规数据",
+        "noDataDescription": "完成评估以查看域合规性分数。",
+        "frameworkHeatmaps": "框架热图",
+        "noAssessmentData": "无评估数据",
+        "noFrameworksTitle": "没有可用的框架",
+        "noFrameworksDescription": "导入或种子框架库以将控制映射到评估问题。"
+      },
+      "findings": {
+        "title": "发现",
+        "openCount": "{count, plural, one {# 个未解决} other {# 个未解决}}",
+        "viewAll": "{count,plural,one{查看风险登记册中的发现 →} other{查看全部 # 风险登记册中的发现 →}}",
+        "emptyTitle": "没有发现",
+        "emptyDescription": "当评估答案不合规时，就会生成调查结果。完成评估以在此处查看结果。"
+      },
+      "assessments": {
+        "title": "评估",
+        "new": "新评估",
+        "emptyTitle": "没有评估",
+        "emptyDescription": "尚未为此供应商创建任何评估。",
+        "noTemplate": "无模板",
+        "due": " · 到期的 {date}",
+        "viewAll": "{count,plural,one{查看评估 →} other{查看全部 # 评估 →}}",
+        "activity": "活动"
+      }
+    },
+    "timeline": {
+      "empty": "尚未记录任何活动。",
+      "assessmentCreated": "已创建评估",
+      "assessmentSent": "评估已发送",
+      "assessmentSubmitted": "已提交评估",
+      "findingOpened": "发现已打开",
+      "remediated": "已修复",
+      "riskAccepted": "接受风险",
+      "certificationAdded": "添加认证",
+      "certificationExpiring": "认证即将到期",
+      "certificationExpiringDescription": "{name} — 过期 {date}"
+    },
+    "certifications": {
+      "empty": "尚未跟踪任何认证。",
+      "expires": "过期 {date}",
+      "statuses": {
+        "valid": "有效的",
+        "expiring": "即将到期",
+        "expired": "已到期"
+      },
+      "add": "添加认证",
+      "edit": "编辑",
+      "delete": "删除",
+      "deleteTitle": "删除认证？",
+      "deleteDescription": "\"{name}” 将被永久删除。",
+      "editor": {
+        "addTitle": "添加认证",
+        "description": "跟踪认证（SOC 2、ISO 27001……）及其到期时间。",
+        "name": "姓名",
+        "namePlaceholder": "例如SOC 2 类型 II",
+        "issuer": "发行人（可选）",
+        "issuerPlaceholder": "例如审核员/认证机构",
+        "issued": "已发布（可选）",
+        "expires": "过期",
+        "notes": "注释（可选）",
+        "complianceActions": "需要采取合规行动",
+        "selectFramework": "选择一个框架...",
+        "attachment": "附件（可选）",
+        "attachmentHint": "上传证书、报告或合同。最大 20 MB。",
+        "attachments": "附件",
+        "saving": "保存...",
+        "save": "保存认证",
+        "cancel": "取消"
+      },
+      "errors": {
+        "missingVendor": "缺少供应商。",
+        "invalidInput": "输入无效。",
+        "wrongVendor": "认证不属于该供应商。",
+        "saved": "认证已保存。",
+        "attachmentFailed": " 附件失败： {reason}",
+        "fileType": "不允许的文件类型。",
+        "fileTooLarge": "文件太大（最大 {max} MB）。",
+        "fileInvalid": "不接受此文件类型。",
+        "fileRecordFailed": "保存文件记录失败。",
+        "fileUploaded": "文件已上传。",
+        "nameRequired": "认证名称为必填项。",
+        "expiryRequired": "需要提供到期日期。",
+        "invalidExpiry": "输入有效的到期日期。",
+        "added": "认证 ”{name}”并附有附件。",
+        "missingEvidence": "缺少证据。",
+        "evidenceNotFound": "未找到证据。"
+      }
+    },
+    "customerResponsibility": {
+      "title": "客户责任",
+      "collapse": "坍塌",
+      "expand": "扩张",
+      "progress": "{completed} / {total} · {percent}%",
+      "empty": "此认证没有共同责任控制。",
+      "assignedTo": "分配给 {name}",
+      "fileCount": "{count,plural,one{# 文件} other{# 文件}}",
+      "status": "地位",
+      "statuses": {
+        "PENDING": "待办的",
+        "IN_PROGRESS": "进行中",
+        "COMPLETED": "完全的",
+        "NOT_APPLICABLE": "不适用"
+      },
+      "assignedToLabel": "分配给",
+      "assignedToPlaceholder": "用户 ID（可选）",
+      "attachment": "依恋",
+      "notes": "笔记",
+      "notesPlaceholder": "添加有关实施的注释...",
+      "files": "文件",
+      "saving": "保存...",
+      "save": "节省",
+      "cancel": "取消",
+      "errors": {
+        "missingFields": "缺少必填字段。",
+        "invalidStatus": "无效状态。",
+        "noChanges": "没有提供任何更改。",
+        "saved": "已保存。"
+      }
+    }
+  },
+  "Assessments": {
+    "list": {
+      "title": "评估",
+      "subtitle": "评估发送给供应商。",
+      "subtitleForVendor": "评估 {vendorName}.",
+      "filters": {
+        "search": "搜索",
+        "searchPlaceholder": "标题或供应商...",
+        "status": "地位",
+        "allStatuses": "所有状态",
+        "statusAriaLabel": "按状态过滤评估",
+        "from": "从",
+        "to": "到",
+        "sort": "种类",
+        "sortAriaLabel": "对评估进行排序",
+        "overdueOnly": "仅限逾期",
+        "apply": "筛选",
+        "clear": "清除"
+      },
+      "sorts": {
+        "created": "最新的优先",
+        "created-asc": "最老的在前",
+        "due-asc": "截止日期（最快）",
+        "due-desc": "截止日期（最晚）",
+        "score-asc": "得分（低→高）",
+        "score-desc": "分数（高→低）",
+        "vendor": "供应商 (A-Z)",
+        "status": "状态（A-Z）",
+        "status-desc": "状态（Z-A）"
+      },
+      "emptyFiltered": "没有评估与所选过滤器匹配。",
+      "emptyTitle": "还没有评估",
+      "emptyDescription": "创建评估并向供应商发送其链接以完成评估。",
+      "items": "评估",
+      "columns": {
+        "assessmentVendor": "评估·供应商",
+        "score": "分数",
+        "status": "地位",
+        "due": "到期的"
+      },
+      "overdue": "逾期",
+      "due": " · 到期的 {date}"
+    },
+    "new": {
+      "title": "新评估 {vendorName}",
+      "breadcrumb": "新评估",
+      "cardTitle": "评估详情",
+      "form": {
+        "title": "标题",
+        "titlePlaceholder": "例如年度安全审查",
+        "template": "问卷模板",
+        "templatePlaceholder": "选择已发布的模板",
+        "noTemplates": "没有找到模板。",
+        "dueDate": "到期日",
+        "reviewer": "审稿人",
+        "unassigned": "未分配",
+        "publishFirst": "首先发布模板以创建评估。",
+        "creating": "创造...",
+        "create": "创建评估",
+        "cancel": "取消"
+      }
+    },
+    "detail": {
+      "notFound": "未找到评估",
+      "breadcrumbs": {
+        "assessments": "评估",
+        "vendors": "供应商"
+      },
+      "actions": {
+        "reopen": "重新开启审核",
+        "exportCsv": "导出 CSV",
+        "downloadPdf": "下载PDF",
+        "preparingReport": "正在准备报告...",
+        "finalize": "最终确定",
+        "finalizing": "正在完成……",
+        "delete": "删除",
+        "deleteTitle": "删除评估？",
+        "deleteDescription": "这将永久删除“{title}”以及所有回应、调查结果和证据。此操作无法撤消。"
+      },
+      "meta": {
+        "due": " · 到期的 {date}",
+        "reviewer": " · 审稿人 {name}"
+      },
+      "draft": {
+        "createLinkTitle": "创建供应商链接",
+        "createLinkDescription": "生成用于评估的免登录供应商链接。 （可选）设置密码以保护访问。",
+        "settingsTitle": "草稿设置",
+        "title": "标题",
+        "dueDate": "到期日",
+        "saving": "保存…",
+        "save": "保存更改"
+      },
+      "link": {
+        "title": "供应商链接（无需登录）",
+        "expires": "过期 {date}",
+        "noExpiry": "无有效期",
+        "passwordProtected": "密码保护",
+        "extend": "延长30天",
+        "regenerate": "重新生成链接",
+        "revoke": "撤销",
+        "revokeTitle": "撤销供应商链接？",
+        "revokeDescription": "供应商将无法再访问调查问卷。如果需要，您可以稍后重新生成链接。",
+        "revokedTitle": "供应商链接",
+        "revokedDescription": "该链接已被撤销。"
+      },
+      "score": {
+        "title": "分数",
+        "low": "低风险",
+        "moderate": "中等风险",
+        "high": "高风险"
+      },
+      "findings": {
+        "summary": "调查结果（{count} · {open,plural,one{# 打开} other{# 打开}})",
+        "deletedUser": "已删除用户",
+        "noneTitle": "发现",
+        "allCompliant": "所有答案均符合要求——没有发现。",
+        "automatedDescription": "供应商的回答没有达到预期的反应。"
+      },
+      "responses": {
+        "title": "回应",
+        "summary": "{approved} 的 {total} 得到正式认可的 · {pending} 待办的",
+        "summaryClarifications": " · {count,plural,one{# 澄清} other{# 澄清}}",
+        "filters": {
+          "all": "全部",
+          "pending": "待办的 （{count})",
+          "approved": "得到正式认可的 （{count})",
+          "clarification": "澄清（{count})"
+        },
+        "notApplicable": "不适用",
+        "evidenceAlt": "证据文件： {fileName}",
+        "viewPdf": "查看PDF： {fileName} ↗",
+        "attachToVendor": "附加到供应商"
+      },
+      "sender": {
+        "password": "门户密码（可选）",
+        "passwordPlaceholder": "要求供应商输入密码",
+        "passwordHint": "如果设置，供应商必须在访问调查问卷之前输入此密码。",
+        "sendToVendor": "发送给供应商",
+        "generateOnly": "仅生成链接",
+        "customEmailPlaceholder": "定制@example.com",
+        "sendTo": "发送至"
+      },
+      "sendBack": {
+        "trigger": "发送回供应商",
+        "title": "寄回给供应商？",
+        "description": "供应商将能够编辑并重新提交他们的答案，并将收到一封包含您的消息的电子邮件。他们现有的答案将被保留。",
+        "messageLabel": "给供应商的消息（可选）",
+        "messagePlaceholder": "解释需要哪些附加信息...",
+        "cancel": "取消",
+        "confirm": "发回",
+        "emailFallback": "请检查并重新提交您的调查问卷。"
+      },
+      "review": {
+        "approved": "得到正式认可的",
+        "clarificationRequested": "要求澄清",
+        "noReviewYet": "还没有评论",
+        "collapse": "坍塌",
+        "expand": "扩张",
+        "reviewPlaceholder": "审查",
+        "approve": "批准",
+        "requestClarification": "要求澄清",
+        "notePlaceholder": "可选注释（如果需要澄清，供应商可以看到）",
+        "save": "节省",
+        "vendor": "供应商",
+        "internal": "内部的",
+        "replyPlaceholder": "回复",
+        "internalOption": "内部的",
+        "vendorOption": "供应商可见",
+        "reply": "回复",
+        "commentPlaceholder": "添加评论",
+        "comment": "评论",
+        "commentCount": "{count,plural,one{# 评论} other{# 评论}}",
+        "previousReview": "之前的评论（{decision}): {note}"
+      },
+      "findingStatus": {
+        "resolutionNotePlaceholder": "决议说明（可选）",
+        "save": "节省"
+      },
+      "attachEvidence": {
+        "trigger": "附",
+        "refreshing": "{message}。清爽…",
+        "attachAs": "附加为",
+        "certificationOption": "认证/鉴证",
+        "generalOption": "一般附件",
+        "certificationName": "认证名称",
+        "namePlaceholder": "例如SOC 2 类型 II",
+        "issuer": "发行人（可选）",
+        "issuerPlaceholder": "例如审计事务所",
+        "expiryDate": "到期日",
+        "displayNameForFile": "文件的显示名称",
+        "notes": "注释（可选）",
+        "notesPlaceholder": "附加上下文...",
+        "complianceActions": "需要采取合规行动",
+        "selectFramework": "选择一个框架...",
+        "displayName": "显示名称",
+        "generalNotesPlaceholder": "为什么要附上这个...",
+        "adding": "添加...",
+        "addCertification": "添加认证",
+        "attachToVendor": "附加到供应商",
+        "cancel": "取消"
+      },
+      "error": {
+        "title": "加载评估失败",
+        "description": "加载此评估时发生错误。请再试一次。",
+        "retry": "再试一次"
+      }
+    },
+    "errors": {
+      "invalidInput": "输入无效。",
+      "titleRequired": "标题为必填项",
+      "titleTooLong": "标题不得超过 200 个字符",
+      "templateRequired": "选择模板",
+      "invalidDueDate": "输入有效的截止日期",
+      "saved": "已保存。",
+      "started": "评估开始了。",
+      "portalLinkFailed": "已创建评估，但无法生成门户链接。",
+      "missingReviews": "{count,plural,one{# 回应仍需审查。} other{# 仍然需要审查答复。}}"
+    }
+  },
+  "Templates": {
+    "list": {
+      "title": "模板",
+      "subtitle": "构建和版本安全调查问卷。",
+      "new": "新模板",
+      "import": "导入",
+      "emptyTitle": "还没有模板",
+      "emptyDescription": "创建您的第一个评估模板。",
+      "sections": "{count,plural,one{# 部分} other{# 部分}}"
+    },
+    "statuses": {
+      "DRAFT": "草稿",
+      "PUBLISHED": "已发表",
+      "ARCHIVED": "已存档"
+    },
+    "new": {
+      "breadcrumb": "新的",
+      "title": "新模板",
+      "cardTitle": "模板详细信息",
+      "form": {
+        "name": "姓名",
+        "description": "描述",
+        "creating": "创造……",
+        "create": "创建模板",
+        "cancel": "取消"
+      }
+    },
+    "builder": {
+      "notFound": "找不到模板",
+      "breadcrumbs": {
+        "templates": "模板"
+      },
+      "actions": {
+        "publish": "发布",
+        "newVersion": "创建新版本",
+        "unpublish": "取消发布",
+        "delete": "删除",
+        "deleteTitle": "删除模板？",
+        "deleteDescription": "这将永久删除“{name}”及其所有部分和问题。使用此模板的评估将丢失模板链接。此操作无法撤消。",
+        "menuAriaLabel": "模板操作",
+        "preview": "预览",
+        "duplicate": "复制",
+        "export": "出口"
+      },
+      "versionHistory": "版本历史",
+      "details": "模板详细信息",
+      "name": "姓名",
+      "description": "描述",
+      "saveDetails": "保存详细信息",
+      "readOnly": "此版本已发布且只读。创建新版本以进行更改。",
+      "jumpToSection": "跳转至部分",
+      "section": {
+        "rename": "重命名",
+        "moveUp": "向上移动部分",
+        "moveDown": "向下移动部分",
+        "deleteTitle": "删除部分？",
+        "deleteDescription": "这将永久删除“{title}”以及其中的所有问题。",
+        "delete": "删除部分",
+        "noQuestionsTitle": "没有问题",
+        "noQuestionsDescription": "添加一个问题以开始学习本部分。",
+        "showQuestions": "展示 {count,plural,one{# 问题} other{# 问题}}",
+        "hideQuestions": "隐藏 {count,plural,one{# 问题} other{# 问题}}",
+        "required": "必需的",
+        "moveQuestionUp": "将问题上移",
+        "moveQuestionDown": "将问题下移",
+        "editQuestion": "编辑",
+        "deleteQuestionTitle": "删除问题？",
+        "deleteQuestionDescription": "这将永久删除“{text}\".",
+        "deleteQuestion": "删除",
+        "addQuestion": "添加问题"
+      },
+      "addSection": {
+        "title": "添加部分",
+        "placeholder": "章节标题",
+        "button": "添加部分"
+      }
+    },
+    "question": {
+      "text": "问题正文",
+      "help": "帮助文本",
+      "helpHint": "支持 Markdown 格式 - 使用**粗体**、*斜体*、列表和链接。",
+      "answerType": "答案类型",
+      "riskWeight": "风险权重",
+      "required": "必需的",
+      "options": "选项（每行一个）",
+      "expectedAnswer": "预期答案",
+      "noExpectedAnswer": "没有预期的答案",
+      "yes": "是的",
+      "no": "不",
+      "acceptedAnswers": "已接受的答案",
+      "acceptedHint": "勾选所有应计为合规的答案。",
+      "acceptedEmpty": "在上方添加选项，以选择哪些答案可接受。",
+      "expectedNumber": "预计数量",
+      "expectedSelections": "预期选择",
+      "selectionsHint": "勾选供应商必须选择的准确组合，才能计为合规。",
+      "selectionsEmpty": "在上方添加选项，以选择必需的选项。",
+      "manualScoring": "此答案类型在审查期间手动评分。",
+      "checked": "已检查",
+      "unchecked": "未选中",
+      "conditionalLegend": "条件可见性规则",
+      "controlsLegend": "映射合规性控制",
+      "saving": "保存...",
+      "save": "保存问题",
+      "cancel": "取消"
+    },
+    "conditions": {
+      "questionFallback": "一个问题",
+      "shownIf": "显示如果",
+      "and": "和",
+      "or": "或者",
+      "editing": {
+        "title": "有条件的可见性",
+        "match": "匹配",
+        "all": "全部（且）",
+        "any": "任意（或）",
+        "noQuestions": "请先添加其他问题，才能将此问题设为条件问题。",
+        "alwaysShown": "始终显示。添加规则，仅在其它回答匹配时才显示此问题。",
+        "selectQuestion": "选择一个问题",
+        "value": "价值",
+        "remove": "消除",
+        "addRule": "添加规则",
+        "legend": "条件逻辑",
+        "yes": "是的",
+        "no": "不",
+        "checked": "已检查",
+        "unchecked": "未选中"
+      },
+      "operators": {
+        "equals": "等于",
+        "notEquals": "不等于",
+        "contains": "包含",
+        "notContains": "不包含",
+        "gt": "大于",
+        "lt": "少于",
+        "gte": "大于或等于",
+        "lte": "小于或等于",
+        "answered": "已回答",
+        "notAnswered": "没有得到答复"
+      }
+    },
+    "controls": {
+      "mappedControls": "映射控件",
+      "selectedCount": "{count} 已选择",
+      "hint": "勾选一个框架标题以映射其每一个控件——对于“你经过认证了吗？”很有用。 questions where a compliant answer should satisfy the whole framework.",
+      "allFrameworks": "所有框架",
+      "filterPlaceholder": "过滤器控制...",
+      "noMatch": "没有控件与当前过滤器匹配。"
+    },
+    "import": {
+      "metadataTitle": "导入模板",
+      "title": "导入模板",
+      "subtitle": "上传 JSON 文件以创建新模板。",
+      "breadcrumb": "导入",
+      "cardTitle": "从 JSON 导入模板",
+      "steps": {
+        "upload": "上传",
+        "review": "审查"
+      },
+      "file": {
+        "label": "JSON 文件",
+        "downloadTemplate": "模板",
+        "hint": "上传有效的 JSON 模板文件。从模板生成器导出现有模板（操作→导出）以查看预期的结构。"
+      },
+      "parse": {
+        "invalidStructure": "模板结构无效。预期的名称和部分数组。",
+        "invalidJson": "JSON 文件无效。"
+      },
+      "summary": {
+        "sections": "{count,plural,one{# 部分} other{# 部分}}",
+        "questions": "{count,plural,one{# 问题} other{# 问题}}",
+        "controlCodes": "{count,plural,one{# 控制码} other{# 控制码}}"
+      },
+      "table": {
+        "section": "部分",
+        "questions": "问题"
+      },
+      "review": {
+        "introPrefix": "您即将导入模板"
+      },
+      "next": "下一页 →",
+      "back": "← 返回",
+      "importing": "输入…",
+      "import": "导入模板",
+      "success": "已将“{name}”导入为新草稿。",
+      "errors": {
+        "noFile": "未选择文件。",
+        "fileTooLarge": "文件太大（最大 1 MB）。",
+        "invalidJson": "JSON 文件无效。",
+        "importFailed": "导入失败 — 无法处理文件结构。对照可下载的模板进行检查，然后重试。",
+        "nameRequired": "模板名称为必填项。",
+        "sectionsRequired": "模板必须至少包含一节。",
+        "sectionTitleRequired": "部分 {number}: 标题为必填项。",
+        "questionsArray": "部分 ”{title}\": 问题必须是一个数组。",
+        "textRequired": "{where}: 文字为必填项。",
+        "helpTextType": "{where}：helpText 提供时必须是字符串。",
+        "unknownType": "{where}：未知类型”{type}\".",
+        "unknownRiskWeight": "{where}：未知风险权重”{weight}\".",
+        "requiredType": "{where}: 提供时必需的必须是布尔值。",
+        "optionsType": "{where}：选项必须是字符串数组。",
+        "controlCodesType": "{where}：controlCodes 必须是字符串数组。",
+        "expectedAnswerType": "{where}：expectedAnswer 必须是字符串、数字或字符串数​​组。",
+        "expectedAnswer": {
+          "multiSelectArray": "{where}：expectedAnswer 必须是字符串数组。",
+          "choiceStringOrArray": "{where}：expectedAnswer 必须是字符串或字符串数​​组。",
+          "numeric": "{where}：预期答案必须是数字。",
+          "yesNoCheckboxString": "{where}：expectedAnswer 必须是一个字符串。"
+        },
+        "controlAmbiguous": "控制代码 {codes} 不明确——相同的代码存在于多个框架中。删除重复项或重命名其中一个控件。",
+        "controlNotFound": "未找到控制代码： {code}"
+      }
+    },
+    "preview": {
+      "notFound": "找不到模板",
+      "breadcrumb": "预览",
+      "title": "预览 - {name}",
+      "description": "此调查问卷对供应商的显示方式的只读预览。此处显示了所有条件问题并注明了其规则。",
+      "noSectionsTitle": "还没有章节",
+      "noQuestionsTitle": "没有问题。",
+      "yes": "是的",
+      "no": "不",
+      "select": "选择…",
+      "freeTextPlaceholder": "自由文本答案",
+      "attachmentUpload": "附件上传",
+      "numberPlaceholder": "数字",
+      "acknowledge": "我承认"
+    },
+    "questionPages": {
+      "editTitle": "编辑问题",
+      "editBreadcrumb": "编辑问题",
+      "addTitle": "添加问题",
+      "addBreadcrumb": "添加问题"
+    },
+    "error": {
+      "title": "加载模板失败",
+      "description": "加载此模板时发生错误。请再试一次。",
+      "retry": "再试一次"
+    },
+    "errors": {
+      "invalidInput": "输入无效。",
+      "nameRequired": "模板名称为必填项",
+      "questionTextRequired": "问题文字为必填项",
+      "conditionalTooLarge": "条件逻辑负载太大。",
+      "conditionalInvalid": "无效的条件逻辑。"
+    }
+  },
+  "Frameworks": {
+    "list": {
+      "title": "框架",
+      "subtitle": "用于将问卷答案映射到要求的控制库。",
+      "import": "导入框架",
+      "gaps": "覆盖范围差距",
+      "deleteBlocked": "{count,plural,one{无法删除： # 控制仍然映射到问卷问题。首先取消映射。} other{无法删除： # 控件仍然映射到问卷问题。首先取消它们的映射。}}",
+      "emptyTitle": "没有框架",
+      "emptyDescription": "无法加载框架数据。",
+      "controls": "{count,plural,one{# 控制} other{# 控制}}",
+      "deleteTitle": "删除框架”{name} v{version}\"?",
+      "deleteDescription": "这将永久删除该框架及其 {count,plural,one{# 控制} other{# 控制}}。映射到这些控件的模板问题将丢失其分配的任务。现有的评估和调查结果不受影响。",
+      "delete": "删除"
+    },
+    "detail": {
+      "notFound": "未找到框架",
+      "breadcrumbs": "框架",
+      "deleteFramework": "删除框架",
+      "searchPlaceholder": "搜索控件...",
+      "noControlsTitle": "没有匹配的控件",
+      "noControlsDescription": "尝试不同的搜索词。"
+    },
+    "control": {
+      "notFound": "未找到控件",
+      "breadcrumbs": "框架",
+      "guidance": "指导",
+      "mappedQuestions": "映射问题（{count})",
+      "noMappedTitle": "没有映射问题",
+      "noMappedDescription": "尚无问卷问题映射到此控件。"
+    },
+    "gaps": {
+      "title": "控制覆盖范围差距",
+      "subtitle": "没有跨任何模板映射问题的控件。用它来识别评估范围中的盲点。",
+      "emptyTitle": "没有发现缺口",
+      "emptyDescription": "每个框架中的每个控件都至少有一个与之对应的问题。",
+      "covered": "{mapped}/{total} 覆盖",
+      "allCovered": "全部 {count,plural,one{# 控制} other{# 控制}} 至少映射一个问题。",
+      "errorTitle": "出了点问题",
+      "errorDescription": "无法加载合规性差距视图。请再试一次。",
+      "retry": "再试一次"
+    },
+    "import": {
+      "metadataTitle": "导入框架",
+      "title": "导入框架",
+      "subtitle": "上传包含控件的 CSV 文件以创建新框架。",
+      "breadcrumb": "导入",
+      "cardTitle": "从 CSV 导入框架",
+      "steps": {
+        "setup": "设置和上传",
+        "review": "审查"
+      },
+      "form": {
+        "name": "框架名称",
+        "namePlaceholder": "例如PCI数据安全标准",
+        "version": "版本",
+        "versionPlaceholder": "例如4.0",
+        "description": "说明（可选）",
+        "descriptionPlaceholder": "框架简要说明",
+        "csvFile": "CSV 文件",
+        "downloadTemplate": "模板",
+        "csvHint": "CSV 必须包含列：域、代码、标题、指导（指导是可选的）。可选：is_shared_responsibility（true/false，默认为 false）。最大 1 MB。",
+        "controlsFound": "{count,plural,one{# 找到控制} other{# 找到控制}}",
+        "domain": "领域",
+        "code": "代码",
+        "titleColumn": "标题",
+        "showingFirst": "首先显示 {shown} 的 {total} 行",
+        "next": "下一页 →",
+        "back": "← 返回",
+        "importing": "输入…",
+        "import": "导入框架",
+        "reviewIntro": "您即将创建框架 {name} v{version} 和 {count,plural,one{# 控制} other{# 控制}}.",
+        "success": "已导入“{name} v{version}”，包含 {count, plural, one {# 个控制} other {# 个控制}}。"
+      },
+      "errors": {
+        "noFile": "需要 CSV 文件。",
+        "invalidFileType": "文件必须是 .csv 文件。",
+        "tooLarge": "CSV 文件太大（最大 1 MB）。",
+        "noRows": "CSV 文件不包含数据行。",
+        "missingColumns": "缺少 CSV 列： {columns}。预期的： {expected}",
+        "invalidInput": "输入无效。",
+        "nameRequired": "框架名称为必填项",
+        "nameTooLong": "框架名称不得超过 200 个字符",
+        "versionRequired": "版本为必填项",
+        "versionTooLong": "版本不得超过 50 个字符",
+        "descriptionTooLong": "描述不得超过 500 个字符",
+        "rowDomainRequired": "排 {row}: 域名为必填项",
+        "rowCodeRequired": "排 {row}: 需要控制代码",
+        "rowTitleRequired": "排 {row}: 控件标题为必填项",
+        "rowInvalid": "排 {row}: 输入无效。",
+        "duplicateCode": "排 {row}：重复的控制代码”{code}\".",
+        "duplicateFramework": "一个名为“{name}“ 版本 ”{version}“已经存在了。"
+      }
+    },
+    "shared": "共享",
+    "error": {
+      "title": "出了点问题",
+      "description": "发生意外错误。请重试或联系支持人员。",
+      "retry": "再试一次"
+    },
+    "radar": {
+      "title": "领域合规雷达",
+      "current": "当前评估",
+      "previous": "之前的评估",
+      "ariaLabel": "域合规雷达： {values}",
+      "tableCaption": "域合规性百分比",
+      "domain": "领域",
+      "currentShort": "当前的",
+      "previousShort": "以前的",
+      "noPrevious": "仅完成一项评估——没有之前的数据可供比较。"
+    },
+    "heatmap": {
+      "metadataNotFound": "找不到供应商",
+      "metadataTitle": "热图 — {name}",
+      "breadcrumbs": "供应商",
+      "subtitle": "最近评估的域合规性雷达和控制级热图。",
+      "downloadReport": "下载PDF报告",
+      "preparingReport": "正在准备报告...",
+      "emptyTitle": "无可用数据",
+      "emptyDescription": "该框架尚无可用的评估数据。"
+    }
+  },
+  "RiskRegister": {
+    "metaTitle": "风险登记册",
+    "title": "风险登记册",
+    "subtitle": "供应商的每一项发现都集中在一个地方。",
+    "stats": {
+      "open": "开放调查结果",
+      "criticalOpen": "关键开放",
+      "remediated": "已修复",
+      "riskAccepted": "接受风险"
+    },
+    "filters": {
+      "status": "地位",
+      "allFindings": "所有发现",
+      "statusAriaLabel": "按状态过滤结果",
+      "severity": "严重性",
+      "anySeverity": "任何严重程度",
+      "severityAriaLabel": "按严重性过滤结果",
+      "vendor": "供应商",
+      "allVendors": "所有供应商",
+      "vendorAriaLabel": "按供应商过滤结果",
+      "sort": "种类",
+      "sortAriaLabel": "对结果进行排序",
+      "show": "展示",
+      "findingsOnly": "仅调查结果",
+      "responsibilityAriaLabel": "按责任过滤",
+      "customerResponsibility": "客户责任",
+      "apply": "筛选",
+      "clear": "清除",
+      "sorts": {
+        "priority": "优先事项",
+        "newest": "最新",
+        "severity": "严重性"
+      }
+    },
+    "emptyFiltered": "没有发现与所选过滤器匹配的结果。",
+    "emptyTitle": "尚未发现任何结果",
+    "emptyDescription": "当供应商提交的评估结果有缺陷时，系统会自动提出调查结果。",
+    "items": "发现",
+    "responsibility": {
+      "title": "客户责任",
+      "noMatch": "没有客户责任项目与所选过滤器匹配。",
+      "vendorFallback": "供应商",
+      "assignedTo": "分配给 {name}"
+    },
+    "bulk": {
+      "selected": "{count} 已选择",
+      "statusRemediated": "已修复",
+      "statusRiskAccepted": "接受风险",
+      "statusReopen": "重新开放",
+      "updateTitle": "{count,plural,one{更新 # 发现？} other{更新 # 发现？}}",
+      "updateDescription": "{count, plural, one {将 # 个发现设置为“{status}”。} other {将 # 个发现设置为“{status}”。}}",
+      "apply": "申请",
+      "applying": "正在申请...",
+      "clearSelection": "清除选择",
+      "note": "笔记： {note}",
+      "automatedDescription": "供应商的回答没有达到预期的反应。",
+      "errors": {
+        "invalidStatus": "无效状态。",
+        "invalidSelection": "选择数据无效。",
+        "noFindings": "未选择任何发现。",
+        "updated": "{count,plural,one{# 发现已更新} other{# 调查结果已更新}}",
+        "alreadyRemoved": "({count} 已经删除）。"
+      }
+    },
+    "error": {
+      "title": "出了点问题",
+      "description": "发生意外错误。请重试或联系支持人员。",
+      "retry": "再试一次"
+    }
+  },
+  "SelfAssessment": {
+    "metaTitle": "自我评估",
+    "title": "自我评估",
+    "subtitle": "使用供应商使用的同一调查问卷门户，根据合规性框架评估您自己的组织。",
+    "start": "开始新的评估",
+    "emptyTitle": "还没有自我评估",
+    "emptyDescription": "开始第一次自我评估，根据 ISO 27001、SOC 2 或其他框架评估您的组织。",
+    "noTemplate": "无模板",
+    "new": {
+      "metaTitle": "新的自我评估",
+      "breadcrumb": "新的",
+      "title": "新的自我评估",
+      "cardTitle": "评估详情",
+      "form": {
+        "title": "标题",
+        "titlePlaceholder": "例如ISO 27001:2022 自我评估",
+        "template": "问卷模板",
+        "templatePlaceholder": "选择已发布的模板",
+        "noTemplates": "没有找到模板。",
+        "dueDate": "截止日期（可选）",
+        "publishFirst": "先发布模板，开始自我评估。",
+        "starting": "开始...",
+        "start": "开始评估"
+      }
+    }
+  },
+  "Admin": {
+    "metaTitle": "行政",
+    "general": {
+      "metaTitle": "管理员 — 一般",
+      "title": "一般的",
+      "subtitle": "整个应用程序中显示的组织身份。",
+      "cardTitle": "组织",
+      "cardDescription": "电子邮件和界面中显示的名称、支持电子邮件和默认语言。",
+      "form": {
+        "name": "组织名称",
+        "supportEmail": "支持电子邮件",
+        "defaultLanguage": "默认语言",
+        "defaultLanguageHint": "当访问者尚未选择语言时使用。个人的选择会凌驾于它之上。",
+        "saving": "保存...",
+        "save": "节省"
+      },
+      "success": "已保存组织设置。",
+      "errors": {
+        "nameRequired": "组织名称为必填项",
+        "invalidEmail": "输入有效的电子邮件地址",
+        "invalidInput": "输入无效。"
+      }
+    },
+    "appearance": {
+      "metaTitle": "管理员 — 外观",
+      "title": "外貌",
+      "subtitle": "整个应用程序的品牌——徽标、颜色和布局。",
+      "cardTitle": "外貌",
+      "cardDescription": "自定义徽标、主色（按钮）和辅助色（标签/药丸）。将字段留空以使用默认值。",
+      "logo": "标识",
+      "currentLogoAlt": "当前标志",
+      "removeLogoTitle": "删除标志？",
+      "removeLogoDescription": "当前徽标将从所有页面中删除。您可以随时上传新徽标。",
+      "remove": "消除",
+      "removeLogo": "删除标志",
+      "noLogo": "没有上传徽标。上传 PNG 或 JPG（最大 2 MB）。",
+      "primaryColour": "原色",
+      "primaryColourHint": "用于主按钮、链接和活动状态。",
+      "secondaryColour": "次要颜色",
+      "secondaryColourHint": "用于标签、药丸、徽章和次要元素。",
+      "reset": "重置",
+      "ragTitle": "RAG 指示灯颜色",
+      "ragHint": "用于分数指示器、进度条和供应商风险热图。",
+      "ragGreen": "绿色（合规）",
+      "ragGreenHint": "分数≥85%",
+      "ragAmber": "琥珀色（需要注意）",
+      "ragAmberHint": "得分 60–84%",
+      "ragRed": "红色（缺乏）",
+      "ragRedHint": "分数 < 60%",
+      "ragUnscored": "未评分（中性）",
+      "ragUnscoredHint": "尚未评估",
+      "layoutTitle": "布局",
+      "layoutHint": "调整平台的整体外观和感觉。",
+      "borderRadius": "边框半径（像素）",
+      "borderRadiusHint": "控制应用程序中的圆角程度。",
+      "pageWidth": "页宽",
+      "pageWidthHint": "将内容限制在可读宽度或使用全屏。",
+      "constrained": "受约束",
+      "full": "全宽",
+      "saving": "保存...",
+      "save": "保存外观",
+      "success": "外观设置已保存。",
+      "errors": {
+        "primaryHex": "主要颜色必须是有效的十六进制颜色（例如#3b82f6）。",
+        "secondaryHex": "辅助颜色必须是有效的十六进制颜色（例如#f59e0b）。",
+        "ragGreen": "RAG 绿色必须是有效的十六进制颜色。",
+        "ragAmber": "RAG 琥珀色必须是有效的十六进制颜色。",
+        "ragRed": "RAG 红色必须是有效的十六进制颜色。",
+        "ragUnscored": "未评分的 RAG 必须是有效的十六进制颜色。",
+        "logoTooLarge": "徽标必须小于 2 MB。",
+        "logoImage": "徽标必须是图像文件。",
+        "logoFormat": "徽标必须是 PNG、JPG、GIF 或 WEBP 图像。",
+        "logoContent": "徽标文件内容与其扩展名不匹配。",
+        "invalidInput": "输入无效。"
+      }
+    },
+    "error": {
+      "title": "出了点问题",
+      "description": "发生意外错误。请重试或联系支持人员。",
+      "retry": "再试一次"
+    },
+    "email": {
+      "metaTitle": "管理员 — 电子邮件",
+      "title": "电子邮件",
+      "subtitle": "SMTP 传送以及用于供应商和审阅者电子邮件的模板。",
+      "smtpTitle": "邮件传输协议",
+      "smtpDescription": "用于发送供应商邀请和提醒。密码静态加密。",
+      "form": {
+        "host": "SMTP主机",
+        "port": "SMTP端口",
+        "username": "SMTP 用户名",
+        "password": "SMTP密码",
+        "passwordKeep": "留空以保留当前密码",
+        "passwordEnter": "输入 SMTP 密码",
+        "passwordHint": "静态时加密存储并且从不显示。",
+        "fromAddress": "发件人地址",
+        "fromName": "来自名字",
+        "saving": "保存...",
+        "save": "节省"
+      },
+      "test": {
+        "label": "发送测试电子邮件至",
+        "placeholder": "你@company.com",
+        "sending": "正在发送...",
+        "send": "发送测试",
+        "hint": "使用您保存的 SMTP 设置发送。首先保存所有更改。"
+      },
+      "templatesTitle": "电子邮件模板",
+      "templatesDescription": "选择一个模板来编辑其主题和正文。动态值使用双括号标记。",
+      "subject": "主题",
+      "body": "身体",
+      "editorHint": "支持 Markdown 格式 - 使用**粗体**、*斜体*、列表和链接。代币： {tokens}.",
+      "savingChanges": "保存...",
+      "saveChanges": "保存更改",
+      "resetTitle": "重置为默认值？",
+      "resetDescription": "这 ”{name}\" 主题和正文将替换为内置默认值。任何自定义都将丢失。",
+      "reset": "重置",
+      "resetting": "正在重置...",
+      "resetToDefault": "重置为默认值",
+      "cancel": "取消",
+      "preview": "预览",
+      "templateTypes": {
+        "invite": {
+          "label": "邀请邮件",
+          "description": "首次共享调查问卷时发送给供应商。"
+        },
+        "invite-password": {
+          "label": "邀请电子邮件（受密码保护）",
+          "description": "包含门户访问密码的邀请变体。"
+        },
+        "reminder": {
+          "label": "提醒邮件",
+          "description": "随着截止日期的临近，向供应商发送推送。"
+        },
+        "escalation": {
+          "label": "升级电子邮件",
+          "description": "当调查问卷过期时发送给审阅者。"
+        },
+        "submission": {
+          "label": "提交收到邮件",
+          "description": "通知审阅者供应商已提交答案。"
+        },
+        "clarification": {
+          "label": "发回澄清电子邮件",
+          "description": "当评估重新开放以获取更多信息时发送给供应商。"
+        },
+        "reset": {
+          "label": "密码重置电子邮件",
+          "description": "发送给要求重置密码的内部员工。"
+        },
+        "expiry": {
+          "label": "到期提醒邮件",
+          "description": "当认证或合同即将到期时发送给供应商的风险负责人。"
+        }
+      },
+      "success": "电子邮件设置已保存。",
+      "testSuccess": "测试电子邮件发送至 {email}.",
+      "templateSaved": "{name} 已保存。",
+      "templateReset": "{name} 重置为默认值。",
+      "errors": {
+        "invalidInput": "输入无效。",
+        "invalidEmail": "输入有效的电子邮件地址",
+        "invalidPort": "SMTP 端口必须介于 1 到 65535 之间",
+        "invalidRecipient": "收件人无效。",
+        "smtpNotConfigured": "在发送测试电子邮件之前保存您的 SMTP 设置。",
+        "unknownTemplate": "未知的电子邮件模板。",
+        "subjectRequired": "主题为必填项。",
+        "bodyRequired": "身体是必需的。"
+      }
+    },
+    "emailTracking": {
+      "metaTitle": "管理员 — 电子邮件跟踪",
+      "title": "电子邮件追踪",
+      "subtitle": "平台发送的每封电子邮件的送达状态。",
+      "retentionTitle": "保留",
+      "retentionDescription": "超过此天数的电子邮件发送记录将通过计划的清理自动删除。设置为 0 以无限期保留。",
+      "retentionLabel": "电子邮件日志保留（天）",
+      "retentionHelp": "适用于下一次计划运行。",
+      "cardTitle": "电子邮件追踪",
+      "cardDescription": "查看平台发送的每封邮件的状态。条目根据配置的保留策略保留。",
+      "description": "跟踪平台发送的每封电子邮件 - 邀请、提醒、升级和测试消息。 SMTP服务器确认接受；这并不能保证收件箱送达。日志根据配置的保留策略保留。",
+      "filters": {
+        "status": "地位",
+        "allStatuses": "所有状态",
+        "statusAria": "按状态过滤电子邮件",
+        "type": "类型",
+        "allTypes": "所有类型",
+        "typeAria": "按类型过滤电子邮件",
+        "recipient": "接受者",
+        "recipientPlaceholder": "电子邮件@example.com",
+        "from": "从",
+        "to": "到",
+        "rows": "行数",
+        "pageSizeAria": "电子邮件日志页面大小",
+        "filter": "筛选",
+        "clear": "清除"
+      },
+      "statuses": {
+        "SENT": "发送",
+        "FAILED": "失败的"
+      },
+      "types": {
+        "INVITE": "邀请",
+        "INVITE-PASSWORD": "邀请（密码保护）",
+        "REMINDER": "提醒",
+        "ESCALATION": "升级",
+        "SUBMISSION": "提交",
+        "CLARIFICATION": "澄清",
+        "RESET": "密码重置",
+        "EXPIRY": "到期日",
+        "TEST": "测试"
+      },
+      "table": {
+        "date": "日期",
+        "recipient": "接受者",
+        "subject": "主题",
+        "type": "类型",
+        "status": "地位",
+        "detail": "细节",
+        "assessment": "评估",
+        "sentBy": "发送者"
+      },
+      "noLogs": "未找到电子邮件日志。",
+      "pagination": "第 {page} 页，共 {totalPages} 页（{total} 条）",
+      "previous": "以前的",
+      "next": "下一个",
+      "accepted": "SMTP 服务器接受",
+      "system": "系统",
+      "retry": "重试",
+      "retrying": "正在重试...",
+      "retrySuccess": "电子邮件重新发送成功。",
+      "testResent": "测试电子邮件已重新发送。",
+      "errors": {
+        "missingLog": "缺少电子邮件日志条目。",
+        "notFound": "未找到电子邮件日志条目。",
+        "onlyFailed": "只能重试失败的电子邮件。",
+        "resetSingleUse": "重置链接是一次性的，不能重新发送。要求用户请求新的重置。",
+        "resendFailed": "重新发送电子邮件失败。检查跟踪选项卡了解详细信息。",
+        "retentionInvalid": "电子邮件日志保留必须为 0 或正数。",
+        "retentionSaved": "已保存电子邮件日志保留。"
+      }
+    },
+    "scoring": {
+      "metaTitle": "管理员 — 评分",
+      "title": "评分",
+      "subtitle": "供应商概况和热图的风险权重和 RAG 截止值。",
+      "cardTitle": "评分",
+      "cardDescription": "用于供应商概况和差距热图的风险权重和红色/琥珀色/绿色截止值。",
+      "riskWeights": "风险权重（数字）",
+      "ragThresholds": "RAG阈值",
+      "ragHint": "绿色位于或上方，琥珀色位于或上方，红色位于下方。",
+      "green": "绿色≥",
+      "amber": "琥珀色≥",
+      "saving": "保存...",
+      "save": "保存得分",
+      "success": "已保存评分设置。",
+      "errors": {
+        "invalidInput": "输入无效。"
+      }
+    },
+    "scheduling": {
+      "metaTitle": "管理——日程安排",
+      "title": "调度",
+      "subtitle": "提醒、升级和内置调度程序。",
+      "cardTitle": "调度",
+      "cardDescription": "在到期日之前自动提醒，并针对逾期评估向审阅者升级。",
+      "reminderLabel": "提醒抵消天数",
+      "reminderHint": "发送提醒的截止日期之前以逗号分隔的天数列表。示例：7、1 在到期日前 7 天和 1 天发送提醒。",
+      "reminderPlaceholder": "7, 1",
+      "escalationLabel": "升级后（天）",
+      "escalationHint": "截止日期后几天，审阅者会收到升级电子邮件。",
+      "defaultDueLabel": "违约评估到期（天）",
+      "defaultDueHint": "新评估默认距离截止日期还有这么多天。",
+      "schedulerLabel": "在应用程序内运行预定作业",
+      "schedulerHint": "启用后，应用程序每五分钟检查一次到期提醒、升级、到期通知、定期评估、日志修剪和孤立文件清理 - 不需要外部 cron 作业或调度程序。仅当触发时禁用此功能 {endpoint} 您自己（例如从系统 crontab 或 Azure Function）。",
+      "saving": "保存...",
+      "save": "保存日程安排",
+      "lastRun": "上次预定运行： {when}",
+      "never": "绝不",
+      "justNow": "现在",
+      "lessThanMinute": "不到一分钟前",
+      "minuteAgo": "1 分钟前",
+      "minutesAgo": "{count} 分钟前",
+      "hourAgo": "1 小时前",
+      "hoursAgo": "{count} 几小时前",
+      "dayAgo": "1 天前",
+      "daysAgo": "{count} 几天前",
+      "success": "配置已保存。",
+      "errors": {
+        "escalationInvalid": "升级天数必须至少为 1。",
+        "defaultDueInvalid": "默认到期日必须至少为 1。"
+      }
+    },
+    "retention": {
+      "saving": "保存...",
+      "save": "节省"
+    },
+    "storage": {
+      "metaTitle": "管理 — 存储",
+      "title": "贮存",
+      "subtitle": "证据文件存放在哪里以及供应商可以上传哪些内容。",
+      "fileStorageTitle": "文件存储",
+      "fileStorageDescription": "配置证据文件和附件的存储位置。更改提供程序不会迁移现有文件。",
+      "uploadConstraintsTitle": "上传限制",
+      "uploadConstraintsDescription": "适用于供应商证据上传的大小和文件类型限制。",
+      "form": {
+        "provider": "提供者",
+        "providerHint": "更改提供程序不会迁移现有文件。仅当您切换回来时，使用先前提供商存储的文件仍可访问。",
+        "local": "本地盘",
+        "s3": "亚马逊S3",
+        "azure": "蔚蓝斑点",
+        "s3Title": "亚马逊S3",
+        "bucket": "桶",
+        "region": "地区",
+        "regionPlaceholder": "例如美国东部1",
+        "accessKeyId": "访问密钥 ID",
+        "secretAccessKey": "秘密访问密钥",
+        "secretHint": "静态时加密存储。留空以保留现有值。",
+        "azureTitle": "蔚蓝斑点",
+        "containerName": "集装箱名称",
+        "connectionString": "连接字符串",
+        "saving": "保存…",
+        "save": "保存存储设置"
+      },
+      "uploads": {
+        "maxSize": "最大文件上传大小 (MB)",
+        "maxSizeHint": "上传过程中会拒绝大于此限制的证据文件。",
+        "allowedExtensions": "允许的文件扩展名",
+        "allowedHint": "供应商可以上传文件类型作为证据。至少选择一项。",
+        "saving": "保存...",
+        "save": "节省"
+      },
+      "success": "已保存存储设置。",
+      "uploadsSuccess": "已保存上传限制。",
+      "errors": {
+        "invalidInput": "输入无效。",
+        "maxUploadInvalid": "最大上传大小必须至少为 1 MB。"
+      }
+    },
+    "signIn": {
+      "metaTitle": "管理员 — 登录",
+      "title": "登入",
+      "subtitle": "员工如何进行身份验证以及他们保持登录状态的时间。",
+      "ssoTitle": "单点登录",
+      "ssoDescription": "允许员工使用 Microsoft Entra ID、Google Workspace 或自定义 OIDC 提供商登录。客户端凭据静态加密。",
+      "sessionsTitle": "会议",
+      "sessionsDescription": "空闲会话的登录限制和自动注销。",
+      "sso": {
+        "entraId": "微软Entra ID",
+        "google": "谷歌工作区",
+        "oidc": "定制OIDC",
+        "enabled": "启用",
+        "clientId": "客户ID",
+        "clientSecret": "客户秘密",
+        "secretKeep": "留空以保持最新",
+        "secretEnter": "客户秘密",
+        "secretHint": "静态时加密存储并且从不显示。",
+        "displayName": "提供商显示名称",
+        "displayNamePlaceholder": "Okta / Auth0 / Keycloak",
+        "issuerUrl": "发行人网址",
+        "issuerPlaceholder": "https://example.okta.com",
+        "defaultRole": "新 SSO 用户的默认角色",
+        "allowedDomain": "限制域（可选）",
+        "allowedDomainPlaceholder": "@company.com",
+        "disableLocalAuth": "禁用电子邮件/密码登录（仅限 SSO）",
+        "disableLocalAuthHint": "隐藏本地登录表单，以便员工只能通过 SSO 登录。除非至少启用一个 SSO 提供程序，否则将被忽略，因此错误配置无法将所有人拒之门外。使用下面的碎玻璃 URL 进行紧急访问。",
+        "saving": "保存...",
+        "save": "保存单点登录"
+      },
+      "breakGlass": {
+        "title": "打破玻璃通道",
+        "description": "禁用本地登录后，此秘密 URL 仍会显示电子邮件/密码表单，以便管理员在 SSO 不可用时可以登录。生成新 URL 会立即撤销前一个 URL。",
+        "configured": "当前配置了break-glass URL。",
+        "notConfigured": "尚未配置break-glass URL。",
+        "generating": "生成...",
+        "regenerate": "重新生成碎玻璃 URL",
+        "generate": "生成碎玻璃 URL",
+        "success": "已生成破碎玻璃 URL。立即复制它 - 它不会再显示。"
+      },
+      "security": {
+        "loginRateLimit": "登录速率限制（每分钟）",
+        "loginRateLimitHint": "每个 IP 地址每分钟的最大登录尝试次数。增加单个公共 IP 后面的共享办公环境。",
+        "autoLogout": "自动注销（分钟）",
+        "autoLogoutHint": "闲置这么多分钟后自动注销。设置为 0 以禁用。启用后至少 5 分钟。",
+        "saving": "保存...",
+        "save": "节省"
+      },
+      "success": "已保存 SSO 设置。",
+      "securitySuccess": "已保存登录设置。",
+      "errors": {
+        "invalidInput": "输入无效。",
+        "loginRateInvalid": "登录速率限制必须至少为每分钟 1 次。",
+        "autoLogoutInvalid": "自动注销必须为 0（禁用）或至少 5 分钟。"
+      }
+    },
+    "rateLimits": {
+      "metaTitle": "管理员 — 速率限制",
+      "title": "速率限制",
+      "subtitle": "供应商门户和帐户恢复的滥用保护。",
+      "cardTitle": "速率限制（每分钟）",
+      "cardDescription": "为繁忙的供应商或共享办公室 IP 提高这些；默认值适合大多数部署。",
+      "fields": {
+        "portalPageLoadsPerMin": {
+          "label": "门户页面加载/分钟（每个访问者）",
+          "help": "供应商浏览器加载供应商链接的频率。防止链接枚举。"
+        },
+        "portalUploadsPerMin": {
+          "label": "门户证据上传/分钟（每个访客）",
+          "help": "供应商每分钟可以上传的最大证据文件数。"
+        },
+        "portalSubmitPerMin": {
+          "label": "门户提交/分钟（每个链接）",
+          "help": "单个供应商链接的最大提交尝试次数。"
+        },
+        "portalCommentPerMin": {
+          "label": "门户评论/分钟（每个链接）",
+          "help": "供应商可以在单个供应商链接上发布的最大评论数。"
+        },
+        "portalPasswordAttemptsPerMin": {
+          "label": "门户密码尝试次数/分钟（每个链接）",
+          "help": "保护受密码保护的调查问卷免遭暴力破解。"
+        },
+        "passwordResetPerMin": {
+          "label": "密码重置请求/分钟（每封电子邮件）",
+          "help": "限制给定地址的员工密码重置电子邮件。"
+        },
+        "breakGlassPerMin": {
+          "label": "打破玻璃尝试/分钟（每个 IP）",
+          "help": "限制 SSO 破碎玻璃恢复链接的验证。"
+        }
+      },
+      "saving": "保存...",
+      "save": "保存率限制",
+      "success": "已保存速率限制。",
+      "errors": {
+        "minimum": "{field} 每分钟必须至少 1 个。"
+      }
+    },
+    "api": {
+      "metaTitle": "管理——API",
+      "title": "应用程序编程接口",
+      "subtitle": "以编程方式访问 REST API。",
+      "cardTitle": "API访问",
+      "cardDescription": "生成用于以编程方式访问 REST API 的 API 密钥。密钥使用承载身份验证，并且可以通过 IP 地址进行限制。密钥在创建时仅显示一次。",
+      "enabled": "启用 API 密钥身份验证",
+      "enabledHint": "API 密钥允许外部工具无需登录浏览器即可调用 REST API。密钥可以完全访问每个端点，并且独立于创建它们的帐户而保持有效。密钥仅显示一次，以后无法检索。为了安全起见，在查找前缀更新之前创建的密钥已被禁用，并且必须重新生成。",
+      "saving": "保存...",
+      "save": "节省",
+      "docs": "API 文档 →",
+      "keysTitle": "API 密钥（{count})",
+      "keyCreatedTitle": "密钥已创建 — 立即复制",
+      "keyCreatedHint": "该键将不会再次显示。安全存放。",
+      "copy": "复制",
+      "done": "完毕",
+      "createTitle": "创建新密钥",
+      "name": "姓名",
+      "namePlaceholder": "例如CI 管道",
+      "expiry": "到期日",
+      "expiryOptions": {
+        "30": "30天",
+        "90": "90天",
+        "180": "180天",
+        "365": "1年",
+        "permanent": "永恒的"
+      },
+      "allowedIps": "允许的 IP（可选）",
+      "allowedIpsPlaceholder": "192.168.1.0/24",
+      "rateLimit": "速率限制/分钟",
+      "rateLimitPlaceholder": "默认",
+      "creating": "创造...",
+      "create": "创建密钥",
+      "empty": "尚未创建 API 密钥。",
+      "permissionCount": "{count,plural,one{# 允许} other{# 权限}}",
+      "fullAccess": "完全访问权限",
+      "revoked": "已撤销",
+      "expired": "已到期",
+      "lastUsed": "上次使用 {date}",
+      "neverUsed": "从未使用过",
+      "requestCount": "{count,plural,one{# 要求} other{# 要求}}",
+      "ips": "IP： {ips}",
+      "rateLimitSuffix": "速率限制： {value}/分钟",
+      "enable": "使能够",
+      "revokeTitle": "撤销 API 密钥？",
+      "revokeDescription": "任何使用“的集成{name}\" 将立即停止工作。稍后可以重新启用。",
+      "revoke": "撤销",
+      "deleteTitle": "删除 API 密钥？",
+      "deleteDescription": "\"{name}\" 将被永久删除。任何使用此密钥的集成都将永久中断。此操作无法撤消。",
+      "delete": "删除",
+      "keyCreatedMessage": "已创建密钥： {prefix}。复制下面的密钥 - 它不会再次显示。",
+      "success": "API 设置已保存。",
+      "errors": {
+        "nameRequired": "密钥名称是必需的。",
+        "permissionsRequired": "至少选择一项权限或启用完全访问权限。",
+        "invalidInput": "输入无效。"
+      }
+    },
+    "webhooks": {
+      "metaTitle": "管理员 — Webhooks",
+      "title": "网络钩子",
+      "subtitle": "事件通知推送到您的端点。",
+      "cardTitle": "网络钩子",
+      "cardDescription": "配置端点以在提交评估、结果更改或认证过期时接收事件通知。",
+      "endpointsTitle": "Webhook 端点 ({count})",
+      "add": "添加端点",
+      "newTitle": "新的网络钩子",
+      "name": "姓名",
+      "namePlaceholder": "例如Slack 警报、Teams 合规性",
+      "url": "网址",
+      "urlPlaceholder": "https://example.com/webhooks/mitch-risk",
+      "platform": "平台",
+      "platformPlaceholder": "选择平台",
+      "platforms": {
+        "GENERIC": "通用（HTTP）",
+        "SLACK": "松弛",
+        "MICROSOFT_TEAMS": "微软团队",
+        "DISCORD": "不和谐"
+      },
+      "events": "活动",
+      "eventLabels": {
+        "ASSESSMENT_SUBMITTED": "已提交评估",
+        "ASSESSMENT_OVERDUE": "评估逾期",
+        "FINDING_CREATED": "发现已创建",
+        "FINDING_RESOLVED": "发现已解决",
+        "CERTIFICATION_EXPIRING": "认证即将到期"
+      },
+      "creating": "创造...",
+      "create": "创造",
+      "cancel": "取消",
+      "empty": "没有配置 webhook。添加端点以接收事件通知。",
+      "active": "积极的",
+      "disabled": "残疾人",
+      "disable": "禁用",
+      "enable": "使能够",
+      "deleteTitle": "删除网络钩子？",
+      "deleteDescription": "该端点将停止接收事件： {url}",
+      "delete": "删除",
+      "success": "Webhook 端点已创建。",
+      "errors": {
+        "urlRequired": "网址为必填项。",
+        "urlTooLong": "URL 不得超过 500 个字符。",
+        "nameTooLong": "名称不得超过 100 个字符。",
+        "invalidUrl": "输入有效的 URL。",
+        "httpsRequired": "Webhook URL 必须使用 HTTPS。",
+        "publicOnly": "Webhook URL 必须指向公共地址 - 不允许使用内部主机和环回主机。",
+        "unknownPlatform": "未知平台。",
+        "eventRequired": "必须至少选择一项活动。"
+      }
+    },
+    "trustCenter": {
+      "metaTitle": "管理员 — 信任中心",
+      "title": "信托中心",
+      "subtitle": "面向公众的合规页面配置。",
+      "cardTitle": "信托中心",
+      "cardDescription": "/trust 的公共页面与供应商和合作伙伴共享合规徽章、安全文档、子处理者和叙述部分。在“管理”→“信任中心”下管理内容。",
+      "enabled": "启用信任中心",
+      "enabledHint": "禁用后，/trust 会显示未找到消息，并且不会公开提供任何内容。",
+      "intro": "简介（降价）",
+      "introHint": "公共页面上组织名称下方显示的短段落。",
+      "introPlaceholder": "我们对安全和隐私的承诺......",
+      "contactEmail": "联系邮箱",
+      "contactEmailHint": "显示在公共页面的底部。当空时返回到组织的支持电子邮件。",
+      "contactEmailPlaceholder": "security@example.com",
+      "includeInInvites": "供应商邀请电子邮件中信任中心的链接",
+      "includeInInvitesHint": "添加页脚行以邀请指向 /trust 的电子邮件。模板不会被修改——链接会在发送时添加。",
+      "pageLoads": "公共页面加载/分钟（每个IP）",
+      "downloads": "文档下载/分钟（每个 IP）",
+      "saving": "保存...",
+      "save": "保存信任中心",
+      "success": "已保存信任中心设置。",
+      "errors": {
+        "invalidInput": "输入无效。",
+        "invalidEmail": "输入有效的电子邮件地址。"
+      }
+    },
+    "permissions": {
+      "fullAccess": "完全访问权限",
+      "fullAccessHint": "选择后，该密钥将授予所有权限。取消选中可将密钥限制为一组特定的权限。",
+      "selectAll": "选择所有权限",
+      "permissionCount": "{granted} / {total} 权限",
+      "groups": {
+        "vendors": "供应商",
+        "assessments": "评估",
+        "templates": "模板",
+        "frameworks": "框架",
+        "administration": "行政",
+        "webhooks": "网络钩子",
+        "trustcenter": "信托中心",
+        "profile": "轮廓"
+      },
+      "items": {
+        "vendors_view": "查看供应商",
+        "vendors_create": "创建供应商",
+        "vendors_edit": "编辑供应商",
+        "vendors_delete": "删除供应商",
+        "assessments_view": "查看评估",
+        "assessments_create": "创建并发送评估",
+        "assessments_edit": "编辑和管理链接",
+        "assessments_review": "审查并最终确定",
+        "assessments_delete": "删除评估",
+        "templates_view": "查看模板",
+        "templates_create": "创建模板",
+        "templates_edit": "编辑和发布模板",
+        "templates_delete": "删除模板",
+        "frameworks_view": "查看框架",
+        "frameworks_edit": "编辑框架",
+        "frameworks_delete": "删除框架",
+        "audit_view": "查看审核和电子邮件日志",
+        "users_manage": "管理用户",
+        "roles_manage": "管理角色",
+        "settings_manage": "管理设置",
+        "api_manage": "管理 API 访问",
+        "webhooks_manage": "管理网络钩子",
+        "trustcenter_manage": "管理信任中心内容",
+        "profile_view": "查看和编辑自己的个人资料"
+      }
+    },
+    "users": {
+      "metaTitle": "管理员 — 用户",
+      "title": "用户",
+      "subtitle": "员工帐户及其访问权限。",
+      "cardTitle": "员工账户",
+      "cardDescription": "创建员工帐户并管理他们的角色、访问权限和密码。",
+      "searchLabel": "搜寻工作人员",
+      "searchPlaceholder": "搜寻工作人员…",
+      "newUser": "新用户",
+      "empty": "还没有用户。",
+      "noMatch": "没有符合您搜索条件的员工。",
+      "added": "额外 {date}",
+      "sso": "单点登录",
+      "local": "当地的",
+      "disabled": "残疾人",
+      "addTitle": "添加用户",
+      "addDescription": "创建一个具有起始角色和密码的员工帐户。",
+      "name": "姓名",
+      "email": "电子邮件",
+      "password": "密码",
+      "role": "角色",
+      "creating": "创造...",
+      "create": "创建用户",
+      "cancel": "取消",
+      "save": "节省",
+      "access": "使用权",
+      "enableSignIn": "启用登录",
+      "disableSignIn": "禁用登录",
+      "disableTitle": "禁用用户？",
+      "disableDescription": "{name} 将无法再登录。他们的数据将被保留。",
+      "disable": "禁用",
+      "newPasswordPlaceholder": "新密码",
+      "resetTitle": "重置密码？",
+      "resetDescription": "这会覆盖 {name}的当前密码。他们必须使用新密码才能登录。",
+      "reset": "重置",
+      "ssoPassword": "该帐户通过 SSO 登录 - 其密码由身份提供商管理。",
+      "dangerZone": "危险区域",
+      "deleteTitle": "删除用户？",
+      "deleteDescription": "{name} 将被永久删除。此操作无法撤消。",
+      "ownedVendors": "{count,plural,one{# 供应商将失去其所有者分配} other{# 供应商将失去其所有者分配}}",
+      "reviewingAssessments": "{count,plural,one{# 评估将失去审稿人} other{# 评估将失去审稿人}}",
+      "resolvedFindings": "{count,plural,one{# 发现将清除其解析器} other{# 调查结果将清除其解析器}}",
+      "answerReviews": "{count,plural,one{# 答案审核将匿名} other{# 回答评论将被匿名}}",
+      "createdApiKeys": "{count,plural,one{# API 密钥将失去其创建者参考} other{# API 密钥将失去其创建者参考}}",
+      "auditPreserved": "审核历史记录被保留（显示为“已删除的用户”）。",
+      "delete": "删除",
+      "deleteUser": "删除用户",
+      "loading": "加载中...",
+      "success": "用户已创建。",
+      "errors": {
+        "nameRequired": "姓名为必填项。",
+        "emailInvalid": "输入有效的电子邮件地址。",
+        "passwordTooShort": "至少使用 12 个字符。",
+        "roleRequired": "角色是必需的。",
+        "invalidInput": "输入无效。",
+        "roleNotFound": "所选角色不存在。",
+        "emailExists": "使用此电子邮件的用户已存在。",
+        "createFailed": "无法创建用户。请再试一次。"
+      }
+    },
+    "roles": {
+      "metaTitle": "管理员 — 角色",
+      "title": "角色",
+      "subtitle": "分配给员工帐户的权限集。",
+      "cardTitle": "角色",
+      "cardDescription": "定义权限集并将其分配给员工帐户。",
+      "searchPlaceholder": "搜索角色...",
+      "newRole": "新角色",
+      "noMatch": "没有符合您搜索条件的角色。",
+      "system": "系统",
+      "userCount": "{count,plural,one{# 用户} other{# 用户}}",
+      "edit": "编辑",
+      "duplicate": "复制",
+      "deleteTitle": "删除角色？",
+      "deleteDescription": "这 ”{name}\" 角色将被永久删除。只有在没有向该角色分配用户时才可以执行此操作。",
+      "delete": "删除",
+      "createTitle": "创建角色",
+      "adminLocked": "管理员角色始终拥有所有权限且无法更改。",
+      "editorDescription": "选择该角色授予的权限。分配给此角色的用户恰好获得这些权限。",
+      "name": "姓名",
+      "description": "描述",
+      "saving": "保存...",
+      "create": "创建角色",
+      "saveChanges": "保存更改",
+      "cancel": "取消",
+      "success": "角色已创建。",
+      "updated": "角色已更新。",
+      "errors": {
+        "nameRequired": "角色名称为必填项。",
+        "nameTooLong": "角色名称不得超过 50 个字符。",
+        "descriptionTooLong": "说明不得超过 200 个字符。",
+        "invalidInput": "输入无效。",
+        "roleExists": "同名的角色已存在。",
+        "createFailed": "无法创建角色。请再试一次。",
+        "missingRole": "缺少角色。",
+        "notFound": "未找到角色。",
+        "adminLocked": "管理员角色权限无法更改。",
+        "updateFailed": "无法更新角色。请再试一次。",
+        "duplicateFailed": "无法复制角色： {reason}",
+        "deleteFailed": "无法删除角色： {reason}",
+        "systemCannotDelete": "系统角色无法删除。",
+        "assignedUsers": "该角色被分配给一个或多个用户。删除之前重新分配它们。"
+      }
+    },
+    "audit": {
+      "metaTitle": "管理员——审核日志",
+      "title": "审核日志",
+      "subtitle": "整个平台的管理和系统活动。",
+      "retentionTitle": "保留",
+      "retentionDescription": "超过此天数的审核条目将通过计划的清理自动修剪。设置为 0 以无限期保留。",
+      "retentionLabel": "审核日志保留（天）",
+      "retentionHelp": "适用于下一次计划运行。",
+      "cardTitle": "审核日志",
+      "cardDescription": "跟踪整个平台的管理和系统活动。",
+      "action": "行动",
+      "user": "用户",
+      "from": "从",
+      "to": "到",
+      "rows": "行数",
+      "allActions": "所有动作",
+      "allUsers": "所有用户",
+      "actionFilterLabel": "按操作过滤审核日志",
+      "userFilterLabel": "按用户过滤审核日志",
+      "pageSizeLabel": "审核日志页面大小",
+      "filter": "筛选",
+      "clear": "清除",
+      "export": "出口",
+      "allResults": "所有结果",
+      "currentPage": "当前页面",
+      "empty": "未找到审核条目。",
+      "date": "日期",
+      "entity": "实体",
+      "deleted": "已删除",
+      "pageSummary": "第 {page} 页，共 {totalPages} 页（{totalCount, plural, one {# 条} other {# 条}}）",
+      "previous": "以前的",
+      "next": "下一个",
+      "csvHeader": "日期、用户、操作、实体、ID",
+      "success": "审计保留已保存。",
+      "clarificationRequested": "要求澄清",
+      "errors": {
+        "retentionInvalid": "审核保留必须为 0 或正数。",
+        "invalidInput": "输入无效。"
+      },
+      "actions": {
+        "LOGIN": "登录",
+        "CREATE_ASSESSMENT": "创建评估",
+        "DELETE_ASSESSMENT": "已删除评估",
+        "SEND_ASSESSMENT": "发送评估",
+        "REVOKE_ASSESSMENT": "已撤销评估链接",
+        "EXTEND_ASSESSMENT": "扩展评估链接",
+        "REGENERATE_ASSESSMENT": "重新生成评估链接",
+        "SUBMIT_ASSESSMENT": "已提交评估",
+        "REVIEW_DECISION": "审查决定",
+        "SEND_BACK_TO_VENDOR": "发送回供应商",
+        "REOPEN_REVIEW": "重新审查",
+        "UPDATE_FINDING": "更新的发现",
+        "ADD_COMMENT": "添加评论",
+        "REOPEN_ASSESSMENT": "重新开放评估",
+        "FINALIZE_ASSESSMENT": "最终评估",
+        "CREATE_VENDOR": "创建供应商",
+        "UPDATE_VENDOR": "更新的供应商",
+        "DELETE_VENDOR": "已删除供应商",
+        "IMPORT_VENDOR": "已导入供应商",
+        "CREATE_TEMPLATE": "已创建模板",
+        "UPDATE_TEMPLATE": "更新了模板",
+        "DELETE_TEMPLATE": "已删除模板",
+        "PUBLISH_TEMPLATE": "已发布模板",
+        "UNPUBLISH_TEMPLATE": "未发布的模板",
+        "CREATE_TEMPLATE_VERSION": "创建模板版本",
+        "DUPLICATE_TEMPLATE": "重复的模板",
+        "IMPORT_TEMPLATE": "导入模板",
+        "CREATE_USER": "已创建用户",
+        "DELETE_USER": "已删除用户",
+        "DISABLE_USER": "残疾用户",
+        "ENABLE_USER": "启用的用户",
+        "CHANGE_ROLE": "角色改变",
+        "CREATE_ROLE": "已创建角色",
+        "UPDATE_ROLE": "更新的角色",
+        "UPDATE_PROFILE": "更新个人资料",
+        "DELETE_ROLE": "已删除的角色",
+        "DUPLICATE_ROLE": "角色重复",
+        "RESET_PASSWORD": "重置密码",
+        "UPDATE_SETTINGS": "更新的设置",
+        "API_KEY_CREATED": "创建 API 密钥",
+        "API_KEY_REVOKED": "已撤销 API 密钥",
+        "API_KEY_ENABLED": "已启用 API 密钥",
+        "API_KEY_DELETED": "已删除 API 密钥",
+        "CREATE_CERTIFICATION": "新增认证",
+        "UPDATE_CERTIFICATION": "更新认证",
+        "DELETE_CERTIFICATION": "已删除认证",
+        "CREATE_FRAMEWORK": "导入框架",
+        "DELETE_FRAMEWORK": "删除框架",
+        "UPDATE_RESPONSIBILITY_ACTION": "更新了责任行动",
+        "MARK_CONTROL_SHARED": "将控制标记为共同责任",
+        "UNMARK_CONTROL_SHARED": "未标记的控制作为共同责任",
+        "RETRY_EMAIL_SEND": "已重试电子邮件发送",
+        "CREATE_WEBHOOK": "已创建网络钩子",
+        "DELETE_WEBHOOK": "已删除网络钩子",
+        "ENABLE_WEBHOOK": "启用网络钩子",
+        "DISABLE_WEBHOOK": "禁用网络钩子",
+        "UPDATE_TRUST_CENTER": "更新的信任中心"
+      }
+    },
+    "health": {
+      "metaTitle": "管理员 — 健康",
+      "title": "健康",
+      "subtitle": "系统诊断和预定作业状态。",
+      "application": "应用",
+      "status": "地位",
+      "running": "跑步",
+      "version": "版本",
+      "commit": "犯罪",
+      "buildTime": "构建时间",
+      "uptime": "正常运行时间",
+      "memory": "内存（堆）",
+      "lessThanMinute": "小于1m",
+      "database": "数据库",
+      "connection": "联系",
+      "connected": "已连接",
+      "error": "错误"
+    }
+  },
+  "NotFound": {
+    "description": "您要查找的页面不存在或已被移动。",
+    "backToDashboard": "返回仪表板"
+  },
+  "BulkSend": {
+    "metaTitle": "批量发送",
+    "title": "批量发送",
+    "subtitle": "一次向多个供应商发送相同的调查问卷。",
+    "breadcrumb": "批量发送",
+    "steps": {
+      "configure": "配置",
+      "vendors": "供应商",
+      "send": "发送"
+    },
+    "template": "模板",
+    "selectTemplate": "选择模板",
+    "dueDate": "到期日",
+    "reviewer": "审稿人",
+    "unassigned": "未分配",
+    "portalPassword": "门户密码（可选）",
+    "portalPasswordPlaceholder": "所有供应商共享密码",
+    "next": "下一页 →",
+    "back": "← 返回",
+    "filterPlaceholder": "过滤器供应商...",
+    "selectAll": "选择全部",
+    "selectedCount": "{count} 已选择",
+    "noMatch": "没有供应商符合您的搜索。",
+    "noEmail": "没有电子邮件",
+    "sendingTo": "发送 {template} 到 {count,plural,one{# 供应商} other{# 供应商}}",
+    "due": "到期的： {date}",
+    "reviewerLabel": "审稿人： {name}",
+    "portalPasswordSet": "门户密码设置",
+    "sending": "正在发送...",
+    "sendTo": "发送至 {count,plural,one{# 供应商} other{# 供应商}}",
+    "sentCount": "{count,plural,one{发送 # 评估} other{发送 # 评估}}",
+    "skippedCount": "{count,plural,one{# 无法发送} other{# 无法发送}}",
+    "emailFailedCount": "{count,plural,one{# 电子邮件发送失败} other{# 电子邮件未能送达}}",
+    "errors": {
+      "noTemplate": "未选择模板。",
+      "noVendors": "未选择供应商。"
+    }
+  },
+  "VendorImport": {
+    "metaTitle": "导入供应商",
+    "title": "导入供应商",
+    "subtitle": "将 CSV 文件上传到批量创建供应商。",
+    "breadcrumb": "导入",
+    "cardTitle": "从 CSV 导入供应商",
+    "steps": {
+      "upload": "上传",
+      "review": "审查"
+    },
+    "csvFile": "CSV 文件",
+    "template": "模板",
+    "columnsHelp": "CSV 必须包含列：id（可选）、名称、联系人电子邮件，以及可选的：externalid、联系人名称、层级、网站、注释、服务描述、数据敏感性、合同更新日期、合同值、地理风险、标签。仅需要姓名和联系电子邮件。最大 1 MB。包含供应商 ID 或 externalid 以更新现有供应商，而不是创建新供应商。",
+    "found": "{count,plural,one{# 找到供应商} other{# 找到供应商}}",
+    "showingFirst": "显示前 10 个 {count} 行",
+    "next": "下一页 →",
+    "back": "← 返回",
+    "aboutToImport": "您即将导入 {count,plural,one{# 供应商} other{# 供应商}}.",
+    "skippedNote": "如果某些行验证失败（重复的电子邮件、缺少必填字段），则可能会被跳过。",
+    "importing": "输入…",
+    "importVendors": "导入供应商",
+    "errors": {
+      "noFile": "未选择文件。",
+      "fileTooLarge": "文件太大（最大 1 MB）。",
+      "noRows": "在 CSV 中找不到行。第一行必须是标题。",
+      "noValidVendors": "未找到有效的供应商。第一个错误： {reason}",
+      "rowInvalid": "排 {row}: 输入无效。",
+      "rowNameRequired": "排 {row}: 供应商名称为必填项。",
+      "rowContactEmailRequired": "排 {row}: 需要联系电子邮件。",
+      "duplicateExternalId": "{name}：重复的外部 ID",
+      "rowFailed": "{name}: {reason}",
+      "updateRequiresEdit": "此导入将更新现有供应商。更新需要供应商编辑权限。",
+      "unknown": "未知",
+      "importComplete": "导入完成： {summary}.",
+      "created": "{count} 已创建",
+      "updated": "{count} 已更新",
+      "skipped": "{count,plural,one{# 跳过行} other{# 跳过的行}}"
+    }
+  },
+  "CompareVendors": {
+    "metaTitle": "比较供应商",
+    "title": "比较供应商",
+    "subtitle": "选择两家供应商并排比较他们最新完成的评估。",
+    "breadcrumb": "比较",
+    "notEnoughVendorsTitle": "没有足够的供应商",
+    "notEnoughVendorsDescription": "您至少需要两个供应商进行比较。首先创建更多供应商。",
+    "vendorA": "供应商A",
+    "vendorB": "供应商B",
+    "selectVendor": "选择供应商",
+    "compare": "比较",
+    "notEnoughAssessmentsTitle": "评估不够",
+    "notEnoughAssessmentsDescription": "两家供应商必须至少有一项已完成或正在审核的评估才能进行比较。",
+    "comparisonSubtitle": "{vendorA} 与 {vendorB}",
+    "statusLabel": "{title} · {status}",
+    "question": "问题",
+    "changed": "改变了",
+    "notApplicable": "不适用"
+  },
+  "ApiDocs": {
+    "metaTitle": "API文档",
+    "loading": "正在加载 API 文档...",
+    "loadFailed": "Swagger UI 无法加载。"
+  },
+  "CompareAssessments": {
+    "metaTitle": "比较评估",
+    "metadataTitle": "比较评估—— {vendorName}",
+    "notFound": "找不到供应商",
+    "title": "比较评估",
+    "breadcrumb": "比较评估",
+    "instructions": "从供应商页面选择两个评估以并排比较它们。打开两个后，使用 ?left=[id]&right=[id] 将此页面添加为书签。",
+    "comparisonSubtitle": "{leftTitle} ({leftStatus}) 与 {rightTitle} ({rightStatus})",
+    "question": "问题",
+    "changed": "改变了",
+    "notApplicable": "不适用"
+  },
+  "Profile": {
+    "metaTitle": "轮廓",
+    "title": "轮廓",
+    "subtitle": "管理您的帐户详细信息。",
+    "accountDetails": "账户详情",
+    "ssoDescription": "您通过单点登录进行登录。您的电子邮件由您的身份提供商管理。",
+    "localDescription": "您的姓名和登录电子邮件。",
+    "name": "姓名",
+    "email": "电子邮件",
+    "passwordTitle": "密码",
+    "passwordDescription": "您必须输入当前密码才能进行任何更改。",
+    "currentPassword": "当前密码",
+    "newPassword": "新密码",
+    "optional": "（选修的）",
+    "confirmNewPassword": "确认新密码",
+    "ssoPasswordNote": "您的密码由您的身份提供商 (SSO) 管理，因此此处无需更改。",
+    "saving": "保存...",
+    "saveChanges": "保存更改",
+    "errorDescription": "无法加载您的个人资料。请重试或联系支持人员。",
+    "errors": {
+      "notAuthenticated": "未经过验证。",
+      "accountNotFound": "未找到帐户。",
+      "currentPasswordIncorrect": "当前密码不正确。",
+      "emailTaken": "该电子邮件已被占用。",
+      "nameRequired": "姓名为必填项。",
+      "emailInvalid": "输入有效的电子邮件地址。",
+      "currentPasswordRequired": "需要当前密码。",
+      "passwordTooShort": "新密码必须至少有 12 个字符。",
+      "passwordMismatch": "密码不匹配。",
+      "invalidInput": "输入无效。",
+      "success": "个人资料已更新。"
+    }
+  },
+  "TrustCenterManager": {
+    "metaTitle": "信托中心",
+    "title": "信托中心",
+    "subtitle": "将合规徽章、安全文档、子处理者和叙述部分发布到您的公共信任中心页面。",
+    "viewPublic": "查看公共页面",
+    "disabledBanner": "信任中心当前已禁用。在“设置”→“信任中心”中启用它 - 直到公共页面显示“未找到”消息。",
+    "errorDescription": "无法加载信任中心管理器。请再试一次。",
+    "common": {
+      "edit": "编辑",
+      "draft": "草稿",
+      "published": "已发表",
+      "saving": "保存...",
+      "cancel": "取消",
+      "moveUp": "移动 {name} 向上",
+      "moveDown": "移动 {name} 向下",
+      "deleteNamed": "删除 {name}"
+    },
+    "badges": {
+      "cardTitle": "合规徽章",
+      "add": "添加徽章",
+      "empty": "未配置徽章。添加 SOC 2 或 ISO 27001 等认证以将其显示在公共页面上。",
+      "verificationLink": "验证链接",
+      "deleteTitle": "删除徽章？",
+      "deleteDescription": "这 ”{name}\" 徽章将从信任中心删除。",
+      "addTitle": "添加徽章",
+      "editTitle": "编辑徽章",
+      "editorDescription": "在公共信任中心页面上显示为认证图块。",
+      "titleLabel": "标题",
+      "issuer": "发行人",
+      "issuerPlaceholder": "例如美国注册会计师协会、英国标准协会",
+      "description": "描述",
+      "descriptionPlaceholder": "例如每年审核 SOC 2 Type II",
+      "verificationUrl": "验证网址",
+      "image": "徽章图片",
+      "imageHint": "PNG、JPG、GIF 或 WebP。最大 2 MB。不允许使用 SVG。",
+      "imageHintKeep": " 留空以保留当前图像。",
+      "save": "保存徽章"
+    },
+    "documents": {
+      "cardTitle": "安全文件",
+      "add": "添加文档",
+      "empty": "没有配置文档。上传政策、安全报告或合规性资料以供公众下载。",
+      "noFile": "没有上传文件",
+      "deleteTitle": "删除文档？",
+      "deleteDescription": "\"{name}”，其文件将从信任中心删除。",
+      "addTitle": "添加文档",
+      "editTitle": "编辑文档",
+      "editorDescription": "已发布的文件可从公共信任中心页面下载。",
+      "titleLabel": "标题",
+      "description": "描述",
+      "descriptionPlaceholder": "本文档涵盖的内容",
+      "category": "类别",
+      "file": "文件",
+      "replaceFile": "替换文件",
+      "fileHint": "PDF、PNG、JPG、DOCX 或 XLSX。最大 20 MB。",
+      "fileHintCurrent": " 当前的： {fileName}。替换会删除旧文件。",
+      "save": "保存文档",
+      "categories": {
+        "POLICY": "政策",
+        "SECURITY": "安全报告",
+        "COMPLIANCE": "遵守",
+        "PRIVACY": "隐私",
+        "OTHER": "其他"
+      }
+    },
+    "sections": {
+      "cardTitle": "自定义部分",
+      "add": "添加部分",
+      "empty": "没有自定义部分。添加 Markdown 块以获取概述、常见问题解答或结构化类型未涵盖的任何其他内容。",
+      "deleteTitle": "删除部分？",
+      "deleteDescription": "\"{name}”将从信任中心删除。",
+      "addTitle": "添加部分",
+      "editTitle": "编辑部分",
+      "editorDescription": "公共信任中心页面上呈现的免费降价块。",
+      "titleLabel": "标题",
+      "body": "正文（降价）",
+      "bodyPlaceholder": "支持 Markdown 格式。",
+      "save": "保存部分"
+    },
+    "subprocessors": {
+      "cardTitle": "子处理者",
+      "add": "添加子处理器",
+      "empty": "未配置子处理器。列出代表您处理数据的第三方。",
+      "deleteTitle": "删除子处理器？",
+      "deleteDescription": "\"{name}”将从信任中心删除。",
+      "addTitle": "添加子处理器",
+      "editTitle": "编辑子处理者",
+      "editorDescription": "代表您处理数据的第三方，列在公共信任中心页面上。",
+      "name": "姓名",
+      "purpose": "目的",
+      "purposePlaceholder": "例如应用程序数据的云托管",
+      "location": "数据位置",
+      "locationPlaceholder": "例如澳大利亚（悉尼）",
+      "website": "网站",
+      "websitePlaceholder": "https://…",
+      "logo": "标志图片",
+      "logoHint": "PNG、JPG、GIF 或 WebP。最大 2 MB。不允许使用 SVG。",
+      "logoHintKeep": " 留空以保留当前徽标。",
+      "logoUrl": "…或者从 URL 获取徽标",
+      "logoUrlPlaceholder": "https://example.com/logo.png",
+      "logoUrlHint": "该图像与其他信任中心文件一起下载并存储 - 公共页面永远不会加载外部主机。上传的文件优先于 URL。",
+      "save": "保存子处理器"
+    },
+    "errors": {
+      "invalidInput": "输入无效。",
+      "titleRequired": "标题为必填项。",
+      "nameRequired": "姓名为必填项。",
+      "invalidUrl": "输入有效的 URL。",
+      "sectionTooLong": "节正文太长（最多 10,000 个字符）。",
+      "badgeNotFound": "未找到徽章。",
+      "documentFileRequired": "需要一个文档文件。",
+      "saveFailed": "保存失败。",
+      "badgeSaved": "徽章已保存。",
+      "documentSaved": "文档已保存。",
+      "sectionSaved": "部分已保存。",
+      "subprocessorSaved": "子处理器已保存。",
+      "imageType": "图片必须是 PNG、JPG、GIF 或 WebP（不允许使用 SVG）。",
+      "imageInvalid": "该图像无效。",
+      "imageTooLarge": "图片太大（最大 {max} MB）。",
+      "fileTooLarge": "文件太大（最大 {max} MB）。",
+      "fileInvalid": "文件内容与其扩展名不匹配。",
+      "fileType": "不接受此文件类型。",
+      "imageFetchFailed": "无法获取图像 URL。",
+      "imageContent": "图像 URL 必须返回 PNG、JPG、GIF 或 WebP 内容。"
+    }
+  },
+  "Shell": {
+    "workspace": {
+      "dashboard": "仪表板",
+      "vendors": "供应商",
+      "assessments": "评估",
+      "riskRegister": "风险登记册",
+      "selfAssessment": "自我评估",
+      "frameworks": "框架",
+      "templates": "模板",
+      "trustCenter": "信托中心",
+      "admin": "行政",
+      "groups": {
+        "risk": "风险",
+        "frameworks": "框架",
+        "manage": "管理"
+      }
+    },
+    "admin": {
+      "backToWorkspace": "返回工作区",
+      "groups": {
+        "workspace": "工作空间",
+        "email": "电子邮件",
+        "assessments": "评估",
+        "files": "文件",
+        "accessSecurity": "访问和安全",
+        "integrations": "集成",
+        "platform": "平台"
+      },
+      "sections": {
+        "general": "一般的",
+        "appearance": "外貌",
+        "email": "电子邮件",
+        "emailTracking": "电子邮件追踪",
+        "scoring": "评分",
+        "scheduling": "调度",
+        "storage": "贮存",
+        "users": "用户",
+        "roles": "角色",
+        "signIn": "登入",
+        "rateLimits": "速率限制",
+        "api": "应用程序编程接口",
+        "webhooks": "网络钩子",
+        "trustCenter": "信托中心",
+        "auditLog": "审核日志",
+        "health": "健康"
+      }
+    },
+    "header": {
+      "admin": "行政",
+      "toggleTheme": "切换主题",
+      "themeLight": "光",
+      "themeDark": "黑暗的",
+      "themeSystem": "系统",
+      "profile": "轮廓",
+      "language": "语言",
+      "signOut": "登出"
+    },
+    "sidebar": {
+      "toggle": "切换侧边栏"
+    },
+    "breadcrumbs": {
+      "label": "面包屑",
+      "dashboard": "仪表板"
+    },
+    "commandPalette": {
+      "label": "命令面板",
+      "searchPlaceholder": "搜索页面...",
+      "noResults": "没有结果。",
+      "navigate": "导航",
+      "open": "打开",
+      "close": "关闭",
+      "or": "或者",
+      "items": {
+        "dashboard": {
+          "label": "仪表盘",
+          "subtitle": "供应商风险概述"
+        },
+        "vendors": {
+          "label": "供应商",
+          "subtitle": "管理供应商"
+        },
+        "assessments": {
+          "label": "评估",
+          "subtitle": "问卷调查"
+        },
+        "frameworks": {
+          "label": "框架",
+          "subtitle": "合规控制"
+        },
+        "templates": {
+          "label": "模板",
+          "subtitle": "问卷制作者"
+        },
+        "profile": {
+          "label": "个人资料",
+          "subtitle": "您的帐户"
+        },
+        "adminGeneral": {
+          "label": "管理员 · 常规",
+          "subtitle": "组织"
+        },
+        "adminUsers": {
+          "label": "管理员 · 用户",
+          "subtitle": "员工账户"
+        },
+        "adminRoles": {
+          "label": "管理员 · 角色",
+          "subtitle": "权限"
+        },
+        "adminApi": {
+          "label": "管理员 · API",
+          "subtitle": "API访问"
+        },
+        "adminAudit": {
+          "label": "管理员 · 审计日志",
+          "subtitle": "活动记录"
+        },
+        "apiDocs": {
+          "label": "API文档",
+          "subtitle": "OpenAPI / Swagger"
+        }
+      }
+    },
+    "idle": {
+      "title": "会话即将过期",
+      "description": "您将退出登录 {countdown,plural,one{# 第二} other{# 秒}} 由于不活动。移动鼠标或按任意键以保持登录状态。",
+      "staySignedIn": "保持登录状态"
+    },
+    "scrollToTop": "滚动到顶部",
+    "error": {
+      "title": "出了点问题",
+      "description": "发生意外错误。请重试或联系支持人员。",
+      "retry": "再试一次"
+    }
+  },
+  "Trust": {
+    "title": "{orgName} 信托中心",
+    "compliance": "合规性和认证",
+    "expired": "已到期",
+    "expiringSoon": "即将到期",
+    "verify": "核实",
+    "documents": "安全文件",
+    "download": "下载",
+    "subprocessors": "子处理者",
+    "name": "姓名",
+    "purpose": "目的",
+    "location": "地点",
+    "contactPrompt": "对我们的安全状况有疑问吗？",
+    "categories": {
+      "POLICY": "政策",
+      "SECURITY": "安全报告",
+      "COMPLIANCE": "遵守",
+      "PRIVACY": "隐私",
+      "OTHER": "其他"
+    }
+  },
+  "Portal": {
+    "metaTitle": "供应商调查问卷",
+    "noscript": "需要 JavaScript 来完成此调查问卷。请在您的浏览器设置中启用 JavaScript。",
+    "logoAlt": "标识",
+    "linkNotFound": "找不到链接",
+    "linkInvalid": "该问卷链接无效。",
+    "linkExpiredTitle": "链接已过期",
+    "linkExpiredBody": "该调查问卷链接已过期。请联系请求者获取新链接。",
+    "submittedTitle": "{title} — 已提交",
+    "submittedBanner": "✓ 您的回复已提交。",
+    "submittedBody": "请求者将审查您的答案并可能要求澄清。您可以返回此链接查看任何更新。",
+    "notApplicableShort": "不适用",
+    "decisions": {
+      "APPROVED": "得到正式认可的",
+      "CLARIFICATION_REQUESTED": "要求澄清"
+    },
+    "notAvailableTitle": "无法使用",
+    "notAvailableBody": "该调查问卷目前不可用。",
+    "additionalInfoTitle": "已要求提供更多信息。",
+    "additionalInfoBody": "请查看标记的问题并在准备好后重新提交。",
+    "password": {
+      "title": "需要密码",
+      "description": "该调查问卷受密码保护。输入请求者提供的密码以继续。",
+      "label": "密码",
+      "placeholder": "输入密码",
+      "verifying": "正在验证...",
+      "continue": "继续",
+      "tooMany": "尝试次数太多。请稍等。",
+      "notSet": "该链接没有设置密码。",
+      "incorrect": "密码不正确。"
+    },
+    "error": {
+      "title": "出了点问题",
+      "description": "加载调查问卷时发生意外错误。请联系向您发送此链接的组织以获取帮助。",
+      "retry": "再试一次"
+    },
+    "loading": "正在加载调查问卷...",
+    "upload": {
+      "tooMany": "上传太多。请稍等。",
+      "linkInvalid": "该链接不再有效。",
+      "noFile": "未选择文件。",
+      "invalidQuestion": "无效问题。",
+      "tooLarge": "文件超出 {max} MB 限制。",
+      "badType": "文件类型 .{ext} 是不允许的。",
+      "dangerousType": "不允许使用此文件类型。",
+      "mismatch": "文件内容与 .{ext} 文件。"
+    },
+    "questionnaire": {
+      "yes": "是的",
+      "no": "不",
+      "maxUpload": "最大 {maxUploadMb} MB。允许的格式：{extensions}。",
+      "uploading": " 正在上传...",
+      "uploaded": "已上传： {fileName}",
+      "remove": "消除",
+      "selectPlaceholder": "选择…",
+      "confirmStatement": "我确认这个说法",
+      "clarification": "审稿人要求对此答案进行澄清。",
+      "notApplicable": "不适用",
+      "commentPlaceholder": "添加评论...",
+      "send": "发送",
+      "autosaveHint": "您的答案会自动保存 - 您可以关闭此页面并随时使用相同的链接返回。",
+      "saveExpired": "此链接已过期 - 您最近的更改无法保存。",
+      "saveError": "我们无法保存您的最新更改。检查您的连接并重试。",
+      "retrySave": "重试保存",
+      "expiry": {
+        "expired": "该链接已过期。",
+        "hours": "此链接过期时间为 {hours,plural,one{# 小时} other{# 小时}}.",
+        "minutes": "此链接过期时间为 {minutes,plural,one{# 分钟} other{# 分钟}}."
+      },
+      "sectionCounter": "· 部分 {current} 的 {total}",
+      "saving": "保存…",
+      "saveFailed": "保存失败",
+      "savedAt": "保存于 {time}",
+      "lastSavedAt": "最后保存于 {time}",
+      "expires": "过期 {date}",
+      "back": "后退",
+      "continue": "继续",
+      "reviewAnswers": "查看答案",
+      "continueWarning": "{count,plural,one{# 本节的必问问题仍需要答案。} other{# 本节的必答问题仍需要答案。}} 您可以继续并回来。",
+      "reviewHeading": "检查您的答案",
+      "reviewAnswered": "{answered}/{total} 回答了",
+      "reviewMissing": "{count} 需要缺失",
+      "openSection": "开放部分",
+      "submitting": "正在提交...",
+      "submit": "提交调查问卷",
+      "submitTitle": "提交调查问卷？",
+      "submitDescription": "提交后您将无法编辑答案。您确定准备好提交吗？",
+      "cancel": "取消",
+      "submitConfirm": "提交",
+      "missingRequired": "{count,plural,one{请回答 # 提交前必问的问题。} other{请回答 # 提交前需要提出的问题。}}",
+      "linkInvalid": "该链接不再有效。",
+      "vendorAuthor": "供应商"
+    }
+  },
+  "Pdf": {
+    "common": {
+      "pageOf": "第 {page} 页，共 {total} 页",
+      "na": "不适用",
+      "none": "--",
+      "yes": "是的",
+      "no": "不",
+      "notScored": "未得分",
+      "tier": "等级： {tier}",
+      "template": "模板： {name} v{version}",
+      "reviewer": "审稿人： {name}",
+      "generated": "生成 {date}",
+      "due": "到期的： {date}",
+      "completed": "完全的： {date}",
+      "automatedFindingDescription": "供应商的回答没有达到预期的反应。"
+    },
+    "tiers": {
+      "CRITICAL": "批判的",
+      "HIGH": "高的",
+      "MEDIUM": "中等的",
+      "LOW": "低的"
+    },
+    "questionTypes": {
+      "YES_NO": "是/否",
+      "MULTIPLE_CHOICE": "单项选择",
+      "FREE_TEXT": "自由文本",
+      "FILE_UPLOAD": "文件上传",
+      "DATE": "日期",
+      "NUMERIC": "数字",
+      "COMBOBOX": "组合框",
+      "MULTI_SELECT": "多选",
+      "RATING": "等级",
+      "URL": "网址",
+      "EMAIL": "电子邮件",
+      "CHECKBOX": "复选框"
+    },
+    "statuses": {
+      "DRAFT": "草稿",
+      "SENT": "发送",
+      "IN_PROGRESS": "进行中",
+      "SUBMITTED": "已提交",
+      "UNDER_REVIEW": "审核中",
+      "COMPLETED": "完全的"
+    },
+    "assessment": {
+      "score": "分数",
+      "customerResponsibility": "客户责任： {percent}% ({completed}/{total} 完全的）",
+      "responses": "回应（{count})",
+      "question": "问题",
+      "answer": "回答",
+      "type": "类型",
+      "weight": "重量",
+      "compliant": "合规",
+      "scoreColumn": "分数",
+      "findings": "调查结果（{count})"
+    },
+    "framework": {
+      "complianceReport": "{frameworkName} {version} — 合规报告",
+      "summary": "概括",
+      "overallScore": "总分：",
+      "domainsAssessed": "评估的领域：",
+      "controlsMapped": "映射的控件：",
+      "domainCompliance": "域名合规性",
+      "domain": "领域",
+      "current": "当前的",
+      "previous": "以前的",
+      "change": "改变",
+      "controlHeatmap": "控制热图",
+      "control": "控制",
+      "title": "标题",
+      "compliance": "遵守",
+      "status": "地位",
+      "ragGreen": "绿色的",
+      "ragAmber": "琥珀色",
+      "ragRed": "红色的",
+      "ragNone": "未评估"
+    },
+    "portfolio": {
+      "title": "标题",
+      "vendors": "供应商",
+      "averageScore": "平均分",
+      "openFindings": "开放调查结果",
+      "needsAttention": "需要注意",
+      "scoreDistribution": "分数分布",
+      "green": "绿色（≥85%）",
+      "amber": "琥珀色 (60–84%)",
+      "red": "红色（<60%）",
+      "unscored": "未计分",
+      "vendorsByTier": "按级别划分的供应商",
+      "assessmentsByStatus": "按状态评估",
+      "vendorsCount": "供应商（{count})",
+      "vendor": "供应商",
+      "tier": "等级",
+      "score": "分数",
+      "lastAssessed": "最后评估",
+      "assessments": "评估",
+      "notAssessed": "未评估",
+      "topDeficientControls": "最有缺陷的控制措施（{count})",
+      "control": "控制",
+      "vendorsAffected": "受影响的供应商"
+    }
+  },
+  "Email": {
+    "footer": "这封电子邮件的发送者是 {appName}。如果该按钮不起作用，请将链接复制并粘贴到浏览器中。",
+    "trustFooter": "详细了解我们的安全状况： {url}",
+    "testSubject": "{appName} — SMTP 测试",
+    "testBody": "您的 SMTP 设置工作正常。",
+    "testSent": "测试电子邮件已发送。",
+    "smtpNotConfigured": "未配置 SMTP。",
+    "transporterFailed": "创建传输程序失败。",
+    "sendFailed": "发送失败： {reason}",
+    "retryMessage": "请检查并重新提交您的调查问卷。"
+  },
+  "Auth": {
+    "tagline": "供应商风险管理",
+    "login": {
+      "title": "登入",
+      "description": "登录您的帐户。",
+      "email": "电子邮件",
+      "password": "密码",
+      "submit": "登入",
+      "submitting": "正在登录...",
+      "forgot": "忘记密码？",
+      "or": "或者",
+      "invalid": "电子邮件或密码无效。",
+      "tooMany": "尝试次数太多。请稍等片刻，然后重试。"
+    },
+    "forgot": {
+      "title": "忘记密码",
+      "description": "输入您的电子邮件，我们将向您发送重置链接。",
+      "email": "电子邮件",
+      "submit": "发送重置链接",
+      "submitting": "正在发送...",
+      "back": "返回登录",
+      "invalidEmail": "输入有效的电子邮件地址。",
+      "rateLimited": "如果具有该电子邮件的帐户存在，则最近已发送重置链接。",
+      "sent": "如果具有该电子邮件地址的帐户存在，则已发送重置链接。"
+    },
+    "reset": {
+      "title": "重置密码",
+      "description": "为您的帐户选择一个新密码。",
+      "missing": "此重置链接丢失或无效。请求一个新的",
+      "expired": "此重置链接已过期或已被使用。请求一个新的",
+      "forgotLink": "忘记密码页面",
+      "forUser": "选择一个新密码 {email}.",
+      "newPassword": "新密码",
+      "confirmPassword": "确认密码",
+      "submit": "重置密码",
+      "submitting": "正在重置...",
+      "back": "返回登录",
+      "invalidLink": "重置链接无效。",
+      "invalidPassword": "使用符合要求的密码。",
+      "expiredToken": "此重置链接无效或已过期。"
+    },
+    "setup": {
+      "title": "创建管理员",
+      "cardTitle": "创建第一个管理员",
+      "description": "设置初始管理员帐户以开始管理供应商风险。",
+      "fullName": "姓名",
+      "email": "电子邮件",
+      "password": "密码",
+      "passwordHint": "至少 12 个字符。",
+      "submit": "创建管理员",
+      "submitting": "创造……",
+      "alreadyDone": "设置已经完成。",
+      "invalid": "检查姓名、电子邮件和密码（至少 12 个字符）。",
+      "roleError": "无法初始化管理员角色。请再试一次。",
+      "createdSignIn": "帐户已创建。请登录。"
+    },
+    "sso": {
+      "orSignInWith": "或登录"
+    }
+  }
+}

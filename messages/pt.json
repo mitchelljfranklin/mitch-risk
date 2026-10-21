@@ -1,0 +1,2681 @@
+{
+  "Common": {
+    "changeLanguage": "Alterar idioma",
+    "skipToContent": "Pular para o conteúdo",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "close": "Fechar",
+    "sidebar": "Barra lateral",
+    "sidebarDescription": "Exibe a barra lateral móvel.",
+    "toggleSidebar": "Alternar barra lateral",
+    "step": "Etapa {number}:",
+    "tiers": {
+      "CRITICAL": "Crítico",
+      "HIGH": "Alto",
+      "MEDIUM": "Médio",
+      "LOW": "Baixo"
+    },
+    "pagination": {
+      "pageOf": "Página {page} de {totalPages} · {totalCount} {itemLabel}",
+      "previous": "Anterior",
+      "next": "Próximo"
+    },
+    "viewToggle": {
+      "rows": "Visualização de linha",
+      "cards": "Visualização de cartão"
+    },
+    "assessmentStatuses": {
+      "DRAFT": "Rascunho",
+      "SENT": "Enviado",
+      "IN_PROGRESS": "Em andamento",
+      "SUBMITTED": "Enviado",
+      "UNDER_REVIEW": "Em revisão",
+      "COMPLETED": "Concluído"
+    },
+    "findingStatuses": {
+      "OPEN": "Abrir",
+      "REMEDIATED": "Corrigido",
+      "RISK_ACCEPTED": "Risco aceito"
+    },
+    "copyLink": {
+      "copy": "Cópia",
+      "copied": "Copiado"
+    },
+    "pendingLink": {
+      "preparing": "Preparando…"
+    },
+    "evidencePreview": {
+      "preview": "Visualização {fileName}"
+    },
+    "questionTypes": {
+      "YES_NO": "Sim / Não",
+      "MULTIPLE_CHOICE": "Escolha única (escolha uma)",
+      "FREE_TEXT": "Texto livre",
+      "FILE_UPLOAD": "Carregamento de arquivo",
+      "DATE": "Data",
+      "NUMERIC": "Numérico",
+      "COMBOBOX": "Caixa de combinação",
+      "MULTI_SELECT": "Seleção múltipla (escolha vários)",
+      "RATING": "Classificação (1‑5)",
+      "URL": "URL",
+      "EMAIL": "E-mail",
+      "CHECKBOX": "Caixa de seleção (reconhecimento)"
+    },
+    "controlCodes": {
+      "showMore": "{count,plural,one{Mostrar # mais controle} other{Mostrar # mais controles}}",
+      "showLess": "Mostrar menos"
+    },
+    "search": {
+      "placeholder": "Procurar…"
+    }
+  },
+  "Metadata": {
+    "description": "Solução de gerenciamento de riscos de fornecedores terceirizados de marca branca"
+  },
+  "Dashboard": {
+    "metaTitle": "Painel",
+    "title": "Visão geral do risco do fornecedor",
+    "tracked": "{count,plural,one{# fornecedor rastreado} other{# fornecedores rastreados}}",
+    "newVendor": "Novo fornecedor",
+    "assessments": "Avaliações",
+    "portfolioReport": "Relatório de portfólio",
+    "emptyTitle": "Ainda não há fornecedores",
+    "emptyCanCreate": "Adicione seu primeiro fornecedor para começar a monitorar seus riscos.",
+    "emptyReadOnly": "Nenhum fornecedor está sendo rastreado ainda.",
+    "addVendor": "Adicione um fornecedor →",
+    "stats": {
+      "vendors": "Fornecedores rastreados",
+      "averageScore": "Pontuação média",
+      "openFindings": "Descobertas abertas",
+      "needsAttention": "Precisa de atenção"
+    },
+    "topControls": "Principais controles deficientes",
+    "viewRiskRegister": "Ver registro de risco →",
+    "highestRisk": "Fornecedores de maior risco",
+    "viewAllVendors": "Ver todos os fornecedores →",
+    "noAssessments": "Sem avaliações",
+    "overdue": "{count} atrasado",
+    "attention": {
+      "title": "Precisa de atenção",
+      "allClear": "Tudo claro – nada precisa de atenção agora.",
+      "titleWithCount": "Precisa de atenção ({count})",
+      "unreviewed": "não revisado",
+      "clarification": "esclarecimento",
+      "clarifications": "esclarecimentos",
+      "failedEmail": "e-mail com falha (24h)",
+      "failedEmails": "e-mails falhados (24h)",
+      "groups": {
+        "overdue": "Avaliações atrasadas",
+        "belowThreshold": "Abaixo do limite de pontuação",
+        "keyDates": "Datas importantes (60 dias)"
+      },
+      "overdueAssessment": "{count,plural,one{# avaliação atrasada} other{# avaliações atrasadas}}",
+      "oldestSince": "mais antigo desde {date}",
+      "belowThreshold": "abaixo {percent}% limite",
+      "contractRenewal": "Renovação de contrato",
+      "daysOverdue": "{days}atrasado",
+      "inDays": "em {days}d"
+    },
+    "charts": {
+      "portfolioHealth": "Saúde do portfólio",
+      "openFindingsBySeverity": "Abrir descobertas por gravidade",
+      "assessmentStatus": "Status da avaliação",
+      "riskByTier": "Risco por nível",
+      "vendors": "fornecedores",
+      "assessments": "Avaliações",
+      "openFindings": "Descobertas abertas",
+      "ragShort": {
+        "green": "Verde",
+        "amber": "Âmbar",
+        "red": "Vermelho",
+        "unscored": "Sem pontuação"
+      },
+      "rag": {
+        "green": "Verde (≥85%)",
+        "amber": "Âmbar (60–84%)",
+        "red": "Vermelho (<60%)",
+        "unscored": "Sem pontuação"
+      },
+      "severity": {
+        "CRITICAL": "Crítico",
+        "HIGH": "Alto",
+        "MEDIUM": "Médio",
+        "LOW": "Baixo"
+      },
+      "status": {
+        "DRAFT": "Rascunho",
+        "SENT": "Enviado",
+        "IN_PROGRESS": "Em andamento",
+        "SUBMITTED": "Enviado",
+        "UNDER_REVIEW": "Em revisão",
+        "COMPLETED": "Concluído",
+        "OVERDUE": "Atrasado"
+      },
+      "tier": {
+        "CRITICAL": "Crítico",
+        "HIGH": "Alto",
+        "MEDIUM": "Médio",
+        "LOW": "Baixo",
+        "Unspecified": "Não especificado"
+      },
+      "activity": {
+        "title": "Atividade de avaliação",
+        "noActivity": "Nenhuma atividade neste período",
+        "timeRange": "Selecione um intervalo de tempo",
+        "ranges": {
+          "90d": "Últimos 3 meses",
+          "30d": "Últimos 30 dias",
+          "7d": "Últimos 7 dias"
+        },
+        "assessments": "Avaliações"
+      }
+    }
+  },
+  "Vendors": {
+    "metaTitle": "Fornecedores",
+    "title": "Fornecedores",
+    "subtitle": "Fornecedores que você avalia quanto ao risco de segurança.",
+    "compare": "Comparar",
+    "import": "Importar",
+    "bulkSend": "Envio em massa",
+    "newVendor": "Novo fornecedor",
+    "search": "Procurar",
+    "searchPlaceholder": "Nome ou e-mail…",
+    "tier": "Nível",
+    "anyTier": "Qualquer nível",
+    "filterTierAria": "Filtrar fornecedores por nível",
+    "sort": "Organizar",
+    "sortAria": "Classificar fornecedores",
+    "filter": "Filtro",
+    "clear": "Claro",
+    "viewAria": "Visualização da lista de fornecedores",
+    "noMatches": "Nenhum fornecedor corresponde aos filtros selecionados.",
+    "emptyTitle": "Ainda não há fornecedores",
+    "emptyDescription": "Adicione um fornecedor para começar a monitorar o risco de segurança.",
+    "assessed": "Avaliado {date}",
+    "notAssessed": "Não avaliado",
+    "assessmentCount": "{count,plural,one{# avaliação} other{# avaliações}}",
+    "openFindingCount": "{count,plural,one{# descoberta aberta} other{# descobertas abertas}}",
+    "list": {
+      "vendor": "Fornecedor",
+      "tier": "Nível",
+      "score": "Pontuação",
+      "items": "fornecedores"
+    },
+    "sorts": {
+      "name": "Nome (A – Z)",
+      "name-desc": "Nome (Z–A)",
+      "score-asc": "Pontuação (baixa → alta)",
+      "score-desc": "Pontuação (alta → baixa)",
+      "tier": "Nível (A – Z)",
+      "tier-desc": "Nível (Z–A)",
+      "last-assessed": "Última avaliação",
+      "assessments": "A maioria das avaliações"
+    },
+    "form": {
+      "vendorName": "Nome do fornecedor",
+      "externalId": "ID externo",
+      "externalIdPlaceholder": "por exemplo ERP-V-001",
+      "externalIdHint": "Referência opcional a este fornecedor em outro sistema",
+      "contactName": "Nome do contato",
+      "contactEmail": "E-mail de contato",
+      "tier": "Nível",
+      "website": "Site",
+      "riskOwner": "Proprietário do risco",
+      "dataSensitivity": "Sensibilidade de dados",
+      "contractValue": "Valor do contrato",
+      "geographicRisk": "Risco geográfico",
+      "tags": "Etiquetas",
+      "tagsPlaceholder": "por exemplo saas, crítico, finanças",
+      "tagsHint": "Rótulos separados por vírgula para agrupamento e filtragem",
+      "serviceProvided": "Serviço prestado",
+      "servicePlaceholder": "por exemplo Hospedagem de e-mail na nuvem",
+      "contractRenewalDate": "Data de renovação do contrato",
+      "notes": "Notas",
+      "saving": "Salvando...",
+      "saveChanges": "Salvar alterações",
+      "create": "Criar fornecedor",
+      "cancel": "Cancelar",
+      "unspecified": "Não especificado",
+      "unassigned": "Não atribuído",
+      "levels": {
+        "NONE": "Nenhum",
+        "LOW": "Baixo",
+        "MEDIUM": "Médio",
+        "HIGH": "Alto"
+      },
+      "dataSensitivities": {
+        "PUBLIC": "Público",
+        "INTERNAL": "Interno",
+        "CONFIDENTIAL": "Confidencial",
+        "RESTRICTED": "Restrito"
+      }
+    },
+    "new": {
+      "title": "Novo fornecedor",
+      "cardTitle": "Detalhes do fornecedor",
+      "cardDescription": "Adicione um novo fornecedor para rastrear.",
+      "breadcrumb": "Novo"
+    },
+    "edit": {
+      "title": "Editar fornecedor",
+      "cardTitle": "Detalhes do fornecedor",
+      "cardDescription": "Atualize os detalhes do fornecedor.",
+      "breadcrumb": "Editar"
+    },
+    "attachments": {
+      "title": "Anexos",
+      "emptyTitle": "Ainda não há anexos",
+      "emptyDescription": "Faça upload de contratos, cartas ou outros documentos.",
+      "removeAria": "Remover anexo",
+      "dropHint": "Solte um arquivo ou clique para navegar",
+      "uploading": "Fazendo upload…",
+      "upload": "Carregar"
+    },
+    "export": {
+      "button": "Exportar CSV",
+      "all": "Todos os fornecedores",
+      "currentPage": "Página atual"
+    },
+    "errors": {
+      "invalidInput": "Entrada inválida.",
+      "duplicateExternalId": "Já existe um fornecedor com este ID externo.",
+      "vendorCreated": "Fornecedor criado.",
+      "vendorUpdated": "Fornecedor atualizado.",
+      "noFile": "Nenhum arquivo selecionado.",
+      "fileTypeNotAllowed": "Tipo de arquivo não permitido.",
+      "fileTypeNotAccepted": "Este tipo de arquivo não é aceito.",
+      "fileTooLarge": "O arquivo é muito grande (máx. {max} MB).",
+      "fileUploaded": "Arquivo carregado.",
+      "fileAttached": "Arquivo anexado ao fornecedor."
+    },
+    "detail": {
+      "notFound": "Fornecedor não encontrado",
+      "errorTitle": "Falha ao carregar fornecedor",
+      "errorDescription": "Ocorreu um erro ao carregar os detalhes deste fornecedor. Por favor, tente novamente.",
+      "created": "Fornecedor criado.",
+      "breadcrumbs": {
+        "riskRegister": "Registro de risco",
+        "vendors": "Fornecedores"
+      },
+      "edit": "Editar",
+      "exportCsv": "Exportar CSV",
+      "delete": "Excluir",
+      "deleteTitle": "Excluir fornecedor?",
+      "deleteDescription": "Isso excluirá permanentemente {vendorName} e tudo {count,plural,one{# avaliação} other{# avaliações}}. Esta ação não pode ser desfeita.",
+      "tabs": {
+        "overview": "Visão geral",
+        "compliance": "Conformidade",
+        "findings": "Descobertas",
+        "assessments": "Avaliações"
+      },
+      "overview": {
+        "title": "Visão geral",
+        "serviceProvided": "Serviço prestado",
+        "riskOwner": "Proprietário do risco",
+        "unassigned": "Não atribuído",
+        "externalId": "ID externo",
+        "dataSensitivity": "Sensibilidade de dados",
+        "unspecified": "Não especificado",
+        "website": "Site",
+        "contractRenewal": "Renovação de contrato",
+        "overdue": " · atrasado",
+        "attachments": "Anexos",
+        "emptyTitle": "Sem detalhes de visão geral",
+        "emptyDescription": "Edite este fornecedor para adicionar detalhes do serviço, um proprietário do risco e outras informações de perfil."
+      },
+      "riskProfile": {
+        "title": "Perfil de risco",
+        "inherent": "Inerente (pré-avaliação)",
+        "residual": "Residual (avaliado)",
+        "trendingUp": "Tendências ↑",
+        "trendingDown": "Tendência de queda ↓",
+        "stable": "Estável →",
+        "noScore": "Nenhuma pontuação ainda – envie uma avaliação",
+        "trend": "Tendência",
+        "compareLastTwo": "Compare os dois últimos →"
+      },
+      "certifications": "Certificações e atestados",
+      "compliance": {
+        "vendorCompliance": "Conformidade do fornecedor",
+        "yourCompliance": "Sua conformidade",
+        "domainCompliance": "Conformidade de domínio",
+        "noDataTitle": "Não há dados de conformidade",
+        "noDataDescription": "Conclua uma avaliação para ver as pontuações de conformidade do domínio.",
+        "frameworkHeatmaps": "Mapas de calor da estrutura",
+        "noAssessmentData": "Sem dados de avaliação",
+        "noFrameworksTitle": "Nenhuma estrutura disponível",
+        "noFrameworksDescription": "Importe ou propague bibliotecas de estrutura para mapear controles para questões de avaliação."
+      },
+      "findings": {
+        "title": "Descobertas",
+        "openCount": "{count, plural, one {# aberto} other {# abertos}}",
+        "viewAll": "{count,plural,one{Veja a constatação no registro de risco →} other{Ver tudo # descobertas no registro de riscos →}}",
+        "emptyTitle": "Nenhuma descoberta",
+        "emptyDescription": "As descobertas são geradas quando as respostas da avaliação não são conformes. Conclua uma avaliação para ver os resultados aqui."
+      },
+      "assessments": {
+        "title": "Avaliações",
+        "new": "Nova avaliação",
+        "emptyTitle": "Sem avaliações",
+        "emptyDescription": "Nenhuma avaliação foi criada para este fornecedor ainda.",
+        "noTemplate": "Nenhum modelo",
+        "due": " · devido {date}",
+        "viewAll": "{count,plural,one{Veja a avaliação →} other{Ver tudo # avaliações →}}",
+        "activity": "Atividade"
+      }
+    },
+    "timeline": {
+      "empty": "Nenhuma atividade registrada ainda.",
+      "assessmentCreated": "Avaliação criada",
+      "assessmentSent": "Avaliação enviada",
+      "assessmentSubmitted": "Avaliação enviada",
+      "findingOpened": "Encontrando aberto",
+      "remediated": "Corrigido",
+      "riskAccepted": "Risco aceito",
+      "certificationAdded": "Certificação adicionada",
+      "certificationExpiring": "Certificação expirando",
+      "certificationExpiringDescription": "{name} - expira {date}"
+    },
+    "certifications": {
+      "empty": "Nenhuma certificação rastreada ainda.",
+      "expires": "Expira {date}",
+      "statuses": {
+        "valid": "Válido",
+        "expiring": "Expira em breve",
+        "expired": "Expirado"
+      },
+      "add": "Adicionar certificação",
+      "edit": "Editar",
+      "delete": "Excluir",
+      "deleteTitle": "Excluir certificação?",
+      "deleteDescription": "\"{name}\"será removido permanentemente.",
+      "editor": {
+        "addTitle": "Adicionar certificação",
+        "description": "Acompanhe um atestado (SOC 2, ISO 27001,…) e sua validade.",
+        "name": "Nome",
+        "namePlaceholder": "por exemplo SOC 2 Tipo II",
+        "issuer": "Emissor (opcional)",
+        "issuerPlaceholder": "por exemplo Auditor/organismo de certificação",
+        "issued": "Emitido (opcional)",
+        "expires": "Expira",
+        "notes": "Notas (opcional)",
+        "complianceActions": "Ações de conformidade necessárias",
+        "selectFramework": "Selecione uma estrutura...",
+        "attachment": "Anexo (opcional)",
+        "attachmentHint": "Carregue um certificado, relatório ou contrato. Máximo de 20 MB.",
+        "attachments": "Anexos",
+        "saving": "Salvando...",
+        "save": "Salvar certificação",
+        "cancel": "Cancelar"
+      },
+      "errors": {
+        "missingVendor": "Fornecedor ausente.",
+        "invalidInput": "Entrada inválida.",
+        "wrongVendor": "A certificação não pertence a este fornecedor.",
+        "saved": "Certificação salva.",
+        "attachmentFailed": " Falha no anexo: {reason}",
+        "fileType": "Tipo de arquivo não permitido.",
+        "fileTooLarge": "O arquivo é muito grande (máx. {max} MB).",
+        "fileInvalid": "Este tipo de arquivo não é aceito.",
+        "fileRecordFailed": "Falha ao salvar o registro do arquivo.",
+        "fileUploaded": "Arquivo carregado.",
+        "nameRequired": "O nome da certificação é obrigatório.",
+        "expiryRequired": "A data de validade é obrigatória.",
+        "invalidExpiry": "Insira uma data de validade válida.",
+        "added": "Certificação \"{name}\" adicionado com anexo.",
+        "missingEvidence": "Evidências ausentes.",
+        "evidenceNotFound": "Evidência não encontrada."
+      }
+    },
+    "customerResponsibility": {
+      "title": "Responsabilidade do Cliente",
+      "collapse": "Colapso",
+      "expand": "Expandir",
+      "progress": "{completed} de {total} · {percent}%",
+      "empty": "Não há controles de responsabilidade compartilhada para esta certificação.",
+      "assignedTo": "Atribuído a {name}",
+      "fileCount": "{count,plural,one{# arquivo} other{# arquivos}}",
+      "status": "Status",
+      "statuses": {
+        "PENDING": "Pendente",
+        "IN_PROGRESS": "Em andamento",
+        "COMPLETED": "Concluído",
+        "NOT_APPLICABLE": "Não aplicável"
+      },
+      "assignedToLabel": "Atribuído a",
+      "assignedToPlaceholder": "ID do usuário (opcional)",
+      "attachment": "Anexo",
+      "notes": "Notas",
+      "notesPlaceholder": "Adicione notas sobre a implementação...",
+      "files": "Arquivos",
+      "saving": "Salvando...",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "errors": {
+        "missingFields": "Campos obrigatórios ausentes.",
+        "invalidStatus": "Estado inválido.",
+        "noChanges": "Nenhuma alteração fornecida.",
+        "saved": "Salvo."
+      }
+    }
+  },
+  "Assessments": {
+    "list": {
+      "title": "Avaliações",
+      "subtitle": "Avaliações enviadas aos fornecedores.",
+      "subtitleForVendor": "Avaliações para {vendorName}.",
+      "filters": {
+        "search": "Procurar",
+        "searchPlaceholder": "Título ou fornecedor...",
+        "status": "Status",
+        "allStatuses": "Todos os status",
+        "statusAriaLabel": "Filtrar avaliações por status",
+        "from": "De",
+        "to": "Para",
+        "sort": "Organizar",
+        "sortAriaLabel": "Classificar avaliações",
+        "overdueOnly": "Apenas atrasado",
+        "apply": "Filtro",
+        "clear": "Claro"
+      },
+      "sorts": {
+        "created": "O mais novo primeiro",
+        "created-asc": "Mais antigo primeiro",
+        "due-asc": "Data de vencimento (mais cedo)",
+        "due-desc": "Data de vencimento (mais recente)",
+        "score-asc": "Pontuação (baixa → alta)",
+        "score-desc": "Pontuação (alta → baixa)",
+        "vendor": "Fornecedor (A–Z)",
+        "status": "Status (A–Z)",
+        "status-desc": "Status (Z–A)"
+      },
+      "emptyFiltered": "Nenhuma avaliação corresponde aos filtros selecionados.",
+      "emptyTitle": "Ainda não há avaliações",
+      "emptyDescription": "Crie uma avaliação e envie ao fornecedor seu link para concluí-la.",
+      "items": "avaliações",
+      "columns": {
+        "assessmentVendor": "Avaliação · Fornecedor",
+        "score": "Pontuação",
+        "status": "Status",
+        "due": "Devido"
+      },
+      "overdue": "Atrasado",
+      "due": " · devido {date}"
+    },
+    "new": {
+      "title": "Nova avaliação para {vendorName}",
+      "breadcrumb": "Nova avaliação",
+      "cardTitle": "Detalhes da avaliação",
+      "form": {
+        "title": "Título",
+        "titlePlaceholder": "por exemplo Revisão anual de segurança",
+        "template": "Modelo de questionário",
+        "templatePlaceholder": "Selecione um modelo publicado",
+        "noTemplates": "Nenhum modelo encontrado.",
+        "dueDate": "Data de vencimento",
+        "reviewer": "Revisor",
+        "unassigned": "Não atribuído",
+        "publishFirst": "Publique um modelo primeiro para criar uma avaliação.",
+        "creating": "Criando...",
+        "create": "Criar avaliação",
+        "cancel": "Cancelar"
+      }
+    },
+    "detail": {
+      "notFound": "Avaliação não encontrada",
+      "breadcrumbs": {
+        "assessments": "Avaliações",
+        "vendors": "Fornecedores"
+      },
+      "actions": {
+        "reopen": "Reabrir revisão",
+        "exportCsv": "Exportar CSV",
+        "downloadPdf": "Baixar PDF",
+        "preparingReport": "Preparando relatório…",
+        "finalize": "Finalizar",
+        "finalizing": "Finalizando…",
+        "delete": "Excluir",
+        "deleteTitle": "Excluir avaliação?",
+        "deleteDescription": "Isso excluirá permanentemente \"{title}\" e todas as respostas, descobertas e evidências. Esta ação não pode ser desfeita."
+      },
+      "meta": {
+        "due": " · devido {date}",
+        "reviewer": " · revisor {name}"
+      },
+      "draft": {
+        "createLinkTitle": "Criar link de fornecedor",
+        "createLinkDescription": "Gere um link de fornecedor sem login para a avaliação. Opcionalmente, defina uma senha para proteger o acesso.",
+        "settingsTitle": "Configurações de rascunho",
+        "title": "Título",
+        "dueDate": "Data de vencimento",
+        "saving": "Salvando…",
+        "save": "Salvar alterações"
+      },
+      "link": {
+        "title": "Link do fornecedor (não é necessário fazer login)",
+        "expires": "Expira {date}",
+        "noExpiry": "Sem vencimento",
+        "passwordProtected": "Protegido por senha",
+        "extend": "Estender 30 dias",
+        "regenerate": "Regenerar link",
+        "revoke": "Revogar",
+        "revokeTitle": "Revogar link do fornecedor?",
+        "revokeDescription": "O fornecedor não poderá mais acessar o questionário. Você pode regenerar o link mais tarde, se necessário.",
+        "revokedTitle": "Link do fornecedor",
+        "revokedDescription": "O link foi revogado."
+      },
+      "score": {
+        "title": "Pontuação",
+        "low": "Baixo risco",
+        "moderate": "Risco moderado",
+        "high": "Alto risco"
+      },
+      "findings": {
+        "summary": "Descobertas ({count} · {open,plural,one{# abrir} other{# abrir}})",
+        "deletedUser": "Usuário excluído",
+        "noneTitle": "Descobertas",
+        "allCompliant": "Todas as respostas são compatíveis – nenhuma descoberta.",
+        "automatedDescription": "A resposta do fornecedor não atendeu à resposta esperada."
+      },
+      "responses": {
+        "title": "Respostas",
+        "summary": "{approved} de {total} aprovado · {pending} pendente",
+        "summaryClarifications": " · {count,plural,one{# esclarecimento} other{# esclarecimentos}}",
+        "filters": {
+          "all": "Todos",
+          "pending": "Pendente ({count})",
+          "approved": "Aprovado ({count})",
+          "clarification": "Esclarecimento ({count})"
+        },
+        "notApplicable": "N / D",
+        "evidenceAlt": "Arquivo de evidência: {fileName}",
+        "viewPdf": "Ver PDF: {fileName} ↗",
+        "attachToVendor": "Anexar ao fornecedor"
+      },
+      "sender": {
+        "password": "Senha do portal (opcional)",
+        "passwordPlaceholder": "Exigir que o fornecedor insira uma senha",
+        "passwordHint": "Se definido, os fornecedores deverão inserir esta senha antes de acessar o questionário.",
+        "sendToVendor": "Enviar para o fornecedor",
+        "generateOnly": "Gerar apenas link",
+        "customEmailPlaceholder": "custom@example.com",
+        "sendTo": "Enviar para"
+      },
+      "sendBack": {
+        "trigger": "Enviar de volta ao fornecedor",
+        "title": "Enviar de volta ao fornecedor?",
+        "description": "O fornecedor poderá editar e reenviar suas respostas e receberá um e-mail com sua mensagem. Suas respostas existentes são mantidas.",
+        "messageLabel": "Mensagem para o fornecedor (opcional)",
+        "messagePlaceholder": "Explique quais informações adicionais são necessárias…",
+        "cancel": "Cancelar",
+        "confirm": "Enviar de volta",
+        "emailFallback": "Revise e reenvie seu questionário."
+      },
+      "review": {
+        "approved": "Aprovado",
+        "clarificationRequested": "Esclarecimento solicitado",
+        "noReviewYet": "Nenhuma revisão ainda",
+        "collapse": "Colapso",
+        "expand": "Expandir",
+        "reviewPlaceholder": "Análise",
+        "approve": "Aprovar",
+        "requestClarification": "Solicitar esclarecimentos",
+        "notePlaceholder": "Nota opcional (visível para o fornecedor se for solicitado esclarecimento)",
+        "save": "Salvar",
+        "vendor": "fornecedor",
+        "internal": "interno",
+        "replyPlaceholder": "Responder",
+        "internalOption": "Interno",
+        "vendorOption": "Visível para o fornecedor",
+        "reply": "Responder",
+        "commentPlaceholder": "Adicione um comentário",
+        "comment": "Comentário",
+        "commentCount": "{count,plural,one{# comentário} other{# comentários}}",
+        "previousReview": "Revisão anterior ({decision}): {note}"
+      },
+      "findingStatus": {
+        "resolutionNotePlaceholder": "Nota de resolução (opcional)",
+        "save": "Salvar"
+      },
+      "attachEvidence": {
+        "trigger": "Anexar",
+        "refreshing": "{message}. Refrescante…",
+        "attachAs": "Anexar como",
+        "certificationOption": "Certificação / atestado",
+        "generalOption": "Anexo geral",
+        "certificationName": "Nome da certificação",
+        "namePlaceholder": "por exemplo SOC 2 Tipo II",
+        "issuer": "Emissor (opcional)",
+        "issuerPlaceholder": "por exemplo Empresa de auditoria",
+        "expiryDate": "Data de validade",
+        "displayNameForFile": "Nome de exibição do arquivo",
+        "notes": "Notas (opcional)",
+        "notesPlaceholder": "Contexto adicional…",
+        "complianceActions": "Ações de conformidade necessárias",
+        "selectFramework": "Selecione uma estrutura...",
+        "displayName": "Nome de exibição",
+        "generalNotesPlaceholder": "Por que isso foi anexado…",
+        "adding": "Adicionando…",
+        "addCertification": "Adicionar certificação",
+        "attachToVendor": "Anexar ao fornecedor",
+        "cancel": "Cancelar"
+      },
+      "error": {
+        "title": "Falha ao carregar avaliação",
+        "description": "Ocorreu um erro ao carregar esta avaliação. Por favor, tente novamente.",
+        "retry": "Tente novamente"
+      }
+    },
+    "errors": {
+      "invalidInput": "Entrada inválida.",
+      "titleRequired": "O título é obrigatório",
+      "titleTooLong": "O título deve ter 200 caracteres ou menos",
+      "templateRequired": "Selecione um modelo",
+      "invalidDueDate": "Insira uma data de vencimento válida",
+      "saved": "Salvo.",
+      "started": "Avaliação iniciada.",
+      "portalLinkFailed": "Avaliação criada, mas não foi possível gerar o link do portal.",
+      "missingReviews": "{count,plural,one{# a resposta ainda precisa ser revista.} other{# as respostas ainda precisam ser revisadas.}}"
+    }
+  },
+  "Templates": {
+    "list": {
+      "title": "Modelos",
+      "subtitle": "Crie e versione questionários de segurança.",
+      "new": "Novo modelo",
+      "import": "Importar",
+      "emptyTitle": "Ainda não há modelos",
+      "emptyDescription": "Crie seu primeiro modelo de avaliação.",
+      "sections": "{count,plural,one{# seção} other{# seções}}"
+    },
+    "statuses": {
+      "DRAFT": "Rascunho",
+      "PUBLISHED": "Publicado",
+      "ARCHIVED": "Arquivado"
+    },
+    "new": {
+      "breadcrumb": "Novo",
+      "title": "Novo modelo",
+      "cardTitle": "Detalhes do modelo",
+      "form": {
+        "name": "Nome",
+        "description": "Descrição",
+        "creating": "Criando…",
+        "create": "Criar modelo",
+        "cancel": "Cancelar"
+      }
+    },
+    "builder": {
+      "notFound": "Modelo não encontrado",
+      "breadcrumbs": {
+        "templates": "Modelos"
+      },
+      "actions": {
+        "publish": "Publicar",
+        "newVersion": "Criar nova versão",
+        "unpublish": "Cancelar publicação",
+        "delete": "Excluir",
+        "deleteTitle": "Excluir modelo?",
+        "deleteDescription": "Isso excluirá permanentemente \"{name}\" e todas as suas seções e perguntas. As avaliações que usam este modelo perderão o link do modelo. Esta ação não pode ser desfeita.",
+        "menuAriaLabel": "Ações de modelo",
+        "preview": "Visualização",
+        "duplicate": "Duplicado",
+        "export": "Exportar"
+      },
+      "versionHistory": "Histórico de versões",
+      "details": "Detalhes do modelo",
+      "name": "Nome",
+      "description": "Descrição",
+      "saveDetails": "Salvar detalhes",
+      "readOnly": "Esta versão é publicada e somente leitura. Crie uma nova versão para fazer alterações.",
+      "jumpToSection": "Ir para a seção",
+      "section": {
+        "rename": "Renomear",
+        "moveUp": "Mover seção para cima",
+        "moveDown": "Mover seção para baixo",
+        "deleteTitle": "Excluir seção?",
+        "deleteDescription": "Isso excluirá permanentemente \"{title}\" e todas as perguntas dentro dele.",
+        "delete": "Excluir seção",
+        "noQuestionsTitle": "Sem perguntas",
+        "noQuestionsDescription": "Adicione uma pergunta para começar esta seção.",
+        "showQuestions": "Mostrar {count,plural,one{# pergunta} other{# questões}}",
+        "hideQuestions": "Esconder {count,plural,one{# pergunta} other{# questões}}",
+        "required": "Obrigatório",
+        "moveQuestionUp": "Mover pergunta para cima",
+        "moveQuestionDown": "Mover pergunta para baixo",
+        "editQuestion": "Editar",
+        "deleteQuestionTitle": "Excluir pergunta?",
+        "deleteQuestionDescription": "Isso excluirá permanentemente \"{text}\".",
+        "deleteQuestion": "Excluir",
+        "addQuestion": "Adicionar pergunta"
+      },
+      "addSection": {
+        "title": "Adicionar seção",
+        "placeholder": "Título da seção",
+        "button": "Adicionar seção"
+      }
+    },
+    "question": {
+      "text": "Texto da pergunta",
+      "help": "Texto de ajuda",
+      "helpHint": "A formatação Markdown é suportada — use **negrito**, *itálico*, listas e links.",
+      "answerType": "Tipo de resposta",
+      "riskWeight": "Peso de risco",
+      "required": "Obrigatório",
+      "options": "Opções (uma por linha)",
+      "expectedAnswer": "Resposta esperada",
+      "noExpectedAnswer": "Nenhuma resposta esperada",
+      "yes": "Sim",
+      "no": "Não",
+      "acceptedAnswers": "Respostas aceitas",
+      "acceptedHint": "Marque todas as respostas que devem ser pontuadas como compatíveis.",
+      "acceptedEmpty": "Adicione opções acima para escolher quais respostas são aceitáveis.",
+      "expectedNumber": "Número esperado",
+      "expectedSelections": "Seleções esperadas",
+      "selectionsHint": "Marque o conjunto exato que o fornecedor deve selecionar para obter conformidade com a pontuação.",
+      "selectionsEmpty": "Adicione opções acima para escolher as seleções necessárias.",
+      "manualScoring": "Este tipo de resposta é pontuado manualmente durante a revisão.",
+      "checked": "Verificado",
+      "unchecked": "Desmarcado",
+      "conditionalLegend": "Regras de visibilidade condicional",
+      "controlsLegend": "Controles de conformidade mapeados",
+      "saving": "Salvando...",
+      "save": "Salvar pergunta",
+      "cancel": "Cancelar"
+    },
+    "conditions": {
+      "questionFallback": "uma pergunta",
+      "shownIf": "Mostrado se",
+      "and": "E",
+      "or": "OU",
+      "editing": {
+        "title": "Visibilidade condicional",
+        "match": "Corresponder",
+        "all": "Todos (E)",
+        "any": "Qualquer (OU)",
+        "noQuestions": "Adicione outras perguntas primeiro para tornar esta condicional.",
+        "alwaysShown": "Sempre exibido. Adicione uma regra para mostrar esta pergunta somente quando outras respostas corresponderem.",
+        "selectQuestion": "Selecione uma pergunta",
+        "value": "Valor",
+        "remove": "Remover",
+        "addRule": "Adicionar regra",
+        "legend": "Lógica condicional",
+        "yes": "Sim",
+        "no": "Não",
+        "checked": "Verificado",
+        "unchecked": "Desmarcado"
+      },
+      "operators": {
+        "equals": "é igual",
+        "notEquals": "não é igual",
+        "contains": "contém",
+        "notContains": "não contém",
+        "gt": "maior que",
+        "lt": "menor que",
+        "gte": "maior ou igual a",
+        "lte": "menor ou igual a",
+        "answered": "é respondido",
+        "notAnswered": "não foi respondido"
+      }
+    },
+    "controls": {
+      "mappedControls": "Controles mapeados",
+      "selectedCount": "{count} selecionado",
+      "hint": "Marque um título de estrutura para mapear cada um de seus controles – útil para “você é certificado?” perguntas onde uma resposta compatível deve satisfazer toda a estrutura.",
+      "allFrameworks": "Todas as estruturas",
+      "filterPlaceholder": "Controles de filtro…",
+      "noMatch": "Nenhum controle corresponde ao filtro atual."
+    },
+    "import": {
+      "metadataTitle": "Modelo de importação",
+      "title": "Modelo de importação",
+      "subtitle": "Faça upload de um arquivo JSON para criar um novo modelo.",
+      "breadcrumb": "Importar",
+      "cardTitle": "Importar modelo do JSON",
+      "steps": {
+        "upload": "Carregar",
+        "review": "Análise"
+      },
+      "file": {
+        "label": "Arquivo JSON",
+        "downloadTemplate": "Modelo",
+        "hint": "Carregue um arquivo de modelo JSON válido. Exporte um modelo existente do construtor de modelos (Ações → Exportar) para ver a estrutura esperada."
+      },
+      "parse": {
+        "invalidStructure": "Estrutura de modelo inválida. Nome esperado e matriz de seções.",
+        "invalidJson": "Arquivo JSON inválido."
+      },
+      "summary": {
+        "sections": "{count,plural,one{# seção} other{# seções}}",
+        "questions": "{count,plural,one{# pergunta} other{# questões}}",
+        "controlCodes": "{count,plural,one{# código de controle} other{# códigos de controle}}"
+      },
+      "table": {
+        "section": "Seção",
+        "questions": "Questões"
+      },
+      "review": {
+        "introPrefix": "Você está prestes a importar o modelo"
+      },
+      "next": "Próximo →",
+      "back": "← Voltar",
+      "importing": "Importando…",
+      "import": "Modelo de importação",
+      "success": "Importado \"{name}\" como um novo rascunho.",
+      "errors": {
+        "noFile": "Nenhum arquivo selecionado.",
+        "fileTooLarge": "O arquivo é muito grande (máximo de 1 MB).",
+        "invalidJson": "Arquivo JSON inválido.",
+        "importFailed": "Falha na importação — a estrutura do arquivo não pôde ser processada. Compare-o com o modelo para download e tente novamente.",
+        "nameRequired": "O nome do modelo é obrigatório.",
+        "sectionsRequired": "O modelo deve conter pelo menos uma seção.",
+        "sectionTitleRequired": "Seção {number}: o título é obrigatório.",
+        "questionsArray": "Seção \"{title}\": as perguntas devem ser uma matriz.",
+        "textRequired": "{where}: o texto é obrigatório.",
+        "helpTextType": "{where}: helpText deve ser uma string quando fornecido.",
+        "unknownType": "{where}: tipo desconhecido \"{type}\".",
+        "unknownRiskWeight": "{where}: peso de risco desconhecido \"{weight}\".",
+        "requiredType": "{where}: obrigatório deve ser um booleano quando fornecido.",
+        "optionsType": "{where}: as opções devem ser uma matriz de strings.",
+        "controlCodesType": "{where}: controlCodes deve ser uma matriz de strings.",
+        "expectedAnswerType": "{where}: expectAnswer deve ser uma string, um número ou uma matriz de strings.",
+        "expectedAnswer": {
+          "multiSelectArray": "{where}: expectAnswer deve ser uma matriz de strings.",
+          "choiceStringOrArray": "{where}: expectAnswer deve ser uma string ou uma matriz de strings.",
+          "numeric": "{where}: a resposta esperada deve ser um número.",
+          "yesNoCheckboxString": "{where}: expectAnswer deve ser uma string."
+        },
+        "controlAmbiguous": "Códigos de controle {codes} são ambíguos — o mesmo código existe em vários frameworks. Remova a duplicata ou renomeie um dos controles.",
+        "controlNotFound": "Código de controle não encontrado: {code}"
+      }
+    },
+    "preview": {
+      "notFound": "Modelo não encontrado",
+      "breadcrumb": "Visualização",
+      "title": "Pré-visualização — {name}",
+      "description": "Visualização somente leitura de como esse questionário aparece para um fornecedor. Todas as perguntas condicionais são mostradas aqui com suas regras anotadas.",
+      "noSectionsTitle": "Nenhuma seção ainda",
+      "noQuestionsTitle": "Sem perguntas.",
+      "yes": "Sim",
+      "no": "Não",
+      "select": "Selecione…",
+      "freeTextPlaceholder": "Resposta em texto livre",
+      "attachmentUpload": "Carregamento de anexo",
+      "numberPlaceholder": "Número",
+      "acknowledge": "eu reconheço"
+    },
+    "questionPages": {
+      "editTitle": "Editar pergunta",
+      "editBreadcrumb": "Editar pergunta",
+      "addTitle": "Adicionar pergunta",
+      "addBreadcrumb": "Adicionar pergunta"
+    },
+    "error": {
+      "title": "Falha ao carregar o modelo",
+      "description": "Ocorreu um erro ao carregar este modelo. Por favor, tente novamente.",
+      "retry": "Tente novamente"
+    },
+    "errors": {
+      "invalidInput": "Entrada inválida.",
+      "nameRequired": "O nome do modelo é obrigatório",
+      "questionTextRequired": "O texto da pergunta é obrigatório",
+      "conditionalTooLarge": "A carga útil da lógica condicional é muito grande.",
+      "conditionalInvalid": "Lógica condicional inválida."
+    }
+  },
+  "Frameworks": {
+    "list": {
+      "title": "Estruturas",
+      "subtitle": "Bibliotecas de controle usadas para mapear respostas de questionários aos requisitos.",
+      "import": "Estrutura de importação",
+      "gaps": "Lacunas de cobertura",
+      "deleteBlocked": "{count,plural,one{Não é possível excluir: # o controle ainda está mapeado para perguntas do questionário. Desmapeie-o primeiro.} other{Não é possível excluir: # os controles ainda são mapeados para perguntas do questionário. Desmapeie-os primeiro.}}",
+      "emptyTitle": "Sem estruturas",
+      "emptyDescription": "Os dados da estrutura não puderam ser carregados.",
+      "controls": "{count,plural,one{# controlar} other{# controles}}",
+      "deleteTitle": "Excluir estrutura \"{name} v{version}\"?",
+      "deleteDescription": "Isso excluirá permanentemente esta estrutura e seus {count,plural,one{# controlar} other{# controles}}. As perguntas modelo mapeadas para esses controles perderão suas atribuições. As avaliações e conclusões existentes não são afetadas.",
+      "delete": "Excluir"
+    },
+    "detail": {
+      "notFound": "Estrutura não encontrada",
+      "breadcrumbs": "Estruturas",
+      "deleteFramework": "Excluir estrutura",
+      "searchPlaceholder": "Controles de pesquisa…",
+      "noControlsTitle": "Nenhum controle correspondente",
+      "noControlsDescription": "Experimente um termo de pesquisa diferente."
+    },
+    "control": {
+      "notFound": "Controle não encontrado",
+      "breadcrumbs": "Estruturas",
+      "guidance": "Orientação",
+      "mappedQuestions": "Perguntas mapeadas ({count})",
+      "noMappedTitle": "Nenhuma pergunta mapeada",
+      "noMappedDescription": "Nenhuma pergunta do questionário é mapeada para esse controle ainda."
+    },
+    "gaps": {
+      "title": "Controlar lacunas de cobertura",
+      "subtitle": "Controles que não possuem perguntas mapeadas em nenhum modelo. Use isso para identificar pontos cegos na cobertura da sua avaliação.",
+      "emptyTitle": "Nenhuma lacuna encontrada",
+      "emptyDescription": "Cada controle em cada estrutura possui pelo menos uma pergunta mapeada.",
+      "covered": "{mapped}/{total} abordado",
+      "allCovered": "Todos {count,plural,one{# controlar} other{# controles}} tenha pelo menos uma pergunta mapeada.",
+      "errorTitle": "Algo deu errado",
+      "errorDescription": "A visualização da lacuna de conformidade não pôde ser carregada. Por favor, tente novamente.",
+      "retry": "Tente novamente"
+    },
+    "import": {
+      "metadataTitle": "Estrutura de importação",
+      "title": "Estrutura de importação",
+      "subtitle": "Faça upload de um arquivo CSV com controles para criar uma nova estrutura.",
+      "breadcrumb": "Importar",
+      "cardTitle": "Importar estrutura do CSV",
+      "steps": {
+        "setup": "Configuração e upload",
+        "review": "Análise"
+      },
+      "form": {
+        "name": "Nome da estrutura",
+        "namePlaceholder": "por exemplo PCI-DSS",
+        "version": "Versão",
+        "versionPlaceholder": "por exemplo 4,0",
+        "description": "Descrição (opcional)",
+        "descriptionPlaceholder": "Breve descrição da estrutura",
+        "csvFile": "Arquivo CSV",
+        "downloadTemplate": "Modelo",
+        "csvHint": "O CSV deve ter colunas: domínio, código, título, orientação (a orientação é opcional). Opcional: is_shared_responsibility (verdadeiro/falso, o padrão é falso). Máximo de 1 MB.",
+        "controlsFound": "{count,plural,one{# controle encontrado} other{# controles encontrados}}",
+        "domain": "Domínio",
+        "code": "Código",
+        "titleColumn": "Título",
+        "showingFirst": "Mostrando primeiro {shown} de {total} linhas",
+        "next": "Próximo →",
+        "back": "← Voltar",
+        "importing": "Importando…",
+        "import": "Estrutura de importação",
+        "reviewIntro": "Você está prestes a criar uma estrutura {name} v{version} com {count,plural,one{# controlar} other{# controles}}.",
+        "success": "Importado \"{name} v{version}\" com {count,plural,one{# controlar} other{# controles}}."
+      },
+      "errors": {
+        "noFile": "É necessário um arquivo CSV.",
+        "invalidFileType": "O arquivo deve ser um arquivo .csv.",
+        "tooLarge": "O arquivo CSV é muito grande (máximo de 1 MB).",
+        "noRows": "O arquivo CSV não contém linhas de dados.",
+        "missingColumns": "Colunas CSV ausentes: {columns}. Esperado: {expected}",
+        "invalidInput": "Entrada inválida.",
+        "nameRequired": "O nome da estrutura é obrigatório",
+        "nameTooLong": "O nome da estrutura deve ter 200 caracteres ou menos",
+        "versionRequired": "A versão é obrigatória",
+        "versionTooLong": "A versão deve ter 50 caracteres ou menos",
+        "descriptionTooLong": "A descrição deve ter 500 caracteres ou menos",
+        "rowDomainRequired": "Linha {row}: domínio é obrigatório",
+        "rowCodeRequired": "Linha {row}: o código de controle é necessário",
+        "rowTitleRequired": "Linha {row}: o título do controle é obrigatório",
+        "rowInvalid": "Linha {row}: entrada inválida.",
+        "duplicateCode": "Linha {row}: código de controle duplicado \"{code}\".",
+        "duplicateFramework": "Uma estrutura chamada \"{name}\"versão\"{version}\"já existe."
+      }
+    },
+    "shared": "Compartilhado",
+    "error": {
+      "title": "Algo deu errado",
+      "description": "Ocorreu um erro inesperado. Tente novamente ou entre em contato com o suporte.",
+      "retry": "Tente novamente"
+    },
+    "radar": {
+      "title": "Radar de conformidade de domínio",
+      "current": "Avaliação atual",
+      "previous": "Avaliação anterior",
+      "ariaLabel": "Radar de conformidade de domínio: {values}",
+      "tableCaption": "Conformidade do domínio por porcentagem",
+      "domain": "Domínio",
+      "currentShort": "Atual",
+      "previousShort": "Anterior",
+      "noPrevious": "Apenas uma avaliação concluída – sem dados anteriores para comparar."
+    },
+    "heatmap": {
+      "metadataNotFound": "Fornecedor não encontrado",
+      "metadataTitle": "Mapa de calor - {name}",
+      "breadcrumbs": "Fornecedores",
+      "subtitle": "Radar de conformidade de domínio e mapa térmico de nível de controle de avaliações recentes.",
+      "downloadReport": "Baixe o relatório em PDF",
+      "preparingReport": "Preparando relatório…",
+      "emptyTitle": "Não há dados disponíveis",
+      "emptyDescription": "Ainda não estão disponíveis dados de avaliação para este quadro."
+    }
+  },
+  "RiskRegister": {
+    "metaTitle": "Registro de risco",
+    "title": "Registro de risco",
+    "subtitle": "Todas as descobertas de seus fornecedores em um só lugar.",
+    "stats": {
+      "open": "Descobertas abertas",
+      "criticalOpen": "Abertura crítica",
+      "remediated": "Corrigido",
+      "riskAccepted": "Risco aceito"
+    },
+    "filters": {
+      "status": "Status",
+      "allFindings": "Todas as descobertas",
+      "statusAriaLabel": "Filtrar descobertas por status",
+      "severity": "Gravidade",
+      "anySeverity": "Qualquer gravidade",
+      "severityAriaLabel": "Filtrar descobertas por gravidade",
+      "vendor": "Fornecedor",
+      "allVendors": "Todos os fornecedores",
+      "vendorAriaLabel": "Filtrar descobertas por fornecedor",
+      "sort": "Organizar",
+      "sortAriaLabel": "Classificar descobertas",
+      "show": "Mostrar",
+      "findingsOnly": "Apenas descobertas",
+      "responsibilityAriaLabel": "Filtrar por responsabilidade",
+      "customerResponsibility": "Responsabilidade do cliente",
+      "apply": "Filtro",
+      "clear": "Claro",
+      "sorts": {
+        "priority": "Prioridade",
+        "newest": "Mais recente",
+        "severity": "Gravidade"
+      }
+    },
+    "emptyFiltered": "Nenhuma descoberta corresponde aos filtros selecionados.",
+    "emptyTitle": "Nenhuma descoberta ainda",
+    "emptyDescription": "As descobertas são levantadas automaticamente quando os fornecedores enviam avaliações com respostas deficientes.",
+    "items": "descobertas",
+    "responsibility": {
+      "title": "Responsabilidade do Cliente",
+      "noMatch": "Nenhum item de responsabilidade do cliente corresponde aos filtros selecionados.",
+      "vendorFallback": "Fornecedor",
+      "assignedTo": "Atribuído a {name}"
+    },
+    "bulk": {
+      "selected": "{count} selecionado",
+      "statusRemediated": "Corrigido",
+      "statusRiskAccepted": "Risco aceito",
+      "statusReopen": "Reabrir",
+      "updateTitle": "{count,plural,one{Atualizar # encontrar?} other{Atualizar # descobertas?}}",
+      "updateDescription": "{count, plural, one {Definir # constatação como \"{status}\".} other {Definir # constatações como \"{status}\".}}",
+      "apply": "Aplicar",
+      "applying": "Aplicando...",
+      "clearSelection": "Limpar seleção",
+      "note": "Observação: {note}",
+      "automatedDescription": "A resposta do fornecedor não atendeu à resposta esperada.",
+      "errors": {
+        "invalidStatus": "Estado inválido.",
+        "invalidSelection": "Dados de seleção inválidos.",
+        "noFindings": "Nenhuma descoberta selecionada.",
+        "updated": "{count,plural,one{# encontrando atualizado} other{# descobertas atualizadas}}",
+        "alreadyRemoved": "({count} já removido)."
+      }
+    },
+    "error": {
+      "title": "Algo deu errado",
+      "description": "Ocorreu um erro inesperado. Tente novamente ou entre em contato com o suporte.",
+      "retry": "Tente novamente"
+    }
+  },
+  "SelfAssessment": {
+    "metaTitle": "Auto-avaliação",
+    "title": "Auto-avaliação",
+    "subtitle": "Avalie sua própria organização em relação às estruturas de conformidade usando o mesmo portal de questionários usado por seus fornecedores.",
+    "start": "Iniciar nova avaliação",
+    "emptyTitle": "Ainda não há autoavaliações",
+    "emptyDescription": "Comece sua primeira autoavaliação para avaliar sua organização em relação à ISO 27001, SOC 2 ou outras estruturas.",
+    "noTemplate": "Nenhum modelo",
+    "new": {
+      "metaTitle": "Nova autoavaliação",
+      "breadcrumb": "Novo",
+      "title": "Nova autoavaliação",
+      "cardTitle": "Detalhes da avaliação",
+      "form": {
+        "title": "Título",
+        "titlePlaceholder": "por exemplo Autoavaliação ISO 27001:2022",
+        "template": "Modelo de questionário",
+        "templatePlaceholder": "Selecione um modelo publicado",
+        "noTemplates": "Nenhum modelo encontrado.",
+        "dueDate": "Data de vencimento (opcional)",
+        "publishFirst": "Publique primeiro um modelo para iniciar uma autoavaliação.",
+        "starting": "Começando...",
+        "start": "Iniciar avaliação"
+      }
+    }
+  },
+  "Admin": {
+    "metaTitle": "Administrador",
+    "general": {
+      "metaTitle": "Administrador - Geral",
+      "title": "Em geral",
+      "subtitle": "Identidade da organização mostrada no aplicativo.",
+      "cardTitle": "Organização",
+      "cardDescription": "O nome, email de suporte e idioma padrão mostrados nos emails e na interface.",
+      "form": {
+        "name": "Nome da organização",
+        "supportEmail": "E-mail de suporte",
+        "defaultLanguage": "Idioma padrão",
+        "defaultLanguageHint": "Usado quando um visitante não escolheu um idioma. As escolhas individuais o substituem.",
+        "saving": "Salvando...",
+        "save": "Salvar"
+      },
+      "success": "Configurações da organização salvas.",
+      "errors": {
+        "nameRequired": "O nome da organização é obrigatório",
+        "invalidEmail": "Insira um endereço de e-mail válido",
+        "invalidInput": "Entrada inválida."
+      }
+    },
+    "appearance": {
+      "metaTitle": "Administrador – Aparência",
+      "title": "Aparência",
+      "subtitle": "Branding em todo o aplicativo – logotipo, cores e layout.",
+      "cardTitle": "Aparência",
+      "cardDescription": "Personalize o logotipo, a cor primária (botões) e a cor secundária (tags/comprimidos). Deixe um campo em branco para usar o padrão.",
+      "logo": "Logotipo",
+      "currentLogoAlt": "Logotipo atual",
+      "removeLogoTitle": "Remover logotipo?",
+      "removeLogoDescription": "O logotipo atual será removido de todas as páginas. Você pode fazer upload de um novo logotipo a qualquer momento.",
+      "remove": "Remover",
+      "removeLogo": "Remover logotipo",
+      "noLogo": "Nenhum logotipo carregado. Faça upload de um PNG ou JPG (máximo de 2 MB).",
+      "primaryColour": "Cor primária",
+      "primaryColourHint": "Usado para botões principais, links e estados ativos.",
+      "secondaryColour": "Cor secundária",
+      "secondaryColourHint": "Usado para tags, comprimidos, emblemas e elementos secundários.",
+      "reset": "Reiniciar",
+      "ragTitle": "Cores do indicador RAG",
+      "ragHint": "Usado para indicadores de pontuação, barras de progresso e mapa de calor de risco do fornecedor.",
+      "ragGreen": "Verde (compatível)",
+      "ragGreenHint": "Pontuação ≥ 85%",
+      "ragAmber": "Âmbar (precisa de atenção)",
+      "ragAmberHint": "Pontuação 60–84%",
+      "ragRed": "Vermelho (deficiente)",
+      "ragRedHint": "Pontuação <60%",
+      "ragUnscored": "Sem pontuação (neutro)",
+      "ragUnscoredHint": "Ainda não avaliado",
+      "layoutTitle": "Disposição",
+      "layoutHint": "Ajuste a aparência geral da plataforma.",
+      "borderRadius": "Raio da borda (px)",
+      "borderRadiusHint": "Controla como os cantos arredondados ficam no aplicativo.",
+      "pageWidth": "Largura da página",
+      "pageWidthHint": "Restrinja o conteúdo a uma largura legível ou use a tela inteira.",
+      "constrained": "Restrito",
+      "full": "Largura total",
+      "saving": "Salvando...",
+      "save": "Salvar aparência",
+      "success": "Configurações de aparência salvas.",
+      "errors": {
+        "primaryHex": "A cor primária deve ser uma cor hexadecimal válida (por exemplo, #3b82f6).",
+        "secondaryHex": "A cor secundária deve ser uma cor hexadecimal válida (por exemplo, #f59e0b).",
+        "ragGreen": "O verde RAG deve ser uma cor hexadecimal válida.",
+        "ragAmber": "O âmbar RAG deve ser uma cor hexadecimal válida.",
+        "ragRed": "RAG vermelho deve ser uma cor hexadecimal válida.",
+        "ragUnscored": "RAG sem pontuação deve ter uma cor hexadecimal válida.",
+        "logoTooLarge": "O logotipo deve ter menos de 2 MB.",
+        "logoImage": "O logotipo deve ser um arquivo de imagem.",
+        "logoFormat": "O logotipo deve ser uma imagem PNG, JPG, GIF ou WEBP.",
+        "logoContent": "O conteúdo do arquivo de logotipo não corresponde à sua extensão.",
+        "invalidInput": "Entrada inválida."
+      }
+    },
+    "error": {
+      "title": "Algo deu errado",
+      "description": "Ocorreu um erro inesperado. Tente novamente ou entre em contato com o suporte.",
+      "retry": "Tente novamente"
+    },
+    "email": {
+      "metaTitle": "Administrador – E-mail",
+      "title": "E-mail",
+      "subtitle": "Entrega SMTP e os modelos usados ​​para emails de fornecedores e revisores.",
+      "smtpTitle": "SMTP",
+      "smtpDescription": "Usado para enviar convites e lembretes de fornecedores. A senha é criptografada em repouso.",
+      "form": {
+        "host": "Anfitrião SMTP",
+        "port": "Porta SMTP",
+        "username": "Nome de usuário SMTP",
+        "password": "Senha SMTP",
+        "passwordKeep": "Deixe em branco para manter a senha atual",
+        "passwordEnter": "Digite a senha SMTP",
+        "passwordHint": "Armazenado criptografado em repouso e nunca exibido.",
+        "fromAddress": "Do endereço",
+        "fromName": "Do nome",
+        "saving": "Salvando...",
+        "save": "Salvar"
+      },
+      "test": {
+        "label": "Enviar e-mail de teste para",
+        "placeholder": "você@empresa.com",
+        "sending": "Enviando...",
+        "send": "Enviar teste",
+        "hint": "Envia usando suas configurações SMTP salvas. Salve todas as alterações primeiro."
+      },
+      "templatesTitle": "Modelos de e-mail",
+      "templatesDescription": "Selecione um modelo para editar seu assunto e corpo. Os valores dinâmicos usam tokens de colchetes duplos.",
+      "subject": "Assunto",
+      "body": "Corpo",
+      "editorHint": "A formatação Markdown é suportada — use **negrito**, *itálico*, listas e links. Fichas: {tokens}.",
+      "savingChanges": "Salvando...",
+      "saveChanges": "Salvar alterações",
+      "resetTitle": "Redefinir para o padrão?",
+      "resetDescription": "O \"{name}\"assunto e corpo serão substituídos pelo padrão integrado. Qualquer personalização será perdida.",
+      "reset": "Reiniciar",
+      "resetting": "Redefinindo...",
+      "resetToDefault": "Redefinir para o padrão",
+      "cancel": "Cancelar",
+      "preview": "Visualização",
+      "templateTypes": {
+        "invite": {
+          "label": "E-mail de convite",
+          "description": "Enviado a um fornecedor quando um questionário é compartilhado pela primeira vez."
+        },
+        "invite-password": {
+          "label": "E-mail de convite (protegido por senha)",
+          "description": "Variante de convite que inclui a senha de acesso ao portal."
+        },
+        "reminder": {
+          "label": "E-mail de lembrete",
+          "description": "Nudge enviado a um fornecedor conforme a data de vencimento se aproxima."
+        },
+        "escalation": {
+          "label": "E-mail de escalonamento",
+          "description": "Enviado ao revisor quando um questionário está atrasado."
+        },
+        "submission": {
+          "label": "E-mail de envio recebido",
+          "description": "Notifica o revisor de que um fornecedor enviou respostas."
+        },
+        "clarification": {
+          "label": "Enviado de volta para e-mail de esclarecimento",
+          "description": "Enviado a um fornecedor quando a avaliação for reaberta para obter mais informações."
+        },
+        "reset": {
+          "label": "E-mail de redefinição de senha",
+          "description": "Enviado para funcionários internos que solicitam redefinição de senha."
+        },
+        "expiry": {
+          "label": "E-mail de lembrete de expiração",
+          "description": "Enviado ao proprietário do risco de um fornecedor quando uma certificação ou contrato está próximo de expirar."
+        }
+      },
+      "success": "Configurações de e-mail salvas.",
+      "testSuccess": "E-mail de teste enviado para {email}.",
+      "templateSaved": "{name} salvo.",
+      "templateReset": "{name} redefinir para o padrão.",
+      "errors": {
+        "invalidInput": "Entrada inválida.",
+        "invalidEmail": "Insira um endereço de e-mail válido",
+        "invalidPort": "A porta SMTP deve estar entre 1 e 65535",
+        "invalidRecipient": "Destinatário inválido.",
+        "smtpNotConfigured": "Salve suas configurações de SMTP antes de enviar um e-mail de teste.",
+        "unknownTemplate": "Modelo de e-mail desconhecido.",
+        "subjectRequired": "O assunto é obrigatório.",
+        "bodyRequired": "O corpo é necessário."
+      }
+    },
+    "emailTracking": {
+      "metaTitle": "Administrador – Rastreamento de e-mail",
+      "title": "Rastreamento de e-mail",
+      "subtitle": "Status de entrega de cada e-mail enviado pela plataforma.",
+      "retentionTitle": "Retenção",
+      "retentionDescription": "Os registros de envio de e-mail anteriores a esse número de dias são automaticamente removidos pela limpeza agendada. Defina como 0 para manter indefinidamente.",
+      "retentionLabel": "Retenção de registro de e-mail (dias)",
+      "retentionHelp": "Aplica-se na próxima execução agendada.",
+      "cardTitle": "Rastreamento de e-mail",
+      "cardDescription": "Visualize o status de cada email enviado pela plataforma. As entradas são retidas de acordo com a política de retenção configurada.",
+      "description": "Rastreie todos os e-mails enviados pela plataforma – convites, lembretes, escalonamentos e mensagens de teste. O servidor SMTP confirma a aceitação; isso não garante a entrega na caixa de entrada. Os logs são retidos de acordo com a política de retenção configurada.",
+      "filters": {
+        "status": "Status",
+        "allStatuses": "Todos os status",
+        "statusAria": "Filtrar e-mails por status",
+        "type": "Tipo",
+        "allTypes": "Todos os tipos",
+        "typeAria": "Filtre e-mails por tipo",
+        "recipient": "Destinatário",
+        "recipientPlaceholder": "email@exemplo.com",
+        "from": "De",
+        "to": "Para",
+        "rows": "Linhas",
+        "pageSizeAria": "Tamanho da página de registro de e-mail",
+        "filter": "Filtro",
+        "clear": "Claro"
+      },
+      "statuses": {
+        "SENT": "Enviado",
+        "FAILED": "Fracassado"
+      },
+      "types": {
+        "INVITE": "Convidar",
+        "INVITE-PASSWORD": "Convidar (protegido por senha)",
+        "REMINDER": "Lembrete",
+        "ESCALATION": "Escalada",
+        "SUBMISSION": "Submissão",
+        "CLARIFICATION": "Esclarecimento",
+        "RESET": "Redefinição de senha",
+        "EXPIRY": "Termo",
+        "TEST": "Teste"
+      },
+      "table": {
+        "date": "Data",
+        "recipient": "Destinatário",
+        "subject": "Assunto",
+        "type": "Tipo",
+        "status": "Status",
+        "detail": "Detalhe",
+        "assessment": "Avaliação",
+        "sentBy": "Enviado por"
+      },
+      "noLogs": "Nenhum registro de e-mail encontrado.",
+      "pagination": "Página {page} de {totalPages} ({total} entradas)",
+      "previous": "Anterior",
+      "next": "Próximo",
+      "accepted": "Aceito pelo servidor SMTP",
+      "system": "Sistema",
+      "retry": "Tentar novamente",
+      "retrying": "Tentando novamente...",
+      "retrySuccess": "Email reenviado com sucesso.",
+      "testResent": "Teste o reenvio do e-mail.",
+      "errors": {
+        "missingLog": "Entrada de registro de e-mail ausente.",
+        "notFound": "Entrada de registro de e-mail não encontrada.",
+        "onlyFailed": "Somente e-mails com falha podem ser repetidos.",
+        "resetSingleUse": "Os links de redefinição são de uso único e não podem ser reenviados. Peça ao usuário para solicitar uma nova redefinição.",
+        "resendFailed": "Falha ao reenviar e-mail. Verifique a guia de rastreamento para obter detalhes.",
+        "retentionInvalid": "A retenção do log de e-mail deve ser 0 ou um número positivo.",
+        "retentionSaved": "Retenção de log de e-mail salva."
+      }
+    },
+    "scoring": {
+      "metaTitle": "Administrador – Pontuação",
+      "title": "Pontuação",
+      "subtitle": "Ponderações de risco e limites RAG para perfis de fornecedores e mapa de calor.",
+      "cardTitle": "Pontuação",
+      "cardDescription": "Ponderações de risco e limites vermelho/âmbar/verde usados ​​para perfis de fornecedores e mapa de calor de lacunas.",
+      "riskWeights": "Ponderações de risco (numéricas)",
+      "ragThresholds": "Limites RAG",
+      "ragHint": "Verde em ou acima, âmbar em ou acima, vermelho abaixo.",
+      "green": "Verde ≥",
+      "amber": "Âmbar ≥",
+      "saving": "Salvando...",
+      "save": "Salvar pontuação",
+      "success": "Configurações de pontuação salvas.",
+      "errors": {
+        "invalidInput": "Entrada inválida."
+      }
+    },
+    "scheduling": {
+      "metaTitle": "Administrador – Agendamento",
+      "title": "Agendamento",
+      "subtitle": "Lembretes, escalonamentos e agendador integrado.",
+      "cardTitle": "Agendamento",
+      "cardDescription": "Lembretes automatizados antes da data de vencimento e escalonamentos de revisores para avaliações atrasadas.",
+      "reminderLabel": "Dias de compensação de lembrete",
+      "reminderHint": "Lista separada por vírgulas de dias antes da data de vencimento para envio de lembretes. Exemplo: 7, 1 envia lembretes 7 dias e 1 dia antes da data de vencimento.",
+      "reminderPlaceholder": "7, 1",
+      "escalationLabel": "Escalação após (dias)",
+      "escalationHint": "Dias após a data de vencimento antes que o revisor receba um e-mail de escalonamento.",
+      "defaultDueLabel": "Avaliação padrão vencida (dias)",
+      "defaultDueHint": "As novas avaliações têm como padrão esse número de dias até a data de vencimento.",
+      "schedulerLabel": "Execute jobs agendados dentro do aplicativo",
+      "schedulerHint": "Quando ativado, o aplicativo verifica a cada cinco minutos lembretes de vencimento, escalonamentos, avisos de expiração, avaliações recorrentes, remoção de log e limpeza de arquivos órfãos – nenhum cron job ou agendador externo é necessário. Desative isso apenas se você acionar {endpoint} você mesmo (por exemplo, de um crontab do sistema ou do Azure Function).",
+      "saving": "Salvando...",
+      "save": "Salvar agendamento",
+      "lastRun": "Última execução agendada: {when}",
+      "never": "Nunca",
+      "justNow": "agora mesmo",
+      "lessThanMinute": "há menos de um minuto",
+      "minuteAgo": "1 minuto atrás",
+      "minutesAgo": "{count} minutos atrás",
+      "hourAgo": "1 hora atrás",
+      "hoursAgo": "{count} horas atrás",
+      "dayAgo": "1 dia atrás",
+      "daysAgo": "{count} dias atrás",
+      "success": "Configuração salva.",
+      "errors": {
+        "escalationInvalid": "Os dias de escalonamento devem ser pelo menos 1.",
+        "defaultDueInvalid": "Os dias de vencimento padrão devem ser pelo menos 1."
+      }
+    },
+    "retention": {
+      "saving": "Salvando...",
+      "save": "Salvar"
+    },
+    "storage": {
+      "metaTitle": "Administrador – Armazenamento",
+      "title": "Armazenar",
+      "subtitle": "Onde ficam os arquivos de evidências e o que os fornecedores podem carregar.",
+      "fileStorageTitle": "Armazenamento de arquivos",
+      "fileStorageDescription": "Configure onde os arquivos e anexos de evidências são armazenados. A alteração de provedores não migra os arquivos existentes.",
+      "uploadConstraintsTitle": "Restrições de upload",
+      "uploadConstraintsDescription": "Limites de tamanho e tipo de arquivo aplicados a uploads de evidências de fornecedores.",
+      "form": {
+        "provider": "Provedor",
+        "providerHint": "A alteração de provedores não migra os arquivos existentes. Os arquivos armazenados no provedor anterior permanecerão acessíveis somente se você voltar.",
+        "local": "Disco local",
+        "s3": "Amazon S3",
+        "azure": "Blob Azure",
+        "s3Title": "Amazon S3",
+        "bucket": "Balde",
+        "region": "Região",
+        "regionPlaceholder": "por exemplo nós-leste-1",
+        "accessKeyId": "ID da chave de acesso",
+        "secretAccessKey": "Chave de acesso secreta",
+        "secretHint": "Armazenado criptografado em repouso. Deixe em branco para manter o valor existente.",
+        "azureTitle": "Blob Azure",
+        "containerName": "Nome do contêiner",
+        "connectionString": "Cadeia de conexão",
+        "saving": "Salvando…",
+        "save": "Salvar configurações de armazenamento"
+      },
+      "uploads": {
+        "maxSize": "Tamanho máximo de upload de arquivo (MB)",
+        "maxSizeHint": "Arquivos de evidências maiores que esse limite serão rejeitados durante o upload.",
+        "allowedExtensions": "Extensões de arquivo permitidas",
+        "allowedHint": "Os fornecedores de tipos de arquivo podem fazer upload como evidência. Selecione pelo menos um.",
+        "saving": "Salvando...",
+        "save": "Salvar"
+      },
+      "success": "Configurações de armazenamento salvas.",
+      "uploadsSuccess": "Restrições de upload salvas.",
+      "errors": {
+        "invalidInput": "Entrada inválida.",
+        "maxUploadInvalid": "O tamanho máximo de upload deve ser de pelo menos 1 MB."
+      }
+    },
+    "signIn": {
+      "metaTitle": "Administrador – Login",
+      "title": "Entrar",
+      "subtitle": "Como a equipe se autentica e por quanto tempo permanece conectada.",
+      "ssoTitle": "Logon único",
+      "ssoDescription": "Permita que a equipe faça login com o Microsoft Entra ID, o Google Workspace ou um provedor OIDC personalizado. As credenciais do cliente são criptografadas em repouso.",
+      "sessionsTitle": "Sessões",
+      "sessionsDescription": "Limitação de login e logout automático para sessões ociosas.",
+      "sso": {
+        "entraId": "ID de entrada da Microsoft",
+        "google": "Google Workspace",
+        "oidc": "OIDC personalizado",
+        "enabled": "Habilitado",
+        "clientId": "ID do cliente",
+        "clientSecret": "Segredo do cliente",
+        "secretKeep": "Deixe em branco para se manter atualizado",
+        "secretEnter": "Segredo do cliente",
+        "secretHint": "Armazenado criptografado em repouso e nunca exibido.",
+        "displayName": "Nome de exibição do provedor",
+        "displayNamePlaceholder": "Okta/Auth0/Keycloak",
+        "issuerUrl": "URL do emissor",
+        "issuerPlaceholder": "https://exemplo.okta.com",
+        "defaultRole": "Função padrão para novos usuários de SSO",
+        "allowedDomain": "Restringir ao domínio (opcional)",
+        "allowedDomainPlaceholder": "@empresa.com",
+        "disableLocalAuth": "Desativar login por e-mail/senha (somente SSO)",
+        "disableLocalAuthHint": "Oculta o formulário de login local para que a equipe só possa fazer login via SSO. Ignorado, a menos que pelo menos um provedor de SSO esteja habilitado, portanto, uma configuração incorreta não pode bloquear o acesso de todos. Use o URL de segurança abaixo para acesso de emergência.",
+        "saving": "Salvando...",
+        "save": "Salvar SSO"
+      },
+      "breakGlass": {
+        "title": "Acesso de quebra de vidro",
+        "description": "Quando o login local está desabilitado, esse URL secreto ainda mostra o formulário de e-mail/senha para que um administrador possa fazer login se o SSO não estiver disponível. A geração de um novo URL revoga imediatamente o anterior.",
+        "configured": "Um URL de segurança está configurado no momento.",
+        "notConfigured": "Nenhum URL de segurança está configurado ainda.",
+        "generating": "Gerando...",
+        "regenerate": "Gerar novamente URL de segurança",
+        "generate": "Gerar URL de segurança",
+        "success": "URL de segurança gerado. Copie-o agora – ele não será mostrado novamente."
+      },
+      "security": {
+        "loginRateLimit": "Limite de taxa de login (por minuto)",
+        "loginRateLimitHint": "Máximo de tentativas de login por endereço IP por minuto. Aumento para ambientes de escritório compartilhado atrás de um único IP público.",
+        "autoLogout": "Logout automático (minutos)",
+        "autoLogoutHint": "Sair automaticamente após tantos minutos de inatividade. Defina como 0 para desativar. Mínimo de 5 minutos quando ativado.",
+        "saving": "Salvando...",
+        "save": "Salvar"
+      },
+      "success": "Configurações de SSO salvas.",
+      "securitySuccess": "Configurações de login salvas.",
+      "errors": {
+        "invalidInput": "Entrada inválida.",
+        "loginRateInvalid": "O limite de taxa de login deve ser de pelo menos 1 por minuto.",
+        "autoLogoutInvalid": "O logout automático deve ser 0 (desativado) ou pelo menos 5 minutos."
+      }
+    },
+    "rateLimits": {
+      "metaTitle": "Administrador – Limites de taxa",
+      "title": "Limites de taxa",
+      "subtitle": "Proteção contra abuso para o portal do fornecedor e recuperação de conta.",
+      "cardTitle": "Limites de taxa (por minuto)",
+      "cardDescription": "Aumente-os para fornecedores ocupados ou IPs de escritórios compartilhados; os padrões são adequados para a maioria das implantações.",
+      "fields": {
+        "portalPageLoadsPerMin": {
+          "label": "Carregamentos de página do portal/min (por visitante)",
+          "help": "Com que frequência o navegador de um fornecedor pode carregar o link do fornecedor. Protege contra enumeração de links."
+        },
+        "portalUploadsPerMin": {
+          "label": "Uploads de evidências do portal/min (por visitante)",
+          "help": "Máximo de uploads de arquivos de evidências que um fornecedor pode fazer por minuto."
+        },
+        "portalSubmitPerMin": {
+          "label": "Envios do portal / min (por link)",
+          "help": "Máximo de tentativas de envio para um único link de fornecedor."
+        },
+        "portalCommentPerMin": {
+          "label": "Comentários do portal/min (por link)",
+          "help": "Máximo de comentários que um fornecedor pode postar em um único link de fornecedor."
+        },
+        "portalPasswordAttemptsPerMin": {
+          "label": "Tentativas de senha do portal/min (por link)",
+          "help": "Protege um questionário protegido por senha contra força bruta."
+        },
+        "passwordResetPerMin": {
+          "label": "Solicitações de redefinição de senha/min (por e-mail)",
+          "help": "Limita e-mails de redefinição de senha da equipe para um determinado endereço."
+        },
+        "breakGlassPerMin": {
+          "label": "Tentativas de quebra de vidro / min (por IP)",
+          "help": "Limita a validação do link de recuperação de quebra de SSO."
+        }
+      },
+      "saving": "Salvando...",
+      "save": "Salvar limites de taxa",
+      "success": "Limites de taxa salvos.",
+      "errors": {
+        "minimum": "{field} deve ser pelo menos 1 por minuto."
+      }
+    },
+    "api": {
+      "metaTitle": "Administrador – API",
+      "title": "API",
+      "subtitle": "Acesso programático à API REST.",
+      "cardTitle": "Acesso à API",
+      "cardDescription": "Gere chaves de API para acesso programático à API REST. As chaves usam autenticação de portador e podem ser restritas por endereço IP. As chaves são mostradas apenas uma vez quando criadas.",
+      "enabled": "Habilitar autenticação de chave API",
+      "enabledHint": "As chaves de API permitem que ferramentas externas chamem a API REST sem fazer login no navegador. As chaves têm acesso total a todos os endpoints e permanecem válidas independentemente da conta que as criou. As chaves são mostradas apenas uma vez e não podem ser recuperadas posteriormente. As chaves criadas antes da atualização do prefixo de pesquisa foram desativadas por questões de segurança e devem ser regeneradas.",
+      "saving": "Salvando...",
+      "save": "Salvar",
+      "docs": "Documentação da API →",
+      "keysTitle": "Chaves de API ({count})",
+      "keyCreatedTitle": "Chave criada – copie-a agora",
+      "keyCreatedHint": "Esta chave não será mostrada novamente. Guarde-o com segurança.",
+      "copy": "Cópia",
+      "done": "Feito",
+      "createTitle": "Criar nova chave",
+      "name": "Nome",
+      "namePlaceholder": "por exemplo Pipeline de CI",
+      "expiry": "Termo",
+      "expiryOptions": {
+        "30": "30 dias",
+        "90": "90 dias",
+        "180": "180 dias",
+        "365": "1 ano",
+        "permanent": "Permanente"
+      },
+      "allowedIps": "IPs permitidos (opcional)",
+      "allowedIpsPlaceholder": "192.168.1.0/24",
+      "rateLimit": "Limite de taxa/min",
+      "rateLimitPlaceholder": "Padrão",
+      "creating": "Criando...",
+      "create": "Criar chave",
+      "empty": "Nenhuma chave de API foi criada ainda.",
+      "permissionCount": "{count,plural,one{# permissão} other{# permissões}}",
+      "fullAccess": "Acesso total",
+      "revoked": "Revogado",
+      "expired": "Expirado",
+      "lastUsed": "Usado pela última vez {date}",
+      "neverUsed": "Nunca usado",
+      "requestCount": "{count,plural,one{# solicitar} other{# solicitações}}",
+      "ips": "IP: {ips}",
+      "rateLimitSuffix": "Limite de taxa: {value}/min",
+      "enable": "Habilitar",
+      "revokeTitle": "Revogar chave de API?",
+      "revokeDescription": "Quaisquer integrações usando \"{name}\" irá parar de funcionar imediatamente. Isso pode ser reativado mais tarde.",
+      "revoke": "Revogar",
+      "deleteTitle": "Excluir chave de API?",
+      "deleteDescription": "\"{name}\" será excluído permanentemente. Quaisquer integrações que usem esta chave serão interrompidas permanentemente. Isso não pode ser desfeito.",
+      "delete": "Excluir",
+      "keyCreatedMessage": "Chave criada: {prefix}. Copie a chave abaixo – ela não será mostrada novamente.",
+      "success": "Configurações de API salvas.",
+      "errors": {
+        "nameRequired": "O nome da chave é obrigatório.",
+        "permissionsRequired": "Selecione pelo menos uma permissão ou habilite o acesso total.",
+        "invalidInput": "Entrada inválida."
+      }
+    },
+    "webhooks": {
+      "metaTitle": "Administrador – Webhooks",
+      "title": "Webhooks",
+      "subtitle": "Notificações de eventos enviadas para seus endpoints.",
+      "cardTitle": "Webhooks",
+      "cardDescription": "Configure endpoints para receber notificações de eventos quando avaliações forem enviadas, descobertas forem alteradas ou certificações expirarem.",
+      "endpointsTitle": "Pontos de extremidade de webhook ({count})",
+      "add": "Adicionar ponto de extremidade",
+      "newTitle": "Novo webhook",
+      "name": "Nome",
+      "namePlaceholder": "por exemplo Alertas do Slack, conformidade do Teams",
+      "url": "URL",
+      "urlPlaceholder": "https://example.com/webhooks/mitch-risk",
+      "platform": "Plataforma",
+      "platformPlaceholder": "Selecione a plataforma",
+      "platforms": {
+        "GENERIC": "Genérico (HTTP)",
+        "SLACK": "Folga",
+        "MICROSOFT_TEAMS": "Equipes da Microsoft",
+        "DISCORD": "Discórdia"
+      },
+      "events": "Eventos",
+      "eventLabels": {
+        "ASSESSMENT_SUBMITTED": "Avaliação enviada",
+        "ASSESSMENT_OVERDUE": "Avaliação atrasada",
+        "FINDING_CREATED": "Encontrando criado",
+        "FINDING_RESOLVED": "Encontrando resolvido",
+        "CERTIFICATION_EXPIRING": "Certificação expirando"
+      },
+      "creating": "Criando...",
+      "create": "Criar",
+      "cancel": "Cancelar",
+      "empty": "Nenhum webhooks configurado. Adicione um endpoint para receber notificações de eventos.",
+      "active": "Ativo",
+      "disabled": "Desabilitado",
+      "disable": "Desativar",
+      "enable": "Habilitar",
+      "deleteTitle": "Excluir webhook?",
+      "deleteDescription": "Este endpoint irá parar de receber eventos: {url}",
+      "delete": "Excluir",
+      "success": "Ponto de extremidade do webhook criado.",
+      "errors": {
+        "urlRequired": "O URL é obrigatório.",
+        "urlTooLong": "O URL deve ter 500 caracteres ou menos.",
+        "nameTooLong": "O nome deve ter 100 caracteres ou menos.",
+        "invalidUrl": "Insira um URL válido.",
+        "httpsRequired": "URLs de webhook devem usar HTTPS.",
+        "publicOnly": "URLs de webhook devem apontar para um endereço público – hosts internos e de loopback não são permitidos.",
+        "unknownPlatform": "Plataforma desconhecida.",
+        "eventRequired": "Pelo menos um evento deve ser selecionado."
+      }
+    },
+    "trustCenter": {
+      "metaTitle": "Administrador – Central de Confiabilidade",
+      "title": "Central de Confiança",
+      "subtitle": "Configuração da página de conformidade voltada ao público.",
+      "cardTitle": "Central de Confiança",
+      "cardDescription": "Página pública em /trust que compartilha crachás de conformidade, documentos de segurança, subprocessadores e seções narrativas com fornecedores e parceiros. Organize o conteúdo em Gerenciar → Central de confiança.",
+      "enabled": "Habilite a central de confiança",
+      "enabledHint": "Enquanto desativado, /trust mostra uma mensagem não encontrada e nenhum conteúdo é veiculado publicamente.",
+      "intro": "Introdução (redução)",
+      "introHint": "Parágrafo curto mostrado sob o nome da organização na página pública.",
+      "introPlaceholder": "Nosso compromisso com segurança e privacidade…",
+      "contactEmail": "E-mail de contato",
+      "contactEmailHint": "Mostrado no rodapé da página pública. Volta para o e-mail de suporte da organização quando vazio.",
+      "contactEmailPlaceholder": "segurança@exemplo.com",
+      "includeInInvites": "Link para a central de confiança em e-mails de convite de fornecedores",
+      "includeInInvitesHint": "Adiciona uma linha de rodapé para convidar e-mails apontando para /trust. Os modelos não são modificados — o link é adicionado no momento do envio.",
+      "pageLoads": "Carregamentos de páginas públicas/minuto (por IP)",
+      "downloads": "Downloads de documentos/min (por IP)",
+      "saving": "Salvando...",
+      "save": "Salvar centro de confiança",
+      "success": "Configurações da central de confiança salvas.",
+      "errors": {
+        "invalidInput": "Entrada inválida.",
+        "invalidEmail": "Insira um endereço de e-mail válido."
+      }
+    },
+    "permissions": {
+      "fullAccess": "Acesso total",
+      "fullAccessHint": "Quando selecionada, a chave concede todas as permissões. Desmarque para restringir a chave a um conjunto específico de permissões.",
+      "selectAll": "Selecione todas as permissões",
+      "permissionCount": "{granted} / {total} permissões",
+      "groups": {
+        "vendors": "Fornecedores",
+        "assessments": "Avaliações",
+        "templates": "Modelos",
+        "frameworks": "Estruturas",
+        "administration": "Administração",
+        "webhooks": "Webhooks",
+        "trustcenter": "Central de Confiança",
+        "profile": "Perfil"
+      },
+      "items": {
+        "vendors_view": "Ver fornecedores",
+        "vendors_create": "Criar fornecedores",
+        "vendors_edit": "Editar fornecedores",
+        "vendors_delete": "Excluir fornecedores",
+        "assessments_view": "Ver avaliações",
+        "assessments_create": "Criar e enviar avaliações",
+        "assessments_edit": "Editar e gerenciar links",
+        "assessments_review": "Revise e finalize",
+        "assessments_delete": "Excluir avaliações",
+        "templates_view": "Ver modelos",
+        "templates_create": "Crie modelos",
+        "templates_edit": "Editar e publicar modelos",
+        "templates_delete": "Excluir modelos",
+        "frameworks_view": "Ver estruturas",
+        "frameworks_edit": "Editar estruturas",
+        "frameworks_delete": "Excluir estruturas",
+        "audit_view": "Ver registros de auditoria e e-mail",
+        "users_manage": "Gerenciar usuários",
+        "roles_manage": "Gerenciar funções",
+        "settings_manage": "Gerenciar configurações",
+        "api_manage": "Gerenciar o acesso à API",
+        "webhooks_manage": "Gerenciar webhooks",
+        "trustcenter_manage": "Gerenciar o conteúdo da central de confiança",
+        "profile_view": "Ver e editar o próprio perfil"
+      }
+    },
+    "users": {
+      "metaTitle": "Administrador – Usuários",
+      "title": "Usuários",
+      "subtitle": "Contas de funcionários e seu acesso.",
+      "cardTitle": "Contas de pessoal",
+      "cardDescription": "Crie contas de equipe e gerencie sua função, acesso e senha.",
+      "searchLabel": "Equipe de pesquisa",
+      "searchPlaceholder": "Equipe de pesquisa…",
+      "newUser": "Novo usuário",
+      "empty": "Nenhum usuário ainda.",
+      "noMatch": "Nenhum funcionário corresponde à sua pesquisa.",
+      "added": "Adicionado {date}",
+      "sso": "SSO",
+      "local": "Local",
+      "disabled": "Desabilitado",
+      "addTitle": "Adicionar usuário",
+      "addDescription": "Crie uma conta de equipe com uma função inicial e senha.",
+      "name": "Nome",
+      "email": "E-mail",
+      "password": "Senha",
+      "role": "Papel",
+      "creating": "Criando...",
+      "create": "Criar usuário",
+      "cancel": "Cancelar",
+      "save": "Salvar",
+      "access": "Acesso",
+      "enableSignIn": "Ativar login",
+      "disableSignIn": "Desativar login",
+      "disableTitle": "Desabilitar usuário?",
+      "disableDescription": "{name} não poderá mais fazer login. Seus dados serão preservados.",
+      "disable": "Desativar",
+      "newPasswordPlaceholder": "Nova Senha",
+      "resetTitle": "Redefinir senha?",
+      "resetDescription": "Isso substitui {name}a senha atual. Eles devem usar a nova senha para fazer login.",
+      "reset": "Reiniciar",
+      "ssoPassword": "Esta conta faz login via SSO — sua senha é gerenciada pelo provedor de identidade.",
+      "dangerZone": "Zona de perigo",
+      "deleteTitle": "Excluir usuário?",
+      "deleteDescription": "{name} será removido permanentemente. Isto não pode ser desfeito.",
+      "ownedVendors": "{count,plural,one{# o fornecedor perderá sua atribuição de proprietário} other{# os fornecedores perderão sua atribuição de proprietário}}",
+      "reviewingAssessments": "{count,plural,one{# a avaliação perderá seu revisor} other{# as avaliações perderão seu revisor}}",
+      "resolvedFindings": "{count,plural,one{# a descoberta terá seu resolvedor limpo} other{# as descobertas terão seu resolvedor limpo}}",
+      "answerReviews": "{count,plural,one{# a revisão da resposta será anônima} other{# as avaliações das respostas serão anônimas}}",
+      "createdApiKeys": "{count,plural,one{# A chave de API perderá a referência do criador} other{# As chaves de API perderão a referência do criador}}",
+      "auditPreserved": "O histórico de auditoria é preservado (mostrado como \"Usuário excluído\").",
+      "delete": "Excluir",
+      "deleteUser": "Excluir usuário",
+      "loading": "Carregando...",
+      "success": "Usuário criado.",
+      "errors": {
+        "nameRequired": "O nome é obrigatório.",
+        "emailInvalid": "Insira um endereço de e-mail válido.",
+        "passwordTooShort": "Use pelo menos 12 caracteres.",
+        "roleRequired": "A função é obrigatória.",
+        "invalidInput": "Entrada inválida.",
+        "roleNotFound": "A função selecionada não existe.",
+        "emailExists": "Já existe um usuário com este e-mail.",
+        "createFailed": "Não foi possível criar o usuário. Por favor, tente novamente."
+      }
+    },
+    "roles": {
+      "metaTitle": "Administrador – Funções",
+      "title": "Funções",
+      "subtitle": "Conjuntos de permissões atribuídos a contas de funcionários.",
+      "cardTitle": "Funções",
+      "cardDescription": "Defina conjuntos de permissões e atribua-os às contas da equipe.",
+      "searchPlaceholder": "Pesquisar funções…",
+      "newRole": "Nova função",
+      "noMatch": "Nenhuma função corresponde à sua pesquisa.",
+      "system": "Sistema",
+      "userCount": "{count,plural,one{# usuário} other{# Usuários}}",
+      "edit": "Editar",
+      "duplicate": "Duplicado",
+      "deleteTitle": "Excluir função?",
+      "deleteDescription": "O \"{name}\" a função será removida permanentemente. Isso só é possível quando nenhum usuário está atribuído a ela.",
+      "delete": "Excluir",
+      "createTitle": "Criar função",
+      "adminLocked": "A função Admin sempre tem todas as permissões e não pode ser alterada.",
+      "editorDescription": "Escolha as permissões que esta função concede. Os usuários atribuídos a esta função obtêm exatamente essas permissões.",
+      "name": "Nome",
+      "description": "Descrição",
+      "saving": "Salvando...",
+      "create": "Criar função",
+      "saveChanges": "Salvar alterações",
+      "cancel": "Cancelar",
+      "success": "Função criada.",
+      "updated": "Função atualizada.",
+      "errors": {
+        "nameRequired": "O nome da função é obrigatório.",
+        "nameTooLong": "O nome da função deve ter 50 caracteres ou menos.",
+        "descriptionTooLong": "A descrição deve ter 200 caracteres ou menos.",
+        "invalidInput": "Entrada inválida.",
+        "roleExists": "Já existe uma função com este nome.",
+        "createFailed": "Não foi possível criar a função. Por favor, tente novamente.",
+        "missingRole": "Papel ausente.",
+        "notFound": "Função não encontrada.",
+        "adminLocked": "As permissões da função Admin não podem ser alteradas.",
+        "updateFailed": "Não foi possível atualizar a função. Por favor, tente novamente.",
+        "duplicateFailed": "Não foi possível duplicar a função: {reason}",
+        "deleteFailed": "Não foi possível excluir a função: {reason}",
+        "systemCannotDelete": "As funções do sistema não podem ser excluídas.",
+        "assignedUsers": "Esta função é atribuída a um ou mais usuários. Reatribua-os antes de excluí-los."
+      }
+    },
+    "audit": {
+      "metaTitle": "Administrador – registro de auditoria",
+      "title": "Registro de auditoria",
+      "subtitle": "Atividade administrativa e de sistema em toda a plataforma.",
+      "retentionTitle": "Retenção",
+      "retentionDescription": "As entradas de auditoria anteriores a esse número de dias são automaticamente removidas pela limpeza agendada. Defina como 0 para manter indefinidamente.",
+      "retentionLabel": "Retenção de log de auditoria (dias)",
+      "retentionHelp": "Aplica-se na próxima execução agendada.",
+      "cardTitle": "Registro de auditoria",
+      "cardDescription": "Acompanhe as atividades administrativas e do sistema em toda a plataforma.",
+      "action": "Ação",
+      "user": "Usuário",
+      "from": "De",
+      "to": "Para",
+      "rows": "Linhas",
+      "allActions": "Todas as ações",
+      "allUsers": "Todos os usuários",
+      "actionFilterLabel": "Filtrar log de auditoria por ação",
+      "userFilterLabel": "Filtrar log de auditoria por usuário",
+      "pageSizeLabel": "Tamanho da página do registro de auditoria",
+      "filter": "Filtro",
+      "clear": "Claro",
+      "export": "Exportar",
+      "allResults": "Todos os resultados",
+      "currentPage": "Página atual",
+      "empty": "Nenhuma entrada de auditoria encontrada.",
+      "date": "Data",
+      "entity": "Entidade",
+      "deleted": "Excluído",
+      "pageSummary": "Página {page} de {totalPages} ({totalCount, plural, one {# entrada} other {# entradas}})",
+      "previous": "Anterior",
+      "next": "Próximo",
+      "csvHeader": "Data, Usuário, Ação, Entidade, ID",
+      "success": "Retenção de auditoria salva.",
+      "clarificationRequested": "esclarecimento solicitado",
+      "errors": {
+        "retentionInvalid": "A retenção de auditoria deve ser 0 ou um número positivo.",
+        "invalidInput": "Entrada inválida."
+      },
+      "actions": {
+        "LOGIN": "Conecte-se",
+        "CREATE_ASSESSMENT": "Avaliação criada",
+        "DELETE_ASSESSMENT": "Avaliação excluída",
+        "SEND_ASSESSMENT": "Avaliação enviada",
+        "REVOKE_ASSESSMENT": "Link de avaliação revogado",
+        "EXTEND_ASSESSMENT": "Link de avaliação estendida",
+        "REGENERATE_ASSESSMENT": "Link de avaliação regenerado",
+        "SUBMIT_ASSESSMENT": "Avaliação enviada",
+        "REVIEW_DECISION": "Rever decisão",
+        "SEND_BACK_TO_VENDOR": "Enviado de volta ao fornecedor",
+        "REOPEN_REVIEW": "Revisão reaberta",
+        "UPDATE_FINDING": "Descoberta atualizada",
+        "ADD_COMMENT": "Comentário adicionado",
+        "REOPEN_ASSESSMENT": "Avaliação reaberta",
+        "FINALIZE_ASSESSMENT": "Avaliação finalizada",
+        "CREATE_VENDOR": "Fornecedor criado",
+        "UPDATE_VENDOR": "Fornecedor atualizado",
+        "DELETE_VENDOR": "Fornecedor excluído",
+        "IMPORT_VENDOR": "Fornecedor importado",
+        "CREATE_TEMPLATE": "Modelo criado",
+        "UPDATE_TEMPLATE": "Modelo atualizado",
+        "DELETE_TEMPLATE": "Modelo excluído",
+        "PUBLISH_TEMPLATE": "Modelo publicado",
+        "UNPUBLISH_TEMPLATE": "Modelo não publicado",
+        "CREATE_TEMPLATE_VERSION": "Versão do modelo criado",
+        "DUPLICATE_TEMPLATE": "Modelo duplicado",
+        "IMPORT_TEMPLATE": "Modelo importado",
+        "CREATE_USER": "Usuário criado",
+        "DELETE_USER": "Usuário excluído",
+        "DISABLE_USER": "Usuário desativado",
+        "ENABLE_USER": "Usuário habilitado",
+        "CHANGE_ROLE": "Função alterada",
+        "CREATE_ROLE": "Função criada",
+        "UPDATE_ROLE": "Função atualizada",
+        "UPDATE_PROFILE": "Perfil atualizado",
+        "DELETE_ROLE": "Função excluída",
+        "DUPLICATE_ROLE": "Função duplicada",
+        "RESET_PASSWORD": "Redefinir senha",
+        "UPDATE_SETTINGS": "Configurações atualizadas",
+        "API_KEY_CREATED": "Chave de API criada",
+        "API_KEY_REVOKED": "Chave de API revogada",
+        "API_KEY_ENABLED": "Chave de API ativada",
+        "API_KEY_DELETED": "Chave de API excluída",
+        "CREATE_CERTIFICATION": "Certificação adicionada",
+        "UPDATE_CERTIFICATION": "Certificação atualizada",
+        "DELETE_CERTIFICATION": "Certificação excluída",
+        "CREATE_FRAMEWORK": "Estrutura importada",
+        "DELETE_FRAMEWORK": "Estrutura excluída",
+        "UPDATE_RESPONSIBILITY_ACTION": "Ação de responsabilidade atualizada",
+        "MARK_CONTROL_SHARED": "Controle marcado como responsabilidade compartilhada",
+        "UNMARK_CONTROL_SHARED": "Controle não marcado como responsabilidade compartilhada",
+        "RETRY_EMAIL_SEND": "Nova tentativa de envio de e-mail",
+        "CREATE_WEBHOOK": "Webhook criado",
+        "DELETE_WEBHOOK": "Webhook excluído",
+        "ENABLE_WEBHOOK": "Webhook ativado",
+        "DISABLE_WEBHOOK": "Webhook desativado",
+        "UPDATE_TRUST_CENTER": "Centro de confiança atualizado"
+      }
+    },
+    "health": {
+      "metaTitle": "Administrador - Saúde",
+      "title": "Saúde",
+      "subtitle": "Diagnóstico do sistema e status do trabalho agendado.",
+      "application": "Aplicativo",
+      "status": "Status",
+      "running": "Correndo",
+      "version": "Versão",
+      "commit": "Comprometer-se",
+      "buildTime": "Tempo de construção",
+      "uptime": "Tempo de atividade",
+      "memory": "Memória (pilha)",
+      "lessThanMinute": "menos de 1m",
+      "database": "Banco de dados",
+      "connection": "Conexão",
+      "connected": "Conectado",
+      "error": "Erro"
+    }
+  },
+  "NotFound": {
+    "description": "A página que você procura não existe ou foi movida.",
+    "backToDashboard": "Voltar ao painel"
+  },
+  "BulkSend": {
+    "metaTitle": "Envio em massa",
+    "title": "Envio em massa",
+    "subtitle": "Envie o mesmo questionário para vários fornecedores de uma só vez.",
+    "breadcrumb": "Envio em massa",
+    "steps": {
+      "configure": "Configurar",
+      "vendors": "Fornecedores",
+      "send": "Enviar"
+    },
+    "template": "Modelo",
+    "selectTemplate": "Selecione o modelo",
+    "dueDate": "Data de vencimento",
+    "reviewer": "Revisor",
+    "unassigned": "Não atribuído",
+    "portalPassword": "Senha do portal (opcional)",
+    "portalPasswordPlaceholder": "Senha compartilhada para todos os fornecedores",
+    "next": "Próximo →",
+    "back": "← Voltar",
+    "filterPlaceholder": "Filtrar fornecedores...",
+    "selectAll": "Selecionar tudo",
+    "selectedCount": "{count} selecionado",
+    "noMatch": "Nenhum fornecedor corresponde à sua pesquisa.",
+    "noEmail": "Nenhum e-mail",
+    "sendingTo": "Enviando {template} para {count,plural,one{# fornecedor} other{# fornecedores}}",
+    "due": "Devido: {date}",
+    "reviewerLabel": "Revisor: {name}",
+    "portalPasswordSet": "Senha do portal definida",
+    "sending": "Enviando...",
+    "sendTo": "Enviar para {count,plural,one{# fornecedor} other{# fornecedores}}",
+    "sentCount": "{count,plural,one{Enviado # avaliação} other{Enviado # avaliações}}",
+    "skippedCount": "{count,plural,one{# não foi possível enviar} other{# não foi possível enviar}}",
+    "emailFailedCount": "{count,plural,one{# e-mail não foi entregue} other{# e-mails não foram entregues}}",
+    "errors": {
+      "noTemplate": "Nenhum modelo selecionado.",
+      "noVendors": "Nenhum fornecedor selecionado."
+    }
+  },
+  "VendorImport": {
+    "metaTitle": "Importar fornecedores",
+    "title": "Importar fornecedores",
+    "subtitle": "Carregue um arquivo CSV para criar fornecedores em massa.",
+    "breadcrumb": "Importar",
+    "cardTitle": "Importar fornecedores de CSV",
+    "steps": {
+      "upload": "Carregar",
+      "review": "Análise"
+    },
+    "csvFile": "Arquivo CSV",
+    "template": "Modelo",
+    "columnsHelp": "O CSV deve ter colunas: id (opcional), nome, contactemail, mais opcional: externalid, contactname, tier, website, notes, servicedescription, datasensitive, contractrenewaldate, contractvalue, Geographicrisk, tags. Apenas nome e e-mail de contato são obrigatórios. Máximo de 1 MB. Inclua um ID de fornecedor ou externalid para atualizar um fornecedor existente em vez de criar um novo.",
+    "found": "{count,plural,one{# fornecedor encontrado} other{# fornecedores encontrados}}",
+    "showingFirst": "Mostrando os primeiros 10 de {count} linhas",
+    "next": "Próximo →",
+    "back": "← Voltar",
+    "aboutToImport": "Você está prestes a importar {count,plural,one{# fornecedor} other{# fornecedores}}.",
+    "skippedNote": "Algumas linhas podem ser ignoradas se falharem na validação (e-mails duplicados, campos obrigatórios ausentes).",
+    "importing": "Importando…",
+    "importVendors": "Importar fornecedores",
+    "errors": {
+      "noFile": "Nenhum arquivo selecionado.",
+      "fileTooLarge": "O arquivo é muito grande (máximo de 1 MB).",
+      "noRows": "Nenhuma linha encontrada no CSV. A primeira linha deve ser um cabeçalho.",
+      "noValidVendors": "Nenhum fornecedor válido encontrado. Primeiro erro: {reason}",
+      "rowInvalid": "Linha {row}: entrada inválida.",
+      "rowNameRequired": "Linha {row}: o nome do fornecedor é obrigatório.",
+      "rowContactEmailRequired": "Linha {row}: e-mail de contato é obrigatório.",
+      "duplicateExternalId": "{name}: ID externo duplicado",
+      "rowFailed": "{name}: {reason}",
+      "updateRequiresEdit": "Esta importação atualizaria os fornecedores existentes. A atualização requer permissão de edição do fornecedor.",
+      "unknown": "desconhecido",
+      "importComplete": "Importação concluída: {summary}.",
+      "created": "{count} criado",
+      "updated": "{count} atualizado",
+      "skipped": "{count,plural,one{# linha ignorada} other{# linhas ignoradas}}"
+    }
+  },
+  "CompareVendors": {
+    "metaTitle": "Comparar fornecedores",
+    "title": "Comparar fornecedores",
+    "subtitle": "Escolha dois fornecedores para comparar lado a lado as últimas avaliações concluídas.",
+    "breadcrumb": "Comparar",
+    "notEnoughVendorsTitle": "Não há fornecedores suficientes",
+    "notEnoughVendorsDescription": "Você precisa de pelo menos dois fornecedores para comparar. Crie mais fornecedores primeiro.",
+    "vendorA": "Fornecedor A",
+    "vendorB": "Fornecedor B",
+    "selectVendor": "Selecione um fornecedor",
+    "compare": "Comparar",
+    "notEnoughAssessmentsTitle": "Avaliações insuficientes",
+    "notEnoughAssessmentsDescription": "Ambos os fornecedores devem ter pelo menos uma avaliação concluída ou em revisão para comparação.",
+    "comparisonSubtitle": "{vendorA} contra {vendorB}",
+    "statusLabel": "{title} · {status}",
+    "question": "Pergunta",
+    "changed": "mudado",
+    "notApplicable": "N / D"
+  },
+  "ApiDocs": {
+    "metaTitle": "Documentação da API",
+    "loading": "Carregando documentação da API...",
+    "loadFailed": "Falha ao carregar a IU do Swagger."
+  },
+  "CompareAssessments": {
+    "metaTitle": "Comparar avaliações",
+    "metadataTitle": "Compare avaliações - {vendorName}",
+    "notFound": "Fornecedor não encontrado",
+    "title": "Comparar avaliações",
+    "breadcrumb": "Comparar avaliações",
+    "instructions": "Selecione duas avaliações na página do fornecedor para compará-las lado a lado. Depois de abrir dois, adicione esta página aos favoritos com ?left=[id]&right=[id].",
+    "comparisonSubtitle": "{leftTitle} ({leftStatus}) versus {rightTitle} ({rightStatus})",
+    "question": "Pergunta",
+    "changed": "mudado",
+    "notApplicable": "N / D"
+  },
+  "Profile": {
+    "metaTitle": "Perfil",
+    "title": "Perfil",
+    "subtitle": "Gerencie os detalhes da sua conta.",
+    "accountDetails": "Detalhes da conta",
+    "ssoDescription": "Você faz login por meio de logon único. Seu email é gerenciado pelo seu provedor de identidade.",
+    "localDescription": "Seu nome e e-mail de login.",
+    "name": "Nome",
+    "email": "E-mail",
+    "passwordTitle": "Senha",
+    "passwordDescription": "Você deve inserir sua senha atual para fazer alterações.",
+    "currentPassword": "Senha atual",
+    "newPassword": "Nova Senha",
+    "optional": "(opcional)",
+    "confirmNewPassword": "Confirme a nova senha",
+    "ssoPasswordNote": "Sua senha é gerenciada pelo seu provedor de identidade (SSO), portanto não há nada a alterar aqui.",
+    "saving": "Salvando...",
+    "saveChanges": "Salvar alterações",
+    "errorDescription": "Não foi possível carregar seu perfil. Tente novamente ou entre em contato com o suporte.",
+    "errors": {
+      "notAuthenticated": "Não autenticado.",
+      "accountNotFound": "Conta não encontrada.",
+      "currentPasswordIncorrect": "A senha atual está incorreta.",
+      "emailTaken": "Este e-mail já está em uso.",
+      "nameRequired": "O nome é obrigatório.",
+      "emailInvalid": "Insira um endereço de e-mail válido.",
+      "currentPasswordRequired": "A senha atual é necessária.",
+      "passwordTooShort": "A nova senha deve ter pelo menos 12 caracteres.",
+      "passwordMismatch": "As senhas não coincidem.",
+      "invalidInput": "Entrada inválida.",
+      "success": "Perfil atualizado."
+    }
+  },
+  "TrustCenterManager": {
+    "metaTitle": "Central de Confiança",
+    "title": "Central de Confiança",
+    "subtitle": "Publique selos de conformidade, documentos de segurança, subprocessadores e seções narrativas na página pública da sua central de confiança.",
+    "viewPublic": "Ver página pública",
+    "disabledBanner": "A central de confiança está atualmente desativada. Habilite-o em Configurações → Central de Confiabilidade — até então a página pública mostra uma mensagem de não encontrado.",
+    "errorDescription": "O gerenciador do centro confiável não pôde ser carregado. Por favor, tente novamente.",
+    "common": {
+      "edit": "Editar",
+      "draft": "Rascunho",
+      "published": "Publicado",
+      "saving": "Salvando...",
+      "cancel": "Cancelar",
+      "moveUp": "Mover {name} acima",
+      "moveDown": "Mover {name} abaixo",
+      "deleteNamed": "Excluir {name}"
+    },
+    "badges": {
+      "cardTitle": "Selos de conformidade",
+      "add": "Adicionar selo",
+      "empty": "Nenhum selo configurado. Adicione certificações como SOC 2 ou ISO 27001 para exibi-las na página pública.",
+      "verificationLink": "Link de verificação",
+      "deleteTitle": "Excluir selo?",
+      "deleteDescription": "O \"{name}\"O selo será removido da central de confiança.",
+      "addTitle": "Adicionar selo",
+      "editTitle": "Editar selo",
+      "editorDescription": "Exibido como um bloco de certificação na página da central de confiança pública.",
+      "titleLabel": "Título",
+      "issuer": "Emissor",
+      "issuerPlaceholder": "por exemplo AICPA, BSI",
+      "description": "Descrição",
+      "descriptionPlaceholder": "por exemplo SOC 2 Tipo II auditado anualmente",
+      "verificationUrl": "URL de verificação",
+      "image": "Imagem do selo",
+      "imageHint": "PNG, JPG, GIF ou WebP. Máximo de 2 MB. SVG não é permitido.",
+      "imageHintKeep": " Deixe em branco para manter a imagem atual.",
+      "save": "Salvar selo"
+    },
+    "documents": {
+      "cardTitle": "Documentos de segurança",
+      "add": "Adicionar documento",
+      "empty": "Nenhum documento configurado. Carregue políticas, relatórios de segurança ou artefatos de conformidade para download público.",
+      "noFile": "Nenhum arquivo enviado",
+      "deleteTitle": "Excluir documento?",
+      "deleteDescription": "\"{name}\" e seu arquivo será removido da central de confiança.",
+      "addTitle": "Adicionar documento",
+      "editTitle": "Editar documento",
+      "editorDescription": "Os documentos publicados podem ser baixados na página da central de confiança pública.",
+      "titleLabel": "Título",
+      "description": "Descrição",
+      "descriptionPlaceholder": "O que este documento cobre",
+      "category": "Categoria",
+      "file": "Arquivo",
+      "replaceFile": "Substituir arquivo",
+      "fileHint": "PDF, PNG, JPG, DOCX ou XLSX. Máximo de 20 MB.",
+      "fileHintCurrent": " Atual: {fileName}. A substituição exclui o arquivo antigo.",
+      "save": "Salvar documento",
+      "categories": {
+        "POLICY": "Política",
+        "SECURITY": "Relatório de segurança",
+        "COMPLIANCE": "Conformidade",
+        "PRIVACY": "Privacidade",
+        "OTHER": "Outro"
+      }
+    },
+    "sections": {
+      "cardTitle": "Seções personalizadas",
+      "add": "Adicionar seção",
+      "empty": "Nenhuma seção personalizada. Adicione blocos de descontos para uma visão geral, perguntas frequentes ou qualquer outra coisa que os tipos estruturados não cubram.",
+      "deleteTitle": "Excluir seção?",
+      "deleteDescription": "\"{name}\"será removido da central de confiança.",
+      "addTitle": "Adicionar seção",
+      "editTitle": "Editar seção",
+      "editorDescription": "Blocos de descontos gratuitos renderizados na página da central de confiança pública.",
+      "titleLabel": "Título",
+      "body": "Corpo (redução)",
+      "bodyPlaceholder": "Suporta formatação de redução.",
+      "save": "Salvar seção"
+    },
+    "subprocessors": {
+      "cardTitle": "Subprocessadores",
+      "add": "Adicionar subprocessador",
+      "empty": "Nenhum subprocessador configurado. Liste terceiros que processam dados em seu nome.",
+      "deleteTitle": "Excluir subprocessador?",
+      "deleteDescription": "\"{name}\"será removido da central de confiança.",
+      "addTitle": "Adicionar subprocessador",
+      "editTitle": "Editar subprocessador",
+      "editorDescription": "Terceiros que processam dados em seu nome, listados na página da central de confiança pública.",
+      "name": "Nome",
+      "purpose": "Propósito",
+      "purposePlaceholder": "por exemplo Hospedagem em nuvem de dados de aplicativos",
+      "location": "Localização dos dados",
+      "locationPlaceholder": "por exemplo Austrália (Sydney)",
+      "website": "Site",
+      "websitePlaceholder": "https://…",
+      "logo": "Imagem do logotipo",
+      "logoHint": "PNG, JPG, GIF ou WebP. Máximo de 2 MB. SVG não é permitido.",
+      "logoHintKeep": " Deixe em branco para manter o logotipo atual.",
+      "logoUrl": "…ou busque um logotipo de um URL",
+      "logoUrlPlaceholder": "https://example.com/logo.png",
+      "logoUrlHint": "A imagem é baixada e armazenada com outros arquivos da central de confiança — a página pública nunca carrega hosts externos. Um arquivo enviado tem prioridade sobre um URL.",
+      "save": "Salvar subprocessador"
+    },
+    "errors": {
+      "invalidInput": "Entrada inválida.",
+      "titleRequired": "O título é obrigatório.",
+      "nameRequired": "O nome é obrigatório.",
+      "invalidUrl": "Insira um URL válido.",
+      "sectionTooLong": "O corpo da seção é muito longo (máximo de 10.000 caracteres).",
+      "badgeNotFound": "Selo não encontrado.",
+      "documentFileRequired": "É necessário um arquivo de documento.",
+      "saveFailed": "Falha ao salvar.",
+      "badgeSaved": "Selo salvo.",
+      "documentSaved": "Documento salvo.",
+      "sectionSaved": "Seção salva.",
+      "subprocessorSaved": "Subprocessador salvo.",
+      "imageType": "As imagens devem ser PNG, JPG, GIF ou WebP (SVG não é permitido).",
+      "imageInvalid": "Esta imagem não é válida.",
+      "imageTooLarge": "A imagem é muito grande (máx. {max} MB).",
+      "fileTooLarge": "O arquivo é muito grande (máx. {max} MB).",
+      "fileInvalid": "O conteúdo do arquivo não corresponde à sua extensão.",
+      "fileType": "Este tipo de arquivo não é aceito.",
+      "imageFetchFailed": "Não foi possível buscar o URL da imagem.",
+      "imageContent": "O URL da imagem deve retornar conteúdo PNG, JPG, GIF ou WebP."
+    }
+  },
+  "Shell": {
+    "workspace": {
+      "dashboard": "Painel",
+      "vendors": "Fornecedores",
+      "assessments": "Avaliações",
+      "riskRegister": "Registro de risco",
+      "selfAssessment": "Auto-avaliação",
+      "frameworks": "Estruturas",
+      "templates": "Modelos",
+      "trustCenter": "Central de Confiança",
+      "admin": "Administrador",
+      "groups": {
+        "risk": "Risco",
+        "frameworks": "Estruturas",
+        "manage": "Gerenciar"
+      }
+    },
+    "admin": {
+      "backToWorkspace": "De volta ao espaço de trabalho",
+      "groups": {
+        "workspace": "Espaço de trabalho",
+        "email": "E-mail",
+        "assessments": "Avaliações",
+        "files": "Arquivos",
+        "accessSecurity": "Acesso e segurança",
+        "integrations": "Integrações",
+        "platform": "Plataforma"
+      },
+      "sections": {
+        "general": "Em geral",
+        "appearance": "Aparência",
+        "email": "E-mail",
+        "emailTracking": "Rastreamento de e-mail",
+        "scoring": "Pontuação",
+        "scheduling": "Agendamento",
+        "storage": "Armazenar",
+        "users": "Usuários",
+        "roles": "Funções",
+        "signIn": "Entrar",
+        "rateLimits": "Limites de taxa",
+        "api": "API",
+        "webhooks": "Webhooks",
+        "trustCenter": "Central de Confiança",
+        "auditLog": "Registro de auditoria",
+        "health": "Saúde"
+      }
+    },
+    "header": {
+      "admin": "Administrador",
+      "toggleTheme": "Alternar tema",
+      "themeLight": "Luz",
+      "themeDark": "Escuro",
+      "themeSystem": "Sistema",
+      "profile": "Perfil",
+      "language": "Linguagem",
+      "signOut": "sair"
+    },
+    "sidebar": {
+      "toggle": "Alternar barra lateral"
+    },
+    "breadcrumbs": {
+      "label": "Pão ralado",
+      "dashboard": "Painel"
+    },
+    "commandPalette": {
+      "label": "Paleta de comandos",
+      "searchPlaceholder": "Pesquisar páginas...",
+      "noResults": "Sem resultados.",
+      "navigate": "navegar",
+      "open": "abrir",
+      "close": "fechar",
+      "or": "ou",
+      "items": {
+        "dashboard": {
+          "label": "Painel",
+          "subtitle": "Visão geral do risco do fornecedor"
+        },
+        "vendors": {
+          "label": "Fornecedores",
+          "subtitle": "Gerenciar fornecedores"
+        },
+        "assessments": {
+          "label": "Avaliações",
+          "subtitle": "Questionários"
+        },
+        "frameworks": {
+          "label": "Estruturas",
+          "subtitle": "Controles de conformidade"
+        },
+        "templates": {
+          "label": "Modelos",
+          "subtitle": "Construtor de questionário"
+        },
+        "profile": {
+          "label": "Perfil",
+          "subtitle": "Sua conta"
+        },
+        "adminGeneral": {
+          "label": "Administrador · Geral",
+          "subtitle": "Organização"
+        },
+        "adminUsers": {
+          "label": "Administrador · Usuários",
+          "subtitle": "Contas de pessoal"
+        },
+        "adminRoles": {
+          "label": "Administrador · Funções",
+          "subtitle": "Permissões"
+        },
+        "adminApi": {
+          "label": "Administrador · API",
+          "subtitle": "Acesso à API"
+        },
+        "adminAudit": {
+          "label": "Administrador · Registro de auditoria",
+          "subtitle": "Trilha de atividades"
+        },
+        "apiDocs": {
+          "label": "Documentos da API",
+          "subtitle": "OpenAPI/Swagger"
+        }
+      }
+    },
+    "idle": {
+      "title": "Sessão expirando",
+      "description": "Você será desconectado {countdown,plural,one{# segundo} other{# segundos}} devido à inatividade. Mova o mouse ou pressione qualquer tecla para permanecer conectado.",
+      "staySignedIn": "Permaneça conectado"
+    },
+    "scrollToTop": "Role para cima",
+    "error": {
+      "title": "Algo deu errado",
+      "description": "Ocorreu um erro inesperado. Tente novamente ou entre em contato com o suporte.",
+      "retry": "Tente novamente"
+    }
+  },
+  "Trust": {
+    "title": "{orgName} Central de Confiança",
+    "compliance": "Conformidade e certificações",
+    "expired": "Expirado",
+    "expiringSoon": "Expira em breve",
+    "verify": "Verificar",
+    "documents": "Documentos de segurança",
+    "download": "Download",
+    "subprocessors": "Subprocessadores",
+    "name": "Nome",
+    "purpose": "Propósito",
+    "location": "Localização",
+    "contactPrompt": "Dúvidas sobre nossa postura de segurança?",
+    "categories": {
+      "POLICY": "Política",
+      "SECURITY": "Relatório de segurança",
+      "COMPLIANCE": "Conformidade",
+      "PRIVACY": "Privacidade",
+      "OTHER": "Outro"
+    }
+  },
+  "Portal": {
+    "metaTitle": "Questionário do fornecedor",
+    "noscript": "JavaScript é necessário para preencher este questionário. Por favor, habilite o JavaScript nas configurações do seu navegador.",
+    "logoAlt": "Logotipo",
+    "linkNotFound": "Link não encontrado",
+    "linkInvalid": "Este link do questionário é inválido.",
+    "linkExpiredTitle": "O link expirou",
+    "linkExpiredBody": "O link deste questionário expirou. Entre em contato com o solicitante para obter um novo link.",
+    "submittedTitle": "{title} - enviado",
+    "submittedBanner": "✓ Suas respostas foram enviadas.",
+    "submittedBody": "O solicitante analisará suas respostas e poderá solicitar esclarecimentos. Você pode retornar a este link para ver quaisquer atualizações.",
+    "notApplicableShort": "N / D",
+    "decisions": {
+      "APPROVED": "Aprovado",
+      "CLARIFICATION_REQUESTED": "Esclarecimento solicitado"
+    },
+    "notAvailableTitle": "Não disponível",
+    "notAvailableBody": "Este questionário não está disponível no momento.",
+    "additionalInfoTitle": "Informações adicionais foram solicitadas.",
+    "additionalInfoBody": "Revise as perguntas sinalizadas e reenvie quando estiver pronto.",
+    "password": {
+      "title": "Senha obrigatória",
+      "description": "Este questionário é protegido por senha. Digite a senha fornecida pelo solicitante para continuar.",
+      "label": "Senha",
+      "placeholder": "Digite a senha",
+      "verifying": "Verificando...",
+      "continue": "Continuar",
+      "tooMany": "Muitas tentativas. Por favor, espere um minuto.",
+      "notSet": "Nenhuma senha está definida para este link.",
+      "incorrect": "Senha incorreta."
+    },
+    "error": {
+      "title": "Algo deu errado",
+      "description": "Ocorreu um erro inesperado ao carregar o questionário. Entre em contato com a organização que lhe enviou este link para obter assistência.",
+      "retry": "Tente novamente"
+    },
+    "loading": "Carregando questionário…",
+    "upload": {
+      "tooMany": "Muitos envios. Por favor, espere um momento.",
+      "linkInvalid": "Este link não é mais válido.",
+      "noFile": "Nenhum arquivo selecionado.",
+      "invalidQuestion": "Pergunta inválida.",
+      "tooLarge": "Arquivo excede o {max} Limite de MB.",
+      "badType": "Arquivos do tipo .{ext} não são permitidos.",
+      "dangerousType": "Este tipo de arquivo não é permitido.",
+      "mismatch": "O conteúdo do arquivo não corresponde a um arquivo .{ext} arquivo."
+    },
+    "questionnaire": {
+      "yes": "Sim",
+      "no": "Não",
+      "maxUpload": "Máx. {maxUploadMb} MB. Permitido: {extensions}.",
+      "uploading": " Fazendo upload…",
+      "uploaded": "Carregado: {fileName}",
+      "remove": "Remover",
+      "selectPlaceholder": "Selecione…",
+      "confirmStatement": "Eu confirmo esta afirmação",
+      "clarification": "O revisor solicitou esclarecimentos sobre esta resposta.",
+      "notApplicable": "Não aplicável",
+      "commentPlaceholder": "Adicione um comentário…",
+      "send": "Enviar",
+      "autosaveHint": "Suas respostas são salvas automaticamente — você pode fechar esta página e retornar usando o mesmo link a qualquer momento.",
+      "saveExpired": "Este link expirou. Não foi possível salvar suas alterações recentes.",
+      "saveError": "Não foi possível salvar suas alterações mais recentes. Verifique sua conexão e tente novamente.",
+      "retrySave": "Tentar salvar novamente",
+      "expiry": {
+        "expired": "Este link expirou.",
+        "hours": "Este link expira em {hours,plural,one{# hora} other{# horas}}.",
+        "minutes": "Este link expira em {minutes,plural,one{# minuto} other{# minutos}}."
+      },
+      "sectionCounter": "· Seção {current} de {total}",
+      "saving": "Salvando…",
+      "saveFailed": "Falha ao salvar",
+      "savedAt": "Salvo em {time}",
+      "lastSavedAt": "Salvo pela última vez em {time}",
+      "expires": "Expira {date}",
+      "back": "Voltar",
+      "continue": "Continuar",
+      "reviewAnswers": "Revise as respostas",
+      "continueWarning": "{count,plural,one{# pergunta obrigatória nesta seção ainda precisa de uma resposta.} other{# as perguntas obrigatórias nesta seção ainda precisam de respostas.}} Você pode continuar e voltar.",
+      "reviewHeading": "Revise suas respostas",
+      "reviewAnswered": "{answered}/{total} respondido",
+      "reviewMissing": "{count} necessário faltando",
+      "openSection": "Seção aberta",
+      "submitting": "Enviando…",
+      "submit": "Enviar questionário",
+      "submitTitle": "Enviar questionário?",
+      "submitDescription": "Você não poderá editar suas respostas após o envio. Tem certeza de que está pronto para enviar?",
+      "cancel": "Cancelar",
+      "submitConfirm": "Enviar",
+      "missingRequired": "{count,plural,one{Por favor responda # pergunta obrigatória antes de enviar.} other{Por favor responda # perguntas obrigatórias antes de enviar.}}",
+      "linkInvalid": "Este link não é mais válido.",
+      "vendorAuthor": "Fornecedor"
+    }
+  },
+  "Pdf": {
+    "common": {
+      "pageOf": "Página {page} de {total}",
+      "na": "N / D",
+      "none": "--",
+      "yes": "Sim",
+      "no": "Não",
+      "notScored": "Não marcou",
+      "tier": "Nível: {tier}",
+      "template": "Modelo: {name} v{version}",
+      "reviewer": "Revisor: {name}",
+      "generated": "Gerado {date}",
+      "due": "Devido: {date}",
+      "completed": "Concluído: {date}",
+      "automatedFindingDescription": "A resposta do fornecedor não atendeu à resposta esperada."
+    },
+    "tiers": {
+      "CRITICAL": "Crítico",
+      "HIGH": "Alto",
+      "MEDIUM": "Médio",
+      "LOW": "Baixo"
+    },
+    "questionTypes": {
+      "YES_NO": "Sim / Não",
+      "MULTIPLE_CHOICE": "Escolha única",
+      "FREE_TEXT": "Texto livre",
+      "FILE_UPLOAD": "Carregamento de arquivo",
+      "DATE": "Data",
+      "NUMERIC": "Numérico",
+      "COMBOBOX": "Caixa de combinação",
+      "MULTI_SELECT": "Seleção múltipla",
+      "RATING": "Avaliação",
+      "URL": "URL",
+      "EMAIL": "E-mail",
+      "CHECKBOX": "Caixa de seleção"
+    },
+    "statuses": {
+      "DRAFT": "Rascunho",
+      "SENT": "Enviado",
+      "IN_PROGRESS": "Em andamento",
+      "SUBMITTED": "Enviado",
+      "UNDER_REVIEW": "Em revisão",
+      "COMPLETED": "Concluído"
+    },
+    "assessment": {
+      "score": "Pontuação",
+      "customerResponsibility": "Responsabilidade do Cliente: {percent}% ({completed}/{total} concluído)",
+      "responses": "Respostas ({count})",
+      "question": "Pergunta",
+      "answer": "Responder",
+      "type": "Tipo",
+      "weight": "Peso",
+      "compliant": "Compatível",
+      "scoreColumn": "Pontuação",
+      "findings": "Descobertas ({count})"
+    },
+    "framework": {
+      "complianceReport": "{frameworkName} {version} — Relatório de Conformidade",
+      "summary": "Resumo",
+      "overallScore": "Pontuação geral:",
+      "domainsAssessed": "Domínios avaliados:",
+      "controlsMapped": "Controles mapeados:",
+      "domainCompliance": "Conformidade de domínio",
+      "domain": "Domínio",
+      "current": "Atual",
+      "previous": "Anterior",
+      "change": "Mudar",
+      "controlHeatmap": "Controlar mapa de calor",
+      "control": "Controlar",
+      "title": "Título",
+      "compliance": "Conformidade",
+      "status": "Status",
+      "ragGreen": "Verde",
+      "ragAmber": "Âmbar",
+      "ragRed": "Vermelho",
+      "ragNone": "Não avaliado"
+    },
+    "portfolio": {
+      "title": "Título",
+      "vendors": "Fornecedores",
+      "averageScore": "Pontuação média",
+      "openFindings": "Descobertas abertas",
+      "needsAttention": "Precisa de atenção",
+      "scoreDistribution": "Distribuição de pontuação",
+      "green": "Verde (≥85%)",
+      "amber": "Âmbar (60–84%)",
+      "red": "Vermelho (<60%)",
+      "unscored": "Sem pontuação",
+      "vendorsByTier": "Fornecedores por nível",
+      "assessmentsByStatus": "Avaliações por status",
+      "vendorsCount": "Fornecedores ({count})",
+      "vendor": "Fornecedor",
+      "tier": "Nível",
+      "score": "Pontuação",
+      "lastAssessed": "Última avaliação",
+      "assessments": "Avaliações",
+      "notAssessed": "Não avaliado",
+      "topDeficientControls": "Principais controles deficientes ({count})",
+      "control": "Controlar",
+      "vendorsAffected": "Fornecedores afetados"
+    }
+  },
+  "Email": {
+    "footer": "Este e-mail foi enviado por {appName}. Caso o botão não funcione, copie e cole o link no seu navegador.",
+    "trustFooter": "Saiba mais sobre nossa postura de segurança: {url}",
+    "testSubject": "{appName} - teste SMTP",
+    "testBody": "Suas configurações de SMTP estão funcionando corretamente.",
+    "testSent": "E-mail de teste enviado.",
+    "smtpNotConfigured": "SMTP não está configurado.",
+    "transporterFailed": "Falha ao criar transportador.",
+    "sendFailed": "Falha ao enviar: {reason}",
+    "retryMessage": "Revise e reenvie seu questionário."
+  },
+  "Auth": {
+    "tagline": "Gerenciamento de risco do fornecedor",
+    "login": {
+      "title": "Entrar",
+      "description": "Faça login em sua conta.",
+      "email": "E-mail",
+      "password": "Senha",
+      "submit": "Entrar",
+      "submitting": "Fazendo login…",
+      "forgot": "Esqueceu sua senha?",
+      "or": "ou",
+      "invalid": "E-mail ou senha inválidos.",
+      "tooMany": "Muitas tentativas. Aguarde um momento e tente novamente."
+    },
+    "forgot": {
+      "title": "Esqueceu sua senha",
+      "description": "Digite seu e-mail e enviaremos um link de redefinição.",
+      "email": "E-mail",
+      "submit": "Enviar link de redefinição",
+      "submitting": "Enviando...",
+      "back": "Voltar para fazer login",
+      "invalidEmail": "Insira um endereço de e-mail válido.",
+      "rateLimited": "Se existir uma conta com esse e-mail, um link de redefinição já foi enviado recentemente.",
+      "sent": "Se existir uma conta com esse e-mail, um link de redefinição foi enviado."
+    },
+    "reset": {
+      "title": "Redefinir senha",
+      "description": "Escolha uma nova senha para sua conta.",
+      "missing": "Este link de redefinição está ausente ou é inválido. Solicite um novo no",
+      "expired": "Este link de redefinição expirou ou já foi usado. Solicite um novo no",
+      "forgotLink": "página de esqueci de senha",
+      "forUser": "Escolha uma nova senha para {email}.",
+      "newPassword": "Nova Senha",
+      "confirmPassword": "Confirme sua senha",
+      "submit": "Redefinir senha",
+      "submitting": "Redefinindo...",
+      "back": "Voltar para fazer login",
+      "invalidLink": "Link de redefinição inválido.",
+      "invalidPassword": "Use uma senha que atenda aos requisitos.",
+      "expiredToken": "Este link de redefinição é inválido ou expirou."
+    },
+    "setup": {
+      "title": "Criar administrador",
+      "cardTitle": "Crie o primeiro administrador",
+      "description": "Configure a conta de administrador inicial para começar a gerenciar o risco do fornecedor.",
+      "fullName": "Nome completo",
+      "email": "E-mail",
+      "password": "Senha",
+      "passwordHint": "Pelo menos 12 caracteres.",
+      "submit": "Criar administrador",
+      "submitting": "Criando…",
+      "alreadyDone": "A configuração já foi concluída.",
+      "invalid": "Verifique o nome, e-mail e senha (pelo menos 12 caracteres).",
+      "roleError": "Não foi possível inicializar a função Admin. Por favor, tente novamente.",
+      "createdSignIn": "Conta criada. Faça login."
+    },
+    "sso": {
+      "orSignInWith": "ou faça login com"
+    }
+  }
+}

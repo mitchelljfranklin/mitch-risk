@@ -1,0 +1,2681 @@
+{
+  "Common": {
+    "changeLanguage": "言語を変更",
+    "skipToContent": "コンテンツにスキップ",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "close": "閉じる",
+    "sidebar": "サイドバー",
+    "sidebarDescription": "モバイルサイドバーを表示します。",
+    "toggleSidebar": "サイドバーの切り替え",
+    "step": "ステップ {number}:",
+    "tiers": {
+      "CRITICAL": "致命的",
+      "HIGH": "高い",
+      "MEDIUM": "中くらい",
+      "LOW": "低い"
+    },
+    "pagination": {
+      "pageOf": "{totalPages} ページ中 {page} ページ · {totalCount} {itemLabel}",
+      "previous": "前の",
+      "next": "次"
+    },
+    "viewToggle": {
+      "rows": "行ビュー",
+      "cards": "カードビュー"
+    },
+    "assessmentStatuses": {
+      "DRAFT": "下書き",
+      "SENT": "送信済み",
+      "IN_PROGRESS": "進行中",
+      "SUBMITTED": "提出済み",
+      "UNDER_REVIEW": "検討中",
+      "COMPLETED": "完了"
+    },
+    "findingStatuses": {
+      "OPEN": "開ける",
+      "REMEDIATED": "修復済み",
+      "RISK_ACCEPTED": "リスクを受け入れる"
+    },
+    "copyLink": {
+      "copy": "コピー",
+      "copied": "コピーされました"
+    },
+    "pendingLink": {
+      "preparing": "準備中…"
+    },
+    "evidencePreview": {
+      "preview": "プレビュー {fileName}"
+    },
+    "questionTypes": {
+      "YES_NO": "はい / いいえ",
+      "MULTIPLE_CHOICE": "単一選択 (1 つ選択)",
+      "FREE_TEXT": "フリーテキスト",
+      "FILE_UPLOAD": "ファイルのアップロード",
+      "DATE": "日付",
+      "NUMERIC": "数値",
+      "COMBOBOX": "コンボボックス",
+      "MULTI_SELECT": "複数選択 (複数選択)",
+      "RATING": "評価 (1 ～ 5)",
+      "URL": "URL",
+      "EMAIL": "電子メール",
+      "CHECKBOX": "チェックボックス（確認）"
+    },
+    "controlCodes": {
+      "showMore": "{count,plural,one{見せる # より多くのコントロール} other{見せる # さらに多くのコントロール}}",
+      "showLess": "表示を少なくする"
+    },
+    "search": {
+      "placeholder": "検索…"
+    }
+  },
+  "Metadata": {
+    "description": "ホワイトラベルのサードパーティベンダーのリスク管理ソリューション"
+  },
+  "Dashboard": {
+    "metaTitle": "ダッシュボード",
+    "title": "ベンダーリスクの概要",
+    "tracked": "{count,plural,one{# ベンダー追跡済み} other{# 追跡されたベンダー}}",
+    "newVendor": "新しいベンダー",
+    "assessments": "評価",
+    "portfolioReport": "ポートフォリオレポート",
+    "emptyTitle": "まだベンダーはいません",
+    "emptyCanCreate": "最初のベンダーを追加して、リスクの追跡を開始します。",
+    "emptyReadOnly": "まだ追跡されているベンダーはありません。",
+    "addVendor": "ベンダーを追加 →",
+    "stats": {
+      "vendors": "追跡されたベンダー",
+      "averageScore": "平均点",
+      "openFindings": "未解決の調査結果",
+      "needsAttention": "注意が必要です"
+    },
+    "topControls": "最も欠陥のあるコントロール",
+    "viewRiskRegister": "リスク登録簿を見る→",
+    "highestRisk": "最もリスクの高いベンダー",
+    "viewAllVendors": "すべてのベンダーを見る→",
+    "noAssessments": "評価なし",
+    "overdue": "{count} 期限を過ぎた",
+    "attention": {
+      "title": "注意が必要です",
+      "allClear": "すべて明確です。現時点で注意を必要とするものは何もありません。",
+      "titleWithCount": "注意が必要です ({count})",
+      "unreviewed": "未レビュー",
+      "clarification": "clarification",
+      "clarifications": "clarifications",
+      "failedEmail": "失敗したメール (24 時間)",
+      "failedEmails": "失敗したメール (24 時間)",
+      "groups": {
+        "overdue": "Overdue assessments",
+        "belowThreshold": "スコアしきい値未満",
+        "keyDates": "重要日付（60日以内）"
+      },
+      "overdueAssessment": "{count, plural, one {# 件の期限超過評価} other {# 件の期限超過評価}}",
+      "oldestSince": "最古: {date}",
+      "belowThreshold": "下に {percent}％ しきい値",
+      "contractRenewal": "Contract renewal",
+      "daysOverdue": "{days}延滞",
+      "inDays": "で {days}d"
+    },
+    "charts": {
+      "portfolioHealth": "Portfolio health",
+      "openFindingsBySeverity": "重大度別に調査結果を開く",
+      "assessmentStatus": "評価状況",
+      "riskByTier": "階層別リスク",
+      "vendors": "ベンダー",
+      "assessments": "評価",
+      "openFindings": "未解決の調査結果",
+      "ragShort": {
+        "green": "緑",
+        "amber": "アンバー",
+        "red": "赤",
+        "unscored": "得点なし"
+      },
+      "rag": {
+        "green": "緑 (≥85%)",
+        "amber": "琥珀 (60–84%)",
+        "red": "赤 (<60%)",
+        "unscored": "得点なし"
+      },
+      "severity": {
+        "CRITICAL": "致命的",
+        "HIGH": "高い",
+        "MEDIUM": "中くらい",
+        "LOW": "低い"
+      },
+      "status": {
+        "DRAFT": "下書き",
+        "SENT": "送信済み",
+        "IN_PROGRESS": "進行中",
+        "SUBMITTED": "提出済み",
+        "UNDER_REVIEW": "検討中",
+        "COMPLETED": "完了",
+        "OVERDUE": "期限を過ぎました"
+      },
+      "tier": {
+        "CRITICAL": "致命的",
+        "HIGH": "高い",
+        "MEDIUM": "中くらい",
+        "LOW": "低い",
+        "Unspecified": "不特定"
+      },
+      "activity": {
+        "title": "評価活動",
+        "noActivity": "この期間はアクティビティがありません",
+        "timeRange": "時間範囲を選択してください",
+        "ranges": {
+          "90d": "過去 3 か月",
+          "30d": "過去 30 日間",
+          "7d": "過去 7 日間"
+        },
+        "assessments": "評価"
+      }
+    }
+  },
+  "Vendors": {
+    "metaTitle": "ベンダー",
+    "title": "ベンダー",
+    "subtitle": "セキュリティ リスクを評価するベンダー。",
+    "compare": "比較する",
+    "import": "インポート",
+    "bulkSend": "一括送信",
+    "newVendor": "新しいベンダー",
+    "search": "検索",
+    "searchPlaceholder": "名前またはメールアドレス…",
+    "tier": "階層",
+    "anyTier": "どの層でも",
+    "filterTierAria": "ベンダーを層ごとにフィルタリングする",
+    "sort": "選別",
+    "sortAria": "ベンダーを並べ替える",
+    "filter": "フィルター",
+    "clear": "クリア",
+    "viewAria": "ベンダーリストビュー",
+    "noMatches": "選択したフィルターに一致するベンダーはありません。",
+    "emptyTitle": "まだベンダーはいません",
+    "emptyDescription": "ベンダーを追加して、セキュリティ リスクの追跡を開始します。",
+    "assessed": "評価済み {date}",
+    "notAssessed": "評価されていない",
+    "assessmentCount": "{count,plural,one{# 評価} other{# 評価}}",
+    "openFindingCount": "{count,plural,one{# オープンな所見} other{# オープンな調査結果}}",
+    "list": {
+      "vendor": "ベンダー",
+      "tier": "ティア",
+      "score": "スコア",
+      "items": "ベンダー"
+    },
+    "sorts": {
+      "name": "名前 (A ～ Z)",
+      "name-desc": "名前 (Z-A)",
+      "score-asc": "スコア（低→高）",
+      "score-desc": "スコア（高→低）",
+      "tier": "階層 (A ～ Z)",
+      "tier-desc": "階層 (Z ～ A)",
+      "last-assessed": "最終評価",
+      "assessments": "ほとんどの評価"
+    },
+    "form": {
+      "vendorName": "ベンダー名",
+      "externalId": "外部ID",
+      "externalIdPlaceholder": "例えばERP-V-001",
+      "externalIdHint": "別のシステム内のこのベンダーへのオプションの参照",
+      "contactName": "連絡先名",
+      "contactEmail": "連絡先メールアドレス",
+      "tier": "階層",
+      "website": "Webサイト",
+      "riskOwner": "リスクオーナー",
+      "dataSensitivity": "データの機密性",
+      "contractValue": "契約金額",
+      "geographicRisk": "地理的リスク",
+      "tags": "タグ",
+      "tagsPlaceholder": "例えばSaas、クリティカル、ファイナンス",
+      "tagsHint": "グループ化とフィルタリングのためのカンマ区切りのラベル",
+      "serviceProvided": "提供されるサービス",
+      "servicePlaceholder": "例えばクラウドメールホスティング",
+      "contractRenewalDate": "契約更新日",
+      "notes": "注意事項",
+      "saving": "保存中...",
+      "saveChanges": "変更を保存する",
+      "create": "ベンダーの作成",
+      "cancel": "キャンセル",
+      "unspecified": "不特定",
+      "unassigned": "未割り当て",
+      "levels": {
+        "NONE": "なし",
+        "LOW": "低い",
+        "MEDIUM": "中くらい",
+        "HIGH": "高い"
+      },
+      "dataSensitivities": {
+        "PUBLIC": "公共",
+        "INTERNAL": "内部",
+        "CONFIDENTIAL": "機密",
+        "RESTRICTED": "制限付き"
+      }
+    },
+    "new": {
+      "title": "新しいベンダー",
+      "cardTitle": "ベンダーの詳細",
+      "cardDescription": "追跡する新しいベンダーを追加します。",
+      "breadcrumb": "新しい"
+    },
+    "edit": {
+      "title": "ベンダーの編集",
+      "cardTitle": "ベンダーの詳細",
+      "cardDescription": "ベンダーの詳細を更新します。",
+      "breadcrumb": "編集"
+    },
+    "attachments": {
+      "title": "添付ファイル",
+      "emptyTitle": "まだ添付ファイルはありません",
+      "emptyDescription": "契約書、手紙、その他の文書をアップロードします。",
+      "removeAria": "添付ファイルを削除する",
+      "dropHint": "ファイルをドロップするか、クリックして参照します",
+      "uploading": "アップロード中…",
+      "upload": "アップロード"
+    },
+    "export": {
+      "button": "CSVのエクスポート",
+      "all": "すべてのベンダー",
+      "currentPage": "現在のページ"
+    },
+    "errors": {
+      "invalidInput": "無効な入力です。",
+      "duplicateExternalId": "この外部 ID を持つベンダーはすでに存在します。",
+      "vendorCreated": "ベンダーが作成しました。",
+      "vendorUpdated": "ベンダーが更新されました。",
+      "noFile": "ファイルが選択されていません。",
+      "fileTypeNotAllowed": "ファイルの種類は許可されていません。",
+      "fileTypeNotAccepted": "このファイル形式は受け入れられません。",
+      "fileTooLarge": "ファイルが大きすぎます（最大 {max} MB）。",
+      "fileUploaded": "ファイルがアップロードされました。",
+      "fileAttached": "ベンダーに添付されたファイル。"
+    },
+    "detail": {
+      "notFound": "ベンダーが見つかりません",
+      "errorTitle": "ベンダーのロードに失敗しました",
+      "errorDescription": "このベンダーの詳細をロード中にエラーが発生しました。もう一度試してください。",
+      "created": "ベンダーが作成しました。",
+      "breadcrumbs": {
+        "riskRegister": "リスクレジスター",
+        "vendors": "ベンダー"
+      },
+      "edit": "編集",
+      "exportCsv": "CSVのエクスポート",
+      "delete": "消去",
+      "deleteTitle": "ベンダーを削除しますか?",
+      "deleteDescription": "これにより完全に削除されます {vendorName} そしてすべて {count,plural,one{# 評価} other{# 評価}}。この操作は元に戻すことができません。",
+      "tabs": {
+        "overview": "概要",
+        "compliance": "コンプライアンス",
+        "findings": "調査結果",
+        "assessments": "評価"
+      },
+      "overview": {
+        "title": "概要",
+        "serviceProvided": "提供されるサービス",
+        "riskOwner": "リスクオーナー",
+        "unassigned": "未割り当て",
+        "externalId": "外部ID",
+        "dataSensitivity": "データの機密性",
+        "unspecified": "不特定",
+        "website": "Webサイト",
+        "contractRenewal": "Contract renewal",
+        "overdue": " · 延滞",
+        "attachments": "添付ファイル",
+        "emptyTitle": "概要の詳細はありません",
+        "emptyDescription": "このベンダーを編集して、サービスの詳細、リスク所有者、およびその他のプロファイル情報を追加します。"
+      },
+      "riskProfile": {
+        "title": "リスクプロファイル",
+        "inherent": "固有（事前評価）",
+        "residual": "残留物（評価済み）",
+        "trendingUp": "上昇傾向にあります ↑",
+        "trendingDown": "下降傾向 ↓",
+        "stable": "安定 →",
+        "noScore": "まだスコアがありません — 評価を送信してください",
+        "trend": "傾向",
+        "compareLastTwo": "最後の 2 つを比較 →"
+      },
+      "certifications": "認証と証明",
+      "compliance": {
+        "vendorCompliance": "ベンダーのコンプライアンス",
+        "yourCompliance": "あなたのコンプライアンス",
+        "domainCompliance": "ドメインコンプライアンス",
+        "noDataTitle": "コンプライアンスデータなし",
+        "noDataDescription": "評価を完了すると、ドメイン コンプライアンス スコアが表示されます。",
+        "frameworkHeatmaps": "フレームワークのヒートマップ",
+        "noAssessmentData": "評価データがありません",
+        "noFrameworksTitle": "利用可能なフレームワークがありません",
+        "noFrameworksDescription": "フレームワーク ライブラリをインポートまたはシードして、コントロールを評価質問にマッピングします。"
+      },
+      "findings": {
+        "title": "調査結果",
+        "openCount": "{count, plural, one {# 件未解決} other {# 件未解決}}",
+        "viewAll": "{count,plural,one{リスク登録の結果を表示 →} other{すべて見る # リスク登録簿の所見 →}}",
+        "emptyTitle": "所見なし",
+        "emptyDescription": "調査結果は、評価の回答が準拠していない場合に生成されます。評価を完了すると、ここで結果が表示されます。"
+      },
+      "assessments": {
+        "title": "評価",
+        "new": "新しい評価",
+        "emptyTitle": "評価なし",
+        "emptyDescription": "このベンダーに対する評価はまだ作成されていません。",
+        "noTemplate": "テンプレートなし",
+        "due": " ・ 期限 {date}",
+        "viewAll": "{count,plural,one{評価を見る→} other{すべて見る # 評価→}}",
+        "activity": "活動"
+      }
+    },
+    "timeline": {
+      "empty": "アクティビティはまだ記録されていません。",
+      "assessmentCreated": "評価が作成されました",
+      "assessmentSent": "評価が送信されました",
+      "assessmentSubmitted": "評価が提出されました",
+      "findingOpened": "発見が開かれました",
+      "remediated": "修復済み",
+      "riskAccepted": "リスクを受け入れる",
+      "certificationAdded": "認定が追加されました",
+      "certificationExpiring": "認定の有効期限が切れます",
+      "certificationExpiringDescription": "{name} — 有効期限が切れます {date}"
+    },
+    "certifications": {
+      "empty": "まだ追跡された認定はありません。",
+      "expires": "有効期限が切れます {date}",
+      "statuses": {
+        "valid": "有効",
+        "expiring": "もうすぐ期限切れになります",
+        "expired": "期限切れ"
+      },
+      "add": "証明書の追加",
+      "edit": "編集",
+      "delete": "消去",
+      "deleteTitle": "認証を削除しますか?",
+      "deleteDescription": "\"{name}「」は完全に削除されます。",
+      "editor": {
+        "addTitle": "証明書の追加",
+        "description": "証明書 (SOC 2、ISO 27001 など) とその有効期限を追跡します。",
+        "name": "名前",
+        "namePlaceholder": "例えばSOC 2 タイプ II",
+        "issuer": "発行者 (オプション)",
+        "issuerPlaceholder": "例えば監査人/認証機関",
+        "issued": "発行済み（オプション）",
+        "expires": "有効期限が切れます",
+        "notes": "注記 (オプション)",
+        "complianceActions": "コンプライアンス措置が必要です",
+        "selectFramework": "フレームワークを選択してください...",
+        "attachment": "アタッチメント（オプション）",
+        "attachmentHint": "証明書、レポート、または契約書をアップロードします。最大20MB。",
+        "attachments": "添付ファイル",
+        "saving": "保存中...",
+        "save": "証明書の保存",
+        "cancel": "キャンセル"
+      },
+      "errors": {
+        "missingVendor": "ベンダーがありません。",
+        "invalidInput": "無効な入力です。",
+        "wrongVendor": "認定はこのベンダーに帰属しません。",
+        "saved": "証明書が保存されました。",
+        "attachmentFailed": " 添付に失敗しました: {reason}",
+        "fileType": "ファイルの種類は許可されていません。",
+        "fileTooLarge": "ファイルが大きすぎます（最大 {max} MB）。",
+        "fileInvalid": "このファイル形式は受け入れられません。",
+        "fileRecordFailed": "ファイルレコードの保存に失敗しました。",
+        "fileUploaded": "ファイルがアップロードされました。",
+        "nameRequired": "認証名は必須です。",
+        "expiryRequired": "有効期限は必須です。",
+        "invalidExpiry": "有効な有効期限を入力してください。",
+        "added": "認証 \"{name}」を添付ファイルとして追加しました。",
+        "missingEvidence": "証拠が欠けている。",
+        "evidenceNotFound": "証拠が見つかりません。"
+      }
+    },
+    "customerResponsibility": {
+      "title": "顧客の責任",
+      "collapse": "崩壊",
+      "expand": "拡大する",
+      "progress": "{total} 件中 {completed} 件 · {percent}%",
+      "empty": "この認定には共同責任の管理はありません。",
+      "assignedTo": "担当者 {name}",
+      "fileCount": "{count,plural,one{# ファイル} other{# ファイル}}",
+      "status": "状態",
+      "statuses": {
+        "PENDING": "保留中",
+        "IN_PROGRESS": "進行中",
+        "COMPLETED": "完了",
+        "NOT_APPLICABLE": "適用できない"
+      },
+      "assignedToLabel": "担当者",
+      "assignedToPlaceholder": "ユーザーID (オプション)",
+      "attachment": "アタッチメント",
+      "notes": "注意事項",
+      "notesPlaceholder": "実装に関するメモを追加...",
+      "files": "ファイル",
+      "saving": "保存中...",
+      "save": "保存",
+      "cancel": "キャンセル",
+      "errors": {
+        "missingFields": "必須フィールドが欠落しています。",
+        "invalidStatus": "無効なステータスです。",
+        "noChanges": "変更は提供されません。",
+        "saved": "保存されました。"
+      }
+    }
+  },
+  "Assessments": {
+    "list": {
+      "title": "評価",
+      "subtitle": "評価はベンダーに送信されます。",
+      "subtitleForVendor": "の評価 {vendorName}.",
+      "filters": {
+        "search": "検索",
+        "searchPlaceholder": "タイトルとか販売元とか…",
+        "status": "状態",
+        "allStatuses": "すべてのステータス",
+        "statusAriaLabel": "ステータスごとに評価をフィルタリングする",
+        "from": "から",
+        "to": "に",
+        "sort": "選別",
+        "sortAriaLabel": "評価の並べ替え",
+        "overdueOnly": "延滞のみ",
+        "apply": "フィルター",
+        "clear": "クリア"
+      },
+      "sorts": {
+        "created": "新しい順",
+        "created-asc": "古い順",
+        "due-asc": "締切日（最短）",
+        "due-desc": "締切日（最新）",
+        "score-asc": "スコア（低→高）",
+        "score-desc": "スコア（高→低）",
+        "vendor": "ベンダー (A ～ Z)",
+        "status": "ステータス (A ～ Z)",
+        "status-desc": "ステータス（Z～A）"
+      },
+      "emptyFiltered": "選択したフィルターに一致する評価はありません。",
+      "emptyTitle": "まだ評価はありません",
+      "emptyDescription": "評価を作成し、そのリンクをベンダーに送信して評価を完了します。",
+      "items": "評価",
+      "columns": {
+        "assessmentVendor": "評価・ベンダー",
+        "score": "スコア",
+        "status": "状態",
+        "due": "期限"
+      },
+      "overdue": "期限を過ぎました",
+      "due": " ・ 期限 {date}"
+    },
+    "new": {
+      "title": "の新しい評価 {vendorName}",
+      "breadcrumb": "新しい評価",
+      "cardTitle": "評価の詳細",
+      "form": {
+        "title": "タイトル",
+        "titlePlaceholder": "例えば年次セキュリティレビュー",
+        "template": "アンケートテンプレート",
+        "templatePlaceholder": "公開されたテンプレートを選択する",
+        "noTemplates": "テンプレートが見つかりませんでした。",
+        "dueDate": "期日",
+        "reviewer": "査読者",
+        "unassigned": "未割り当て",
+        "publishFirst": "評価を作成するには、最初にテンプレートを公開します。",
+        "creating": "作成...",
+        "create": "評価の作成",
+        "cancel": "キャンセル"
+      }
+    },
+    "detail": {
+      "notFound": "評価が見つかりません",
+      "breadcrumbs": {
+        "assessments": "評価",
+        "vendors": "ベンダー"
+      },
+      "actions": {
+        "reopen": "レビューを再開する",
+        "exportCsv": "CSVのエクスポート",
+        "downloadPdf": "PDFをダウンロード",
+        "preparingReport": "レポートを準備しています…",
+        "finalize": "ファイナライズ",
+        "finalizing": "仕上げ中…",
+        "delete": "消去",
+        "deleteTitle": "評価を削除しますか?",
+        "deleteDescription": "これにより、「」が完全に削除されます。{title}「およびすべての回答、調査結果、証拠。このアクションは元に戻すことはできません。」"
+      },
+      "meta": {
+        "due": " ・ 期限 {date}",
+        "reviewer": " · レビュアー {name}"
+      },
+      "draft": {
+        "createLinkTitle": "ベンダーリンクの作成",
+        "createLinkDescription": "評価用にログイン不要のベンダー リンクを生成します。必要に応じて、アクセスを保護するためのパスワードを設定します。",
+        "settingsTitle": "ドラフト設定",
+        "title": "タイトル",
+        "dueDate": "期日",
+        "saving": "保存中…",
+        "save": "変更を保存する"
+      },
+      "link": {
+        "title": "ベンダーリンク (ログイン不要)",
+        "expires": "有効期限が切れます {date}",
+        "noExpiry": "有効期限なし",
+        "passwordProtected": "パスワードで保護されています",
+        "extend": "30日間延長",
+        "regenerate": "リンクを再生成する",
+        "revoke": "取り消す",
+        "revokeTitle": "ベンダーリンクを取り消しますか?",
+        "revokeDescription": "ベンダーはアンケートにアクセスできなくなります。必要に応じて、後でリンクを再生成できます。",
+        "revokedTitle": "ベンダーリンク",
+        "revokedDescription": "リンクは取り消されました。"
+      },
+      "score": {
+        "title": "スコア",
+        "low": "低リスク",
+        "moderate": "中程度のリスク",
+        "high": "高リスク"
+      },
+      "findings": {
+        "summary": "調査結果 ({count} · {open,plural,one{# 開ける} other{# 開ける}})",
+        "deletedUser": "削除されたユーザー",
+        "noneTitle": "調査結果",
+        "allCompliant": "すべての回答は準拠しています - 所見はありません。",
+        "automatedDescription": "ベンダーの回答は期待されたものではありませんでした。"
+      },
+      "responses": {
+        "title": "応答",
+        "summary": "{approved} の {total} 承認された ・ {pending} 保留中",
+        "summaryClarifications": " · {count, plural, one {# 件の確認依頼} other {# 件の確認依頼}}",
+        "filters": {
+          "all": "全て",
+          "pending": "保留中 （{count})",
+          "approved": "承認された （{count})",
+          "clarification": "説明 ({count})"
+        },
+        "notApplicable": "該当なし",
+        "evidenceAlt": "証拠ファイル: {fileName}",
+        "viewPdf": "PDF を表示: {fileName} ↗",
+        "attachToVendor": "ベンダーに添付する"
+      },
+      "sender": {
+        "password": "ポータルのパスワード (オプション)",
+        "passwordPlaceholder": "ベンダーにパスワードの入力を要求する",
+        "passwordHint": "設定されている場合、ベンダーはアンケートにアクセスする前にこのパスワードを入力する必要があります。",
+        "sendToVendor": "ベンダーに送信する",
+        "generateOnly": "リンクのみを生成",
+        "customEmailPlaceholder": "カスタム@example.com",
+        "sendTo": "送信先"
+      },
+      "sendBack": {
+        "trigger": "ベンダーに返送する",
+        "title": "ベンダーに返送しますか?",
+        "description": "ベンダーは回答を編集して再送信することができ、メッセージが記載された電子メールを受け取ります。彼らの既存の回答は保持されます。",
+        "messageLabel": "ベンダーへのメッセージ (オプション)",
+        "messagePlaceholder": "どのような追加情報が必要かを説明してください...",
+        "cancel": "キャンセル",
+        "confirm": "送り返す",
+        "emailFallback": "アンケートを確認して再送信してください。"
+      },
+      "review": {
+        "approved": "承認された",
+        "clarificationRequested": "説明が求められています",
+        "noReviewYet": "まだレビューはありません",
+        "collapse": "崩壊",
+        "expand": "拡大する",
+        "reviewPlaceholder": "レビュー",
+        "approve": "承認する",
+        "requestClarification": "説明の要求",
+        "notePlaceholder": "オプションのメモ (説明が要求された場合にベンダーに表示されます)",
+        "save": "保存",
+        "vendor": "ベンダー",
+        "internal": "内部",
+        "replyPlaceholder": "返事",
+        "internalOption": "内部",
+        "vendorOption": "ベンダーに表示される",
+        "reply": "返事",
+        "commentPlaceholder": "コメントを追加する",
+        "comment": "コメント",
+        "commentCount": "{count,plural,one{# コメント} other{# コメント}}",
+        "previousReview": "以前のレビュー ({decision}): {note}"
+      },
+      "findingStatus": {
+        "resolutionNotePlaceholder": "解決策のメモ (オプション)",
+        "save": "保存"
+      },
+      "attachEvidence": {
+        "trigger": "添付する",
+        "refreshing": "{message}。爽やか…",
+        "attachAs": "として添付",
+        "certificationOption": "認証/認証",
+        "generalOption": "一般アタッチメント",
+        "certificationName": "認証名",
+        "namePlaceholder": "例えばSOC 2 タイプ II",
+        "issuer": "発行者 (オプション)",
+        "issuerPlaceholder": "例えば監査法人",
+        "expiryDate": "有効期限",
+        "displayNameForFile": "ファイルの表示名",
+        "notes": "注記 (オプション)",
+        "notesPlaceholder": "追加のコンテキスト…",
+        "complianceActions": "コンプライアンス措置が必要です",
+        "selectFramework": "フレームワークを選択してください...",
+        "displayName": "表示名",
+        "generalNotesPlaceholder": "なぜこれが付いていたのかというと…",
+        "adding": "追加中…",
+        "addCertification": "証明書の追加",
+        "attachToVendor": "ベンダーに添付する",
+        "cancel": "キャンセル"
+      },
+      "error": {
+        "title": "評価のロードに失敗しました",
+        "description": "この評価のロード中にエラーが発生しました。もう一度試してください。",
+        "retry": "もう一度やり直してください"
+      }
+    },
+    "errors": {
+      "invalidInput": "無効な入力です。",
+      "titleRequired": "タイトルは必須です",
+      "titleTooLong": "タイトルは200文字以内にしてください",
+      "templateRequired": "テンプレートを選択してください",
+      "invalidDueDate": "有効な期日を入力してください",
+      "saved": "保存されました。",
+      "started": "評価が始まりました。",
+      "portalLinkFailed": "評価は作成されましたが、ポータル リンクを生成できませんでした。",
+      "missingReviews": "{count,plural,one{# 対応はまだ検討する必要がある。} other{# 回答はまだ検討する必要があります。}}"
+    }
+  },
+  "Templates": {
+    "list": {
+      "title": "テンプレート",
+      "subtitle": "セキュリティに関するアンケートを作成し、バージョンを作成します。",
+      "new": "新しいテンプレート",
+      "import": "インポート",
+      "emptyTitle": "まだテンプレートがありません",
+      "emptyDescription": "最初の評価テンプレートを作成します。",
+      "sections": "{count,plural,one{# セクション} other{# セクション}}"
+    },
+    "statuses": {
+      "DRAFT": "下書き",
+      "PUBLISHED": "発行済み",
+      "ARCHIVED": "アーカイブ済み"
+    },
+    "new": {
+      "breadcrumb": "新しい",
+      "title": "新しいテンプレート",
+      "cardTitle": "テンプレートの詳細",
+      "form": {
+        "name": "名前",
+        "description": "説明",
+        "creating": "作成…",
+        "create": "テンプレートの作成",
+        "cancel": "キャンセル"
+      }
+    },
+    "builder": {
+      "notFound": "テンプレートが見つかりません",
+      "breadcrumbs": {
+        "templates": "テンプレート"
+      },
+      "actions": {
+        "publish": "公開",
+        "newVersion": "新しいバージョンを作成する",
+        "unpublish": "非公開にする",
+        "delete": "消去",
+        "deleteTitle": "テンプレートを削除しますか?",
+        "deleteDescription": "これにより、「」が完全に削除されます。{name}\" とそのすべてのセクションと質問。このテンプレートを使用した評価では、テンプレートのリンクが失われます。この操作は元に戻すことができません。",
+        "menuAriaLabel": "テンプレートアクション",
+        "preview": "プレビュー",
+        "duplicate": "重複",
+        "export": "輸出"
+      },
+      "versionHistory": "バージョン履歴",
+      "details": "テンプレートの詳細",
+      "name": "名前",
+      "description": "説明",
+      "saveDetails": "詳細を保存する",
+      "readOnly": "このバージョンは公開されており、読み取り専用です。変更を加えるには新しいバージョンを作成します。",
+      "jumpToSection": "セクションにジャンプ",
+      "section": {
+        "rename": "名前の変更",
+        "moveUp": "セクションを上に移動",
+        "moveDown": "セクションを下に移動",
+        "deleteTitle": "セクションを削除しますか?",
+        "deleteDescription": "これにより、「」が完全に削除されます。{title}」とその中のすべての質問。",
+        "delete": "セクションの削除",
+        "noQuestionsTitle": "質問はありません",
+        "noQuestionsDescription": "このセクションを始めるには、質問を追加してください。",
+        "showQuestions": "見せる {count,plural,one{# 質問} other{# 質問}}",
+        "hideQuestions": "隠れる {count,plural,one{# 質問} other{# 質問}}",
+        "required": "必須",
+        "moveQuestionUp": "質問を上に移動",
+        "moveQuestionDown": "質問を下に移動します",
+        "editQuestion": "編集",
+        "deleteQuestionTitle": "質問を削除しますか?",
+        "deleteQuestionDescription": "これにより、「」が完全に削除されます。{text}\".",
+        "deleteQuestion": "消去",
+        "addQuestion": "質問を追加"
+      },
+      "addSection": {
+        "title": "セクションを追加",
+        "placeholder": "セクションのタイトル",
+        "button": "セクションを追加"
+      }
+    },
+    "question": {
+      "text": "質問文",
+      "help": "ヘルプテキスト",
+      "helpHint": "マークダウン形式がサポートされています。**太字**、*斜体*、リスト、リンクを使用します。",
+      "answerType": "回答タイプ",
+      "riskWeight": "リスクウェイト",
+      "required": "必須",
+      "options": "オプション (1 行に 1 つ)",
+      "expectedAnswer": "予想される答え",
+      "noExpectedAnswer": "期待される答えはありません",
+      "yes": "はい",
+      "no": "いいえ",
+      "acceptedAnswers": "受け入れられた回答",
+      "acceptedHint": "準拠していると評価されるすべての回答にチェックを入れます。",
+      "acceptedEmpty": "上にオプションを追加して、受け入れられる回答を選択します。",
+      "expectedNumber": "期待される数",
+      "expectedSelections": "予想される選択",
+      "selectionsHint": "スコアに準拠するためにベンダーが選択する必要がある正確なセットにチェックマークを付けます。",
+      "selectionsEmpty": "上記のオプションを追加して、必要な項目を選択します。",
+      "manualScoring": "この回答タイプはレビュー中に手動で採点されます。",
+      "checked": "チェック済み",
+      "unchecked": "チェックなし",
+      "conditionalLegend": "条件付き可視性ルール",
+      "controlsLegend": "マッピングされたコンプライアンス管理",
+      "saving": "保存中...",
+      "save": "質問を保存する",
+      "cancel": "キャンセル"
+    },
+    "conditions": {
+      "questionFallback": "質問",
+      "shownIf": "表示される場合",
+      "and": "そして",
+      "or": "または",
+      "editing": {
+        "title": "条件付き可視性",
+        "match": "マッチ",
+        "all": "すべて (AND)",
+        "any": "任意 (または)",
+        "noQuestions": "最初に他の質問を追加して、この質問を条件付きにします。",
+        "alwaysShown": "常に表示されます。他の回答が一致する場合にのみこの質問を表示するルールを追加します。",
+        "selectQuestion": "質問を選択してください",
+        "value": "価値",
+        "remove": "取り除く",
+        "addRule": "ルールの追加",
+        "legend": "条件付きロジック",
+        "yes": "はい",
+        "no": "いいえ",
+        "checked": "チェック済み",
+        "unchecked": "チェックなし"
+      },
+      "operators": {
+        "equals": "等しい",
+        "notEquals": "等しくない",
+        "contains": "含まれています",
+        "notContains": "含まれていない",
+        "gt": "より大きい",
+        "lt": "未満",
+        "gte": "以上",
+        "lte": "以下",
+        "answered": "答えられる",
+        "notAnswered": "答えられていない"
+      }
+    },
+    "controls": {
+      "mappedControls": "マップされたコントロール",
+      "selectedCount": "{count} 選択された",
+      "hint": "フレームワークの見出しにチェックを入れると、そのすべてのコントロールがマッピングされます。「認定を受けていますか?」という質問に役立ちます。準拠した回答がフレームワーク全体を満たす必要がある質問。",
+      "allFrameworks": "すべてのフレームワーク",
+      "filterPlaceholder": "フィルターコントロール…",
+      "noMatch": "現在のフィルターに一致するコントロールはありません。"
+    },
+    "import": {
+      "metadataTitle": "テンプレートをインポートする",
+      "title": "テンプレートをインポートする",
+      "subtitle": "JSON ファイルをアップロードして新しいテンプレートを作成します。",
+      "breadcrumb": "インポート",
+      "cardTitle": "JSONからテンプレートをインポート",
+      "steps": {
+        "upload": "アップロード",
+        "review": "レビュー"
+      },
+      "file": {
+        "label": "JSONファイル",
+        "downloadTemplate": "テンプレート",
+        "hint": "有効な JSON テンプレート ファイルをアップロードします。テンプレート ビルダーから既存のテンプレートをエクスポートし ([アクション] → [エクスポート])、予想される構造を確認します。"
+      },
+      "parse": {
+        "invalidStructure": "テンプレート構造が無効です。予期される名前とセクションの配列。",
+        "invalidJson": "無効な JSON ファイルです。"
+      },
+      "summary": {
+        "sections": "{count,plural,one{# セクション} other{# セクション}}",
+        "questions": "{count,plural,one{# 質問} other{# 質問}}",
+        "controlCodes": "{count,plural,one{# 制御コード} other{# 制御コード}}"
+      },
+      "table": {
+        "section": "セクション",
+        "questions": "質問"
+      },
+      "review": {
+        "introPrefix": "テンプレートをインポートしようとしています"
+      },
+      "next": "次へ →",
+      "back": "← 戻る",
+      "importing": "インポート中…",
+      "import": "テンプレートをインポートする",
+      "success": "「{name}」を新しい下書きとしてインポートしました。",
+      "errors": {
+        "noFile": "ファイルが選択されていません。",
+        "fileTooLarge": "ファイルが大きすぎます (最大 1 MB)。",
+        "invalidJson": "無効な JSON ファイルです。",
+        "importFailed": "インポートに失敗しました — ファイル構造を処理できませんでした。ダウンロード可能なテンプレートと照合して、再試行してください。",
+        "nameRequired": "テンプレート名は必須です。",
+        "sectionsRequired": "テンプレートには少なくとも 1 つのセクションが含まれている必要があります。",
+        "sectionTitleRequired": "セクション {number}: タイトルは必須です。",
+        "questionsArray": "セクション \"{title}\": 質問は配列である必要があります。",
+        "textRequired": "{where}: テキストは必須です。",
+        "helpTextType": "{where}: helpText を指定する場合は文字列である必要があります。",
+        "unknownType": "{where}: 不明なタイプ \"{type}\".",
+        "unknownRiskWeight": "{where}: 不明なリスクウェイト \"{weight}\".",
+        "requiredType": "{where}: required を指定する場合はブール値である必要があります。",
+        "optionsType": "{where}: オプションは文字列の配列である必要があります。",
+        "controlCodesType": "{where}: controlCodes は文字列の配列である必要があります。",
+        "expectedAnswerType": "{where}: ExpectedAnswer は文字列、数値、または文字列の配列である必要があります。",
+        "expectedAnswer": {
+          "multiSelectArray": "{where}: ExpectedAnswer は文字列の配列である必要があります。",
+          "choiceStringOrArray": "{where}: ExpectedAnswer は文字列または文字列の配列である必要があります。",
+          "numeric": "{where}: ExpectedAnswer は数値である必要があります。",
+          "yesNoCheckboxString": "{where}: ExpectedAnswer は文字列である必要があります。"
+        },
+        "controlAmbiguous": "制御コード {codes} あいまいです - 同じコードが複数のフレームワークに存在します。重複を削除するか、いずれかのコントロールの名前を変更します。",
+        "controlNotFound": "制御コードが見つかりません: {code}"
+      }
+    },
+    "preview": {
+      "notFound": "テンプレートが見つかりません",
+      "breadcrumb": "プレビュー",
+      "title": "プレビュー — {name}",
+      "description": "このアンケートがベンダーにどのように表示されるかを示す読み取り専用のプレビュー。ここでは、条件付き質問がすべて、そのルールとともに示されています。",
+      "noSectionsTitle": "まだセクションがありません",
+      "noQuestionsTitle": "質問はありません。",
+      "yes": "はい",
+      "no": "いいえ",
+      "select": "選択してください…",
+      "freeTextPlaceholder": "自由記述による回答",
+      "attachmentUpload": "添付ファイルのアップロード",
+      "numberPlaceholder": "番号",
+      "acknowledge": "了承します"
+    },
+    "questionPages": {
+      "editTitle": "質問を編集する",
+      "editBreadcrumb": "質問を編集する",
+      "addTitle": "質問を追加",
+      "addBreadcrumb": "質問を追加"
+    },
+    "error": {
+      "title": "テンプレートのロードに失敗しました",
+      "description": "このテンプレートのロード中にエラーが発生しました。もう一度試してください。",
+      "retry": "もう一度やり直してください"
+    },
+    "errors": {
+      "invalidInput": "無効な入力です。",
+      "nameRequired": "テンプレート名は必須です",
+      "questionTextRequired": "質問テキストは必須です",
+      "conditionalTooLarge": "条件付きロジックのペイロードが大きすぎます。",
+      "conditionalInvalid": "無効な条件ロジックです。"
+    }
+  },
+  "Frameworks": {
+    "list": {
+      "title": "フレームワーク",
+      "subtitle": "アンケートの回答を要件にマッピングするために使用されるコントロール ライブラリ。",
+      "import": "インポートフレームワーク",
+      "gaps": "カバレッジギャップ",
+      "deleteBlocked": "{count,plural,one{削除できません: # コントロールは引き続きアンケートの質問にマッピングされます。まずマッピングを解除します。} other{削除できません: # コントロールは引き続きアンケートの質問にマップされます。まずマップを解除します。}}",
+      "emptyTitle": "枠組みがない",
+      "emptyDescription": "フレームワーク データをロードできませんでした。",
+      "controls": "{count,plural,one{# コントロール} other{# コントロール}}",
+      "deleteTitle": "フレームワークを削除します。」{name} v{version}\"?",
+      "deleteDescription": "これにより、このフレームワークとそのフレームワークが完全に削除されます。 {count,plural,one{# コントロール} other{# コントロール}}。これらのコントロールにマップされたテンプレートの質問は、割り当てを失います。既存の評価と結果は影響を受けません。",
+      "delete": "消去"
+    },
+    "detail": {
+      "notFound": "フレームワークが見つかりません",
+      "breadcrumbs": "フレームワーク",
+      "deleteFramework": "フレームワークの削除",
+      "searchPlaceholder": "検索コントロール…",
+      "noControlsTitle": "一致するコントロールがありません",
+      "noControlsDescription": "別の検索語を試してください。"
+    },
+    "control": {
+      "notFound": "コントロールが見つかりません",
+      "breadcrumbs": "フレームワーク",
+      "guidance": "ガイダンス",
+      "mappedQuestions": "マッピングされた質問 ({count})",
+      "noMappedTitle": "マッピングされた質問はありません",
+      "noMappedDescription": "このコントロールにマップされているアンケートの質問はまだありません。"
+    },
+    "gaps": {
+      "title": "カバレッジギャップを制御する",
+      "subtitle": "どのテンプレートにもマッピングされている質問のないコントロール。これを使用して、評価範囲内の盲点を特定します。",
+      "emptyTitle": "ギャップは見つかりませんでした",
+      "emptyDescription": "すべてのフレームワークのすべてのコントロールには、少なくとも 1 つの質問がマッピングされています。",
+      "covered": "{mapped}/{total} 覆われた",
+      "allCovered": "全て {count,plural,one{# コントロール} other{# コントロール}} 少なくとも 1 つの質問がマッピングされている必要があります。",
+      "errorTitle": "何か問題が発生しました",
+      "errorDescription": "コンプライアンス ギャップ ビューをロードできませんでした。もう一度試してください。",
+      "retry": "もう一度やり直してください"
+    },
+    "import": {
+      "metadataTitle": "インポートフレームワーク",
+      "title": "インポートフレームワーク",
+      "subtitle": "新しいフレームワークを作成するためのコントロールを含む CSV ファイルをアップロードします。",
+      "breadcrumb": "インポート",
+      "cardTitle": "CSVからフレームワークをインポート",
+      "steps": {
+        "setup": "セットアップとアップロード",
+        "review": "レビュー"
+      },
+      "form": {
+        "name": "フレームワーク名",
+        "namePlaceholder": "例えばPCI DSS",
+        "version": "バージョン",
+        "versionPlaceholder": "例えば4.0",
+        "description": "説明 (オプション)",
+        "descriptionPlaceholder": "フレームワークの簡単な説明",
+        "csvFile": "CSVファイル",
+        "downloadTemplate": "テンプレート",
+        "csvHint": "CSV にはドメイン、コード、タイトル、ガイダンスの列が必要です (ガイダンスはオプションです)。オプション: is_shared_responsibility (true/false、デフォルトは false)。最大1MB。",
+        "controlsFound": "{count,plural,one{# コントロールが見つかりました} other{# コントロールが見つかりました}}",
+        "domain": "ドメイン",
+        "code": "コード",
+        "titleColumn": "タイトル",
+        "showingFirst": "最初に表示しています {shown} の {total} 行",
+        "next": "次へ →",
+        "back": "← 戻る",
+        "importing": "インポート中…",
+        "import": "インポートフレームワーク",
+        "reviewIntro": "フレームワークを作成しようとしています {name} v{version} と {count,plural,one{# コントロール} other{# コントロール}}.",
+        "success": "「{name} v{version}」を {count, plural, one {# 件のコントロール} other {# 件のコントロール}} とともにインポートしました。"
+      },
+      "errors": {
+        "noFile": "CSV ファイルが必要です。",
+        "invalidFileType": "ファイルは .csv ファイルである必要があります。",
+        "tooLarge": "CSV ファイルが大きすぎます (最大 1 MB)。",
+        "noRows": "CSV ファイルにはデータ行が含まれていません。",
+        "missingColumns": "CSV 列が欠落しています: {columns}。期待される： {expected}",
+        "invalidInput": "無効な入力です。",
+        "nameRequired": "フレームワーク名は必須です",
+        "nameTooLong": "フレームワーク名は 200 文字以下である必要があります",
+        "versionRequired": "バージョンは必須です",
+        "versionTooLong": "バージョンは 50 文字以下である必要があります",
+        "descriptionTooLong": "説明は 500 文字以下にする必要があります",
+        "rowDomainRequired": "行 {row}: ドメインは必須です",
+        "rowCodeRequired": "行 {row}: 制御コードが必要です",
+        "rowTitleRequired": "行 {row}: コントロールのタイトルは必須です",
+        "rowInvalid": "行 {row}: 無効な入力です。",
+        "duplicateCode": "行 {row}: 制御コードが重複しています \"{code}\".",
+        "duplicateFramework": "「」という名前のフレームワーク{name}「バージョン」{version}\" はすでに存在します。"
+      }
+    },
+    "shared": "共有",
+    "error": {
+      "title": "何か問題が発生しました",
+      "description": "予期しないエラーが発生しました。もう一度試すか、サポートにお問い合わせください。",
+      "retry": "もう一度やり直してください"
+    },
+    "radar": {
+      "title": "ドメインコンプライアンスレーダー",
+      "current": "現在の評価",
+      "previous": "前回の評価",
+      "ariaLabel": "ドメインコンプライアンスレーダー: {values}",
+      "tableCaption": "ドメインコンプライアンスのパーセンテージ別",
+      "domain": "ドメイン",
+      "currentShort": "現在",
+      "previousShort": "前の",
+      "noPrevious": "完了した評価は 1 つだけです。比較する以前のデータはありません。"
+    },
+    "heatmap": {
+      "metadataNotFound": "ベンダーが見つかりません",
+      "metadataTitle": "ヒートマップ — {name}",
+      "breadcrumbs": "ベンダー",
+      "subtitle": "最近の評価によるドメイン コンプライアンス レーダーと制御レベルのヒートマップ。",
+      "downloadReport": "PDFレポートをダウンロード",
+      "preparingReport": "レポートを準備しています…",
+      "emptyTitle": "利用可能なデータがありません",
+      "emptyDescription": "このフレームワークに関する評価データはまだありません。"
+    }
+  },
+  "RiskRegister": {
+    "metaTitle": "リスクレジスター",
+    "title": "リスクレジスター",
+    "subtitle": "ベンダー全体で見つかったすべての情報を 1 か所にまとめます。",
+    "stats": {
+      "open": "未解決の調査結果",
+      "criticalOpen": "クリティカルオープン",
+      "remediated": "修復済み",
+      "riskAccepted": "リスクを受け入れる"
+    },
+    "filters": {
+      "status": "状態",
+      "allFindings": "すべての調査結果",
+      "statusAriaLabel": "結果をステータスでフィルタリングする",
+      "severity": "重大度",
+      "anySeverity": "任意の重大度",
+      "severityAriaLabel": "重大度別に検出結果をフィルタリングする",
+      "vendor": "ベンダー",
+      "allVendors": "すべてのベンダー",
+      "vendorAriaLabel": "ベンダーごとに結果をフィルタリングする",
+      "sort": "選別",
+      "sortAriaLabel": "結果を並べ替える",
+      "show": "見せる",
+      "findingsOnly": "所見のみ",
+      "responsibilityAriaLabel": "責任でフィルタリングする",
+      "customerResponsibility": "お客様の責任",
+      "apply": "フィルター",
+      "clear": "クリア",
+      "sorts": {
+        "priority": "優先度",
+        "newest": "最新",
+        "severity": "重大度"
+      }
+    },
+    "emptyFiltered": "選択したフィルターに一致する結果はありません。",
+    "emptyTitle": "まだ発見はありません",
+    "emptyDescription": "ベンダーが評価に不備な回答を提出すると、調査結果が自動的に提示されます。",
+    "items": "所見",
+    "responsibility": {
+      "title": "顧客の責任",
+      "noMatch": "選択したフィルターに一致する顧客責任項目はありません。",
+      "vendorFallback": "ベンダー",
+      "assignedTo": "担当者 {name}"
+    },
+    "bulk": {
+      "selected": "{count} 選択された",
+      "statusRemediated": "修復済み",
+      "statusRiskAccepted": "リスクを受け入れる",
+      "statusReopen": "再開",
+      "updateTitle": "{count,plural,one{アップデート # 見つけますか？} other{アップデート # 調査結果は？}}",
+      "updateDescription": "{count, plural, one {# 件の指摘を「{status}」に設定します。} other {# 件の指摘を「{status}」に設定します。}}",
+      "apply": "適用する",
+      "applying": "申請中...",
+      "clearSelection": "選択をクリア",
+      "note": "注記： {note}",
+      "automatedDescription": "ベンダーの回答は期待されたものではありませんでした。",
+      "errors": {
+        "invalidStatus": "無効なステータスです。",
+        "invalidSelection": "選択データが無効です。",
+        "noFindings": "結果が選択されていません。",
+        "updated": "{count,plural,one{# 更新された検索結果} other{# 調査結果が更新されました}}",
+        "alreadyRemoved": "({count} すでに削除されています）。"
+      }
+    },
+    "error": {
+      "title": "何か問題が発生しました",
+      "description": "予期しないエラーが発生しました。もう一度試すか、サポートにお問い合わせください。",
+      "retry": "もう一度やり直してください"
+    }
+  },
+  "SelfAssessment": {
+    "metaTitle": "自己評価",
+    "title": "自己評価",
+    "subtitle": "ベンダーが使用しているのと同じアンケート ポータルを使用して、コンプライアンス フレームワークに照らして自社の組織を評価します。",
+    "start": "新しい評価を開始する",
+    "emptyTitle": "自己評価はまだありません",
+    "emptyDescription": "最初の自己評価を開始して、ISO 27001、SOC 2、またはその他のフレームワークに照らして組織を評価します。",
+    "noTemplate": "テンプレートなし",
+    "new": {
+      "metaTitle": "新しい自己評​​価",
+      "breadcrumb": "新しい",
+      "title": "新しい自己評​​価",
+      "cardTitle": "評価の詳細",
+      "form": {
+        "title": "タイトル",
+        "titlePlaceholder": "例えばISO 27001:2022 自己評価",
+        "template": "アンケートテンプレート",
+        "templatePlaceholder": "公開されたテンプレートを選択する",
+        "noTemplates": "テンプレートが見つかりませんでした。",
+        "dueDate": "期限（オプション）",
+        "publishFirst": "自己評価を開始するには、まずテンプレートを公開します。",
+        "starting": "起動...",
+        "start": "評価を開始する"
+      }
+    }
+  },
+  "Admin": {
+    "metaTitle": "管理者",
+    "general": {
+      "metaTitle": "管理者 - 一般",
+      "title": "一般的な",
+      "subtitle": "組織の ID がアプリ全体に表示されます。",
+      "cardTitle": "組織",
+      "cardDescription": "電子メールとインターフェイスに表示される名前、サポート電子メール、およびデフォルト言語。",
+      "form": {
+        "name": "組織名",
+        "supportEmail": "サポートメール",
+        "defaultLanguage": "デフォルトの言語",
+        "defaultLanguageHint": "訪問者が言語を選択していない場合に使用されます。個人の選択はそれを無効にします。",
+        "saving": "保存中...",
+        "save": "保存"
+      },
+      "success": "組織設定が保存されました。",
+      "errors": {
+        "nameRequired": "組織名は必須です",
+        "invalidEmail": "有効なメールアドレスを入力してください",
+        "invalidInput": "無効な入力です。"
+      }
+    },
+    "appearance": {
+      "metaTitle": "管理者 — 外観",
+      "title": "外観",
+      "subtitle": "アプリ全体のブランディング - ロゴ、色、レイアウト。",
+      "cardTitle": "外観",
+      "cardDescription": "ロゴ、原色 (ボタン)、および二次色 (タグ/ピル) をカスタマイズします。デフォルトを使用するには、フィールドを空白のままにします。",
+      "logo": "ロゴ",
+      "currentLogoAlt": "現在のロゴ",
+      "removeLogoTitle": "ロゴを削除しますか?",
+      "removeLogoDescription": "現在のロゴはすべてのページから削除されます。新しいロゴはいつでもアップロードできます。",
+      "remove": "取り除く",
+      "removeLogo": "ロゴを削除する",
+      "noLogo": "ロゴはアップロードされていません。 PNG または JPG (最大 2 MB) をアップロードします。",
+      "primaryColour": "原色",
+      "primaryColourHint": "メインボタン、リンク、アクティブ状態に使用されます。",
+      "secondaryColour": "二次色",
+      "secondaryColourHint": "タグ、錠剤、バッジ、および二次要素に使用されます。",
+      "reset": "リセット",
+      "ragTitle": "RAGインジケーターの色",
+      "ragHint": "スコア インジケーター、進行状況バー、ベンダー リスク ヒートマップに使用されます。",
+      "ragGreen": "緑（準拠）",
+      "ragGreenHint": "スコア ≥ 85%",
+      "ragAmber": "琥珀色（要注意）",
+      "ragAmberHint": "スコア 60 ～ 84%",
+      "ragRed": "赤（欠損）",
+      "ragRedHint": "スコア < 60%",
+      "ragUnscored": "無得点（中立）",
+      "ragUnscoredHint": "まだ評価されていません",
+      "layoutTitle": "レイアウト",
+      "layoutHint": "プラットフォームの全体的な外観と感触を調整します。",
+      "borderRadius": "境界線の半径 (ピクセル)",
+      "borderRadiusHint": "アプリ全体の角の丸みを制御します。",
+      "pageWidth": "ページ幅",
+      "pageWidthHint": "コンテンツを読み取り可能な幅に制限するか、全画面を使用します。",
+      "constrained": "制約された",
+      "full": "全幅",
+      "saving": "保存中...",
+      "save": "外観の保存",
+      "success": "外観設定が保存されました。",
+      "errors": {
+        "primaryHex": "原色は有効な 16 進数の色でなければなりません (例: #3b82f6)。",
+        "secondaryHex": "2 次色は有効な 16 進色でなければなりません (例: #f59e0b)。",
+        "ragGreen": "RAG 緑は有効な 16 進カラーでなければなりません。",
+        "ragAmber": "RAG アンバーは有効な 16 進カラーでなければなりません。",
+        "ragRed": "RAG 赤は有効な 16 進カラーでなければなりません。",
+        "ragUnscored": "RAG unscored は有効な 16 進カラーでなければなりません。",
+        "logoTooLarge": "ロゴは 2 MB 未満である必要があります。",
+        "logoImage": "ロゴは画像ファイルである必要があります。",
+        "logoFormat": "ロゴは PNG、JPG、GIF、または WEBP 画像である必要があります。",
+        "logoContent": "ロゴ ファイルの内容が拡張子と一致しません。",
+        "invalidInput": "無効な入力です。"
+      }
+    },
+    "error": {
+      "title": "何か問題が発生しました",
+      "description": "予期しないエラーが発生しました。もう一度試すか、サポートにお問い合わせください。",
+      "retry": "もう一度やり直してください"
+    },
+    "email": {
+      "metaTitle": "管理者 — 電子メール",
+      "title": "電子メール",
+      "subtitle": "SMTP 配信と、ベンダーおよびレビュー担当者の電子メールに使用されるテンプレート。",
+      "smtpTitle": "SMTP",
+      "smtpDescription": "ベンダーの招待やリマインダーを送信するために使用されます。パスワードは保存時に暗号化されます。",
+      "form": {
+        "host": "SMTPホスト",
+        "port": "SMTPポート",
+        "username": "SMTPユーザー名",
+        "password": "SMTPパスワード",
+        "passwordKeep": "現在のパスワードを保持するには空白のままにしてください",
+        "passwordEnter": "SMTPパスワードを入力してください",
+        "passwordHint": "暗号化されて保存され、表示されることはありません。",
+        "fromAddress": "送信元アドレス",
+        "fromName": "名前から",
+        "saving": "保存中...",
+        "save": "保存"
+      },
+      "test": {
+        "label": "にテストメールを送信します",
+        "placeholder": "you@company.com",
+        "sending": "送信中...",
+        "send": "送信テスト",
+        "hint": "保存した SMTP 設定を使用して送信します。まず変更を保存します。"
+      },
+      "templatesTitle": "電子メールテンプレート",
+      "templatesDescription": "テンプレートを選択して件名と本文を編集します。動的値には二重中括弧トークンが使用されます。",
+      "subject": "主題",
+      "body": "体",
+      "editorHint": "マークダウン形式がサポートされています。**太字**、*斜体*、リスト、リンクを使用します。トークン: {tokens}.",
+      "savingChanges": "保存中...",
+      "saveChanges": "変更を保存する",
+      "resetTitle": "デフォルトにリセットしますか?",
+      "resetDescription": "」{name}\" 件名と本文は組み込みのデフォルトに置き換えられます。カスタマイズはすべて失われます。",
+      "reset": "リセット",
+      "resetting": "リセット中...",
+      "resetToDefault": "デフォルトにリセットする",
+      "cancel": "キャンセル",
+      "preview": "プレビュー",
+      "templateTypes": {
+        "invite": {
+          "label": "招待メール",
+          "description": "アンケートが最初に共有されるときにベンダーに送信されます。"
+        },
+        "invite-password": {
+          "label": "招待メール (パスワード保護)",
+          "description": "ポータルのアクセス パスワードを含む招待バリアント。"
+        },
+        "reminder": {
+          "label": "リマインダーメール",
+          "description": "期日が近づくとベンダーにナッジが送信されます。"
+        },
+        "escalation": {
+          "label": "エスカレーションメール",
+          "description": "アンケートの期限が切れた場合にレビュー担当者に送信されます。"
+        },
+        "submission": {
+          "label": "提出受付メール",
+          "description": "ベンダーが回答を提出したことをレビュー担当者に通知します。"
+        },
+        "clarification": {
+          "label": "説明のためメールが返送されました",
+          "description": "評価が再開されると、詳細情報を得るためにベンダーに送信されます。"
+        },
+        "reset": {
+          "label": "パスワードリセットメール",
+          "description": "パスワードのリセットを要求する社内スタッフに送信されます。"
+        },
+        "expiry": {
+          "label": "有効期限リマインダーメール",
+          "description": "認定または契約の有効期限が近づくと、ベンダーのリスク所有者に送信されます。"
+        }
+      },
+      "success": "メール設定が保存されました。",
+      "testSuccess": "テストメールの送信先 {email}.",
+      "templateSaved": "{name} 保存されました。",
+      "templateReset": "{name} デフォルトにリセットします。",
+      "errors": {
+        "invalidInput": "無効な入力です。",
+        "invalidEmail": "有効なメールアドレスを入力してください",
+        "invalidPort": "SMTP ポートは 1 ～ 65535 でなければなりません",
+        "invalidRecipient": "受信者が無効です。",
+        "smtpNotConfigured": "テスト電子メールを送信する前に、SMTP 設定を保存します。",
+        "unknownTemplate": "不明なメール テンプレートです。",
+        "subjectRequired": "件名は必須です。",
+        "bodyRequired": "本体は必須です。"
+      }
+    },
+    "emailTracking": {
+      "metaTitle": "管理者 — 電子メール追跡",
+      "title": "電子メール追跡",
+      "subtitle": "プラットフォームが送信したすべての電子メールの配信ステータス。",
+      "retentionTitle": "保持",
+      "retentionDescription": "この日数より古い電子メール送信レコードは、スケジュールされたクリーンアップによって自動的に削除されます。無期限に保持するには 0 に設定します。",
+      "retentionLabel": "メールログの保存期間（日）",
+      "retentionHelp": "次回のスケジュールされた実行に適用されます。",
+      "cardTitle": "電子メール追跡",
+      "cardDescription": "プラットフォームによって送信されたすべての電子メールのステータスを表示します。エントリは、構成された保持ポリシーに従って保持されます。",
+      "description": "プラットフォームから送信されるすべての電子メール (招待、リマインダー、エスカレーション、テスト メッセージ) を追跡します。 SMTP サーバーは受け入れを確認します。これは受信箱の配信を保証するものではありません。ログは、構成された保持ポリシーに従って保持されます。",
+      "filters": {
+        "status": "状態",
+        "allStatuses": "すべてのステータス",
+        "statusAria": "メールをステータスでフィルタリングする",
+        "type": "タイプ",
+        "allTypes": "全種類",
+        "typeAria": "メールをタイプ別にフィルタリングする",
+        "recipient": "受信者",
+        "recipientPlaceholder": "email@example.com",
+        "from": "から",
+        "to": "に",
+        "rows": "行",
+        "pageSizeAria": "電子メールログのページサイズ",
+        "filter": "フィルター",
+        "clear": "クリア"
+      },
+      "statuses": {
+        "SENT": "送信済み",
+        "FAILED": "失敗した"
+      },
+      "types": {
+        "INVITE": "招待する",
+        "INVITE-PASSWORD": "招待 (パスワードで保護されています)",
+        "REMINDER": "リマインダー",
+        "ESCALATION": "エスカレーション",
+        "SUBMISSION": "提出",
+        "CLARIFICATION": "説明",
+        "RESET": "パスワードのリセット",
+        "EXPIRY": "有効期限",
+        "TEST": "テスト"
+      },
+      "table": {
+        "date": "日付",
+        "recipient": "受信者",
+        "subject": "主題",
+        "type": "タイプ",
+        "status": "状態",
+        "detail": "詳細",
+        "assessment": "評価",
+        "sentBy": "送信者"
+      },
+      "noLogs": "電子メールのログが見つかりませんでした。",
+      "pagination": "{totalPages} ページ中 {page} ページ（{total} 件）",
+      "previous": "前の",
+      "next": "次",
+      "accepted": "SMTPサーバーによって受け入れられました",
+      "system": "システム",
+      "retry": "リトライ",
+      "retrying": "再試行中...",
+      "retrySuccess": "メールが正常に再送信されました。",
+      "testResent": "テストメールが再送信されました。",
+      "errors": {
+        "missingLog": "電子メールのログエントリがありません。",
+        "notFound": "電子メール ログ エントリが見つかりません。",
+        "onlyFailed": "再試行できるのは失敗したメールのみです。",
+        "resetSingleUse": "リセット リンクは 1 回限りの使用であり、再送信することはできません。ユーザーに新しいリセットをリクエストするよう依頼します。",
+        "resendFailed": "メールの再送信に失敗しました。詳細については、追跡タブを確認してください。",
+        "retentionInvalid": "電子メール ログの保存期間は 0 または正の数である必要があります。",
+        "retentionSaved": "メールログの保存が保存されました。"
+      }
+    },
+    "scoring": {
+      "metaTitle": "管理者 — スコアリング",
+      "title": "採点",
+      "subtitle": "ベンダー プロファイルとヒートマップのリスク ウェイトと RAG カットオフ。",
+      "cardTitle": "採点",
+      "cardDescription": "ベンダー プロファイルとギャップ ヒートマップに使用されるリスク ウェイトとレッド/アンバー/グリーン カットオフ。",
+      "riskWeights": "リスクウェイト（数値）",
+      "ragThresholds": "RAG しきい値",
+      "ragHint": "緑色以上、黄色以上、赤色以下。",
+      "green": "緑≧",
+      "amber": "琥珀色 ≥",
+      "saving": "保存中...",
+      "save": "スコアを保存する",
+      "success": "スコア設定が保存されました。",
+      "errors": {
+        "invalidInput": "無効な入力です。"
+      }
+    },
+    "scheduling": {
+      "metaTitle": "管理者 — スケジュール設定",
+      "title": "スケジュール設定",
+      "subtitle": "リマインダー、エスカレーション、および組み込みスケジューラ。",
+      "cardTitle": "スケジュール設定",
+      "cardDescription": "期限前の自動リマインダーと、期限を過ぎた評価に対するレビュー担当者のエスカレーション。",
+      "reminderLabel": "リマインダーのオフセット日",
+      "reminderHint": "リマインダーを送信する期日の何日前のカンマ区切りのリスト。例: 7, 1 は、期日の 7 日前と 1 日前にリマインダーを送信します。",
+      "reminderPlaceholder": "7, 1",
+      "escalationLabel": "(日) 後のエスカレーション",
+      "escalationHint": "期日からレビュー担当者がエスカレーション電子メールを受信するまでの日数。",
+      "defaultDueLabel": "デフォルトの評価期限 (日)",
+      "defaultDueHint": "新しい評価では、期日までのデフォルトの日数が設定されます。",
+      "schedulerLabel": "アプリ内でスケジュールされたジョブを実行する",
+      "schedulerHint": "有効にすると、アプリケーションは期限のリマインダー、エスカレーション、有効期限通知、定期的な評価、ログのプルーニング、孤立したファイルのクリーンアップを 5 分ごとにチェックします。外部の cron ジョブやスケジューラは必要ありません。トリガーした場合にのみこれを無効にします {endpoint} 自分自身 (たとえば、システムの crontab または Azure 関数から)。",
+      "saving": "保存中...",
+      "save": "スケジュールの保存",
+      "lastRun": "最後にスケジュールされた実行: {when}",
+      "never": "一度もない",
+      "justNow": "ちょうど今",
+      "lessThanMinute": "1分も前に",
+      "minuteAgo": "1分前",
+      "minutesAgo": "{count} 数分前",
+      "hourAgo": "1時間前",
+      "hoursAgo": "{count} 数時間前",
+      "dayAgo": "1日前",
+      "daysAgo": "{count} 数日前",
+      "success": "設定が保存されました。",
+      "errors": {
+        "escalationInvalid": "エスカレーション日数は少なくとも 1 日である必要があります。",
+        "defaultDueInvalid": "デフォルトの期日は少なくとも 1 日である必要があります。"
+      }
+    },
+    "retention": {
+      "saving": "保存中...",
+      "save": "保存"
+    },
+    "storage": {
+      "metaTitle": "管理者 — ストレージ",
+      "title": "ストレージ",
+      "subtitle": "証拠ファイルが存在する場所、およびベンダーがアップロードできるもの。",
+      "fileStorageTitle": "ファイルストレージ",
+      "fileStorageDescription": "証拠ファイルと添付ファイルを保存する場所を構成します。プロバイダーを変更しても、既存のファイルは移行されません。",
+      "uploadConstraintsTitle": "アップロードの制約",
+      "uploadConstraintsDescription": "ベンダー証拠のアップロードに適用されるサイズとファイルタイプの制限。",
+      "form": {
+        "provider": "プロバイダー",
+        "providerHint": "プロバイダーを変更しても、既存のファイルは移行されません。以前のプロバイダーで保存されたファイルには、元に戻った場合にのみアクセスできます。",
+        "local": "ローカルディスク",
+        "s3": "アマゾンS3",
+        "azure": "アズールブロブ",
+        "s3Title": "アマゾンS3",
+        "bucket": "バケツ",
+        "region": "地域",
+        "regionPlaceholder": "例えば米国東部-1",
+        "accessKeyId": "アクセスキーID",
+        "secretAccessKey": "シークレットアクセスキー",
+        "secretHint": "暗号化して保存されます。既存の値を保持するには、空白のままにします。",
+        "azureTitle": "アズールブロブ",
+        "containerName": "コンテナ名",
+        "connectionString": "接続文字列",
+        "saving": "保存中…",
+        "save": "ストレージ設定を保存する"
+      },
+      "uploads": {
+        "maxSize": "最大ファイルアップロードサイズ(MB)",
+        "maxSizeHint": "この制限を超える証拠ファイルはアップロード中に拒否されます。",
+        "allowedExtensions": "許可されるファイル拡張子",
+        "allowedHint": "ベンダーが証拠としてアップロードできるファイルの種類。少なくとも 1 つ選択してください。",
+        "saving": "保存中...",
+        "save": "保存"
+      },
+      "success": "ストレージ設定が保存されました。",
+      "uploadsSuccess": "アップロードの制約が保存されました。",
+      "errors": {
+        "invalidInput": "無効な入力です。",
+        "maxUploadInvalid": "最大アップロード サイズは 1 MB 以上である必要があります。"
+      }
+    },
+    "signIn": {
+      "metaTitle": "管理者 — サインイン",
+      "title": "サインイン",
+      "subtitle": "スタッフが認証する方法と、サインインしたままにする時間。",
+      "ssoTitle": "シングルサインオン",
+      "ssoDescription": "スタッフが Microsoft Entra ID、Google Workspace、またはカスタム OIDC プロバイダーを使用してサインインできるようにします。クライアントの資格情報は保存時に暗号化されます。",
+      "sessionsTitle": "セッション",
+      "sessionsDescription": "アイドル状態のセッションに対するサインインの調整と自動ログアウト。",
+      "sso": {
+        "entraId": "Microsoft エントラ ID",
+        "google": "Google ワークスペース",
+        "oidc": "カスタム OIDC",
+        "enabled": "有効",
+        "clientId": "クライアントID",
+        "clientSecret": "クライアントシークレット",
+        "secretKeep": "最新の状態を保つには空白のままにしてください",
+        "secretEnter": "クライアントシークレット",
+        "secretHint": "暗号化されて保存され、表示されることはありません。",
+        "displayName": "プロバイダーの表示名",
+        "displayNamePlaceholder": "Okta / Auth0 / Keycloak",
+        "issuerUrl": "発行者のURL",
+        "issuerPlaceholder": "https://example.okta.com",
+        "defaultRole": "新しい SSO ユーザーのデフォルトの役割",
+        "allowedDomain": "ドメインに制限する (オプション)",
+        "allowedDomainPlaceholder": "@company.com",
+        "disableLocalAuth": "電子メール/パスワードによるサインインを無効にする (SSO のみ)",
+        "disableLocalAuthHint": "ローカル ログイン フォームを非表示にして、スタッフが SSO 経由でのみサインインできるようにします。少なくとも 1 つの SSO プロバイダーが有効になっていない限り無視されるため、構成ミスによって全員がロックアウトされることはありません。緊急アクセスには、以下の緊急用 URL を使用してください。",
+        "saving": "保存中...",
+        "save": "SSO の保存"
+      },
+      "breakGlass": {
+        "title": "ガラス破りによるアクセス",
+        "description": "ローカル サインインが無効になっている場合でも、このシークレット URL にはメール/パスワード フォームが表示されるため、SSO が利用できない場合でも管理者はサインインできます。新しい URL を生成すると、以前の URL がすぐに取り消されます。",
+        "configured": "現在、ブレークグラス URL が構成されています。",
+        "notConfigured": "ブレークグラス URL はまだ設定されていません。",
+        "generating": "生成中...",
+        "regenerate": "ブレークグラス URL を再生成する",
+        "generate": "ブレークグラス URL を生成する",
+        "success": "ブレークグラス URL が生成されました。今すぐコピーしてください。再度表示されなくなります。"
+      },
+      "security": {
+        "loginRateLimit": "ログイン速度制限 (1 分あたり)",
+        "loginRateLimitHint": "IP アドレスごとの 1 分あたりの最大サインイン試行回数。単一のパブリック IP の背後にある共有オフィス環境の場合は増加します。",
+        "autoLogout": "自動ログアウト (分)",
+        "autoLogoutHint": "この数分間非アクティブ状態が続くと、自動的にサインアウトします。無効にするには 0 に設定します。有効にした場合は最低 5 分。",
+        "saving": "保存中...",
+        "save": "保存"
+      },
+      "success": "SSO設定が保存されました。",
+      "securitySuccess": "サインイン設定が保存されました。",
+      "errors": {
+        "invalidInput": "無効な入力です。",
+        "loginRateInvalid": "ログイン速度制限は 1 分あたり 1 回以上にする必要があります。",
+        "autoLogoutInvalid": "自動ログアウトは 0 (無効) または少なくとも 5 分にする必要があります。"
+      }
+    },
+    "rateLimits": {
+      "metaTitle": "管理者 - レート制限",
+      "title": "レート制限",
+      "subtitle": "ベンダー ポータルとアカウント回復のための不正行為からの保護。",
+      "cardTitle": "レート制限 (1 分あたり)",
+      "cardDescription": "多忙なベンダーまたは共有オフィス IP の場合は、これらを上げます。デフォルトはほとんどの展開に適しています。",
+      "fields": {
+        "portalPageLoadsPerMin": {
+          "label": "ポータル ページの読み込み数/分 (訪問者あたり)",
+          "help": "ベンダーのブラウザがベンダー リンクをロードできる頻度。リンク列挙を防止します。"
+        },
+        "portalUploadsPerMin": {
+          "label": "ポータル証拠のアップロード/分 (訪問者あたり)",
+          "help": "ベンダーが 1 分あたりに実行できる証拠ファイルのアップロードの最大数。"
+        },
+        "portalSubmitPerMin": {
+          "label": "ポータルの送信数 / 分 (リンクごと)",
+          "help": "単一ベンダー リンクの送信試行の最大数。"
+        },
+        "portalCommentPerMin": {
+          "label": "ポータル コメント/分 (リンクごと)",
+          "help": "ベンダーが 1 つのベンダー リンクに投稿できるコメントの最大数。"
+        },
+        "portalPasswordAttemptsPerMin": {
+          "label": "ポータルのパスワード試行/分 (リンクごと)",
+          "help": "パスワードで保護されたアンケートをブルートフォースから保護します。"
+        },
+        "passwordResetPerMin": {
+          "label": "パスワード リセット リクエスト/分 (電子メールあたり)",
+          "help": "指定されたアドレスに対するスタッフのパスワード リセット電子メールを制限します。"
+        },
+        "breakGlassPerMin": {
+          "label": "ブレークグラス試行/分 (IP ごと)",
+          "help": "SSO ブレークグラスリカバリリンクの検証を制限します。"
+        }
+      },
+      "saving": "保存中...",
+      "save": "レート制限を保存する",
+      "success": "レート制限が保存されました。",
+      "errors": {
+        "minimum": "{field} 少なくとも 1 分に 1 回である必要があります。"
+      }
+    },
+    "api": {
+      "metaTitle": "管理者 — API",
+      "title": "API",
+      "subtitle": "REST API へのプログラムによるアクセス。",
+      "cardTitle": "APIアクセス",
+      "cardDescription": "REST API にプログラムでアクセスするための API キーを生成します。キーはベアラー認証を使用し、IP アドレスによって制限できます。キーは作成時に 1 回だけ表示されます。",
+      "enabled": "APIキー認証を有効にする",
+      "enabledHint": "API キーを使用すると、外部ツールがブラウザーにログインせずに REST API を呼び出すことができます。キーはすべてのエンドポイントに完全にアクセスでき、キーを作成したアカウントとは関係なく有効なままです。キーは一度だけ表示され、後で取得することはできません。ルックアップ プレフィックスの更新前に作成されたキーはセキュリティのために無効になっているため、再生成する必要があります。",
+      "saving": "保存中...",
+      "save": "保存",
+      "docs": "APIドキュメント →",
+      "keysTitle": "API キー ({count})",
+      "keyCreatedTitle": "キーが作成されました - 今すぐコピーします",
+      "keyCreatedHint": "このキーは再度表示されません。安全に保管してください。",
+      "copy": "コピー",
+      "done": "終わり",
+      "createTitle": "新しいキーを作成する",
+      "name": "名前",
+      "namePlaceholder": "例えばCIパイプライン",
+      "expiry": "有効期限",
+      "expiryOptions": {
+        "30": "30日",
+        "90": "90日",
+        "180": "180日",
+        "365": "1年",
+        "permanent": "永続"
+      },
+      "allowedIps": "許可された IP (オプション)",
+      "allowedIpsPlaceholder": "192.168.1.0/24",
+      "rateLimit": "レート制限/分",
+      "rateLimitPlaceholder": "デフォルト",
+      "creating": "作成...",
+      "create": "キーの作成",
+      "empty": "API キーはまだ作成されていません。",
+      "permissionCount": "{count,plural,one{# 許可} other{# 権限}}",
+      "fullAccess": "フルアクセス",
+      "revoked": "取り消されました",
+      "expired": "期限切れ",
+      "lastUsed": "最後に使用した {date}",
+      "neverUsed": "一度も使用されていない",
+      "requestCount": "{count,plural,one{# リクエスト} other{# リクエスト}}",
+      "ips": "IP: {ips}",
+      "rateLimitSuffix": "レート制限: {value}/分",
+      "enable": "有効にする",
+      "revokeTitle": "APIキーを取り消しますか?",
+      "revokeDescription": "「」を使用した統合{name}\" はすぐに動作を停止します。これは後で再度有効にすることができます。",
+      "revoke": "取り消す",
+      "deleteTitle": "APIキーを削除しますか?",
+      "deleteDescription": "\"{name}\" は完全に削除されます。このキーを使用した統合は完全に中断されます。これは元に戻すことはできません。",
+      "delete": "消去",
+      "keyCreatedMessage": "作成されたキー: {prefix}。以下のキーをコピーします。これは再度表示されません。",
+      "success": "API設定が保存されました。",
+      "errors": {
+        "nameRequired": "キー名は必須です。",
+        "permissionsRequired": "少なくとも 1 つの権限を選択するか、フルアクセスを有効にします。",
+        "invalidInput": "無効な入力です。"
+      }
+    },
+    "webhooks": {
+      "metaTitle": "管理者 — Webhook",
+      "title": "Webhook",
+      "subtitle": "イベント通知がエンドポイントにプッシュされます。",
+      "cardTitle": "Webhook",
+      "cardDescription": "評価が送信されたとき、調査結果が変更されたとき、または認定の有効期限が切れたときにイベント通知を受信するようにエンドポイントを構成します。",
+      "endpointsTitle": "Webhook エンドポイント ({count})",
+      "add": "エンドポイントの追加",
+      "newTitle": "新しい Webhook",
+      "name": "名前",
+      "namePlaceholder": "例えばSlack アラート、Teams コンプライアンス",
+      "url": "URL",
+      "urlPlaceholder": "https://example.com/webhooks/mitch-risk",
+      "platform": "プラットフォーム",
+      "platformPlaceholder": "プラットフォームの選択",
+      "platforms": {
+        "GENERIC": "汎用 (HTTP)",
+        "SLACK": "スラック",
+        "MICROSOFT_TEAMS": "マイクロソフトチーム",
+        "DISCORD": "不和"
+      },
+      "events": "イベント",
+      "eventLabels": {
+        "ASSESSMENT_SUBMITTED": "評価が提出されました",
+        "ASSESSMENT_OVERDUE": "評価期限切れ",
+        "FINDING_CREATED": "作成された調査結果",
+        "FINDING_RESOLVED": "調査結果は解決されました",
+        "CERTIFICATION_EXPIRING": "認定の有効期限が切れます"
+      },
+      "creating": "作成...",
+      "create": "作成する",
+      "cancel": "キャンセル",
+      "empty": "Webhook が構成されていません。イベント通知を受信するエンドポイントを追加します。",
+      "active": "アクティブ",
+      "disabled": "無効",
+      "disable": "無効にする",
+      "enable": "有効にする",
+      "deleteTitle": "Webhook を削除しますか?",
+      "deleteDescription": "このエンドポイントはイベントの受信を停止します。 {url}",
+      "delete": "消去",
+      "success": "Webhook エンドポイントが作成されました。",
+      "errors": {
+        "urlRequired": "URLは必須です。",
+        "urlTooLong": "URL は 500 文字以下にする必要があります。",
+        "nameTooLong": "名前は 100 文字以下にする必要があります。",
+        "invalidUrl": "有効な URL を入力してください。",
+        "httpsRequired": "Webhook URL は HTTPS を使用する必要があります。",
+        "publicOnly": "Webhook URL はパブリック アドレスを指す必要があります。内部ホストとループバック ホストは許可されません。",
+        "unknownPlatform": "不明なプラットフォーム。",
+        "eventRequired": "少なくとも 1 つのイベントを選択する必要があります。"
+      }
+    },
+    "trustCenter": {
+      "metaTitle": "管理者 — トラスト センター",
+      "title": "トラストセンター",
+      "subtitle": "公開コンプライアンス ページの構成。",
+      "cardTitle": "トラストセンター",
+      "cardDescription": "/trust の公開ページでは、コンプライアンス バッジ、セキュリティ文書、副処理者、説明セクションをベンダーやパートナーと共有します。 「管理」→「トラストセンター」でコンテンツを管理します。",
+      "enabled": "トラスト センターを有効にする",
+      "enabledHint": "無効になっていると、/trust は見つからないメッセージを表示し、コンテンツは公開されません。",
+      "intro": "イントロ（マークダウン）",
+      "introHint": "公開ページの組織名の下に短い段落が表示されます。",
+      "introPlaceholder": "セキュリティとプライバシーに対する当社の取り組み…",
+      "contactEmail": "連絡先メールアドレス",
+      "contactEmailHint": "公開ページの下部に表示されます。空の場合は、組織のサポート電子メールにフォールバックします。",
+      "contactEmailPlaceholder": "security@example.com",
+      "includeInInvites": "ベンダー招待メール内のトラスト センターへのリンク",
+      "includeInInvitesHint": "/trust を指す電子メールを招待するためのフッター行を追加します。テンプレートは変更されません。リンクは送信時に追加されます。",
+      "pageLoads": "パブリック ページの読み込み数/分 (IP ごと)",
+      "downloads": "ドキュメントのダウンロード数/分 (IP ごと)",
+      "saving": "保存中...",
+      "save": "トラストセンターを保存する",
+      "success": "トラスト センターの設定が保存されました。",
+      "errors": {
+        "invalidInput": "無効な入力です。",
+        "invalidEmail": "有効な電子メール アドレスを入力してください。"
+      }
+    },
+    "permissions": {
+      "fullAccess": "フルアクセス",
+      "fullAccessHint": "選択すると、キーによってすべての権限が付与されます。キーを特定の権限セットに制限するには、チェックを外します。",
+      "selectAll": "すべての権限を選択します",
+      "permissionCount": "{granted} / {total} 権限",
+      "groups": {
+        "vendors": "ベンダー",
+        "assessments": "評価",
+        "templates": "テンプレート",
+        "frameworks": "フレームワーク",
+        "administration": "管理",
+        "webhooks": "Webhook",
+        "trustcenter": "トラストセンター",
+        "profile": "プロフィール"
+      },
+      "items": {
+        "vendors_view": "ベンダーを見る",
+        "vendors_create": "ベンダーの作成",
+        "vendors_edit": "ベンダーの編集",
+        "vendors_delete": "ベンダーの削除",
+        "assessments_view": "評価を見る",
+        "assessments_create": "評価を作成して送信する",
+        "assessments_edit": "リンクの編集と管理",
+        "assessments_review": "確認して最終決定する",
+        "assessments_delete": "評価の削除",
+        "templates_view": "テンプレートを表示する",
+        "templates_create": "テンプレートの作成",
+        "templates_edit": "テンプレートの編集と公開",
+        "templates_delete": "テンプレートの削除",
+        "frameworks_view": "フレームワークを表示する",
+        "frameworks_edit": "フレームワークの編集",
+        "frameworks_delete": "フレームワークの削除",
+        "audit_view": "監査ログとメールログの表示",
+        "users_manage": "ユーザーを管理する",
+        "roles_manage": "役割の管理",
+        "settings_manage": "設定を管理する",
+        "api_manage": "APIアクセスを管理する",
+        "webhooks_manage": "Webhook の管理",
+        "trustcenter_manage": "トラスト センターのコンテンツを管理する",
+        "profile_view": "自分のプロフィールを表示および編集する"
+      }
+    },
+    "users": {
+      "metaTitle": "管理者 - ユーザー",
+      "title": "ユーザー",
+      "subtitle": "スタッフのアカウントとそのアクセス。",
+      "cardTitle": "スタッフアカウント",
+      "cardDescription": "スタッフのアカウントを作成し、その役割、アクセス、パスワードを管理します。",
+      "searchLabel": "スタッフの検索",
+      "searchPlaceholder": "スタッフを検索…",
+      "newUser": "新規ユーザー",
+      "empty": "まだユーザーがいません。",
+      "noMatch": "検索に一致するスタッフはいません。",
+      "added": "追加した {date}",
+      "sso": "SSO",
+      "local": "地元",
+      "disabled": "無効",
+      "addTitle": "ユーザーの追加",
+      "addDescription": "開始ロールとパスワードを使用してスタッフ アカウントを作成します。",
+      "name": "名前",
+      "email": "電子メール",
+      "password": "パスワード",
+      "role": "役割",
+      "creating": "作成...",
+      "create": "ユーザーの作成",
+      "cancel": "キャンセル",
+      "save": "保存",
+      "access": "アクセス",
+      "enableSignIn": "サインインを有効にする",
+      "disableSignIn": "サインインを無効にする",
+      "disableTitle": "ユーザーを無効にしますか?",
+      "disableDescription": "{name} サインインできなくなります。データは保存されます。",
+      "disable": "無効にする",
+      "newPasswordPlaceholder": "新しいパスワード",
+      "resetTitle": "パスワードをリセットしますか?",
+      "resetDescription": "これは上書きします {name}の現在のパスワード。サインインするには新しいパスワードを使用する必要があります。",
+      "reset": "リセット",
+      "ssoPassword": "このアカウントは SSO 経由でサインインします。そのパスワードは ID プロバイダーによって管理されます。",
+      "dangerZone": "危険地帯",
+      "deleteTitle": "ユーザーを削除しますか?",
+      "deleteDescription": "{name} 永久に削除されます。これを元に戻すことはできません。",
+      "ownedVendors": "{count,plural,one{# ベンダーは所有者の割り当てを失います} other{# ベンダーは所有者の割り当てを失います}}",
+      "reviewingAssessments": "{count,plural,one{# 評価はレビュー担当者を失います} other{# 評価はレビュー担当者を失うことになる}}",
+      "resolvedFindings": "{count,plural,one{# 検索結果のリゾルバがクリアされます} other{# 検出結果のリゾルバはクリアされます}}",
+      "answerReviews": "{count,plural,one{# 回答レビューは匿名化されます} other{# 回答レビューは匿名化されます}}",
+      "createdApiKeys": "{count,plural,one{# API キーは作成者参照を失います} other{# API キーは作成者参照を失います}}",
+      "auditPreserved": "監査履歴は保存されます (「削除されたユーザー」として表示されます)。",
+      "delete": "消去",
+      "deleteUser": "ユーザーの削除",
+      "loading": "読み込み中...",
+      "success": "ユーザーが作成されました。",
+      "errors": {
+        "nameRequired": "名前は必須です。",
+        "emailInvalid": "有効な電子メール アドレスを入力してください。",
+        "passwordTooShort": "少なくとも 12 文字を使用してください。",
+        "roleRequired": "役割は必須です。",
+        "invalidInput": "無効な入力です。",
+        "roleNotFound": "選択された役割は存在しません。",
+        "emailExists": "このメールアドレスを持つユーザーはすでに存在します。",
+        "createFailed": "ユーザーを作成できませんでした。もう一度試してください。"
+      }
+    },
+    "roles": {
+      "metaTitle": "管理者 — 役割",
+      "title": "役割",
+      "subtitle": "スタッフアカウントに割り当てられた権限セット。",
+      "cardTitle": "役割",
+      "cardDescription": "権限セットを定義し、スタッフ アカウントに割り当てます。",
+      "searchPlaceholder": "役割を検索…",
+      "newRole": "新しい役割",
+      "noMatch": "検索に一致する役割はありません。",
+      "system": "システム",
+      "userCount": "{count,plural,one{# ユーザー} other{# ユーザー}}",
+      "edit": "編集",
+      "duplicate": "重複",
+      "deleteTitle": "役割を削除しますか?",
+      "deleteDescription": "」{name}\" ロールは完全に削除されます。これは、そのロールに割り当てられているユーザーがいない場合にのみ可能です。",
+      "delete": "消去",
+      "createTitle": "ロールの作成",
+      "adminLocked": "管理者ロールには常にすべての権限があり、変更することはできません。",
+      "editorDescription": "この役割が付与する権限を選択します。この役割に割り当てられたユーザーは、まさにこれらの権限を取得します。",
+      "name": "名前",
+      "description": "説明",
+      "saving": "保存中...",
+      "create": "ロールの作成",
+      "saveChanges": "変更を保存する",
+      "cancel": "キャンセル",
+      "success": "ロールが作成されました。",
+      "updated": "役割が更新されました。",
+      "errors": {
+        "nameRequired": "ロール名は必須です。",
+        "nameTooLong": "ロール名は 50 文字以下にする必要があります。",
+        "descriptionTooLong": "説明は 200 文字以下にする必要があります。",
+        "invalidInput": "無効な入力です。",
+        "roleExists": "この名前のロールはすでに存在します。",
+        "createFailed": "ロールを作成できませんでした。もう一度試してください。",
+        "missingRole": "役割がありません。",
+        "notFound": "役割が見つかりません。",
+        "adminLocked": "管理者ロールの権限は変更できません。",
+        "updateFailed": "役割を更新できませんでした。もう一度試してください。",
+        "duplicateFailed": "ロールを複製できませんでした: {reason}",
+        "deleteFailed": "役割を削除できませんでした: {reason}",
+        "systemCannotDelete": "システム役割は削除できません。",
+        "assignedUsers": "この役割は 1 人以上のユーザーに割り当てられます。削除する前に再割り当てしてください。"
+      }
+    },
+    "audit": {
+      "metaTitle": "管理者 — 監査ログ",
+      "title": "監査ログ",
+      "subtitle": "プラットフォーム全体にわたる管理アクティビティとシステム アクティビティ。",
+      "retentionTitle": "保持",
+      "retentionDescription": "この日数より古い監査エントリは、スケジュールされたクリーンアップによって自動的に削除されます。無期限に保持するには 0 に設定します。",
+      "retentionLabel": "監査ログの保存期間 (日)",
+      "retentionHelp": "次回のスケジュールされた実行に適用されます。",
+      "cardTitle": "監査ログ",
+      "cardDescription": "プラットフォーム全体で管理アクティビティとシステム アクティビティを追跡します。",
+      "action": "アクション",
+      "user": "ユーザー",
+      "from": "から",
+      "to": "に",
+      "rows": "行",
+      "allActions": "すべてのアクション",
+      "allUsers": "すべてのユーザー",
+      "actionFilterLabel": "アクションごとに監査ログをフィルタリングする",
+      "userFilterLabel": "監査ログをユーザーごとにフィルタリングする",
+      "pageSizeLabel": "監査ログのページサイズ",
+      "filter": "フィルター",
+      "clear": "クリア",
+      "export": "輸出",
+      "allResults": "すべての結果",
+      "currentPage": "現在のページ",
+      "empty": "監査エントリが見つかりませんでした。",
+      "date": "日付",
+      "entity": "実在物",
+      "deleted": "削除されました",
+      "pageSummary": "{totalPages} ページ中 {page} ページ（{totalCount, plural, one {# 件} other {# 件}}）",
+      "previous": "前の",
+      "next": "次",
+      "csvHeader": "日付、ユーザー、アクション、エンティティ、ID",
+      "success": "監査の保持が保存されました。",
+      "clarificationRequested": "説明が要求されました",
+      "errors": {
+        "retentionInvalid": "監査保持は 0 または正の数である必要があります。",
+        "invalidInput": "無効な入力です。"
+      },
+      "actions": {
+        "LOGIN": "ログイン",
+        "CREATE_ASSESSMENT": "作成された評価",
+        "DELETE_ASSESSMENT": "削除された評価",
+        "SEND_ASSESSMENT": "送信された評価",
+        "REVOKE_ASSESSMENT": "取り消された評価リンク",
+        "EXTEND_ASSESSMENT": "拡張評価リンク",
+        "REGENERATE_ASSESSMENT": "再生成された評価リンク",
+        "SUBMIT_ASSESSMENT": "提出された評価",
+        "REVIEW_DECISION": "決定をレビューする",
+        "SEND_BACK_TO_VENDOR": "ベンダーに返送されました",
+        "REOPEN_REVIEW": "レビューを再開しました",
+        "UPDATE_FINDING": "更新された調査結果",
+        "ADD_COMMENT": "コメントを追加しました",
+        "REOPEN_ASSESSMENT": "再開された評価",
+        "FINALIZE_ASSESSMENT": "最終的な評価",
+        "CREATE_VENDOR": "作成されたベンダー",
+        "UPDATE_VENDOR": "ベンダーを更新しました",
+        "DELETE_VENDOR": "削除されたベンダー",
+        "IMPORT_VENDOR": "ベンダーをインポートしました",
+        "CREATE_TEMPLATE": "作成したテンプレート",
+        "UPDATE_TEMPLATE": "テンプレートを更新しました",
+        "DELETE_TEMPLATE": "削除されたテンプレート",
+        "PUBLISH_TEMPLATE": "公開されたテンプレート",
+        "UNPUBLISH_TEMPLATE": "未公開のテンプレート",
+        "CREATE_TEMPLATE_VERSION": "作成したテンプレートのバージョン",
+        "DUPLICATE_TEMPLATE": "複製されたテンプレート",
+        "IMPORT_TEMPLATE": "インポートされたテンプレート",
+        "CREATE_USER": "作成されたユーザー",
+        "DELETE_USER": "削除されたユーザー",
+        "DISABLE_USER": "障害のあるユーザー",
+        "ENABLE_USER": "有効なユーザー",
+        "CHANGE_ROLE": "変更された役割",
+        "CREATE_ROLE": "作成されたロール",
+        "UPDATE_ROLE": "更新された役割",
+        "UPDATE_PROFILE": "プロフィールを更新しました",
+        "DELETE_ROLE": "削除された役割",
+        "DUPLICATE_ROLE": "重複したロール",
+        "RESET_PASSWORD": "パスワードをリセットする",
+        "UPDATE_SETTINGS": "更新された設定",
+        "API_KEY_CREATED": "作成されたAPIキー",
+        "API_KEY_REVOKED": "取り消されたAPIキー",
+        "API_KEY_ENABLED": "有効なAPIキー",
+        "API_KEY_DELETED": "削除されたAPIキー",
+        "CREATE_CERTIFICATION": "追加された認定",
+        "UPDATE_CERTIFICATION": "更新された認定",
+        "DELETE_CERTIFICATION": "削除された証明書",
+        "CREATE_FRAMEWORK": "インポートされたフレームワーク",
+        "DELETE_FRAMEWORK": "削除されたフレームワーク",
+        "UPDATE_RESPONSIBILITY_ACTION": "責任アクションを更新しました",
+        "MARK_CONTROL_SHARED": "コントロールを共有責任としてマーク",
+        "UNMARK_CONTROL_SHARED": "共有責任としてマークされていないコントロール",
+        "RETRY_EMAIL_SEND": "メール送信を再試行しました",
+        "CREATE_WEBHOOK": "作成された Webhook",
+        "DELETE_WEBHOOK": "削除された Webhook",
+        "ENABLE_WEBHOOK": "有効な Webhook",
+        "DISABLE_WEBHOOK": "無効化された Webhook",
+        "UPDATE_TRUST_CENTER": "トラストセンターを更新しました"
+      }
+    },
+    "health": {
+      "metaTitle": "管理者 — 健康",
+      "title": "健康",
+      "subtitle": "システム診断とスケジュールされたジョブのステータス。",
+      "application": "応用",
+      "status": "状態",
+      "running": "ランニング",
+      "version": "バージョン",
+      "commit": "専念",
+      "buildTime": "ビルド時間",
+      "uptime": "稼働時間",
+      "memory": "メモリ (ヒープ)",
+      "lessThanMinute": "1m未満",
+      "database": "データベース",
+      "connection": "繋がり",
+      "connected": "接続済み",
+      "error": "エラー"
+    }
+  },
+  "NotFound": {
+    "description": "お探しのページは存在しないか、移動されました。",
+    "backToDashboard": "ダッシュボードに戻る"
+  },
+  "BulkSend": {
+    "metaTitle": "一括送信",
+    "title": "一括送信",
+    "subtitle": "同じアンケートを複数のベンダーに一度に送信します。",
+    "breadcrumb": "一括送信",
+    "steps": {
+      "configure": "設定する",
+      "vendors": "ベンダー",
+      "send": "送信"
+    },
+    "template": "テンプレート",
+    "selectTemplate": "テンプレートを選択",
+    "dueDate": "期日",
+    "reviewer": "査読者",
+    "unassigned": "未割り当て",
+    "portalPassword": "ポータルのパスワード (オプション)",
+    "portalPasswordPlaceholder": "すべてのベンダーの共有パスワード",
+    "next": "次へ →",
+    "back": "← 戻る",
+    "filterPlaceholder": "ベンダーをフィルタリング...",
+    "selectAll": "すべて選択",
+    "selectedCount": "{count} 選択された",
+    "noMatch": "検索に一致するベンダーはありません。",
+    "noEmail": "電子メールなし",
+    "sendingTo": "送信中 {template} に {count,plural,one{# ベンダー} other{# ベンダー}}",
+    "due": "期限： {date}",
+    "reviewerLabel": "査読者: {name}",
+    "portalPasswordSet": "ポータルのパスワード設定",
+    "sending": "送信中...",
+    "sendTo": "送信先 {count,plural,one{# ベンダー} other{# ベンダー}}",
+    "sentCount": "{count,plural,one{送信済み # 評価} other{送信済み # 評価}}",
+    "skippedCount": "{count,plural,one{# 送信できませんでした} other{# 送信できませんでした}}",
+    "emailFailedCount": "{count,plural,one{# メールが配信できませんでした} other{# メールが配信できませんでした}}",
+    "errors": {
+      "noTemplate": "テンプレートが選択されていません。",
+      "noVendors": "ベンダーが選択されていません。"
+    }
+  },
+  "VendorImport": {
+    "metaTitle": "ベンダーのインポート",
+    "title": "ベンダーのインポート",
+    "subtitle": "CSV ファイルを一括作成ベンダーにアップロードします。",
+    "breadcrumb": "インポート",
+    "cardTitle": "CSV からベンダーをインポートする",
+    "steps": {
+      "upload": "アップロード",
+      "review": "レビュー"
+    },
+    "csvFile": "CSVファイル",
+    "template": "テンプレート",
+    "columnsHelp": "CSV には次の列が必要です: ID (オプション)、名前、連絡先電子メール、およびオプション: externalid、contactname、tier、web サイト、メモ、servicedescription、datasensitivity、contractrenewaldate、contractvalue、geographicrisk、tag。名前と連絡先メールアドレスのみが必要です。最大1MB。新しいベンダーを作成する代わりに既存のベンダーを更新するには、ベンダー ID または externalid を含めます。",
+    "found": "{count,plural,one{# ベンダーが見つかりました} other{# ベンダーが見つかりました}}",
+    "showingFirst": "最初の 10 件を表示 {count} 行",
+    "next": "次へ →",
+    "back": "← 戻る",
+    "aboutToImport": "{count, plural, one {# 件のベンダー} other {# 件のベンダー}}をインポートしようとしています。",
+    "skippedNote": "検証に失敗した場合 (電子メールの重複、必須フィールドの欠落)、一部の行がスキップされる場合があります。",
+    "importing": "インポート中…",
+    "importVendors": "ベンダーをインポート",
+    "errors": {
+      "noFile": "ファイルが選択されていません。",
+      "fileTooLarge": "ファイルが大きすぎます (最大 1 MB)。",
+      "noRows": "CSV に行が見つかりません。最初の行はヘッダーである必要があります。",
+      "noValidVendors": "有効なベンダーが見つかりません。最初のエラー: {reason}",
+      "rowInvalid": "行 {row}: 無効な入力です。",
+      "rowNameRequired": "行 {row}: ベンダー名は必須です。",
+      "rowContactEmailRequired": "行 {row}: 連絡先メールアドレスは必須です。",
+      "duplicateExternalId": "{name}: 外部 ID が重複しています",
+      "rowFailed": "{name}: {reason}",
+      "updateRequiresEdit": "このインポートにより、既存のベンダーが更新されます。更新にはベンダーの編集権限が必要です。",
+      "unknown": "未知",
+      "importComplete": "インポートが完了しました: {summary}.",
+      "created": "{count} 作成されました",
+      "updated": "{count} 更新されました",
+      "skipped": "{count,plural,one{# 行がスキップされました} other{# スキップされた行}}"
+    }
+  },
+  "CompareVendors": {
+    "metaTitle": "ベンダーを比較する",
+    "title": "ベンダーを比較する",
+    "subtitle": "2 つのベンダーを選択して、最新の完了した評価を並べて比較します。",
+    "breadcrumb": "比較する",
+    "notEnoughVendorsTitle": "ベンダーが足りない",
+    "notEnoughVendorsDescription": "比較するには少なくとも 2 つのベンダーが必要です。まず、さらにベンダーを作成します。",
+    "vendorA": "ベンダーA",
+    "vendorB": "ベンダーB",
+    "selectVendor": "ベンダーを選択してください",
+    "compare": "比較する",
+    "notEnoughAssessmentsTitle": "評価が足りない",
+    "notEnoughAssessmentsDescription": "比較するには、両方のベンダーが少なくとも 1 つの完了済みまたはレビュー中の評価を持っている必要があります。",
+    "comparisonSubtitle": "{vendorA} 対 {vendorB}",
+    "statusLabel": "{title} · {status}",
+    "question": "質問",
+    "changed": "変わった",
+    "notApplicable": "該当なし"
+  },
+  "ApiDocs": {
+    "metaTitle": "APIドキュメント",
+    "loading": "API ドキュメントを読み込み中...",
+    "loadFailed": "Swagger UI のロードに失敗しました。"
+  },
+  "CompareAssessments": {
+    "metaTitle": "評価を比較する",
+    "metadataTitle": "評価を比較する — {vendorName}",
+    "notFound": "ベンダーが見つかりません",
+    "title": "評価を比較する",
+    "breadcrumb": "評価を比較する",
+    "instructions": "ベンダーのページから 2 つの評価を選択し、並べて比較します。 2 つを開いたら、このページを ?left=[id]&right=[id] でブックマークします。",
+    "comparisonSubtitle": "{leftTitle} ({leftStatus}）対 {rightTitle} ({rightStatus})",
+    "question": "質問",
+    "changed": "変わった",
+    "notApplicable": "該当なし"
+  },
+  "Profile": {
+    "metaTitle": "プロフィール",
+    "title": "プロフィール",
+    "subtitle": "アカウントの詳細を管理します。",
+    "accountDetails": "アカウントの詳細",
+    "ssoDescription": "シングル サインオン経由でサインインします。あなたの電子メールはアイデンティティプロバイダーによって管理されます。",
+    "localDescription": "あなたの名前とサインインメールアドレス。",
+    "name": "名前",
+    "email": "電子メール",
+    "passwordTitle": "パスワード",
+    "passwordDescription": "変更を行うには、現在のパスワードを入力する必要があります。",
+    "currentPassword": "現在のパスワード",
+    "newPassword": "新しいパスワード",
+    "optional": "(オプション)",
+    "confirmNewPassword": "新しいパスワードを確認します",
+    "ssoPasswordNote": "パスワードはアイデンティティ プロバイダー (SSO) によって管理されるため、ここでは何も変更する必要はありません。",
+    "saving": "保存中...",
+    "saveChanges": "変更を保存する",
+    "errorDescription": "プロフィールを読み込めませんでした。もう一度試すか、サポートにお問い合わせください。",
+    "errors": {
+      "notAuthenticated": "認証されていません。",
+      "accountNotFound": "アカウントが見つかりません。",
+      "currentPasswordIncorrect": "現在のパスワードが間違っています。",
+      "emailTaken": "このメールはすでに受信されています。",
+      "nameRequired": "名前は必須です。",
+      "emailInvalid": "有効な電子メール アドレスを入力してください。",
+      "currentPasswordRequired": "現在のパスワードが必要です。",
+      "passwordTooShort": "新しいパスワードは 12 文字以上である必要があります。",
+      "passwordMismatch": "パスワードが一致しません。",
+      "invalidInput": "無効な入力です。",
+      "success": "プロフィールを更新しました。"
+    }
+  },
+  "TrustCenterManager": {
+    "metaTitle": "トラストセンター",
+    "title": "トラストセンター",
+    "subtitle": "コンプライアンス バッジ、セキュリティ文書、副処理者、説明セクションをパブリック トラスト センター ページに公開します。",
+    "viewPublic": "公開ページを見る",
+    "disabledBanner": "トラスト センターは現在無効になっています。 [設定] → [セキュリティ センター] で有効にします。それまでは、公開ページに見つからないメッセージが表示されます。",
+    "errorDescription": "トラスト センター マネージャーをロードできませんでした。もう一度試してください。",
+    "common": {
+      "edit": "編集",
+      "draft": "下書き",
+      "published": "発行済み",
+      "saving": "保存中...",
+      "cancel": "キャンセル",
+      "moveUp": "動く {name} 上",
+      "moveDown": "動く {name} 下",
+      "deleteNamed": "消去 {name}"
+    },
+    "badges": {
+      "cardTitle": "コンプライアンスバッジ",
+      "add": "バッジを追加する",
+      "empty": "バッジが設定されていません。 SOC 2 や ISO 27001 などの認証を追加して、公開ページに表示します。",
+      "verificationLink": "確認リンク",
+      "deleteTitle": "バッジを削除しますか?",
+      "deleteDescription": "」{name}「バッジはトラスト センターから削除されます。",
+      "addTitle": "バッジを追加する",
+      "editTitle": "バッジの編集",
+      "editorDescription": "パブリック トラスト センター ページに証明書タイルとして表示されます。",
+      "titleLabel": "タイトル",
+      "issuer": "発行者",
+      "issuerPlaceholder": "例えばAICPA、BSI",
+      "description": "説明",
+      "descriptionPlaceholder": "例えばSOC 2 Type II は毎年監査されます",
+      "verificationUrl": "認証URL",
+      "image": "バッジ画像",
+      "imageHint": "PNG、JPG、GIF、または WebP。最大2MB。 SVG は使用できません。",
+      "imageHintKeep": " 現在のイメージを保持するには、空のままにしておきます。",
+      "save": "バッジを保存"
+    },
+    "documents": {
+      "cardTitle": "セキュリティ文書",
+      "add": "ドキュメントの追加",
+      "empty": "ドキュメントが設定されていません。ポリシー、セキュリティ レポート、またはコンプライアンス アーティファクトをアップロードして、一般にダウンロードします。",
+      "noFile": "ファイルがアップロードされていません",
+      "deleteTitle": "文書を削除しますか?",
+      "deleteDescription": "\"{name}\" となり、そのファイルはトラスト センターから削除されます。",
+      "addTitle": "ドキュメントの追加",
+      "editTitle": "ドキュメントの編集",
+      "editorDescription": "公開された文書はパブリックトラストセンターのページからダウンロードできます。",
+      "titleLabel": "タイトル",
+      "description": "説明",
+      "descriptionPlaceholder": "この文書の内容",
+      "category": "カテゴリ",
+      "file": "ファイル",
+      "replaceFile": "ファイルを置き換える",
+      "fileHint": "PDF、PNG、JPG、DOCX、または XLSX。最大20MB。",
+      "fileHintCurrent": " 現在： {fileName}。置換すると古いファイルが削除されます。",
+      "save": "文書の保存",
+      "categories": {
+        "POLICY": "ポリシー",
+        "SECURITY": "セキュリティレポート",
+        "COMPLIANCE": "コンプライアンス",
+        "PRIVACY": "プライバシー",
+        "OTHER": "他の"
+      }
+    },
+    "sections": {
+      "cardTitle": "カスタムセクション",
+      "add": "セクションを追加",
+      "empty": "カスタムセクションはありません。概要、FAQ、その他構造化タイプでカバーされていないものについては、マークダウン ブロックを追加します。",
+      "deleteTitle": "セクションを削除しますか?",
+      "deleteDescription": "\"{name}\" はトラスト センターから削除されます。",
+      "addTitle": "セクションを追加",
+      "editTitle": "編集セクション",
+      "editorDescription": "パブリック トラスト センター ページでレンダリングされる無料のマークダウン ブロック。",
+      "titleLabel": "タイトル",
+      "body": "本体（値下げ）",
+      "bodyPlaceholder": "マークダウン形式をサポートします。",
+      "save": "セクションの保存"
+    },
+    "subprocessors": {
+      "cardTitle": "副処理者",
+      "add": "サブプロセッサーの追加",
+      "empty": "サブプロセッサが構成されていません。あなたに代わってデータを処理する第三者をリストします。",
+      "deleteTitle": "副処理者を削除しますか?",
+      "deleteDescription": "\"{name}\" はトラスト センターから削除されます。",
+      "addTitle": "サブプロセッサーの追加",
+      "editTitle": "サブプロセッサーの編集",
+      "editorDescription": "あなたに代わってデータを処理する第三者。公的信頼センターのページにリストされています。",
+      "name": "名前",
+      "purpose": "目的",
+      "purposePlaceholder": "例えばアプリケーションデータのクラウドホスティング",
+      "location": "データの場所",
+      "locationPlaceholder": "例えばオーストラリア（シドニー）",
+      "website": "Webサイト",
+      "websitePlaceholder": "https://…",
+      "logo": "ロゴイメージ",
+      "logoHint": "PNG、JPG、GIF、または WebP。最大2MB。 SVG は使用できません。",
+      "logoHintKeep": " 現在のロゴを維持するには、空白のままにします。",
+      "logoUrl": "…または URL からロゴを取得する",
+      "logoUrlPlaceholder": "https://example.com/logo.png",
+      "logoUrlHint": "イメージはダウンロードされ、他のトラスト センター ファイルとともに保存されます。パブリック ページが外部ホストを読み込むことはありません。アップロードされたファイルは URL よりも優先されます。",
+      "save": "サブプロセッサーの保存"
+    },
+    "errors": {
+      "invalidInput": "無効な入力です。",
+      "titleRequired": "タイトルは必須です。",
+      "nameRequired": "名前は必須です。",
+      "invalidUrl": "有効な URL を入力してください。",
+      "sectionTooLong": "セクション本文が長すぎます (最大 10,000 文字)。",
+      "badgeNotFound": "バッジが見つかりません。",
+      "documentFileRequired": "文書ファイルが必要です。",
+      "saveFailed": "保存に失敗しました。",
+      "badgeSaved": "バッジが保存されました。",
+      "documentSaved": "ドキュメントが保存されました。",
+      "sectionSaved": "セクションが保存されました。",
+      "subprocessorSaved": "サブプロセッサが保存されました。",
+      "imageType": "画像は PNG、JPG、GIF、または WebP である必要があります (SVG は使用できません)。",
+      "imageInvalid": "この画像は無効です。",
+      "imageTooLarge": "画像が大きすぎます（最大 {max} MB）。",
+      "fileTooLarge": "ファイルが大きすぎます（最大 {max} MB）。",
+      "fileInvalid": "ファイルの内容が拡張子と一致しません。",
+      "fileType": "このファイル形式は受け入れられません。",
+      "imageFetchFailed": "画像のURLを取得できませんでした。",
+      "imageContent": "画像 URL は PNG、JPG、GIF、または WebP コンテンツを返す必要があります。"
+    }
+  },
+  "Shell": {
+    "workspace": {
+      "dashboard": "ダッシュボード",
+      "vendors": "ベンダー",
+      "assessments": "評価",
+      "riskRegister": "リスクレジスター",
+      "selfAssessment": "自己評価",
+      "frameworks": "フレームワーク",
+      "templates": "テンプレート",
+      "trustCenter": "トラストセンター",
+      "admin": "管理者",
+      "groups": {
+        "risk": "リスク",
+        "frameworks": "フレームワーク",
+        "manage": "管理"
+      }
+    },
+    "admin": {
+      "backToWorkspace": "ワークスペースに戻る",
+      "groups": {
+        "workspace": "ワークスペース",
+        "email": "電子メール",
+        "assessments": "評価",
+        "files": "ファイル",
+        "accessSecurity": "アクセスとセキュリティ",
+        "integrations": "統合",
+        "platform": "プラットフォーム"
+      },
+      "sections": {
+        "general": "一般的な",
+        "appearance": "外観",
+        "email": "電子メール",
+        "emailTracking": "電子メール追跡",
+        "scoring": "採点",
+        "scheduling": "スケジュール設定",
+        "storage": "ストレージ",
+        "users": "ユーザー",
+        "roles": "役割",
+        "signIn": "サインイン",
+        "rateLimits": "レート制限",
+        "api": "API",
+        "webhooks": "Webhook",
+        "trustCenter": "トラストセンター",
+        "auditLog": "監査ログ",
+        "health": "健康"
+      }
+    },
+    "header": {
+      "admin": "管理者",
+      "toggleTheme": "テーマの切り替え",
+      "themeLight": "ライト",
+      "themeDark": "暗い",
+      "themeSystem": "システム",
+      "profile": "プロフィール",
+      "language": "言語",
+      "signOut": "サインアウト"
+    },
+    "sidebar": {
+      "toggle": "サイドバーの切り替え"
+    },
+    "breadcrumbs": {
+      "label": "ブレッドクラム",
+      "dashboard": "ダッシュボード"
+    },
+    "commandPalette": {
+      "label": "コマンドパレット",
+      "searchPlaceholder": "ページを検索...",
+      "noResults": "結果はありません。",
+      "navigate": "ナビゲートする",
+      "open": "開ける",
+      "close": "近い",
+      "or": "または",
+      "items": {
+        "dashboard": {
+          "label": "ダッシュボード",
+          "subtitle": "ベンダーリスクの概要"
+        },
+        "vendors": {
+          "label": "ベンダー",
+          "subtitle": "ベンダーの管理"
+        },
+        "assessments": {
+          "label": "評価",
+          "subtitle": "アンケート"
+        },
+        "frameworks": {
+          "label": "フレームワーク",
+          "subtitle": "コンプライアンス管理"
+        },
+        "templates": {
+          "label": "テンプレート",
+          "subtitle": "アンケートビルダー"
+        },
+        "profile": {
+          "label": "プロフィール",
+          "subtitle": "あなたのアカウント"
+        },
+        "adminGeneral": {
+          "label": "管理者 · 一般",
+          "subtitle": "組織"
+        },
+        "adminUsers": {
+          "label": "管理者 · ユーザー",
+          "subtitle": "スタッフアカウント"
+        },
+        "adminRoles": {
+          "label": "管理者 · 役割",
+          "subtitle": "権限"
+        },
+        "adminApi": {
+          "label": "管理者 · API",
+          "subtitle": "APIアクセス"
+        },
+        "adminAudit": {
+          "label": "管理者 · 監査ログ",
+          "subtitle": "アクティビティの軌跡"
+        },
+        "apiDocs": {
+          "label": "APIドキュメント",
+          "subtitle": "OpenAPI / Swagger"
+        }
+      }
+    },
+    "idle": {
+      "title": "セッションが期限切れになります",
+      "description": "サインアウトされます {countdown,plural,one{# 2番} other{# 秒}} 活動がないため。サインインした状態を維持するには、マウスを動かすか任意のキーを押します。",
+      "staySignedIn": "サインインしたままにする"
+    },
+    "scrollToTop": "一番上までスクロール",
+    "error": {
+      "title": "何か問題が発生しました",
+      "description": "予期しないエラーが発生しました。もう一度試すか、サポートにお問い合わせください。",
+      "retry": "もう一度やり直してください"
+    }
+  },
+  "Trust": {
+    "title": "{orgName} トラストセンター",
+    "compliance": "コンプライアンスと認証",
+    "expired": "期限切れ",
+    "expiringSoon": "もうすぐ期限切れになります",
+    "verify": "確認する",
+    "documents": "セキュリティ文書",
+    "download": "ダウンロード",
+    "subprocessors": "副処理者",
+    "name": "名前",
+    "purpose": "目的",
+    "location": "位置",
+    "contactPrompt": "弊社のセキュリティ体制についてご質問がありますか?",
+    "categories": {
+      "POLICY": "ポリシー",
+      "SECURITY": "セキュリティレポート",
+      "COMPLIANCE": "コンプライアンス",
+      "PRIVACY": "プライバシー",
+      "OTHER": "他の"
+    }
+  },
+  "Portal": {
+    "metaTitle": "ベンダーアンケート",
+    "noscript": "このアンケートに回答するには JavaScript が必要です。ブラウザの設定でJavaScriptを有効にしてください。",
+    "logoAlt": "ロゴ",
+    "linkNotFound": "リンクが見つかりません",
+    "linkInvalid": "このアンケートのリンクは無効です。",
+    "linkExpiredTitle": "リンクの有効期限が切れました",
+    "linkExpiredBody": "このアンケートのリンクは有効期限が切れています。新しいリンクについては、要求者に連絡してください。",
+    "submittedTitle": "{title} — 提出済み",
+    "submittedBanner": "✓ 回答は送信されました。",
+    "submittedBody": "要求者はあなたの回答を検討し、説明を求める場合があります。このリンクに戻って更新を確認できます。",
+    "notApplicableShort": "該当なし",
+    "decisions": {
+      "APPROVED": "承認された",
+      "CLARIFICATION_REQUESTED": "説明が求められています"
+    },
+    "notAvailableTitle": "利用不可",
+    "notAvailableBody": "このアンケートは現在ご利用いただけません。",
+    "additionalInfoTitle": "追加情報が要求されました。",
+    "additionalInfoBody": "フラグが付けられた質問を確認し、準備ができたら再送信してください。",
+    "password": {
+      "title": "パスワードが必要です",
+      "description": "このアンケートはパスワードで保護されています。続行するには、要求者から提供されたパスワードを入力してください。",
+      "label": "パスワード",
+      "placeholder": "パスワードを入力してください",
+      "verifying": "確認中...",
+      "continue": "続く",
+      "tooMany": "試行回数が多すぎます。ちょっとお待ちください。",
+      "notSet": "このリンクにはパスワードが設定されていません。",
+      "incorrect": "パスワードが間違っています。"
+    },
+    "error": {
+      "title": "何か問題が発生しました",
+      "description": "アンケートのロード中に予期しないエラーが発生しました。サポートが必要な場合は、このリンクを送信した組織にお問い合わせください。",
+      "retry": "もう一度やり直してください"
+    },
+    "loading": "アンケートを読み込んでいます…",
+    "upload": {
+      "tooMany": "アップロードが多すぎます。しばらくお待ちください。",
+      "linkInvalid": "このリンクは無効になりました。",
+      "noFile": "ファイルが選択されていません。",
+      "invalidQuestion": "無効な質問です。",
+      "tooLarge": "ファイルが次の値を超えています {max} MB制限。",
+      "badType": "タイプのファイル。{ext} は許可されていません。",
+      "dangerousType": "このファイルの種類は許可されていません。",
+      "mismatch": "ファイルの内容が と一致しません。{ext} ファイル。"
+    },
+    "questionnaire": {
+      "yes": "はい",
+      "no": "いいえ",
+      "maxUpload": "最大 {maxUploadMb} MB。許可されている形式: {extensions}。",
+      "uploading": " アップロード中…",
+      "uploaded": "アップロードされた: {fileName}",
+      "remove": "取り除く",
+      "selectPlaceholder": "選択してください…",
+      "confirmStatement": "私はこの声明を確認します",
+      "clarification": "査読者はこの回答についての説明を求めました。",
+      "notApplicable": "適用できない",
+      "commentPlaceholder": "コメントを追加…",
+      "send": "送信",
+      "autosaveHint": "回答は自動的に保存されます。いつでもこのページを閉じて、同じリンクを使用して戻ることができます。",
+      "saveExpired": "このリンクの有効期限が切れています。最近の変更を保存できませんでした。",
+      "saveError": "最新の変更を保存できませんでした。接続を確認して再試行してください。",
+      "retrySave": "保存を再試行",
+      "expiry": {
+        "expired": "このリンクの有効期限は切れています。",
+        "hours": "このリンクの有効期限は次のとおりです {hours,plural,one{# 時間} other{# 時間}}.",
+        "minutes": "このリンクの有効期限は次のとおりです {minutes,plural,one{# 分} other{# 分}}."
+      },
+      "sectionCounter": "・ セクション {current} の {total}",
+      "saving": "保存中…",
+      "saveFailed": "保存に失敗しました",
+      "savedAt": "保存場所 {time}",
+      "lastSavedAt": "最後に保存された場所 {time}",
+      "expires": "有効期限が切れます {date}",
+      "back": "戻る",
+      "continue": "続く",
+      "reviewAnswers": "回答を確認する",
+      "continueWarning": "{count,plural,one{# このセクションの必須の質問にはまだ回答が必要です。} other{# このセクションの必須の質問にはまだ回答が必要です。}} 続行して戻ってくることができます。",
+      "reviewHeading": "回答を確認してください",
+      "reviewAnswered": "{answered}/{total} 答えた",
+      "reviewMissing": "{count} 必要な不足",
+      "openSection": "オープンセクション",
+      "submitting": "送信中…",
+      "submit": "アンケートの送信",
+      "submitTitle": "アンケートを送信しますか?",
+      "submitDescription": "送信後に回答を編集することはできません。提出してもよろしいですか?",
+      "cancel": "キャンセル",
+      "submitConfirm": "提出する",
+      "missingRequired": "{count,plural,one{答えてください # 送信する前に必須の質問。} other{答えてください # 送信する前に必須の質問を行ってください。}}",
+      "linkInvalid": "このリンクは無効になりました。",
+      "vendorAuthor": "ベンダー"
+    }
+  },
+  "Pdf": {
+    "common": {
+      "pageOf": "{total} ページ中 {page} ページ",
+      "na": "該当なし",
+      "none": "--",
+      "yes": "はい",
+      "no": "いいえ",
+      "notScored": "得点されていない",
+      "tier": "階層: {tier}",
+      "template": "テンプレート： {name} v{version}",
+      "reviewer": "査読者: {name}",
+      "generated": "生成された {date}",
+      "due": "期限： {date}",
+      "completed": "完了: {date}",
+      "automatedFindingDescription": "ベンダーの回答は期待されたものではありませんでした。"
+    },
+    "tiers": {
+      "CRITICAL": "致命的",
+      "HIGH": "高い",
+      "MEDIUM": "中くらい",
+      "LOW": "低い"
+    },
+    "questionTypes": {
+      "YES_NO": "はい / いいえ",
+      "MULTIPLE_CHOICE": "単一の選択",
+      "FREE_TEXT": "フリーテキスト",
+      "FILE_UPLOAD": "ファイルのアップロード",
+      "DATE": "日付",
+      "NUMERIC": "数値",
+      "COMBOBOX": "コンボボックス",
+      "MULTI_SELECT": "複数選択",
+      "RATING": "評価",
+      "URL": "URL",
+      "EMAIL": "電子メール",
+      "CHECKBOX": "チェックボックス"
+    },
+    "statuses": {
+      "DRAFT": "下書き",
+      "SENT": "送信済み",
+      "IN_PROGRESS": "進行中",
+      "SUBMITTED": "提出済み",
+      "UNDER_REVIEW": "検討中",
+      "COMPLETED": "完了"
+    },
+    "assessment": {
+      "score": "スコア",
+      "customerResponsibility": "お客様の責任: {percent}% ({completed}/{total} 完了）",
+      "responses": "応答 ({count})",
+      "question": "質問",
+      "answer": "答え",
+      "type": "タイプ",
+      "weight": "重さ",
+      "compliant": "準拠",
+      "scoreColumn": "スコア",
+      "findings": "調査結果 ({count})"
+    },
+    "framework": {
+      "complianceReport": "{frameworkName} {version} — コンプライアンスレポート",
+      "summary": "まとめ",
+      "overallScore": "総合スコア:",
+      "domainsAssessed": "評価されたドメイン:",
+      "controlsMapped": "マップされたコントロール:",
+      "domainCompliance": "ドメインコンプライアンス",
+      "domain": "ドメイン",
+      "current": "現在",
+      "previous": "前の",
+      "change": "変化",
+      "controlHeatmap": "ヒートマップの制御",
+      "control": "コントロール",
+      "title": "タイトル",
+      "compliance": "コンプライアンス",
+      "status": "状態",
+      "ragGreen": "緑",
+      "ragAmber": "アンバー",
+      "ragRed": "赤",
+      "ragNone": "評価されていない"
+    },
+    "portfolio": {
+      "title": "タイトル",
+      "vendors": "ベンダー",
+      "averageScore": "平均点",
+      "openFindings": "未解決の調査結果",
+      "needsAttention": "注意が必要です",
+      "scoreDistribution": "スコア分布",
+      "green": "緑 (≥85%)",
+      "amber": "琥珀 (60–84%)",
+      "red": "赤 (<60%)",
+      "unscored": "得点なし",
+      "vendorsByTier": "層ごとのベンダー",
+      "assessmentsByStatus": "ステータス別の評価",
+      "vendorsCount": "ベンダー ({count})",
+      "vendor": "ベンダー",
+      "tier": "階層",
+      "score": "スコア",
+      "lastAssessed": "最終評価",
+      "assessments": "評価",
+      "notAssessed": "評価されていない",
+      "topDeficientControls": "最も欠陥のあるコントロール ({count})",
+      "control": "コントロール",
+      "vendorsAffected": "影響を受けるベンダー"
+    }
+  },
+  "Email": {
+    "footer": "このメールの送信者は次のとおりです {appName}。ボタンが機能しない場合は、リンクをコピーしてブラウザに貼り付けてください。",
+    "trustFooter": "当社のセキュリティ体制について詳しくは、こちらをご覧ください。 {url}",
+    "testSubject": "{appName} — SMTPテスト",
+    "testBody": "SMTP 設定は正しく機能しています。",
+    "testSent": "テストメールが送信されました。",
+    "smtpNotConfigured": "SMTPが設定されていません。",
+    "transporterFailed": "トランスポーターの作成に失敗しました。",
+    "sendFailed": "送信に失敗しました: {reason}",
+    "retryMessage": "アンケートを確認して再送信してください。"
+  },
+  "Auth": {
+    "tagline": "ベンダーリスク管理",
+    "login": {
+      "title": "サインイン",
+      "description": "アカウントにサインインします。",
+      "email": "電子メール",
+      "password": "パスワード",
+      "submit": "サインイン",
+      "submitting": "サインイン中…",
+      "forgot": "パスワードをお忘れですか？",
+      "or": "または",
+      "invalid": "メールアドレスまたはパスワードが無効です。",
+      "tooMany": "試行回数が多すぎます。しばらく待ってから、もう一度試してください。"
+    },
+    "forgot": {
+      "title": "パスワードをお忘れですか",
+      "description": "メールアドレスを入力してください。リセット用のリンクが送信されます。",
+      "email": "電子メール",
+      "submit": "リセットリンクを送信する",
+      "submitting": "送信中...",
+      "back": "サインインに戻る",
+      "invalidEmail": "有効な電子メール アドレスを入力してください。",
+      "rateLimited": "そのメールアドレスを持つアカウントが存在する場合は、リセット リンクが最近すでに送信されています。",
+      "sent": "そのメールアドレスを持つアカウントが存在する場合は、リセット リンクが送信されています。"
+    },
+    "reset": {
+      "title": "パスワードをリセットする",
+      "description": "アカウントの新しいパスワードを選択してください。",
+      "missing": "このリセット リンクが見つからないか無効です。で新しいものをリクエストしてください",
+      "expired": "このリセット リンクは有効期限が切れているか、すでに使用されています。で新しいものをリクエストしてください",
+      "forgotLink": "パスワードを忘れた場合のページ",
+      "forUser": "新しいパスワードを選択してください {email}.",
+      "newPassword": "新しいパスワード",
+      "confirmPassword": "パスワードを認証する",
+      "submit": "パスワードをリセットする",
+      "submitting": "リセット中...",
+      "back": "サインインに戻る",
+      "invalidLink": "無効なリセットリンクです。",
+      "invalidPassword": "要件を満たすパスワードを使用してください。",
+      "expiredToken": "このリセット リンクは無効であるか、有効期限が切れています。"
+    },
+    "setup": {
+      "title": "管理者の作成",
+      "cardTitle": "最初の管理者を作成する",
+      "description": "ベンダー リスクの管理を開始するには、初期管理者アカウントをセットアップします。",
+      "fullName": "フルネーム",
+      "email": "電子メール",
+      "password": "パスワード",
+      "passwordHint": "少なくとも 12 文字。",
+      "submit": "管理者の作成",
+      "submitting": "作成…",
+      "alreadyDone": "セットアップはすでに完了しています。",
+      "invalid": "名前、メールアドレス、パスワード（12文字以上）を確認してください。",
+      "roleError": "管理者ロールを初期化できませんでした。もう一度試してください。",
+      "createdSignIn": "アカウントが作成されました。サインインしてください。"
+    },
+    "sso": {
+      "orSignInWith": "または次の方法でサインインします"
+    }
+  }
+}

@@ -1,0 +1,2681 @@
+{
+  "Common": {
+    "changeLanguage": "Taal wijzigen",
+    "skipToContent": "Ga naar de inhoud",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "close": "Sluiten",
+    "sidebar": "Zijbalk",
+    "sidebarDescription": "Geeft de mobiele zijbalk weer.",
+    "toggleSidebar": "Schakel zijbalk in",
+    "step": "Stap {number}:",
+    "tiers": {
+      "CRITICAL": "Kritisch",
+      "HIGH": "Hoog",
+      "MEDIUM": "Medium",
+      "LOW": "Laag"
+    },
+    "pagination": {
+      "pageOf": "Pagina {page} van {totalPages} · {totalCount} {itemLabel}",
+      "previous": "Vorig",
+      "next": "Volgende"
+    },
+    "viewToggle": {
+      "rows": "Rijweergave",
+      "cards": "Kaartweergave"
+    },
+    "assessmentStatuses": {
+      "DRAFT": "Voorlopige versie",
+      "SENT": "Verstuurd",
+      "IN_PROGRESS": "In uitvoering",
+      "SUBMITTED": "Ingediend",
+      "UNDER_REVIEW": "Wordt beoordeeld",
+      "COMPLETED": "Voltooid"
+    },
+    "findingStatuses": {
+      "OPEN": "Open",
+      "REMEDIATED": "Gesaneerd",
+      "RISK_ACCEPTED": "Risico geaccepteerd"
+    },
+    "copyLink": {
+      "copy": "Kopiëren",
+      "copied": "Gekopieerd"
+    },
+    "pendingLink": {
+      "preparing": "Voorbereiden…"
+    },
+    "evidencePreview": {
+      "preview": "Voorbeeld {fileName}"
+    },
+    "questionTypes": {
+      "YES_NO": "Ja / Nee",
+      "MULTIPLE_CHOICE": "Enkele keuze (kies er één)",
+      "FREE_TEXT": "Vrije tekst",
+      "FILE_UPLOAD": "Bestand uploaden",
+      "DATE": "Datum",
+      "NUMERIC": "Numeriek",
+      "COMBOBOX": "Combobox",
+      "MULTI_SELECT": "Multi-select (kies er veel)",
+      "RATING": "Beoordeling (1‑5)",
+      "URL": "URL",
+      "EMAIL": "E-mail",
+      "CHECKBOX": "Selectievakje (bevestiging)"
+    },
+    "controlCodes": {
+      "showMore": "{count,plural,one{Show # meer controle} other{Show # meer controles}}",
+      "showLess": "Laat minder zien"
+    },
+    "search": {
+      "placeholder": "Zoekopdracht…"
+    }
+  },
+  "Metadata": {
+    "description": "Whitelabel-oplossing voor risicobeheer van externe leveranciers"
+  },
+  "Dashboard": {
+    "metaTitle": "Dashboard",
+    "title": "Overzicht leveranciersrisico's",
+    "tracked": "{count,plural,one{# leverancier gevolgd} other{# leveranciers gevolgd}}",
+    "newVendor": "Nieuwe leverancier",
+    "assessments": "Beoordelingen",
+    "portfolioReport": "Portefeuillerapport",
+    "emptyTitle": "Nog geen leveranciers",
+    "emptyCanCreate": "Voeg uw eerste leverancier toe om hun risico's te volgen.",
+    "emptyReadOnly": "Er worden nog geen leveranciers gevolgd.",
+    "addVendor": "Voeg een leverancier toe →",
+    "stats": {
+      "vendors": "Leveranciers gevolgd",
+      "averageScore": "Gemiddelde score",
+      "openFindings": "Bevindingen openen",
+      "needsAttention": "Heeft aandacht nodig"
+    },
+    "topControls": "Top gebrekkige controles",
+    "viewRiskRegister": "Bekijk risicoregister →",
+    "highestRisk": "Leveranciers met het hoogste risico",
+    "viewAllVendors": "Bekijk alle leveranciers →",
+    "noAssessments": "Geen beoordelingen",
+    "overdue": "{count} verlopen",
+    "attention": {
+      "title": "Heeft aandacht nodig",
+      "allClear": "Alles duidelijk: niets heeft op dit moment aandacht nodig.",
+      "titleWithCount": "Heeft aandacht nodig ({count})",
+      "unreviewed": "niet beoordeeld",
+      "clarification": "verduidelijking",
+      "clarifications": "verduidelijkingen",
+      "failedEmail": "mislukte e-mail (24 uur)",
+      "failedEmails": "mislukte e-mails (24 uur)",
+      "groups": {
+        "overdue": "Achterstallige beoordelingen",
+        "belowThreshold": "Onder de scoredrempel",
+        "keyDates": "Belangrijke data (60 dagen)"
+      },
+      "overdueAssessment": "{count,plural,one{# achterstallige beoordeling} other{# achterstallige beoordelingen}}",
+      "oldestSince": "oudste sinds {date}",
+      "belowThreshold": "onderstaand {percent}% drempelwaarde",
+      "contractRenewal": "Contractverlenging",
+      "daysOverdue": "{days}d te laat",
+      "inDays": "in {days}D"
+    },
+    "charts": {
+      "portfolioHealth": "Portefeuille gezondheid",
+      "openFindingsBySeverity": "Open bevindingen op ernst",
+      "assessmentStatus": "Beoordelingsstatus",
+      "riskByTier": "Risico per niveau",
+      "vendors": "leveranciers",
+      "assessments": "Beoordelingen",
+      "openFindings": "Bevindingen openen",
+      "ragShort": {
+        "green": "Groente",
+        "amber": "Amber",
+        "red": "Rood",
+        "unscored": "Ongescoord"
+      },
+      "rag": {
+        "green": "Groen (≥85%)",
+        "amber": "Amberkleurig (60–84%)",
+        "red": "Rood (<60%)",
+        "unscored": "Ongescoord"
+      },
+      "severity": {
+        "CRITICAL": "Kritisch",
+        "HIGH": "Hoog",
+        "MEDIUM": "Medium",
+        "LOW": "Laag"
+      },
+      "status": {
+        "DRAFT": "Voorlopige versie",
+        "SENT": "Verstuurd",
+        "IN_PROGRESS": "In uitvoering",
+        "SUBMITTED": "Ingediend",
+        "UNDER_REVIEW": "Wordt beoordeeld",
+        "COMPLETED": "Voltooid",
+        "OVERDUE": "Verlopen"
+      },
+      "tier": {
+        "CRITICAL": "Kritisch",
+        "HIGH": "Hoog",
+        "MEDIUM": "Medium",
+        "LOW": "Laag",
+        "Unspecified": "Niet gespecificeerd"
+      },
+      "activity": {
+        "title": "Beoordelingsactiviteit",
+        "noActivity": "Geen activiteit in deze periode",
+        "timeRange": "Selecteer een tijdbereik",
+        "ranges": {
+          "90d": "Laatste 3 maanden",
+          "30d": "Laatste 30 dagen",
+          "7d": "Laatste 7 dagen"
+        },
+        "assessments": "Beoordelingen"
+      }
+    }
+  },
+  "Vendors": {
+    "metaTitle": "Leveranciers",
+    "title": "Leveranciers",
+    "subtitle": "Leveranciers die u beoordeelt op beveiligingsrisico's.",
+    "compare": "Vergelijken",
+    "import": "Importeren",
+    "bulkSend": "Bulkverzending",
+    "newVendor": "Nieuwe leverancier",
+    "search": "Zoekopdracht",
+    "searchPlaceholder": "Naam of e-mailadres…",
+    "tier": "Laag",
+    "anyTier": "Elk niveau",
+    "filterTierAria": "Filter leveranciers op niveau",
+    "sort": "Soort",
+    "sortAria": "Sorteer leveranciers",
+    "filter": "Filter",
+    "clear": "Duidelijk",
+    "viewAria": "Leverancierslijstweergave",
+    "noMatches": "Er zijn geen leveranciers die overeenkomen met de geselecteerde filters.",
+    "emptyTitle": "Nog geen leveranciers",
+    "emptyDescription": "Voeg een leverancier toe om het beveiligingsrisico te volgen.",
+    "assessed": "Beoordeeld {date}",
+    "notAssessed": "Niet beoordeeld",
+    "assessmentCount": "{count,plural,one{# onderzoek} other{# beoordelingen}}",
+    "openFindingCount": "{count,plural,one{# open vondst} other{# openstaande bevindingen}}",
+    "list": {
+      "vendor": "Leverancier",
+      "tier": "Niveau",
+      "score": "Score",
+      "items": "leveranciers"
+    },
+    "sorts": {
+      "name": "Naam (A-Z)",
+      "name-desc": "Naam (Z-A)",
+      "score-asc": "Score (laag → hoog)",
+      "score-desc": "Score (hoog → laag)",
+      "tier": "Niveau (A-Z)",
+      "tier-desc": "Niveau (Z-A)",
+      "last-assessed": "Laatst beoordeeld",
+      "assessments": "De meeste beoordelingen"
+    },
+    "form": {
+      "vendorName": "Naam van de leverancier",
+      "externalId": "Externe ID",
+      "externalIdPlaceholder": "bijv. ERP-V-001",
+      "externalIdHint": "Optionele verwijzing naar deze leverancier in een ander systeem",
+      "contactName": "Naam contactpersoon",
+      "contactEmail": "E-mailadres voor contact",
+      "tier": "Laag",
+      "website": "Website",
+      "riskOwner": "Risico-eigenaar",
+      "dataSensitivity": "Gegevensgevoeligheid",
+      "contractValue": "Contractwaarde",
+      "geographicRisk": "Geografisch risico",
+      "tags": "Labels",
+      "tagsPlaceholder": "bijv. saas, kritisch, financiën",
+      "tagsHint": "Door komma's gescheiden labels voor groeperen en filteren",
+      "serviceProvided": "Dienst verleend",
+      "servicePlaceholder": "bijv. Cloud-e-mailhosting",
+      "contractRenewalDate": "Contractverlengingsdatum",
+      "notes": "Opmerkingen",
+      "saving": "Besparing...",
+      "saveChanges": "Wijzigingen opslaan",
+      "create": "Leverancier maken",
+      "cancel": "Annuleren",
+      "unspecified": "Niet gespecificeerd",
+      "unassigned": "Niet toegewezen",
+      "levels": {
+        "NONE": "Geen",
+        "LOW": "Laag",
+        "MEDIUM": "Medium",
+        "HIGH": "Hoog"
+      },
+      "dataSensitivities": {
+        "PUBLIC": "Openbaar",
+        "INTERNAL": "Intern",
+        "CONFIDENTIAL": "Vertrouwelijk",
+        "RESTRICTED": "Beperkt"
+      }
+    },
+    "new": {
+      "title": "Nieuwe leverancier",
+      "cardTitle": "Gegevens van de leverancier",
+      "cardDescription": "Voeg een nieuwe leverancier toe om bij te houden.",
+      "breadcrumb": "Nieuw"
+    },
+    "edit": {
+      "title": "Leverancier bewerken",
+      "cardTitle": "Gegevens van de leverancier",
+      "cardDescription": "Leveranciersgegevens bijwerken.",
+      "breadcrumb": "Bewerking"
+    },
+    "attachments": {
+      "title": "Bijlagen",
+      "emptyTitle": "Nog geen bijlagen",
+      "emptyDescription": "Upload contracten, brieven of andere documenten.",
+      "removeAria": "Bijlage verwijderen",
+      "dropHint": "Zet een bestand neer of klik om te bladeren",
+      "uploading": "Uploaden…",
+      "upload": "Uploaden"
+    },
+    "export": {
+      "button": "CSV exporteren",
+      "all": "Alle leveranciers",
+      "currentPage": "Huidige pagina"
+    },
+    "errors": {
+      "invalidInput": "Ongeldige invoer.",
+      "duplicateExternalId": "Er bestaat al een leverancier met deze externe ID.",
+      "vendorCreated": "Leverancier gemaakt.",
+      "vendorUpdated": "Leverancier bijgewerkt.",
+      "noFile": "Geen bestand geselecteerd.",
+      "fileTypeNotAllowed": "Bestandstype niet toegestaan.",
+      "fileTypeNotAccepted": "Dit bestandstype wordt niet geaccepteerd.",
+      "fileTooLarge": "Bestand is te groot (max {max} MB).",
+      "fileUploaded": "Bestand geüpload.",
+      "fileAttached": "Bestand bijgevoegd bij leverancier."
+    },
+    "detail": {
+      "notFound": "Leverancier niet gevonden",
+      "errorTitle": "Kan leverancier niet laden",
+      "errorDescription": "Er is een fout opgetreden bij het laden van de gegevens van deze leverancier. Probeer het opnieuw.",
+      "created": "Leverancier gemaakt.",
+      "breadcrumbs": {
+        "riskRegister": "Risico register",
+        "vendors": "Leveranciers"
+      },
+      "edit": "Bewerking",
+      "exportCsv": "CSV exporteren",
+      "delete": "Verwijderen",
+      "deleteTitle": "Leverancier verwijderen?",
+      "deleteDescription": "Dit wordt definitief verwijderd {vendorName} en alles {count,plural,one{# onderzoek} other{# beoordelingen}}. Deze actie kan niet ongedaan worden gemaakt.",
+      "tabs": {
+        "overview": "Overzicht",
+        "compliance": "Naleving",
+        "findings": "Bevindingen",
+        "assessments": "Beoordelingen"
+      },
+      "overview": {
+        "title": "Overzicht",
+        "serviceProvided": "Dienst verleend",
+        "riskOwner": "Risico-eigenaar",
+        "unassigned": "Niet toegewezen",
+        "externalId": "Externe ID",
+        "dataSensitivity": "Gegevensgevoeligheid",
+        "unspecified": "Niet gespecificeerd",
+        "website": "Website",
+        "contractRenewal": "Contractverlenging",
+        "overdue": " · verlopen",
+        "attachments": "Bijlagen",
+        "emptyTitle": "Geen overzichtsdetails",
+        "emptyDescription": "Bewerk deze leverancier om servicedetails, een risico-eigenaar en andere profielinformatie toe te voegen."
+      },
+      "riskProfile": {
+        "title": "Risicoprofiel",
+        "inherent": "Inherent (beoordeling vooraf)",
+        "residual": "Resterend (beoordeeld)",
+        "trendingUp": "Trend omhoog ↑",
+        "trendingDown": "Trend omlaag ↓",
+        "stable": "Stabiel →",
+        "noScore": "Nog geen score: dien een beoordeling in",
+        "trend": "Trend",
+        "compareLastTwo": "Vergelijk de laatste twee →"
+      },
+      "certifications": "Certificeringen & attesten",
+      "compliance": {
+        "vendorCompliance": "Naleving van leveranciers",
+        "yourCompliance": "Uw naleving",
+        "domainCompliance": "Domeinnaleving",
+        "noDataTitle": "Geen nalevingsgegevens",
+        "noDataDescription": "Voer een beoordeling uit om de nalevingsscores van domeinen te bekijken.",
+        "frameworkHeatmaps": "Kader-heatmaps",
+        "noAssessmentData": "Geen beoordelingsgegevens",
+        "noFrameworksTitle": "Geen raamwerken beschikbaar",
+        "noFrameworksDescription": "Importeer of zaai raamwerkbibliotheken om besturingselementen toe te wijzen aan beoordelingsvragen."
+      },
+      "findings": {
+        "title": "Bevindingen",
+        "openCount": "{count, plural, one {# open} other {# open}}",
+        "viewAll": "{count,plural,one{Bekijk de bevinding in het risicoregister →} other{Bekijk alles # bevindingen in het risicoregister →}}",
+        "emptyTitle": "Geen bevindingen",
+        "emptyDescription": "Er worden bevindingen gegenereerd wanneer de antwoorden op de beoordeling niet voldoen. Voer een beoordeling uit om hier de bevindingen te bekijken."
+      },
+      "assessments": {
+        "title": "Beoordelingen",
+        "new": "Nieuwe beoordeling",
+        "emptyTitle": "Geen beoordelingen",
+        "emptyDescription": "Er zijn nog geen beoordelingen gemaakt voor deze leverancier.",
+        "noTemplate": "Geen sjabloon",
+        "due": " · vanwege {date}",
+        "viewAll": "{count,plural,one{Bekijk de beoordeling →} other{Bekijk alles # beoordelingen →}}",
+        "activity": "Activiteit"
+      }
+    },
+    "timeline": {
+      "empty": "Nog geen activiteit geregistreerd.",
+      "assessmentCreated": "Beoordeling gemaakt",
+      "assessmentSent": "Beoordeling verzonden",
+      "assessmentSubmitted": "Beoordeling ingediend",
+      "findingOpened": "Vind geopend",
+      "remediated": "Gesaneerd",
+      "riskAccepted": "Risico geaccepteerd",
+      "certificationAdded": "Certificering toegevoegd",
+      "certificationExpiring": "Certificering verloopt",
+      "certificationExpiringDescription": "{name} - verloopt {date}"
+    },
+    "certifications": {
+      "empty": "Er zijn nog geen certificeringen bijgehouden.",
+      "expires": "Verloopt {date}",
+      "statuses": {
+        "valid": "Geldig",
+        "expiring": "Verloopt binnenkort",
+        "expired": "Verlopen"
+      },
+      "add": "Certificering toevoegen",
+      "edit": "Bewerking",
+      "delete": "Verwijderen",
+      "deleteTitle": "Certificering verwijderen?",
+      "deleteDescription": "\"{name}\" wordt definitief verwijderd.",
+      "editor": {
+        "addTitle": "Certificering toevoegen",
+        "description": "Volg een attest (SOC 2, ISO 27001, …) en de vervaldatum ervan.",
+        "name": "Naam",
+        "namePlaceholder": "bijv. SOC 2 Type II",
+        "issuer": "Emittent (optioneel)",
+        "issuerPlaceholder": "bijv. Auditor / certificatie-instelling",
+        "issued": "Uitgegeven (optioneel)",
+        "expires": "Verloopt",
+        "notes": "Opmerkingen (optioneel)",
+        "complianceActions": "Nalevingsacties vereist",
+        "selectFramework": "Selecteer een raamwerk...",
+        "attachment": "Bijlage (optioneel)",
+        "attachmentHint": "Upload een certificaat, rapport of contract. Maximaal 20 MB.",
+        "attachments": "Bijlagen",
+        "saving": "Besparing...",
+        "save": "Certificering opslaan",
+        "cancel": "Annuleren"
+      },
+      "errors": {
+        "missingVendor": "Ontbrekende leverancier.",
+        "invalidInput": "Ongeldige invoer.",
+        "wrongVendor": "Certificering behoort niet toe aan deze leverancier.",
+        "saved": "Certificering opgeslagen.",
+        "attachmentFailed": " Bijlage mislukt: {reason}",
+        "fileType": "Bestandstype niet toegestaan.",
+        "fileTooLarge": "Bestand is te groot (max {max} MB).",
+        "fileInvalid": "Dit bestandstype wordt niet geaccepteerd.",
+        "fileRecordFailed": "Kan bestandsrecord niet opslaan.",
+        "fileUploaded": "Bestand geüpload.",
+        "nameRequired": "Certificeringsnaam is vereist.",
+        "expiryRequired": "Vervaldatum is vereist.",
+        "invalidExpiry": "Voer een geldige vervaldatum in.",
+        "added": "Certificering \"{name}\" toegevoegd met bijlage.",
+        "missingEvidence": "Ontbrekend bewijs.",
+        "evidenceNotFound": "Bewijs niet gevonden."
+      }
+    },
+    "customerResponsibility": {
+      "title": "Verantwoordelijkheid van de klant",
+      "collapse": "Instorten",
+      "expand": "Uitbreiden",
+      "progress": "{completed} van {total} · {percent}%",
+      "empty": "Geen controles op gedeelde verantwoordelijkheid voor deze certificering.",
+      "assignedTo": "Toegewezen aan {name}",
+      "fileCount": "{count,plural,one{# bestand} other{# bestanden}}",
+      "status": "Status",
+      "statuses": {
+        "PENDING": "In behandeling",
+        "IN_PROGRESS": "In uitvoering",
+        "COMPLETED": "Voltooid",
+        "NOT_APPLICABLE": "Niet van toepassing"
+      },
+      "assignedToLabel": "Toegewezen aan",
+      "assignedToPlaceholder": "Gebruikers-ID (optioneel)",
+      "attachment": "Bijlage",
+      "notes": "Opmerkingen",
+      "notesPlaceholder": "Opmerkingen toevoegen over de implementatie...",
+      "files": "Bestanden",
+      "saving": "Besparing...",
+      "save": "Redden",
+      "cancel": "Annuleren",
+      "errors": {
+        "missingFields": "Er ontbreken verplichte velden.",
+        "invalidStatus": "Ongeldige status.",
+        "noChanges": "Geen wijzigingen opgegeven.",
+        "saved": "Opgeslagen."
+      }
+    }
+  },
+  "Assessments": {
+    "list": {
+      "title": "Beoordelingen",
+      "subtitle": "Evaluaties verzonden naar leveranciers.",
+      "subtitleForVendor": "Evaluaties voor {vendorName}.",
+      "filters": {
+        "search": "Zoekopdracht",
+        "searchPlaceholder": "Titel of leverancier...",
+        "status": "Status",
+        "allStatuses": "Alle statussen",
+        "statusAriaLabel": "Filter beoordelingen op status",
+        "from": "Van",
+        "to": "Naar",
+        "sort": "Soort",
+        "sortAriaLabel": "Sorteer beoordelingen",
+        "overdueOnly": "Alleen achterstallig",
+        "apply": "Filter",
+        "clear": "Duidelijk"
+      },
+      "sorts": {
+        "created": "Nieuwste eerst",
+        "created-asc": "Oudste eerst",
+        "due-asc": "Vervaldatum (snelst)",
+        "due-desc": "Vervaldatum (laatste)",
+        "score-asc": "Score (laag → hoog)",
+        "score-desc": "Score (hoog → laag)",
+        "vendor": "Leverancier (A-Z)",
+        "status": "Status (A-Z)",
+        "status-desc": "Status (Z-A)"
+      },
+      "emptyFiltered": "Er zijn geen beoordelingen die overeenkomen met de geselecteerde filters.",
+      "emptyTitle": "Nog geen beoordelingen",
+      "emptyDescription": "Maak een beoordeling en stuur de leverancier de link om deze te voltooien.",
+      "items": "beoordelingen",
+      "columns": {
+        "assessmentVendor": "Beoordeling · Leverancier",
+        "score": "Scoren",
+        "status": "Status",
+        "due": "Vanwege"
+      },
+      "overdue": "Verlopen",
+      "due": " · vanwege {date}"
+    },
+    "new": {
+      "title": "Nieuwe beoordeling voor {vendorName}",
+      "breadcrumb": "Nieuwe beoordeling",
+      "cardTitle": "Beoordelingsdetails",
+      "form": {
+        "title": "Titel",
+        "titlePlaceholder": "bijv. Jaarlijkse veiligheidsbeoordeling",
+        "template": "Vragenlijst sjabloon",
+        "templatePlaceholder": "Selecteer een gepubliceerde sjabloon",
+        "noTemplates": "Geen sjablonen gevonden.",
+        "dueDate": "Deadline",
+        "reviewer": "Recensent",
+        "unassigned": "Niet toegewezen",
+        "publishFirst": "Publiceer eerst een sjabloon om een ​​beoordeling te maken.",
+        "creating": "Creëren...",
+        "create": "Beoordeling maken",
+        "cancel": "Annuleren"
+      }
+    },
+    "detail": {
+      "notFound": "Beoordeling niet gevonden",
+      "breadcrumbs": {
+        "assessments": "Beoordelingen",
+        "vendors": "Leveranciers"
+      },
+      "actions": {
+        "reopen": "Heropen de recensie",
+        "exportCsv": "CSV exporteren",
+        "downloadPdf": "PDF downloaden",
+        "preparingReport": "Rapport voorbereiden…",
+        "finalize": "Voltooien",
+        "finalizing": "Afsluiten…",
+        "delete": "Verwijderen",
+        "deleteTitle": "Beoordeling verwijderen?",
+        "deleteDescription": "Hierdoor wordt permanent verwijderd \"{title}\" en alle reacties, bevindingen en bewijsmateriaal. Deze actie kan niet ongedaan worden gemaakt."
+      },
+      "meta": {
+        "due": " · vanwege {date}",
+        "reviewer": " · recensent {name}"
+      },
+      "draft": {
+        "createLinkTitle": "Leverancierslink maken",
+        "createLinkDescription": "Genereer een leverancierslink zonder aanmelding voor de beoordeling. Stel optioneel een wachtwoord in om de toegang te beveiligen.",
+        "settingsTitle": "Concept-instellingen",
+        "title": "Titel",
+        "dueDate": "Deadline",
+        "saving": "Besparing…",
+        "save": "Wijzigingen opslaan"
+      },
+      "link": {
+        "title": "Leverancierslink (geen login vereist)",
+        "expires": "Verloopt {date}",
+        "noExpiry": "Geen vervaldatum",
+        "passwordProtected": "Wachtwoord beveiligd",
+        "extend": "Verleng 30 dagen",
+        "regenerate": "Koppeling opnieuw genereren",
+        "revoke": "Herroepen",
+        "revokeTitle": "Leverancierslink intrekken?",
+        "revokeDescription": "De leverancier heeft geen toegang meer tot de vragenlijst. Indien nodig kunt u de koppeling later opnieuw genereren.",
+        "revokedTitle": "Leverancierslink",
+        "revokedDescription": "De link is ingetrokken."
+      },
+      "score": {
+        "title": "Scoren",
+        "low": "Laag risico",
+        "moderate": "Matig risico",
+        "high": "Hoog risico"
+      },
+      "findings": {
+        "summary": "Bevindingen ({count} · {open,plural,one{# open} other{# open}})",
+        "deletedUser": "Gebruiker verwijderd",
+        "noneTitle": "Bevindingen",
+        "allCompliant": "Alle antwoorden voldoen – geen bevindingen.",
+        "automatedDescription": "Het antwoord van de leverancier voldeed niet aan het verwachte antwoord."
+      },
+      "responses": {
+        "title": "Reacties",
+        "summary": "{approved} van {total} goedgekeurd · {pending} in behandeling",
+        "summaryClarifications": " · {count,plural,one{# verduidelijking} other{# verduidelijkingen}}",
+        "filters": {
+          "all": "Alle",
+          "pending": "In behandeling ({count})",
+          "approved": "Goedgekeurd ({count})",
+          "clarification": "Verduidelijking ({count})"
+        },
+        "notApplicable": "N.v.t",
+        "evidenceAlt": "Bewijsdossier: {fileName}",
+        "viewPdf": "PDF bekijken: {fileName} ↗",
+        "attachToVendor": "Koppelen aan leverancier"
+      },
+      "sender": {
+        "password": "Portaalwachtwoord (optioneel)",
+        "passwordPlaceholder": "Vereisen dat de leverancier een wachtwoord invoert",
+        "passwordHint": "Indien ingesteld, moeten leveranciers dit wachtwoord invoeren voordat ze toegang krijgen tot de vragenlijst.",
+        "sendToVendor": "Verzenden naar leverancier",
+        "generateOnly": "Alleen een link genereren",
+        "customEmailPlaceholder": "aangepast@voorbeeld.com",
+        "sendTo": "Verzenden naar"
+      },
+      "sendBack": {
+        "trigger": "Terugsturen naar leverancier",
+        "title": "Terugsturen naar leverancier?",
+        "description": "De leverancier kan zijn antwoorden bewerken en opnieuw indienen, en ontvangt een e-mail met uw bericht. Hun bestaande antwoorden worden behouden.",
+        "messageLabel": "Bericht aan de leverancier (optioneel)",
+        "messagePlaceholder": "Leg uit welke aanvullende informatie nodig is...",
+        "cancel": "Annuleren",
+        "confirm": "Stuur terug",
+        "emailFallback": "Controleer uw vragenlijst en verzend deze opnieuw."
+      },
+      "review": {
+        "approved": "Goedgekeurd",
+        "clarificationRequested": "Opheldering gevraagd",
+        "noReviewYet": "Nog geen recensie",
+        "collapse": "Instorten",
+        "expand": "Uitbreiden",
+        "reviewPlaceholder": "Beoordeling",
+        "approve": "Goedkeuren",
+        "requestClarification": "Vraag om opheldering",
+        "notePlaceholder": "Optionele opmerking (zichtbaar voor de leverancier als om verduidelijking wordt gevraagd)",
+        "save": "Redden",
+        "vendor": "leverancier",
+        "internal": "intern",
+        "replyPlaceholder": "Antwoord",
+        "internalOption": "Intern",
+        "vendorOption": "Zichtbaar voor leverancier",
+        "reply": "Antwoord",
+        "commentPlaceholder": "Voeg een opmerking toe",
+        "comment": "Opmerking",
+        "commentCount": "{count,plural,one{# opmerking} other{# opmerkingen}}",
+        "previousReview": "Vorige recensie ({decision}): {note}"
+      },
+      "findingStatus": {
+        "resolutionNotePlaceholder": "Resolutienota (optioneel)",
+        "save": "Redden"
+      },
+      "attachEvidence": {
+        "trigger": "Bijvoegen",
+        "refreshing": "{message}. Verfrissend…",
+        "attachAs": "Bijvoegen als",
+        "certificationOption": "Certificering / attestatie",
+        "generalOption": "Algemene bijlage",
+        "certificationName": "Certificeringsnaam",
+        "namePlaceholder": "bijv. SOC 2 Type II",
+        "issuer": "Emittent (optioneel)",
+        "issuerPlaceholder": "bijv. Accountantskantoor",
+        "expiryDate": "Vervaldatum",
+        "displayNameForFile": "Weergavenaam voor bestand",
+        "notes": "Opmerkingen (optioneel)",
+        "notesPlaceholder": "Aanvullende context…",
+        "complianceActions": "Nalevingsacties vereist",
+        "selectFramework": "Selecteer een raamwerk...",
+        "displayName": "Weergavenaam",
+        "generalNotesPlaceholder": "Waarom dit is bijgevoegd...",
+        "adding": "Toevoegen…",
+        "addCertification": "Certificering toevoegen",
+        "attachToVendor": "Koppelen aan leverancier",
+        "cancel": "Annuleren"
+      },
+      "error": {
+        "title": "Kan beoordeling niet laden",
+        "description": "Er is een fout opgetreden bij het laden van deze beoordeling. Probeer het opnieuw.",
+        "retry": "Probeer het opnieuw"
+      }
+    },
+    "errors": {
+      "invalidInput": "Ongeldige invoer.",
+      "titleRequired": "Titel is vereist",
+      "titleTooLong": "Titel moet 200 tekens of minder bevatten",
+      "templateRequired": "Selecteer een sjabloon",
+      "invalidDueDate": "Voer een geldige vervaldatum in",
+      "saved": "Opgeslagen.",
+      "started": "Beoordeling gestart.",
+      "portalLinkFailed": "Beoordeling gemaakt, maar portallink kan niet worden gegenereerd.",
+      "missingReviews": "{count,plural,one{# reactie moet nog worden beoordeeld.} other{# De reacties moeten nog worden beoordeeld.}}"
+    }
+  },
+  "Templates": {
+    "list": {
+      "title": "Sjablonen",
+      "subtitle": "Beveiligingsvragenlijsten bouwen en aanpassen.",
+      "new": "Nieuw sjabloon",
+      "import": "Importeren",
+      "emptyTitle": "Nog geen sjablonen",
+      "emptyDescription": "Maak uw eerste beoordelingssjabloon.",
+      "sections": "{count,plural,one{# sectie} other{# secties}}"
+    },
+    "statuses": {
+      "DRAFT": "Voorlopige versie",
+      "PUBLISHED": "Gepubliceerd",
+      "ARCHIVED": "Gearchiveerd"
+    },
+    "new": {
+      "breadcrumb": "Nieuw",
+      "title": "Nieuw sjabloon",
+      "cardTitle": "Sjabloondetails",
+      "form": {
+        "name": "Naam",
+        "description": "Beschrijving",
+        "creating": "Creëren…",
+        "create": "Sjabloon maken",
+        "cancel": "Annuleren"
+      }
+    },
+    "builder": {
+      "notFound": "Sjabloon niet gevonden",
+      "breadcrumbs": {
+        "templates": "Sjablonen"
+      },
+      "actions": {
+        "publish": "Publiceren",
+        "newVersion": "Nieuwe versie maken",
+        "unpublish": "Publicatie ongedaan maken",
+        "delete": "Verwijderen",
+        "deleteTitle": "Sjabloon verwijderen?",
+        "deleteDescription": "Hierdoor wordt permanent verwijderd \"{name}\" en alle bijbehorende secties en vragen. Bij beoordelingen waarbij dit sjabloon wordt gebruikt, raakt de sjabloonlink verloren. Deze actie kan niet ongedaan worden gemaakt.",
+        "menuAriaLabel": "Sjabloonacties",
+        "preview": "Voorbeeld",
+        "duplicate": "Duplicaat",
+        "export": "Exporteren"
+      },
+      "versionHistory": "Versiegeschiedenis",
+      "details": "Sjabloondetails",
+      "name": "Naam",
+      "description": "Beschrijving",
+      "saveDetails": "Bewaar gegevens",
+      "readOnly": "Deze versie is gepubliceerd en alleen-lezen. Maak een nieuwe versie om wijzigingen aan te brengen.",
+      "jumpToSection": "Ga naar sectie",
+      "section": {
+        "rename": "Hernoemen",
+        "moveUp": "Verplaats sectie naar boven",
+        "moveDown": "Verplaats sectie naar beneden",
+        "deleteTitle": "Sectie verwijderen?",
+        "deleteDescription": "Hierdoor wordt permanent verwijderd \"{title}'' en alle vragen daarin.",
+        "delete": "Sectie verwijderen",
+        "noQuestionsTitle": "Geen vragen",
+        "noQuestionsDescription": "Voeg een vraag toe om aan de slag te gaan met deze sectie.",
+        "showQuestions": "Show {count,plural,one{# vraag} other{# vragen}}",
+        "hideQuestions": "Verbergen {count,plural,one{# vraag} other{# vragen}}",
+        "required": "Vereist",
+        "moveQuestionUp": "Verplaats de vraag naar boven",
+        "moveQuestionDown": "Verplaats de vraag naar beneden",
+        "editQuestion": "Bewerking",
+        "deleteQuestionTitle": "Vraag verwijderen?",
+        "deleteQuestionDescription": "Hierdoor wordt permanent verwijderd \"{text}\".",
+        "deleteQuestion": "Verwijderen",
+        "addQuestion": "Vraag toevoegen"
+      },
+      "addSection": {
+        "title": "Sectie toevoegen",
+        "placeholder": "Sectietitel",
+        "button": "Sectie toevoegen"
+      }
+    },
+    "question": {
+      "text": "Vraag tekst",
+      "help": "Help-tekst",
+      "helpHint": "Markdown-opmaak wordt ondersteund: gebruik **vet**, *cursief*, lijsten en links.",
+      "answerType": "Antwoordtype",
+      "riskWeight": "Risicogewicht",
+      "required": "Vereist",
+      "options": "Opties (één per regel)",
+      "expectedAnswer": "Verwacht antwoord",
+      "noExpectedAnswer": "Geen verwacht antwoord",
+      "yes": "Ja",
+      "no": "Nee",
+      "acceptedAnswers": "Geaccepteerde antwoorden",
+      "acceptedHint": "Vink elk antwoord aan dat als conform moet scoren.",
+      "acceptedEmpty": "Voeg hierboven opties toe om te kiezen welke antwoorden acceptabel zijn.",
+      "expectedNumber": "Verwacht aantal",
+      "expectedSelections": "Verwachte selecties",
+      "selectionsHint": "Vink de exacte set aan die de leverancier moet selecteren om conform te scoren.",
+      "selectionsEmpty": "Voeg hierboven opties toe om de vereiste selecties te kiezen.",
+      "manualScoring": "Dit antwoordtype wordt tijdens de beoordeling handmatig gescoord.",
+      "checked": "Gecontroleerd",
+      "unchecked": "Niet aangevinkt",
+      "conditionalLegend": "Voorwaardelijke zichtbaarheidsregels",
+      "controlsLegend": "In kaart gebrachte nalevingscontroles",
+      "saving": "Besparing...",
+      "save": "Vraag opslaan",
+      "cancel": "Annuleren"
+    },
+    "conditions": {
+      "questionFallback": "een vraag",
+      "shownIf": "Getoond als",
+      "and": "EN",
+      "or": "OF",
+      "editing": {
+        "title": "Voorwaardelijke zichtbaarheid",
+        "match": "Overeenkomst",
+        "all": "Alles (EN)",
+        "any": "Elke (OF)",
+        "noQuestions": "Voeg eerst andere vragen toe om deze voorwaardelijk te maken.",
+        "alwaysShown": "Altijd getoond. Voeg een regel toe om deze vraag alleen weer te geven als andere antwoorden overeenkomen.",
+        "selectQuestion": "Selecteer een vraag",
+        "value": "Waarde",
+        "remove": "Verwijderen",
+        "addRule": "Regel toevoegen",
+        "legend": "Voorwaardelijke logica",
+        "yes": "Ja",
+        "no": "Nee",
+        "checked": "Gecontroleerd",
+        "unchecked": "Niet aangevinkt"
+      },
+      "operators": {
+        "equals": "gelijk aan",
+        "notEquals": "is niet gelijk",
+        "contains": "bevat",
+        "notContains": "bevat niet",
+        "gt": "groter dan",
+        "lt": "minder dan",
+        "gte": "groter dan of gelijk aan",
+        "lte": "kleiner dan of gelijk aan",
+        "answered": "wordt beantwoord",
+        "notAnswered": "wordt niet beantwoord"
+      }
+    },
+    "controls": {
+      "mappedControls": "In kaart gebrachte bedieningselementen",
+      "selectedCount": "{count} gekozen",
+      "hint": "Vink een raamwerkkop aan om alle controles ervan in kaart te brengen – handig voor “Bent u gecertificeerd?” vragen waarbij een conform antwoord aan het hele raamwerk moet voldoen.",
+      "allFrameworks": "Alle kaders",
+      "filterPlaceholder": "Filterbediening…",
+      "noMatch": "Er zijn geen bedieningselementen die overeenkomen met het huidige filter."
+    },
+    "import": {
+      "metadataTitle": "Sjabloon importeren",
+      "title": "Sjabloon importeren",
+      "subtitle": "Upload een JSON-bestand om een ​​nieuwe sjabloon te maken.",
+      "breadcrumb": "Importeren",
+      "cardTitle": "Sjabloon importeren uit JSON",
+      "steps": {
+        "upload": "Uploaden",
+        "review": "Beoordeling"
+      },
+      "file": {
+        "label": "JSON-bestand",
+        "downloadTemplate": "Sjabloon",
+        "hint": "Upload een geldig JSON-sjabloonbestand. Exporteer een bestaande sjabloon vanuit de sjabloonbouwer (Acties → Exporteren) om de verwachte structuur te zien."
+      },
+      "parse": {
+        "invalidStructure": "Ongeldige sjabloonstructuur. Verwachte naam en sectiematrix.",
+        "invalidJson": "Ongeldig JSON-bestand."
+      },
+      "summary": {
+        "sections": "{count,plural,one{# sectie} other{# secties}}",
+        "questions": "{count,plural,one{# vraag} other{# vragen}}",
+        "controlCodes": "{count,plural,one{# controlecode} other{# controlecodes}}"
+      },
+      "table": {
+        "section": "Sectie",
+        "questions": "Vragen"
+      },
+      "review": {
+        "introPrefix": "U staat op het punt de sjabloon te importeren"
+      },
+      "next": "Volgende →",
+      "back": "← Terug",
+      "importing": "Importeren…",
+      "import": "Sjabloon importeren",
+      "success": "Geïmporteerd \"{name}\" als een nieuw ONTWERP.",
+      "errors": {
+        "noFile": "Geen bestand geselecteerd.",
+        "fileTooLarge": "Bestand is te groot (max. 1 MB).",
+        "invalidJson": "Ongeldig JSON-bestand.",
+        "importFailed": "Importeren mislukt: de bestandsstructuur kon niet worden verwerkt. Vergelijk het met de downloadbare sjabloon en probeer het opnieuw.",
+        "nameRequired": "Sjabloonnaam is vereist.",
+        "sectionsRequired": "Sjabloon moet ten minste één sectie bevatten.",
+        "sectionTitleRequired": "Sectie {number}: titel is vereist.",
+        "questionsArray": "Sectie \"{title}\": vragen moeten een array zijn.",
+        "textRequired": "{where}: tekst is vereist.",
+        "helpTextType": "{where}: helpText moet een tekenreeks zijn als deze wordt opgegeven.",
+        "unknownType": "{where}: onbekend soort \"{type}\".",
+        "unknownRiskWeight": "{where}: onbekend risicogewicht \"{weight}\".",
+        "requiredType": "{where}: vereist moet een Booleaanse waarde zijn wanneer opgegeven.",
+        "optionsType": "{where}: opties moeten een array van tekenreeksen zijn.",
+        "controlCodesType": "{where}: controlCodes moet een array van tekenreeksen zijn.",
+        "expectedAnswerType": "{where}: verwacht antwoord moet een tekenreeks, een getal of een reeks tekenreeksen zijn.",
+        "expectedAnswer": {
+          "multiSelectArray": "{where}: verwacht antwoord moet een array van tekenreeksen zijn.",
+          "choiceStringOrArray": "{where}: verwacht antwoord moet een tekenreeks of een array van tekenreeksen zijn.",
+          "numeric": "{where}: verwachtAntwoord moet een getal zijn.",
+          "yesNoCheckboxString": "{where}: verwacht antwoord moet een tekenreeks zijn."
+        },
+        "controlAmbiguous": "Controlecodes {codes} zijn dubbelzinnig: dezelfde code bestaat in meerdere raamwerken. Verwijder het duplicaat of hernoem een ​​van de besturingselementen.",
+        "controlNotFound": "Controlecode niet gevonden: {code}"
+      }
+    },
+    "preview": {
+      "notFound": "Sjabloon niet gevonden",
+      "breadcrumb": "Voorbeeld",
+      "title": "Voorbeeld — {name}",
+      "description": "Alleen-lezen voorbeeld van hoe deze vragenlijst er voor een leverancier uitziet. Voorwaardelijke vragen worden hier allemaal weergegeven met vermelding van de regel.",
+      "noSectionsTitle": "Nog geen secties",
+      "noQuestionsTitle": "Geen vragen.",
+      "yes": "Ja",
+      "no": "Nee",
+      "select": "Selecteer…",
+      "freeTextPlaceholder": "Antwoord in vrije tekst",
+      "attachmentUpload": "Bijlage uploaden",
+      "numberPlaceholder": "Nummer",
+      "acknowledge": "Ik erken"
+    },
+    "questionPages": {
+      "editTitle": "Vraag bewerken",
+      "editBreadcrumb": "Vraag bewerken",
+      "addTitle": "Vraag toevoegen",
+      "addBreadcrumb": "Vraag toevoegen"
+    },
+    "error": {
+      "title": "Kan sjabloon niet laden",
+      "description": "Er is een fout opgetreden tijdens het laden van deze sjabloon. Probeer het opnieuw.",
+      "retry": "Probeer het opnieuw"
+    },
+    "errors": {
+      "invalidInput": "Ongeldige invoer.",
+      "nameRequired": "Sjabloonnaam is vereist",
+      "questionTextRequired": "Vraagtekst is vereist",
+      "conditionalTooLarge": "Voorwaardelijke logica-payload is te groot.",
+      "conditionalInvalid": "Ongeldige voorwaardelijke logica."
+    }
+  },
+  "Frameworks": {
+    "list": {
+      "title": "Kaders",
+      "subtitle": "Controlebibliotheken die worden gebruikt om de antwoorden op vragenlijsten in kaart te brengen aan de vereisten.",
+      "import": "Kader importeren",
+      "gaps": "Dekkingslacunes",
+      "deleteBlocked": "{count,plural,one{Kan niet verwijderen: # controle wordt nog steeds toegewezen aan vragenlijstvragen. Ontkoppel het eerst.} other{Kan niet verwijderen: # controles worden nog steeds toegewezen aan vragenlijstvragen. Ontkoppel ze eerst.}}",
+      "emptyTitle": "Geen kaders",
+      "emptyDescription": "Frameworkgegevens kunnen niet worden geladen.",
+      "controls": "{count,plural,one{# controle} other{# controles}}",
+      "deleteTitle": "Kader verwijderen \"{name} v{version}\"?",
+      "deleteDescription": "Hierdoor worden dit raamwerk en de bijbehorende bestanden permanent verwijderd {count,plural,one{# controle} other{# controles}}. Sjabloonvragen die aan deze besturingselementen zijn toegewezen, verliezen hun toewijzingen. Bestaande beoordelingen en bevindingen worden niet beïnvloed.",
+      "delete": "Verwijderen"
+    },
+    "detail": {
+      "notFound": "Kader niet gevonden",
+      "breadcrumbs": "Kaders",
+      "deleteFramework": "Kader verwijderen",
+      "searchPlaceholder": "Zoekbediening…",
+      "noControlsTitle": "Geen bijpassende bedieningselementen",
+      "noControlsDescription": "Probeer een andere zoekterm."
+    },
+    "control": {
+      "notFound": "Controle niet gevonden",
+      "breadcrumbs": "Kaders",
+      "guidance": "Begeleiding",
+      "mappedQuestions": "In kaart gebrachte vragen ({count})",
+      "noMappedTitle": "Geen in kaart gebrachte vragen",
+      "noMappedDescription": "Er zijn nog geen vragenlijstvragen toegewezen aan deze controle."
+    },
+    "gaps": {
+      "title": "Beheers dekkingslacunes",
+      "subtitle": "Besturingselementen waarbij geen vragen zijn toegewezen aan een sjabloon. Gebruik dit om blinde vlekken in uw beoordelingsdekking te identificeren.",
+      "emptyTitle": "Geen gaten gevonden",
+      "emptyDescription": "Aan elk besturingselement in elk raamwerk is ten minste één vraag gekoppeld.",
+      "covered": "{mapped}/{total} bedekt",
+      "allCovered": "Alle {count,plural,one{# controle} other{# controles}} minimaal één vraag in kaart hebben gebracht.",
+      "errorTitle": "Er is iets misgegaan",
+      "errorDescription": "De weergave van het nalevingstekort kan niet worden geladen. Probeer het opnieuw.",
+      "retry": "Probeer het opnieuw"
+    },
+    "import": {
+      "metadataTitle": "Kader importeren",
+      "title": "Kader importeren",
+      "subtitle": "Upload een CSV-bestand met besturingselementen om een ​​nieuw raamwerk te maken.",
+      "breadcrumb": "Importeren",
+      "cardTitle": "Importeer raamwerk uit CSV",
+      "steps": {
+        "setup": "Instellen en uploaden",
+        "review": "Beoordeling"
+      },
+      "form": {
+        "name": "Kadernaam",
+        "namePlaceholder": "bijv. PCI DSS",
+        "version": "Versie",
+        "versionPlaceholder": "bijv. 4.0",
+        "description": "Beschrijving (optioneel)",
+        "descriptionPlaceholder": "Korte beschrijving van het raamwerk",
+        "csvFile": "CSV-bestand",
+        "downloadTemplate": "Sjabloon",
+        "csvHint": "CSV moet kolommen bevatten: domein, code, titel, begeleiding (begeleiding is optioneel). Optioneel: is_shared_responsibility (true/false, standaard ingesteld op false). Maximaal 1 MB.",
+        "controlsFound": "{count,plural,one{# controle gevonden} other{# controles gevonden}}",
+        "domain": "Domein",
+        "code": "Code",
+        "titleColumn": "Titel",
+        "showingFirst": "Als eerste tonen {shown} van {total} rijen",
+        "next": "Volgende →",
+        "back": "← Terug",
+        "importing": "Importeren…",
+        "import": "Kader importeren",
+        "reviewIntro": "Je staat op het punt een raamwerk te creëren {name} v{version} met {count,plural,one{# controle} other{# controles}}.",
+        "success": "Geïmporteerd \"{name} v{version}\" met {count,plural,one{# controle} other{# controles}}."
+      },
+      "errors": {
+        "noFile": "Er is een CSV-bestand vereist.",
+        "invalidFileType": "Bestand moet een .csv-bestand zijn.",
+        "tooLarge": "CSV-bestand is te groot (max. 1 MB).",
+        "noRows": "CSV-bestand bevat geen gegevensrijen.",
+        "missingColumns": "Ontbrekende CSV-kolommen: {columns}. Verwacht: {expected}",
+        "invalidInput": "Ongeldige invoer.",
+        "nameRequired": "Frameworknaam is vereist",
+        "nameTooLong": "De raamwerknaam moet 200 tekens of minder bevatten",
+        "versionRequired": "Versie is vereist",
+        "versionTooLong": "De versie moet 50 tekens of minder bevatten",
+        "descriptionTooLong": "Beschrijving moet 500 tekens of minder bevatten",
+        "rowDomainRequired": "Rij {row}: domein is vereist",
+        "rowCodeRequired": "Rij {row}: controlecode is vereist",
+        "rowTitleRequired": "Rij {row}: controletitel is vereist",
+        "rowInvalid": "Rij {row}: ongeldige invoer.",
+        "duplicateCode": "Rij {row}: dubbele controlecode \"{code}\".",
+        "duplicateFramework": "Een raamwerk met de naam \"{name}\"versie\"{version}\"bestaat al."
+      }
+    },
+    "shared": "Gedeeld",
+    "error": {
+      "title": "Er is iets misgegaan",
+      "description": "Er is een onverwachte fout opgetreden. Probeer het opnieuw of neem contact op met de ondersteuning.",
+      "retry": "Probeer het opnieuw"
+    },
+    "radar": {
+      "title": "Domeinnalevingsradar",
+      "current": "Huidige beoordeling",
+      "previous": "Vorige beoordeling",
+      "ariaLabel": "Domeinnalevingsradar: {values}",
+      "tableCaption": "Domeinnaleving per percentage",
+      "domain": "Domein",
+      "currentShort": "Huidig",
+      "previousShort": "Vorig",
+      "noPrevious": "Slechts één voltooide beoordeling – geen eerdere gegevens om te vergelijken."
+    },
+    "heatmap": {
+      "metadataNotFound": "Leverancier niet gevonden",
+      "metadataTitle": "Warmtekaart — {name}",
+      "breadcrumbs": "Leveranciers",
+      "subtitle": "Domeinnalevingsradar en heatmap op controleniveau uit recente beoordelingen.",
+      "downloadReport": "PDF-rapport downloaden",
+      "preparingReport": "Rapport voorbereiden…",
+      "emptyTitle": "Geen gegevens beschikbaar",
+      "emptyDescription": "Voor dit raamwerk zijn nog geen beoordelingsgegevens beschikbaar."
+    }
+  },
+  "RiskRegister": {
+    "metaTitle": "Risico register",
+    "title": "Risicoregister",
+    "subtitle": "Alle bevindingen van al uw leveranciers op één plek.",
+    "stats": {
+      "open": "Bevindingen openen",
+      "criticalOpen": "Kritisch geopend",
+      "remediated": "Gesaneerd",
+      "riskAccepted": "Risico geaccepteerd"
+    },
+    "filters": {
+      "status": "Status",
+      "allFindings": "Alle bevindingen",
+      "statusAriaLabel": "Filter bevindingen op status",
+      "severity": "Ernst",
+      "anySeverity": "Elke ernst",
+      "severityAriaLabel": "Filter bevindingen op ernst",
+      "vendor": "Leverancier",
+      "allVendors": "Alle leveranciers",
+      "vendorAriaLabel": "Filter bevindingen op leverancier",
+      "sort": "Soort",
+      "sortAriaLabel": "Sorteer bevindingen",
+      "show": "Show",
+      "findingsOnly": "Alleen bevindingen",
+      "responsibilityAriaLabel": "Filter op verantwoordelijkheid",
+      "customerResponsibility": "Verantwoordelijkheid van de klant",
+      "apply": "Filter",
+      "clear": "Duidelijk",
+      "sorts": {
+        "priority": "Prioriteit",
+        "newest": "Nieuwste",
+        "severity": "Ernst"
+      }
+    },
+    "emptyFiltered": "Er zijn geen bevindingen die overeenkomen met de geselecteerde filters.",
+    "emptyTitle": "Nog geen bevindingen",
+    "emptyDescription": "Bevindingen worden automatisch gegenereerd wanneer leveranciers beoordelingen met gebrekkige antwoorden indienen.",
+    "items": "bevindingen",
+    "responsibility": {
+      "title": "Verantwoordelijkheid van de klant",
+      "noMatch": "Er zijn geen klantverantwoordelijkheidsitems die overeenkomen met de geselecteerde filters.",
+      "vendorFallback": "Leverancier",
+      "assignedTo": "Toegewezen aan {name}"
+    },
+    "bulk": {
+      "selected": "{count} gekozen",
+      "statusRemediated": "Gesaneerd",
+      "statusRiskAccepted": "Risico geaccepteerd",
+      "statusReopen": "Heropenen",
+      "updateTitle": "{count,plural,one{Update # vinden?} other{Update # bevindingen?}}",
+      "updateDescription": "{count, plural, one {# bevinding instellen op \"{status}\".} other {# bevindingen instellen op \"{status}\".}}",
+      "apply": "Toepassen",
+      "applying": "Toepassen...",
+      "clearSelection": "Duidelijke selectie",
+      "note": "Opmerking: {note}",
+      "automatedDescription": "Het antwoord van de leverancier voldeed niet aan het verwachte antwoord.",
+      "errors": {
+        "invalidStatus": "Ongeldige status.",
+        "invalidSelection": "Ongeldige selectiegegevens.",
+        "noFindings": "Geen bevindingen geselecteerd.",
+        "updated": "{count,plural,one{# bijgewerkt vinden} other{# bevindingen bijgewerkt}}",
+        "alreadyRemoved": "({count} al verwijderd)."
+      }
+    },
+    "error": {
+      "title": "Er is iets misgegaan",
+      "description": "Er is een onverwachte fout opgetreden. Probeer het opnieuw of neem contact op met de ondersteuning.",
+      "retry": "Probeer het opnieuw"
+    }
+  },
+  "SelfAssessment": {
+    "metaTitle": "Zelfevaluatie",
+    "title": "Zelfevaluatie",
+    "subtitle": "Beoordeel uw eigen organisatie aan de hand van compliance-frameworks met behulp van hetzelfde vragenlijstportaal dat uw leveranciers gebruiken.",
+    "start": "Nieuwe beoordeling starten",
+    "emptyTitle": "Er zijn nog geen zelfbeoordelingen",
+    "emptyDescription": "Start uw eerste zelfevaluatie om uw organisatie te beoordelen aan de hand van ISO 27001, SOC 2 of andere raamwerken.",
+    "noTemplate": "Geen sjabloon",
+    "new": {
+      "metaTitle": "Nieuwe zelfevaluatie",
+      "breadcrumb": "Nieuw",
+      "title": "Nieuwe zelfevaluatie",
+      "cardTitle": "Beoordelingsdetails",
+      "form": {
+        "title": "Titel",
+        "titlePlaceholder": "bijv. ISO 27001:2022 zelfbeoordeling",
+        "template": "Vragenlijst sjabloon",
+        "templatePlaceholder": "Selecteer een gepubliceerde sjabloon",
+        "noTemplates": "Geen sjablonen gevonden.",
+        "dueDate": "Vervaldatum (optioneel)",
+        "publishFirst": "Publiceer eerst een sjabloon om een ​​zelfevaluatie te starten.",
+        "starting": "Beginnen...",
+        "start": "Beoordeling starten"
+      }
+    }
+  },
+  "Admin": {
+    "metaTitle": "Beheerder",
+    "general": {
+      "metaTitle": "Beheerder — Algemeen",
+      "title": "Algemeen",
+      "subtitle": "Organisatie-identiteit weergegeven in de app.",
+      "cardTitle": "Organisatie",
+      "cardDescription": "De naam, het ondersteunings-e-mailadres en de standaardtaal die worden weergegeven in e-mails en de interface.",
+      "form": {
+        "name": "Naam van de organisatie",
+        "supportEmail": "Ondersteuning e-mail",
+        "defaultLanguage": "Standaardtaal",
+        "defaultLanguageHint": "Wordt gebruikt wanneer een bezoeker geen taal heeft gekozen. Individuele keuzes hebben voorrang.",
+        "saving": "Besparing...",
+        "save": "Redden"
+      },
+      "success": "Organisatie-instellingen opgeslagen.",
+      "errors": {
+        "nameRequired": "Organisatienaam is vereist",
+        "invalidEmail": "Voer een geldig e-mailadres in",
+        "invalidInput": "Ongeldige invoer."
+      }
+    },
+    "appearance": {
+      "metaTitle": "Beheerder — Uiterlijk",
+      "title": "Verschijning",
+      "subtitle": "Branding in de hele app: logo, kleuren en lay-out.",
+      "cardTitle": "Verschijning",
+      "cardDescription": "Pas het logo, de primaire kleur (knoppen) en de secundaire kleur (tags/pillen) aan. Laat een veld leeg om de standaard te gebruiken.",
+      "logo": "Logo",
+      "currentLogoAlt": "Huidig ​​logo",
+      "removeLogoTitle": "Logo verwijderen?",
+      "removeLogoDescription": "Het huidige logo wordt van alle pagina's verwijderd. U kunt op elk gewenst moment een nieuw logo uploaden.",
+      "remove": "Verwijderen",
+      "removeLogo": "Logo verwijderen",
+      "noLogo": "Geen logo geüpload. Upload een PNG of JPG (max. 2 MB).",
+      "primaryColour": "Primaire kleur",
+      "primaryColourHint": "Wordt gebruikt voor hoofdknoppen, koppelingen en actieve statussen.",
+      "secondaryColour": "Secundaire kleur",
+      "secondaryColourHint": "Gebruikt voor tags, pillen, badges en secundaire elementen.",
+      "reset": "Opnieuw instellen",
+      "ragTitle": "RAG-indicatorkleuren",
+      "ragHint": "Wordt gebruikt voor score-indicatoren, voortgangsbalken en de heatmap voor leveranciersrisico's.",
+      "ragGreen": "Groen (compatibel)",
+      "ragGreenHint": "Score ≥ 85%",
+      "ragAmber": "Amber (heeft aandacht nodig)",
+      "ragAmberHint": "Score 60-84%",
+      "ragRed": "Rood (tekort)",
+      "ragRedHint": "Score < 60%",
+      "ragUnscored": "Ongescoord (neutraal)",
+      "ragUnscoredHint": "Nog niet beoordeeld",
+      "layoutTitle": "Indeling",
+      "layoutHint": "Pas de algehele look en feel van het platform aan.",
+      "borderRadius": "Randradius (px)",
+      "borderRadiusHint": "Bepaalt hoe afgeronde hoeken in de app zijn.",
+      "pageWidth": "Paginabreedte",
+      "pageWidthHint": "Beperk de inhoud tot een leesbare breedte of gebruik het volledige scherm.",
+      "constrained": "Beperkt",
+      "full": "Volledige breedte",
+      "saving": "Besparing...",
+      "save": "Bewaar uiterlijk",
+      "success": "Weergave-instellingen opgeslagen.",
+      "errors": {
+        "primaryHex": "De primaire kleur moet een geldige hexadecimale kleur zijn (bijvoorbeeld #3b82f6).",
+        "secondaryHex": "De secundaire kleur moet een geldige hexadecimale kleur zijn (bijvoorbeeld #f59e0b).",
+        "ragGreen": "RAG-groen moet een geldige hexkleur zijn.",
+        "ragAmber": "RAG-amber moet een geldige hexkleur zijn.",
+        "ragRed": "RAG rood moet een geldige hexkleur zijn.",
+        "ragUnscored": "RAG zonder score moet een geldige hexkleur zijn.",
+        "logoTooLarge": "Logo moet kleiner zijn dan 2 MB.",
+        "logoImage": "Logo moet een afbeeldingsbestand zijn.",
+        "logoFormat": "Het logo moet een PNG-, JPG-, GIF- of WEBP-afbeelding zijn.",
+        "logoContent": "De inhoud van het logobestand komt niet overeen met de extensie.",
+        "invalidInput": "Ongeldige invoer."
+      }
+    },
+    "error": {
+      "title": "Er is iets misgegaan",
+      "description": "Er is een onverwachte fout opgetreden. Probeer het opnieuw of neem contact op met de ondersteuning.",
+      "retry": "Probeer het opnieuw"
+    },
+    "email": {
+      "metaTitle": "Beheerder — E-mail",
+      "title": "E-mail",
+      "subtitle": "SMTP-levering en de sjablonen die worden gebruikt voor e-mails van leveranciers en recensenten.",
+      "smtpTitle": "SMTP",
+      "smtpDescription": "Wordt gebruikt om leveranciersuitnodigingen en herinneringen te verzenden. Het wachtwoord wordt in rust gecodeerd.",
+      "form": {
+        "host": "SMTP-host",
+        "port": "SMTP-poort",
+        "username": "SMTP-gebruikersnaam",
+        "password": "SMTP-wachtwoord",
+        "passwordKeep": "Laat dit leeg om het huidige wachtwoord te behouden",
+        "passwordEnter": "Voer het SMTP-wachtwoord in",
+        "passwordHint": "In rust versleuteld opgeslagen en nooit weergegeven.",
+        "fromAddress": "Van adres",
+        "fromName": "Van naam",
+        "saving": "Besparing...",
+        "save": "Redden"
+      },
+      "test": {
+        "label": "Stuur een testmail naar",
+        "placeholder": "jij@bedrijf.com",
+        "sending": "Verzenden...",
+        "send": "Test verzenden",
+        "hint": "Verzendt met behulp van uw opgeslagen SMTP-instellingen. Sla eventuele wijzigingen eerst op."
+      },
+      "templatesTitle": "E-mailsjablonen",
+      "templatesDescription": "Selecteer een sjabloon om het onderwerp en de hoofdtekst ervan te bewerken. Dynamische waarden maken gebruik van tokens met dubbele accolades.",
+      "subject": "Onderwerp",
+      "body": "Lichaam",
+      "editorHint": "Markdown-opmaak wordt ondersteund: gebruik **vet**, *cursief*, lijsten en links. Tokens: {tokens}.",
+      "savingChanges": "Besparing...",
+      "saveChanges": "Wijzigingen opslaan",
+      "resetTitle": "Terugzetten naar standaard?",
+      "resetDescription": "De \"{name}\"onderwerp en hoofdtekst worden vervangen door de ingebouwde standaard. Eventuele aanpassingen gaan verloren.",
+      "reset": "Opnieuw instellen",
+      "resetting": "Resetten...",
+      "resetToDefault": "Resetten naar standaard",
+      "cancel": "Annuleren",
+      "preview": "Voorbeeld",
+      "templateTypes": {
+        "invite": {
+          "label": "E-mail uitnodigen",
+          "description": "Verzonden naar een leverancier wanneer een vragenlijst voor het eerst wordt gedeeld."
+        },
+        "invite-password": {
+          "label": "E-mail met uitnodiging (wachtwoord beveiligd)",
+          "description": "Uitnodigingsvariant met het toegangswachtwoord voor de portal."
+        },
+        "reminder": {
+          "label": "Herinnering e-mail",
+          "description": "Nudge verzonden naar een leverancier naarmate de vervaldatum nadert."
+        },
+        "escalation": {
+          "label": "Escalatie e-mail",
+          "description": "Wordt naar de reviewer verzonden als de vragenlijst te laat is."
+        },
+        "submission": {
+          "label": "Inzending ontvangen e-mail",
+          "description": "Hiermee wordt de revisor geïnformeerd dat een leverancier antwoorden heeft ingediend."
+        },
+        "clarification": {
+          "label": "E-mail teruggestuurd voor verduidelijking",
+          "description": "Wordt naar een leverancier verzonden wanneer de beoordeling opnieuw wordt geopend voor meer informatie."
+        },
+        "reset": {
+          "label": "E-mail voor het opnieuw instellen van het wachtwoord",
+          "description": "Verzonden naar interne medewerkers die een wachtwoordreset aanvragen."
+        },
+        "expiry": {
+          "label": "Herinneringsmail voor vervaldatum",
+          "description": "Verzonden naar de risico-eigenaar van een leverancier wanneer een certificering of contract bijna afloopt."
+        }
+      },
+      "success": "E-mailinstellingen opgeslagen.",
+      "testSuccess": "Testmail verzonden naar {email}.",
+      "templateSaved": "{name} opgeslagen.",
+      "templateReset": "{name} resetten naar standaard.",
+      "errors": {
+        "invalidInput": "Ongeldige invoer.",
+        "invalidEmail": "Voer een geldig e-mailadres in",
+        "invalidPort": "De SMTP-poort moet tussen 1 en 65535 liggen",
+        "invalidRecipient": "Ongeldige ontvanger.",
+        "smtpNotConfigured": "Sla uw SMTP-instellingen op voordat u een test-e-mail verzendt.",
+        "unknownTemplate": "Onbekend e-mailsjabloon.",
+        "subjectRequired": "Onderwerp is vereist.",
+        "bodyRequired": "Lichaam is vereist."
+      }
+    },
+    "emailTracking": {
+      "metaTitle": "Beheerder — E-mail bijhouden",
+      "title": "E-mail volgen",
+      "subtitle": "Bezorgstatus voor elke e-mail die het platform heeft verzonden.",
+      "retentionTitle": "Behoud",
+      "retentionDescription": "E-mailverzendrecords die ouder zijn dan dit aantal dagen, worden automatisch opgeschoond door de geplande opschoning. Stel in op 0 om voor onbepaalde tijd te bewaren.",
+      "retentionLabel": "Bewaren van e-maillogboeken (dagen)",
+      "retentionHelp": "Geldt voor de volgende geplande run.",
+      "cardTitle": "E-mail volgen",
+      "cardDescription": "Bekijk de status van elke e-mail die door het platform wordt verzonden. Inzendingen worden bewaard volgens het geconfigureerde bewaarbeleid.",
+      "description": "Volg elke e-mail die door het platform wordt verzonden: uitnodigingen, herinneringen, escalaties en testberichten. De SMTP-server bevestigt acceptatie; dit garandeert geen bezorging in de mailbox. Logboeken worden bewaard volgens het geconfigureerde bewaarbeleid.",
+      "filters": {
+        "status": "Status",
+        "allStatuses": "Alle statussen",
+        "statusAria": "Filter e-mails op status",
+        "type": "Type",
+        "allTypes": "Alle soorten",
+        "typeAria": "Filter e-mails op type",
+        "recipient": "Ontvanger",
+        "recipientPlaceholder": "e-mail@voorbeeld.com",
+        "from": "Van",
+        "to": "Naar",
+        "rows": "Rijen",
+        "pageSizeAria": "Grootte van e-maillogboekpagina",
+        "filter": "Filter",
+        "clear": "Duidelijk"
+      },
+      "statuses": {
+        "SENT": "Verstuurd",
+        "FAILED": "Mislukt"
+      },
+      "types": {
+        "INVITE": "Uitnodiging",
+        "INVITE-PASSWORD": "Uitnodigen (wachtwoord beveiligd)",
+        "REMINDER": "Herinnering",
+        "ESCALATION": "Escalatie",
+        "SUBMISSION": "Dwang",
+        "CLARIFICATION": "Verduidelijking",
+        "RESET": "Wachtwoord opnieuw instellen",
+        "EXPIRY": "Vervaldatum",
+        "TEST": "Test"
+      },
+      "table": {
+        "date": "Datum",
+        "recipient": "Ontvanger",
+        "subject": "Onderwerp",
+        "type": "Type",
+        "status": "Status",
+        "detail": "Detail",
+        "assessment": "Onderzoek",
+        "sentBy": "Verzonden door"
+      },
+      "noLogs": "Geen e-maillogboeken gevonden.",
+      "pagination": "Pagina {page} van {totalPages} ({total} inzendingen)",
+      "previous": "Vorig",
+      "next": "Volgende",
+      "accepted": "Geaccepteerd door SMTP-server",
+      "system": "Systeem",
+      "retry": "Opnieuw proberen",
+      "retrying": "Opnieuw proberen...",
+      "retrySuccess": "E-mail opnieuw succesvol verzonden.",
+      "testResent": "Test-e-mail opnieuw verzonden.",
+      "errors": {
+        "missingLog": "Ontbrekende vermelding in het e-maillogboek.",
+        "notFound": "E-maillogboekinvoer niet gevonden.",
+        "onlyFailed": "Alleen mislukte e-mails kunnen opnieuw worden geprobeerd.",
+        "resetSingleUse": "Resetlinks zijn voor eenmalig gebruik en kunnen niet opnieuw worden verzonden. Vraag de gebruiker om een ​​nieuwe reset aan te vragen.",
+        "resendFailed": "Het opnieuw verzenden van e-mail is mislukt. Controleer het tabblad tracking voor meer informatie.",
+        "retentionInvalid": "Het bewaren van e-maillogboeken moet 0 of een positief getal zijn.",
+        "retentionSaved": "Het bewaren van e-maillogboeken is opgeslagen."
+      }
+    },
+    "scoring": {
+      "metaTitle": "Beheerder — Scoren",
+      "title": "Scoren",
+      "subtitle": "Risicogewichten en RAG-cut-offs voor leveranciersprofielen en de heatmap.",
+      "cardTitle": "Scoren",
+      "cardDescription": "Risicogewichten en de rood/oranje/groene grenswaarden die worden gebruikt voor leveranciersprofielen en de gap-heatmap.",
+      "riskWeights": "Risicogewichten (numeriek)",
+      "ragThresholds": "RAG-drempels",
+      "ragHint": "Groen aan of boven, oranje aan of boven, rood onder.",
+      "green": "Groen ≥",
+      "amber": "Amberkleurig ≥",
+      "saving": "Besparing...",
+      "save": "Score opslaan",
+      "success": "Score-instellingen opgeslagen.",
+      "errors": {
+        "invalidInput": "Ongeldige invoer."
+      }
+    },
+    "scheduling": {
+      "metaTitle": "Beheerder — Planning",
+      "title": "Planning",
+      "subtitle": "Herinneringen, escalaties en de ingebouwde planner.",
+      "cardTitle": "Planning",
+      "cardDescription": "Geautomatiseerde herinneringen vóór de vervaldatum en escalaties van reviewers voor achterstallige beoordelingen.",
+      "reminderLabel": "Herinnering compensatiedagen",
+      "reminderHint": "Door komma's gescheiden lijst met dagen vóór de vervaldatum voor het verzenden van herinneringen. Voorbeeld: 7, 1 stuurt herinneringen 7 dagen en 1 dag vóór de vervaldatum.",
+      "reminderPlaceholder": "7, 1",
+      "escalationLabel": "Escalatie na (dagen)",
+      "escalationHint": "Dagen na de vervaldatum voordat de reviewer een escalatie-e-mail ontvangt.",
+      "defaultDueLabel": "Standaard verschuldigde aanslag (dagen)",
+      "defaultDueHint": "Nieuwe aanslagen worden standaard ingesteld op dit aantal dagen tot de vervaldatum.",
+      "schedulerLabel": "Voer geplande taken uit binnen de app",
+      "schedulerHint": "Indien ingeschakeld, controleert de applicatie elke vijf minuten op vervalste herinneringen, escalaties, vervalmeldingen, terugkerende beoordelingen, het opschonen van logboeken en het opschonen van zwevende bestanden. Er is geen externe cron-job of planner nodig. Schakel dit alleen uit als u triggert {endpoint} zelf (bijvoorbeeld vanuit een systeemcrontab of Azure Function).",
+      "saving": "Besparing...",
+      "save": "Bewaar planning",
+      "lastRun": "Laatste geplande run: {when}",
+      "never": "Nooit",
+      "justNow": "zojuist",
+      "lessThanMinute": "minder dan een minuut geleden",
+      "minuteAgo": "1 minuut geleden",
+      "minutesAgo": "{count} minuten geleden",
+      "hourAgo": "1 uur geleden",
+      "hoursAgo": "{count} uur geleden",
+      "dayAgo": "1 dag geleden",
+      "daysAgo": "{count} dagen geleden",
+      "success": "Configuratie opgeslagen.",
+      "errors": {
+        "escalationInvalid": "Escalatiedagen moeten minimaal 1 zijn.",
+        "defaultDueInvalid": "De standaard vervaldagen moeten minimaal 1 zijn."
+      }
+    },
+    "retention": {
+      "saving": "Besparing...",
+      "save": "Redden"
+    },
+    "storage": {
+      "metaTitle": "Beheerder — Opslag",
+      "title": "Opslag",
+      "subtitle": "Waar bewijsbestanden staan ​​en wat leveranciers kunnen uploaden.",
+      "fileStorageTitle": "Bestandsopslag",
+      "fileStorageDescription": "Configureer waar bewijsbestanden en bijlagen worden opgeslagen. Als u van provider verandert, worden bestaande bestanden niet gemigreerd.",
+      "uploadConstraintsTitle": "Uploadbeperkingen",
+      "uploadConstraintsDescription": "Er zijn limieten voor grootte en bestandstype toegepast op uploads van bewijsmateriaal van leveranciers.",
+      "form": {
+        "provider": "Aanbieder",
+        "providerHint": "Als u van provider verandert, worden bestaande bestanden niet gemigreerd. Bestanden opgeslagen bij de vorige provider blijven alleen toegankelijk als u terugschakelt.",
+        "local": "Lokale schijf",
+        "s3": "Amazon S3",
+        "azure": "Azure-blob",
+        "s3Title": "Amazon S3",
+        "bucket": "Emmer",
+        "region": "Regio",
+        "regionPlaceholder": "bijv. us-oost-1",
+        "accessKeyId": "Toegangssleutel-ID",
+        "secretAccessKey": "Geheime toegangssleutel",
+        "secretHint": "In rust versleuteld opgeslagen. Laat dit leeg om de bestaande waarde te behouden.",
+        "azureTitle": "Azure-blob",
+        "containerName": "Containernaam",
+        "connectionString": "Verbindingsreeks",
+        "saving": "Besparing…",
+        "save": "Bewaar opslaginstellingen"
+      },
+      "uploads": {
+        "maxSize": "Maximale bestandsuploadgrootte (MB)",
+        "maxSizeHint": "Bewijsbestanden die groter zijn dan deze limiet worden tijdens het uploaden afgewezen.",
+        "allowedExtensions": "Toegestane bestandsextensies",
+        "allowedHint": "Bestandstypen die leveranciers als bewijsmateriaal kunnen uploaden. Selecteer er minstens één.",
+        "saving": "Besparing...",
+        "save": "Redden"
+      },
+      "success": "Opslaginstellingen opgeslagen.",
+      "uploadsSuccess": "Uploadbeperkingen opgeslagen.",
+      "errors": {
+        "invalidInput": "Ongeldige invoer.",
+        "maxUploadInvalid": "De maximale uploadgrootte moet minimaal 1 MB zijn."
+      }
+    },
+    "signIn": {
+      "metaTitle": "Beheerder — Inloggen",
+      "title": "Inloggen",
+      "subtitle": "Hoe medewerkers zich verifiëren en hoe lang ze ingelogd blijven.",
+      "ssoTitle": "Eenmalige aanmelding",
+      "ssoDescription": "Laat medewerkers inloggen met Microsoft Entra ID, Google Workspace of een aangepaste OIDC-provider. Clientreferenties worden in rust versleuteld.",
+      "sessionsTitle": "Sessies",
+      "sessionsDescription": "Aanmeldingsbeperking en automatisch uitloggen voor inactieve sessies.",
+      "sso": {
+        "entraId": "Microsoft Entra-ID",
+        "google": "Google Werkruimte",
+        "oidc": "Aangepaste OIDC",
+        "enabled": "Ingeschakeld",
+        "clientId": "Klant-ID",
+        "clientSecret": "Klantgeheim",
+        "secretKeep": "Laat dit leeg om actueel te blijven",
+        "secretEnter": "Klantgeheim",
+        "secretHint": "In rust versleuteld opgeslagen en nooit weergegeven.",
+        "displayName": "Weergavenaam van provider",
+        "displayNamePlaceholder": "Okta / Auth0 / Sleutelmantel",
+        "issuerUrl": "Uitgever-URL",
+        "issuerPlaceholder": "https://voorbeeld.okta.com",
+        "defaultRole": "Standaardrol voor nieuwe SSO-gebruikers",
+        "allowedDomain": "Beperken tot domein (optioneel)",
+        "allowedDomainPlaceholder": "@bedrijf.com",
+        "disableLocalAuth": "Aanmelden via e-mail/wachtwoord uitschakelen (alleen SSO)",
+        "disableLocalAuthHint": "Verbergt het lokale inlogformulier zodat medewerkers alleen kunnen inloggen via SSO. Genegeerd tenzij ten minste één SSO-provider is ingeschakeld. Een verkeerde configuratie kan dus niet iedereen buitensluiten. Gebruik de onderstaande breekglas-URL voor noodtoegang.",
+        "saving": "Besparing...",
+        "save": "SSO opslaan"
+      },
+      "breakGlass": {
+        "title": "Toegang tot breekglas",
+        "description": "Wanneer lokaal inloggen is uitgeschakeld, wordt op deze geheime URL nog steeds het e-mailadres/wachtwoordformulier weergegeven, zodat een beheerder zich kan aanmelden als SSO niet beschikbaar is. Als u een nieuwe URL genereert, wordt de vorige onmiddellijk ingetrokken.",
+        "configured": "Er is momenteel een break-glass-URL geconfigureerd.",
+        "notConfigured": "Er is nog geen break-glass-URL geconfigureerd.",
+        "generating": "Genereren...",
+        "regenerate": "Genereer de break-glass-URL opnieuw",
+        "generate": "Genereer een break-glass-URL",
+        "success": "Break-glass-URL gegenereerd. Kopieer het nu. Het wordt niet meer weergegeven."
+      },
+      "security": {
+        "loginRateLimit": "Limiet inlogsnelheid (per minuut)",
+        "loginRateLimitHint": "Maximale inlogpogingen per IP-adres per minuut. Verhoging voor gedeelde kantooromgevingen achter één openbaar IP-adres.",
+        "autoLogout": "Automatisch uitloggen (minuten)",
+        "autoLogoutHint": "Meld u automatisch af na zoveel minuten inactiviteit. Stel in op 0 om uit te schakelen. Minimaal 5 minuten indien ingeschakeld.",
+        "saving": "Besparing...",
+        "save": "Redden"
+      },
+      "success": "SSO-instellingen opgeslagen.",
+      "securitySuccess": "Inloginstellingen opgeslagen.",
+      "errors": {
+        "invalidInput": "Ongeldige invoer.",
+        "loginRateInvalid": "De inlogsnelheidslimiet moet minimaal 1 per minuut zijn.",
+        "autoLogoutInvalid": "Automatisch uitloggen moet 0 zijn (uitgeschakeld) of minimaal 5 minuten duren."
+      }
+    },
+    "rateLimits": {
+      "metaTitle": "Beheerder — Tarieflimieten",
+      "title": "Tarieflimieten",
+      "subtitle": "Bescherming tegen misbruik voor het leveranciersportaal en accountherstel.",
+      "cardTitle": "Tarieflimieten (per minuut)",
+      "cardDescription": "Verhoog deze voor drukke leveranciers of gedeelde kantoor-IP's; de standaardinstellingen zijn geschikt voor de meeste implementaties.",
+      "fields": {
+        "portalPageLoadsPerMin": {
+          "label": "Portaalpaginaladingen / min (per bezoeker)",
+          "help": "Hoe vaak de browser van een leverancier de leverancierslink kan laden. Beschermt tegen link-opsomming."
+        },
+        "portalUploadsPerMin": {
+          "label": "Uploads van portaalbewijsmateriaal / min (per bezoeker)",
+          "help": "Het maximale aantal uploads van bewijsbestanden dat een leverancier per minuut kan maken."
+        },
+        "portalSubmitPerMin": {
+          "label": "Portal-inzendingen / min (per link)",
+          "help": "Maximale verzendpogingen voor één leverancierlink."
+        },
+        "portalCommentPerMin": {
+          "label": "Portalopmerkingen / min (per link)",
+          "help": "Het maximale aantal opmerkingen dat een leverancier kan plaatsen op een enkele leverancierslink."
+        },
+        "portalPasswordAttemptsPerMin": {
+          "label": "Portaalwachtwoordpogingen / min (per link)",
+          "help": "Beveiligt een met een wachtwoord beveiligde vragenlijst tegen brute kracht."
+        },
+        "passwordResetPerMin": {
+          "label": "Verzoeken om wachtwoord opnieuw in te stellen / min (per e-mail)",
+          "help": "Beperkt e-mails voor het opnieuw instellen van wachtwoorden van medewerkers voor een bepaald adres."
+        },
+        "breakGlassPerMin": {
+          "label": "Glasbreukpogingen / min (per IP)",
+          "help": "Beperkt de validatie van de SSO-koppeling voor het herstellen van breekglas."
+        }
+      },
+      "saving": "Besparing...",
+      "save": "Tarieflimieten opslaan",
+      "success": "Tarieflimieten opgeslagen.",
+      "errors": {
+        "minimum": "{field} moet minimaal 1 per minuut zijn."
+      }
+    },
+    "api": {
+      "metaTitle": "Beheerder — API",
+      "title": "API",
+      "subtitle": "Programmatische toegang tot de REST API.",
+      "cardTitle": "API-toegang",
+      "cardDescription": "Genereer API-sleutels voor programmatische toegang tot de REST API. Sleutels maken gebruik van Bearer-authenticatie en kunnen worden beperkt op basis van een IP-adres. Sleutels worden slechts één keer weergegeven wanneer ze worden gemaakt.",
+      "enabled": "Schakel API-sleutelverificatie in",
+      "enabledHint": "Met API-sleutels kunnen externe tools de REST API aanroepen zonder browseraanmelding. Sleutels hebben volledige toegang tot elk eindpunt en blijven geldig, onafhankelijk van het account dat ze heeft aangemaakt. Sleutels worden slechts één keer getoond en kunnen later niet meer worden opgehaald. Sleutels die vóór de update van het opzoekvoorvoegsel zijn gemaakt, zijn om veiligheidsredenen uitgeschakeld en moeten opnieuw worden gegenereerd.",
+      "saving": "Besparing...",
+      "save": "Redden",
+      "docs": "API-documentatie →",
+      "keysTitle": "API-sleutels ({count})",
+      "keyCreatedTitle": "Sleutel gemaakt — kopieer deze nu",
+      "keyCreatedHint": "Deze sleutel wordt niet meer getoond. Bewaar het veilig.",
+      "copy": "Kopiëren",
+      "done": "Klaar",
+      "createTitle": "Nieuwe sleutel maken",
+      "name": "Naam",
+      "namePlaceholder": "bijv. CI-pijplijn",
+      "expiry": "Vervaldatum",
+      "expiryOptions": {
+        "30": "30 dagen",
+        "90": "90 dagen",
+        "180": "180 dagen",
+        "365": "1 jaar",
+        "permanent": "Permanent"
+      },
+      "allowedIps": "Toegestane IP's (optioneel)",
+      "allowedIpsPlaceholder": "192.168.1.0/24",
+      "rateLimit": "Snelheidslimiet/min",
+      "rateLimitPlaceholder": "Standaard",
+      "creating": "Creëren...",
+      "create": "Sleutel maken",
+      "empty": "Er zijn nog geen API-sleutels aangemaakt.",
+      "permissionCount": "{count,plural,one{# toestemming} other{# machtigingen}}",
+      "fullAccess": "Volledige toegang",
+      "revoked": "Ingetrokken",
+      "expired": "Verlopen",
+      "lastUsed": "Laatst gebruikt {date}",
+      "neverUsed": "Nooit gebruikt",
+      "requestCount": "{count,plural,one{# verzoek} other{# verzoeken}}",
+      "ips": "IP's: {ips}",
+      "rateLimitSuffix": "Tarieflimiet: {value}/min",
+      "enable": "Inschakelen",
+      "revokeTitle": "API-sleutel intrekken?",
+      "revokeDescription": "Eventuele integraties met \"{name}\" stopt onmiddellijk met werken. Dit kan later opnieuw worden ingeschakeld.",
+      "revoke": "Herroepen",
+      "deleteTitle": "API-sleutel verwijderen?",
+      "deleteDescription": "\"{name}\" wordt definitief verwijderd. Alle integraties die deze sleutel gebruiken, worden definitief verbroken. Dit kan niet ongedaan worden gemaakt.",
+      "delete": "Verwijderen",
+      "keyCreatedMessage": "Sleutel gemaakt: {prefix}. Kopieer de onderstaande sleutel. Deze wordt niet meer weergegeven.",
+      "success": "API-instellingen opgeslagen.",
+      "errors": {
+        "nameRequired": "Sleutelnaam is vereist.",
+        "permissionsRequired": "Selecteer ten minste één machtiging of schakel volledige toegang in.",
+        "invalidInput": "Ongeldige invoer."
+      }
+    },
+    "webhooks": {
+      "metaTitle": "Beheerder — Webhooks",
+      "title": "Webhaken",
+      "subtitle": "Gebeurtenismeldingen worden naar uw eindpunten gepusht.",
+      "cardTitle": "Webhaken",
+      "cardDescription": "Configureer eindpunten om gebeurtenismeldingen te ontvangen wanneer beoordelingen worden ingediend, bevindingen veranderen of certificeringen verlopen.",
+      "endpointsTitle": "Webhook-eindpunten ({count})",
+      "add": "Eindpunt toevoegen",
+      "newTitle": "Nieuwe webhook",
+      "name": "Naam",
+      "namePlaceholder": "bijv. Slack-waarschuwingen, naleving van Teams",
+      "url": "URL",
+      "urlPlaceholder": "https://example.com/webhooks/mitch-risk",
+      "platform": "Platform",
+      "platformPlaceholder": "Selecteer platform",
+      "platforms": {
+        "GENERIC": "Algemeen (HTTP)",
+        "SLACK": "Slank",
+        "MICROSOFT_TEAMS": "Microsoft Teams",
+        "DISCORD": "Meningsverschil"
+      },
+      "events": "Evenementen",
+      "eventLabels": {
+        "ASSESSMENT_SUBMITTED": "Beoordeling ingediend",
+        "ASSESSMENT_OVERDUE": "Beoordeling te laat",
+        "FINDING_CREATED": "Vinding gemaakt",
+        "FINDING_RESOLVED": "Vind opgelost",
+        "CERTIFICATION_EXPIRING": "Certificering verloopt"
+      },
+      "creating": "Creëren...",
+      "create": "Creëren",
+      "cancel": "Annuleren",
+      "empty": "Geen webhooks geconfigureerd. Voeg een eindpunt toe om gebeurtenismeldingen te ontvangen.",
+      "active": "Actief",
+      "disabled": "Gehandicapt",
+      "disable": "Uitzetten",
+      "enable": "Inschakelen",
+      "deleteTitle": "Webhook verwijderen?",
+      "deleteDescription": "Dit eindpunt ontvangt geen gebeurtenissen meer: {url}",
+      "delete": "Verwijderen",
+      "success": "Webhook-eindpunt gemaakt.",
+      "errors": {
+        "urlRequired": "URL is vereist.",
+        "urlTooLong": "De URL moet 500 tekens of minder bevatten.",
+        "nameTooLong": "Naam moet 100 tekens of minder bevatten.",
+        "invalidUrl": "Voer een geldige URL in.",
+        "httpsRequired": "Webhook-URL's moeten HTTPS gebruiken.",
+        "publicOnly": "Webhook-URL's moeten naar een openbaar adres verwijzen. Interne en loopback-hosts zijn niet toegestaan.",
+        "unknownPlatform": "Onbekend platform.",
+        "eventRequired": "Er moet minimaal één gebeurtenis worden geselecteerd."
+      }
+    },
+    "trustCenter": {
+      "metaTitle": "Beheerder — Vertrouwenscentrum",
+      "title": "Vertrouwenscentrum",
+      "subtitle": "Configuratie van openbare nalevingspagina's.",
+      "cardTitle": "Vertrouwenscentrum",
+      "cardDescription": "Openbare pagina op /trust deelt nalevingsbadges, beveiligingsdocumenten, subverwerkers en verhalende secties met leveranciers en partners. Beheer de inhoud onder Beheren → Vertrouwenscentrum.",
+      "enabled": "Schakel het vertrouwenscentrum in",
+      "enabledHint": "Wanneer uitgeschakeld, toont /trust een niet-gevonden bericht en wordt er geen inhoud openbaar aangeboden.",
+      "intro": "Intro (korting)",
+      "introHint": "Korte paragraaf weergegeven onder de naam van de organisatie op de openbare pagina.",
+      "introPlaceholder": "Onze toewijding aan veiligheid en privacy...",
+      "contactEmail": "E-mailadres voor contact",
+      "contactEmailHint": "Getoond onderaan de openbare pagina. Valt terug naar de ondersteunings-e-mail van de organisatie als deze leeg is.",
+      "contactEmailPlaceholder": "beveiliging@voorbeeld.com",
+      "includeInInvites": "Link naar het vertrouwenscentrum in e-mails met uitnodigingen voor leveranciers",
+      "includeInInvitesHint": "Voegt een voettekstregel toe om e-mails uit te nodigen die naar /trust verwijzen. Sjablonen worden niet gewijzigd; de link wordt toegevoegd tijdens het verzenden.",
+      "pageLoads": "Aantal publieke pagina's / min (per IP)",
+      "downloads": "Documentdownloads / min (per IP)",
+      "saving": "Besparing...",
+      "save": "Vertrouwenscentrum opslaan",
+      "success": "Instellingen voor het vertrouwenscentrum opgeslagen.",
+      "errors": {
+        "invalidInput": "Ongeldige invoer.",
+        "invalidEmail": "Voer een geldig e-mailadres in."
+      }
+    },
+    "permissions": {
+      "fullAccess": "Volledige toegang",
+      "fullAccessHint": "Indien geselecteerd, verleent de sleutel alle machtigingen. Haal het vinkje weg om de sleutel te beperken tot een specifieke set machtigingen.",
+      "selectAll": "Selecteer alle machtigingen",
+      "permissionCount": "{granted} / {total} machtigingen",
+      "groups": {
+        "vendors": "Leveranciers",
+        "assessments": "Beoordelingen",
+        "templates": "Sjablonen",
+        "frameworks": "Kaders",
+        "administration": "Administratie",
+        "webhooks": "Webhaken",
+        "trustcenter": "Vertrouwenscentrum",
+        "profile": "Profiel"
+      },
+      "items": {
+        "vendors_view": "Bekijk leveranciers",
+        "vendors_create": "Maak leveranciers aan",
+        "vendors_edit": "Leveranciers bewerken",
+        "vendors_delete": "Leveranciers verwijderen",
+        "assessments_view": "Bekijk beoordelingen",
+        "assessments_create": "Evaluaties maken en verzenden",
+        "assessments_edit": "Koppelingen bewerken en beheren",
+        "assessments_review": "Beoordelen en afronden",
+        "assessments_delete": "Evaluaties verwijderen",
+        "templates_view": "Bekijk sjablonen",
+        "templates_create": "Sjablonen maken",
+        "templates_edit": "Sjablonen bewerken en publiceren",
+        "templates_delete": "Sjablonen verwijderen",
+        "frameworks_view": "Bekijk kaders",
+        "frameworks_edit": "Kaders bewerken",
+        "frameworks_delete": "Kaders verwijderen",
+        "audit_view": "Bekijk audit- en e-maillogboeken",
+        "users_manage": "Beheer gebruikers",
+        "roles_manage": "Beheer rollen",
+        "settings_manage": "Beheer instellingen",
+        "api_manage": "Beheer API-toegang",
+        "webhooks_manage": "Beheer webhooks",
+        "trustcenter_manage": "Beheer de inhoud van het vertrouwenscentrum",
+        "profile_view": "Eigen profiel bekijken en bewerken"
+      }
+    },
+    "users": {
+      "metaTitle": "Beheerder — Gebruikers",
+      "title": "Gebruikers",
+      "subtitle": "Personeelsaccounts en hun toegang.",
+      "cardTitle": "Personeelsrekeningen",
+      "cardDescription": "Maak personeelsaccounts aan en beheer hun rol, toegang en wachtwoord.",
+      "searchLabel": "Zoek personeel",
+      "searchPlaceholder": "Zoek personeel…",
+      "newUser": "Nieuwe gebruiker",
+      "empty": "Nog geen gebruikers.",
+      "noMatch": "Er zijn geen medewerkers die overeenkomen met uw zoekopdracht.",
+      "added": "Toegevoegd {date}",
+      "sso": "SSO",
+      "local": "Lokaal",
+      "disabled": "Gehandicapt",
+      "addTitle": "Gebruiker toevoegen",
+      "addDescription": "Maak een personeelsaccount aan met een startrol en wachtwoord.",
+      "name": "Naam",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "role": "Rol",
+      "creating": "Creëren...",
+      "create": "Gebruiker aanmaken",
+      "cancel": "Annuleren",
+      "save": "Redden",
+      "access": "Toegang",
+      "enableSignIn": "Schakel inloggen in",
+      "disableSignIn": "Schakel inloggen uit",
+      "disableTitle": "Gebruiker uitschakelen?",
+      "disableDescription": "{name} kunnen niet meer inloggen. Hun gegevens blijven bewaard.",
+      "disable": "Uitzetten",
+      "newPasswordPlaceholder": "Nieuw wachtwoord",
+      "resetTitle": "Wachtwoord opnieuw instellen?",
+      "resetDescription": "Dit overschrijft {name}''s huidige wachtwoord. Ze moeten het nieuwe wachtwoord gebruiken om in te loggen.",
+      "reset": "Opnieuw instellen",
+      "ssoPassword": "Dit account logt in via SSO. Het wachtwoord wordt beheerd door de identiteitsprovider.",
+      "dangerZone": "Gevarenzone",
+      "deleteTitle": "Gebruiker verwijderen?",
+      "deleteDescription": "{name} zal definitief worden verwijderd. Dit kan niet ongedaan worden gemaakt.",
+      "ownedVendors": "{count,plural,one{# de leverancier verliest zijn eigenaarstoewijzing} other{# leveranciers verliezen hun eigenaarstoewijzing}}",
+      "reviewingAssessments": "{count,plural,one{# beoordeling verliest zijn beoordelaar} other{# beoordelingen verliezen hun beoordelaar}}",
+      "resolvedFindings": "{count,plural,one{# Bij het vinden van de vondst wordt de oplosser gewist} other{# Bij bevindingen wordt de oplosser gewist}}",
+      "answerReviews": "{count,plural,one{# antwoordbeoordeling wordt geanonimiseerd} other{# antwoordrecensies worden geanonimiseerd}}",
+      "createdApiKeys": "{count,plural,one{# De API-sleutel verliest de referentie van de maker} other{# API-sleutels verliezen hun makerreferentie}}",
+      "auditPreserved": "De auditgeschiedenis blijft behouden (weergegeven als 'Verwijderde gebruiker').",
+      "delete": "Verwijderen",
+      "deleteUser": "Gebruiker verwijderen",
+      "loading": "Laden...",
+      "success": "Gebruiker gemaakt.",
+      "errors": {
+        "nameRequired": "Naam is vereist.",
+        "emailInvalid": "Voer een geldig e-mailadres in.",
+        "passwordTooShort": "Gebruik minimaal 12 tekens.",
+        "roleRequired": "Rol is vereist.",
+        "invalidInput": "Ongeldige invoer.",
+        "roleNotFound": "Geselecteerde rol bestaat niet.",
+        "emailExists": "Er bestaat al een gebruiker met dit e-mailadres.",
+        "createFailed": "Kan de gebruiker niet aanmaken. Probeer het opnieuw."
+      }
+    },
+    "roles": {
+      "metaTitle": "Beheerder — Rollen",
+      "title": "Rollen",
+      "subtitle": "Machtigingensets toegewezen aan personeelsaccounts.",
+      "cardTitle": "Rollen",
+      "cardDescription": "Definieer machtigingensets en wijs deze toe aan personeelsaccounts.",
+      "searchPlaceholder": "Zoek rollen…",
+      "newRole": "Nieuwe rol",
+      "noMatch": "Er zijn geen rollen die overeenkomen met uw zoekopdracht.",
+      "system": "Systeem",
+      "userCount": "{count,plural,one{# gebruiker} other{# gebruikers}}",
+      "edit": "Bewerking",
+      "duplicate": "Duplicaat",
+      "deleteTitle": "Rol verwijderen?",
+      "deleteDescription": "De \"{name}De rol \" wordt definitief verwijderd. Dit is alleen mogelijk als er geen gebruikers aan zijn toegewezen.",
+      "delete": "Verwijderen",
+      "createTitle": "Rol creëren",
+      "adminLocked": "De beheerdersrol heeft altijd alle rechten en kan niet worden gewijzigd.",
+      "editorDescription": "Kies de machtigingen die deze rol verleent. Gebruikers die aan deze rol zijn toegewezen, krijgen precies deze machtigingen.",
+      "name": "Naam",
+      "description": "Beschrijving",
+      "saving": "Besparing...",
+      "create": "Rol creëren",
+      "saveChanges": "Wijzigingen opslaan",
+      "cancel": "Annuleren",
+      "success": "Rol gemaakt.",
+      "updated": "Rol bijgewerkt.",
+      "errors": {
+        "nameRequired": "Rolnaam is vereist.",
+        "nameTooLong": "De rolnaam moet 50 tekens of minder bevatten.",
+        "descriptionTooLong": "Beschrijving moet 200 tekens of minder bevatten.",
+        "invalidInput": "Ongeldige invoer.",
+        "roleExists": "Er bestaat al een rol met deze naam.",
+        "createFailed": "Kan de rol niet maken. Probeer het opnieuw.",
+        "missingRole": "Ontbrekende rol.",
+        "notFound": "Rol niet gevonden.",
+        "adminLocked": "De machtigingen voor de beheerdersrol kunnen niet worden gewijzigd.",
+        "updateFailed": "Kan de rol niet updaten. Probeer het opnieuw.",
+        "duplicateFailed": "Kan de rol niet dupliceren: {reason}",
+        "deleteFailed": "Kan de rol niet verwijderen: {reason}",
+        "systemCannotDelete": "Systeemrollen kunnen niet worden verwijderd.",
+        "assignedUsers": "Deze rol wordt toegewezen aan een of meer gebruikers. Wijs ze opnieuw toe voordat u ze verwijdert."
+      }
+    },
+    "audit": {
+      "metaTitle": "Beheerder — Auditlogboek",
+      "title": "Auditlogboek",
+      "subtitle": "Administratieve en systeemactiviteit op het hele platform.",
+      "retentionTitle": "Behoud",
+      "retentionDescription": "Auditvermeldingen die ouder zijn dan dit aantal dagen, worden automatisch opgeschoond door de geplande opschoning. Stel in op 0 om voor onbepaalde tijd te bewaren.",
+      "retentionLabel": "Bewaren van auditlogboeken (dagen)",
+      "retentionHelp": "Geldt voor de volgende geplande run.",
+      "cardTitle": "Auditlogboek",
+      "cardDescription": "Volg administratieve en systeemactiviteiten op het hele platform.",
+      "action": "Actie",
+      "user": "Gebruiker",
+      "from": "Van",
+      "to": "Naar",
+      "rows": "Rijen",
+      "allActions": "Alle acties",
+      "allUsers": "Alle gebruikers",
+      "actionFilterLabel": "Filter het auditlogboek op actie",
+      "userFilterLabel": "Filter het auditlogboek op gebruiker",
+      "pageSizeLabel": "Paginagrootte van auditlogboek",
+      "filter": "Filter",
+      "clear": "Duidelijk",
+      "export": "Exporteren",
+      "allResults": "Alle resultaten",
+      "currentPage": "Huidige pagina",
+      "empty": "Geen auditgegevens gevonden.",
+      "date": "Datum",
+      "entity": "Entiteit",
+      "deleted": "Verwijderd",
+      "pageSummary": "Pagina {page} van {totalPages} ({totalCount, plural, one {# item} other {# items}})",
+      "previous": "Vorig",
+      "next": "Volgende",
+      "csvHeader": "Datum, Gebruiker, Actie, Entiteit, ID",
+      "success": "Auditretentie opgeslagen.",
+      "clarificationRequested": "opheldering gevraagd",
+      "errors": {
+        "retentionInvalid": "Auditretentie moet 0 of een positief getal zijn.",
+        "invalidInput": "Ongeldige invoer."
+      },
+      "actions": {
+        "LOGIN": "Login",
+        "CREATE_ASSESSMENT": "Beoordeling gemaakt",
+        "DELETE_ASSESSMENT": "Beoordeling verwijderd",
+        "SEND_ASSESSMENT": "Beoordeling verzonden",
+        "REVOKE_ASSESSMENT": "Beoordelingslink ingetrokken",
+        "EXTEND_ASSESSMENT": "Uitgebreide beoordelingslink",
+        "REGENERATE_ASSESSMENT": "Opnieuw gegenereerde beoordelingslink",
+        "SUBMIT_ASSESSMENT": "Ingezonden beoordeling",
+        "REVIEW_DECISION": "Beslissing herzien",
+        "SEND_BACK_TO_VENDOR": "Teruggestuurd naar leverancier",
+        "REOPEN_REVIEW": "Heropende recensie",
+        "UPDATE_FINDING": "Bijgewerkte bevinding",
+        "ADD_COMMENT": "Commentaar toegevoegd",
+        "REOPEN_ASSESSMENT": "Evaluatie heropend",
+        "FINALIZE_ASSESSMENT": "Afgeronde beoordeling",
+        "CREATE_VENDOR": "Leverancier gemaakt",
+        "UPDATE_VENDOR": "Bijgewerkte leverancier",
+        "DELETE_VENDOR": "Leverancier verwijderd",
+        "IMPORT_VENDOR": "Geïmporteerde leverancier",
+        "CREATE_TEMPLATE": "Sjabloon gemaakt",
+        "UPDATE_TEMPLATE": "Bijgewerkt sjabloon",
+        "DELETE_TEMPLATE": "Sjabloon verwijderd",
+        "PUBLISH_TEMPLATE": "Gepubliceerde sjabloon",
+        "UNPUBLISH_TEMPLATE": "Niet-gepubliceerde sjabloon",
+        "CREATE_TEMPLATE_VERSION": "Sjabloonversie gemaakt",
+        "DUPLICATE_TEMPLATE": "Gedupliceerde sjabloon",
+        "IMPORT_TEMPLATE": "Geïmporteerde sjabloon",
+        "CREATE_USER": "Gebruiker aangemaakt",
+        "DELETE_USER": "Gebruiker verwijderd",
+        "DISABLE_USER": "Uitgeschakelde gebruiker",
+        "ENABLE_USER": "Ingeschakelde gebruiker",
+        "CHANGE_ROLE": "Gewijzigde rol",
+        "CREATE_ROLE": "Rol aangemaakt",
+        "UPDATE_ROLE": "Bijgewerkte rol",
+        "UPDATE_PROFILE": "Bijgewerkt profiel",
+        "DELETE_ROLE": "Rol verwijderd",
+        "DUPLICATE_ROLE": "Dubbele rol",
+        "RESET_PASSWORD": "Wachtwoord opnieuw instellen",
+        "UPDATE_SETTINGS": "Bijgewerkte instellingen",
+        "API_KEY_CREATED": "API-sleutel gemaakt",
+        "API_KEY_REVOKED": "Ingetrokken API-sleutel",
+        "API_KEY_ENABLED": "API-sleutel ingeschakeld",
+        "API_KEY_DELETED": "API-sleutel verwijderd",
+        "CREATE_CERTIFICATION": "Certificering toegevoegd",
+        "UPDATE_CERTIFICATION": "Bijgewerkte certificering",
+        "DELETE_CERTIFICATION": "Certificering verwijderd",
+        "CREATE_FRAMEWORK": "Geïmporteerd raamwerk",
+        "DELETE_FRAMEWORK": "Kader verwijderd",
+        "UPDATE_RESPONSIBILITY_ACTION": "Bijgewerkte verantwoordelijkheidsactie",
+        "MARK_CONTROL_SHARED": "Controle gemarkeerd als gedeelde verantwoordelijkheid",
+        "UNMARK_CONTROL_SHARED": "Ongemarkeerde controle als gedeelde verantwoordelijkheid",
+        "RETRY_EMAIL_SEND": "Opnieuw geprobeerd e-mail te verzenden",
+        "CREATE_WEBHOOK": "Webhook gemaakt",
+        "DELETE_WEBHOOK": "Webhook verwijderd",
+        "ENABLE_WEBHOOK": "Webhook ingeschakeld",
+        "DISABLE_WEBHOOK": "Uitgeschakelde webhook",
+        "UPDATE_TRUST_CENTER": "Bijgewerkt vertrouwenscentrum"
+      }
+    },
+    "health": {
+      "metaTitle": "Beheerder — Gezondheid",
+      "title": "Gezondheid",
+      "subtitle": "Systeemdiagnostiek en status van geplande taken.",
+      "application": "Sollicitatie",
+      "status": "Status",
+      "running": "Rennen",
+      "version": "Versie",
+      "commit": "Verbinden",
+      "buildTime": "Bouw tijd",
+      "uptime": "Uptime",
+      "memory": "Geheugen (hoop)",
+      "lessThanMinute": "minder dan 1m",
+      "database": "Database",
+      "connection": "Verbinding",
+      "connected": "Aangesloten",
+      "error": "Fout"
+    }
+  },
+  "NotFound": {
+    "description": "De pagina die u zoekt bestaat niet of is verplaatst.",
+    "backToDashboard": "Terug naar dashboard"
+  },
+  "BulkSend": {
+    "metaTitle": "Bulkverzending",
+    "title": "Bulkverzending",
+    "subtitle": "Stuur dezelfde vragenlijst tegelijk naar meerdere leveranciers.",
+    "breadcrumb": "Bulkverzending",
+    "steps": {
+      "configure": "Configureer",
+      "vendors": "Leveranciers",
+      "send": "Versturen"
+    },
+    "template": "Sjabloon",
+    "selectTemplate": "Selecteer sjabloon",
+    "dueDate": "Deadline",
+    "reviewer": "Recensent",
+    "unassigned": "Niet toegewezen",
+    "portalPassword": "Portaalwachtwoord (optioneel)",
+    "portalPasswordPlaceholder": "Gedeeld wachtwoord voor alle leveranciers",
+    "next": "Volgende →",
+    "back": "← Terug",
+    "filterPlaceholder": "Leveranciers filteren...",
+    "selectAll": "Selecteer alles",
+    "selectedCount": "{count} gekozen",
+    "noMatch": "Er zijn geen leveranciers die overeenkomen met uw zoekopdracht.",
+    "noEmail": "Geen e-mail",
+    "sendingTo": "Verzenden {template} naar {count,plural,one{# leverancier} other{# leveranciers}}",
+    "due": "Vanwege: {date}",
+    "reviewerLabel": "Recensent: {name}",
+    "portalPasswordSet": "Portaalwachtwoord ingesteld",
+    "sending": "Verzenden...",
+    "sendTo": "Verzenden naar {count,plural,one{# leverancier} other{# leveranciers}}",
+    "sentCount": "{count,plural,one{Verstuurd # onderzoek} other{Verstuurd # beoordelingen}}",
+    "skippedCount": "{count,plural,one{# kon niet worden verzonden} other{# kon niet worden verzonden}}",
+    "emailFailedCount": "{count,plural,one{# e-mail kon niet worden afgeleverd} other{# e-mails konden niet worden afgeleverd}}",
+    "errors": {
+      "noTemplate": "Geen sjabloon geselecteerd.",
+      "noVendors": "Geen leveranciers geselecteerd."
+    }
+  },
+  "VendorImport": {
+    "metaTitle": "Leveranciers importeren",
+    "title": "Leveranciers importeren",
+    "subtitle": "Upload een CSV-bestand om leveranciers in bulk aan te maken.",
+    "breadcrumb": "Importeren",
+    "cardTitle": "Importeer leveranciers uit CSV",
+    "steps": {
+      "upload": "Uploaden",
+      "review": "Beoordeling"
+    },
+    "csvFile": "CSV-bestand",
+    "template": "Sjabloon",
+    "columnsHelp": "CSV moet kolommen bevatten: id (optioneel), naam, e-mail contact, plus optioneel: externalid, contactnaam, niveau, website, notities, servicebeschrijving, gegevensgevoeligheid, contracthernieuwde datum, contractwaarde, geografisch risico, tags. Alleen naam en e-mailadres zijn vereist. Maximaal 1 MB. Voeg een leveranciers-ID of externalid toe om een ​​bestaande leverancier bij te werken in plaats van een nieuwe te maken.",
+    "found": "{count,plural,one{# leverancier gevonden} other{# leveranciers gevonden}}",
+    "showingFirst": "Toont de eerste 10 van {count} rijen",
+    "next": "Volgende →",
+    "back": "← Terug",
+    "aboutToImport": "U staat op het punt te importeren {count,plural,one{# leverancier} other{# leveranciers}}.",
+    "skippedNote": "Sommige rijen kunnen worden overgeslagen als de validatie mislukt (dubbele e-mails, ontbrekende verplichte velden).",
+    "importing": "Importeren…",
+    "importVendors": "Leveranciers importeren",
+    "errors": {
+      "noFile": "Geen bestand geselecteerd.",
+      "fileTooLarge": "Bestand is te groot (max. 1 MB).",
+      "noRows": "Geen rijen gevonden in CSV. De eerste rij moet een koptekst zijn.",
+      "noValidVendors": "Geen geldige leveranciers gevonden. Eerste fout: {reason}",
+      "rowInvalid": "Rij {row}: ongeldige invoer.",
+      "rowNameRequired": "Rij {row}: leveranciersnaam is vereist.",
+      "rowContactEmailRequired": "Rij {row}: contact-e-mailadres is vereist.",
+      "duplicateExternalId": "{name}: dubbele externe ID",
+      "rowFailed": "{name}: {reason}",
+      "updateRequiresEdit": "Deze import zou bestaande leveranciers bijwerken. Voor bijwerken is bewerkingsmachtiging van de leverancier vereist.",
+      "unknown": "onbekend",
+      "importComplete": "Importeren voltooid: {summary}.",
+      "created": "{count} gemaakt",
+      "updated": "{count} bijgewerkt",
+      "skipped": "{count,plural,one{# rij overgeslagen} other{# rijen overgeslagen}}"
+    }
+  },
+  "CompareVendors": {
+    "metaTitle": "Vergelijk leveranciers",
+    "title": "Vergelijk leveranciers",
+    "subtitle": "Kies twee leveranciers om hun laatst voltooide beoordelingen naast elkaar te vergelijken.",
+    "breadcrumb": "Vergelijken",
+    "notEnoughVendorsTitle": "Niet genoeg leveranciers",
+    "notEnoughVendorsDescription": "Om te kunnen vergelijken heb je minimaal twee leveranciers nodig. Maak eerst meer leveranciers aan.",
+    "vendorA": "Leverancier A",
+    "vendorB": "Leverancier B",
+    "selectVendor": "Selecteer een leverancier",
+    "compare": "Vergelijken",
+    "notEnoughAssessmentsTitle": "Niet genoeg beoordelingen",
+    "notEnoughAssessmentsDescription": "Beide leveranciers moeten ten minste één voltooide of nog te beoordelen beoordeling hebben om te kunnen vergelijken.",
+    "comparisonSubtitle": "{vendorA} versus {vendorB}",
+    "statusLabel": "{title} · {status}",
+    "question": "Vraag",
+    "changed": "veranderd",
+    "notApplicable": "N.v.t"
+  },
+  "ApiDocs": {
+    "metaTitle": "API-documentatie",
+    "loading": "API-documentatie laden...",
+    "loadFailed": "Swagger-gebruikersinterface kan niet worden geladen."
+  },
+  "CompareAssessments": {
+    "metaTitle": "Vergelijk beoordelingen",
+    "metadataTitle": "Vergelijk beoordelingen — {vendorName}",
+    "notFound": "Leverancier niet gevonden",
+    "title": "Vergelijk beoordelingen",
+    "breadcrumb": "Vergelijk beoordelingen",
+    "instructions": "Selecteer twee beoordelingen op de leverancierspagina om ze naast elkaar te vergelijken. Nadat u er twee heeft geopend, maakt u een bladwijzer voor deze pagina met ?left=[id]&right=[id].",
+    "comparisonSubtitle": "{leftTitle} ({leftStatus}) versus {rightTitle} ({rightStatus})",
+    "question": "Vraag",
+    "changed": "veranderd",
+    "notApplicable": "N.v.t"
+  },
+  "Profile": {
+    "metaTitle": "Profiel",
+    "title": "Profiel",
+    "subtitle": "Beheer uw accountgegevens.",
+    "accountDetails": "Accountgegevens",
+    "ssoDescription": "U logt in via eenmalige aanmelding. Uw e-mail wordt beheerd door uw identiteitsprovider.",
+    "localDescription": "Uw naam en e-mailadres voor inloggen.",
+    "name": "Naam",
+    "email": "E-mail",
+    "passwordTitle": "Wachtwoord",
+    "passwordDescription": "Om wijzigingen aan te brengen, moet u uw huidige wachtwoord invoeren.",
+    "currentPassword": "Huidig ​​wachtwoord",
+    "newPassword": "Nieuw wachtwoord",
+    "optional": "(optioneel)",
+    "confirmNewPassword": "Bevestig nieuw wachtwoord",
+    "ssoPasswordNote": "Uw wachtwoord wordt beheerd door uw identiteitsprovider (SSO), u hoeft hier dus niets aan te veranderen.",
+    "saving": "Besparing...",
+    "saveChanges": "Wijzigingen opslaan",
+    "errorDescription": "Je profiel kon niet worden geladen. Probeer het opnieuw of neem contact op met de ondersteuning.",
+    "errors": {
+      "notAuthenticated": "Niet geauthenticeerd.",
+      "accountNotFound": "Account niet gevonden.",
+      "currentPasswordIncorrect": "Het huidige wachtwoord is onjuist.",
+      "emailTaken": "Deze e-mail is al in gebruik.",
+      "nameRequired": "Naam is vereist.",
+      "emailInvalid": "Voer een geldig e-mailadres in.",
+      "currentPasswordRequired": "Huidig ​​wachtwoord is vereist.",
+      "passwordTooShort": "Nieuw wachtwoord moet minimaal 12 tekens lang zijn.",
+      "passwordMismatch": "Wachtwoorden komen niet overeen.",
+      "invalidInput": "Ongeldige invoer.",
+      "success": "Profiel bijgewerkt."
+    }
+  },
+  "TrustCenterManager": {
+    "metaTitle": "Vertrouwenscentrum",
+    "title": "Vertrouwenscentrum",
+    "subtitle": "Publiceer nalevingsbadges, beveiligingsdocumenten, subverwerkers en verhalende secties op uw openbare vertrouwenscentrumpagina.",
+    "viewPublic": "Bekijk openbare pagina",
+    "disabledBanner": "Het vertrouwenscentrum is momenteel uitgeschakeld. Schakel het in via Instellingen → Vertrouwenscentrum — tot die tijd toont de openbare pagina een niet-gevonden bericht.",
+    "errorDescription": "De beheerder van het vertrouwenscentrum kan niet worden geladen. Probeer het opnieuw.",
+    "common": {
+      "edit": "Bewerking",
+      "draft": "Voorlopige versie",
+      "published": "Gepubliceerd",
+      "saving": "Besparing...",
+      "cancel": "Annuleren",
+      "moveUp": "Beweging {name} omhoog",
+      "moveDown": "Beweging {name} omlaag",
+      "deleteNamed": "Verwijderen {name}"
+    },
+    "badges": {
+      "cardTitle": "Nalevingsbadges",
+      "add": "Badge toevoegen",
+      "empty": "Geen badges geconfigureerd. Voeg certificeringen zoals SOC 2 of ISO 27001 toe om ze op de openbare pagina weer te geven.",
+      "verificationLink": "Verificatielink",
+      "deleteTitle": "Badge verwijderen?",
+      "deleteDescription": "De \"{name}\"-badge wordt verwijderd uit het vertrouwenscentrum.",
+      "addTitle": "Badge toevoegen",
+      "editTitle": "Badge bewerken",
+      "editorDescription": "Weergegeven als certificeringstegel op de openbare vertrouwenscentrumpagina.",
+      "titleLabel": "Titel",
+      "issuer": "Uitgever",
+      "issuerPlaceholder": "bijv. AICPA, BSI",
+      "description": "Beschrijving",
+      "descriptionPlaceholder": "bijv. SOC 2 Type II jaarlijks gecontroleerd",
+      "verificationUrl": "Verificatie-URL",
+      "image": "Badge-afbeelding",
+      "imageHint": "PNG, JPG, GIF of WebP. Maximaal 2 MB. SVG-bestanden zijn niet toegestaan.",
+      "imageHintKeep": " Laat leeg om de huidige afbeelding te behouden.",
+      "save": "Badge opslaan"
+    },
+    "documents": {
+      "cardTitle": "Beveiligingsdocumenten",
+      "add": "Document toevoegen",
+      "empty": "Geen documenten geconfigureerd. Upload beleid, beveiligingsrapporten of compliance-artefacten voor openbare download.",
+      "noFile": "Geen bestand geüpload",
+      "deleteTitle": "Document verwijderen?",
+      "deleteDescription": "\"{name}\" en het bijbehorende bestand wordt uit het vertrouwenscentrum verwijderd.",
+      "addTitle": "Document toevoegen",
+      "editTitle": "Document bewerken",
+      "editorDescription": "Gepubliceerde documenten kunnen worden gedownload vanaf de openbare vertrouwenscentrumpagina.",
+      "titleLabel": "Titel",
+      "description": "Beschrijving",
+      "descriptionPlaceholder": "Waar dit document over gaat",
+      "category": "Categorie",
+      "file": "Bestand",
+      "replaceFile": "Bestand vervangen",
+      "fileHint": "PDF, PNG, JPG, DOCX of XLSX. Maximaal 20 MB.",
+      "fileHintCurrent": " Huidig: {fileName}. Als u vervangt, wordt het oude bestand verwijderd.",
+      "save": "Bewaar document",
+      "categories": {
+        "POLICY": "Beleid",
+        "SECURITY": "Beveiligingsrapport",
+        "COMPLIANCE": "Naleving",
+        "PRIVACY": "Privacy",
+        "OTHER": "Ander"
+      }
+    },
+    "sections": {
+      "cardTitle": "Aangepaste secties",
+      "add": "Sectie toevoegen",
+      "empty": "Geen aangepaste secties. Voeg markdown-blokken toe voor een overzicht, veelgestelde vragen of iets anders dat niet wordt gedekt door de gestructureerde typen.",
+      "deleteTitle": "Sectie verwijderen?",
+      "deleteDescription": "\"{name}\" wordt verwijderd uit het vertrouwenscentrum.",
+      "addTitle": "Sectie toevoegen",
+      "editTitle": "Sectie bewerken",
+      "editorDescription": "Gratis kortingsblokken weergegeven op de openbare vertrouwenscentrumpagina.",
+      "titleLabel": "Titel",
+      "body": "Lichaam (afprijzing)",
+      "bodyPlaceholder": "Ondersteunt markdown-opmaak.",
+      "save": "Sectie opslaan"
+    },
+    "subprocessors": {
+      "cardTitle": "Subverwerkers",
+      "add": "Voeg subverwerker toe",
+      "empty": "Geen subprocessors geconfigureerd. Vermeld derde partijen die namens u gegevens verwerken.",
+      "deleteTitle": "Subverwerker verwijderen?",
+      "deleteDescription": "\"{name}\" wordt verwijderd uit het vertrouwenscentrum.",
+      "addTitle": "Voeg subverwerker toe",
+      "editTitle": "Subverwerker bewerken",
+      "editorDescription": "Derde partijen die namens u gegevens verwerken, vermeld op de openbare vertrouwenscentrumpagina.",
+      "name": "Naam",
+      "purpose": "Doel",
+      "purposePlaceholder": "bijv. Cloudhosting van applicatiegegevens",
+      "location": "Gegevenslocatie",
+      "locationPlaceholder": "bijv. Australië (Sydney)",
+      "website": "Website",
+      "websitePlaceholder": "https://…",
+      "logo": "Logo-afbeelding",
+      "logoHint": "PNG, JPG, GIF of WebP. Maximaal 2 MB. SVG-bestanden zijn niet toegestaan.",
+      "logoHintKeep": " Laat dit leeg om het huidige logo te behouden.",
+      "logoUrl": "…of haal een logo op van een URL",
+      "logoUrlPlaceholder": "https://example.com/logo.png",
+      "logoUrlHint": "De afbeelding wordt gedownload en opgeslagen met de andere bestanden van het vertrouwenscentrum; de openbare pagina laadt nooit externe hosts. Een geüpload bestand heeft voorrang op een URL.",
+      "save": "Subverwerker opslaan"
+    },
+    "errors": {
+      "invalidInput": "Ongeldige invoer.",
+      "titleRequired": "Titel is vereist.",
+      "nameRequired": "Naam is vereist.",
+      "invalidUrl": "Voer een geldige URL in.",
+      "sectionTooLong": "De sectietekst is te lang (max. 10.000 tekens).",
+      "badgeNotFound": "Badge niet gevonden.",
+      "documentFileRequired": "Er is een documentbestand vereist.",
+      "saveFailed": "Opslaan mislukt.",
+      "badgeSaved": "Badge opgeslagen.",
+      "documentSaved": "Document opgeslagen.",
+      "sectionSaved": "Sectie opgeslagen.",
+      "subprocessorSaved": "Subverwerker opgeslagen.",
+      "imageType": "Afbeeldingen moeten PNG, JPG, GIF of WebP zijn (SVG is niet toegestaan).",
+      "imageInvalid": "Deze afbeelding is niet geldig.",
+      "imageTooLarge": "Afbeelding is te groot (max {max} MB).",
+      "fileTooLarge": "Bestand is te groot (max {max} MB).",
+      "fileInvalid": "Bestandsinhoud komt niet overeen met de extensie.",
+      "fileType": "Dit bestandstype wordt niet geaccepteerd.",
+      "imageFetchFailed": "Afbeeldings-URL kan niet worden opgehaald.",
+      "imageContent": "Afbeeldings-URL moet PNG-, JPG-, GIF- of WebP-inhoud retourneren."
+    }
+  },
+  "Shell": {
+    "workspace": {
+      "dashboard": "Dashboard",
+      "vendors": "Leveranciers",
+      "assessments": "Beoordelingen",
+      "riskRegister": "Risico register",
+      "selfAssessment": "Zelfevaluatie",
+      "frameworks": "Kaders",
+      "templates": "Sjablonen",
+      "trustCenter": "Vertrouwenscentrum",
+      "admin": "Beheerder",
+      "groups": {
+        "risk": "Risico",
+        "frameworks": "Kaders",
+        "manage": "Beheren"
+      }
+    },
+    "admin": {
+      "backToWorkspace": "Terug naar werkruimte",
+      "groups": {
+        "workspace": "Werkruimte",
+        "email": "E-mail",
+        "assessments": "Beoordelingen",
+        "files": "Bestanden",
+        "accessSecurity": "Toegang & beveiliging",
+        "integrations": "Integraties",
+        "platform": "Platform"
+      },
+      "sections": {
+        "general": "Algemeen",
+        "appearance": "Verschijning",
+        "email": "E-mail",
+        "emailTracking": "E-mail volgen",
+        "scoring": "Scoren",
+        "scheduling": "Planning",
+        "storage": "Opslag",
+        "users": "Gebruikers",
+        "roles": "Rollen",
+        "signIn": "Inloggen",
+        "rateLimits": "Tarieflimieten",
+        "api": "API",
+        "webhooks": "Webhaken",
+        "trustCenter": "Vertrouwenscentrum",
+        "auditLog": "Auditlogboek",
+        "health": "Gezondheid"
+      }
+    },
+    "header": {
+      "admin": "Beheerder",
+      "toggleTheme": "Schakel van thema",
+      "themeLight": "Licht",
+      "themeDark": "Donker",
+      "themeSystem": "Systeem",
+      "profile": "Profiel",
+      "language": "Taal",
+      "signOut": "Meld u af"
+    },
+    "sidebar": {
+      "toggle": "Zijbalk schakelen"
+    },
+    "breadcrumbs": {
+      "label": "Broodkruimel",
+      "dashboard": "Dashboard"
+    },
+    "commandPalette": {
+      "label": "Commandopalet",
+      "searchPlaceholder": "Pagina's zoeken...",
+      "noResults": "Geen resultaten.",
+      "navigate": "navigeren",
+      "open": "open",
+      "close": "dichtbij",
+      "or": "of",
+      "items": {
+        "dashboard": {
+          "label": "Dashboard",
+          "subtitle": "Overzicht leveranciersrisico's"
+        },
+        "vendors": {
+          "label": "Leveranciers",
+          "subtitle": "Beheer leveranciers"
+        },
+        "assessments": {
+          "label": "Beoordelingen",
+          "subtitle": "Vragenlijsten"
+        },
+        "frameworks": {
+          "label": "Frameworks",
+          "subtitle": "Nalevingscontroles"
+        },
+        "templates": {
+          "label": "Sjablonen",
+          "subtitle": "Vragenlijstbouwer"
+        },
+        "profile": {
+          "label": "Profiel",
+          "subtitle": "Uw account"
+        },
+        "adminGeneral": {
+          "label": "Beheerder · Algemeen",
+          "subtitle": "Organisatie"
+        },
+        "adminUsers": {
+          "label": "Beheerder · Gebruikers",
+          "subtitle": "Personeelsrekeningen"
+        },
+        "adminRoles": {
+          "label": "Beheerder · Rollen",
+          "subtitle": "Rechten"
+        },
+        "adminApi": {
+          "label": "Beheerder · API",
+          "subtitle": "API-toegang"
+        },
+        "adminAudit": {
+          "label": "Beheerder · Auditlogboek",
+          "subtitle": "Activiteitenlogboek"
+        },
+        "apiDocs": {
+          "label": "API-documenten",
+          "subtitle": "OpenAPI / Swagger"
+        }
+      }
+    },
+    "idle": {
+      "title": "Sessie verloopt",
+      "description": "U wordt afgemeld {countdown,plural,one{# seconde} other{# seconden}} wegens inactiviteit. Beweeg uw muis of druk op een willekeurige toets om aangemeld te blijven.",
+      "staySignedIn": "Blijf ingelogd"
+    },
+    "scrollToTop": "Scroll naar boven",
+    "error": {
+      "title": "Er is iets misgegaan",
+      "description": "Er is een onverwachte fout opgetreden. Probeer het opnieuw of neem contact op met de ondersteuning.",
+      "retry": "Probeer het opnieuw"
+    }
+  },
+  "Trust": {
+    "title": "{orgName} Vertrouwenscentrum",
+    "compliance": "Naleving & certificeringen",
+    "expired": "Verlopen",
+    "expiringSoon": "Verloopt binnenkort",
+    "verify": "Verifiëren",
+    "documents": "Beveiligingsdocumenten",
+    "download": "Downloaden",
+    "subprocessors": "Subverwerkers",
+    "name": "Naam",
+    "purpose": "Doel",
+    "location": "Locatie",
+    "contactPrompt": "Vragen over ons veiligheidsbeleid?",
+    "categories": {
+      "POLICY": "Beleid",
+      "SECURITY": "Beveiligingsrapport",
+      "COMPLIANCE": "Naleving",
+      "PRIVACY": "Privacy",
+      "OTHER": "Ander"
+    }
+  },
+  "Portal": {
+    "metaTitle": "Vragenlijst leverancier",
+    "noscript": "JavaScript is vereist om deze vragenlijst in te vullen. Schakel JavaScript in uw browserinstellingen in.",
+    "logoAlt": "Logo",
+    "linkNotFound": "Link niet gevonden",
+    "linkInvalid": "Deze vragenlijstlink is ongeldig.",
+    "linkExpiredTitle": "Link verlopen",
+    "linkExpiredBody": "Deze vragenlijstlink is verlopen. Neem contact op met de aanvrager voor een nieuwe link.",
+    "submittedTitle": "{title} - ingediend",
+    "submittedBanner": "✓ Uw antwoorden zijn verzonden.",
+    "submittedBody": "De aanvrager zal uw antwoorden beoordelen en kan om opheldering vragen. U kunt terugkeren naar deze link om eventuele updates te bekijken.",
+    "notApplicableShort": "N.v.t",
+    "decisions": {
+      "APPROVED": "Goedgekeurd",
+      "CLARIFICATION_REQUESTED": "Opheldering gevraagd"
+    },
+    "notAvailableTitle": "Niet beschikbaar",
+    "notAvailableBody": "Deze vragenlijst is momenteel niet beschikbaar.",
+    "additionalInfoTitle": "Er is om aanvullende informatie gevraagd.",
+    "additionalInfoBody": "Controleer de gemarkeerde vragen en dien deze opnieuw in als u klaar bent.",
+    "password": {
+      "title": "Wachtwoord vereist",
+      "description": "Deze vragenlijst is beveiligd met een wachtwoord. Voer het door de aanvrager verstrekte wachtwoord in om door te gaan.",
+      "label": "Wachtwoord",
+      "placeholder": "Voer wachtwoord in",
+      "verifying": "Verifiëren...",
+      "continue": "Doorgaan",
+      "tooMany": "Te veel pogingen. Wacht even.",
+      "notSet": "Voor deze link is geen wachtwoord ingesteld.",
+      "incorrect": "Onjuist wachtwoord."
+    },
+    "error": {
+      "title": "Er is iets misgegaan",
+      "description": "Er is een onverwachte fout opgetreden tijdens het laden van de vragenlijst. Neem voor hulp contact op met de organisatie die u deze link heeft gestuurd.",
+      "retry": "Probeer het opnieuw"
+    },
+    "loading": "Vragenlijst laden…",
+    "upload": {
+      "tooMany": "Te veel uploads. Wacht even.",
+      "linkInvalid": "Deze link is niet langer geldig.",
+      "noFile": "Geen bestand geselecteerd.",
+      "invalidQuestion": "Ongeldige vraag.",
+      "tooLarge": "Bestand overschrijdt de {max} MB-limiet.",
+      "badType": "Bestanden van het type .{ext} zijn niet toegestaan.",
+      "dangerousType": "Dit bestandstype is niet toegestaan.",
+      "mismatch": "De bestandsinhoud komt niet overeen met een .{ext} bestand."
+    },
+    "questionnaire": {
+      "yes": "Ja",
+      "no": "Nee",
+      "maxUpload": "Max {maxUploadMb} MB. Toegestaan: {extensions}.",
+      "uploading": " Uploaden…",
+      "uploaded": "Geüpload: {fileName}",
+      "remove": "Verwijderen",
+      "selectPlaceholder": "Selecteer…",
+      "confirmStatement": "Ik bevestig deze verklaring",
+      "clarification": "De recensent vroeg om opheldering over dit antwoord.",
+      "notApplicable": "Niet van toepassing",
+      "commentPlaceholder": "Voeg een reactie toe…",
+      "send": "Versturen",
+      "autosaveHint": "Uw antwoorden worden automatisch opgeslagen. U kunt deze pagina op elk gewenst moment sluiten en terugkeren via dezelfde link.",
+      "saveExpired": "Deze link is verlopen. Uw recente wijzigingen konden niet worden opgeslagen.",
+      "saveError": "We kunnen uw laatste wijzigingen niet opslaan. Controleer uw verbinding en probeer het opnieuw.",
+      "retrySave": "Probeer opnieuw op te slaan",
+      "expiry": {
+        "expired": "Deze link is verlopen.",
+        "hours": "Deze link verloopt over {hours,plural,one{# uur} other{# uur}}.",
+        "minutes": "Deze link verloopt over {minutes,plural,one{# minuut} other{# notulen}}."
+      },
+      "sectionCounter": "· Sectie {current} van {total}",
+      "saving": "Besparing…",
+      "saveFailed": "Opslaan mislukt",
+      "savedAt": "Opgeslagen bij {time}",
+      "lastSavedAt": "Laatst opgeslagen op {time}",
+      "expires": "Verloopt {date}",
+      "back": "Rug",
+      "continue": "Doorgaan",
+      "reviewAnswers": "Bekijk de antwoorden",
+      "continueWarning": "{count,plural,one{# De vereiste vraag over deze sectie heeft nog steeds een antwoord nodig.} other{# vereiste vragen over dit gedeelte hebben nog steeds antwoorden nodig.}} U kunt doorgaan en terugkomen.",
+      "reviewHeading": "Controleer uw antwoorden",
+      "reviewAnswered": "{answered}/{total} beantwoord",
+      "reviewMissing": "{count} vereist ontbreekt",
+      "openSection": "Open gedeelte",
+      "submitting": "Verzenden…",
+      "submit": "Vragenlijst indienen",
+      "submitTitle": "Vragenlijst indienen?",
+      "submitDescription": "Na verzending kunt u uw antwoorden niet meer bewerken. Weet u zeker dat u klaar bent om in te dienen?",
+      "cancel": "Annuleren",
+      "submitConfirm": "Indienen",
+      "missingRequired": "{count,plural,one{Geef alstublieft antwoord # verplichte vraag voordat u deze indient.} other{Geef alstublieft antwoord # vereiste vragen voordat u deze indient.}}",
+      "linkInvalid": "Deze link is niet langer geldig.",
+      "vendorAuthor": "Leverancier"
+    }
+  },
+  "Pdf": {
+    "common": {
+      "pageOf": "Pagina {page} van {total}",
+      "na": "N.v.t",
+      "none": "--",
+      "yes": "Ja",
+      "no": "Nee",
+      "notScored": "Niet gescoord",
+      "tier": "Laag: {tier}",
+      "template": "Sjabloon: {name} v{version}",
+      "reviewer": "Recensent: {name}",
+      "generated": "Gegenereerd {date}",
+      "due": "Vanwege: {date}",
+      "completed": "Voltooid: {date}",
+      "automatedFindingDescription": "Het antwoord van de leverancier voldeed niet aan het verwachte antwoord."
+    },
+    "tiers": {
+      "CRITICAL": "Kritisch",
+      "HIGH": "Hoog",
+      "MEDIUM": "Medium",
+      "LOW": "Laag"
+    },
+    "questionTypes": {
+      "YES_NO": "Ja / Nee",
+      "MULTIPLE_CHOICE": "Enkele keuze",
+      "FREE_TEXT": "Vrije tekst",
+      "FILE_UPLOAD": "Bestand uploaden",
+      "DATE": "Datum",
+      "NUMERIC": "Numeriek",
+      "COMBOBOX": "Combobox",
+      "MULTI_SELECT": "Meervoudig selecteren",
+      "RATING": "Beoordeling",
+      "URL": "URL",
+      "EMAIL": "E-mail",
+      "CHECKBOX": "Selectievakje"
+    },
+    "statuses": {
+      "DRAFT": "Voorlopige versie",
+      "SENT": "Verstuurd",
+      "IN_PROGRESS": "In uitvoering",
+      "SUBMITTED": "Ingediend",
+      "UNDER_REVIEW": "Wordt beoordeeld",
+      "COMPLETED": "Voltooid"
+    },
+    "assessment": {
+      "score": "Scoren",
+      "customerResponsibility": "Verantwoordelijkheid van de klant: {percent}% ({completed}/{total} voltooid)",
+      "responses": "Reacties ({count})",
+      "question": "Vraag",
+      "answer": "Antwoord",
+      "type": "Type",
+      "weight": "Gewicht",
+      "compliant": "Meewerkend",
+      "scoreColumn": "Scoren",
+      "findings": "Bevindingen ({count})"
+    },
+    "framework": {
+      "complianceReport": "{frameworkName} {version} — Nalevingsrapport",
+      "summary": "Samenvatting",
+      "overallScore": "Totaalscore:",
+      "domainsAssessed": "Beoordeelde domeinen:",
+      "controlsMapped": "Controles in kaart gebracht:",
+      "domainCompliance": "Domeinnaleving",
+      "domain": "Domein",
+      "current": "Huidig",
+      "previous": "Vorig",
+      "change": "Wijziging",
+      "controlHeatmap": "Controle heatmap",
+      "control": "Controle",
+      "title": "Titel",
+      "compliance": "Naleving",
+      "status": "Status",
+      "ragGreen": "Groente",
+      "ragAmber": "Amber",
+      "ragRed": "Rood",
+      "ragNone": "Niet beoordeeld"
+    },
+    "portfolio": {
+      "title": "Titel",
+      "vendors": "Leveranciers",
+      "averageScore": "Gemiddelde score",
+      "openFindings": "Bevindingen openen",
+      "needsAttention": "Heeft aandacht nodig",
+      "scoreDistribution": "Scoreverdeling",
+      "green": "Groen (≥85%)",
+      "amber": "Amberkleurig (60–84%)",
+      "red": "Rood (<60%)",
+      "unscored": "Ongescoord",
+      "vendorsByTier": "Leveranciers per niveau",
+      "assessmentsByStatus": "Beoordelingen op status",
+      "vendorsCount": "Leveranciers ({count})",
+      "vendor": "Leverancier",
+      "tier": "Laag",
+      "score": "Scoren",
+      "lastAssessed": "Laatst beoordeeld",
+      "assessments": "Beoordelingen",
+      "notAssessed": "Niet beoordeeld",
+      "topDeficientControls": "Meest gebrekkige controles ({count})",
+      "control": "Controle",
+      "vendorsAffected": "Leveranciers getroffen"
+    }
+  },
+  "Email": {
+    "footer": "Deze e-mail is verzonden door {appName}. Als de knop niet werkt, kopieer en plak dan de link in uw browser.",
+    "trustFooter": "Meer informatie over ons beveiligingsbeleid: {url}",
+    "testSubject": "{appName} — SMTP-test",
+    "testBody": "Uw SMTP-instellingen werken correct.",
+    "testSent": "Test-e-mail verzonden.",
+    "smtpNotConfigured": "SMTP is niet geconfigureerd.",
+    "transporterFailed": "Kan transporter niet maken.",
+    "sendFailed": "Kan niet verzenden: {reason}",
+    "retryMessage": "Controleer uw vragenlijst en verzend deze opnieuw."
+  },
+  "Auth": {
+    "tagline": "Risicobeheer van leveranciers",
+    "login": {
+      "title": "Log in",
+      "description": "Meld u aan bij uw account.",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "submit": "Log in",
+      "submitting": "Inloggen…",
+      "forgot": "Wachtwoord vergeten?",
+      "or": "of",
+      "invalid": "Ongeldig e-mailadres of wachtwoord.",
+      "tooMany": "Te veel pogingen. Wacht even en probeer het opnieuw."
+    },
+    "forgot": {
+      "title": "Wachtwoord vergeten",
+      "description": "Voer uw e-mailadres in en wij sturen u een resetlink.",
+      "email": "E-mail",
+      "submit": "Resetlink verzenden",
+      "submitting": "Verzenden...",
+      "back": "Terug naar inloggen",
+      "invalidEmail": "Voer een geldig e-mailadres in.",
+      "rateLimited": "Als er een account met dat e-mailadres bestaat, is er onlangs al een resetlink verzonden.",
+      "sent": "Als er een account met dat e-mailadres bestaat, is er een resetlink verzonden."
+    },
+    "reset": {
+      "title": "Wachtwoord opnieuw instellen",
+      "description": "Kies een nieuw wachtwoord voor uw account.",
+      "missing": "Deze resetlink ontbreekt of is ongeldig. Vraag een nieuwe aan via de",
+      "expired": "Deze resetlink is verlopen of is al gebruikt. Vraag een nieuwe aan via de",
+      "forgotLink": "pagina voor vergeten wachtwoord",
+      "forUser": "Kies een nieuw wachtwoord voor {email}.",
+      "newPassword": "Nieuw wachtwoord",
+      "confirmPassword": "Bevestig wachtwoord",
+      "submit": "Wachtwoord opnieuw instellen",
+      "submitting": "Resetten...",
+      "back": "Terug naar inloggen",
+      "invalidLink": "Ongeldige resetlink.",
+      "invalidPassword": "Gebruik een wachtwoord dat aan de eisen voldoet.",
+      "expiredToken": "Deze resetlink is ongeldig of verlopen."
+    },
+    "setup": {
+      "title": "Beheerder aanmaken",
+      "cardTitle": "Maak de eerste beheerder",
+      "description": "Stel het initiële beheerdersaccount in om het leveranciersrisico te beheren.",
+      "fullName": "Volledige naam",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "passwordHint": "Minimaal 12 tekens.",
+      "submit": "Beheerder aanmaken",
+      "submitting": "Creëren…",
+      "alreadyDone": "Het instellen is al voltooid.",
+      "invalid": "Controleer de naam, het e-mailadres en het wachtwoord (minimaal 12 tekens).",
+      "roleError": "Kan de beheerdersrol niet initialiseren. Probeer het opnieuw.",
+      "createdSignIn": "Account aangemaakt. Meld u aan."
+    },
+    "sso": {
+      "orSignInWith": "of log in met"
+    }
+  }
+}
