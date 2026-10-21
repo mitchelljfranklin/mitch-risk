@@ -2,6 +2,7 @@
 
 import { randomBytes } from "crypto";
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
@@ -29,16 +30,25 @@ import {
 export type CertificationActionState =
   { ok: boolean; message: string } | undefined;
 
+type AttachmentMessages = {
+  fileType: string;
+  fileTooLarge: string;
+  fileInvalid: string;
+  fileRecordFailed: string;
+  fileUploaded: string;
+};
+
 export async function saveCertificationAction(
   previousState: CertificationActionState,
   formData: FormData,
 ): Promise<CertificationActionState> {
   await requirePermission(PERMISSIONS.VENDORS_EDIT);
+  const translations = await getTranslations("Vendors.certifications");
 
   const vendorId = getField(formData, "vendorId");
   const certificationId = getField(formData, "certificationId");
   if (!vendorId) {
-    return { ok: false, message: "Missing vendor." };
+    return { ok: false, message: translations("errors.missingVendor") };
   }
 
   const parsed = certificationSchema.safeParse({
@@ -49,10 +59,7 @@ export async function saveCertificationAction(
     notes: getField(formData, "notes"),
   });
   if (!parsed.success) {
-    return {
-      ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
-    };
+    return { ok: false, message: translations("errors.invalidInput") };
   }
 
   const user = await getCurrentUser();
@@ -62,10 +69,7 @@ export async function saveCertificationAction(
   if (certificationId) {
     const existingCert = await getCertification(certificationId);
     if (!existingCert || existingCert.vendorId !== vendorId) {
-      return {
-        ok: false,
-        message: "Certification does not belong to this vendor.",
-      };
+      return { ok: false, message: translations("errors.wrongVendor") };
     }
     await updateCertification(certificationId, parsed.data);
     savedId = certificationId;
@@ -100,13 +104,27 @@ export async function saveCertificationAction(
     formData,
     "VendorCertification",
     savedId,
+    {
+      fileType: translations("errors.fileType"),
+      fileTooLarge: translations("errors.fileTooLarge", {
+        max: MAX_ATTACHMENT_BYTES / (1024 * 1024),
+      }),
+      fileInvalid: translations("errors.fileInvalid"),
+      fileRecordFailed: translations("errors.fileRecordFailed"),
+      fileUploaded: translations("errors.fileUploaded"),
+    },
   );
   const attachmentNote =
     attachmentResult && !attachmentResult.ok
-      ? ` Attachment failed: ${attachmentResult.message}`
+      ? translations("errors.attachmentFailed", {
+          reason: attachmentResult.message,
+        })
       : "";
 
-  return { ok: true, message: `Certification saved.${attachmentNote}` };
+  return {
+    ok: true,
+    message: `${translations("errors.saved")}${attachmentNote}`,
+  };
 }
 
 export async function deleteCertificationAction(formData: FormData) {
@@ -154,25 +172,23 @@ async function handleAttachmentUpload(
   formData: FormData,
   entityType: string,
   entityId: string,
+  messages: AttachmentMessages,
 ): Promise<{ ok: boolean; message: string } | undefined> {
   const file = formData.get("attachmentFile") as File | null;
   if (!file || !(file instanceof File) || file.size === 0) return undefined;
 
   const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
   if (!ALLOWED_ATTACHMENT_EXTS.includes(ext)) {
-    return { ok: false, message: "File type not allowed." };
+    return { ok: false, message: messages.fileType };
   }
 
   if (file.size > MAX_ATTACHMENT_BYTES) {
-    return {
-      ok: false,
-      message: `File is too large (max ${MAX_ATTACHMENT_BYTES / (1024 * 1024)} MB).`,
-    };
+    return { ok: false, message: messages.fileTooLarge };
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
   if (!validateMagicBytes(ext, buffer)) {
-    return { ok: false, message: "This file type is not accepted." };
+    return { ok: false, message: messages.fileInvalid };
   }
   const storageKey = `attachment-${randomBytes(12).toString("hex")}.${ext}`;
 
@@ -204,10 +220,10 @@ async function handleAttachmentUpload(
           : String(cleanupError),
       );
     }
-    return { ok: false, message: "Failed to save file record." };
+    return { ok: false, message: messages.fileRecordFailed };
   }
 
-  return { ok: true, message: "File uploaded." };
+  return { ok: true, message: messages.fileUploaded };
 }
 
 export async function removeAttachmentAction(formData: FormData) {

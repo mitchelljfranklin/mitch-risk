@@ -113,29 +113,34 @@ async function recordAudit(entityId: string): Promise<void> {
 }
 
 // Shared raster-image validation for badge and subprocessor images.
+type TrustCenterImageMessages = {
+  imageType: string;
+  imageInvalid: string;
+  imageTooLarge: string;
+  fileType: string;
+  imageFetchFailed: string;
+  imageContent: string;
+  invalidUrl: string;
+};
+
 async function validateImageBuffer(
   buffer: Buffer,
   ext: string,
-  label: string,
+  messages: TrustCenterImageMessages,
 ): Promise<{ ok: true } | { ok: false; message: string }> {
   if (!TRUST_CENTER_IMAGE_EXTS.includes(ext)) {
-    return {
-      ok: false,
-      message: `${label} images must be PNG, JPG, GIF or WebP (SVG is not allowed).`,
-    };
+    return { ok: false, message: messages.imageType };
   }
   if (!validateMagicBytes(ext, buffer)) {
-    return {
-      ok: false,
-      message: `This ${label.toLowerCase()} image is not valid.`,
-    };
+    return { ok: false, message: messages.imageInvalid };
   }
   return { ok: true };
 }
 
 async function saveBadgeImage(
   file: File | null,
-  keyPrefix = "trust-badge",
+  keyPrefix: string,
+  messages: TrustCenterImageMessages,
 ): Promise<{ ok: true; imageKey: string } | { ok: false; message: string }> {
   if (!file || !(file instanceof File) || file.size === 0) {
     return { ok: true, imageKey: "" };
@@ -143,24 +148,17 @@ async function saveBadgeImage(
 
   const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
   if (!["png", "jpg", "jpeg", "gif", "webp"].includes(ext)) {
-    return {
-      ok: false,
-      message:
-        "Badge images must be PNG, JPG, GIF or WebP (SVG is not allowed).",
-    };
+    return { ok: false, message: messages.imageType };
   }
   if (file.size > MAX_TRUST_CENTER_IMAGE_BYTES) {
-    return {
-      ok: false,
-      message: `Badge image is too large (max ${MAX_TRUST_CENTER_IMAGE_BYTES / (1024 * 1024)} MB).`,
-    };
+    return { ok: false, message: messages.imageTooLarge };
   }
   if (isDangerousUploadMime(file.type)) {
-    return { ok: false, message: "This file type is not accepted." };
+    return { ok: false, message: messages.fileType };
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const validation = await validateImageBuffer(buffer, ext, "Badge");
+  const validation = await validateImageBuffer(buffer, ext, messages);
   if (!validation.ok) return validation;
 
   const imageKey = `${keyPrefix}-${randomBytes(12).toString("hex")}.${ext}`;
@@ -177,10 +175,10 @@ async function saveBadgeImage(
 async function fetchAndStoreRemoteImage(
   rawUrl: string,
   prefix: string,
-  label: string,
+  messages: TrustCenterImageMessages,
 ): Promise<{ ok: true; imageKey: string } | { ok: false; message: string }> {
   const target = validateWebhookTarget(rawUrl);
-  if (!target.ok) return { ok: false, message: target.reason };
+  if (!target.ok) return { ok: false, message: messages.invalidUrl };
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 10_000);
@@ -190,21 +188,15 @@ async function fetchAndStoreRemoteImage(
       redirect: "follow",
     });
     if (!response.ok) {
-      return { ok: false, message: `${label} image URL could not be fetched.` };
+      return { ok: false, message: messages.imageFetchFailed };
     }
     const declaredLength = Number(response.headers.get("content-length") ?? 0);
     if (declaredLength > MAX_TRUST_CENTER_IMAGE_BYTES) {
-      return {
-        ok: false,
-        message: `Image is too large (max ${MAX_TRUST_CENTER_IMAGE_BYTES / (1024 * 1024)} MB).`,
-      };
+      return { ok: false, message: messages.imageTooLarge };
     }
     const buffer = Buffer.from(await response.arrayBuffer());
     if (buffer.length > MAX_TRUST_CENTER_IMAGE_BYTES) {
-      return {
-        ok: false,
-        message: `Image is too large (max ${MAX_TRUST_CENTER_IMAGE_BYTES / (1024 * 1024)} MB).`,
-      };
+      return { ok: false, message: messages.imageTooLarge };
     }
 
     // Derive the extension from the response content type (URLs may omit
@@ -221,19 +213,16 @@ async function fetchAndStoreRemoteImage(
     };
     const ext = extByMime[contentType] ?? "";
     if (!ext) {
-      return {
-        ok: false,
-        message: `${label} image URL must return PNG, JPG, GIF or WebP content.`,
-      };
+      return { ok: false, message: messages.imageContent };
     }
-    const validation = await validateImageBuffer(buffer, ext, label);
+    const validation = await validateImageBuffer(buffer, ext, messages);
     if (!validation.ok) return validation;
 
     const imageKey = `${prefix}-${randomBytes(12).toString("hex")}.${ext}`;
     await storage.save(imageKey, buffer);
     return { ok: true, imageKey };
   } catch {
-    return { ok: false, message: `${label} image URL could not be fetched.` };
+    return { ok: false, message: messages.imageFetchFailed };
   } finally {
     clearTimeout(timeout);
   }
@@ -247,6 +236,17 @@ export async function saveTrustBadgeAction(
 ): Promise<TrustCenterActionState> {
   await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
   const translations = await getTranslations("TrustCenterManager");
+  const imageMessages = {
+    imageType: translations("errors.imageType"),
+    imageInvalid: translations("errors.imageInvalid"),
+    imageTooLarge: translations("errors.imageTooLarge", {
+      max: MAX_TRUST_CENTER_IMAGE_BYTES / (1024 * 1024),
+    }),
+    fileType: translations("errors.fileType"),
+    imageFetchFailed: translations("errors.imageFetchFailed"),
+    imageContent: translations("errors.imageContent"),
+    invalidUrl: translations("errors.invalidUrl"),
+  };
 
   const parsed = parseForm(
     trustCenterBadgeSchema,
@@ -260,7 +260,7 @@ export async function saveTrustBadgeAction(
   const imageFile = formData.get("imageFile");
   const image =
     imageFile instanceof File && imageFile.size > 0
-      ? await saveBadgeImage(imageFile)
+      ? await saveBadgeImage(imageFile, "trust-badge", imageMessages)
       : { ok: true as const, imageKey: "" };
 
   if (!image.ok) return { ok: false, message: image.message };
@@ -344,6 +344,13 @@ export async function saveTrustDocumentAction(
 ): Promise<TrustCenterActionState> {
   await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
   const translations = await getTranslations("TrustCenterManager");
+  const documentMessages = {
+    fileType: translations("errors.fileType"),
+    fileTooLarge: translations("errors.fileTooLarge", {
+      max: MAX_ATTACHMENT_BYTES / (1024 * 1024),
+    }),
+    fileInvalid: translations("errors.fileInvalid"),
+  };
 
   const parsed = parseForm(
     trustCenterDocumentSchema,
@@ -361,7 +368,7 @@ export async function saveTrustDocumentAction(
     if (id) {
       await updateTrustDocument(id, parsed.data);
       if (file instanceof File && file.size > 0) {
-        const prepared = await prepareTrustDocumentFile(file);
+        const prepared = await prepareTrustDocumentFile(file, documentMessages);
         await persistTrustDocumentFile(id, prepared);
       }
     } else {
@@ -373,7 +380,7 @@ export async function saveTrustDocumentAction(
       }
       // Validate the upload BEFORE creating the record so a rejected file
       // never leaves an orphan document row behind.
-      const prepared = await prepareTrustDocumentFile(file);
+      const prepared = await prepareTrustDocumentFile(file, documentMessages);
       const document = await createTrustDocument(parsed.data);
       entityId = document.id;
       try {
@@ -409,7 +416,16 @@ export async function saveTrustDocumentAction(
 // Validates then prepares a document file with the shared upload rules:
 // extension allowlist, size cap, magic bytes. Pure validation + buffer read
 // so callers can reject before creating any records.
-async function prepareTrustDocumentFile(file: File): Promise<{
+type TrustCenterDocumentMessages = {
+  fileType: string;
+  fileTooLarge: string;
+  fileInvalid: string;
+};
+
+async function prepareTrustDocumentFile(
+  file: File,
+  messages: TrustCenterDocumentMessages,
+): Promise<{
   fileName: string;
   buffer: Buffer;
   storageKey: string;
@@ -418,20 +434,18 @@ async function prepareTrustDocumentFile(file: File): Promise<{
 }> {
   const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
   if (!ALLOWED_ATTACHMENT_EXTS.includes(ext)) {
-    throw new Error("File type not allowed.");
+    throw new Error(messages.fileType);
   }
   if (file.size > MAX_ATTACHMENT_BYTES) {
-    throw new Error(
-      `File is too large (max ${MAX_ATTACHMENT_BYTES / (1024 * 1024)} MB).`,
-    );
+    throw new Error(messages.fileTooLarge);
   }
   if (isDangerousUploadMime(file.type)) {
-    throw new Error("This file type is not accepted.");
+    throw new Error(messages.fileType);
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
   if (!validateMagicBytes(ext, buffer)) {
-    throw new Error("This file type is not accepted.");
+    throw new Error(messages.fileInvalid);
   }
 
   return {
@@ -497,6 +511,17 @@ export async function saveTrustSubprocessorAction(
 ): Promise<TrustCenterActionState> {
   await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
   const translations = await getTranslations("TrustCenterManager");
+  const imageMessages = {
+    imageType: translations("errors.imageType"),
+    imageInvalid: translations("errors.imageInvalid"),
+    imageTooLarge: translations("errors.imageTooLarge", {
+      max: MAX_TRUST_CENTER_IMAGE_BYTES / (1024 * 1024),
+    }),
+    fileType: translations("errors.fileType"),
+    imageFetchFailed: translations("errors.imageFetchFailed"),
+    imageContent: translations("errors.imageContent"),
+    invalidUrl: translations("errors.invalidUrl"),
+  };
 
   const parsed = parseForm(
     trustCenterSubprocessorSchema,
@@ -515,14 +540,18 @@ export async function saveTrustSubprocessorAction(
   // external hosts directly.
   let newLogoKey: string | undefined;
   if (logoFile instanceof File && logoFile.size > 0) {
-    const image = await saveBadgeImage(logoFile, "trust-subprocessor");
+    const image = await saveBadgeImage(
+      logoFile,
+      "trust-subprocessor",
+      imageMessages,
+    );
     if (!image.ok) return { ok: false, message: image.message };
     if (image.imageKey) newLogoKey = image.imageKey;
   } else if (logoUrl) {
     const fetched = await fetchAndStoreRemoteImage(
       logoUrl,
       "trust-subprocessor",
-      "Logo",
+      imageMessages,
     );
     if (!fetched.ok) return { ok: false, message: fetched.message };
     newLogoKey = fetched.imageKey;

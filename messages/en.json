@@ -284,7 +284,9 @@
       "noFile": "No file selected.",
       "fileTypeNotAllowed": "File type not allowed.",
       "fileTypeNotAccepted": "This file type is not accepted.",
-      "fileTooLarge": "File is too large (max {max} MB)."
+      "fileTooLarge": "File is too large (max {max} MB).",
+      "fileUploaded": "File uploaded.",
+      "fileAttached": "File attached to vendor."
     },
     "detail": {
       "notFound": "Vendor not found",
@@ -405,6 +407,24 @@
         "saving": "Saving...",
         "save": "Save certification",
         "cancel": "Cancel"
+      },
+      "errors": {
+        "missingVendor": "Missing vendor.",
+        "invalidInput": "Invalid input.",
+        "wrongVendor": "Certification does not belong to this vendor.",
+        "saved": "Certification saved.",
+        "attachmentFailed": " Attachment failed: {reason}",
+        "fileType": "File type not allowed.",
+        "fileTooLarge": "File is too large (max {max} MB).",
+        "fileInvalid": "This file type is not accepted.",
+        "fileRecordFailed": "Failed to save file record.",
+        "fileUploaded": "File uploaded.",
+        "nameRequired": "Certification name is required.",
+        "expiryRequired": "Expiry date is required.",
+        "invalidExpiry": "Enter a valid expiry date.",
+        "added": "Certification \"{name}\" added with attachment.",
+        "missingEvidence": "Missing evidence.",
+        "evidenceNotFound": "Evidence not found."
       }
     },
     "customerResponsibility": {
@@ -430,7 +450,13 @@
       "files": "Files",
       "saving": "Saving...",
       "save": "Save",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "errors": {
+        "missingFields": "Missing required fields.",
+        "invalidStatus": "Invalid status.",
+        "noChanges": "No changes provided.",
+        "saved": "Saved."
+      }
     }
   },
   "Assessments": {
@@ -2212,6 +2238,8 @@
       "imageType": "Images must be PNG, JPG, GIF or WebP (SVG is not allowed).",
       "imageInvalid": "This image is not valid.",
       "imageTooLarge": "Image is too large (max {max} MB).",
+      "fileTooLarge": "File is too large (max {max} MB).",
+      "fileInvalid": "File content does not match its extension.",
       "fileType": "This file type is not accepted.",
       "imageFetchFailed": "Image URL could not be fetched.",
       "imageContent": "Image URL must return PNG, JPG, GIF or WebP content."

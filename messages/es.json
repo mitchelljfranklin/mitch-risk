@@ -284,7 +284,9 @@
       "noFile": "No se ha seleccionado ningún archivo.",
       "fileTypeNotAllowed": "Tipo de archivo no permitido.",
       "fileTypeNotAccepted": "Este tipo de archivo no se acepta.",
-      "fileTooLarge": "El archivo es demasiado grande (máximo {max} MB)."
+      "fileTooLarge": "El archivo es demasiado grande (máximo {max} MB).",
+      "fileUploaded": "Archivo subido.",
+      "fileAttached": "Archivo adjuntado al proveedor."
     },
     "detail": {
       "notFound": "Proveedor no encontrado",
@@ -405,6 +407,24 @@
         "saving": "Guardando...",
         "save": "Guardar certificación",
         "cancel": "Cancelar"
+      },
+      "errors": {
+        "missingVendor": "Falta el proveedor.",
+        "invalidInput": "Entrada no válida.",
+        "wrongVendor": "La certificación no pertenece a este proveedor.",
+        "saved": "Certificación guardada.",
+        "attachmentFailed": " Error al adjuntar: {reason}",
+        "fileType": "Tipo de archivo no permitido.",
+        "fileTooLarge": "El archivo es demasiado grande (máximo {max} MB).",
+        "fileInvalid": "Este tipo de archivo no se acepta.",
+        "fileRecordFailed": "No se pudo guardar el registro del archivo.",
+        "fileUploaded": "Archivo subido.",
+        "nameRequired": "El nombre de la certificación es obligatorio.",
+        "expiryRequired": "La fecha de caducidad es obligatoria.",
+        "invalidExpiry": "Introduce una fecha de caducidad válida.",
+        "added": "Certificación «{name}» añadida con adjunto.",
+        "missingEvidence": "Falta la evidencia.",
+        "evidenceNotFound": "Evidencia no encontrada."
       }
     },
     "customerResponsibility": {
@@ -430,7 +450,13 @@
       "files": "Archivos",
       "saving": "Guardando...",
       "save": "Guardar",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "errors": {
+        "missingFields": "Faltan campos obligatorios.",
+        "invalidStatus": "Estado no válido.",
+        "noChanges": "No se han proporcionado cambios.",
+        "saved": "Guardado."
+      }
     }
   },
   "Assessments": {
@@ -2212,6 +2238,8 @@
       "imageType": "Las imágenes deben ser PNG, JPG, GIF o WebP (no se permite SVG).",
       "imageInvalid": "Esta imagen no es válida.",
       "imageTooLarge": "La imagen es demasiado grande (máximo {max} MB).",
+      "fileTooLarge": "El archivo es demasiado grande (máximo {max} MB).",
+      "fileInvalid": "El contenido del archivo no coincide con su extensión.",
       "fileType": "Este tipo de archivo no se acepta.",
       "imageFetchFailed": "No se pudo obtener la URL de la imagen.",
       "imageContent": "La URL de la imagen debe devolver contenido PNG, JPG, GIF o WebP."

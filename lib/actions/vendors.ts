@@ -417,7 +417,7 @@ export async function addVendorAttachmentAction(
   }
 
   revalidatePath(`/vendors/${vendorId}`);
-  return { ok: true, message: "File uploaded." };
+  return { ok: true, message: translations("fileUploaded") };
 }
 
 export async function removeVendorAttachmentAction(formData: FormData) {
@@ -459,6 +459,7 @@ async function handleGeneralAttachment(
   },
   newKey: string,
   user: { id: string } | null,
+  message: string,
 ) {
   const displayName = getField(formData, "displayName").trim();
   const notes = getField(formData, "notes").trim() || undefined;
@@ -486,8 +487,15 @@ async function handleGeneralAttachment(
   revalidatePath(`/assessments/${evidence.assessmentId}`);
   revalidatePath(`/vendors/${vendorId}`);
 
-  return { ok: true, message: "File attached to vendor." } as const;
+  return { ok: true, message } as const;
 }
+
+type CertificationAttachmentMessages = {
+  nameRequired: string;
+  expiryRequired: string;
+  invalidExpiry: string;
+  added: (name: string) => string;
+};
 
 async function handleCertificationAttachment(
   formData: FormData,
@@ -500,6 +508,7 @@ async function handleCertificationAttachment(
   },
   newKey: string,
   user: { id: string } | null,
+  messages: CertificationAttachmentMessages,
 ) {
   const name = getField(formData, "name").trim();
   const issuer = getField(formData, "issuer").trim() || undefined;
@@ -508,12 +517,12 @@ async function handleCertificationAttachment(
   const displayName = getField(formData, "displayName").trim();
   const frameworkName = getField(formData, "frameworkName").trim() || undefined;
 
-  if (!name) return { ok: false, message: "Certification name is required." };
-  if (!expiresDate) return { ok: false, message: "Expiry date is required." };
+  if (!name) return { ok: false, message: messages.nameRequired };
+  if (!expiresDate) return { ok: false, message: messages.expiryRequired };
   // Validate before any write - a garbage date previously crashed after the
   // storage copy had already happened.
   if (!isValidIsoDateString(expiresDate)) {
-    return { ok: false, message: "Enter a valid expiry date." };
+    return { ok: false, message: messages.invalidExpiry };
   }
 
   await prisma.$transaction(async (tx) => {
@@ -559,7 +568,7 @@ async function handleCertificationAttachment(
 
   return {
     ok: true,
-    message: `Certification "${name}" added with attachment.`,
+    message: messages.added(name),
   };
 }
 
@@ -568,17 +577,31 @@ export async function attachEvidenceToCertificationAction(
   formData: FormData,
 ): Promise<{ ok: boolean; message: string }> {
   const user = await requirePermission(PERMISSIONS.VENDORS_EDIT);
+  const translations = await getTranslations("Vendors.errors");
+  const certificationTranslations = await getTranslations(
+    "Vendors.certifications",
+  );
 
   const evidenceId = getField(formData, "evidenceId");
   const attachType = getField(formData, "attachType");
 
-  if (!evidenceId) return { ok: false, message: "Missing evidence." };
+  if (!evidenceId) {
+    return {
+      ok: false,
+      message: certificationTranslations("errors.missingEvidence"),
+    };
+  }
 
   const evidence = await prisma.evidence.findUnique({
     where: { id: evidenceId },
     include: { assessment: { select: { vendorId: true } } },
   });
-  if (!evidence) return { ok: false, message: "Evidence not found." };
+  if (!evidence) {
+    return {
+      ok: false,
+      message: certificationTranslations("errors.evidenceNotFound"),
+    };
+  }
 
   const vendorId = evidence.assessment.vendorId;
   const file = await storage.read(evidence.storageKey);
@@ -595,6 +618,7 @@ export async function attachEvidenceToCertificationAction(
       evidence,
       newKey,
       user,
+      translations("fileAttached"),
     );
   }
 
@@ -604,5 +628,11 @@ export async function attachEvidenceToCertificationAction(
     evidence,
     newKey,
     user,
+    {
+      nameRequired: certificationTranslations("errors.nameRequired"),
+      expiryRequired: certificationTranslations("errors.expiryRequired"),
+      invalidExpiry: certificationTranslations("errors.invalidExpiry"),
+      added: (name) => certificationTranslations("errors.added", { name }),
+    },
   );
 }

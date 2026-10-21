@@ -106,7 +106,7 @@ describe("trust center actions (integration)", () => {
       }),
     );
     expect(result?.ok).toBe(false);
-    expect(result?.message).toMatch(/SVG/i);
+    expect(result?.message).toMatch(/imageType/i);
 
     const stored = await prisma.trustCenterBadge.findFirst({
       where: { title: `${PREFIX} SVG Badge` },
