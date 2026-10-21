@@ -176,6 +176,29 @@ docker compose up -d
 
 ---
 
+## Internationalization
+
+Mitch‑Risk ships in **English** and **Spanish**. The display language is a per-browser preference stored in the `NEXT_LOCALE` cookie — there are no `/[locale]/` URL segments.
+
+- **Default:** the organisation default in **Admin → General → Default language** (English unless changed). New visitors get this language.
+- **Users can switch:** logged-in user menu → **Language**, the selector on auth screens, the trust center header, and the vendor portal header.
+- **Resolution order:** `NEXT_LOCALE` cookie → organisation default → browser `Accept-Language` → English. Regional tags are handled automatically (`es-MX` → `es`).
+- **Translated:** all app screens, admin sections, dialogs, validation messages, public trust center, vendor portal, built-in email defaults, and PDF reports.
+- **English by design:** the REST API, OpenAPI/Swagger content, and audit CSV exports. Custom email templates are sent exactly as written.
+- **Emails** use the organisation default language; **PDFs** follow the request locale.
+
+### Adding a language
+
+1. Add the locale code and its display name in `lib/i18n/config.ts`.
+2. Copy `messages/en.json` to `messages/<code>.json` and translate the values, keeping keys and ICU placeholders unchanged.
+3. Register the catalog in `lib/i18n/messages.ts`.
+4. Add the built-in email defaults in `lib/settings/email-template-defaults.ts`.
+5. Run `npm run precheck`, `npm test`, `npm run build`, and `npm run test:e2e`.
+
+See the full [internationalization guide](docs/advanced/internationalization.md) for the detailed checklist, ICU rules, testing, and RTL caveats. The same page is published in the documentation site under **Advanced → Internationalization**.
+
+---
+
 ## Framework Libraries
 
 | Framework | Version | Controls |
@@ -315,6 +338,7 @@ docker run --rm -v mitch-risk_evidence_data:/data -v "$PWD":/backup alpine \
 | [Security](APPSECURITY.md) | Security architecture, hardening, and risk register |
 | [Cloud Storage](STORAGE.md) | AWS S3 and Azure Blob configuration |
 | [SSO](ssoConfig.md) | Entra ID, Google, and generic OIDC setup |
+| [Internationalization](docs/advanced/internationalization.md) | Language selection, catalogs, and adding a new language |
 | [Security Policy](SECURITY.md) | Vulnerability reporting, supported versions, security model |
 | [Privacy Policy](PRIVACY.md) | Data processing, retention, vendor portal privacy, cookies |
 

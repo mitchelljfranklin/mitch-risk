@@ -73,6 +73,7 @@ const sidebar = [
       { text: "SBOM", link: "/advanced/sbom" },
       { text: "Compliance Coverage", link: "/advanced/compliance-coverage" },
       { text: "Integration Examples", link: "/advanced/integration-examples" },
+      { text: "Internationalization", link: "/advanced/internationalization" },
     ],
   },
   {
