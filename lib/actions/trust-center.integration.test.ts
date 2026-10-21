@@ -11,6 +11,13 @@ vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
 }));
 
+// Server actions request translations from the Next request context. These
+// tests invoke the actions directly, outside a request, so return a pass-through
+// translator; the assertions here cover persistence, not message text.
+vi.mock("next-intl/server", () => ({
+  getTranslations: vi.fn(async () => (key: string) => key),
+}));
+
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
 import {
@@ -245,7 +252,7 @@ describe("trust center actions (integration)", () => {
       }),
     );
     expect(badSection?.ok).toBe(false);
-    expect(badSection?.message).toMatch(/too long/i);
+    expect(badSection?.message).toMatch(/sectionTooLong/i);
 
     const goodSubprocessor = await saveTrustSubprocessorAction(
       undefined,

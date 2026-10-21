@@ -2,6 +2,7 @@
 
 import { randomBytes } from "node:crypto";
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 import { type z } from "zod";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
@@ -64,10 +65,18 @@ function refreshTrustPaths(): void {
 
 // Generic form -> zod bridge: text fields pass through, checkboxes are
 // absent when unchecked so they must be materialised explicitly.
+type TrustCenterErrorKey =
+  | "errors.invalidInput"
+  | "errors.titleRequired"
+  | "errors.nameRequired"
+  | "errors.invalidUrl"
+  | "errors.sectionTooLong";
+
 function parseForm<T>(
   schema: z.ZodType<T>,
   formData: FormData,
   boolFields: string[],
+  translate: (key: TrustCenterErrorKey) => string,
 ): { ok: true; data: T } | { ok: false; message: string } {
   const raw: Record<string, unknown> = {};
   for (const [key, value] of formData.entries()) {
@@ -79,10 +88,14 @@ function parseForm<T>(
   }
   const parsed = schema.safeParse(raw);
   if (!parsed.success) {
-    return {
-      ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
-    };
+    const path = String(parsed.error.issues[0]?.path[0] ?? "");
+    let messageKey: TrustCenterErrorKey = "errors.invalidInput";
+    if (path === "title") messageKey = "errors.titleRequired";
+    else if (path === "name") messageKey = "errors.nameRequired";
+    else if (path === "externalUrl" || path === "websiteUrl") {
+      messageKey = "errors.invalidUrl";
+    } else if (path === "body") messageKey = "errors.sectionTooLong";
+    return { ok: false, message: translate(messageKey) };
   }
   return { ok: true, data: parsed.data };
 }
@@ -233,8 +246,14 @@ export async function saveTrustBadgeAction(
   formData: FormData,
 ): Promise<TrustCenterActionState> {
   await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
+  const translations = await getTranslations("TrustCenterManager");
 
-  const parsed = parseForm(trustCenterBadgeSchema, formData, ["published"]);
+  const parsed = parseForm(
+    trustCenterBadgeSchema,
+    formData,
+    ["published"],
+    translations,
+  );
   if (!parsed.ok) return { ok: false, message: parsed.message };
 
   const id = getField(formData, "id");
@@ -250,7 +269,12 @@ export async function saveTrustBadgeAction(
     let entityId = id;
     if (id) {
       const existing = await getTrustBadge(id);
-      if (!existing) return { ok: false, message: "Badge not found." };
+      if (!existing) {
+        return {
+          ok: false,
+          message: translations("errors.badgeNotFound"),
+        };
+      }
 
       await updateTrustBadge(id, parsed.data);
       if (image.imageKey) {
@@ -279,13 +303,16 @@ export async function saveTrustBadgeAction(
     }
     return {
       ok: false,
-      message: error instanceof Error ? error.message : "Save failed.",
+      message:
+        error instanceof Error
+          ? error.message
+          : translations("errors.saveFailed"),
     };
   }
 
   // useActionState-consumed save: no revalidatePath (Node streaming bug +
   // toast race) — useActionFeedback refreshes the manager lists instead.
-  return { ok: true, message: "Badge saved." };
+  return { ok: true, message: translations("errors.badgeSaved") };
 }
 
 export async function deleteTrustBadgeAction(
@@ -316,8 +343,14 @@ export async function saveTrustDocumentAction(
   formData: FormData,
 ): Promise<TrustCenterActionState> {
   await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
+  const translations = await getTranslations("TrustCenterManager");
 
-  const parsed = parseForm(trustCenterDocumentSchema, formData, ["published"]);
+  const parsed = parseForm(
+    trustCenterDocumentSchema,
+    formData,
+    ["published"],
+    translations,
+  );
   if (!parsed.ok) return { ok: false, message: parsed.message };
 
   const id = getField(formData, "id");
@@ -333,7 +366,10 @@ export async function saveTrustDocumentAction(
       }
     } else {
       if (!(file instanceof File) || file.size === 0) {
-        return { ok: false, message: "A document file is required." };
+        return {
+          ok: false,
+          message: translations("errors.documentFileRequired"),
+        };
       }
       // Validate the upload BEFORE creating the record so a rejected file
       // never leaves an orphan document row behind.
@@ -358,13 +394,16 @@ export async function saveTrustDocumentAction(
   } catch (error: unknown) {
     return {
       ok: false,
-      message: error instanceof Error ? error.message : "Save failed.",
+      message:
+        error instanceof Error
+          ? error.message
+          : translations("errors.saveFailed"),
     };
   }
 
   // useActionState-consumed save: no revalidatePath (Node streaming bug +
   // toast race) — useActionFeedback refreshes the manager lists instead.
-  return { ok: true, message: "Document saved." };
+  return { ok: true, message: translations("errors.documentSaved") };
 }
 
 // Validates then prepares a document file with the shared upload rules:
@@ -457,10 +496,14 @@ export async function saveTrustSubprocessorAction(
   formData: FormData,
 ): Promise<TrustCenterActionState> {
   await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
+  const translations = await getTranslations("TrustCenterManager");
 
-  const parsed = parseForm(trustCenterSubprocessorSchema, formData, [
-    "published",
-  ]);
+  const parsed = parseForm(
+    trustCenterSubprocessorSchema,
+    formData,
+    ["published"],
+    translations,
+  );
   if (!parsed.ok) return { ok: false, message: parsed.message };
 
   const id = getField(formData, "id");
@@ -513,13 +556,16 @@ export async function saveTrustSubprocessorAction(
     }
     return {
       ok: false,
-      message: error instanceof Error ? error.message : "Save failed.",
+      message:
+        error instanceof Error
+          ? error.message
+          : translations("errors.saveFailed"),
     };
   }
 
   // useActionState-consumed save: no revalidatePath (Node streaming bug +
   // toast race) — useActionFeedback refreshes the manager lists instead.
-  return { ok: true, message: "Subprocessor saved." };
+  return { ok: true, message: translations("errors.subprocessorSaved") };
 }
 
 export async function deleteTrustSubprocessorAction(
@@ -552,8 +598,14 @@ export async function saveTrustSectionAction(
   formData: FormData,
 ): Promise<TrustCenterActionState> {
   await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
+  const translations = await getTranslations("TrustCenterManager");
 
-  const parsed = parseForm(trustCenterSectionSchema, formData, ["published"]);
+  const parsed = parseForm(
+    trustCenterSectionSchema,
+    formData,
+    ["published"],
+    translations,
+  );
   if (!parsed.ok) return { ok: false, message: parsed.message };
 
   const id = getField(formData, "id");
@@ -569,13 +621,16 @@ export async function saveTrustSectionAction(
   } catch (error: unknown) {
     return {
       ok: false,
-      message: error instanceof Error ? error.message : "Save failed.",
+      message:
+        error instanceof Error
+          ? error.message
+          : translations("errors.saveFailed"),
     };
   }
 
   // useActionState-consumed save: no revalidatePath (Node streaming bug +
   // toast race) — useActionFeedback refreshes the manager lists instead.
-  return { ok: true, message: "Section saved." };
+  return { ok: true, message: translations("errors.sectionSaved") };
 }
 
 export async function deleteTrustSectionAction(

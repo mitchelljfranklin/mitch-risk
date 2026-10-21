@@ -2,14 +2,6 @@ import { z } from "zod";
 
 export const VENDOR_TIERS = ["LOW", "MEDIUM", "HIGH", "CRITICAL"] as const;
 
-export const VENDOR_TIER_LABELS: Record<(typeof VENDOR_TIERS)[number], string> =
-  {
-    LOW: "Low",
-    MEDIUM: "Medium",
-    HIGH: "High",
-    CRITICAL: "Critical",
-  };
-
 export const DATA_SENSITIVITIES = [
   "PUBLIC",
   "INTERNAL",

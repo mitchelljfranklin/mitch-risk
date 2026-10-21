@@ -346,28 +346,12 @@ async function processBulkVendorSend(params: {
   return { status: "sent", emailFailed: hasEmailFailed };
 }
 
-function buildBulkSendMessage(
-  sentCount: number,
-  skippedCount: number,
-  emailFailedCount: number,
-): string {
-  const parts = [`Sent ${sentCount} assessment${sentCount !== 1 ? "s" : ""}`];
-  if (skippedCount > 0) {
-    parts.push(`${skippedCount} could not be sent`);
-  }
-  if (emailFailedCount > 0) {
-    parts.push(
-      `${emailFailedCount} email${emailFailedCount !== 1 ? "s" : ""} failed to deliver`,
-    );
-  }
-  return `${parts.join(". ")}.`;
-}
-
 export async function sendBulkAssessmentsAction(
   previousState: BulkSendState,
   formData: FormData,
 ): Promise<BulkSendState> {
   await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
+  const translations = await getTranslations("BulkSend");
 
   const templateId = getField(formData, "templateId");
   const dueDate = getField(formData, "dueDate");
@@ -376,10 +360,10 @@ export async function sendBulkAssessmentsAction(
   const vendorIds = formData.getAll("vendorIds").map(String);
 
   if (!templateId) {
-    return { ok: false, message: "No template selected." };
+    return { ok: false, message: translations("errors.noTemplate") };
   }
   if (vendorIds.length === 0) {
-    return { ok: false, message: "No vendors selected." };
+    return { ok: false, message: translations("errors.noVendors") };
   }
 
   const user = await getCurrentUser();
@@ -415,9 +399,19 @@ export async function sendBulkAssessmentsAction(
     }
   }
 
+  const messageParts = [translations("sentCount", { count: sentCount })];
+  if (skippedCount > 0) {
+    messageParts.push(translations("skippedCount", { count: skippedCount }));
+  }
+  if (emailFailedCount > 0) {
+    messageParts.push(
+      translations("emailFailedCount", { count: emailFailedCount }),
+    );
+  }
+
   return {
     ok: true,
-    message: buildBulkSendMessage(sentCount, skippedCount, emailFailedCount),
+    message: `${messageParts.join(". ")}.`,
     sent: sentCount,
     skipped: skippedCount,
     emailFailed: emailFailedCount,

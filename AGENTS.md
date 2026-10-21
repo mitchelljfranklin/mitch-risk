@@ -285,13 +285,14 @@ UI hiding is cosmetic; the server guard is the real control — **both are alway
   single-letter variables. Keep `messages/en.json` and `messages/es.json` key-identical — a unit
   test enforces it. Resolution is cookie → org default (Admin → General) → `Accept-Language` →
   `en`. `setLocaleAction` only writes the cookie; the switcher calls `router.refresh()` (never
-  `revalidatePath`). Translated: auth screens, internal shell, dashboard, vendors
-  list/create/edit/detail, assessments list/create/detail/review, templates list/builder/preview/import,
-  frameworks list/detail/controls/gaps/import, risk register, self-assessment, public trust center,
-  vendor portal, emails, and PDFs. Internal pages are being translated area by area (admin forms;
-  General, Appearance, Email, Email tracking, Scoring, Scheduling, Storage, Sign-in, Rate limits,
-  API, Webhooks, Trust Center, Users, Roles, Audit and Health are done). Email templates are
-  admin-authored; only the built-in defaults are translated
+  `revalidatePath`). Translated: auth screens; internal shell (sidebar, user menu, command palette,
+  breadcrumbs, idle timeout, scroll-to-top); dashboard; vendors
+  list/create/edit/detail/import/compare/bulk-send; assessments list/create/detail/review; templates
+  list/builder/preview/import; frameworks list/detail/controls/gaps/import; risk register;
+  self-assessment; profile; Trust Center manager and public page; vendor portal; emails; PDFs;
+  admin (all sections); and not-found. The catastrophic `app/global-error.tsx` fallback stays
+  English because it renders outside the locale provider. Email templates are admin-authored; only
+  the built-in defaults are translated
   (`lib/settings/email-template-defaults.ts`) — customized templates are sent as written. PDFs
   follow the request locale via `getTranslations`/`getFormatter`; use those (not `formatDate()`,
   which is fixed to en-GB) for dates on translated surfaces.

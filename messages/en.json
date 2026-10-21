@@ -2,6 +2,12 @@
   "Common": {
     "changeLanguage": "Change language",
     "skipToContent": "Skip to content",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "close": "Close",
+    "sidebar": "Sidebar",
+    "sidebarDescription": "Displays the mobile sidebar.",
+    "toggleSidebar": "Toggle Sidebar",
     "tiers": {
       "CRITICAL": "Critical",
       "HIGH": "High",
@@ -282,6 +288,8 @@
     },
     "detail": {
       "notFound": "Vendor not found",
+      "errorTitle": "Failed to load vendor",
+      "errorDescription": "An error occurred while loading this vendor's details. Please try again.",
       "created": "Vendor created.",
       "breadcrumbs": {
         "riskRegister": "Risk register",
@@ -1941,6 +1949,274 @@
       "error": "Error"
     }
   },
+  "NotFound": {
+    "description": "The page you are looking for does not exist or has been moved.",
+    "backToDashboard": "Back to dashboard"
+  },
+  "BulkSend": {
+    "metaTitle": "Bulk send",
+    "title": "Bulk send",
+    "subtitle": "Send the same questionnaire to multiple vendors at once.",
+    "breadcrumb": "Bulk send",
+    "steps": {
+      "configure": "Configure",
+      "vendors": "Vendors",
+      "send": "Send"
+    },
+    "template": "Template",
+    "selectTemplate": "Select template",
+    "dueDate": "Due date",
+    "reviewer": "Reviewer",
+    "unassigned": "Unassigned",
+    "portalPassword": "Portal password (optional)",
+    "portalPasswordPlaceholder": "Shared password for all vendors",
+    "next": "Next →",
+    "back": "← Back",
+    "filterPlaceholder": "Filter vendors...",
+    "selectAll": "Select all",
+    "selectedCount": "{count} selected",
+    "noMatch": "No vendors match your search.",
+    "noEmail": "No email",
+    "sendingTo": "Sending {template} to {count, plural, one {# vendor} other {# vendors}}",
+    "due": "Due: {date}",
+    "reviewerLabel": "Reviewer: {name}",
+    "portalPasswordSet": "Portal password set",
+    "sending": "Sending...",
+    "sendTo": "Send to {count, plural, one {# vendor} other {# vendors}}",
+    "sentCount": "{count, plural, one {Sent # assessment} other {Sent # assessments}}",
+    "skippedCount": "{count, plural, one {# could not be sent} other {# could not be sent}}",
+    "emailFailedCount": "{count, plural, one {# email failed to deliver} other {# emails failed to deliver}}",
+    "errors": {
+      "noTemplate": "No template selected.",
+      "noVendors": "No vendors selected."
+    }
+  },
+  "VendorImport": {
+    "metaTitle": "Import vendors",
+    "title": "Import vendors",
+    "subtitle": "Upload a CSV file to bulk-create vendors.",
+    "breadcrumb": "Import",
+    "cardTitle": "Import vendors from CSV",
+    "steps": {
+      "upload": "Upload",
+      "review": "Review"
+    },
+    "csvFile": "CSV file",
+    "template": "Template",
+    "columnsHelp": "CSV must have columns: id (optional), name, contactemail, plus optional: externalid, contactname, tier, website, notes, servicedescription, datasensitivity, contractrenewaldate, contractvalue, geographicrisk, tags. Only name and contactemail are required. Max 1 MB. Include a vendor id or externalid to update an existing vendor instead of creating a new one.",
+    "found": "{count, plural, one {# vendor found} other {# vendors found}}",
+    "showingFirst": "Showing first 10 of {count} rows",
+    "next": "Next →",
+    "back": "← Back",
+    "aboutToImport": "You are about to import {count, plural, one {# vendor} other {# vendors}}.",
+    "skippedNote": "Some rows may be skipped if they fail validation (duplicate emails, missing required fields).",
+    "importing": "Importing…",
+    "importVendors": "Import vendors",
+    "errors": {
+      "noFile": "No file selected.",
+      "fileTooLarge": "File is too large (max 1 MB).",
+      "noRows": "No rows found in CSV. The first row must be a header.",
+      "noValidVendors": "No valid vendors found. First error: {reason}",
+      "rowInvalid": "Row {row}: invalid input.",
+      "rowNameRequired": "Row {row}: vendor name is required.",
+      "rowContactEmailRequired": "Row {row}: contact email is required.",
+      "duplicateExternalId": "{name}: duplicate external ID",
+      "rowFailed": "{name}: {reason}",
+      "updateRequiresEdit": "This import would update existing vendors. Updating requires vendor edit permission.",
+      "unknown": "unknown",
+      "importComplete": "Import complete: {summary}.",
+      "created": "{count} created",
+      "updated": "{count} updated",
+      "skipped": "{count, plural, one {# row skipped} other {# rows skipped}}"
+    }
+  },
+  "CompareVendors": {
+    "metaTitle": "Compare vendors",
+    "title": "Compare vendors",
+    "subtitle": "Pick two vendors to compare their latest completed assessments side-by-side.",
+    "breadcrumb": "Compare",
+    "notEnoughVendorsTitle": "Not enough vendors",
+    "notEnoughVendorsDescription": "You need at least two vendors to compare. Create more vendors first.",
+    "vendorA": "Vendor A",
+    "vendorB": "Vendor B",
+    "selectVendor": "Select a vendor",
+    "compare": "Compare",
+    "notEnoughAssessmentsTitle": "Not enough assessments",
+    "notEnoughAssessmentsDescription": "Both vendors must have at least one completed or under-review assessment to compare.",
+    "comparisonSubtitle": "{vendorA} vs {vendorB}",
+    "statusLabel": "{title} · {status}",
+    "question": "Question",
+    "notApplicable": "N/A"
+  },
+  "CompareAssessments": {
+    "metaTitle": "Compare assessments",
+    "metadataTitle": "Compare assessments — {vendorName}",
+    "notFound": "Vendor not found",
+    "title": "Compare assessments",
+    "breadcrumb": "Compare assessments",
+    "instructions": "Select two assessments from the vendor page to compare them side-by-side. After opening two, bookmark this page with ?left=<id>&right=<id>.",
+    "comparisonSubtitle": "{leftTitle} ({leftStatus}) vs {rightTitle} ({rightStatus})",
+    "question": "Question",
+    "changed": "changed",
+    "notApplicable": "N/A"
+  },
+  "Profile": {
+    "metaTitle": "Profile",
+    "title": "Profile",
+    "subtitle": "Manage your account details.",
+    "accountDetails": "Account details",
+    "ssoDescription": "You sign in via single sign-on. Your email is managed by your identity provider.",
+    "localDescription": "Your name and sign-in email.",
+    "name": "Name",
+    "email": "Email",
+    "passwordTitle": "Password",
+    "passwordDescription": "You must enter your current password to make any changes.",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "optional": "(optional)",
+    "confirmNewPassword": "Confirm new password",
+    "ssoPasswordNote": "Your password is managed by your identity provider (SSO), so there is nothing to change here.",
+    "saving": "Saving...",
+    "saveChanges": "Save changes",
+    "errorDescription": "Your profile could not be loaded. Please try again or contact support.",
+    "errors": {
+      "notAuthenticated": "Not authenticated.",
+      "accountNotFound": "Account not found.",
+      "currentPasswordIncorrect": "Current password is incorrect.",
+      "emailTaken": "This email is already taken.",
+      "nameRequired": "Name is required.",
+      "emailInvalid": "Enter a valid email address.",
+      "currentPasswordRequired": "Current password is required.",
+      "passwordTooShort": "New password must be at least 12 characters.",
+      "passwordMismatch": "Passwords do not match.",
+      "invalidInput": "Invalid input.",
+      "success": "Profile updated."
+    }
+  },
+  "TrustCenterManager": {
+    "metaTitle": "Trust center",
+    "title": "Trust center",
+    "subtitle": "Publish compliance badges, security documents, subprocessors and narrative sections to your public trust center page.",
+    "viewPublic": "View public page",
+    "disabledBanner": "The trust center is currently disabled. Enable it in Settings → Trust Center — until then the public page shows a not-found message.",
+    "errorDescription": "The trust center manager could not be loaded. Please try again.",
+    "common": {
+      "edit": "Edit",
+      "draft": "Draft",
+      "published": "Published",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "moveUp": "Move {name} up",
+      "moveDown": "Move {name} down",
+      "deleteNamed": "Delete {name}"
+    },
+    "badges": {
+      "cardTitle": "Compliance badges",
+      "add": "Add badge",
+      "empty": "No badges configured. Add certifications like SOC 2 or ISO 27001 to display them on the public page.",
+      "verificationLink": "Verification link",
+      "deleteTitle": "Delete badge?",
+      "deleteDescription": "The \"{name}\" badge will be removed from the trust center.",
+      "addTitle": "Add badge",
+      "editTitle": "Edit badge",
+      "editorDescription": "Shown as a certification tile on the public trust center page.",
+      "titleLabel": "Title",
+      "issuer": "Issuer",
+      "issuerPlaceholder": "e.g. AICPA, BSI",
+      "description": "Description",
+      "descriptionPlaceholder": "e.g. SOC 2 Type II audited annually",
+      "verificationUrl": "Verification URL",
+      "image": "Badge image",
+      "imageHint": "PNG, JPG, GIF or WebP. Max 2 MB. SVG is not allowed.",
+      "imageHintKeep": " Leave empty to keep the current image.",
+      "save": "Save badge"
+    },
+    "documents": {
+      "cardTitle": "Security documents",
+      "add": "Add document",
+      "empty": "No documents configured. Upload policies, security reports or compliance artefacts for public download.",
+      "noFile": "No file uploaded",
+      "deleteTitle": "Delete document?",
+      "deleteDescription": "\"{name}\" and its file will be removed from the trust center.",
+      "addTitle": "Add document",
+      "editTitle": "Edit document",
+      "editorDescription": "Published documents are downloadable from the public trust center page.",
+      "titleLabel": "Title",
+      "description": "Description",
+      "descriptionPlaceholder": "What this document covers",
+      "category": "Category",
+      "file": "File",
+      "replaceFile": "Replace file",
+      "fileHint": "PDF, PNG, JPG, DOCX or XLSX. Max 20 MB.",
+      "fileHintCurrent": " Current: {fileName}. Replacing deletes the old file.",
+      "save": "Save document",
+      "categories": {
+        "POLICY": "Policy",
+        "SECURITY": "Security report",
+        "COMPLIANCE": "Compliance",
+        "PRIVACY": "Privacy",
+        "OTHER": "Other"
+      }
+    },
+    "sections": {
+      "cardTitle": "Custom sections",
+      "add": "Add section",
+      "empty": "No custom sections. Add markdown blocks for an overview, FAQ or anything else the structured types do not cover.",
+      "deleteTitle": "Delete section?",
+      "deleteDescription": "\"{name}\" will be removed from the trust center.",
+      "addTitle": "Add section",
+      "editTitle": "Edit section",
+      "editorDescription": "Free markdown blocks rendered on the public trust center page.",
+      "titleLabel": "Title",
+      "body": "Body (markdown)",
+      "bodyPlaceholder": "Supports markdown formatting.",
+      "save": "Save section"
+    },
+    "subprocessors": {
+      "cardTitle": "Subprocessors",
+      "add": "Add subprocessor",
+      "empty": "No subprocessors configured. List third parties that process data on your behalf.",
+      "deleteTitle": "Delete subprocessor?",
+      "deleteDescription": "\"{name}\" will be removed from the trust center.",
+      "addTitle": "Add subprocessor",
+      "editTitle": "Edit subprocessor",
+      "editorDescription": "Third parties that process data on your behalf, listed on the public trust center page.",
+      "name": "Name",
+      "purpose": "Purpose",
+      "purposePlaceholder": "e.g. Cloud hosting of application data",
+      "location": "Data location",
+      "locationPlaceholder": "e.g. Australia (Sydney)",
+      "website": "Website",
+      "websitePlaceholder": "https://…",
+      "logo": "Logo image",
+      "logoHint": "PNG, JPG, GIF or WebP. Max 2 MB. SVG is not allowed.",
+      "logoHintKeep": " Leave empty to keep the current logo.",
+      "logoUrl": "…or fetch a logo from a URL",
+      "logoUrlPlaceholder": "https://example.com/logo.png",
+      "logoUrlHint": "The image is downloaded and stored with the other trust center files — the public page never loads external hosts. An uploaded file takes priority over a URL.",
+      "save": "Save subprocessor"
+    },
+    "errors": {
+      "invalidInput": "Invalid input.",
+      "titleRequired": "Title is required.",
+      "nameRequired": "Name is required.",
+      "invalidUrl": "Enter a valid URL.",
+      "sectionTooLong": "Section body is too long (max 10,000 characters).",
+      "badgeNotFound": "Badge not found.",
+      "documentFileRequired": "A document file is required.",
+      "saveFailed": "Save failed.",
+      "badgeSaved": "Badge saved.",
+      "documentSaved": "Document saved.",
+      "sectionSaved": "Section saved.",
+      "subprocessorSaved": "Subprocessor saved.",
+      "imageType": "Images must be PNG, JPG, GIF or WebP (SVG is not allowed).",
+      "imageInvalid": "This image is not valid.",
+      "imageTooLarge": "Image is too large (max {max} MB).",
+      "fileType": "This file type is not accepted.",
+      "imageFetchFailed": "Image URL could not be fetched.",
+      "imageContent": "Image URL must return PNG, JPG, GIF or WebP content."
+    }
+  },
   "Shell": {
     "workspace": {
       "dashboard": "Dashboard",
@@ -2000,6 +2276,80 @@
     },
     "sidebar": {
       "toggle": "Toggle sidebar"
+    },
+    "breadcrumbs": {
+      "label": "Breadcrumb",
+      "dashboard": "Dashboard"
+    },
+    "commandPalette": {
+      "label": "Command palette",
+      "searchPlaceholder": "Search pages...",
+      "noResults": "No results.",
+      "navigate": "navigate",
+      "open": "open",
+      "close": "close",
+      "or": "or",
+      "items": {
+        "dashboard": {
+          "label": "Dashboard",
+          "subtitle": "Vendor risk overview"
+        },
+        "vendors": {
+          "label": "Vendors",
+          "subtitle": "Manage vendors"
+        },
+        "assessments": {
+          "label": "Assessments",
+          "subtitle": "Questionnaires"
+        },
+        "frameworks": {
+          "label": "Frameworks",
+          "subtitle": "Compliance controls"
+        },
+        "templates": {
+          "label": "Templates",
+          "subtitle": "Questionnaire builder"
+        },
+        "profile": {
+          "label": "Profile",
+          "subtitle": "Your account"
+        },
+        "adminGeneral": {
+          "label": "Admin · General",
+          "subtitle": "Organization"
+        },
+        "adminUsers": {
+          "label": "Admin · Users",
+          "subtitle": "Staff accounts"
+        },
+        "adminRoles": {
+          "label": "Admin · Roles",
+          "subtitle": "Permissions"
+        },
+        "adminApi": {
+          "label": "Admin · API",
+          "subtitle": "API access"
+        },
+        "adminAudit": {
+          "label": "Admin · Audit log",
+          "subtitle": "Activity trail"
+        },
+        "apiDocs": {
+          "label": "API Docs",
+          "subtitle": "OpenAPI / Swagger"
+        }
+      }
+    },
+    "idle": {
+      "title": "Session expiring",
+      "description": "You will be signed out in {countdown, plural, one {# second} other {# seconds}} due to inactivity. Move your mouse or press any key to stay signed in.",
+      "staySignedIn": "Stay signed in"
+    },
+    "scrollToTop": "Scroll to top",
+    "error": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again or contact support.",
+      "retry": "Try again"
     }
   },
   "Trust": {

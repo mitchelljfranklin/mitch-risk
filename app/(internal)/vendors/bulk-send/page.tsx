@@ -1,5 +1,6 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
 
+import { getTranslations } from "next-intl/server";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { listPublishedTemplates } from "@/lib/db/templates";
@@ -10,10 +11,15 @@ import { BulkSendForm } from "./bulk-send-form";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Bulk send" };
+export async function generateMetadata() {
+  const translations = await getTranslations("BulkSend");
+  return { title: translations("metaTitle") };
+}
 
 export default async function BulkSendPage() {
   await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
+  const translations = await getTranslations("BulkSend");
+  const shellTranslations = await getTranslations("Shell.workspace");
 
   const [vendors, templates, users] = await Promise.all([
     listAllVendorsBasic(),
@@ -31,14 +37,16 @@ export default async function BulkSendPage() {
     <div className="flex flex-col gap-6">
       <Breadcrumbs
         segments={[
-          { label: "Vendors", href: "/vendors" },
-          { label: "Bulk send" },
+          { label: shellTranslations("vendors"), href: "/vendors" },
+          { label: translations("breadcrumb") },
         ]}
       />
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Bulk send</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {translations("title")}
+        </h1>
         <p className="text-muted-foreground text-sm">
-          Send the same questionnaire to multiple vendors at once.
+          {translations("subtitle")}
         </p>
       </div>
 

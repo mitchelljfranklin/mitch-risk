@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useActionState, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,23 +39,26 @@ type SectionsManagerProps = {
 };
 
 export function SectionsManager({ sections }: SectionsManagerProps) {
+  const translations = useTranslations("TrustCenterManager.sections");
+  const commonTranslations = useTranslations("TrustCenterManager.common");
   const [editing, setEditing] = useState<"new" | TrustSectionView | null>(null);
 
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-base">Custom sections</CardTitle>
+          <CardTitle className="text-base">
+            {translations("cardTitle")}
+          </CardTitle>
           <Button size="sm" variant="outline" onClick={() => setEditing("new")}>
-            Add section
+            {translations("add")}
           </Button>
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         {sections.length === 0 ? (
           <p className="text-muted-foreground text-sm">
-            No custom sections. Add markdown blocks for an overview, FAQ or
-            anything else the structured types do not cover.
+            {translations("empty")}
           </p>
         ) : (
           <div className="flex flex-col divide-y rounded-lg border">
@@ -73,7 +77,7 @@ export function SectionsManager({ sections }: SectionsManagerProps) {
                       </span>
                       {section.published ? null : (
                         <Badge variant="secondary" className="text-xs">
-                          Draft
+                          {commonTranslations("draft")}
                         </Badge>
                       )}
                     </div>
@@ -97,7 +101,9 @@ export function SectionsManager({ sections }: SectionsManagerProps) {
                         size="sm"
                         className="h-5 w-6 p-0"
                         disabled={isFirst}
-                        aria-label={`Move ${section.title} up`}
+                        aria-label={commonTranslations("moveUp", {
+                          name: section.title,
+                        })}
                       >
                         <ChevronUp className="size-3.5" />
                       </Button>
@@ -109,7 +115,9 @@ export function SectionsManager({ sections }: SectionsManagerProps) {
                         size="sm"
                         className="h-5 w-6 p-0"
                         disabled={isLast}
-                        aria-label={`Move ${section.title} down`}
+                        aria-label={commonTranslations("moveDown", {
+                          name: section.title,
+                        })}
                       >
                         <ChevronDown className="size-3.5" />
                       </Button>
@@ -120,7 +128,7 @@ export function SectionsManager({ sections }: SectionsManagerProps) {
                       variant="ghost"
                       onClick={() => setEditing(section)}
                     >
-                      Edit
+                      {commonTranslations("edit")}
                     </Button>
                     <form
                       id={`delete-trust-section-${section.id}`}
@@ -128,15 +136,19 @@ export function SectionsManager({ sections }: SectionsManagerProps) {
                     >
                       <input type="hidden" name="id" value={section.id} />
                       <ConfirmDialog
-                        title="Delete section?"
-                        description={`"${section.title}" will be removed from the trust center.`}
+                        title={translations("deleteTitle")}
+                        description={translations("deleteDescription", {
+                          name: section.title,
+                        })}
                         formId={`delete-trust-section-${section.id}`}
                       >
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          aria-label={`Delete ${section.title}`}
+                          aria-label={commonTranslations("deleteNamed", {
+                            name: section.title,
+                          })}
                         >
                           <Trash2 className="size-4" />
                         </Button>
@@ -159,7 +171,9 @@ export function SectionsManager({ sections }: SectionsManagerProps) {
         <SheetContent className="w-full overflow-y-auto sm:max-w-md">
           <SheetHeader>
             <SheetTitle>
-              {editing === "new" ? "Add section" : "Edit section"}
+              {editing === "new"
+                ? translations("addTitle")
+                : translations("editTitle")}
             </SheetTitle>
           </SheetHeader>
           {editing !== null ? (
@@ -182,6 +196,8 @@ function SectionEditor({
   section: TrustSectionView | null;
   onDone: () => void;
 }) {
+  const translations = useTranslations("TrustCenterManager.sections");
+  const commonTranslations = useTranslations("TrustCenterManager.common");
   const [state, formAction, isPending] = useActionState(
     saveTrustSectionAction,
     undefined,
@@ -199,10 +215,10 @@ function SectionEditor({
   return (
     <SheetContent className="w-full overflow-y-auto sm:max-w-md">
       <SheetHeader>
-        <SheetTitle>{isNew ? "Add section" : "Edit section"}</SheetTitle>
-        <SheetDescription>
-          Free markdown blocks rendered on the public trust center page.
-        </SheetDescription>
+        <SheetTitle>
+          {isNew ? translations("addTitle") : translations("editTitle")}
+        </SheetTitle>
+        <SheetDescription>{translations("editorDescription")}</SheetDescription>
       </SheetHeader>
       <form
         id="trust-section-form"
@@ -211,7 +227,7 @@ function SectionEditor({
       >
         {section ? <input type="hidden" name="id" value={section.id} /> : null}
         <div className="grid gap-2">
-          <Label htmlFor="section-title">Title</Label>
+          <Label htmlFor="section-title">{translations("titleLabel")}</Label>
           <Input
             id="section-title"
             name="title"
@@ -220,13 +236,13 @@ function SectionEditor({
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="section-body">Body (markdown)</Label>
+          <Label htmlFor="section-body">{translations("body")}</Label>
           <Textarea
             id="section-body"
             name="body"
             rows={10}
             defaultValue={section?.body ?? ""}
-            placeholder="Supports markdown formatting."
+            placeholder={translations("bodyPlaceholder")}
           />
         </div>
         <div className="flex items-center gap-2">
@@ -235,15 +251,17 @@ function SectionEditor({
             name="published"
             defaultChecked={section?.published ?? true}
           />
-          <Label htmlFor="section-published">Published</Label>
+          <Label htmlFor="section-published">
+            {commonTranslations("published")}
+          </Label>
         </div>
       </form>
       <SheetFooter className="px-4">
         <Button type="submit" form="trust-section-form" disabled={isPending}>
-          {isPending ? "Saving..." : "Save section"}
+          {isPending ? commonTranslations("saving") : translations("save")}
         </Button>
         <Button type="button" variant="outline" onClick={onDone}>
-          Cancel
+          {commonTranslations("cancel")}
         </Button>
       </SheetFooter>
     </SheetContent>

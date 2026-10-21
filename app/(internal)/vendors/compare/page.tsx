@@ -1,6 +1,7 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { EmptyState } from "@/components/empty-state";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,13 +19,15 @@ import { PERMISSIONS } from "@/lib/permissions";
 import { getAssessment } from "@/lib/db/assessments";
 import { getVendor, listVendorOptions } from "@/lib/db/vendors";
 import { ScoreBadge } from "@/components/score-badge";
-import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
 import { formatResponseValue } from "@/lib/utils";
 import { compareResponses } from "@/lib/compare";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Compare vendors" };
+export async function generateMetadata() {
+  const translations = await getTranslations("CompareVendors");
+  return { title: translations("metaTitle") };
+}
 
 type ComparePageProps = {
   searchParams: Promise<{ a?: string; b?: string }>;
@@ -34,6 +37,12 @@ export default async function CompareVendorsPage({
   searchParams,
 }: ComparePageProps) {
   await requirePermission(PERMISSIONS.VENDORS_VIEW);
+  const translations = await getTranslations("CompareVendors");
+  const shellTranslations = await getTranslations("Shell.workspace");
+  const questionTypeTranslations = await getTranslations(
+    "Common.questionTypes",
+  );
+  const statusTranslations = await getTranslations("Common.assessmentStatuses");
   const { a: vendorAId, b: vendorBId } = await searchParams;
 
   if (!vendorAId || !vendorBId) {
@@ -42,17 +51,16 @@ export default async function CompareVendorsPage({
       <div className="flex flex-col gap-6">
         <Breadcrumbs
           segments={[
-            { label: "Vendors", href: "/vendors" },
-            { label: "Compare" },
+            { label: shellTranslations("vendors"), href: "/vendors" },
+            { label: translations("breadcrumb") },
           ]}
         />
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            Compare vendors
+            {translations("title")}
           </h1>
           <p className="text-muted-foreground text-sm">
-            Pick two vendors to compare their latest completed assessments
-            side‑by‑side.
+            {translations("subtitle")}
           </p>
         </div>
 
@@ -60,16 +68,16 @@ export default async function CompareVendorsPage({
           <EmptyState
             compact
             icon="vendors"
-            title="Not enough vendors"
-            description="You need at least two vendors to compare. Create more vendors first."
+            title={translations("notEnoughVendorsTitle")}
+            description={translations("notEnoughVendorsDescription")}
           />
         ) : (
           <form className="flex flex-wrap items-end gap-3">
             <div className="flex flex-col gap-1">
-              <Label htmlFor="a">Vendor A</Label>
+              <Label htmlFor="a">{translations("vendorA")}</Label>
               <Select name="a" defaultValue={vendorAId ?? undefined}>
                 <SelectTrigger id="a" className="w-56">
-                  <SelectValue placeholder="Select a vendor" />
+                  <SelectValue placeholder={translations("selectVendor")} />
                 </SelectTrigger>
                 <SelectContent>
                   {vendorOptions.map((vendor) => (
@@ -81,10 +89,10 @@ export default async function CompareVendorsPage({
               </Select>
             </div>
             <div className="flex flex-col gap-1">
-              <Label htmlFor="b">Vendor B</Label>
+              <Label htmlFor="b">{translations("vendorB")}</Label>
               <Select name="b" defaultValue={vendorBId ?? undefined}>
                 <SelectTrigger id="b" className="w-56">
-                  <SelectValue placeholder="Select a vendor" />
+                  <SelectValue placeholder={translations("selectVendor")} />
                 </SelectTrigger>
                 <SelectContent>
                   {vendorOptions.map((vendor) => (
@@ -96,7 +104,7 @@ export default async function CompareVendorsPage({
               </Select>
             </div>
             <Button type="submit" size="sm" className="mb-px">
-              Compare
+              {translations("compare")}
             </Button>
           </form>
         )}
@@ -137,14 +145,14 @@ export default async function CompareVendorsPage({
       <div className="flex flex-col gap-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            Compare vendors
+            {translations("title")}
           </h1>
         </div>
         <EmptyState
           compact
           icon="assessments"
-          title="Not enough assessments"
-          description="Both vendors must have at least one completed or under‑review assessment to compare."
+          title={translations("notEnoughAssessmentsTitle")}
+          description={translations("notEnoughAssessmentsDescription")}
         />
       </div>
     );
@@ -189,16 +197,19 @@ export default async function CompareVendorsPage({
     <div className="flex flex-col gap-6">
       <Breadcrumbs
         segments={[
-          { label: "Vendors", href: "/vendors" },
-          { label: "Compare" },
+          { label: shellTranslations("vendors"), href: "/vendors" },
+          { label: translations("breadcrumb") },
         ]}
       />
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">
-          Compare vendors
+          {translations("title")}
         </h1>
         <p className="text-muted-foreground text-sm">
-          {vendorA.name} vs {vendorB.name}
+          {translations("comparisonSubtitle", {
+            vendorA: vendorA.name,
+            vendorB: vendorB.name,
+          })}
         </p>
       </div>
 
@@ -210,7 +221,12 @@ export default async function CompareVendorsPage({
           <CardContent>
             <ScoreBadge score={aScore} size="lg" />
             <p className="text-muted-foreground text-xs">
-              {assessmentA.title} · {assessmentA.status.toLowerCase()}
+              {translations("statusLabel", {
+                title: assessmentA.title,
+                status: statusTranslations.has(assessmentA.status)
+                  ? statusTranslations(assessmentA.status)
+                  : assessmentA.status.toLowerCase(),
+              })}
             </p>
           </CardContent>
         </Card>
@@ -221,7 +237,12 @@ export default async function CompareVendorsPage({
           <CardContent>
             <ScoreBadge score={bScore} size="lg" />
             <p className="text-muted-foreground text-xs">
-              {assessmentB.title} · {assessmentB.status.toLowerCase()}
+              {translations("statusLabel", {
+                title: assessmentB.title,
+                status: statusTranslations.has(assessmentB.status)
+                  ? statusTranslations(assessmentB.status)
+                  : assessmentB.status.toLowerCase(),
+              })}
             </p>
           </CardContent>
         </Card>
@@ -232,7 +253,7 @@ export default async function CompareVendorsPage({
           <thead className="bg-background sticky top-14">
             <tr className="bg-muted/50 border-b">
               <th scope="col" className="p-3 text-left font-medium">
-                Question
+                {translations("question")}
               </th>
               <th scope="col" className="p-3 text-left font-medium">
                 {vendorA.name}
@@ -252,10 +273,10 @@ export default async function CompareVendorsPage({
               const bCompliant = br?.isCompliant;
 
               const aAnswer = ar?.isNotApplicable
-                ? "N/A"
+                ? translations("notApplicable")
                 : formatResponseValue(ar?.value);
               const bAnswer = br?.isNotApplicable
-                ? "N/A"
+                ? translations("notApplicable")
                 : formatResponseValue(br?.value);
               const answersDiffer = aq && bq && aAnswer !== bAnswer;
 
@@ -277,11 +298,11 @@ export default async function CompareVendorsPage({
                     <span>{text}</span>
                     <br />
                     <Badge variant="secondary" className="text-xs">
-                      {
-                        QUESTION_TYPE_LABELS[
-                          aq?.type ?? bq?.type ?? "FREE_TEXT"
-                        ]
-                      }
+                      {questionTypeTranslations.has(aq?.type ?? bq?.type ?? "")
+                        ? questionTypeTranslations(
+                            aq?.type ?? bq?.type ?? "FREE_TEXT",
+                          )
+                        : (aq?.type ?? bq?.type ?? "FREE_TEXT")}
                     </Badge>
                   </td>
                   <td className="p-3 align-top">

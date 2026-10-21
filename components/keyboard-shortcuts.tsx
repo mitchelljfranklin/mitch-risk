@@ -2,83 +2,79 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { PERMISSIONS, hasPermission, type Permission } from "@/lib/permissions";
 
 type PaletteItem = {
-  label: string;
-  subtitle?: string;
+  id: string;
   href: string;
   permission?: string;
 };
 
+type ResolvedPaletteItem = PaletteItem & {
+  label: string;
+  subtitle: string;
+};
+
 const ALL_ITEMS: PaletteItem[] = [
-  { label: "Dashboard", subtitle: "Vendor risk overview", href: "/dashboard" },
+  { id: "dashboard", href: "/dashboard" },
   {
-    label: "Vendors",
-    subtitle: "Manage vendors",
+    id: "vendors",
     href: "/vendors",
     permission: PERMISSIONS.VENDORS_VIEW,
   },
   {
-    label: "Assessments",
-    subtitle: "Questionnaires",
+    id: "assessments",
     href: "/assessments",
     permission: PERMISSIONS.ASSESSMENTS_VIEW,
   },
   {
-    label: "Frameworks",
-    subtitle: "Compliance controls",
+    id: "frameworks",
     href: "/frameworks",
     permission: PERMISSIONS.FRAMEWORKS_VIEW,
   },
   {
-    label: "Templates",
-    subtitle: "Questionnaire builder",
+    id: "templates",
     href: "/templates",
     permission: PERMISSIONS.TEMPLATES_VIEW,
   },
-  { label: "Profile", subtitle: "Your account", href: "/profile" },
+  { id: "profile", href: "/profile" },
   {
-    label: "Admin · General",
-    subtitle: "Organization",
+    id: "adminGeneral",
     href: "/admin/general",
     permission: PERMISSIONS.SETTINGS_MANAGE,
   },
   {
-    label: "Admin · Users",
-    subtitle: "Staff accounts",
+    id: "adminUsers",
     href: "/admin/users",
     permission: PERMISSIONS.USERS_MANAGE,
   },
   {
-    label: "Admin · Roles",
-    subtitle: "Permissions",
+    id: "adminRoles",
     href: "/admin/roles",
     permission: PERMISSIONS.ROLES_MANAGE,
   },
   {
-    label: "Admin · API",
-    subtitle: "API access",
+    id: "adminApi",
     href: "/admin/api",
     permission: PERMISSIONS.API_MANAGE,
   },
   {
-    label: "Admin · Audit log",
-    subtitle: "Activity trail",
+    id: "adminAudit",
     href: "/admin/audit",
     permission: PERMISSIONS.AUDIT_VIEW,
   },
-  { label: "API Docs", subtitle: "OpenAPI / Swagger", href: "/docs" },
+  { id: "apiDocs", href: "/docs" },
 ];
 
-function fuzzyMatch(item: PaletteItem, query: string): boolean {
+function fuzzyMatch(item: ResolvedPaletteItem, query: string): boolean {
   const lower = query.toLowerCase();
   const tokens = lower.split(/\s+/).filter(Boolean);
   if (tokens.length === 0) return true;
-  const target = `${item.label} ${item.subtitle ?? ""}`.toLowerCase();
+  const target = `${item.label} ${item.subtitle}`.toLowerCase();
   return tokens.every((token) => target.includes(token));
 }
 
@@ -87,14 +83,25 @@ type CommandPaletteProps = {
 };
 
 export function KeyboardShortcuts({ permissions }: CommandPaletteProps) {
+  const translations = useTranslations("Shell.commandPalette");
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
+  const resolvedItems = useMemo(
+    () =>
+      ALL_ITEMS.map((item) => ({
+        ...item,
+        label: translations(`items.${item.id}.label`),
+        subtitle: translations(`items.${item.id}.subtitle`),
+      })),
+    [translations],
+  );
+
   const filteredItems = useMemo(() => {
-    return ALL_ITEMS.filter((item) => {
+    return resolvedItems.filter((item) => {
       if (
         item.permission &&
         !hasPermission(permissions, item.permission as Permission)
@@ -103,7 +110,7 @@ export function KeyboardShortcuts({ permissions }: CommandPaletteProps) {
       }
       return fuzzyMatch(item, query);
     });
-  }, [permissions, query]);
+  }, [permissions, query, resolvedItems]);
 
   const safeIndex = Math.max(
     0,
@@ -214,15 +221,15 @@ export function KeyboardShortcuts({ permissions }: CommandPaletteProps) {
   return (
     <Dialog open={open} onOpenChange={(next) => (next ? undefined : close())}>
       <DialogContent
-        aria-label="Command palette"
+        aria-label={translations("label")}
         className="top-[15vh] max-w-lg translate-y-0 gap-0 p-0"
       >
-        <DialogTitle className="sr-only">Command palette</DialogTitle>
+        <DialogTitle className="sr-only">{translations("label")}</DialogTitle>
         <div className="border-b px-3 py-3">
           <Input
             ref={inputRef}
             type="text"
-            placeholder="Search pages..."
+            placeholder={translations("searchPlaceholder")}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             className="border-none shadow-none focus-visible:ring-0"
@@ -242,7 +249,7 @@ export function KeyboardShortcuts({ permissions }: CommandPaletteProps) {
         >
           {filteredItems.length === 0 ? (
             <p className="text-muted-foreground px-3 py-6 text-center text-sm">
-              No results.
+              {translations("noResults")}
             </p>
           ) : (
             filteredItems.map((item, index) => (
@@ -272,21 +279,21 @@ export function KeyboardShortcuts({ permissions }: CommandPaletteProps) {
             <kbd className="bg-muted rounded px-1.5 py-0.5 font-mono text-xs">
               ↑↓
             </kbd>{" "}
-            navigate ·{" "}
+            {translations("navigate")} ·{" "}
             <kbd className="bg-muted rounded px-1.5 py-0.5 font-mono text-xs">
               ↵
             </kbd>{" "}
-            open ·{" "}
+            {translations("open")} ·{" "}
             <kbd className="bg-muted rounded px-1.5 py-0.5 font-mono text-xs">
               esc
             </kbd>{" "}
-            close
+            {translations("close")}
           </span>
           <span>
             <kbd className="bg-muted rounded px-1.5 py-0.5 font-mono text-xs">
               ⌘K
             </kbd>{" "}
-            or{" "}
+            {translations("or")}{" "}
             <kbd className="bg-muted rounded px-1.5 py-0.5 font-mono text-xs">
               ?
             </kbd>

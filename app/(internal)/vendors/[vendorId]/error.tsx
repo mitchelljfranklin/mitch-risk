@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 
 export default function VendorDetailErrorPage({
@@ -9,16 +11,18 @@ export default function VendorDetailErrorPage({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const translations = useTranslations("Vendors.detail");
+  const shellTranslations = useTranslations("Shell.error");
+
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 p-6">
       <h1 className="text-2xl font-semibold tracking-tight">
-        Failed to load vendor
+        {translations("errorTitle")}
       </h1>
       <p className="text-muted-foreground text-sm">
-        An error occurred while loading this vendor&apos;s details. Please try
-        again.
+        {translations("errorDescription")}
       </p>
-      <Button onClick={() => reset()}>Try again</Button>
+      <Button onClick={() => reset()}>{shellTranslations("retry")}</Button>
     </div>
   );
 }

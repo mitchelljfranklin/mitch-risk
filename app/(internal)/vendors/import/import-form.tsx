@@ -2,6 +2,7 @@
 
 import { useActionState, useState, useEffect, startTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,6 +45,7 @@ const CSV_TEMPLATE = [
 
 export function ImportVendorsForm() {
   const router = useRouter();
+  const translations = useTranslations("VendorImport");
   const [state, formAction, isPending] = useActionState(
     importVendorsAction,
     undefined as VendorsImportState,
@@ -90,7 +92,7 @@ export function ImportVendorsForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Import vendors from CSV</CardTitle>
+        <CardTitle>{translations("cardTitle")}</CardTitle>
       </CardHeader>
       <CardContent>
         <Stepper defaultValue="upload" className="flex flex-col gap-6">
@@ -99,7 +101,7 @@ export function ImportVendorsForm() {
               <StepperTrigger className="flex flex-col items-center gap-1">
                 <StepperIndicator className="flex size-8 items-center justify-center rounded-full border-2 text-sm font-medium" />
                 <StepperLabel className="text-xs font-medium">
-                  Upload
+                  {translations("steps.upload")}
                 </StepperLabel>
               </StepperTrigger>
               <StepperSeparator className="bg-muted-foreground/20 mx-2 h-0.5 w-12" />
@@ -108,7 +110,7 @@ export function ImportVendorsForm() {
               <StepperTrigger className="flex flex-col items-center gap-1">
                 <StepperIndicator className="flex size-8 items-center justify-center rounded-full border-2 text-sm font-medium" />
                 <StepperLabel className="text-xs font-medium">
-                  Review
+                  {translations("steps.review")}
                 </StepperLabel>
               </StepperTrigger>
             </StepperItem>
@@ -117,7 +119,7 @@ export function ImportVendorsForm() {
           <StepperContent value="upload" className="flex flex-col gap-4">
             <div className="grid gap-2">
               <div className="flex items-center justify-between gap-2">
-                <Label htmlFor="file">CSV file</Label>
+                <Label htmlFor="file">{translations("csvFile")}</Label>
                 <Button
                   type="button"
                   variant="ghost"
@@ -136,7 +138,7 @@ export function ImportVendorsForm() {
                   }}
                 >
                   <Download className="size-3" />
-                  Template
+                  {translations("template")}
                 </Button>
               </div>
               <Input
@@ -147,25 +149,14 @@ export function ImportVendorsForm() {
                 onChange={handleFileChange}
               />
               <p className="text-muted-foreground text-xs">
-                CSV must have columns: <code>id</code> (optional),{" "}
-                <code>name</code>, <code>contactemail</code>, plus optional:{" "}
-                <code>externalid</code>, <code>contactname</code>,{" "}
-                <code>tier</code>, <code>website</code>, <code>notes</code>,{" "}
-                <code>servicedescription</code>, <code>datasensitivity</code>,{" "}
-                <code>contractrenewaldate</code>, <code>contractvalue</code>,{" "}
-                <code>geographicrisk</code>, <code>tags</code>. Only{" "}
-                <code>name</code> and <code>contactemail</code> are required.
-                Max 1 MB. Include a vendor <code>id</code> or{" "}
-                <code>externalid</code> to update an existing vendor instead of
-                creating a new one.
+                {translations("columnsHelp")}
               </p>
             </div>
 
             {parsedRows.length > 0 ? (
               <div>
                 <p className="text-muted-foreground mb-2 text-sm">
-                  {parsedRows.length} vendor
-                  {parsedRows.length !== 1 ? "s" : ""} found
+                  {translations("found", { count: parsedRows.length })}
                 </p>
                 <div className="max-h-64 overflow-auto rounded-md border">
                   <Table>
@@ -196,7 +187,9 @@ export function ImportVendorsForm() {
                 </div>
                 {parsedRows.length > 10 ? (
                   <p className="text-muted-foreground mt-1 text-xs">
-                    Showing first 10 of {parsedRows.length} rows
+                    {translations("showingFirst", {
+                      count: parsedRows.length,
+                    })}
                   </p>
                 ) : null}
               </div>
@@ -208,7 +201,7 @@ export function ImportVendorsForm() {
                 className="w-fit"
                 disabled={parsedRows.length === 0}
               >
-                Next →
+                {translations("next")}
               </Button>
             </StepperNext>
           </StepperContent>
@@ -216,27 +209,23 @@ export function ImportVendorsForm() {
           <StepperContent value="confirm" className="flex flex-col gap-4">
             <div className="rounded-md border p-4">
               <p className="text-sm">
-                You are about to import{" "}
-                <span className="font-semibold">
-                  {parsedRows.length} vendor
-                  {parsedRows.length !== 1 ? "s" : ""}
-                </span>
-                .
+                {translations("aboutToImport", { count: parsedRows.length })}
               </p>
               <p className="text-muted-foreground mt-1 text-xs">
-                Some rows may be skipped if they fail validation (duplicate
-                emails, missing required fields).
+                {translations("skippedNote")}
               </p>
             </div>
 
             <div className="flex items-center gap-3">
               <StepperPrevious asChild>
                 <Button variant="outline" size="sm">
-                  ← Back
+                  {translations("back")}
                 </Button>
               </StepperPrevious>
               <Button size="sm" disabled={isPending} onClick={handleImport}>
-                {isPending ? "Importing…" : "Import vendors"}
+                {isPending
+                  ? translations("importing")
+                  : translations("importVendors")}
               </Button>
             </div>
 

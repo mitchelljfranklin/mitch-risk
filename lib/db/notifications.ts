@@ -7,15 +7,9 @@ import {
   type EmailLogFilters,
   type EmailLogResult,
   type EmailLogEntry,
-  EMAIL_TYPE_LABELS,
 } from "./notifications-types";
 
-export {
-  type EmailLogFilters,
-  type EmailLogResult,
-  type EmailLogEntry,
-  EMAIL_TYPE_LABELS,
-};
+export { type EmailLogFilters, type EmailLogResult, type EmailLogEntry };
 
 export type NotificationCounts = {
   unreviewedSubmissions: number;

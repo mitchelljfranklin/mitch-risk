@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 
 export default function ProfileErrorPage({
@@ -9,15 +11,18 @@ export default function ProfileErrorPage({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const translations = useTranslations("Profile");
+  const shellTranslations = useTranslations("Shell.error");
+
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 p-6">
       <h1 className="text-2xl font-semibold tracking-tight">
-        Something went wrong
+        {shellTranslations("title")}
       </h1>
       <p className="text-muted-foreground text-sm">
-        Your profile could not be loaded. Please try again or contact support.
+        {translations("errorDescription")}
       </p>
-      <Button onClick={() => reset()}>Try again</Button>
+      <Button onClick={() => reset()}>{shellTranslations("retry")}</Button>
     </div>
   );
 }

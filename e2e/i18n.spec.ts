@@ -114,6 +114,31 @@ test.describe("internal shell", () => {
       sidebar.getByRole("link", { name: "Proveedores" }).first(),
     ).toBeVisible();
 
+    await page.keyboard.press("Control+k");
+    const commandPalette = page.getByRole("dialog", {
+      name: "Paleta de comandos",
+    });
+    await expect(commandPalette).toBeVisible();
+    await expect(
+      commandPalette.getByPlaceholder("Buscar páginas..."),
+    ).toBeVisible();
+    await expect(
+      commandPalette.getByText("Panel", { exact: true }),
+    ).toBeVisible();
+    await commandPalette.getByPlaceholder("Buscar páginas...").fill("zzzz");
+    await expect(commandPalette.getByText("Sin resultados.")).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(commandPalette).toBeHidden();
+
+    await page.goto("/vendors/new");
+    const breadcrumbs = page.getByRole("navigation", {
+      name: "Ruta de navegación",
+    });
+    await expect(breadcrumbs).toBeVisible();
+    await expect(
+      breadcrumbs.getByRole("link", { name: "Panel" }),
+    ).toBeVisible();
+
     await page.getByRole("button", { name: "E2E Admin" }).click();
     await page.getByRole("menuitem", { name: "Idioma" }).hover();
     await page.getByRole("menuitem", { name: "English" }).click();
@@ -944,5 +969,83 @@ test.describe("internal shell", () => {
     ).toBeVisible();
     await expect(page.getByText("En ejecución", { exact: true })).toBeVisible();
     await expect(page.getByText("Conectada", { exact: true })).toBeVisible();
+  });
+
+  test("translates the remaining workspace surfaces", async ({ page }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto("/profile");
+
+    await expect(page.getByRole("heading", { name: "Perfil" })).toBeVisible();
+    await expect(
+      page.getByText("Datos de la cuenta", { exact: true }),
+    ).toBeVisible();
+    await expect(page.getByLabel("Nombre")).toBeVisible();
+    await expect(page.getByLabel("Correo electrónico")).toBeVisible();
+    await expect(page.getByLabel("Contraseña actual")).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Guardar cambios" }),
+    ).toBeVisible();
+
+    await page.goto("/vendors/bulk-send");
+
+    await expect(
+      page.getByRole("heading", { name: "Envío masivo" }),
+    ).toBeVisible();
+    await expect(page.getByText("Configurar", { exact: true })).toBeVisible();
+    await expect(page.getByLabel("Plantilla")).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Siguiente →" }),
+    ).toBeVisible();
+
+    await page.goto("/vendors/import");
+
+    await expect(
+      page.getByRole("heading", { name: "Importar proveedores" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Importar proveedores desde CSV"),
+    ).toBeVisible();
+    await expect(page.getByLabel("Archivo CSV")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Plantilla" })).toBeVisible();
+
+    await page.goto("/vendors/compare");
+
+    await expect(
+      page.getByRole("heading", { name: "Comparar proveedores" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        "Elige dos proveedores para comparar sus últimas evaluaciones completadas en paralelo.",
+      ),
+    ).toBeVisible();
+
+    await page.goto("/trust-center");
+
+    await expect(
+      page.getByRole("heading", { name: "Trust center" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Insignias de cumplimiento", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Documentos de seguridad", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Subencargados", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Secciones personalizadas", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Añadir insignia" }),
+    ).toBeVisible();
   });
 });

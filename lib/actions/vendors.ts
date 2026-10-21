@@ -152,23 +152,21 @@ export async function importVendorsAction(
   formData: FormData,
 ): Promise<VendorsImportState> {
   const actor = await requirePermission(PERMISSIONS.VENDORS_CREATE);
+  const translations = await getTranslations("VendorImport");
 
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {
-    return { ok: false, error: "No file selected." };
+    return { ok: false, error: translations("errors.noFile") };
   }
 
   if (file.size > 1_000_000) {
-    return { ok: false, error: "File is too large (max 1 MB)." };
+    return { ok: false, error: translations("errors.fileTooLarge") };
   }
 
   const text = await file.text();
   const rows = parseCsvWithHeaders(text);
   if (rows.length === 0) {
-    return {
-      ok: false,
-      error: "No rows found in CSV. The first row must be a header.",
-    };
+    return { ok: false, error: translations("errors.noRows") };
   }
 
   const vendorRows: { id: string; input: VendorInput }[] = [];
@@ -220,17 +218,27 @@ export async function importVendorsAction(
         },
       });
     } else {
-      rowErrors.push(
-        `Row ${i + 2}: ${parsed.error.issues[0]?.message ?? "invalid"}`,
-      );
+      const issue = parsed.error.issues[0];
+      let rowMessage: string;
+      if (issue?.path[0] === "name") {
+        rowMessage = translations("errors.rowNameRequired", { row: i + 2 });
+      } else if (issue?.path[0] === "contactEmail") {
+        rowMessage = translations("errors.rowContactEmailRequired", {
+          row: i + 2,
+        });
+      } else {
+        rowMessage = translations("errors.rowInvalid", { row: i + 2 });
+      }
+      rowErrors.push(rowMessage);
     }
   }
 
   if (vendorRows.length === 0) {
     return {
       ok: false,
-      error:
-        "No valid vendors found. First error: " + (rowErrors[0] ?? "unknown"),
+      error: translations("errors.noValidVendors", {
+        reason: rowErrors[0] ?? translations("errors.unknown"),
+      }),
     };
   }
 
@@ -278,8 +286,7 @@ export async function importVendorsAction(
     if (!canEdit) {
       return {
         ok: false,
-        error:
-          "This import would update existing vendors. Updating requires vendor edit permission.",
+        error: translations("errors.updateRequiresEdit"),
       };
     }
   }
@@ -321,10 +328,18 @@ export async function importVendorsAction(
       createdCount++;
     } catch (error: unknown) {
       if (isDuplicateExternalId(error)) {
-        rowErrors.push(`${input.name}: duplicate external ID`);
+        rowErrors.push(
+          translations("errors.duplicateExternalId", { name: input.name }),
+        );
       } else {
         rowErrors.push(
-          `${input.name}: ${error instanceof Error ? error.message : "failed"}`,
+          translations("errors.rowFailed", {
+            name: input.name,
+            reason:
+              error instanceof Error
+                ? error.message
+                : translations("errors.unknown"),
+          }),
         );
       }
     }
@@ -333,20 +348,20 @@ export async function importVendorsAction(
 
   const parts: string[] = [];
   if (createdCount > 0) {
-    parts.push(`${createdCount} created`);
+    parts.push(translations("errors.created", { count: createdCount }));
   }
   if (updatedCount > 0) {
-    parts.push(`${updatedCount} updated`);
+    parts.push(translations("errors.updated", { count: updatedCount }));
   }
   if (rowErrors.length > 0) {
-    parts.push(
-      `${rowErrors.length} row${rowErrors.length !== 1 ? "s" : ""} skipped`,
-    );
+    parts.push(translations("errors.skipped", { count: rowErrors.length }));
   }
 
   return {
     ok: true,
-    message: `Import complete: ${parts.join(", ")}.`,
+    message: translations("errors.importComplete", {
+      summary: parts.join(", "),
+    }),
     count: createdCount + updatedCount,
   };
 }
