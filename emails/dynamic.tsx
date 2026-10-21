@@ -12,6 +12,8 @@ type DynamicEmailProps = {
   body: string;
   htmlBody?: string;
   footer?: string;
+  language?: string;
+  direction?: "ltr" | "rtl";
 };
 
 const DEFAULT_FOOTER =
@@ -22,11 +24,13 @@ export function DynamicEmail({
   body,
   htmlBody,
   footer = DEFAULT_FOOTER,
+  language,
+  direction,
 }: DynamicEmailProps) {
   const paragraphs = body.split("\n").filter((line) => line.length > 0);
 
   return (
-    <Html>
+    <Html lang={language} dir={direction}>
       <Head />
       <Body style={{ fontFamily: "sans-serif", padding: "32px" }}>
         <Container>

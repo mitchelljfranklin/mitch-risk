@@ -6,6 +6,7 @@ import { createTranslator } from "next-intl";
 
 import { DynamicEmail } from "@/emails/dynamic";
 import { env } from "@/lib/env";
+import { localeDirection } from "@/lib/i18n/config";
 import { loadMessages, type Translate } from "@/lib/i18n/messages";
 import {
   getEmailSecret,
@@ -202,6 +203,8 @@ export async function sendEmail(
         body: resolvedBody,
         htmlBody,
         footer: translations("footer", { appName: organization.name }),
+        language: locale,
+        direction: localeDirection(locale),
       }),
     );
     await transport.sendMail({

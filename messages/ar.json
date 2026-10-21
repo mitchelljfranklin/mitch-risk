@@ -572,7 +572,7 @@
         "high": "مخاطر عالية"
       },
       "findings": {
-        "summary": "النتائج ({count} · {open,plural,one{# يفتح} other{# يفتح}})",
+        "summary": "النتائج ({count} · {open, plural, one {# مفتوح} other {# مفتوحة}})",
         "deletedUser": "المستخدم المحذوف",
         "noneTitle": "النتائج",
         "allCompliant": "جميع الإجابات متوافقة - لا توجد نتائج.",
@@ -873,18 +873,18 @@
         "sectionTitleRequired": "قسم {number}: العنوان مطلوب.",
         "questionsArray": "قسم \"{title}\": يجب أن تكون الأسئلة مصفوفة.",
         "textRequired": "{where}: النص مطلوب.",
-        "helpTextType": "{where}: يجب أن يكون نص المساعدة عبارة عن سلسلة عند تقديمه.",
-        "unknownType": "{where}:نوع غير معروف\"{type}\".",
+        "helpTextType": "{where}: يجب أن يكون الحقل \"helpText\" سلسلة عند توفيره.",
+        "unknownType": "{where}: نوع غير معروف \"{type}\".",
         "unknownRiskWeight": "{where}: وزن خطر غير معروف \"{weight}\".",
-        "requiredType": "{where}: مطلوب يجب أن يكون منطقيًا عند تقديمه.",
-        "optionsType": "{where}: يجب أن تكون الخيارات عبارة عن مجموعة من السلاسل.",
-        "controlCodesType": "{where}: يجب أن تكون رموز التحكم عبارة عن مجموعة من السلاسل.",
-        "expectedAnswerType": "{where}: يجب أن تكون الإجابة المتوقعة عبارة عن سلسلة أو رقم أو مجموعة من السلاسل.",
+        "requiredType": "{where}: يجب أن يكون الحقل \"required\" قيمة منطقية عند توفيره.",
+        "optionsType": "{where}: يجب أن يكون الحقل \"options\" مصفوفة من السلاسل.",
+        "controlCodesType": "{where}: يجب أن يكون الحقل \"controlCodes\" مصفوفة من السلاسل.",
+        "expectedAnswerType": "{where}: يجب أن يكون الحقل \"expectedAnswer\" سلسلة أو رقمًا أو مصفوفة من السلاسل.",
         "expectedAnswer": {
-          "multiSelectArray": "{where}: يجب أن تكون الإجابة المتوقعة عبارة عن مجموعة من السلاسل.",
-          "choiceStringOrArray": "{where}: يجب أن تكون الإجابة المتوقعة عبارة عن سلسلة أو مجموعة من السلاسل.",
-          "numeric": "{where}: يجب أن تكون الإجابة المتوقعة رقمًا.",
-          "yesNoCheckboxString": "{where}: يجب أن تكون الإجابة المتوقعة سلسلة."
+          "multiSelectArray": "{where}: يجب أن يكون الحقل \"expectedAnswer\" مصفوفة من السلاسل.",
+          "choiceStringOrArray": "{where}: يجب أن يكون الحقل \"expectedAnswer\" سلسلة أو مصفوفة من السلاسل.",
+          "numeric": "{where}: يجب أن يكون الحقل \"expectedAnswer\" رقمًا.",
+          "yesNoCheckboxString": "{where}: يجب أن يكون الحقل \"expectedAnswer\" سلسلة."
         },
         "controlAmbiguous": "رموز التحكم {codes} غامضة - نفس الكود موجود في أطر عمل متعددة. قم بإزالة التكرار أو إعادة تسمية أحد عناصر التحكم.",
         "controlNotFound": "لم يتم العثور على رمز التحكم: {code}"
@@ -1984,8 +1984,8 @@
     "backToDashboard": "العودة إلى لوحة القيادة"
   },
   "BulkSend": {
-    "metaTitle": "إرسال بالجملة",
-    "title": "إرسال بالجملة",
+    "metaTitle": "إرسال جماعي",
+    "title": "إرسال جماعي",
     "subtitle": "أرسل نفس الاستبيان إلى عدة موردين في وقت واحد.",
     "breadcrumb": "إرسال بالجملة",
     "steps": {
@@ -2007,8 +2007,8 @@
     "selectedCount": "{count} مختارة",
     "noMatch": "لا يوجد موردون مطابقون لبحثك.",
     "noEmail": "لا يوجد بريد إلكتروني",
-    "sendingTo": "إرسال {template} ل {count,plural,one{# مورد} other{# الموردين}}",
-    "due": "حق: {date}",
+    "sendingTo": "جارٍ إرسال {template} إلى {count, plural, one {# مورد} other {# موردين}}",
+    "due": "تاريخ الاستحقاق: {date}",
     "reviewerLabel": "المراجع: {name}",
     "portalPasswordSet": "تم تعيين كلمة مرور البوابة",
     "sending": "إرسال...",

@@ -53,8 +53,8 @@ The REST API, OpenAPI/Swagger documentation, and audit CSV exports remain in Eng
 Message catalogs live in:
 
 ```
-messages/en.json   ← source of truth for keys
-messages/es.json
+messages/en.json        ← source of truth for keys
+messages/<locale>.json  ← one catalog per shipped locale
 ```
 
 Locale plumbing lives in:
@@ -82,13 +82,15 @@ The example below adds Swedish (`sv`).
 In `lib/i18n/config.ts`:
 
 ```ts
-export const LOCALES = ["en", "es", "sv"] as const;
+export const LOCALES = [
+  // …existing locale codes…
+  "sv",
+] as const;
 
 export type Locale = (typeof LOCALES)[number];
 
 export const LOCALE_LABELS: Record<Locale, string> = {
-  en: "English",
-  es: "Español",
+  // …existing labels…
   sv: "Svenska",
 };
 
@@ -126,7 +128,7 @@ Preserve every ICU construct exactly:
 "pageSummary": "Page {page} of {totalPages}"
 ```
 
-The English catalog is the source of truth. `lib/i18n/messages.test.ts` fails if any locale is missing a key or has an extra key.
+The English catalog is the source of truth. `lib/i18n/messages.test.ts` fails if any locale is missing a key, has an extra key, drops a placeholder, or changes a literal import field name.
 
 #### 3. Register the catalog loader
 
@@ -183,7 +185,7 @@ If the new language uses a script that is not covered:
 3. Keep the `outputFileTracingIncludes` entry in `next.config.ts` so standalone builds include the font files.
 4. Generate a PDF in the new locale and check that all glyphs render.
 
-Arabic sets `dir="rtl"` at the root and in PDF pages. The layout has not had a full RTL audit, so treat Arabic as best-effort and check navigation, tables, icons, and PDF pagination.
+Arabic sets `dir="rtl"` at the root, in PDF pages, and in outbound HTML email. The layout has not had a full RTL audit, so treat Arabic as best-effort and check navigation, tables, icons, and PDF pagination.
 
 #### 6. Add locale tests and run the quality gate
 
@@ -214,7 +216,7 @@ rendered. Avoid `<`/`>` in message text; use `[id]` or the rich-text API instead
 
 ### Right-to-left languages
 
-`app/layout.tsx` sets both `lang` and `dir` from the resolved locale. Arabic is marked RTL via `RTL_LOCALES` in `lib/i18n/config.ts`; PDF pages receive the same direction. The layout has not had a full RTL audit, so Arabic should be treated as best-effort until navigation, tables, icons, and PDF pagination are visually verified.
+`app/layout.tsx` sets both `lang` and `dir` from the resolved locale. Arabic is marked RTL via `RTL_LOCALES` in `lib/i18n/config.ts`; PDF pages and outbound HTML email receive the same direction. The layout has not had a full RTL audit, so Arabic should be treated as best-effort until navigation, tables, icons, and PDF pagination are visually verified.
 
 ### Current limitations
 
@@ -224,5 +226,5 @@ rendered. Avoid `<`/`>` in message text; use `[id]` or the rich-text API instead
 - The developer-only `/style-guide` page is not translated.
 - The REST API, OpenAPI spec, and audit CSV exports remain English.
 - Emails use the organisation default rather than the recipient's browser preference.
-- The bundled PDF fonts add roughly 36 MB to the repository and container image. Arabic/Hindi complex-script shaping is best-effort.
+- The bundled PDF fonts add roughly 38 MB to the repository and container image. Arabic/Hindi complex-script shaping is best-effort.
 - The UI font (Geist) is Latin-subset; CJK, Arabic, and Devanagari glyphs rely on operating-system fallback fonts.

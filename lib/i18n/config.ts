@@ -29,7 +29,7 @@ export const LOCALE_LABELS: Record<Locale, string> = {
   nl: "Nederlands",
   ja: "日本語",
   ko: "한국어",
-  zh: "中文",
+  zh: "简体中文",
   ar: "العربية",
   hi: "हिन्दी",
 };
@@ -37,7 +37,10 @@ export const LOCALE_LABELS: Record<Locale, string> = {
 const RTL_LOCALES: readonly Locale[] = ["ar"];
 
 export function localeDirection(locale: string): "ltr" | "rtl" {
-  return RTL_LOCALES.some((rtlLocale) => rtlLocale === locale) ? "rtl" : "ltr";
+  const baseLocale = locale.split("-")[0] ?? locale;
+  return RTL_LOCALES.some((rtlLocale) => rtlLocale === baseLocale)
+    ? "rtl"
+    : "ltr";
 }
 
 export function isLocale(value: unknown): value is Locale {

@@ -299,7 +299,8 @@ UI hiding is cosmetic; the server guard is the real control — **both are alway
   request locale); PDFs follow the request locale via `getTranslations`/`getFormatter`; use those
   (not `formatDate()`, which is fixed to en-GB) for dates on translated surfaces. PDFs use the
   bundled Noto families in `lib/pdf/fonts/`; keep `outputFileTracingIncludes` in `next.config.ts` so
-  standalone builds include them. Arabic sets `dir="rtl"`, but the layout is only RTL best-effort.
+  standalone builds include them. Arabic sets `dir="rtl"` at the root, in PDFs, and in outbound HTML
+  email, but the layout is only RTL best-effort.
 
 ## Windows / PowerShell tooling notes
 

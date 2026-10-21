@@ -105,7 +105,7 @@
       "failedEmail": "失敗したメール (24 時間)",
       "failedEmails": "失敗したメール (24 時間)",
       "groups": {
-        "overdue": "Overdue assessments",
+        "overdue": "期限超過の評価",
         "belowThreshold": "スコアしきい値未満",
         "keyDates": "重要日付（60日以内）"
       },
@@ -572,7 +572,7 @@
         "high": "高リスク"
       },
       "findings": {
-        "summary": "調査結果 ({count} · {open,plural,one{# 開ける} other{# 開ける}})",
+        "summary": "調査結果 ({count} · {open, plural, one {# 未解決} other {# 未解決}})",
         "deletedUser": "削除されたユーザー",
         "noneTitle": "調査結果",
         "allCompliant": "すべての回答は準拠しています - 所見はありません。",
@@ -877,14 +877,14 @@
         "unknownType": "{where}: 不明なタイプ \"{type}\".",
         "unknownRiskWeight": "{where}: 不明なリスクウェイト \"{weight}\".",
         "requiredType": "{where}: required を指定する場合はブール値である必要があります。",
-        "optionsType": "{where}: オプションは文字列の配列である必要があります。",
+        "optionsType": "{where}: options は文字列の配列である必要があります。",
         "controlCodesType": "{where}: controlCodes は文字列の配列である必要があります。",
-        "expectedAnswerType": "{where}: ExpectedAnswer は文字列、数値、または文字列の配列である必要があります。",
+        "expectedAnswerType": "{where}: expectedAnswer は文字列、数値、または文字列の配列である必要があります。",
         "expectedAnswer": {
-          "multiSelectArray": "{where}: ExpectedAnswer は文字列の配列である必要があります。",
-          "choiceStringOrArray": "{where}: ExpectedAnswer は文字列または文字列の配列である必要があります。",
-          "numeric": "{where}: ExpectedAnswer は数値である必要があります。",
-          "yesNoCheckboxString": "{where}: ExpectedAnswer は文字列である必要があります。"
+          "multiSelectArray": "{where}: expectedAnswer は文字列の配列である必要があります。",
+          "choiceStringOrArray": "{where}: expectedAnswer は文字列または文字列の配列である必要があります。",
+          "numeric": "{where}: expectedAnswer は数値である必要があります。",
+          "yesNoCheckboxString": "{where}: expectedAnswer は文字列である必要があります。"
         },
         "controlAmbiguous": "制御コード {codes} あいまいです - 同じコードが複数のフレームワークに存在します。重複を削除するか、いずれかのコントロールの名前を変更します。",
         "controlNotFound": "制御コードが見つかりません: {code}"
@@ -1996,7 +1996,7 @@
     "template": "テンプレート",
     "selectTemplate": "テンプレートを選択",
     "dueDate": "期日",
-    "reviewer": "査読者",
+    "reviewer": "レビュアー",
     "unassigned": "未割り当て",
     "portalPassword": "ポータルのパスワード (オプション)",
     "portalPasswordPlaceholder": "すべてのベンダーの共有パスワード",
@@ -2007,12 +2007,12 @@
     "selectedCount": "{count} 選択された",
     "noMatch": "検索に一致するベンダーはありません。",
     "noEmail": "電子メールなし",
-    "sendingTo": "送信中 {template} に {count,plural,one{# ベンダー} other{# ベンダー}}",
+    "sendingTo": "{template} を {count, plural, one {# ベンダー} other {# ベンダー}} に送信中",
     "due": "期限： {date}",
-    "reviewerLabel": "査読者: {name}",
+    "reviewerLabel": "レビュアー: {name}",
     "portalPasswordSet": "ポータルのパスワード設定",
     "sending": "送信中...",
-    "sendTo": "送信先 {count,plural,one{# ベンダー} other{# ベンダー}}",
+    "sendTo": "{count, plural, one {# ベンダー} other {# ベンダー}} に送信",
     "sentCount": "{count,plural,one{送信済み # 評価} other{送信済み # 評価}}",
     "skippedCount": "{count,plural,one{# 送信できませんでした} other{# 送信できませんでした}}",
     "emailFailedCount": "{count,plural,one{# メールが配信できませんでした} other{# メールが配信できませんでした}}",

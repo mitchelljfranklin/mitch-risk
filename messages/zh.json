@@ -110,7 +110,7 @@
         "keyDates": "关键日期（60 天）"
       },
       "overdueAssessment": "{count,plural,one{# 逾期评估} other{# 逾期评估}}",
-      "oldestSince": "最古老的 {date}",
+      "oldestSince": "最早：{date}",
       "belowThreshold": "以下 {percent}％ 临界点",
       "contractRenewal": "续约",
       "daysOverdue": "{days}d 逾期",
@@ -572,7 +572,7 @@
         "high": "高风险"
       },
       "findings": {
-        "summary": "调查结果（{count} · {open,plural,one{# 打开} other{# 打开}})",
+        "summary": "调查结果（{count} · {open, plural, one {# 未解决} other {# 未解决}}）",
         "deletedUser": "已删除用户",
         "noneTitle": "发现",
         "allCompliant": "所有答案均符合要求——没有发现。",
@@ -822,7 +822,7 @@
     "controls": {
       "mappedControls": "映射控件",
       "selectedCount": "{count} 已选择",
-      "hint": "勾选一个框架标题以映射其每一个控件——对于“你经过认证了吗？”很有用。 questions where a compliant answer should satisfy the whole framework.",
+      "hint": "勾选一个框架标题即可映射其所有控件——适用于“您是否已获得认证？”这类问题，即合规回答应满足整个框架。",
       "allFrameworks": "所有框架",
       "filterPlaceholder": "过滤器控制...",
       "noMatch": "没有控件与当前过滤器匹配。"
@@ -874,17 +874,17 @@
         "questionsArray": "部分 ”{title}\": 问题必须是一个数组。",
         "textRequired": "{where}: 文字为必填项。",
         "helpTextType": "{where}：helpText 提供时必须是字符串。",
-        "unknownType": "{where}：未知类型”{type}\".",
-        "unknownRiskWeight": "{where}：未知风险权重”{weight}\".",
-        "requiredType": "{where}: 提供时必需的必须是布尔值。",
-        "optionsType": "{where}：选项必须是字符串数组。",
+        "unknownType": "{where}：未知类型“{type}”。",
+        "unknownRiskWeight": "{where}：未知风险权重“{weight}”。",
+        "requiredType": "{where}：required 提供时必须是布尔值。",
+        "optionsType": "{where}：options 必须是字符串数组。",
         "controlCodesType": "{where}：controlCodes 必须是字符串数组。",
-        "expectedAnswerType": "{where}：expectedAnswer 必须是字符串、数字或字符串数​​组。",
+        "expectedAnswerType": "{where}：expectedAnswer 必须是字符串、数字或字符串数组。",
         "expectedAnswer": {
           "multiSelectArray": "{where}：expectedAnswer 必须是字符串数组。",
-          "choiceStringOrArray": "{where}：expectedAnswer 必须是字符串或字符串数​​组。",
-          "numeric": "{where}：预期答案必须是数字。",
-          "yesNoCheckboxString": "{where}：expectedAnswer 必须是一个字符串。"
+          "choiceStringOrArray": "{where}：expectedAnswer 必须是字符串或字符串数组。",
+          "numeric": "{where}：expectedAnswer 必须是数字。",
+          "yesNoCheckboxString": "{where}：expectedAnswer 必须是字符串。"
         },
         "controlAmbiguous": "控制代码 {codes} 不明确——相同的代码存在于多个框架中。删除重复项或重命名其中一个控件。",
         "controlNotFound": "未找到控制代码： {code}"
@@ -1996,7 +1996,7 @@
     "template": "模板",
     "selectTemplate": "选择模板",
     "dueDate": "到期日",
-    "reviewer": "审稿人",
+    "reviewer": "审核人",
     "unassigned": "未分配",
     "portalPassword": "门户密码（可选）",
     "portalPasswordPlaceholder": "所有供应商共享密码",
@@ -2007,9 +2007,9 @@
     "selectedCount": "{count} 已选择",
     "noMatch": "没有供应商符合您的搜索。",
     "noEmail": "没有电子邮件",
-    "sendingTo": "发送 {template} 到 {count,plural,one{# 供应商} other{# 供应商}}",
-    "due": "到期的： {date}",
-    "reviewerLabel": "审稿人： {name}",
+    "sendingTo": "正在向 {count, plural, one {# 家供应商} other {# 家供应商}}发送 {template}",
+    "due": "截止：{date}",
+    "reviewerLabel": "审核人：{name}",
     "portalPasswordSet": "门户密码设置",
     "sending": "正在发送...",
     "sendTo": "发送至 {count,plural,one{# 供应商} other{# 供应商}}",

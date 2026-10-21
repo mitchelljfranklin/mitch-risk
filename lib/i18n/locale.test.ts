@@ -48,6 +48,7 @@ describe("resolveLocale", () => {
 describe("localeFromAcceptLanguage", () => {
   it("marks Arabic as right-to-left and other locales as left-to-right", () => {
     expect(localeDirection("ar")).toBe("rtl");
+    expect(localeDirection("ar-EG")).toBe("rtl");
     expect(localeDirection("ja")).toBe("ltr");
     expect(localeDirection("en")).toBe("ltr");
   });

@@ -345,7 +345,7 @@
         "frameworkHeatmaps": "Mappe di calore del quadro",
         "noAssessmentData": "Nessun dato di valutazione",
         "noFrameworksTitle": "Nessun framework disponibile",
-        "noFrameworksDescription": "Importa o semina librerie di framework per mappare i controlli alle domande di valutazione."
+        "noFrameworksDescription": "Importa o inizializza le librerie di framework per mappare i controlli alle domande di valutazione."
       },
       "findings": {
         "title": "Risultati",
@@ -572,7 +572,7 @@
         "high": "Alto rischio"
       },
       "findings": {
-        "summary": "Risultati ({count} · {open,plural,one{# aprire} other{# aprire}})",
+        "summary": "Risultati ({count} · {open, plural, one {# aperto} other {# aperti}})",
         "deletedUser": "Utente eliminato",
         "noneTitle": "Risultati",
         "allCompliant": "Tutte le risposte sono conformi: nessun risultato.",
@@ -873,18 +873,18 @@
         "sectionTitleRequired": "Sezione {number}: il titolo è obbligatorio.",
         "questionsArray": "Sezione \"{title}\": le domande devono essere un array.",
         "textRequired": "{where}: il testo è obbligatorio.",
-        "helpTextType": "{where}: helpText deve essere una stringa quando fornita.",
+        "helpTextType": "{where}: il campo \"helpText\" deve essere una stringa quando fornito.",
         "unknownType": "{where}: tipo sconosciuto \"{type}\".",
         "unknownRiskWeight": "{where}: peso del rischio sconosciuto \"{weight}\".",
-        "requiredType": "{where}: obbligatorio deve essere un valore booleano quando fornito.",
-        "optionsType": "{where}: le opzioni devono essere un array di stringhe.",
-        "controlCodesType": "{where}: controlCodes deve essere un array di stringhe.",
-        "expectedAnswerType": "{where}: previstaLa risposta deve essere una stringa, un numero o un array di stringhe.",
+        "requiredType": "{where}: il campo \"required\" deve essere un valore booleano quando fornito.",
+        "optionsType": "{where}: il campo \"options\" deve essere un array di stringhe.",
+        "controlCodesType": "{where}: il campo \"controlCodes\" deve essere un array di stringhe.",
+        "expectedAnswerType": "{where}: il campo \"expectedAnswer\" deve essere una stringa, un numero o un array di stringhe.",
         "expectedAnswer": {
-          "multiSelectArray": "{where}: la risposta attesa deve essere un array di stringhe.",
-          "choiceStringOrArray": "{where}: previstaLa risposta deve essere una stringa o un array di stringhe.",
-          "numeric": "{where}: previstaLa risposta deve essere un numero.",
-          "yesNoCheckboxString": "{where}: previstaLa risposta deve essere una stringa."
+          "multiSelectArray": "{where}: il campo \"expectedAnswer\" deve essere un array di stringhe.",
+          "choiceStringOrArray": "{where}: il campo \"expectedAnswer\" deve essere una stringa o un array di stringhe.",
+          "numeric": "{where}: il campo \"expectedAnswer\" deve essere un numero.",
+          "yesNoCheckboxString": "{where}: il campo \"expectedAnswer\" deve essere una stringa."
         },
         "controlAmbiguous": "Codici di controllo {codes} sono ambigui: lo stesso codice esiste in più framework. Rimuovi il duplicato o rinomina uno dei controlli.",
         "controlNotFound": "Codice di controllo non trovato: {code}"
@@ -1996,7 +1996,7 @@
     "template": "Modello",
     "selectTemplate": "Seleziona modello",
     "dueDate": "Scadenza",
-    "reviewer": "Recensore",
+    "reviewer": "Revisore",
     "unassigned": "Non assegnato",
     "portalPassword": "Password del portale (facoltativa)",
     "portalPasswordPlaceholder": "Password condivisa per tutti i fornitori",
@@ -2007,9 +2007,9 @@
     "selectedCount": "{count} selezionato",
     "noMatch": "Nessun fornitore corrisponde alla tua ricerca.",
     "noEmail": "Nessuna e-mail",
-    "sendingTo": "Invio {template} A {count,plural,one{# fornitore} other{# fornitori}}",
-    "due": "Dovuto: {date}",
-    "reviewerLabel": "Recensore: {name}",
+    "sendingTo": "Invio di {template} a {count, plural, one {# fornitore} other {# fornitori}}",
+    "due": "Scadenza: {date}",
+    "reviewerLabel": "Revisore: {name}",
     "portalPasswordSet": "Password del portale impostata",
     "sending": "Invio...",
     "sendTo": "Invia a {count,plural,one{# fornitore} other{# fornitori}}",

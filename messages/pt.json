@@ -345,7 +345,7 @@
         "frameworkHeatmaps": "Mapas de calor da estrutura",
         "noAssessmentData": "Sem dados de avaliação",
         "noFrameworksTitle": "Nenhuma estrutura disponível",
-        "noFrameworksDescription": "Importe ou propague bibliotecas de estrutura para mapear controles para questões de avaliação."
+        "noFrameworksDescription": "Importe ou inicialize bibliotecas de frameworks para mapear controles às perguntas de avaliação."
       },
       "findings": {
         "title": "Descobertas",
@@ -572,7 +572,7 @@
         "high": "Alto risco"
       },
       "findings": {
-        "summary": "Descobertas ({count} · {open,plural,one{# abrir} other{# abrir}})",
+        "summary": "Constatações ({count} · {open, plural, one {# aberta} other {# abertas}})",
         "deletedUser": "Usuário excluído",
         "noneTitle": "Descobertas",
         "allCompliant": "Todas as respostas são compatíveis – nenhuma descoberta.",
@@ -873,18 +873,18 @@
         "sectionTitleRequired": "Seção {number}: o título é obrigatório.",
         "questionsArray": "Seção \"{title}\": as perguntas devem ser uma matriz.",
         "textRequired": "{where}: o texto é obrigatório.",
-        "helpTextType": "{where}: helpText deve ser uma string quando fornecido.",
+        "helpTextType": "{where}: o campo \"helpText\" deve ser uma string quando fornecido.",
         "unknownType": "{where}: tipo desconhecido \"{type}\".",
         "unknownRiskWeight": "{where}: peso de risco desconhecido \"{weight}\".",
-        "requiredType": "{where}: obrigatório deve ser um booleano quando fornecido.",
-        "optionsType": "{where}: as opções devem ser uma matriz de strings.",
-        "controlCodesType": "{where}: controlCodes deve ser uma matriz de strings.",
-        "expectedAnswerType": "{where}: expectAnswer deve ser uma string, um número ou uma matriz de strings.",
+        "requiredType": "{where}: o campo \"required\" deve ser um booleano quando fornecido.",
+        "optionsType": "{where}: o campo \"options\" deve ser uma matriz de strings.",
+        "controlCodesType": "{where}: o campo \"controlCodes\" deve ser uma matriz de strings.",
+        "expectedAnswerType": "{where}: o campo \"expectedAnswer\" deve ser uma string, um número ou uma matriz de strings.",
         "expectedAnswer": {
-          "multiSelectArray": "{where}: expectAnswer deve ser uma matriz de strings.",
-          "choiceStringOrArray": "{where}: expectAnswer deve ser uma string ou uma matriz de strings.",
-          "numeric": "{where}: a resposta esperada deve ser um número.",
-          "yesNoCheckboxString": "{where}: expectAnswer deve ser uma string."
+          "multiSelectArray": "{where}: o campo \"expectedAnswer\" deve ser uma matriz de strings.",
+          "choiceStringOrArray": "{where}: o campo \"expectedAnswer\" deve ser uma string ou uma matriz de strings.",
+          "numeric": "{where}: o campo \"expectedAnswer\" deve ser um número.",
+          "yesNoCheckboxString": "{where}: o campo \"expectedAnswer\" deve ser uma string."
         },
         "controlAmbiguous": "Códigos de controle {codes} são ambíguos — o mesmo código existe em vários frameworks. Remova a duplicata ou renomeie um dos controles.",
         "controlNotFound": "Código de controle não encontrado: {code}"
@@ -995,7 +995,7 @@
         "importing": "Importando…",
         "import": "Estrutura de importação",
         "reviewIntro": "Você está prestes a criar uma estrutura {name} v{version} com {count,plural,one{# controlar} other{# controles}}.",
-        "success": "Importado \"{name} v{version}\" com {count,plural,one{# controlar} other{# controles}}."
+        "success": "Importado \"{name} v{version}\" com {count, plural, one {# controle} other {# controles}}."
       },
       "errors": {
         "noFile": "É necessário um arquivo CSV.",
@@ -2008,7 +2008,7 @@
     "noMatch": "Nenhum fornecedor corresponde à sua pesquisa.",
     "noEmail": "Nenhum e-mail",
     "sendingTo": "Enviando {template} para {count,plural,one{# fornecedor} other{# fornecedores}}",
-    "due": "Devido: {date}",
+    "due": "Vencimento: {date}",
     "reviewerLabel": "Revisor: {name}",
     "portalPasswordSet": "Senha do portal definida",
     "sending": "Enviando...",

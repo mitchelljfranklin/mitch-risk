@@ -2,8 +2,12 @@ import { render } from "@react-email/components";
 
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
-import { getEmailTemplateSettings } from "@/lib/settings";
+import {
+  getEmailTemplateSettings,
+  getOrganizationSettings,
+} from "@/lib/settings";
 import { getEmailTemplateDefinition } from "@/lib/settings/email-templates";
+import { localeDirection } from "@/lib/i18n/config";
 import { DynamicEmail } from "@/emails/dynamic";
 
 function replaceTokens(text: string, tokens: Record<string, string>): string {
@@ -32,6 +36,7 @@ export async function GET(request: Request) {
   }
 
   const settings = await getEmailTemplateSettings();
+  const organization = await getOrganizationSettings();
   const rawSubject = String(
     settings[definition.subjectField] ?? definition.label,
   );
@@ -68,6 +73,8 @@ export async function GET(request: Request) {
         heading,
         body: bodyText,
         htmlBody: bodyText,
+        language: organization.defaultLocale,
+        direction: localeDirection(organization.defaultLocale),
       }),
     );
 
@@ -105,6 +112,7 @@ export async function POST(request: Request) {
   }
 
   const settings = await getEmailTemplateSettings();
+  const organization = await getOrganizationSettings();
   const rawSubject = String(
     settings[definition.subjectField] ?? definition.label,
   );
@@ -142,6 +150,8 @@ export async function POST(request: Request) {
         heading,
         body: bodyText,
         htmlBody: bodyText,
+        language: organization.defaultLocale,
+        direction: localeDirection(organization.defaultLocale),
       }),
     );
 

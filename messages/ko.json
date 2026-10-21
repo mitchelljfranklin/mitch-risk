@@ -110,7 +110,7 @@
         "keyDates": "주요 날짜(60일)"
       },
       "overdueAssessment": "{count,plural,one{# 기한이 지난 평가} other{# 기한이 지난 평가}}",
-      "oldestSince": "이후로 가장 오래된 {date}",
+      "oldestSince": "가장 오래된 항목: {date}",
       "belowThreshold": "아래에 {percent}% 한계점",
       "contractRenewal": "계약갱신",
       "daysOverdue": "{days}d 연체",
@@ -572,7 +572,7 @@
         "high": "위험"
       },
       "findings": {
-        "summary": "조사 결과({count} · {open,plural,one{# 열려 있는} other{# 열려 있는}})",
+        "summary": "조사 결과 ({count} · {open, plural, one {# 미해결} other {# 미해결}})",
         "deletedUser": "삭제된 사용자",
         "noneTitle": "조사 결과",
         "allCompliant": "모든 답변이 규정을 준수합니다. 결과가 없습니다.",
@@ -876,15 +876,15 @@
         "helpTextType": "{where}: helpText는 제공되는 경우 문자열이어야 합니다.",
         "unknownType": "{where}: 알 수 없는 유형 \"{type}\".",
         "unknownRiskWeight": "{where}: 알 수 없는 위험 가중치 \"{weight}\".",
-        "requiredType": "{where}: 필수는 제공되는 경우 부울이어야 합니다.",
-        "optionsType": "{where}: 옵션은 문자열 배열이어야 합니다.",
+        "requiredType": "{where}: required는 제공되는 경우 불리언이어야 합니다.",
+        "optionsType": "{where}: options는 문자열 배열이어야 합니다.",
         "controlCodesType": "{where}: controlCodes는 문자열 배열이어야 합니다.",
-        "expectedAnswerType": "{where}: 예상 답변은 문자열, 숫자 또는 문자열 배열이어야 합니다.",
+        "expectedAnswerType": "{where}: expectedAnswer는 문자열, 숫자 또는 문자열 배열이어야 합니다.",
         "expectedAnswer": {
-          "multiSelectArray": "{where}: ExpectAnswer는 문자열 배열이어야 합니다.",
-          "choiceStringOrArray": "{where}: ExpectAnswer는 문자열이거나 문자열 배열이어야 합니다.",
-          "numeric": "{where}: 예상 답변은 숫자여야 합니다.",
-          "yesNoCheckboxString": "{where}: ExpectAnswer는 문자열이어야 합니다."
+          "multiSelectArray": "{where}: expectedAnswer는 문자열 배열이어야 합니다.",
+          "choiceStringOrArray": "{where}: expectedAnswer는 문자열 또는 문자열 배열이어야 합니다.",
+          "numeric": "{where}: expectedAnswer는 숫자여야 합니다.",
+          "yesNoCheckboxString": "{where}: expectedAnswer는 문자열이어야 합니다."
         },
         "controlAmbiguous": "제어 코드 {codes} 모호합니다. 동일한 코드가 여러 프레임워크에 존재합니다. 중복된 항목을 제거하거나 컨트롤 중 하나의 이름을 바꾸십시오.",
         "controlNotFound": "제어 코드를 찾을 수 없습니다: {code}"
@@ -1984,8 +1984,8 @@
     "backToDashboard": "대시보드로 돌아가기"
   },
   "BulkSend": {
-    "metaTitle": "대량보내기",
-    "title": "대량보내기",
+    "metaTitle": "대량 보내기",
+    "title": "대량 보내기",
     "subtitle": "동일한 설문지를 여러 공급업체에 동시에 보냅니다.",
     "breadcrumb": "대량보내기",
     "steps": {
@@ -1993,7 +1993,7 @@
       "vendors": "공급업체",
       "send": "보내다"
     },
-    "template": "주형",
+    "template": "템플릿",
     "selectTemplate": "템플릿 선택",
     "dueDate": "마감일",
     "reviewer": "리뷰어",
@@ -2007,12 +2007,12 @@
     "selectedCount": "{count} 선택된",
     "noMatch": "검색과 일치하는 공급업체가 없습니다.",
     "noEmail": "이메일 없음",
-    "sendingTo": "배상 {template} 에게 {count,plural,one{# 공급업체} other{# 공급 업체}}",
-    "due": "로 인한: {date}",
+    "sendingTo": "{template}을(를) {count, plural, one {#개 공급업체} other {#개 공급업체}}에 보내는 중",
+    "due": "기한: {date}",
     "reviewerLabel": "검토자: {name}",
     "portalPasswordSet": "포털 비밀번호 설정",
-    "sending": "배상...",
-    "sendTo": "다음으로 보내기 {count,plural,one{# 공급업체} other{# 공급 업체}}",
+    "sending": "보내는 중...",
+    "sendTo": "{count, plural, one {#개 공급업체} other {#개 공급업체}}에 보내기",
     "sentCount": "{count,plural,one{전송된 # 평가} other{전송된 # 평가}}",
     "skippedCount": "{count,plural,one{# 보낼 수 없었습니다} other{# 보낼 수 없었습니다}}",
     "emailFailedCount": "{count,plural,one{# 이메일이 전달되지 않았습니다} other{# 이메일이 전달되지 않았습니다}}",

@@ -105,7 +105,7 @@
       "failedEmail": "email échoué (24h)",
       "failedEmails": "emails échoués (24h)",
       "groups": {
-        "overdue": "Cotisations en retard",
+        "overdue": "Évaluations en retard",
         "belowThreshold": "En dessous du seuil de score",
         "keyDates": "Dates clés (60 jours)"
       },
@@ -572,7 +572,7 @@
         "high": "Risque élevé"
       },
       "findings": {
-        "summary": "Résultats ({count} · {open,plural,one{# ouvrir} other{# ouvrir}})",
+        "summary": "Constats ({count} · {open, plural, one {# ouvert} other {# ouverts}})",
         "deletedUser": "Utilisateur supprimé",
         "noneTitle": "Résultats",
         "allCompliant": "Toutes les réponses sont conformes – aucun résultat.",
@@ -862,7 +862,7 @@
       "back": "← Retour",
       "importing": "Importation…",
       "import": "Modèle d'importation",
-      "success": "Importé \"{name}\" comme nouveau PROJET.",
+      "success": "Importé \"{name}\" comme nouveau BROUILLON.",
       "errors": {
         "noFile": "Aucun fichier sélectionné.",
         "fileTooLarge": "Le fichier est trop volumineux (max 1 Mo).",
@@ -873,18 +873,18 @@
         "sectionTitleRequired": "Section {number}: le titre est obligatoire.",
         "questionsArray": "Section \"{title}\" : les questions doivent être un tableau.",
         "textRequired": "{where}: le texte est requis.",
-        "helpTextType": "{where}: helpText doit être une chaîne lorsqu'il est fourni.",
+        "helpTextType": "{where} : le champ \"helpText\" doit être une chaîne lorsqu’il est fourni.",
         "unknownType": "{where}: type inconnu \"{type}\".",
         "unknownRiskWeight": "{where}: pondération de risque inconnue \"{weight}\".",
-        "requiredType": "{where}: obligatoire doit être un booléen lorsqu'il est fourni.",
-        "optionsType": "{where}: les options doivent être un tableau de chaînes.",
-        "controlCodesType": "{where}: controlCodes doit être un tableau de chaînes.",
-        "expectedAnswerType": "{where}: ExpectAnswer doit être une chaîne, un nombre ou un tableau de chaînes.",
+        "requiredType": "{where} : le champ \"required\" doit être un booléen lorsqu’il est fourni.",
+        "optionsType": "{where} : le champ \"options\" doit être un tableau de chaînes.",
+        "controlCodesType": "{where} : le champ \"controlCodes\" doit être un tableau de chaînes.",
+        "expectedAnswerType": "{where} : le champ \"expectedAnswer\" doit être une chaîne, un nombre ou un tableau de chaînes.",
         "expectedAnswer": {
-          "multiSelectArray": "{where}: ExpectAnswer doit être un tableau de chaînes.",
-          "choiceStringOrArray": "{where}: ExpectAnswer doit être une chaîne ou un tableau de chaînes.",
-          "numeric": "{where}: attenduLa réponse doit être un nombre.",
-          "yesNoCheckboxString": "{where}: ExpectAnswer doit être une chaîne."
+          "multiSelectArray": "{where} : le champ \"expectedAnswer\" doit être un tableau de chaînes.",
+          "choiceStringOrArray": "{where} : le champ \"expectedAnswer\" doit être une chaîne ou un tableau de chaînes.",
+          "numeric": "{where} : le champ \"expectedAnswer\" doit être un nombre.",
+          "yesNoCheckboxString": "{where} : le champ \"expectedAnswer\" doit être une chaîne."
         },
         "controlAmbiguous": "Codes de contrôle {codes} sont ambigus : le même code existe dans plusieurs frameworks. Supprimez le doublon ou renommez l’un des contrôles.",
         "controlNotFound": "Code de contrôle introuvable : {code}"
@@ -1996,7 +1996,7 @@
     "template": "Modèle",
     "selectTemplate": "Sélectionnez un modèle",
     "dueDate": "Date d'échéance",
-    "reviewer": "Critique",
+    "reviewer": "Évaluateur",
     "unassigned": "Non attribué",
     "portalPassword": "Mot de passe du portail (facultatif)",
     "portalPasswordPlaceholder": "Mot de passe partagé pour tous les fournisseurs",
@@ -2008,8 +2008,8 @@
     "noMatch": "Aucun fournisseur ne correspond à votre recherche.",
     "noEmail": "Pas d'e-mail",
     "sendingTo": "Envoi {template} à {count,plural,one{# fournisseur} other{# fournisseurs}}",
-    "due": "Exigible: {date}",
-    "reviewerLabel": "Critique: {name}",
+    "due": "Échéance : {date}",
+    "reviewerLabel": "Évaluateur : {name}",
     "portalPasswordSet": "Mot de passe du portail défini",
     "sending": "Envoi...",
     "sendTo": "Envoyer à {count,plural,one{# fournisseur} other{# fournisseurs}}",

@@ -345,7 +345,7 @@
         "frameworkHeatmaps": "Framework-Heatmaps",
         "noAssessmentData": "Keine Bewertungsdaten",
         "noFrameworksTitle": "Keine Frameworks verfügbar",
-        "noFrameworksDescription": "Importieren oder Seed-Framework-Bibliotheken, um Steuerelemente den Bewertungsfragen zuzuordnen."
+        "noFrameworksDescription": "Importieren Sie Framework-Bibliotheken oder führen Sie deren Seeding aus, um Kontrollen den Bewertungsfragen zuzuordnen."
       },
       "findings": {
         "title": "Erkenntnisse",
@@ -572,7 +572,7 @@
         "high": "Hohes Risiko"
       },
       "findings": {
-        "summary": "Erkenntnisse ({count} · {open,plural,one{# offen} other{# offen}})",
+        "summary": "Erkenntnisse ({count} · {open, plural, one {# offen} other {# offen}})",
         "deletedUser": "Gelöschter Benutzer",
         "noneTitle": "Erkenntnisse",
         "allCompliant": "Alle Antworten konform – keine Ergebnisse.",
@@ -873,18 +873,18 @@
         "sectionTitleRequired": "Abschnitt {number}: Titel ist erforderlich.",
         "questionsArray": "Abschnitt \"{title}\": Fragen müssen ein Array sein.",
         "textRequired": "{where}: Text ist erforderlich.",
-        "helpTextType": "{where}: helpText muss bei Bereitstellung eine Zeichenfolge sein.",
+        "helpTextType": "{where}: Das Feld „helpText“ muss bei Angabe eine Zeichenfolge sein.",
         "unknownType": "{where}: unbekannter Typ \"{type}\".",
         "unknownRiskWeight": "{where}: unbekanntes Risikogewicht \"{weight}\".",
-        "requiredType": "{where}: erforderlich muss bei Bereitstellung ein boolescher Wert sein.",
-        "optionsType": "{where}: Optionen müssen ein Array von Zeichenfolgen sein.",
-        "controlCodesType": "{where}: controlCodes muss ein Array von Zeichenfolgen sein.",
-        "expectedAnswerType": "{where}: Die erwartete Antwort muss eine Zeichenfolge, eine Zahl oder ein Array von Zeichenfolgen sein.",
+        "requiredType": "{where}: Das Feld „required“ muss bei Angabe ein boolescher Wert sein.",
+        "optionsType": "{where}: Das Feld „options“ muss ein Array von Zeichenfolgen sein.",
+        "controlCodesType": "{where}: Das Feld „controlCodes“ muss ein Array von Zeichenfolgen sein.",
+        "expectedAnswerType": "{where}: Das Feld „expectedAnswer“ muss eine Zeichenfolge, eine Zahl oder ein Array von Zeichenfolgen sein.",
         "expectedAnswer": {
-          "multiSelectArray": "{where}: erwartetAntwort muss ein Array von Zeichenfolgen sein.",
-          "choiceStringOrArray": "{where}: Die erwartete Antwort muss eine Zeichenfolge oder ein Array von Zeichenfolgen sein.",
-          "numeric": "{where}: erwartetAntwort muss eine Zahl sein.",
-          "yesNoCheckboxString": "{where}: erwarteteAntwort muss eine Zeichenfolge sein."
+          "multiSelectArray": "{where}: Das Feld „expectedAnswer“ muss ein Array von Zeichenfolgen sein.",
+          "choiceStringOrArray": "{where}: Das Feld „expectedAnswer“ muss eine Zeichenfolge oder ein Array von Zeichenfolgen sein.",
+          "numeric": "{where}: Das Feld „expectedAnswer“ muss eine Zahl sein.",
+          "yesNoCheckboxString": "{where}: Das Feld „expectedAnswer“ muss eine Zeichenfolge sein."
         },
         "controlAmbiguous": "Steuercodes {codes} sind mehrdeutig – derselbe Code existiert in mehreren Frameworks. Entfernen Sie das Duplikat oder benennen Sie eines der Steuerelemente um.",
         "controlNotFound": "Steuercode nicht gefunden: {code}"
@@ -1996,7 +1996,7 @@
     "template": "Vorlage",
     "selectTemplate": "Vorlage auswählen",
     "dueDate": "Fälligkeitsdatum",
-    "reviewer": "Rezensent",
+    "reviewer": "Prüfer",
     "unassigned": "Nicht zugewiesen",
     "portalPassword": "Portalpasswort (optional)",
     "portalPasswordPlaceholder": "Gemeinsames Passwort für alle Anbieter",
@@ -2007,9 +2007,9 @@
     "selectedCount": "{count} ausgewählt",
     "noMatch": "Zu Ihrer Suche passen keine Anbieter.",
     "noEmail": "Keine E-Mail",
-    "sendingTo": "Senden {template} Zu {count,plural,one{# Anbieter} other{# Anbieter}}",
+    "sendingTo": "{template} wird an {count, plural, one {# Anbieter} other {# Anbieter}} gesendet",
     "due": "Fällig: {date}",
-    "reviewerLabel": "Rezensent: {name}",
+    "reviewerLabel": "Prüfer: {name}",
     "portalPasswordSet": "Portal-Passwort festgelegt",
     "sending": "Senden...",
     "sendTo": "Senden an {count,plural,one{# Anbieter} other{# Anbieter}}",

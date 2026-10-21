@@ -186,7 +186,7 @@ Mitch‑Risk ships in **twelve languages**: English, Spanish, French, German, Po
 - **Translated:** all app screens, admin sections, dialogs, validation messages, public trust center, vendor portal, built-in email defaults, and PDF reports.
 - **English by design:** the REST API, OpenAPI/Swagger content, and audit CSV exports. Custom email templates are sent exactly as written.
 - **Emails** use the organisation default language; **PDFs** follow the request locale.
-- **PDF fonts:** bundled Noto families cover Latin, Cyrillic, Arabic, Devanagari, Japanese, Korean, and Simplified Chinese. Arabic sets `dir="rtl"` at the root; RTL layout and complex-script shaping are best-effort and should be visually reviewed.
+- **PDF fonts:** bundled Noto families cover Latin, Cyrillic, Arabic, Devanagari, Japanese, Korean, and Simplified Chinese. Arabic sets `dir="rtl"` at the root, in PDFs, and in outbound HTML email; RTL layout and complex-script shaping are best-effort and should be visually reviewed.
 
 ### Adding a language
 
