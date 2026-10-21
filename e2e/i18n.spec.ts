@@ -656,4 +656,84 @@ test.describe("internal shell", () => {
       page.getByRole("button", { name: "Guardar apariencia" }),
     ).toBeVisible();
   });
+
+  test("translates admin email, tracking, scoring and scheduling", async ({
+    page,
+  }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto("/admin/email");
+
+    await expect(page.getByRole("heading", { name: "Correo" })).toBeVisible();
+    await expect(page.getByText("SMTP", { exact: true })).toBeVisible();
+    await expect(page.getByLabel("Servidor SMTP")).toBeVisible();
+    await expect(page.getByLabel("Puerto SMTP")).toBeVisible();
+    await expect(page.getByLabel("Usuario SMTP")).toBeVisible();
+    await expect(page.getByLabel("Contraseña SMTP")).toBeVisible();
+    await expect(page.getByLabel("Dirección del remitente")).toBeVisible();
+    await expect(page.getByLabel("Nombre del remitente")).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Enviar prueba" }),
+    ).toBeVisible();
+    await expect(page.getByText("Plantillas de correo")).toBeVisible();
+    await expect(
+      page.getByText("Correo de invitación", { exact: true }),
+    ).toBeVisible();
+
+    await page.goto("/admin/email-tracking");
+
+    await expect(
+      page.getByRole("heading", { name: "Seguimiento de correos" }),
+    ).toBeVisible();
+    await expect(page.getByText("Retención", { exact: true })).toBeVisible();
+    await expect(
+      page.getByLabel("Retención del registro de correos (días)"),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("combobox", { name: "Filtrar correos por estado" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("combobox", { name: "Filtrar correos por tipo" }),
+    ).toBeVisible();
+
+    await page.goto("/admin/scoring");
+
+    await expect(
+      page.getByRole("heading", { name: "Puntuación" }),
+    ).toBeVisible();
+    await expect(page.getByText("Pesos de riesgo (numéricos)")).toBeVisible();
+    await expect(page.getByText("Umbrales RAG", { exact: true })).toBeVisible();
+    await expect(page.getByText("Verde ≥")).toBeVisible();
+    await expect(page.getByText("Ámbar ≥")).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Guardar puntuación" }),
+    ).toBeVisible();
+
+    await page.goto("/admin/scheduling");
+
+    await expect(
+      page.getByRole("heading", { name: "Programación" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Días de antelación de los recordatorios"),
+    ).toBeVisible();
+    await expect(page.getByText("Escalar después de (días)")).toBeVisible();
+    await expect(
+      page.getByText("Vencimiento predeterminado de la evaluación (días)"),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Ejecutar trabajos programados dentro de la app"),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Guardar programación" }),
+    ).toBeVisible();
+    await expect(page.getByText(/Última ejecución programada/)).toBeVisible();
+  });
 });

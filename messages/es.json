@@ -1184,6 +1184,221 @@
       "title": "Algo salió mal",
       "description": "Se produjo un error inesperado. Inténtalo de nuevo o contacta con soporte.",
       "retry": "Reintentar"
+    },
+    "email": {
+      "metaTitle": "Administración — Correo",
+      "title": "Correo",
+      "subtitle": "Entrega SMTP y las plantillas usadas para los correos a proveedores y revisores.",
+      "smtpTitle": "SMTP",
+      "smtpDescription": "Se usa para enviar invitaciones y recordatorios a proveedores. La contraseña se cifra en reposo.",
+      "form": {
+        "host": "Servidor SMTP",
+        "port": "Puerto SMTP",
+        "username": "Usuario SMTP",
+        "password": "Contraseña SMTP",
+        "passwordKeep": "Déjalo vacío para mantener la contraseña actual",
+        "passwordEnter": "Introduce la contraseña SMTP",
+        "passwordHint": "Se guarda cifrada en reposo y nunca se muestra.",
+        "fromAddress": "Dirección del remitente",
+        "fromName": "Nombre del remitente",
+        "saving": "Guardando...",
+        "save": "Guardar"
+      },
+      "test": {
+        "label": "Enviar correo de prueba a",
+        "placeholder": "tu@empresa.com",
+        "sending": "Enviando...",
+        "send": "Enviar prueba",
+        "hint": "Se envía con tu configuración SMTP guardada. Guarda los cambios primero."
+      },
+      "templatesTitle": "Plantillas de correo",
+      "templatesDescription": "Selecciona una plantilla para editar su asunto y cuerpo. Los valores dinámicos usan tokens entre llaves dobles.",
+      "subject": "Asunto",
+      "body": "Cuerpo",
+      "editorHint": "Se admite formato Markdown: usa **negrita**, *cursiva*, listas y enlaces. Tokens: {tokens}.",
+      "savingChanges": "Guardando...",
+      "saveChanges": "Guardar cambios",
+      "resetTitle": "¿Restablecer al valor predeterminado?",
+      "resetDescription": "El asunto y el cuerpo de «{name}» se sustituirán por el valor predeterminado integrado. Se perderá cualquier personalización.",
+      "reset": "Restablecer",
+      "resetting": "Restableciendo...",
+      "resetToDefault": "Restablecer al valor predeterminado",
+      "cancel": "Cancelar",
+      "preview": "Vista previa",
+      "templateTypes": {
+        "invite": {
+          "label": "Correo de invitación",
+          "description": "Se envía al proveedor cuando se comparte un cuestionario por primera vez."
+        },
+        "invite-password": {
+          "label": "Correo de invitación (protegido con contraseña)",
+          "description": "Variante de la invitación que incluye la contraseña de acceso al portal."
+        },
+        "reminder": {
+          "label": "Correo de recordatorio",
+          "description": "Aviso enviado al proveedor cuando se acerca la fecha de vencimiento."
+        },
+        "escalation": {
+          "label": "Correo de escalado",
+          "description": "Se envía al revisor cuando un cuestionario está vencido."
+        },
+        "submission": {
+          "label": "Correo de envío recibido",
+          "description": "Notifica al revisor que un proveedor ha enviado sus respuestas."
+        },
+        "clarification": {
+          "label": "Correo de devolución para aclaración",
+          "description": "Se envía al proveedor cuando la evaluación se reabre para pedir más información."
+        },
+        "reset": {
+          "label": "Correo de restablecimiento de contraseña",
+          "description": "Se envía al personal interno que solicita restablecer su contraseña."
+        },
+        "expiry": {
+          "label": "Correo de recordatorio de caducidad",
+          "description": "Se envía al responsable del riesgo del proveedor cuando una certificación o contrato está a punto de caducar."
+        }
+      },
+      "success": "Configuración de correo guardada.",
+      "testSuccess": "Correo de prueba enviado a {email}.",
+      "templateSaved": "{name} guardada.",
+      "templateReset": "{name} restablecida al valor predeterminado.",
+      "errors": {
+        "invalidInput": "Entrada no válida.",
+        "invalidEmail": "Introduce una dirección de correo válida",
+        "invalidPort": "El puerto SMTP debe estar entre 1 y 65535",
+        "invalidRecipient": "Destinatario no válido.",
+        "smtpNotConfigured": "Guarda tu configuración SMTP antes de enviar un correo de prueba.",
+        "unknownTemplate": "Plantilla de correo desconocida.",
+        "subjectRequired": "El asunto es obligatorio.",
+        "bodyRequired": "El cuerpo es obligatorio."
+      }
+    },
+    "emailTracking": {
+      "metaTitle": "Administración — Seguimiento de correos",
+      "title": "Seguimiento de correos",
+      "subtitle": "Estado de entrega de todos los correos enviados por la plataforma.",
+      "retentionTitle": "Retención",
+      "retentionDescription": "Los registros de envío de correo más antiguos que este número de días se eliminan automáticamente en la limpieza programada. Establece 0 para conservarlos indefinidamente.",
+      "retentionLabel": "Retención del registro de correos (días)",
+      "retentionHelp": "Se aplica en la próxima ejecución programada.",
+      "cardTitle": "Seguimiento de correos",
+      "cardDescription": "Consulta el estado de cada correo enviado por la plataforma. Las entradas se conservan según la política de retención configurada.",
+      "description": "Sigue cada correo enviado por la plataforma: invitaciones, recordatorios, escalados y mensajes de prueba. El servidor SMTP confirma la aceptación; esto no garantiza la entrega en la bandeja de entrada. Los registros se conservan según la política de retención configurada.",
+      "filters": {
+        "status": "Estado",
+        "allStatuses": "Todos los estados",
+        "statusAria": "Filtrar correos por estado",
+        "type": "Tipo",
+        "allTypes": "Todos los tipos",
+        "typeAria": "Filtrar correos por tipo",
+        "recipient": "Destinatario",
+        "recipientPlaceholder": "email@example.com",
+        "from": "Desde",
+        "to": "Hasta",
+        "rows": "Filas",
+        "pageSizeAria": "Tamaño de página del registro de correos",
+        "filter": "Filtrar",
+        "clear": "Limpiar"
+      },
+      "statuses": {
+        "SENT": "Enviado",
+        "FAILED": "Fallido"
+      },
+      "types": {
+        "INVITE": "Invitación",
+        "REMINDER": "Recordatorio",
+        "ESCALATION": "Escalado",
+        "SUBMISSION": "Envío",
+        "CLARIFICATION": "Aclaración",
+        "RESET": "Restablecimiento de contraseña",
+        "EXPIRY": "Caducidad",
+        "TEST": "Prueba"
+      },
+      "table": {
+        "date": "Fecha",
+        "recipient": "Destinatario",
+        "subject": "Asunto",
+        "type": "Tipo",
+        "status": "Estado",
+        "detail": "Detalle",
+        "assessment": "Evaluación",
+        "sentBy": "Enviado por"
+      },
+      "noLogs": "No se encontraron registros de correo.",
+      "pagination": "Página {page} de {totalPages} ({total} entradas)",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "accepted": "Aceptado por el servidor SMTP",
+      "system": "Sistema",
+      "retry": "Reintentar",
+      "retrying": "Reintentando...",
+      "retrySuccess": "Correo reenviado correctamente.",
+      "testResent": "Correo de prueba reenviado.",
+      "errors": {
+        "missingLog": "Falta la entrada del registro de correo.",
+        "notFound": "Entrada del registro de correo no encontrada.",
+        "onlyFailed": "Solo se pueden reintentar los correos fallidos.",
+        "resetSingleUse": "Los enlaces de restablecimiento son de un solo uso y no se pueden reenviar. Pide al usuario que solicite uno nuevo.",
+        "resendFailed": "No se pudo reenviar el correo. Consulta la pestaña de seguimiento para más detalles.",
+        "retentionInvalid": "La retención del registro de correos debe ser 0 o un número positivo.",
+        "retentionSaved": "Retención del registro de correos guardada."
+      }
+    },
+    "scoring": {
+      "metaTitle": "Administración — Puntuación",
+      "title": "Puntuación",
+      "subtitle": "Pesos de riesgo y umbrales RAG para los perfiles de proveedor y el mapa de calor.",
+      "cardTitle": "Puntuación",
+      "cardDescription": "Pesos de riesgo y umbrales rojo/ámbar/verde usados para los perfiles de proveedor y el mapa de calor de brechas.",
+      "riskWeights": "Pesos de riesgo (numéricos)",
+      "ragThresholds": "Umbrales RAG",
+      "ragHint": "Verde en o por encima, ámbar en o por encima, rojo por debajo.",
+      "green": "Verde ≥",
+      "amber": "Ámbar ≥",
+      "saving": "Guardando...",
+      "save": "Guardar puntuación",
+      "success": "Configuración de puntuación guardada.",
+      "errors": {
+        "invalidInput": "Entrada no válida."
+      }
+    },
+    "scheduling": {
+      "metaTitle": "Administración — Programación",
+      "title": "Programación",
+      "subtitle": "Recordatorios, escalados y el programador integrado.",
+      "cardTitle": "Programación",
+      "cardDescription": "Recordatorios automáticos antes de la fecha de vencimiento y escalados al revisor para evaluaciones vencidas.",
+      "reminderLabel": "Días de antelación de los recordatorios",
+      "reminderHint": "Lista separada por comas de días antes del vencimiento para enviar recordatorios. Ejemplo: 7, 1 envía recordatorios 7 días y 1 día antes del vencimiento.",
+      "reminderPlaceholder": "7, 1",
+      "escalationLabel": "Escalar después de (días)",
+      "escalationHint": "Días tras la fecha de vencimiento antes de que el revisor reciba un correo de escalado.",
+      "defaultDueLabel": "Vencimiento predeterminado de la evaluación (días)",
+      "defaultDueHint": "Las nuevas evaluaciones vencen por defecto dentro de este número de días.",
+      "schedulerLabel": "Ejecutar trabajos programados dentro de la app",
+      "schedulerHint": "Cuando está activado, la aplicación comprueba cada cinco minutos los recordatorios pendientes, escalados, avisos de caducidad, evaluaciones recurrentes, purga de registros y limpieza de archivos huérfanos; no se necesita ningún cron ni programador externo. Desactívalo solo si tú mismo lanzas {endpoint} (por ejemplo, desde un crontab del sistema o una función de Azure).",
+      "saving": "Guardando...",
+      "save": "Guardar programación",
+      "lastRun": "Última ejecución programada: {when}",
+      "never": "Nunca",
+      "justNow": "ahora mismo",
+      "lessThanMinute": "hace menos de un minuto",
+      "minuteAgo": "hace 1 minuto",
+      "minutesAgo": "hace {count} minutos",
+      "hourAgo": "hace 1 hora",
+      "hoursAgo": "hace {count} horas",
+      "dayAgo": "hace 1 día",
+      "daysAgo": "hace {count} días",
+      "success": "Configuración guardada.",
+      "errors": {
+        "escalationInvalid": "Los días de escalado deben ser al menos 1.",
+        "defaultDueInvalid": "Los días de vencimiento predeterminados deben ser al menos 1."
+      }
+    },
+    "retention": {
+      "saving": "Guardando...",
+      "save": "Guardar"
     }
   },
   "Shell": {

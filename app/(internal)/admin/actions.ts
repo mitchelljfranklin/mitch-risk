@@ -99,6 +99,7 @@ export async function saveEmailSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.email");
 
   const parsed = emailSettingsSchema.safeParse({
     smtpHost: formData.get("smtpHost") ?? "",
@@ -109,9 +110,16 @@ export async function saveEmailSettings(
     smtpPassword: formData.get("smtpPassword") ?? "",
   });
   if (!parsed.success) {
+    const field = parsed.error.issues[0]?.path[0];
+    let message = translations("errors.invalidInput");
+    if (field === "fromAddress") {
+      message = translations("errors.invalidEmail");
+    } else if (field === "smtpPort") {
+      message = translations("errors.invalidPort");
+    }
     return {
       ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
+      message,
     };
   }
 
@@ -119,7 +127,7 @@ export async function saveEmailSettings(
   const user = await getCurrentUser();
   if (user)
     await logAudit(user.id, AUDIT_ACTIONS.UPDATE_SETTINGS, "Setting", "email");
-  return { ok: true, message: "Email settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function sendSmtpTestAction(
@@ -127,6 +135,7 @@ export async function sendSmtpTestAction(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.email");
 
   const parsed = testRecipientSchema.safeParse(
     (formData.get("recipient") as string)?.trim() ?? "",
@@ -134,7 +143,7 @@ export async function sendSmtpTestAction(
   if (!parsed.success) {
     return {
       ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid recipient.",
+      message: translations("errors.invalidRecipient"),
     };
   }
 
@@ -143,7 +152,7 @@ export async function sendSmtpTestAction(
   if (!smtpHost) {
     return {
       ok: false,
-      message: "Save your SMTP settings before sending a test email.",
+      message: translations("errors.smtpNotConfigured"),
     };
   }
 
@@ -159,7 +168,10 @@ export async function sendSmtpTestAction(
         "Setting",
         "email.test",
       );
-    return { ok: true, message: `Test email sent to ${parsed.data}.` };
+    return {
+      ok: true,
+      message: translations("testSuccess", { email: parsed.data }),
+    };
   }
 
   return { ok: false, message: result.message };
@@ -175,11 +187,12 @@ export async function saveEmailTemplateAction(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.email");
 
   const type = (formData.get("type") as string) ?? "";
   const definition = getEmailTemplateDefinition(type);
   if (!definition) {
-    return { ok: false, message: "Unknown email template." };
+    return { ok: false, message: translations("errors.unknownTemplate") };
   }
 
   const parsed = emailTemplateFieldSchema.safeParse({
@@ -187,10 +200,12 @@ export async function saveEmailTemplateAction(
     body: formData.get("body") ?? "",
   });
   if (!parsed.success) {
-    return {
-      ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
-    };
+    const field = parsed.error.issues[0]?.path[0];
+    const message =
+      field === "body"
+        ? translations("errors.bodyRequired")
+        : translations("errors.subjectRequired");
+    return { ok: false, message };
   }
 
   await updateEmailTemplateFields({
@@ -205,7 +220,13 @@ export async function saveEmailTemplateAction(
       "Setting",
       `email.template.${type}`,
     );
-  return { ok: true, message: `${definition.label} saved.` };
+  const templateLabel = translations.has(`templateTypes.${type}.label`)
+    ? translations(`templateTypes.${type}.label`)
+    : definition.label;
+  return {
+    ok: true,
+    message: translations("templateSaved", { name: templateLabel }),
+  };
 }
 
 export async function resetEmailTemplateAction(
@@ -213,11 +234,12 @@ export async function resetEmailTemplateAction(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.email");
 
   const type = (formData.get("type") as string) ?? "";
   const definition = getEmailTemplateDefinition(type);
   if (!definition) {
-    return { ok: false, message: "Unknown email template." };
+    return { ok: false, message: translations("errors.unknownTemplate") };
   }
 
   const defaults = getEmailTemplateDefaults();
@@ -233,7 +255,13 @@ export async function resetEmailTemplateAction(
       "Setting",
       `email.template.${type}`,
     );
-  return { ok: true, message: `${definition.label} reset to default.` };
+  const templateLabel = translations.has(`templateTypes.${type}.label`)
+    ? translations(`templateTypes.${type}.label`)
+    : definition.label;
+  return {
+    ok: true,
+    message: translations("templateReset", { name: templateLabel }),
+  };
 }
 
 export async function saveScoringSettings(
@@ -241,6 +269,7 @@ export async function saveScoringSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.scoring");
 
   const parsed = scoringSettingsSchema.safeParse({
     riskWeights: {
@@ -257,7 +286,7 @@ export async function saveScoringSettings(
   if (!parsed.success) {
     return {
       ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
+      message: translations("errors.invalidInput"),
     };
   }
 
@@ -270,7 +299,7 @@ export async function saveScoringSettings(
       "Setting",
       "scoring",
     );
-  return { ok: true, message: "Scoring settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function saveSsoSettings(
@@ -648,6 +677,7 @@ export async function saveSchedulingSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.scheduling");
 
   const escalationDays = parseInt(
     (formData.get("escalationDays") as string) || "3",
@@ -660,10 +690,10 @@ export async function saveSchedulingSettings(
   const reminderStr = (formData.get("reminderDays") as string) || "";
 
   if (isNaN(escalationDays) || escalationDays < 1) {
-    return { ok: false, message: "Escalation days must be at least 1." };
+    return { ok: false, message: translations("errors.escalationInvalid") };
   }
   if (isNaN(defaultDueDays) || defaultDueDays < 1) {
-    return { ok: false, message: "Default due days must be at least 1." };
+    return { ok: false, message: translations("errors.defaultDueInvalid") };
   }
 
   const reminders = reminderStr
@@ -698,7 +728,7 @@ export async function saveSchedulingSettings(
       "scheduling",
     );
 
-  return { ok: true, message: "Configuration saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function saveSignInSecuritySettings(
@@ -874,6 +904,7 @@ export async function saveEmailLogRetentionSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.emailTracking");
 
   const emailLogRetention = parseInt(
     (formData.get("emailLogRetention") as string) || "14",
@@ -882,7 +913,7 @@ export async function saveEmailLogRetentionSettings(
   if (isNaN(emailLogRetention) || emailLogRetention < 0) {
     return {
       ok: false,
-      message: "Email log retention must be 0 or a positive number.",
+      message: translations("errors.retentionInvalid"),
     };
   }
 
@@ -898,7 +929,7 @@ export async function saveEmailLogRetentionSettings(
       "email-tracking",
     );
 
-  return { ok: true, message: "Email log retention saved." };
+  return { ok: true, message: translations("errors.retentionSaved") };
 }
 
 export async function retryEmailSendAction(
@@ -906,23 +937,23 @@ export async function retryEmailSendAction(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.emailTracking");
 
   const logId = (formData.get("logId") as string) || "";
-  if (!logId) return { ok: false, message: "Missing email log entry." };
+  if (!logId) return { ok: false, message: translations("errors.missingLog") };
 
   const { getEmailLogById } = await import("@/lib/db/notifications");
   const { prisma: db } = await import("@/lib/prisma");
   const { env } = await import("@/lib/env");
 
   const log = await getEmailLogById(logId);
-  if (!log) return { ok: false, message: "Email log entry not found." };
+  if (!log) return { ok: false, message: translations("errors.notFound") };
   if (log.status !== "FAILED")
-    return { ok: false, message: "Only failed emails can be retried." };
+    return { ok: false, message: translations("errors.onlyFailed") };
   if (log.type === "RESET") {
     return {
       ok: false,
-      message:
-        "Reset links are single-use and cannot be resent. Ask the user to request a new reset.",
+      message: translations("errors.resetSingleUse"),
     };
   }
 
@@ -940,7 +971,7 @@ export async function retryEmailSendAction(
           "NotificationLog",
           logId,
         );
-      return { ok: true, message: "Test email resent." };
+      return { ok: true, message: translations("testResent") };
     }
     return { ok: false, message: result.message };
   }
@@ -1009,12 +1040,12 @@ export async function retryEmailSendAction(
         "NotificationLog",
         logId,
       );
-    return { ok: true, message: `Email resent successfully.` };
+    return { ok: true, message: translations("retrySuccess") };
   }
 
   return {
     ok: false,
-    message: "Failed to resend email. Check the tracking tab for details.",
+    message: translations("errors.resendFailed"),
   };
 }
 

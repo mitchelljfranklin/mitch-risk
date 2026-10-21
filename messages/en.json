@@ -1184,6 +1184,221 @@
       "title": "Something went wrong",
       "description": "An unexpected error occurred. Please try again or contact support.",
       "retry": "Try again"
+    },
+    "email": {
+      "metaTitle": "Admin — Email",
+      "title": "Email",
+      "subtitle": "SMTP delivery and the templates used for vendor and reviewer emails.",
+      "smtpTitle": "SMTP",
+      "smtpDescription": "Used to send vendor invites and reminders. The password is encrypted at rest.",
+      "form": {
+        "host": "SMTP host",
+        "port": "SMTP port",
+        "username": "SMTP username",
+        "password": "SMTP password",
+        "passwordKeep": "Leave blank to keep current password",
+        "passwordEnter": "Enter SMTP password",
+        "passwordHint": "Stored encrypted at rest and never displayed.",
+        "fromAddress": "From address",
+        "fromName": "From name",
+        "saving": "Saving...",
+        "save": "Save"
+      },
+      "test": {
+        "label": "Send test email to",
+        "placeholder": "you@company.com",
+        "sending": "Sending...",
+        "send": "Send test",
+        "hint": "Sends using your saved SMTP settings. Save any changes first."
+      },
+      "templatesTitle": "Email templates",
+      "templatesDescription": "Select a template to edit its subject and body. Dynamic values use double-brace tokens.",
+      "subject": "Subject",
+      "body": "Body",
+      "editorHint": "Markdown formatting is supported — use **bold**, *italic*, lists, and links. Tokens: {tokens}.",
+      "savingChanges": "Saving...",
+      "saveChanges": "Save changes",
+      "resetTitle": "Reset to default?",
+      "resetDescription": "The \"{name}\" subject and body will be replaced with the built-in default. Any customisation will be lost.",
+      "reset": "Reset",
+      "resetting": "Resetting...",
+      "resetToDefault": "Reset to default",
+      "cancel": "Cancel",
+      "preview": "Preview",
+      "templateTypes": {
+        "invite": {
+          "label": "Invite email",
+          "description": "Sent to a vendor when a questionnaire is first shared."
+        },
+        "invite-password": {
+          "label": "Invite email (password protected)",
+          "description": "Invite variant that includes the portal access password."
+        },
+        "reminder": {
+          "label": "Reminder email",
+          "description": "Nudge sent to a vendor as the due date approaches."
+        },
+        "escalation": {
+          "label": "Escalation email",
+          "description": "Sent to the reviewer when a questionnaire becomes overdue."
+        },
+        "submission": {
+          "label": "Submission received email",
+          "description": "Notifies the reviewer that a vendor has submitted answers."
+        },
+        "clarification": {
+          "label": "Sent back for clarification email",
+          "description": "Sent to a vendor when the assessment is reopened for more information."
+        },
+        "reset": {
+          "label": "Password reset email",
+          "description": "Sent to internal staff who request a password reset."
+        },
+        "expiry": {
+          "label": "Expiry reminder email",
+          "description": "Sent to a vendor's risk owner when a certification or contract is nearing expiry."
+        }
+      },
+      "success": "Email settings saved.",
+      "testSuccess": "Test email sent to {email}.",
+      "templateSaved": "{name} saved.",
+      "templateReset": "{name} reset to default.",
+      "errors": {
+        "invalidInput": "Invalid input.",
+        "invalidEmail": "Enter a valid email address",
+        "invalidPort": "SMTP port must be between 1 and 65535",
+        "invalidRecipient": "Invalid recipient.",
+        "smtpNotConfigured": "Save your SMTP settings before sending a test email.",
+        "unknownTemplate": "Unknown email template.",
+        "subjectRequired": "Subject is required.",
+        "bodyRequired": "Body is required."
+      }
+    },
+    "emailTracking": {
+      "metaTitle": "Admin — Email tracking",
+      "title": "Email tracking",
+      "subtitle": "Delivery status for every email the platform has sent.",
+      "retentionTitle": "Retention",
+      "retentionDescription": "Email send records older than this many days are automatically pruned by the scheduled cleanup. Set to 0 to keep indefinitely.",
+      "retentionLabel": "Email log retention (days)",
+      "retentionHelp": "Applies on the next scheduled run.",
+      "cardTitle": "Email tracking",
+      "cardDescription": "View the status of every email sent by the platform. Entries are retained according to the configured retention policy.",
+      "description": "Track every email sent by the platform — invites, reminders, escalations, and test messages. The SMTP server confirms acceptance; this does not guarantee inbox delivery. Logs are retained according to the configured retention policy.",
+      "filters": {
+        "status": "Status",
+        "allStatuses": "All statuses",
+        "statusAria": "Filter emails by status",
+        "type": "Type",
+        "allTypes": "All types",
+        "typeAria": "Filter emails by type",
+        "recipient": "Recipient",
+        "recipientPlaceholder": "email@example.com",
+        "from": "From",
+        "to": "To",
+        "rows": "Rows",
+        "pageSizeAria": "Email log page size",
+        "filter": "Filter",
+        "clear": "Clear"
+      },
+      "statuses": {
+        "SENT": "Sent",
+        "FAILED": "Failed"
+      },
+      "types": {
+        "INVITE": "Invite",
+        "REMINDER": "Reminder",
+        "ESCALATION": "Escalation",
+        "SUBMISSION": "Submission",
+        "CLARIFICATION": "Clarification",
+        "RESET": "Password reset",
+        "EXPIRY": "Expiry",
+        "TEST": "Test"
+      },
+      "table": {
+        "date": "Date",
+        "recipient": "Recipient",
+        "subject": "Subject",
+        "type": "Type",
+        "status": "Status",
+        "detail": "Detail",
+        "assessment": "Assessment",
+        "sentBy": "Sent by"
+      },
+      "noLogs": "No email logs found.",
+      "pagination": "Page {page} of {totalPages} ({total} entries)",
+      "previous": "Previous",
+      "next": "Next",
+      "accepted": "Accepted by SMTP server",
+      "system": "System",
+      "retry": "Retry",
+      "retrying": "Retrying...",
+      "retrySuccess": "Email resent successfully.",
+      "testResent": "Test email resent.",
+      "errors": {
+        "missingLog": "Missing email log entry.",
+        "notFound": "Email log entry not found.",
+        "onlyFailed": "Only failed emails can be retried.",
+        "resetSingleUse": "Reset links are single-use and cannot be resent. Ask the user to request a new reset.",
+        "resendFailed": "Failed to resend email. Check the tracking tab for details.",
+        "retentionInvalid": "Email log retention must be 0 or a positive number.",
+        "retentionSaved": "Email log retention saved."
+      }
+    },
+    "scoring": {
+      "metaTitle": "Admin — Scoring",
+      "title": "Scoring",
+      "subtitle": "Risk weights and RAG cut-offs for vendor profiles and the heatmap.",
+      "cardTitle": "Scoring",
+      "cardDescription": "Risk weights and the red/amber/green cut-offs used for vendor profiles and the gap heatmap.",
+      "riskWeights": "Risk weights (numeric)",
+      "ragThresholds": "RAG thresholds",
+      "ragHint": "Green at or above, amber at or above, red below.",
+      "green": "Green ≥",
+      "amber": "Amber ≥",
+      "saving": "Saving...",
+      "save": "Save scoring",
+      "success": "Scoring settings saved.",
+      "errors": {
+        "invalidInput": "Invalid input."
+      }
+    },
+    "scheduling": {
+      "metaTitle": "Admin — Scheduling",
+      "title": "Scheduling",
+      "subtitle": "Reminders, escalations, and the built-in scheduler.",
+      "cardTitle": "Scheduling",
+      "cardDescription": "Automated reminders before the due date and reviewer escalations for overdue assessments.",
+      "reminderLabel": "Reminder offset days",
+      "reminderHint": "Comma-separated list of days before the due date to send reminders. Example: 7, 1 sends reminders 7 days and 1 day before the due date.",
+      "reminderPlaceholder": "7, 1",
+      "escalationLabel": "Escalation after (days)",
+      "escalationHint": "Days after the due date before the reviewer receives an escalation email.",
+      "defaultDueLabel": "Default assessment due (days)",
+      "defaultDueHint": "New assessments default to this many days until the due date.",
+      "schedulerLabel": "Run scheduled jobs inside the app",
+      "schedulerHint": "When enabled, the application checks every five minutes for due reminders, escalations, expiry notices, recurring assessments, log pruning, and orphaned file cleanup — no external cron job or scheduler is needed. Disable this only if you trigger {endpoint} yourself (for example from a system crontab or Azure Function).",
+      "saving": "Saving...",
+      "save": "Save scheduling",
+      "lastRun": "Last scheduled run: {when}",
+      "never": "Never",
+      "justNow": "just now",
+      "lessThanMinute": "less than a minute ago",
+      "minuteAgo": "1 minute ago",
+      "minutesAgo": "{count} minutes ago",
+      "hourAgo": "1 hour ago",
+      "hoursAgo": "{count} hours ago",
+      "dayAgo": "1 day ago",
+      "daysAgo": "{count} days ago",
+      "success": "Configuration saved.",
+      "errors": {
+        "escalationInvalid": "Escalation days must be at least 1.",
+        "defaultDueInvalid": "Default due days must be at least 1."
+      }
+    },
+    "retention": {
+      "saving": "Saving...",
+      "save": "Save"
     }
   },
   "Shell": {

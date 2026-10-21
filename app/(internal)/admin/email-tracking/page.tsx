@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getEmailLogRetention } from "@/lib/settings";
@@ -16,7 +17,10 @@ import { saveEmailLogRetentionSettings } from "../actions";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Admin — Email tracking" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Admin.emailTracking");
+  return { title: translations("metaTitle") };
+}
 
 export default async function AdminEmailTrackingPage({
   searchParams,
@@ -24,27 +28,32 @@ export default async function AdminEmailTrackingPage({
   searchParams: Promise<Record<string, string | undefined>>;
 }) {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
-  const sp = await searchParams;
+  const translations = await getTranslations("Admin.emailTracking");
+  const searchParameters = await searchParams;
 
   const [emailLogs, emailLogRetention] = await Promise.all([
     listEmailLogs({
-      status: sp.status,
-      type: sp.type,
-      recipient: sp.recipient,
-      fromDate: sp.fromDate,
-      toDate: sp.toDate,
-      page: sp.emailLogPage ? parseInt(sp.emailLogPage) : 1,
-      pageSize: sp.emailLogPageSize ? parseInt(sp.emailLogPageSize) : undefined,
+      status: searchParameters.status,
+      type: searchParameters.type,
+      recipient: searchParameters.recipient,
+      fromDate: searchParameters.fromDate,
+      toDate: searchParameters.toDate,
+      page: searchParameters.emailLogPage
+        ? parseInt(searchParameters.emailLogPage)
+        : 1,
+      pageSize: searchParameters.emailLogPageSize
+        ? parseInt(searchParameters.emailLogPageSize)
+        : undefined,
     }),
     getEmailLogRetention(),
   ]);
 
   const emailFilterQuery = buildFilterQueryString({
-    status: sp.status,
-    type: sp.type,
-    recipient: sp.recipient,
-    fromDate: sp.fromDate,
-    toDate: sp.toDate,
+    status: searchParameters.status,
+    type: searchParameters.type,
+    recipient: searchParameters.recipient,
+    fromDate: searchParameters.fromDate,
+    toDate: searchParameters.toDate,
   });
 
   const emailLogStatuses = ["SENT", "FAILED"];
@@ -62,27 +71,26 @@ export default async function AdminEmailTrackingPage({
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">
-          Email tracking
+          {translations("title")}
         </h1>
         <p className="text-muted-foreground text-sm">
-          Delivery status for every email the platform has sent.
+          {translations("subtitle")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Retention</CardTitle>
+          <CardTitle>{translations("retentionTitle")}</CardTitle>
           <CardDescription>
-            Email send records older than this many days are automatically
-            pruned by the scheduled cleanup. Set to 0 to keep indefinitely.
+            {translations("retentionDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <RetentionForm
             action={saveEmailLogRetentionSettings}
             fieldName="emailLogRetention"
-            label="Email log retention (days)"
-            help="Applies on the next scheduled run."
+            label={translations("retentionLabel")}
+            help={translations("retentionHelp")}
             value={emailLogRetention}
           />
         </CardContent>
@@ -90,11 +98,8 @@ export default async function AdminEmailTrackingPage({
 
       <Card>
         <CardHeader>
-          <CardTitle>Email tracking</CardTitle>
-          <CardDescription>
-            View the status of every email sent by the platform. Entries are
-            retained according to the configured retention policy.
-          </CardDescription>
+          <CardTitle>{translations("cardTitle")}</CardTitle>
+          <CardDescription>{translations("cardDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <EmailTrackingForm

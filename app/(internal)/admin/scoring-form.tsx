@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,8 @@ export function ScoringForm({
   ragAmber,
   ragGreen,
 }: ScoringFormProps) {
+  const translations = useTranslations("Admin.scoring");
+  const riskWeights = useTranslations("Common.tiers");
   const [state, formAction, isPending] = useActionState(
     saveScoringSettings,
     initialState,
@@ -37,7 +40,9 @@ export function ScoringForm({
   return (
     <form action={formAction} className="grid gap-4">
       <div className="grid gap-2">
-        <Label className="text-sm font-medium">Risk weights (numeric)</Label>
+        <Label className="text-sm font-medium">
+          {translations("riskWeights")}
+        </Label>
         <div className="grid grid-cols-4 gap-2">
           {(
             [
@@ -49,7 +54,7 @@ export function ScoringForm({
           ).map(([label, name, value]) => (
             <div key={name} className="grid gap-1">
               <Label htmlFor={name} className="text-xs">
-                {label}
+                {riskWeights.has(label) ? riskWeights(label) : label}
               </Label>
               <Input
                 id={name}
@@ -63,14 +68,16 @@ export function ScoringForm({
         </div>
       </div>
       <div className="grid gap-2">
-        <Label className="text-sm font-medium">RAG thresholds</Label>
+        <Label className="text-sm font-medium">
+          {translations("ragThresholds")}
+        </Label>
         <p className="text-muted-foreground text-xs">
-          Green at or above, amber at or above, red below.
+          {translations("ragHint")}
         </p>
         <div className="grid grid-cols-2 gap-2">
           <div className="grid gap-1">
             <Label htmlFor="ragGreen" className="text-xs">
-              Green ≥
+              {translations("green")}
             </Label>
             <Input
               id="ragGreen"
@@ -84,7 +91,7 @@ export function ScoringForm({
           </div>
           <div className="grid gap-1">
             <Label htmlFor="ragAmber" className="text-xs">
-              Amber ≥
+              {translations("amber")}
             </Label>
             <Input
               id="ragAmber"
@@ -100,7 +107,7 @@ export function ScoringForm({
       </div>
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending} size="sm">
-          {isPending ? "Saving..." : "Save scoring"}
+          {isPending ? translations("saving") : translations("save")}
         </Button>
       </div>
     </form>

@@ -289,8 +289,9 @@ UI hiding is cosmetic; the server guard is the real control — **both are alway
   list/create/edit/detail, assessments list/create/detail/review, templates list/builder/preview/import,
   frameworks list/detail/controls/gaps/import, risk register, self-assessment, public trust center,
   vendor portal, emails, and PDFs. Internal pages are being translated area by area (admin forms;
-  General and Appearance are done, remaining admin sections still to come). Email templates are
-  admin-authored; only the built-in defaults are translated
+  General, Appearance, Email, Email tracking, Scoring and Scheduling are done, remaining admin
+  sections still to come). Email templates are admin-authored; only the built-in defaults are
+  translated
   (`lib/settings/email-template-defaults.ts`) — customized templates are sent as written. PDFs
   follow the request locale via `getTranslations`/`getFormatter`; use those (not `formatDate()`,
   which is fixed to en-GB) for dates on translated surfaces.

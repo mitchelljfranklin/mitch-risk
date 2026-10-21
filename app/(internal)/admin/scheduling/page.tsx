@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
@@ -13,10 +14,14 @@ import { SchedulingForm } from "../scheduling-form";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Admin — Scheduling" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Admin.scheduling");
+  return { title: translations("metaTitle") };
+}
 
 export default async function AdminSchedulingPage() {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.scheduling");
 
   const [assessment, cronLastRunRow, cronSettings] = await Promise.all([
     getAssessmentSettings(),
@@ -31,19 +36,18 @@ export default async function AdminSchedulingPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Scheduling</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {translations("title")}
+        </h1>
         <p className="text-muted-foreground text-sm">
-          Reminders, escalations, and the built-in scheduler.
+          {translations("subtitle")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Scheduling</CardTitle>
-          <CardDescription>
-            Automated reminders before the due date and reviewer escalations for
-            overdue assessments.
-          </CardDescription>
+          <CardTitle>{translations("cardTitle")}</CardTitle>
+          <CardDescription>{translations("cardDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <SchedulingForm
