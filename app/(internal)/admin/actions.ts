@@ -503,9 +503,12 @@ export async function createApiKeyAction(
   formData: FormData,
 ): Promise<{ ok: boolean; message: string; key?: string }> {
   await requirePermission(PERMISSIONS.API_MANAGE);
+  const translations = await getTranslations("Admin.api");
 
   const name = (formData.get("name") as string)?.trim();
-  if (!name) return { ok: false, message: "Key name is required." };
+  if (!name) {
+    return { ok: false, message: translations("errors.nameRequired") };
+  }
 
   const expiresIn = (formData.get("expiresIn") as string) || "";
   const allowedIps = (formData.get("allowedIps") as string) || "";
@@ -519,7 +522,7 @@ export async function createApiKeyAction(
     if (permissions.length === 0) {
       return {
         ok: false,
-        message: "Select at least one permission or enable full access.",
+        message: translations("errors.permissionsRequired"),
       };
     }
   }
@@ -569,7 +572,7 @@ export async function createApiKeyAction(
   // the current route, which would drop the returned state in production.
   return {
     ok: true,
-    message: `Key created: ${displayPrefix}. Copy the key below — it won't be shown again.`,
+    message: translations("keyCreatedMessage", { prefix: displayPrefix }),
     key: fullKey,
   };
 }
@@ -620,6 +623,7 @@ export async function saveApiSettingsAction(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.API_MANAGE);
+  const translations = await getTranslations("Admin.api");
   const { prisma: db } = await import("@/lib/prisma");
 
   const enabled = formData.get("enabled") === "on";
@@ -633,7 +637,7 @@ export async function saveApiSettingsAction(
   // No revalidatePath: this result is consumed by useActionState. Revalidating
   // the current route races with the returned state in production builds and can
   // drop the success toast. The client refreshes after handling the result.
-  return { ok: true, message: "API settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function saveTrustCenterSettings(
@@ -641,6 +645,7 @@ export async function saveTrustCenterSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
+  const translations = await getTranslations("Admin.trustCenter");
 
   const parsed = trustCenterSettingsSchema.safeParse({
     enabled: formData.get("enabled") !== null,
@@ -651,10 +656,11 @@ export async function saveTrustCenterSettings(
     downloadsPerMin: (formData.get("downloadsPerMin") as string) || "30",
   });
   if (!parsed.success) {
-    return {
-      ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
-    };
+    const firstIssue = parsed.error.issues[0];
+    if (firstIssue?.path.includes("contactEmail")) {
+      return { ok: false, message: translations("errors.invalidEmail") };
+    }
+    return { ok: false, message: translations("errors.invalidInput") };
   }
 
   const { updateTrustCenterSettings } = await import("@/lib/settings");
@@ -670,7 +676,7 @@ export async function saveTrustCenterSettings(
     );
   }
 
-  return { ok: true, message: "Trust center settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function saveSchedulingSettings(
@@ -1121,6 +1127,7 @@ export async function createWebhookAction(
   formData: FormData,
 ): Promise<WebhookActionState> {
   const user = await requirePermission(PERMISSIONS.WEBHOOKS_MANAGE);
+  const translations = await getTranslations("Admin.webhooks");
 
   const url = getField(formData, "url");
   const name = getField(formData, "name")?.trim() || "";
@@ -1128,27 +1135,30 @@ export async function createWebhookAction(
   const events = formData.getAll("events").map(String);
 
   if (!url) {
-    return { ok: false, message: "URL is required." };
+    return { ok: false, message: translations("errors.urlRequired") };
   }
 
   if (url.length > 500) {
-    return { ok: false, message: "URL must be 500 characters or fewer." };
+    return { ok: false, message: translations("errors.urlTooLong") };
   }
   if (name.length > 100) {
-    return { ok: false, message: "Name must be 100 characters or fewer." };
+    return { ok: false, message: translations("errors.nameTooLong") };
   }
 
   const targetValidation = validateWebhookTarget(url);
   if (!targetValidation.ok) {
-    return { ok: false, message: targetValidation.reason };
+    return {
+      ok: false,
+      message: translations(`errors.${targetValidation.code}`),
+    };
   }
 
   if (!isWebhookPlatform(platform)) {
-    return { ok: false, message: "Unknown platform." };
+    return { ok: false, message: translations("errors.unknownPlatform") };
   }
   const validEvents = [...new Set(events.filter(isWebhookEvent))];
   if (validEvents.length === 0) {
-    return { ok: false, message: "At least one event must be selected." };
+    return { ok: false, message: translations("errors.eventRequired") };
   }
 
   const secret = randomBytes(32).toString("hex");
@@ -1165,7 +1175,7 @@ export async function createWebhookAction(
     await logAudit(user.id, AUDIT_ACTIONS.CREATE_WEBHOOK, "Webhook", url);
   }
 
-  return { ok: true, message: "Webhook endpoint created." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function deleteWebhookAction(formData: FormData) {

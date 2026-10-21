@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -13,6 +14,7 @@ type PermissionSelectorProps = {
 export function PermissionSelector({
   defaultFullAccess = true,
 }: PermissionSelectorProps) {
+  const translations = useTranslations("Admin.permissions");
   const [fullAccess, setFullAccess] = useState(defaultFullAccess);
 
   return (
@@ -25,12 +27,11 @@ export function PermissionSelector({
           onCheckedChange={(checked) => setFullAccess(!!checked)}
         />
         <Label htmlFor="fullAccess" className="text-sm font-medium">
-          Full access
+          {translations("fullAccess")}
         </Label>
       </div>
       <p className="text-muted-foreground text-xs">
-        When selected, the key grants all permissions. Uncheck to restrict the
-        key to a specific set of permissions.
+        {translations("fullAccessHint")}
       </p>
 
       {!fullAccess && (

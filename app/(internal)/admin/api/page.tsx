@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
@@ -12,10 +13,14 @@ import { ApiForm } from "../api-form";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Admin — API" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Admin.api");
+  return { title: translations("metaTitle") };
+}
 
 export default async function AdminApiPage() {
   await requirePermission(PERMISSIONS.API_MANAGE);
+  const translations = await getTranslations("Admin.api");
 
   const [apiKeys, apiEnabled] = await Promise.all([
     prisma.apiKey.findMany({
@@ -42,20 +47,18 @@ export default async function AdminApiPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">API</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {translations("title")}
+        </h1>
         <p className="text-muted-foreground text-sm">
-          Programmatic access to the REST API.
+          {translations("subtitle")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>API access</CardTitle>
-          <CardDescription>
-            Generate API keys for programmatic access to the REST API. Keys use{" "}
-            <code className="text-xs">Bearer</code> authentication and can be
-            restricted by IP address. Keys are shown only once when created.
-          </CardDescription>
+          <CardTitle>{translations("cardTitle")}</CardTitle>
+          <CardDescription>{translations("cardDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <ApiForm enabled={apiEnabled} keys={apiKeys} />

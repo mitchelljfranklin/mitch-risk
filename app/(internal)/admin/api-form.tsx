@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useFormatter, useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,8 @@ type ApiFormProps = {
 
 export function ApiForm({ enabled, keys }: ApiFormProps) {
   const router = useRouter();
+  const translations = useTranslations("Admin.api");
+  const dateFormatter = useFormatter();
   const [showNewKey, setShowNewKey] = useState<string | null>(null);
   const [, createAction, createPending] = useActionState(
     (
@@ -82,22 +85,18 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
             name="enabled"
             defaultChecked={enabled}
           />
-          <Label htmlFor="apiEnabled">Enable API key authentication</Label>
+          <Label htmlFor="apiEnabled">{translations("enabled")}</Label>
         </div>
         <p className="text-muted-foreground text-xs">
-          API keys allow external tools to call the REST API without a browser
-          login. Keys have full access to every endpoint and remain valid
-          independently of the account that created them. Keys are shown only
-          once and cannot be retrieved later. Keys created before the lookup
-          prefix update were disabled for security and must be regenerated.
+          {translations("enabledHint")}
         </p>
         <div className="flex items-center gap-3">
           <Button type="submit" disabled={savePending} size="sm">
-            {savePending ? "Saving..." : "Save"}
+            {savePending ? translations("saving") : translations("save")}
           </Button>
           <Button asChild variant="outline" size="sm">
             <a href="/docs" target="_blank" rel="noopener noreferrer">
-              API documentation →
+              {translations("docs")}
             </a>
           </Button>
         </div>
@@ -105,16 +104,18 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
 
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium">API keys ({keys.length})</h3>
+          <h3 className="text-sm font-medium">
+            {translations("keysTitle", { count: keys.length })}
+          </h3>
         </div>
 
         {showNewKey ? (
           <div className="border-success/30 bg-success/10 rounded-md border p-4">
             <p className="text-success text-sm font-semibold">
-              Key created — copy it now
+              {translations("keyCreatedTitle")}
             </p>
             <p className="text-muted-foreground mt-1 text-xs">
-              This key will not be shown again. Store it securely.
+              {translations("keyCreatedHint")}
             </p>
             <div className="mt-2 flex items-center gap-2">
               <code className="bg-background rounded border px-3 py-1.5 font-mono text-xs break-all">
@@ -128,7 +129,7 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
                   navigator.clipboard.writeText(showNewKey);
                 }}
               >
-                Copy
+                {translations("copy")}
               </Button>
             </div>
             <Button
@@ -138,7 +139,7 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
               className="mt-3"
               onClick={() => setShowNewKey(null)}
             >
-              Done
+              {translations("done")}
             </Button>
           </div>
         ) : null}
@@ -147,57 +148,67 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
           action={createAction}
           className="flex flex-col gap-3 rounded-md border p-4"
         >
-          <h4 className="text-sm font-medium">Create new key</h4>
+          <h4 className="text-sm font-medium">{translations("createTitle")}</h4>
           <div className="grid gap-3 sm:grid-cols-4">
             <div className="flex flex-col gap-1">
               <Label htmlFor="keyName" className="text-xs">
-                Name
+                {translations("name")}
               </Label>
               <Input
                 id="keyName"
                 name="name"
-                placeholder="e.g. CI pipeline"
+                placeholder={translations("namePlaceholder")}
                 required
               />
             </div>
             <div className="flex flex-col gap-1">
               <Label htmlFor="expiresIn" className="text-xs">
-                Expiry
+                {translations("expiry")}
               </Label>
               <Select name="expiresIn" defaultValue="90">
                 <SelectTrigger id="expiresIn" className="text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="30">30 days</SelectItem>
-                  <SelectItem value="90">90 days</SelectItem>
-                  <SelectItem value="180">180 days</SelectItem>
-                  <SelectItem value="365">1 year</SelectItem>
-                  <SelectItem value="permanent">Permanent</SelectItem>
+                  <SelectItem value="30">
+                    {translations("expiryOptions.30")}
+                  </SelectItem>
+                  <SelectItem value="90">
+                    {translations("expiryOptions.90")}
+                  </SelectItem>
+                  <SelectItem value="180">
+                    {translations("expiryOptions.180")}
+                  </SelectItem>
+                  <SelectItem value="365">
+                    {translations("expiryOptions.365")}
+                  </SelectItem>
+                  <SelectItem value="permanent">
+                    {translations("expiryOptions.permanent")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="flex flex-col gap-1">
               <Label htmlFor="allowedIps" className="text-xs">
-                Allowed IPs (optional)
+                {translations("allowedIps")}
               </Label>
               <Input
                 id="allowedIps"
                 name="allowedIps"
-                placeholder="192.168.1.0/24"
+                placeholder={translations("allowedIpsPlaceholder")}
                 className="text-xs"
               />
             </div>
             <div className="flex flex-col gap-1">
               <Label htmlFor="rateLimit" className="text-xs">
-                Rate limit/min
+                {translations("rateLimit")}
               </Label>
               <Input
                 id="rateLimit"
                 name="rateLimit"
                 type="number"
                 min={1}
-                placeholder="Default"
+                placeholder={translations("rateLimitPlaceholder")}
                 className="text-xs"
               />
             </div>
@@ -205,14 +216,16 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
           <PermissionSelector />
           <div className="flex items-center gap-3">
             <Button type="submit" size="sm" disabled={createPending}>
-              {createPending ? "Creating..." : "Create key"}
+              {createPending
+                ? translations("creating")
+                : translations("create")}
             </Button>
           </div>
         </form>
 
         {keys.length === 0 ? (
           <p className="text-muted-foreground text-sm">
-            No API keys created yet.
+            {translations("empty")}
           </p>
         ) : (
           <div className="flex flex-col divide-y rounded-lg border">
@@ -231,36 +244,54 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
                         className="text-xs"
                         title={key.permissions.join(", ")}
                       >
-                        {key.permissions.length} permission
-                        {key.permissions.length !== 1 ? "s" : ""}
+                        {translations("permissionCount", {
+                          count: key.permissions.length,
+                        })}
                       </Badge>
                     ) : (
                       <Badge variant="secondary" className="text-xs">
-                        Full access
+                        {translations("fullAccess")}
                       </Badge>
                     )}
                     {key.disabled ? (
                       <Badge variant="destructive" className="text-xs">
-                        Revoked
+                        {translations("revoked")}
                       </Badge>
                     ) : key.expiresAt && key.expiresAt < new Date() ? (
                       <Badge variant="destructive" className="text-xs">
-                        Expired
+                        {translations("expired")}
                       </Badge>
                     ) : null}
                   </div>
                   <span className="text-muted-foreground text-xs">
                     {key.lastUsedAt
-                      ? `Last used ${new Date(key.lastUsedAt).toLocaleString()}`
-                      : "Never used"}
+                      ? translations("lastUsed", {
+                          date: dateFormatter.dateTime(
+                            new Date(key.lastUsedAt),
+                            {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            },
+                          ),
+                        })
+                      : translations("neverUsed")}
                     {key.requestCount > 0
-                      ? ` · ${key.requestCount} request${key.requestCount !== 1 ? "s" : ""}`
+                      ? ` · ${translations("requestCount", {
+                          count: key.requestCount,
+                        })}`
                       : ""}
                     {key.allowedIps
-                      ? ` · IPs: ${key.allowedIps.replace(/\n/g, ", ")}`
+                      ? ` · ${translations("ips", {
+                          ips: key.allowedIps.replace(/\n/g, ", "),
+                        })}`
                       : ""}
                     {key.rateLimitPerMin
-                      ? ` · Rate limit: ${key.rateLimitPerMin}/min`
+                      ? ` · ${translations("rateLimitSuffix", {
+                          value: key.rateLimitPerMin,
+                        })}`
                       : ""}
                   </span>
                 </div>
@@ -274,17 +305,19 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
                     />
                     {key.disabled ? (
                       <Button type="submit" size="sm" variant="ghost">
-                        Enable
+                        {translations("enable")}
                       </Button>
                     ) : (
                       <ConfirmDialog
-                        title="Revoke API key?"
-                        description={`Any integrations using "${key.name}" will stop working immediately. This can be re-enabled later.`}
-                        confirmLabel="Revoke"
+                        title={translations("revokeTitle")}
+                        description={translations("revokeDescription", {
+                          name: key.name,
+                        })}
+                        confirmLabel={translations("revoke")}
                         formId={`toggle-key-${key.id}`}
                       >
                         <Button type="button" size="sm" variant="ghost">
-                          Revoke
+                          {translations("revoke")}
                         </Button>
                       </ConfirmDialog>
                     )}
@@ -292,12 +325,14 @@ export function ApiForm({ enabled, keys }: ApiFormProps) {
                   <form id={`delete-key-${key.id}`} action={deleteApiKeyAction}>
                     <input type="hidden" name="keyId" value={key.id} />
                     <ConfirmDialog
-                      title="Delete API key?"
-                      description={`"${key.name}" will be permanently deleted. Any integrations using this key will break permanently. This cannot be undone.`}
+                      title={translations("deleteTitle")}
+                      description={translations("deleteDescription", {
+                        name: key.name,
+                      })}
                       formId={`delete-key-${key.id}`}
                     >
                       <Button type="button" size="sm" variant="ghost">
-                        Delete
+                        {translations("delete")}
                       </Button>
                     </ConfirmDialog>
                   </form>

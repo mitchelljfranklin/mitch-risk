@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -27,6 +28,7 @@ export function TrustCenterSettingsForm({
   pageLoadsPerMin,
   downloadsPerMin,
 }: TrustCenterSettingsFormProps) {
+  const translations = useTranslations("Admin.trustCenter");
   const [state, action, isPending] = useActionState(
     saveTrustCenterSettings,
     undefined,
@@ -43,40 +45,40 @@ export function TrustCenterSettingsForm({
             name="enabled"
             defaultChecked={enabled}
           />
-          <Label htmlFor="trustEnabled">Enable the trust center</Label>
+          <Label htmlFor="trustEnabled">{translations("enabled")}</Label>
         </div>
         <p className="text-muted-foreground text-xs">
-          While disabled, <code>/trust</code> shows a not-found message and no
-          content is served publicly.
+          {translations("enabledHint")}
         </p>{" "}
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="trustIntro">Intro (markdown)</Label>
+        <Label htmlFor="trustIntro">{translations("intro")}</Label>
         <p className="text-muted-foreground text-xs">
-          Short paragraph shown under the organisation name on the public page.
+          {translations("introHint")}
         </p>
         <Textarea
           id="trustIntro"
           name="intro"
           rows={3}
           defaultValue={intro}
-          placeholder="Our commitment to security and privacy…"
+          placeholder={translations("introPlaceholder")}
         />
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="trustContactEmail">Contact email</Label>
+        <Label htmlFor="trustContactEmail">
+          {translations("contactEmail")}
+        </Label>
         <p className="text-muted-foreground text-xs">
-          Shown at the foot of the public page. Falls back to the
-          organisation&apos;s support email when empty.
+          {translations("contactEmailHint")}
         </p>
         <Input
           id="trustContactEmail"
           name="contactEmail"
           type="email"
           defaultValue={contactEmail}
-          placeholder="security@example.com"
+          placeholder={translations("contactEmailPlaceholder")}
           className="w-72"
         />
       </div>
@@ -90,19 +92,18 @@ export function TrustCenterSettingsForm({
             defaultChecked={includeInInvites}
           />
           <Label htmlFor="trustIncludeInInvites">
-            Link to the trust center in vendor invite emails
+            {translations("includeInInvites")}
           </Label>
         </div>
         <p className="text-muted-foreground text-xs">
-          Adds a footer line to invite emails pointing at <code>/trust</code>.
-          Templates are not modified — the link is added at send time.
+          {translations("includeInInvitesHint")}
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="trustPageLoadsPerMin">
-            Public page loads / min (per IP)
+            {translations("pageLoads")}
           </Label>
           <Input
             id="trustPageLoadsPerMin"
@@ -116,7 +117,7 @@ export function TrustCenterSettingsForm({
         </div>
         <div className="flex flex-col gap-2">
           <Label htmlFor="trustDownloadsPerMin">
-            Document downloads / min (per IP)
+            {translations("downloads")}
           </Label>
           <Input
             id="trustDownloadsPerMin"
@@ -132,7 +133,7 @@ export function TrustCenterSettingsForm({
 
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending} size="sm">
-          {isPending ? "Saving..." : "Save trust center"}
+          {isPending ? translations("saving") : translations("save")}
         </Button>
       </div>
     </form>

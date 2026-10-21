@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { listWebhookEndpoints } from "@/lib/db/webhooks";
@@ -12,28 +13,31 @@ import { WebhooksForm } from "../webhooks-form";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Admin — Webhooks" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Admin.webhooks");
+  return { title: translations("metaTitle") };
+}
 
 export default async function AdminWebhooksPage() {
   await requirePermission(PERMISSIONS.WEBHOOKS_MANAGE);
+  const translations = await getTranslations("Admin.webhooks");
   const webhookEndpoints = await listWebhookEndpoints();
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Webhooks</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {translations("title")}
+        </h1>
         <p className="text-muted-foreground text-sm">
-          Event notifications pushed to your endpoints.
+          {translations("subtitle")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Webhooks</CardTitle>
-          <CardDescription>
-            Configure endpoints to receive event notifications when assessments
-            are submitted, findings change, or certifications expire.
-          </CardDescription>
+          <CardTitle>{translations("cardTitle")}</CardTitle>
+          <CardDescription>{translations("cardDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <WebhooksForm endpoints={webhookEndpoints} />

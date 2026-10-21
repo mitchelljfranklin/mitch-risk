@@ -816,4 +816,63 @@ test.describe("internal shell", () => {
       page.getByRole("button", { name: "Guardar límites de velocidad" }),
     ).toBeVisible();
   });
+
+  test("translates admin API, webhooks and trust center", async ({ page }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto("/admin/api");
+
+    await expect(
+      page.getByRole("heading", { name: "API", exact: true }),
+    ).toBeVisible();
+    await expect(page.getByText("Acceso a la API")).toBeVisible();
+    await expect(page.getByText("Crear nueva clave")).toBeVisible();
+    await expect(page.getByLabel("Nombre", { exact: true })).toBeVisible();
+    await expect(
+      page.getByText("Acceso completo", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Crear clave" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Documentación de la API →" }),
+    ).toBeVisible();
+
+    await page.goto("/admin/webhooks");
+
+    await expect(
+      page.getByRole("heading", { name: "Webhooks", exact: true }),
+    ).toBeVisible();
+    await expect(page.getByText(/Endpoints de webhook/)).toBeVisible();
+    await page.getByRole("button", { name: "Añadir endpoint" }).click();
+    await expect(page.getByText("Nuevo webhook")).toBeVisible();
+    await expect(page.getByLabel("Plataforma")).toBeVisible();
+    await expect(page.getByText("Eventos", { exact: true })).toBeVisible();
+    await expect(page.getByText("Evaluación enviada")).toBeVisible();
+    await page.getByRole("button", { name: "Cancelar" }).click();
+
+    await page.goto("/admin/trust-center");
+
+    await expect(
+      page.getByRole("heading", { name: "Trust Center" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Configuración de la página pública de cumplimiento."),
+    ).toBeVisible();
+    await expect(page.getByLabel("Activar el Trust Center")).toBeVisible();
+    await expect(page.getByLabel("Correo de contacto")).toBeVisible();
+    await expect(
+      page.getByLabel("Cargas de la página pública / min (por IP)"),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Guardar Trust Center" }),
+    ).toBeVisible();
+  });
 });

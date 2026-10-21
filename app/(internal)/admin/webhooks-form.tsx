@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,19 +26,19 @@ import {
   toggleWebhookAction,
 } from "./actions";
 
-const EVENT_LABELS: Record<string, string> = {
-  ASSESSMENT_SUBMITTED: "Assessment submitted",
-  ASSESSMENT_OVERDUE: "Assessment overdue",
-  FINDING_CREATED: "Finding created",
-  FINDING_RESOLVED: "Finding resolved",
-  CERTIFICATION_EXPIRING: "Certification expiring",
-};
+const EVENT_VALUES = [
+  "ASSESSMENT_SUBMITTED",
+  "ASSESSMENT_OVERDUE",
+  "FINDING_CREATED",
+  "FINDING_RESOLVED",
+  "CERTIFICATION_EXPIRING",
+] as const;
 
-const PLATFORM_OPTIONS: { value: WebhookPlatform; label: string }[] = [
-  { value: "GENERIC", label: "Generic (HTTP)" },
-  { value: "SLACK", label: "Slack" },
-  { value: "MICROSOFT_TEAMS", label: "Microsoft Teams" },
-  { value: "DISCORD", label: "Discord" },
+const PLATFORM_OPTIONS: { value: WebhookPlatform }[] = [
+  { value: "GENERIC" },
+  { value: "SLACK" },
+  { value: "MICROSOFT_TEAMS" },
+  { value: "DISCORD" },
 ];
 
 type WebhookRow = {
@@ -56,6 +57,7 @@ type WebhooksFormProps = {
 
 export function WebhooksForm({ endpoints }: WebhooksFormProps) {
   const router = useRouter();
+  const translations = useTranslations("Admin.webhooks");
   const [showNew, setShowNew] = useState(false);
   const [createState, createAction, isCreating] = useActionState(
     createWebhookAction,
@@ -77,11 +79,11 @@ export function WebhooksForm({ endpoints }: WebhooksFormProps) {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-medium">
-          Webhook endpoints ({endpoints.length})
+          {translations("endpointsTitle", { count: endpoints.length })}
         </h3>
         {!showNew ? (
           <Button size="sm" onClick={() => setShowNew(true)}>
-            Add endpoint
+            {translations("add")}
           </Button>
         ) : null}
       </div>
@@ -91,50 +93,52 @@ export function WebhooksForm({ endpoints }: WebhooksFormProps) {
           action={createAction}
           className="flex flex-col gap-3 rounded-md border p-4"
         >
-          <h4 className="text-sm font-medium">New webhook</h4>
+          <h4 className="text-sm font-medium">{translations("newTitle")}</h4>
           <div className="grid gap-3">
             <div className="flex flex-col gap-1">
               <Label htmlFor="webhookName" className="text-xs">
-                Name
+                {translations("name")}
               </Label>
               <Input
                 id="webhookName"
                 name="name"
-                placeholder="e.g. Slack alerts, Teams compliance"
+                placeholder={translations("namePlaceholder")}
               />
             </div>
             <div className="flex flex-col gap-1">
               <Label htmlFor="webhookUrl" className="text-xs">
-                URL
+                {translations("url")}
               </Label>
               <Input
                 id="webhookUrl"
                 name="url"
-                placeholder="https://example.com/webhooks/mitch-risk"
+                placeholder={translations("urlPlaceholder")}
                 required
               />
             </div>
             <div className="flex flex-col gap-1">
               <Label htmlFor="webhookPlatform" className="text-xs">
-                Platform
+                {translations("platform")}
               </Label>
               <Select name="platform" defaultValue="GENERIC">
                 <SelectTrigger id="webhookPlatform">
-                  <SelectValue placeholder="Select platform" />
+                  <SelectValue
+                    placeholder={translations("platformPlaceholder")}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {PLATFORM_OPTIONS.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
-                      {option.label}
+                      {translations(`platforms.${option.value}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="flex flex-col gap-1">
-              <Label className="text-xs">Events</Label>
+              <Label className="text-xs">{translations("events")}</Label>
               <div className="flex flex-wrap gap-3">
-                {Object.entries(EVENT_LABELS).map(([event, label]) => (
+                {EVENT_VALUES.map((event) => (
                   <div key={event} className="flex items-center gap-2">
                     <Checkbox
                       id={`event-${event}`}
@@ -146,7 +150,7 @@ export function WebhooksForm({ endpoints }: WebhooksFormProps) {
                       htmlFor={`event-${event}`}
                       className="text-xs font-normal"
                     >
-                      {label}
+                      {translations(`eventLabels.${event}`)}
                     </Label>
                   </div>
                 ))}
@@ -155,7 +159,7 @@ export function WebhooksForm({ endpoints }: WebhooksFormProps) {
           </div>
           <div className="flex items-center gap-2">
             <SubmitButton type="submit" size="sm" disabled={isCreating}>
-              {isCreating ? "Creating..." : "Create"}
+              {isCreating ? translations("creating") : translations("create")}
             </SubmitButton>
             <Button
               type="button"
@@ -163,17 +167,14 @@ export function WebhooksForm({ endpoints }: WebhooksFormProps) {
               size="sm"
               onClick={() => setShowNew(false)}
             >
-              Cancel
+              {translations("cancel")}
             </Button>
           </div>
         </form>
       ) : null}
 
       {endpoints.length === 0 && !showNew ? (
-        <p className="text-muted-foreground text-sm">
-          No webhooks configured. Add an endpoint to receive event
-          notifications.
-        </p>
+        <p className="text-muted-foreground text-sm">{translations("empty")}</p>
       ) : (
         <div className="flex flex-col divide-y rounded-lg border">
           {endpoints.map((endpoint) => (
@@ -192,7 +193,9 @@ export function WebhooksForm({ endpoints }: WebhooksFormProps) {
                     variant={endpoint.enabled ? "default" : "secondary"}
                     className="text-xs"
                   >
-                    {endpoint.enabled ? "Active" : "Disabled"}
+                    {endpoint.enabled
+                      ? translations("active")
+                      : translations("disabled")}
                   </Badge>
                   <form action={toggleWebhookAction}>
                     <input type="hidden" name="webhookId" value={endpoint.id} />
@@ -202,7 +205,9 @@ export function WebhooksForm({ endpoints }: WebhooksFormProps) {
                       value={endpoint.enabled ? "false" : "true"}
                     />
                     <Button type="submit" variant="ghost" size="sm">
-                      {endpoint.enabled ? "Disable" : "Enable"}
+                      {endpoint.enabled
+                        ? translations("disable")
+                        : translations("enable")}
                     </Button>
                   </form>
                   <form
@@ -211,13 +216,15 @@ export function WebhooksForm({ endpoints }: WebhooksFormProps) {
                   >
                     <input type="hidden" name="webhookId" value={endpoint.id} />
                     <ConfirmDialog
-                      title="Delete webhook?"
-                      description={`This endpoint will stop receiving events: ${endpoint.url}`}
-                      confirmLabel="Delete"
+                      title={translations("deleteTitle")}
+                      description={translations("deleteDescription", {
+                        url: endpoint.url,
+                      })}
+                      confirmLabel={translations("delete")}
                       formId={`delete-webhook-${endpoint.id}`}
                     >
                       <Button type="button" variant="ghost" size="sm">
-                        Delete
+                        {translations("delete")}
                       </Button>
                     </ConfirmDialog>
                   </form>
@@ -225,13 +232,11 @@ export function WebhooksForm({ endpoints }: WebhooksFormProps) {
               </div>
               <div className="flex flex-wrap gap-1">
                 <Badge variant="outline" className="text-[10px]">
-                  {PLATFORM_OPTIONS.find(
-                    (opt) => opt.value === endpoint.platform,
-                  )?.label ?? endpoint.platform}
+                  {translations(`platforms.${endpoint.platform}`)}
                 </Badge>
                 {endpoint.events.map((event) => (
                   <Badge key={event} variant="outline" className="text-[10px]">
-                    {EVENT_LABELS[event] ?? event}
+                    {translations(`eventLabels.${event}`)}
                   </Badge>
                 ))}
               </div>
