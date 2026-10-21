@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +25,7 @@ type StorageFormProps = {
 const initialState: { ok: boolean; message: string } | undefined = undefined;
 
 export function StorageForm({ defaults }: StorageFormProps) {
+  const translations = useTranslations("Admin.storage.form");
   const [state, formAction, isPending] = useActionState(
     saveStorageSettings,
     initialState,
@@ -34,7 +36,7 @@ export function StorageForm({ defaults }: StorageFormProps) {
     <form action={formAction} className="grid gap-6">
       <div className="grid gap-4 sm:max-w-md">
         <div className="grid gap-2">
-          <Label htmlFor="storage-provider">Provider</Label>
+          <Label htmlFor="storage-provider">{translations("provider")}</Label>
           <Select
             key={defaults.provider}
             name="provider"
@@ -44,15 +46,13 @@ export function StorageForm({ defaults }: StorageFormProps) {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="local">Local disk</SelectItem>
-              <SelectItem value="s3">Amazon S3</SelectItem>
-              <SelectItem value="azure">Azure Blob</SelectItem>
+              <SelectItem value="local">{translations("local")}</SelectItem>
+              <SelectItem value="s3">{translations("s3")}</SelectItem>
+              <SelectItem value="azure">{translations("azure")}</SelectItem>
             </SelectContent>
           </Select>
           <p className="text-muted-foreground text-xs">
-            Changing providers does not migrate existing files. Files stored
-            with the previous provider remain accessible only if you switch
-            back.
+            {translations("providerHint")}
           </p>
         </div>
       </div>
@@ -60,9 +60,9 @@ export function StorageForm({ defaults }: StorageFormProps) {
       <Separator />
 
       <div className="grid gap-4 sm:max-w-md">
-        <h3 className="text-sm font-medium">Amazon S3</h3>
+        <h3 className="text-sm font-medium">{translations("s3Title")}</h3>
         <div className="grid gap-2">
-          <Label htmlFor="s3-bucket">Bucket</Label>
+          <Label htmlFor="s3-bucket">{translations("bucket")}</Label>
           <Input
             id="s3-bucket"
             name="s3Bucket"
@@ -70,16 +70,16 @@ export function StorageForm({ defaults }: StorageFormProps) {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="s3-region">Region</Label>
+          <Label htmlFor="s3-region">{translations("region")}</Label>
           <Input
             id="s3-region"
             name="s3Region"
             defaultValue={defaults.s3Region}
-            placeholder="e.g. us-east-1"
+            placeholder={translations("regionPlaceholder")}
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="s3-accessKeyId">Access key ID</Label>
+          <Label htmlFor="s3-accessKeyId">{translations("accessKeyId")}</Label>
           <Input
             id="s3-accessKeyId"
             name="s3AccessKeyId"
@@ -87,7 +87,9 @@ export function StorageForm({ defaults }: StorageFormProps) {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="s3-secretAccessKey">Secret access key</Label>
+          <Label htmlFor="s3-secretAccessKey">
+            {translations("secretAccessKey")}
+          </Label>
           <Input
             id="s3-secretAccessKey"
             name="s3SecretAccessKey"
@@ -96,7 +98,7 @@ export function StorageForm({ defaults }: StorageFormProps) {
             placeholder={defaults.s3SecretConfigured ? "········" : ""}
           />
           <p className="text-muted-foreground text-xs">
-            Stored encrypted at rest. Leave blank to keep the existing value.
+            {translations("secretHint")}
           </p>
         </div>
       </div>
@@ -104,9 +106,11 @@ export function StorageForm({ defaults }: StorageFormProps) {
       <Separator />
 
       <div className="grid gap-4 sm:max-w-md">
-        <h3 className="text-sm font-medium">Azure Blob</h3>
+        <h3 className="text-sm font-medium">{translations("azureTitle")}</h3>
         <div className="grid gap-2">
-          <Label htmlFor="azure-containerName">Container name</Label>
+          <Label htmlFor="azure-containerName">
+            {translations("containerName")}
+          </Label>
           <Input
             id="azure-containerName"
             name="azureContainerName"
@@ -114,7 +118,9 @@ export function StorageForm({ defaults }: StorageFormProps) {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="azure-connectionString">Connection string</Label>
+          <Label htmlFor="azure-connectionString">
+            {translations("connectionString")}
+          </Label>
           <Input
             id="azure-connectionString"
             name="azureConnectionString"
@@ -125,13 +131,13 @@ export function StorageForm({ defaults }: StorageFormProps) {
             }
           />
           <p className="text-muted-foreground text-xs">
-            Stored encrypted at rest. Leave blank to keep the existing value.
+            {translations("secretHint")}
           </p>
         </div>
       </div>
 
       <Button type="submit" disabled={isPending} className="w-fit">
-        {isPending ? "Saving…" : "Save storage settings"}
+        {isPending ? translations("saving") : translations("save")}
       </Button>
     </form>
   );

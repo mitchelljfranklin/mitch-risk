@@ -307,6 +307,7 @@ export async function saveSsoSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.signIn");
 
   const parsed = ssoSettingsSchema.safeParse({
     entraIdEnabled: formData.get("entraIdEnabled") === "on",
@@ -324,7 +325,7 @@ export async function saveSsoSettings(
   if (!parsed.success) {
     return {
       ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
+      message: translations("errors.invalidInput"),
     };
   }
 
@@ -341,7 +342,7 @@ export async function saveSsoSettings(
   const user = await getCurrentUser();
   if (user)
     await logAudit(user.id, AUDIT_ACTIONS.UPDATE_SETTINGS, "Setting", "sso");
-  return { ok: true, message: "SSO settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function generateBreakGlassUrlAction(
@@ -350,6 +351,7 @@ export async function generateBreakGlassUrlAction(
 ): Promise<{ ok: boolean; message: string; url?: string }> {
   void formData;
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.signIn");
 
   const { generateBreakGlassToken, hashBreakGlassToken } =
     await import("@/lib/break-glass");
@@ -369,8 +371,7 @@ export async function generateBreakGlassUrlAction(
     );
   return {
     ok: true,
-    message:
-      "Break-glass URL generated. Copy it now — it won't be shown again.",
+    message: translations("breakGlass.success"),
     url: `${env.APP_URL}/login?breakGlass=${token}`,
   };
 }
@@ -736,6 +737,7 @@ export async function saveSignInSecuritySettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.signIn");
 
   const loginRateLimit = parseInt(
     (formData.get("loginRateLimit") as string) || "10",
@@ -749,7 +751,7 @@ export async function saveSignInSecuritySettings(
   if (isNaN(loginRateLimit) || loginRateLimit < 1) {
     return {
       ok: false,
-      message: "Login rate limit must be at least 1 per minute.",
+      message: translations("errors.loginRateInvalid"),
     };
   }
   if (
@@ -759,7 +761,7 @@ export async function saveSignInSecuritySettings(
   ) {
     return {
       ok: false,
-      message: "Auto-logout must be 0 (disabled) or at least 5 minutes.",
+      message: translations("errors.autoLogoutInvalid"),
     };
   }
 
@@ -778,7 +780,7 @@ export async function saveSignInSecuritySettings(
       "sign-in",
     );
 
-  return { ok: true, message: "Sign-in settings saved." };
+  return { ok: true, message: translations("securitySuccess") };
 }
 
 export async function saveRateLimitSettings(
@@ -786,22 +788,20 @@ export async function saveRateLimitSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.rateLimits");
 
   const rateLimitFields = {
-    portalPageLoadsPerMin: { label: "Portal page loads", default: 30 },
-    portalUploadsPerMin: { label: "Portal uploads", default: 10 },
-    portalSubmitPerMin: { label: "Portal submissions", default: 5 },
-    portalCommentPerMin: { label: "Portal comments", default: 10 },
-    portalPasswordAttemptsPerMin: {
-      label: "Portal password attempts",
-      default: 5,
-    },
-    passwordResetPerMin: { label: "Password reset requests", default: 1 },
-    breakGlassPerMin: { label: "Break-glass attempts", default: 10 },
+    portalPageLoadsPerMin: { default: 30 },
+    portalUploadsPerMin: { default: 10 },
+    portalSubmitPerMin: { default: 5 },
+    portalCommentPerMin: { default: 10 },
+    portalPasswordAttemptsPerMin: { default: 5 },
+    passwordResetPerMin: { default: 1 },
+    breakGlassPerMin: { default: 10 },
   } as const;
 
   const rateLimits: Record<string, number> = {};
-  for (const [field, { label, default: fallback }] of Object.entries(
+  for (const [field, { default: fallback }] of Object.entries(
     rateLimitFields,
   )) {
     const value = parseInt(
@@ -809,7 +809,12 @@ export async function saveRateLimitSettings(
       10,
     );
     if (isNaN(value) || value < 1) {
-      return { ok: false, message: `${label} must be at least 1 per minute.` };
+      return {
+        ok: false,
+        message: translations("errors.minimum", {
+          field: translations(`fields.${field}.label`),
+        }),
+      };
     }
     rateLimits[field] = value;
   }
@@ -834,7 +839,7 @@ export async function saveRateLimitSettings(
       "rate-limits",
     );
 
-  return { ok: true, message: "Rate limits saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function saveUploadSettings(
@@ -842,13 +847,14 @@ export async function saveUploadSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.storage");
 
   const maxUploadMb = parseInt(
     (formData.get("maxUploadMb") as string) || "20",
     10,
   );
   if (isNaN(maxUploadMb) || maxUploadMb < 1) {
-    return { ok: false, message: "Maximum upload size must be at least 1 MB." };
+    return { ok: false, message: translations("errors.maxUploadInvalid") };
   }
 
   const allowedExtensions = formData.getAll("allowedExtensions").map(String);
@@ -869,7 +875,7 @@ export async function saveUploadSettings(
       "storage",
     );
 
-  return { ok: true, message: "Upload constraints saved." };
+  return { ok: true, message: translations("uploadsSuccess") };
 }
 
 export async function saveAuditRetentionSettings(
@@ -1054,6 +1060,7 @@ export async function saveStorageSettings(
   formData: FormData,
 ): Promise<{ ok: boolean; message: string }> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.storage");
 
   const existing = await getStorageSettings();
   const raw: Record<string, string> = {
@@ -1080,7 +1087,7 @@ export async function saveStorageSettings(
   if (!parsed.success) {
     return {
       ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
+      message: translations("errors.invalidInput"),
     };
   }
 
@@ -1096,7 +1103,7 @@ export async function saveStorageSettings(
     );
   }
 
-  return { ok: true, message: "Storage settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export type WebhookActionState = { ok?: boolean; message?: string } | undefined;

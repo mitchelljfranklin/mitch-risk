@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,7 @@ export function SignInSecurityForm({
   loginRateLimitPerMin,
   sessionTimeoutMinutes,
 }: SignInSecurityFormProps) {
+  const translations = useTranslations("Admin.signIn.security");
   const [state, action, isPending] = useActionState(
     saveSignInSecuritySettings,
     undefined,
@@ -26,10 +28,9 @@ export function SignInSecurityForm({
   return (
     <form action={action} className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <Label htmlFor="loginRateLimit">Login rate limit (per minute)</Label>
+        <Label htmlFor="loginRateLimit">{translations("loginRateLimit")}</Label>
         <p className="text-muted-foreground text-xs">
-          Maximum sign-in attempts per IP address per minute. Increase for
-          shared-office environments behind a single public IP.
+          {translations("loginRateLimitHint")}
         </p>
         <Input
           id="loginRateLimit"
@@ -42,10 +43,11 @@ export function SignInSecurityForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="sessionTimeoutMinutes">Auto-logout (minutes)</Label>
+        <Label htmlFor="sessionTimeoutMinutes">
+          {translations("autoLogout")}
+        </Label>
         <p className="text-muted-foreground text-xs">
-          Automatically sign out after this many minutes of inactivity. Set to 0
-          to disable. Minimum 5 minutes when enabled.
+          {translations("autoLogoutHint")}
         </p>
         <Input
           id="sessionTimeoutMinutes"
@@ -59,7 +61,7 @@ export function SignInSecurityForm({
 
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending} size="sm">
-          {isPending ? "Saving..." : "Save"}
+          {isPending ? translations("saving") : translations("save")}
         </Button>
       </div>
     </form>

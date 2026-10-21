@@ -736,4 +736,84 @@ test.describe("internal shell", () => {
     ).toBeVisible();
     await expect(page.getByText(/Última ejecución programada/)).toBeVisible();
   });
+
+  test("translates admin storage, sign-in and rate limits", async ({
+    page,
+  }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto("/admin/storage");
+
+    await expect(
+      page.getByRole("heading", { name: "Almacenamiento" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("combobox", { name: "Proveedor" }),
+    ).toBeVisible();
+    await expect(page.getByLabel("Bucket")).toBeVisible();
+    await expect(page.getByLabel("Región")).toBeVisible();
+    await expect(page.getByLabel("ID de clave de acceso")).toBeVisible();
+    await expect(page.getByLabel("Clave de acceso secreta")).toBeVisible();
+    await expect(page.getByLabel("Nombre del contenedor")).toBeVisible();
+    await expect(page.getByLabel("Cadena de conexión")).toBeVisible();
+    await expect(
+      page.getByLabel("Tamaño máximo de archivo (MB)"),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Extensiones de archivo permitidas"),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", {
+        name: "Guardar configuración de almacenamiento",
+      }),
+    ).toBeVisible();
+
+    await page.goto("/admin/sign-in");
+
+    await expect(
+      page.getByRole("heading", { name: "Inicio de sesión" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Microsoft Entra ID", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Google Workspace", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("OIDC personalizado", { exact: true }),
+    ).toBeVisible();
+    await expect(page.getByText("Activado").first()).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Guardar SSO" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Acceso de emergencia", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByLabel("Límite de intentos de inicio de sesión (por minuto)"),
+    ).toBeVisible();
+    await expect(page.getByLabel("Cierre automático (minutos)")).toBeVisible();
+
+    await page.goto("/admin/rate-limits");
+
+    await expect(
+      page.getByRole("heading", { name: "Límites de velocidad" }),
+    ).toBeVisible();
+    await expect(
+      page.getByLabel("Cargas de página del portal / min (por visitante)"),
+    ).toBeVisible();
+    await expect(
+      page.getByLabel("Subidas de evidencia del portal / min (por visitante)"),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Guardar límites de velocidad" }),
+    ).toBeVisible();
+  });
 });

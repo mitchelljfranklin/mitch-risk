@@ -1399,6 +1399,147 @@
     "retention": {
       "saving": "Guardando...",
       "save": "Guardar"
+    },
+    "storage": {
+      "metaTitle": "Administración — Almacenamiento",
+      "title": "Almacenamiento",
+      "subtitle": "Dónde viven los archivos de evidencia y qué pueden subir los proveedores.",
+      "fileStorageTitle": "Almacenamiento de archivos",
+      "fileStorageDescription": "Configura dónde se guardan los archivos de evidencia y los adjuntos. Cambiar de proveedor no migra los archivos existentes.",
+      "uploadConstraintsTitle": "Límites de subida",
+      "uploadConstraintsDescription": "Límites de tamaño y tipo de archivo aplicados a las subidas de evidencia de los proveedores.",
+      "form": {
+        "provider": "Proveedor",
+        "providerHint": "Cambiar de proveedor no migra los archivos existentes. Los archivos guardados con el proveedor anterior solo seguirán accesibles si vuelves a él.",
+        "local": "Disco local",
+        "s3": "Amazon S3",
+        "azure": "Azure Blob",
+        "s3Title": "Amazon S3",
+        "bucket": "Bucket",
+        "region": "Región",
+        "regionPlaceholder": "p. ej., us-east-1",
+        "accessKeyId": "ID de clave de acceso",
+        "secretAccessKey": "Clave de acceso secreta",
+        "secretHint": "Se guarda cifrada en reposo. Déjalo vacío para mantener el valor actual.",
+        "azureTitle": "Azure Blob",
+        "containerName": "Nombre del contenedor",
+        "connectionString": "Cadena de conexión",
+        "saving": "Guardando…",
+        "save": "Guardar configuración de almacenamiento"
+      },
+      "uploads": {
+        "maxSize": "Tamaño máximo de archivo (MB)",
+        "maxSizeHint": "Los archivos de evidencia más grandes que este límite se rechazan al subirlos.",
+        "allowedExtensions": "Extensiones de archivo permitidas",
+        "allowedHint": "Tipos de archivo que los proveedores pueden subir como evidencia. Selecciona al menos uno.",
+        "saving": "Guardando...",
+        "save": "Guardar"
+      },
+      "success": "Configuración de almacenamiento guardada.",
+      "uploadsSuccess": "Límites de subida guardados.",
+      "errors": {
+        "invalidInput": "Entrada no válida.",
+        "maxUploadInvalid": "El tamaño máximo de subida debe ser al menos 1 MB."
+      }
+    },
+    "signIn": {
+      "metaTitle": "Administración — Inicio de sesión",
+      "title": "Inicio de sesión",
+      "subtitle": "Cómo se autentica el personal y cuánto tiempo permanece conectado.",
+      "ssoTitle": "Inicio de sesión único",
+      "ssoDescription": "Permite que el personal inicie sesión con Microsoft Entra ID, Google Workspace o un proveedor OIDC personalizado. Las credenciales de cliente se cifran en reposo.",
+      "sessionsTitle": "Sesiones",
+      "sessionsDescription": "Limitación de intentos de inicio de sesión y cierre automático de sesiones inactivas.",
+      "sso": {
+        "entraId": "Microsoft Entra ID",
+        "google": "Google Workspace",
+        "oidc": "OIDC personalizado",
+        "enabled": "Activado",
+        "clientId": "ID de cliente",
+        "clientSecret": "Secreto de cliente",
+        "secretKeep": "Déjalo vacío para mantener el actual",
+        "secretEnter": "Secreto de cliente",
+        "secretHint": "Se guarda cifrado en reposo y nunca se muestra.",
+        "displayName": "Nombre visible del proveedor",
+        "displayNamePlaceholder": "Okta / Auth0 / Keycloak",
+        "issuerUrl": "URL del emisor",
+        "issuerPlaceholder": "https://example.okta.com",
+        "defaultRole": "Rol predeterminado para nuevos usuarios SSO",
+        "allowedDomain": "Restringir a un dominio (opcional)",
+        "allowedDomainPlaceholder": "@empresa.com",
+        "disableLocalAuth": "Desactivar el inicio de sesión con correo/contraseña (solo SSO)",
+        "disableLocalAuthHint": "Oculta el formulario de inicio de sesión local para que el personal solo pueda entrar por SSO. Se ignora salvo que haya al menos un proveedor SSO activado, para que una mala configuración no deje a nadie fuera. Usa la URL de acceso de emergencia de abajo para acceso urgente.",
+        "saving": "Guardando...",
+        "save": "Guardar SSO"
+      },
+      "breakGlass": {
+        "title": "Acceso de emergencia",
+        "description": "Cuando el inicio de sesión local está desactivado, esta URL secreta sigue mostrando el formulario de correo/contraseña para que un administrador pueda entrar si el SSO no está disponible. Generar una nueva URL revoca inmediatamente la anterior.",
+        "configured": "Actualmente hay una URL de acceso de emergencia configurada.",
+        "notConfigured": "Todavía no hay ninguna URL de acceso de emergencia configurada.",
+        "generating": "Generando...",
+        "regenerate": "Regenerar URL de acceso de emergencia",
+        "generate": "Generar URL de acceso de emergencia",
+        "success": "URL de acceso de emergencia generada. Cópiala ahora: no se volverá a mostrar."
+      },
+      "security": {
+        "loginRateLimit": "Límite de intentos de inicio de sesión (por minuto)",
+        "loginRateLimitHint": "Máximo de intentos de inicio de sesión por dirección IP y minuto. Auméntalo en entornos de oficina compartida detrás de una única IP pública.",
+        "autoLogout": "Cierre automático (minutos)",
+        "autoLogoutHint": "Cierra la sesión automáticamente tras este número de minutos de inactividad. Establece 0 para desactivarlo. Mínimo 5 minutos si está activado.",
+        "saving": "Guardando...",
+        "save": "Guardar"
+      },
+      "success": "Configuración de SSO guardada.",
+      "securitySuccess": "Configuración de inicio de sesión guardada.",
+      "errors": {
+        "invalidInput": "Entrada no válida.",
+        "loginRateInvalid": "El límite de intentos de inicio de sesión debe ser al menos 1 por minuto.",
+        "autoLogoutInvalid": "El cierre automático debe ser 0 (desactivado) o al menos 5 minutos."
+      }
+    },
+    "rateLimits": {
+      "metaTitle": "Administración — Límites de velocidad",
+      "title": "Límites de velocidad",
+      "subtitle": "Protección contra abusos para el portal del proveedor y la recuperación de cuentas.",
+      "cardTitle": "Límites de velocidad (por minuto)",
+      "cardDescription": "Auméntalos para proveedores con mucho tráfico o IP de oficina compartida; los valores predeterminados sirven para la mayoría de despliegues.",
+      "fields": {
+        "portalPageLoadsPerMin": {
+          "label": "Cargas de página del portal / min (por visitante)",
+          "help": "Con qué frecuencia el navegador de un proveedor puede cargar el enlace. Protege contra la enumeración de enlaces."
+        },
+        "portalUploadsPerMin": {
+          "label": "Subidas de evidencia del portal / min (por visitante)",
+          "help": "Máximo de archivos de evidencia que un proveedor puede subir por minuto."
+        },
+        "portalSubmitPerMin": {
+          "label": "Envíos del portal / min (por enlace)",
+          "help": "Máximo de intentos de envío para un enlace de proveedor."
+        },
+        "portalCommentPerMin": {
+          "label": "Comentarios del portal / min (por enlace)",
+          "help": "Máximo de comentarios que un proveedor puede publicar en un enlace."
+        },
+        "portalPasswordAttemptsPerMin": {
+          "label": "Intentos de contraseña del portal / min (por enlace)",
+          "help": "Protege un cuestionario con contraseña frente a ataques de fuerza bruta."
+        },
+        "passwordResetPerMin": {
+          "label": "Solicitudes de restablecimiento / min (por correo)",
+          "help": "Limita los correos de restablecimiento de contraseña del personal para una dirección."
+        },
+        "breakGlassPerMin": {
+          "label": "Intentos de acceso de emergencia / min (por IP)",
+          "help": "Limita la validación del enlace de recuperación SSO de emergencia."
+        }
+      },
+      "saving": "Guardando...",
+      "save": "Guardar límites de velocidad",
+      "success": "Límites de velocidad guardados.",
+      "errors": {
+        "minimum": "{field} debe ser al menos 1 por minuto."
+      }
     }
   },
   "Shell": {

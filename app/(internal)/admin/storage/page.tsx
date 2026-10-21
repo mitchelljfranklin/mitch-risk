@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getFileSettings, getStorageSettingsView } from "@/lib/settings";
@@ -13,28 +14,33 @@ import { UploadsForm } from "../uploads-form";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Admin — Storage" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Admin.storage");
+  return { title: translations("metaTitle") };
+}
 
 export default async function AdminStoragePage() {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.storage");
   const storageSettings = await getStorageSettingsView();
   const files = await getFileSettings();
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Storage</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {translations("title")}
+        </h1>
         <p className="text-muted-foreground text-sm">
-          Where evidence files live, and what vendors can upload.
+          {translations("subtitle")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>File storage</CardTitle>
+          <CardTitle>{translations("fileStorageTitle")}</CardTitle>
           <CardDescription>
-            Configure where evidence files and attachments are stored. Changing
-            providers does not migrate existing files.
+            {translations("fileStorageDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -44,9 +50,9 @@ export default async function AdminStoragePage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Upload constraints</CardTitle>
+          <CardTitle>{translations("uploadConstraintsTitle")}</CardTitle>
           <CardDescription>
-            Size and file-type limits applied to vendor evidence uploads.
+            {translations("uploadConstraintsDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>

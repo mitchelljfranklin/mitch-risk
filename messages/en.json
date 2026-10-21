@@ -1399,6 +1399,147 @@
     "retention": {
       "saving": "Saving...",
       "save": "Save"
+    },
+    "storage": {
+      "metaTitle": "Admin — Storage",
+      "title": "Storage",
+      "subtitle": "Where evidence files live, and what vendors can upload.",
+      "fileStorageTitle": "File storage",
+      "fileStorageDescription": "Configure where evidence files and attachments are stored. Changing providers does not migrate existing files.",
+      "uploadConstraintsTitle": "Upload constraints",
+      "uploadConstraintsDescription": "Size and file-type limits applied to vendor evidence uploads.",
+      "form": {
+        "provider": "Provider",
+        "providerHint": "Changing providers does not migrate existing files. Files stored with the previous provider remain accessible only if you switch back.",
+        "local": "Local disk",
+        "s3": "Amazon S3",
+        "azure": "Azure Blob",
+        "s3Title": "Amazon S3",
+        "bucket": "Bucket",
+        "region": "Region",
+        "regionPlaceholder": "e.g. us-east-1",
+        "accessKeyId": "Access key ID",
+        "secretAccessKey": "Secret access key",
+        "secretHint": "Stored encrypted at rest. Leave blank to keep the existing value.",
+        "azureTitle": "Azure Blob",
+        "containerName": "Container name",
+        "connectionString": "Connection string",
+        "saving": "Saving…",
+        "save": "Save storage settings"
+      },
+      "uploads": {
+        "maxSize": "Maximum file upload size (MB)",
+        "maxSizeHint": "Evidence files larger than this limit are rejected during upload.",
+        "allowedExtensions": "Allowed file extensions",
+        "allowedHint": "File types vendors can upload as evidence. Select at least one.",
+        "saving": "Saving...",
+        "save": "Save"
+      },
+      "success": "Storage settings saved.",
+      "uploadsSuccess": "Upload constraints saved.",
+      "errors": {
+        "invalidInput": "Invalid input.",
+        "maxUploadInvalid": "Maximum upload size must be at least 1 MB."
+      }
+    },
+    "signIn": {
+      "metaTitle": "Admin — Sign-in",
+      "title": "Sign-in",
+      "subtitle": "How staff authenticate, and how long they stay signed in.",
+      "ssoTitle": "Single sign-on",
+      "ssoDescription": "Allow staff to sign in with Microsoft Entra ID, Google Workspace, or a custom OIDC provider. Client credentials are encrypted at rest.",
+      "sessionsTitle": "Sessions",
+      "sessionsDescription": "Sign-in throttling and automatic logout for idle sessions.",
+      "sso": {
+        "entraId": "Microsoft Entra ID",
+        "google": "Google Workspace",
+        "oidc": "Custom OIDC",
+        "enabled": "Enabled",
+        "clientId": "Client ID",
+        "clientSecret": "Client secret",
+        "secretKeep": "Leave blank to keep current",
+        "secretEnter": "Client secret",
+        "secretHint": "Stored encrypted at rest and never displayed.",
+        "displayName": "Provider display name",
+        "displayNamePlaceholder": "Okta / Auth0 / Keycloak",
+        "issuerUrl": "Issuer URL",
+        "issuerPlaceholder": "https://example.okta.com",
+        "defaultRole": "Default role for new SSO users",
+        "allowedDomain": "Restrict to domain (optional)",
+        "allowedDomainPlaceholder": "@company.com",
+        "disableLocalAuth": "Disable email/password sign-in (SSO only)",
+        "disableLocalAuthHint": "Hides the local login form so staff can only sign in via SSO. Ignored unless at least one SSO provider is enabled, so a misconfiguration cannot lock everyone out. Use the break-glass URL below for emergency access.",
+        "saving": "Saving...",
+        "save": "Save SSO"
+      },
+      "breakGlass": {
+        "title": "Break-glass access",
+        "description": "When local sign-in is disabled, this secret URL still shows the email/password form so an admin can sign in if SSO is unavailable. Generating a new URL immediately revokes the previous one.",
+        "configured": "A break-glass URL is currently configured.",
+        "notConfigured": "No break-glass URL is configured yet.",
+        "generating": "Generating...",
+        "regenerate": "Regenerate break-glass URL",
+        "generate": "Generate break-glass URL",
+        "success": "Break-glass URL generated. Copy it now — it won't be shown again."
+      },
+      "security": {
+        "loginRateLimit": "Login rate limit (per minute)",
+        "loginRateLimitHint": "Maximum sign-in attempts per IP address per minute. Increase for shared-office environments behind a single public IP.",
+        "autoLogout": "Auto-logout (minutes)",
+        "autoLogoutHint": "Automatically sign out after this many minutes of inactivity. Set to 0 to disable. Minimum 5 minutes when enabled.",
+        "saving": "Saving...",
+        "save": "Save"
+      },
+      "success": "SSO settings saved.",
+      "securitySuccess": "Sign-in settings saved.",
+      "errors": {
+        "invalidInput": "Invalid input.",
+        "loginRateInvalid": "Login rate limit must be at least 1 per minute.",
+        "autoLogoutInvalid": "Auto-logout must be 0 (disabled) or at least 5 minutes."
+      }
+    },
+    "rateLimits": {
+      "metaTitle": "Admin — Rate limits",
+      "title": "Rate limits",
+      "subtitle": "Abuse protection for the vendor portal and account recovery.",
+      "cardTitle": "Rate limits (per minute)",
+      "cardDescription": "Raise these for busy vendors or shared-office IPs; the defaults suit most deployments.",
+      "fields": {
+        "portalPageLoadsPerMin": {
+          "label": "Portal page loads / min (per visitor)",
+          "help": "How often a vendor's browser can load the vendor link. Guards against link-enumeration."
+        },
+        "portalUploadsPerMin": {
+          "label": "Portal evidence uploads / min (per visitor)",
+          "help": "Maximum evidence file uploads a vendor can make per minute."
+        },
+        "portalSubmitPerMin": {
+          "label": "Portal submissions / min (per link)",
+          "help": "Maximum submit attempts for a single vendor link."
+        },
+        "portalCommentPerMin": {
+          "label": "Portal comments / min (per link)",
+          "help": "Maximum comments a vendor can post on a single vendor link."
+        },
+        "portalPasswordAttemptsPerMin": {
+          "label": "Portal password attempts / min (per link)",
+          "help": "Guards a password-protected questionnaire against brute-force."
+        },
+        "passwordResetPerMin": {
+          "label": "Password reset requests / min (per email)",
+          "help": "Limits staff password-reset emails for a given address."
+        },
+        "breakGlassPerMin": {
+          "label": "Break-glass attempts / min (per IP)",
+          "help": "Limits validation of the SSO break-glass recovery link."
+        }
+      },
+      "saving": "Saving...",
+      "save": "Save rate limits",
+      "success": "Rate limits saved.",
+      "errors": {
+        "minimum": "{field} must be at least 1 per minute."
+      }
     }
   },
   "Shell": {
