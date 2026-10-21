@@ -1104,6 +1104,88 @@
       }
     }
   },
+  "Admin": {
+    "metaTitle": "Admin",
+    "general": {
+      "metaTitle": "Admin — General",
+      "title": "General",
+      "subtitle": "Organization identity shown across the app.",
+      "cardTitle": "Organization",
+      "cardDescription": "The name, support email, and default language shown in emails and the interface.",
+      "form": {
+        "name": "Organization name",
+        "supportEmail": "Support email",
+        "defaultLanguage": "Default language",
+        "defaultLanguageHint": "Used when a visitor has not chosen a language. Individual choices override it.",
+        "saving": "Saving...",
+        "save": "Save"
+      },
+      "success": "Organization settings saved.",
+      "errors": {
+        "nameRequired": "Organization name is required",
+        "invalidEmail": "Enter a valid email address",
+        "invalidInput": "Invalid input."
+      }
+    },
+    "appearance": {
+      "metaTitle": "Admin — Appearance",
+      "title": "Appearance",
+      "subtitle": "Branding across the app — logo, colours, and layout.",
+      "cardTitle": "Appearance",
+      "cardDescription": "Customise the logo, primary colour (buttons), and secondary colour (tags/pills). Leave a field blank to use the default.",
+      "logo": "Logo",
+      "currentLogoAlt": "Current logo",
+      "removeLogoTitle": "Remove logo?",
+      "removeLogoDescription": "The current logo will be removed from all pages. You can upload a new logo at any time.",
+      "remove": "Remove",
+      "removeLogo": "Remove logo",
+      "noLogo": "No logo uploaded. Upload a PNG or JPG (max 2 MB).",
+      "primaryColour": "Primary colour",
+      "primaryColourHint": "Used for main buttons, links, and active states.",
+      "secondaryColour": "Secondary colour",
+      "secondaryColourHint": "Used for tags, pills, badges, and secondary elements.",
+      "reset": "Reset",
+      "ragTitle": "RAG indicator colours",
+      "ragHint": "Used for score indicators, progress bars, and the vendor risk heatmap.",
+      "ragGreen": "Green (compliant)",
+      "ragGreenHint": "Score ≥ 85%",
+      "ragAmber": "Amber (needs attention)",
+      "ragAmberHint": "Score 60–84%",
+      "ragRed": "Red (deficient)",
+      "ragRedHint": "Score < 60%",
+      "ragUnscored": "Unscored (neutral)",
+      "ragUnscoredHint": "Not yet assessed",
+      "layoutTitle": "Layout",
+      "layoutHint": "Adjust the overall look and feel of the platform.",
+      "borderRadius": "Border radius (px)",
+      "borderRadiusHint": "Controls how rounded corners are across the app.",
+      "pageWidth": "Page width",
+      "pageWidthHint": "Constrain content to a readable width or use the full screen.",
+      "constrained": "Constrained",
+      "full": "Full width",
+      "saving": "Saving...",
+      "save": "Save appearance",
+      "success": "Appearance settings saved.",
+      "errors": {
+        "primaryHex": "Primary colour must be a valid hex colour (e.g. #3b82f6).",
+        "secondaryHex": "Secondary colour must be a valid hex colour (e.g. #f59e0b).",
+        "ragGreen": "RAG green must be a valid hex colour.",
+        "ragAmber": "RAG amber must be a valid hex colour.",
+        "ragRed": "RAG red must be a valid hex colour.",
+        "ragUnscored": "RAG unscored must be a valid hex colour.",
+        "logoTooLarge": "Logo must be under 2 MB.",
+        "logoImage": "Logo must be an image file.",
+        "logoFormat": "Logo must be a PNG, JPG, GIF, or WEBP image.",
+        "logoContent": "Logo file content does not match its extension.",
+        "invalidInput": "Invalid input."
+      }
+    },
+    "error": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again or contact support.",
+      "retry": "Try again"
+    }
+  },
   "Shell": {
     "workspace": {
       "dashboard": "Dashboard",

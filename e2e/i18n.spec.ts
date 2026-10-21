@@ -608,4 +608,52 @@ test.describe("internal shell", () => {
       page.getByRole("button", { name: "Iniciar evaluación" }),
     ).toBeVisible();
   });
+
+  test("translates admin general and appearance", async ({ page }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto("/admin/general");
+
+    await expect(page.getByRole("heading", { name: "General" })).toBeVisible();
+    await expect(
+      page.getByText("Identidad de la organización mostrada en toda la app."),
+    ).toBeVisible();
+    await expect(page.getByText("Organización", { exact: true })).toBeVisible();
+    await expect(page.getByLabel("Nombre de la organización")).toBeVisible();
+    await expect(page.getByLabel("Correo de soporte")).toBeVisible();
+    await expect(
+      page.getByRole("combobox", { name: "Idioma predeterminado" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Guardar", exact: true }),
+    ).toBeVisible();
+
+    await page.goto("/admin/appearance");
+
+    await expect(
+      page.getByRole("heading", { name: "Apariencia" }),
+    ).toBeVisible();
+    await expect(page.getByText("Logotipo", { exact: true })).toBeVisible();
+    await expect(
+      page.getByText("Color principal", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Color secundario", { exact: true }),
+    ).toBeVisible();
+    await expect(page.getByText("Colores de indicadores RAG")).toBeVisible();
+    await expect(page.getByLabel("Radio de borde (px)")).toBeVisible();
+    await expect(
+      page.getByRole("combobox", { name: "Ancho de página" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Guardar apariencia" }),
+    ).toBeVisible();
+  });
 });

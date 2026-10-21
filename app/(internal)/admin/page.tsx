@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { requireAnyPermission } from "@/lib/auth";
 import {
@@ -8,7 +9,10 @@ import {
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Admin" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Admin");
+  return { title: translations("metaTitle") };
+}
 
 // Landing route: send the user to the first admin section their role can
 // see. Full admins land on General; a users-only admin lands on Users; an

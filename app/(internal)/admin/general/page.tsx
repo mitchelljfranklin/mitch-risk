@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getOrganizationSettings } from "@/lib/settings";
@@ -12,28 +13,31 @@ import { OrganizationForm } from "../organization-form";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Admin — General" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Admin.general");
+  return { title: translations("metaTitle") };
+}
 
 export default async function AdminGeneralPage() {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.general");
   const organization = await getOrganizationSettings();
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">General</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {translations("title")}
+        </h1>
         <p className="text-muted-foreground text-sm">
-          Organization identity shown across the app.
+          {translations("subtitle")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Organization</CardTitle>
-          <CardDescription>
-            The name, support email, and default language shown in emails and
-            the interface.
-          </CardDescription>
+          <CardTitle>{translations("cardTitle")}</CardTitle>
+          <CardDescription>{translations("cardDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <OrganizationForm

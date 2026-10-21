@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS, isValidPermission } from "@/lib/permissions";
@@ -63,6 +64,7 @@ export async function saveOrganizationSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.general");
 
   const parsed = organizationSettingsSchema.safeParse({
     name: formData.get("name"),
@@ -70,10 +72,14 @@ export async function saveOrganizationSettings(
     defaultLocale: formData.get("defaultLocale") ?? undefined,
   });
   if (!parsed.success) {
-    return {
-      ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
-    };
+    const field = parsed.error.issues[0]?.path[0];
+    let message = translations("errors.invalidInput");
+    if (field === "name") {
+      message = translations("errors.nameRequired");
+    } else if (field === "supportEmail") {
+      message = translations("errors.invalidEmail");
+    }
+    return { ok: false, message };
   }
 
   await updateOrganizationSettings(parsed.data);
@@ -85,7 +91,7 @@ export async function saveOrganizationSettings(
       "Setting",
       "organization",
     );
-  return { ok: true, message: "Organization settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function saveEmailSettings(
@@ -345,6 +351,7 @@ export async function saveAppearanceSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.appearance");
 
   const primaryHex = (formData.get("primaryHex") as string) || "";
   const secondaryHex = (formData.get("secondaryHex") as string) || "";
@@ -361,26 +368,26 @@ export async function saveAppearanceSettings(
   if (primaryHex && !/^#[0-9a-fA-F]{6}$/.test(primaryHex)) {
     return {
       ok: false,
-      message: "Primary color must be a valid hex color (e.g. #3b82f6).",
+      message: translations("errors.primaryHex"),
     };
   }
   if (secondaryHex && !/^#[0-9a-fA-F]{6}$/.test(secondaryHex)) {
     return {
       ok: false,
-      message: "Secondary color must be a valid hex color (e.g. #f59e0b).",
+      message: translations("errors.secondaryHex"),
     };
   }
   if (ragGreenHex && !/^#[0-9a-fA-F]{6}$/.test(ragGreenHex)) {
-    return { ok: false, message: "RAG green must be a valid hex color." };
+    return { ok: false, message: translations("errors.ragGreen") };
   }
   if (ragAmberHex && !/^#[0-9a-fA-F]{6}$/.test(ragAmberHex)) {
-    return { ok: false, message: "RAG amber must be a valid hex color." };
+    return { ok: false, message: translations("errors.ragAmber") };
   }
   if (ragRedHex && !/^#[0-9a-fA-F]{6}$/.test(ragRedHex)) {
-    return { ok: false, message: "RAG red must be a valid hex color." };
+    return { ok: false, message: translations("errors.ragRed") };
   }
   if (ragUnscoredHex && !/^#[0-9a-fA-F]{6}$/.test(ragUnscoredHex)) {
-    return { ok: false, message: "RAG unscored must be a valid hex color." };
+    return { ok: false, message: translations("errors.ragUnscored") };
   }
 
   const previousLogoKey = (await getAppearanceSettings()).logoKey;
@@ -392,13 +399,13 @@ export async function saveAppearanceSettings(
     logoKey = "";
   } else if (logoFile && logoFile.size > 0) {
     if (logoFile.size > 2 * 1024 * 1024) {
-      return { ok: false, message: "Logo must be under 2 MB." };
+      return { ok: false, message: translations("errors.logoTooLarge") };
     }
     if (
       !logoFile.type.startsWith("image/") ||
       isDangerousUploadMime(logoFile.type)
     ) {
-      return { ok: false, message: "Logo must be an image file." };
+      return { ok: false, message: translations("errors.logoImage") };
     }
 
     // The declared MIME type is client-controlled, so the extension
@@ -408,14 +415,14 @@ export async function saveAppearanceSettings(
     if (!ALLOWED_LOGO_EXTENSIONS.has(ext)) {
       return {
         ok: false,
-        message: "Logo must be a PNG, JPG, GIF, or WEBP image.",
+        message: translations("errors.logoFormat"),
       };
     }
     const buffer = Buffer.from(await logoFile.arrayBuffer());
     if (!validateMagicBytes(ext, buffer)) {
       return {
         ok: false,
-        message: "Logo file content does not match its extension.",
+        message: translations("errors.logoContent"),
       };
     }
 
@@ -458,7 +465,7 @@ export async function saveAppearanceSettings(
       "Setting",
       "appearance",
     );
-  return { ok: true, message: "Appearance settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function createApiKeyAction(

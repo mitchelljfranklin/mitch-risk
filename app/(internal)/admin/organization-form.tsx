@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +31,7 @@ export function OrganizationForm({
   supportEmail,
   defaultLocale,
 }: OrganizationFormProps) {
+  const translations = useTranslations("Admin.general.form");
   const [state, formAction, isPending] = useActionState(
     saveOrganizationSettings,
     initialState,
@@ -39,11 +41,13 @@ export function OrganizationForm({
   return (
     <form action={formAction} className="grid max-w-md gap-4">
       <div className="grid gap-2">
-        <Label htmlFor="org-name">Organization name</Label>
+        <Label htmlFor="org-name">{translations("name")}</Label>
         <Input id="org-name" name="name" defaultValue={name} required />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="org-support-email">Support email</Label>
+        <Label htmlFor="org-support-email">
+          {translations("supportEmail")}
+        </Label>
         <Input
           id="org-support-email"
           name="supportEmail"
@@ -52,7 +56,9 @@ export function OrganizationForm({
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="org-default-locale">Default language</Label>
+        <Label htmlFor="org-default-locale">
+          {translations("defaultLanguage")}
+        </Label>
         <Select name="defaultLocale" defaultValue={defaultLocale}>
           <SelectTrigger id="org-default-locale">
             <SelectValue />
@@ -66,13 +72,12 @@ export function OrganizationForm({
           </SelectContent>
         </Select>
         <p className="text-muted-foreground text-xs">
-          Used when a visitor has not chosen a language. Individual choices
-          override it.
+          {translations("defaultLanguageHint")}
         </p>
       </div>
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending} size="sm">
-          {isPending ? "Saving..." : "Save"}
+          {isPending ? translations("saving") : translations("save")}
         </Button>
       </div>
     </form>

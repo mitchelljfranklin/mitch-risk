@@ -1104,6 +1104,88 @@
       }
     }
   },
+  "Admin": {
+    "metaTitle": "Administración",
+    "general": {
+      "metaTitle": "Administración — General",
+      "title": "General",
+      "subtitle": "Identidad de la organización mostrada en toda la app.",
+      "cardTitle": "Organización",
+      "cardDescription": "El nombre, el correo de soporte y el idioma predeterminado que se muestran en los correos y la interfaz.",
+      "form": {
+        "name": "Nombre de la organización",
+        "supportEmail": "Correo de soporte",
+        "defaultLanguage": "Idioma predeterminado",
+        "defaultLanguageHint": "Se usa cuando un visitante no ha elegido idioma. Las elecciones individuales lo anulan.",
+        "saving": "Guardando...",
+        "save": "Guardar"
+      },
+      "success": "Configuración de la organización guardada.",
+      "errors": {
+        "nameRequired": "El nombre de la organización es obligatorio",
+        "invalidEmail": "Introduce una dirección de correo válida",
+        "invalidInput": "Entrada no válida."
+      }
+    },
+    "appearance": {
+      "metaTitle": "Administración — Apariencia",
+      "title": "Apariencia",
+      "subtitle": "Marca en toda la app: logotipo, colores y diseño.",
+      "cardTitle": "Apariencia",
+      "cardDescription": "Personaliza el logotipo, el color principal (botones) y el color secundario (etiquetas/píldoras). Deja un campo vacío para usar el valor predeterminado.",
+      "logo": "Logotipo",
+      "currentLogoAlt": "Logotipo actual",
+      "removeLogoTitle": "¿Eliminar el logotipo?",
+      "removeLogoDescription": "El logotipo actual se eliminará de todas las páginas. Puedes subir uno nuevo en cualquier momento.",
+      "remove": "Eliminar",
+      "removeLogo": "Eliminar logotipo",
+      "noLogo": "No hay logotipo subido. Sube un PNG o JPG (máximo 2 MB).",
+      "primaryColour": "Color principal",
+      "primaryColourHint": "Se usa en botones principales, enlaces y estados activos.",
+      "secondaryColour": "Color secundario",
+      "secondaryColourHint": "Se usa en etiquetas, píldoras, insignias y elementos secundarios.",
+      "reset": "Restablecer",
+      "ragTitle": "Colores de indicadores RAG",
+      "ragHint": "Se usan en indicadores de puntuación, barras de progreso y el mapa de calor de riesgo de proveedores.",
+      "ragGreen": "Verde (conforme)",
+      "ragGreenHint": "Puntuación ≥ 85 %",
+      "ragAmber": "Ámbar (requiere atención)",
+      "ragAmberHint": "Puntuación 60–84 %",
+      "ragRed": "Rojo (deficiente)",
+      "ragRedHint": "Puntuación < 60 %",
+      "ragUnscored": "Sin puntuación (neutro)",
+      "ragUnscoredHint": "Aún no evaluado",
+      "layoutTitle": "Diseño",
+      "layoutHint": "Ajusta el aspecto general de la plataforma.",
+      "borderRadius": "Radio de borde (px)",
+      "borderRadiusHint": "Controla el redondeo de las esquinas en toda la app.",
+      "pageWidth": "Ancho de página",
+      "pageWidthHint": "Limita el contenido a un ancho legible o usa toda la pantalla.",
+      "constrained": "Limitado",
+      "full": "Ancho completo",
+      "saving": "Guardando...",
+      "save": "Guardar apariencia",
+      "success": "Configuración de apariencia guardada.",
+      "errors": {
+        "primaryHex": "El color principal debe ser un color hexadecimal válido (p. ej., #3b82f6).",
+        "secondaryHex": "El color secundario debe ser un color hexadecimal válido (p. ej., #f59e0b).",
+        "ragGreen": "El verde RAG debe ser un color hexadecimal válido.",
+        "ragAmber": "El ámbar RAG debe ser un color hexadecimal válido.",
+        "ragRed": "El rojo RAG debe ser un color hexadecimal válido.",
+        "ragUnscored": "El color RAG sin puntuación debe ser un color hexadecimal válido.",
+        "logoTooLarge": "El logotipo debe pesar menos de 2 MB.",
+        "logoImage": "El logotipo debe ser un archivo de imagen.",
+        "logoFormat": "El logotipo debe ser una imagen PNG, JPG, GIF o WEBP.",
+        "logoContent": "El contenido del archivo de logotipo no coincide con su extensión.",
+        "invalidInput": "Entrada no válida."
+      }
+    },
+    "error": {
+      "title": "Algo salió mal",
+      "description": "Se produjo un error inesperado. Inténtalo de nuevo o contacta con soporte.",
+      "retry": "Reintentar"
+    }
+  },
   "Shell": {
     "workspace": {
       "dashboard": "Panel",
