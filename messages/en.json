@@ -1009,6 +1009,75 @@
       "emptyDescription": "No assessment data is available for this framework yet."
     }
   },
+  "RiskRegister": {
+    "metaTitle": "Risk register",
+    "title": "Risk register",
+    "subtitle": "Every finding across your vendors in one place.",
+    "stats": {
+      "open": "Open findings",
+      "criticalOpen": "Critical open",
+      "remediated": "Remediated",
+      "riskAccepted": "Risk accepted"
+    },
+    "filters": {
+      "status": "Status",
+      "allFindings": "All findings",
+      "statusAriaLabel": "Filter findings by status",
+      "severity": "Severity",
+      "anySeverity": "Any severity",
+      "severityAriaLabel": "Filter findings by severity",
+      "vendor": "Vendor",
+      "allVendors": "All vendors",
+      "vendorAriaLabel": "Filter findings by vendor",
+      "sort": "Sort",
+      "sortAriaLabel": "Sort findings",
+      "show": "Show",
+      "findingsOnly": "Findings only",
+      "responsibilityAriaLabel": "Filter by responsibility",
+      "customerResponsibility": "Customer responsibility",
+      "apply": "Filter",
+      "clear": "Clear",
+      "sorts": {
+        "priority": "Priority",
+        "newest": "Newest",
+        "severity": "Severity"
+      }
+    },
+    "emptyFiltered": "No findings match the selected filters.",
+    "emptyTitle": "No findings yet",
+    "emptyDescription": "Findings are raised automatically when vendors submit assessments with deficient answers.",
+    "items": "findings",
+    "responsibility": {
+      "title": "Customer Responsibility",
+      "noMatch": "No customer responsibility items match the selected filters.",
+      "vendorFallback": "Vendor",
+      "assignedTo": "Assigned to {name}"
+    },
+    "bulk": {
+      "selected": "{count} selected",
+      "statusRemediated": "Remediated",
+      "statusRiskAccepted": "Risk accepted",
+      "statusReopen": "Reopen",
+      "updateTitle": "{count, plural, one {Update # finding?} other {Update # findings?}}",
+      "updateDescription": "{count, plural, one {Set # finding to \"{status}\".} other {Set # findings to \"{status}\".}}",
+      "apply": "Apply",
+      "applying": "Applying...",
+      "clearSelection": "Clear selection",
+      "note": "Note: {note}",
+      "errors": {
+        "invalidStatus": "Invalid status.",
+        "invalidSelection": "Invalid selection data.",
+        "noFindings": "No findings selected.",
+        "updated": "{count, plural, one {# finding updated} other {# findings updated}}",
+        "alreadyRemoved": "({count} already removed)."
+      }
+    },
+    "error": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again or contact support.",
+      "retry": "Try again"
+    }
+  },
   "Shell": {
     "workspace": {
       "dashboard": "Dashboard",

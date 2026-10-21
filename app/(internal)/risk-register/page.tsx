@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,21 +17,18 @@ import {
   listFindings,
 } from "@/lib/db/findings";
 import { listVendorOptions } from "@/lib/db/vendors";
-import {
-  FINDING_STATUSES,
-  FINDING_STATUS_LABELS,
-} from "@/lib/schemas/assessment";
+import { FINDING_STATUSES } from "@/lib/schemas/assessment";
 import { RISK_WEIGHTS } from "@/lib/schemas/template";
 import { listAllResponsibilityActions } from "@/lib/db/customer-responsibility";
-import {
-  CUSTOMER_RESPONSIBILITY_STATUS_LABELS,
-  CUSTOMER_RESPONSIBILITY_STATUS_STYLES,
-} from "@/lib/schemas/certification";
+import { CUSTOMER_RESPONSIBILITY_STATUS_STYLES } from "@/lib/schemas/certification";
 import { buildBackParam } from "@/lib/nav";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Risk register" };
+export async function generateMetadata() {
+  const translations = await getTranslations("RiskRegister");
+  return { title: translations("metaTitle") };
+}
 
 type RiskRegisterPageProps = {
   searchParams: Promise<Record<string, string | undefined>>;
@@ -44,37 +42,47 @@ export default async function RiskRegisterPage({
     user.permissions,
     PERMISSIONS.ASSESSMENTS_REVIEW,
   );
+  const translations = await getTranslations("RiskRegister");
+  const commonTranslations = await getTranslations("Common");
+  const responsibilityTranslations = await getTranslations(
+    "Vendors.customerResponsibility",
+  );
 
-  const sp = await searchParams;
-  const sort = (sp.sort as FindingSort) || "priority";
-  const page = sp.page ? parseInt(sp.page, 10) || 1 : 1;
+  const searchParameters = await searchParams;
+  const sort = (searchParameters.sort as FindingSort) || "priority";
+  const pageNumber = searchParameters.page
+    ? parseInt(searchParameters.page, 10) || 1
+    : 1;
 
   const [{ findings, totalCount, pageSize }, summary, vendors] =
     await Promise.all([
       listFindings({
-        status: sp.status || undefined,
-        severity: sp.severity || undefined,
-        vendorId: sp.vendorId || undefined,
+        status: searchParameters.status || undefined,
+        severity: searchParameters.severity || undefined,
+        vendorId: searchParameters.vendorId || undefined,
         sort,
-        page,
+        page: pageNumber,
       }),
       getFindingSummary(),
       listVendorOptions(),
     ]);
 
-  const showResponsibility = sp.responsibility === "1";
+  const showResponsibility = searchParameters.responsibility === "1";
   const responsibilityActions = showResponsibility
     ? await listAllResponsibilityActions(
-        sp.vendorId || undefined,
-        sp.responsibilityStatus || undefined,
+        searchParameters.vendorId || undefined,
+        searchParameters.responsibilityStatus || undefined,
       )
     : [];
 
   const hasFilters = Boolean(
-    sp.status || sp.severity || sp.vendorId || showResponsibility,
+    searchParameters.status ||
+    searchParameters.severity ||
+    searchParameters.vendorId ||
+    showResponsibility,
   );
 
-  const backParam = buildBackParam("/risk-register", sp, [
+  const backParam = buildBackParam("/risk-register", searchParameters, [
     "status",
     "severity",
     "vendorId",
@@ -83,74 +91,95 @@ export default async function RiskRegisterPage({
     "page",
   ]);
 
+  const statusOptions = FINDING_STATUSES.map((status) => ({
+    value: status,
+    label: commonTranslations.has(`findingStatuses.${status}`)
+      ? commonTranslations(`findingStatuses.${status}`)
+      : status,
+  }));
+
+  const severityOptions = RISK_WEIGHTS.map((severity) => ({
+    value: severity,
+    label: commonTranslations.has(`tiers.${severity}`)
+      ? commonTranslations(`tiers.${severity}`)
+      : severity,
+  }));
+
+  const sortOptions = FINDING_SORTS.map((value) => ({
+    value,
+    label: translations(`filters.sorts.${value}`),
+  }));
+
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Risk register</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {translations("title")}
+        </h1>
         <p className="text-muted-foreground text-sm">
-          Every finding across your vendors in one place.
+          {translations("subtitle")}
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-4">
-        <StatCard label="Open findings" value={summary.open} />
+        <StatCard label={translations("stats.open")} value={summary.open} />
         <StatCard
-          label="Critical open"
+          label={translations("stats.criticalOpen")}
           value={summary.openBySeverity.CRITICAL}
         />
-        <StatCard label="Remediated" value={summary.remediated} />
-        <StatCard label="Risk accepted" value={summary.riskAccepted} />
+        <StatCard
+          label={translations("stats.remediated")}
+          value={summary.remediated}
+        />
+        <StatCard
+          label={translations("stats.riskAccepted")}
+          value={summary.riskAccepted}
+        />
       </div>
 
       <form className="flex flex-wrap items-end gap-2">
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="status">
-            Status
+            {translations("filters.status")}
           </label>
           <AutoSubmitSelect
             name="status"
-            defaultValue={sp.status ?? ""}
-            key={`status-${sp.status ?? ""}`}
-            emptyOptionLabel="All findings"
+            defaultValue={searchParameters.status ?? ""}
+            key={`status-${searchParameters.status ?? ""}`}
+            emptyOptionLabel={translations("filters.allFindings")}
             id="status"
             className="w-40"
-            ariaLabel="Filter findings by status"
-            options={FINDING_STATUSES.map((status) => ({
-              value: status,
-              label: FINDING_STATUS_LABELS[status],
-            }))}
+            ariaLabel={translations("filters.statusAriaLabel")}
+            options={statusOptions}
           />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="severity">
-            Severity
+            {translations("filters.severity")}
           </label>
           <AutoSubmitSelect
             name="severity"
-            defaultValue={sp.severity ?? ""}
-            key={`severity-${sp.severity ?? ""}`}
-            emptyOptionLabel="Any severity"
+            defaultValue={searchParameters.severity ?? ""}
+            key={`severity-${searchParameters.severity ?? ""}`}
+            emptyOptionLabel={translations("filters.anySeverity")}
             id="severity"
             className="w-40"
-            ariaLabel="Filter findings by severity"
-            options={RISK_WEIGHTS.map((weight) => ({
-              value: weight,
-              label: weight.charAt(0) + weight.slice(1).toLowerCase(),
-            }))}
+            ariaLabel={translations("filters.severityAriaLabel")}
+            options={severityOptions}
           />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="vendorId">
-            Vendor
+            {translations("filters.vendor")}
           </label>
           <AutoSubmitSelect
             name="vendorId"
-            defaultValue={sp.vendorId ?? ""}
-            key={`vendorId-${sp.vendorId ?? ""}`}
-            emptyOptionLabel="All vendors"
+            defaultValue={searchParameters.vendorId ?? ""}
+            key={`vendorId-${searchParameters.vendorId ?? ""}`}
+            emptyOptionLabel={translations("filters.allVendors")}
             id="vendorId"
             className="w-48"
-            ariaLabel="Filter findings by vendor"
+            ariaLabel={translations("filters.vendorAriaLabel")}
             options={vendors.map((vendor) => ({
               value: vendor.id,
               label: vendor.name,
@@ -159,7 +188,7 @@ export default async function RiskRegisterPage({
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="sort">
-            Sort
+            {translations("filters.sort")}
           </label>
           <AutoSubmitSelect
             name="sort"
@@ -167,11 +196,8 @@ export default async function RiskRegisterPage({
             key={`sort-${sort ?? ""}`}
             id="sort"
             className="w-40"
-            ariaLabel="Sort findings"
-            options={Object.entries(FINDING_SORTS).map(([value, label]) => ({
-              value,
-              label,
-            }))}
+            ariaLabel={translations("filters.sortAriaLabel")}
+            options={sortOptions}
           />
         </div>
         <div className="flex flex-col gap-1">
@@ -179,25 +205,30 @@ export default async function RiskRegisterPage({
             className="text-muted-foreground text-xs"
             htmlFor="responsibility"
           >
-            Show
+            {translations("filters.show")}
           </label>
           <AutoSubmitSelect
             name="responsibility"
-            defaultValue={sp.responsibility ?? ""}
-            key={`responsibility-${sp.responsibility ?? ""}`}
-            emptyOptionLabel="Findings only"
+            defaultValue={searchParameters.responsibility ?? ""}
+            key={`responsibility-${searchParameters.responsibility ?? ""}`}
+            emptyOptionLabel={translations("filters.findingsOnly")}
             id="responsibility"
             className="w-48"
-            ariaLabel="Filter by responsibility"
-            options={[{ value: "1", label: "Customer responsibility" }]}
+            ariaLabel={translations("filters.responsibilityAriaLabel")}
+            options={[
+              {
+                value: "1",
+                label: translations("filters.customerResponsibility"),
+              },
+            ]}
           />
         </div>
         <Button type="submit" variant="secondary" size="sm" className="mb-px">
-          Filter
+          {translations("filters.apply")}
         </Button>
         {hasFilters ? (
           <Button asChild variant="ghost" size="sm" className="mb-px">
-            <Link href="/risk-register">Clear</Link>
+            <Link href="/risk-register">{translations("filters.clear")}</Link>
           </Button>
         ) : null}
       </form>
@@ -205,23 +236,23 @@ export default async function RiskRegisterPage({
       {findings.length === 0 ? (
         hasFilters ? (
           <p className="text-muted-foreground text-sm">
-            No findings match the selected filters.
+            {translations("emptyFiltered")}
           </p>
         ) : (
           <EmptyState
             icon="findings"
-            title="No findings yet"
-            description="Findings are raised automatically when vendors submit assessments with deficient answers."
+            title={translations("emptyTitle")}
+            description={translations("emptyDescription")}
           />
         )
       ) : (
         <>
           <BulkFindingsWrapper findings={findings} canReview={canReview} />
           <Pagination
-            page={page}
+            page={pageNumber}
             pageSize={pageSize}
             totalCount={totalCount}
-            itemLabel="findings"
+            itemLabel={translations("items")}
           />
         </>
       )}
@@ -229,11 +260,13 @@ export default async function RiskRegisterPage({
       {showResponsibility ? (
         responsibilityActions.length === 0 ? (
           <p className="text-muted-foreground text-sm">
-            No customer responsibility items match the selected filters.
+            {translations("responsibility.noMatch")}
           </p>
         ) : (
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-semibold">Customer Responsibility</h2>
+            <h2 className="text-lg font-semibold">
+              {translations("responsibility.title")}
+            </h2>
             <div className="flex flex-col divide-y rounded-lg border">
               {responsibilityActions.map((action) => (
                 <div
@@ -246,7 +279,8 @@ export default async function RiskRegisterPage({
                         href={`/vendors/${action.vendorId}${backParam}`}
                         className="text-xs font-medium hover:underline"
                       >
-                        {action.vendorName ?? "Vendor"}
+                        {action.vendorName ??
+                          translations("responsibility.vendorFallback")}
                       </Link>
                       <span className="text-muted-foreground font-mono text-xs">
                         {action.controlCode}
@@ -257,7 +291,9 @@ export default async function RiskRegisterPage({
                     </span>
                     {action.assignedToName ? (
                       <span className="text-muted-foreground text-xs">
-                        Assigned to {action.assignedToName}
+                        {translations("responsibility.assignedTo", {
+                          name: action.assignedToName,
+                        })}
                       </span>
                     ) : null}
                   </div>
@@ -268,11 +304,9 @@ export default async function RiskRegisterPage({
                       ] ?? ""
                     }
                   >
-                    {
-                      CUSTOMER_RESPONSIBILITY_STATUS_LABELS[
-                        action.status as keyof typeof CUSTOMER_RESPONSIBILITY_STATUS_LABELS
-                      ]
-                    }
+                    {responsibilityTranslations.has(`statuses.${action.status}`)
+                      ? responsibilityTranslations(`statuses.${action.status}`)
+                      : action.status}
                   </Badge>
                 </div>
               ))}

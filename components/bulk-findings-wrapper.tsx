@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useActionState } from "react";
+import { useFormatter, useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,12 +19,10 @@ import { useActionFeedback } from "@/hooks/use-action-feedback";
 import { FindingStatusForm } from "@/app/(internal)/assessments/[assessmentId]/finding-status-form";
 import { ControlCodePills } from "@/components/control-code-pills";
 import {
-  FINDING_STATUS_LABELS,
   FINDING_STATUS_STYLES,
   SEVERITY_ACCENT,
   SEVERITY_STYLES,
 } from "@/lib/schemas/assessment";
-import { formatDate } from "@/lib/utils";
 import { bulkUpdateFindingStatusesAction } from "@/lib/actions/findings";
 import type { RegisterFinding } from "@/lib/db/findings";
 
@@ -36,6 +35,9 @@ export function BulkFindingsWrapper({
   findings,
   canReview,
 }: BulkFindingsWrapperProps) {
+  const translations = useTranslations("RiskRegister.bulk");
+  const commonTranslations = useTranslations("Common");
+  const dateFormatter = useFormatter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [targetStatus, setTargetStatus] = useState("REMEDIATED");
   const [state, bulkAction, isPending] = useActionState(
@@ -58,19 +60,42 @@ export function BulkFindingsWrapper({
 
   const selectedCount = selected.size;
 
+  function statusLabel(status: string): string {
+    if (status === "REMEDIATED") {
+      return translations("statusRemediated");
+    }
+    if (status === "RISK_ACCEPTED") {
+      return translations("statusRiskAccepted");
+    }
+    if (status === "OPEN") {
+      return translations("statusReopen");
+    }
+    return commonTranslations.has(`findingStatuses.${status}`)
+      ? commonTranslations(`findingStatuses.${status}`)
+      : status;
+  }
+
   return (
     <div className="flex flex-col gap-3">
       {canReview && selectedCount > 0 ? (
         <div className="bg-accent/40 sticky top-0 z-10 flex flex-wrap items-center gap-3 rounded-lg border p-3">
-          <span className="text-sm font-medium">{selectedCount} selected</span>
+          <span className="text-sm font-medium">
+            {translations("selected", { count: selectedCount })}
+          </span>
           <Select value={targetStatus} onValueChange={setTargetStatus}>
             <SelectTrigger className="w-40 text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="REMEDIATED">Remediated</SelectItem>
-              <SelectItem value="RISK_ACCEPTED">Risk accepted</SelectItem>
-              <SelectItem value="OPEN">Reopen</SelectItem>
+              <SelectItem value="REMEDIATED">
+                {translations("statusRemediated")}
+              </SelectItem>
+              <SelectItem value="RISK_ACCEPTED">
+                {translations("statusRiskAccepted")}
+              </SelectItem>
+              <SelectItem value="OPEN">
+                {translations("statusReopen")}
+              </SelectItem>
             </SelectContent>
           </Select>
           <form id="bulk-findings-form" action={bulkAction}>
@@ -81,13 +106,16 @@ export function BulkFindingsWrapper({
             />
             <input type="hidden" name="status" value={targetStatus} />
             <ConfirmDialog
-              title={`Update ${selectedCount} finding${selectedCount !== 1 ? "s" : ""}?`}
-              description={`Set ${selectedCount} finding${selectedCount !== 1 ? "s" : ""} to "${FINDING_STATUS_LABELS[targetStatus] ?? targetStatus}".`}
-              confirmLabel="Apply"
+              title={translations("updateTitle", { count: selectedCount })}
+              description={translations("updateDescription", {
+                count: selectedCount,
+                status: statusLabel(targetStatus),
+              })}
+              confirmLabel={translations("apply")}
               formId="bulk-findings-form"
             >
               <Button type="button" size="sm" disabled={isPending}>
-                {isPending ? "Applying..." : "Apply"}
+                {isPending ? translations("applying") : translations("apply")}
               </Button>
             </ConfirmDialog>
           </form>
@@ -98,7 +126,7 @@ export function BulkFindingsWrapper({
             onClick={() => setSelected(new Set())}
             disabled={isPending}
           >
-            Clear selection
+            {translations("clearSelection")}
           </Button>
         </div>
       ) : null}
@@ -122,17 +150,24 @@ export function BulkFindingsWrapper({
                   <CardTitle className="text-base">{finding.title}</CardTitle>
                   <p className="text-muted-foreground text-xs">
                     {finding.vendorName} · {finding.assessmentTitle} ·{" "}
-                    {formatDate(finding.createdAt)}
+                    {dateFormatter.dateTime(finding.createdAt, {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
                   </p>
                 </div>
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <Badge className={SEVERITY_STYLES[finding.severity] ?? ""}>
-                  {finding.severity.charAt(0) +
-                    finding.severity.slice(1).toLowerCase()}
+                  {commonTranslations.has(`tiers.${finding.severity}`)
+                    ? commonTranslations(`tiers.${finding.severity}`)
+                    : finding.severity}
                 </Badge>
                 <Badge className={FINDING_STATUS_STYLES[finding.status] ?? ""}>
-                  {FINDING_STATUS_LABELS[finding.status] ?? finding.status}
+                  {commonTranslations.has(`findingStatuses.${finding.status}`)
+                    ? commonTranslations(`findingStatuses.${finding.status}`)
+                    : finding.status}
                 </Badge>
               </div>
             </div>
@@ -146,7 +181,7 @@ export function BulkFindingsWrapper({
             ) : null}
             {finding.resolutionNote ? (
               <p className="text-muted-foreground text-xs">
-                Note: {finding.resolutionNote}
+                {translations("note", { note: finding.resolutionNote })}
               </p>
             ) : null}
             {canReview ? (

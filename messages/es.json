@@ -1009,6 +1009,75 @@
       "emptyDescription": "Todavía no hay datos de evaluación disponibles para este marco."
     }
   },
+  "RiskRegister": {
+    "metaTitle": "Registro de riesgos",
+    "title": "Registro de riesgos",
+    "subtitle": "Todos los hallazgos de tus proveedores en un solo lugar.",
+    "stats": {
+      "open": "Hallazgos abiertos",
+      "criticalOpen": "Críticos abiertos",
+      "remediated": "Remediados",
+      "riskAccepted": "Riesgo aceptado"
+    },
+    "filters": {
+      "status": "Estado",
+      "allFindings": "Todos los hallazgos",
+      "statusAriaLabel": "Filtrar hallazgos por estado",
+      "severity": "Gravedad",
+      "anySeverity": "Cualquier gravedad",
+      "severityAriaLabel": "Filtrar hallazgos por gravedad",
+      "vendor": "Proveedor",
+      "allVendors": "Todos los proveedores",
+      "vendorAriaLabel": "Filtrar hallazgos por proveedor",
+      "sort": "Ordenar",
+      "sortAriaLabel": "Ordenar hallazgos",
+      "show": "Mostrar",
+      "findingsOnly": "Solo hallazgos",
+      "responsibilityAriaLabel": "Filtrar por responsabilidad",
+      "customerResponsibility": "Responsabilidad del cliente",
+      "apply": "Filtrar",
+      "clear": "Limpiar",
+      "sorts": {
+        "priority": "Prioridad",
+        "newest": "Más recientes",
+        "severity": "Gravedad"
+      }
+    },
+    "emptyFiltered": "Ningún hallazgo coincide con los filtros seleccionados.",
+    "emptyTitle": "Todavía no hay hallazgos",
+    "emptyDescription": "Los hallazgos se generan automáticamente cuando los proveedores envían evaluaciones con respuestas deficientes.",
+    "items": "hallazgos",
+    "responsibility": {
+      "title": "Responsabilidad del cliente",
+      "noMatch": "Ningún elemento de responsabilidad del cliente coincide con los filtros seleccionados.",
+      "vendorFallback": "Proveedor",
+      "assignedTo": "Asignado a {name}"
+    },
+    "bulk": {
+      "selected": "{count, plural, one {# seleccionado} other {# seleccionados}}",
+      "statusRemediated": "Remediado",
+      "statusRiskAccepted": "Riesgo aceptado",
+      "statusReopen": "Reabrir",
+      "updateTitle": "{count, plural, one {¿Actualizar # hallazgo?} other {¿Actualizar # hallazgos?}}",
+      "updateDescription": "{count, plural, one {Establecer # hallazgo como «{status}».} other {Establecer # hallazgos como «{status}».}}",
+      "apply": "Aplicar",
+      "applying": "Aplicando...",
+      "clearSelection": "Borrar selección",
+      "note": "Nota: {note}",
+      "errors": {
+        "invalidStatus": "Estado no válido.",
+        "invalidSelection": "Datos de selección no válidos.",
+        "noFindings": "No se seleccionaron hallazgos.",
+        "updated": "{count, plural, one {# hallazgo actualizado} other {# hallazgos actualizados}}",
+        "alreadyRemoved": "({count} ya eliminados)."
+      }
+    },
+    "error": {
+      "title": "Algo salió mal",
+      "description": "Se produjo un error inesperado. Inténtalo de nuevo o contacta con soporte.",
+      "retry": "Reintentar"
+    }
+  },
   "Shell": {
     "workspace": {
       "dashboard": "Panel",

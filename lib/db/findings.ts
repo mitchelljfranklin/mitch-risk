@@ -10,13 +10,9 @@ export function getFinding(id: string) {
   return prisma.finding.findUnique({ where: { id } });
 }
 
-export const FINDING_SORTS = {
-  priority: "Priority",
-  newest: "Newest",
-  severity: "Severity",
-} as const;
+export const FINDING_SORTS = ["priority", "newest", "severity"] as const;
 
-export type FindingSort = keyof typeof FINDING_SORTS;
+export type FindingSort = (typeof FINDING_SORTS)[number];
 
 // RiskWeight (CRITICAL→LOW) and FindingStatus (OPEN→RISK_ACCEPTED) are declared
 // in priority order, and Postgres sorts enums by declaration order, so these

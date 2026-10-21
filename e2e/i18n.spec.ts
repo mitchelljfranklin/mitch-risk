@@ -519,4 +519,54 @@ test.describe("internal shell", () => {
     ).toBeVisible();
     await expect(page.getByText("Compartido").first()).toBeVisible();
   });
+
+  test("translates the risk register", async ({ page }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto("/risk-register");
+
+    await expect(
+      page.getByRole("heading", { name: "Registro de riesgos" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        "Todos los hallazgos de tus proveedores en un solo lugar.",
+      ),
+    ).toBeVisible();
+    await expect(page.getByText("Hallazgos abiertos")).toBeVisible();
+    await expect(page.getByText("Críticos abiertos")).toBeVisible();
+    await expect(page.getByText("Remediados")).toBeVisible();
+    await expect(page.getByText("Riesgo aceptado").first()).toBeVisible();
+    await expect(
+      page.getByRole("combobox", {
+        name: "Filtrar hallazgos por estado",
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("combobox", {
+        name: "Filtrar hallazgos por gravedad",
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("combobox", {
+        name: "Filtrar hallazgos por proveedor",
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("combobox", { name: "Ordenar hallazgos" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("combobox", { name: "Filtrar por responsabilidad" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Filtrar", exact: true }),
+    ).toBeVisible();
+  });
 });
