@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,10 @@ import { deleteFrameworkAction } from "@/lib/actions/frameworks";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Frameworks" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Frameworks.list");
+  return { title: translations("title") };
+}
 
 type FrameworksPageProps = {
   searchParams: Promise<{ deleteBlocked?: string }>;
@@ -29,6 +33,7 @@ export default async function FrameworksPage({
   searchParams,
 }: FrameworksPageProps) {
   const user = await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
+  const translations = await getTranslations("Frameworks.list");
   const [frameworks, sp] = await Promise.all([listFrameworks(), searchParams]);
   const canEdit = hasPermission(user.permissions, PERMISSIONS.FRAMEWORKS_EDIT);
   const canDelete = hasPermission(
@@ -42,31 +47,35 @@ export default async function FrameworksPage({
       {deleteBlockedCount > 0 ? (
         <FlashToast
           variant="error"
-          message={`Cannot delete: ${deleteBlockedCount} control${deleteBlockedCount !== 1 ? "s are" : " is"} still mapped to questionnaire questions. Unmap them first.`}
+          message={translations("deleteBlocked", {
+            count: deleteBlockedCount,
+          })}
         />
       ) : null}
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Frameworks</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {translations("title")}
+          </h1>
           <p className="text-muted-foreground text-sm">
-            Control libraries used to map questionnaire answers to requirements.
+            {translations("subtitle")}
           </p>
         </div>
         {canEdit ? (
           <Button asChild variant="outline" size="sm">
-            <Link href="/frameworks/import">Import framework</Link>
+            <Link href="/frameworks/import">{translations("import")}</Link>
           </Button>
         ) : null}
         <Button asChild variant="outline" size="sm">
-          <Link href="/frameworks/gaps">Coverage gaps</Link>
+          <Link href="/frameworks/gaps">{translations("gaps")}</Link>
         </Button>
       </div>
 
       {frameworks.length === 0 ? (
         <EmptyState
           icon="frameworks"
-          title="No frameworks"
-          description="Framework data could not be loaded."
+          title={translations("emptyTitle")}
+          description={translations("emptyDescription")}
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
@@ -83,7 +92,9 @@ export default async function FrameworksPage({
               </CardHeader>
               <CardContent className="flex items-center justify-between">
                 <p className="text-muted-foreground text-sm">
-                  {framework._count.controls} controls
+                  {translations("controls", {
+                    count: framework._count.controls,
+                  })}
                 </p>
                 {canDelete ? (
                   <form
@@ -96,13 +107,18 @@ export default async function FrameworksPage({
                       value={framework.id}
                     />
                     <ConfirmDialog
-                      title={`Delete framework "${framework.name} v${framework.version}"?`}
-                      description={`This will permanently delete this framework and its ${framework._count.controls} control${framework._count.controls !== 1 ? "s" : ""}. Template questions mapped to these controls will lose their assignments. Existing assessments and findings are not affected.`}
-                      confirmLabel="Delete"
+                      title={translations("deleteTitle", {
+                        name: framework.name,
+                        version: framework.version,
+                      })}
+                      description={translations("deleteDescription", {
+                        count: framework._count.controls,
+                      })}
+                      confirmLabel={translations("delete")}
                       formId={`delete-framework-${framework.id}`}
                     >
                       <Button type="button" variant="ghost" size="sm">
-                        Delete
+                        {translations("delete")}
                       </Button>
                     </ConfirmDialog>
                   </form>

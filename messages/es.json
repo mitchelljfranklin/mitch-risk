@@ -53,6 +53,13 @@
       "URL": "URL",
       "EMAIL": "Correo electrónico",
       "CHECKBOX": "Casilla de confirmación"
+    },
+    "controlCodes": {
+      "showMore": "{count, plural, one {Mostrar # control más} other {Mostrar # controles más}}",
+      "showLess": "Mostrar menos"
+    },
+    "search": {
+      "placeholder": "Buscar…"
     }
   },
   "Metadata": {
@@ -879,6 +886,127 @@
       "questionTextRequired": "El texto de la pregunta es obligatorio",
       "conditionalTooLarge": "La carga de lógica condicional es demasiado grande.",
       "conditionalInvalid": "Lógica condicional no válida."
+    }
+  },
+  "Frameworks": {
+    "list": {
+      "title": "Marcos",
+      "subtitle": "Bibliotecas de controles usadas para asignar las respuestas del cuestionario a requisitos.",
+      "import": "Importar marco",
+      "gaps": "Brechas de cobertura",
+      "deleteBlocked": "{count, plural, one {No se puede eliminar: # control sigue asignado a preguntas del cuestionario. Desasígnalo primero.} other {No se puede eliminar: # controles siguen asignados a preguntas del cuestionario. Desasígnalos primero.}}",
+      "emptyTitle": "No hay marcos",
+      "emptyDescription": "No se pudieron cargar los datos de los marcos.",
+      "controls": "{count, plural, one {# control} other {# controles}}",
+      "deleteTitle": "¿Eliminar el marco «{name} v{version}»?",
+      "deleteDescription": "Esto eliminará permanentemente este marco y sus {count, plural, one {# control} other {# controles}}. Las preguntas de plantilla asignadas a estos controles perderán sus asignaciones. Las evaluaciones y los hallazgos existentes no se verán afectados.",
+      "delete": "Eliminar"
+    },
+    "detail": {
+      "notFound": "Marco no encontrado",
+      "breadcrumbs": "Marcos",
+      "deleteFramework": "Eliminar marco",
+      "searchPlaceholder": "Buscar controles…",
+      "noControlsTitle": "No hay controles coincidentes",
+      "noControlsDescription": "Prueba con otro término de búsqueda."
+    },
+    "control": {
+      "notFound": "Control no encontrado",
+      "breadcrumbs": "Marcos",
+      "guidance": "Orientación",
+      "mappedQuestions": "Preguntas asignadas ({count})",
+      "noMappedTitle": "No hay preguntas asignadas",
+      "noMappedDescription": "Todavía no hay preguntas del cuestionario asignadas a este control."
+    },
+    "gaps": {
+      "title": "Brechas de cobertura de controles",
+      "subtitle": "Controles que no tienen preguntas asignadas en ninguna plantilla. Úsalo para identificar puntos ciegos en la cobertura de tus evaluaciones.",
+      "emptyTitle": "No se encontraron brechas",
+      "emptyDescription": "Cada control de cada marco tiene al menos una pregunta asignada.",
+      "covered": "{mapped}/{total} cubiertos",
+      "allCovered": "Los {count, plural, one {# control} other {# controles}} tienen al menos una pregunta asignada.",
+      "errorTitle": "Algo salió mal",
+      "errorDescription": "No se pudo cargar la vista de brechas de cumplimiento. Inténtalo de nuevo.",
+      "retry": "Reintentar"
+    },
+    "import": {
+      "metadataTitle": "Importar marco",
+      "title": "Importar marco",
+      "subtitle": "Sube un archivo CSV con controles para crear un nuevo marco.",
+      "breadcrumb": "Importar",
+      "cardTitle": "Importar marco desde CSV",
+      "steps": {
+        "setup": "Configurar y subir",
+        "review": "Revisar"
+      },
+      "form": {
+        "name": "Nombre del marco",
+        "namePlaceholder": "p. ej., PCI DSS",
+        "version": "Versión",
+        "versionPlaceholder": "p. ej., 4.0",
+        "description": "Descripción (opcional)",
+        "descriptionPlaceholder": "Breve descripción del marco",
+        "csvFile": "Archivo CSV",
+        "downloadTemplate": "Plantilla",
+        "csvHint": "El CSV debe tener las columnas domain, code, title y guidance (guidance es opcional). Opcional: is_shared_responsibility (true/false; por defecto, false). Máximo 1 MB.",
+        "controlsFound": "{count, plural, one {# control encontrado} other {# controles encontrados}}",
+        "domain": "Dominio",
+        "code": "Código",
+        "titleColumn": "Título",
+        "showingFirst": "Mostrando las primeras {shown} de {total} filas",
+        "next": "Siguiente →",
+        "back": "← Atrás",
+        "importing": "Importando…",
+        "import": "Importar marco",
+        "reviewIntro": "Vas a crear el marco {name} v{version} con {count, plural, one {# control} other {# controles}}.",
+        "success": "Se importó «{name} v{version}» con {count, plural, one {# control} other {# controles}}."
+      },
+      "errors": {
+        "noFile": "Se requiere un archivo CSV.",
+        "invalidFileType": "El archivo debe ser un .csv.",
+        "tooLarge": "El archivo CSV es demasiado grande (máximo 1 MB).",
+        "noRows": "El archivo CSV no contiene filas de datos.",
+        "missingColumns": "Faltan columnas en el CSV: {columns}. Se esperaban: {expected}",
+        "invalidInput": "Entrada no válida.",
+        "nameRequired": "El nombre del marco es obligatorio",
+        "nameTooLong": "El nombre del marco debe tener 200 caracteres o menos",
+        "versionRequired": "La versión es obligatoria",
+        "versionTooLong": "La versión debe tener 50 caracteres o menos",
+        "descriptionTooLong": "La descripción debe tener 500 caracteres o menos",
+        "rowDomainRequired": "Fila {row}: el dominio es obligatorio",
+        "rowCodeRequired": "Fila {row}: el código de control es obligatorio",
+        "rowTitleRequired": "Fila {row}: el título del control es obligatorio",
+        "rowInvalid": "Fila {row}: entrada no válida.",
+        "duplicateCode": "Fila {row}: código de control duplicado «{code}».",
+        "duplicateFramework": "Ya existe un marco llamado «{name}» con la versión «{version}»."
+      }
+    },
+    "shared": "Compartido",
+    "error": {
+      "title": "Algo salió mal",
+      "description": "Se produjo un error inesperado. Inténtalo de nuevo o contacta con soporte.",
+      "retry": "Reintentar"
+    },
+    "radar": {
+      "title": "Radar de cumplimiento por dominio",
+      "current": "Evaluación actual",
+      "previous": "Evaluación anterior",
+      "ariaLabel": "Radar de cumplimiento por dominio: {values}",
+      "tableCaption": "Cumplimiento por dominio en porcentaje",
+      "domain": "Dominio",
+      "currentShort": "Actual",
+      "previousShort": "Anterior",
+      "noPrevious": "Solo hay una evaluación completada: no hay datos anteriores para comparar."
+    },
+    "heatmap": {
+      "metadataNotFound": "Proveedor no encontrado",
+      "metadataTitle": "Mapa de calor — {name}",
+      "breadcrumbs": "Proveedores",
+      "subtitle": "Radar de cumplimiento por dominio y mapa de calor por control de evaluaciones recientes.",
+      "downloadReport": "Descargar informe PDF",
+      "preparingReport": "Preparando informe…",
+      "emptyTitle": "No hay datos disponibles",
+      "emptyDescription": "Todavía no hay datos de evaluación disponibles para este marco."
     }
   },
   "Shell": {

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,8 +27,14 @@ export async function generateMetadata({
 }: HeatmapPageProps): Promise<Metadata> {
   const { vendorId } = await params;
   const vendor = await getVendor(vendorId);
-  if (!vendor) return { title: "Vendor not found" };
-  return { title: `Heatmap — ${vendor.name}` };
+  if (!vendor) {
+    const translations = await getTranslations("Frameworks.heatmap");
+    return { title: translations("metadataNotFound") };
+  }
+  const translations = await getTranslations("Frameworks.heatmap");
+  return {
+    title: translations("metadataTitle", { name: vendor.name }),
+  };
 }
 
 export default async function VendorHeatmapPage({
@@ -35,10 +42,13 @@ export default async function VendorHeatmapPage({
   searchParams,
 }: HeatmapPageProps) {
   await requirePermission(PERMISSIONS.VENDORS_VIEW);
+  const translations = await getTranslations("Frameworks.heatmap");
   const { vendorId, frameworkId } = await params;
-  const sp = await searchParams;
-  const returnTab = sp.tab ?? "";
-  const vendorBackParam = sp.back ? `&back=${encodeURIComponent(sp.back)}` : "";
+  const searchParameters = await searchParams;
+  const returnTab = searchParameters.tab ?? "";
+  const vendorBackParam = searchParameters.back
+    ? `&back=${encodeURIComponent(searchParameters.back)}`
+    : "";
 
   const [vendor, framework] = await Promise.all([
     getVendor(vendorId),
@@ -53,16 +63,19 @@ export default async function VendorHeatmapPage({
 
   const grouped = new Map<string, typeof controls>();
   for (const control of controls) {
-    const list = grouped.get(control.domain) ?? [];
-    list.push(control);
-    grouped.set(control.domain, list);
+    const domainControls = grouped.get(control.domain) ?? [];
+    domainControls.push(control);
+    grouped.set(control.domain, domainControls);
   }
 
   return (
     <div className="flex max-w-4xl flex-col gap-6">
       <Breadcrumbs
         segments={[
-          { label: "Vendors", href: "/vendors" },
+          {
+            label: translations("breadcrumbs"),
+            href: "/vendors",
+          },
           {
             label: vendor.name,
             href: returnTab
@@ -78,17 +91,16 @@ export default async function VendorHeatmapPage({
             {framework.name} {framework.version}
           </h1>
           <p className="text-muted-foreground text-sm">
-            Domain compliance radar and control-level heatmap from recent
-            assessments.
+            {translations("subtitle")}
           </p>
         </div>
         {controls.length > 0 ? (
           <Button asChild variant="outline" size="sm">
             <PendingLink
               href={`/api/vendors/${vendorId}/frameworks/${frameworkId}/report`}
-              pendingLabel="Preparing report…"
+              pendingLabel={translations("preparingReport")}
             >
-              Download PDF report
+              {translations("downloadReport")}
             </PendingLink>
           </Button>
         ) : null}
@@ -98,8 +110,8 @@ export default async function VendorHeatmapPage({
         <EmptyState
           compact
           icon="assessments"
-          title="No data available"
-          description="No assessment data is available for this framework yet."
+          title={translations("emptyTitle")}
+          description={translations("emptyDescription")}
         />
       ) : (
         <div className="flex flex-col gap-6">

@@ -7,6 +7,7 @@ import {
   Radar,
   RadarChart,
 } from "recharts";
+import { useTranslations } from "next-intl";
 
 import {
   ChartContainer,
@@ -20,20 +21,22 @@ import { buildShortDomainLabels } from "@/lib/radar-labels";
 const CURRENT_COLOR = "var(--primary)";
 const PREVIOUS_COLOR = "var(--muted-foreground)";
 
-const RADAR_CONFIG = {
-  current: { label: "Current assessment", color: CURRENT_COLOR },
-  previous: { label: "Previous assessment", color: PREVIOUS_COLOR },
-};
-
 type ComplianceRadarProps = {
   data: DomainRadarPoint[];
   hasPrevious: boolean;
 };
 
 export function ComplianceRadar({ data, hasPrevious }: ComplianceRadarProps) {
+  const translations = useTranslations("Frameworks.radar");
+
   if (data.length === 0) {
     return null;
   }
+
+  const radarConfig = {
+    current: { label: translations("current"), color: CURRENT_COLOR },
+    previous: { label: translations("previous"), color: PREVIOUS_COLOR },
+  };
 
   const shortLabelByDomain = new Map(
     buildShortDomainLabels(data.map((point) => point.domain)).map((label) => [
@@ -49,17 +52,19 @@ export function ComplianceRadar({ data, hasPrevious }: ComplianceRadarProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Domain compliance radar</CardTitle>
+        <CardTitle>{translations("title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div
           role="img"
-          aria-label={`Domain compliance radar: ${data
-            .map((point) => `${point.domain} ${point.current}%`)
-            .join(", ")}`}
+          aria-label={translations("ariaLabel", {
+            values: data
+              .map((point) => `${point.domain} ${point.current}%`)
+              .join(", "),
+          })}
         >
           <ChartContainer
-            config={RADAR_CONFIG}
+            config={radarConfig}
             className="mx-auto aspect-square max-h-[360px]"
           >
             <RadarChart data={chartData} outerRadius="70%">
@@ -104,12 +109,14 @@ export function ComplianceRadar({ data, hasPrevious }: ComplianceRadarProps) {
         </div>
         {/* Screen-reader table mirroring the chart values */}
         <table className="sr-only">
-          <caption>Domain compliance by percentage</caption>
+          <caption>{translations("tableCaption")}</caption>
           <thead>
             <tr>
-              <th scope="col">Domain</th>
-              <th scope="col">Current</th>
-              {hasPrevious ? <th scope="col">Previous</th> : null}
+              <th scope="col">{translations("domain")}</th>
+              <th scope="col">{translations("currentShort")}</th>
+              {hasPrevious ? (
+                <th scope="col">{translations("previousShort")}</th>
+              ) : null}
             </tr>
           </thead>
           <tbody>
@@ -133,15 +140,15 @@ export function ComplianceRadar({ data, hasPrevious }: ComplianceRadarProps) {
               <span key={key} className="flex items-center gap-1">
                 <span
                   className="size-2.5 rounded-full"
-                  style={{ backgroundColor: RADAR_CONFIG[key].color }}
+                  style={{ backgroundColor: radarConfig[key].color }}
                 />
-                {RADAR_CONFIG[key].label}
+                {radarConfig[key].label}
               </span>
             ))}
         </div>
         {!hasPrevious ? (
           <p className="text-muted-foreground mt-2 text-center text-xs">
-            Only one completed assessment — no previous data to compare.
+            {translations("noPrevious")}
           </p>
         ) : null}
       </CardContent>

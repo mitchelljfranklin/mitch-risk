@@ -53,6 +53,13 @@
       "URL": "URL",
       "EMAIL": "Email",
       "CHECKBOX": "Checkbox (acknowledgment)"
+    },
+    "controlCodes": {
+      "showMore": "{count, plural, one {Show # more control} other {Show # more controls}}",
+      "showLess": "Show less"
+    },
+    "search": {
+      "placeholder": "Search…"
     }
   },
   "Metadata": {
@@ -879,6 +886,127 @@
       "questionTextRequired": "Question text is required",
       "conditionalTooLarge": "Conditional logic payload is too large.",
       "conditionalInvalid": "Invalid conditional logic."
+    }
+  },
+  "Frameworks": {
+    "list": {
+      "title": "Frameworks",
+      "subtitle": "Control libraries used to map questionnaire answers to requirements.",
+      "import": "Import framework",
+      "gaps": "Coverage gaps",
+      "deleteBlocked": "{count, plural, one {Cannot delete: # control is still mapped to questionnaire questions. Unmap it first.} other {Cannot delete: # controls are still mapped to questionnaire questions. Unmap them first.}}",
+      "emptyTitle": "No frameworks",
+      "emptyDescription": "Framework data could not be loaded.",
+      "controls": "{count, plural, one {# control} other {# controls}}",
+      "deleteTitle": "Delete framework \"{name} v{version}\"?",
+      "deleteDescription": "This will permanently delete this framework and its {count, plural, one {# control} other {# controls}}. Template questions mapped to these controls will lose their assignments. Existing assessments and findings are not affected.",
+      "delete": "Delete"
+    },
+    "detail": {
+      "notFound": "Framework not found",
+      "breadcrumbs": "Frameworks",
+      "deleteFramework": "Delete framework",
+      "searchPlaceholder": "Search controls…",
+      "noControlsTitle": "No matching controls",
+      "noControlsDescription": "Try a different search term."
+    },
+    "control": {
+      "notFound": "Control not found",
+      "breadcrumbs": "Frameworks",
+      "guidance": "Guidance",
+      "mappedQuestions": "Mapped questions ({count})",
+      "noMappedTitle": "No mapped questions",
+      "noMappedDescription": "No questionnaire questions map to this control yet."
+    },
+    "gaps": {
+      "title": "Control coverage gaps",
+      "subtitle": "Controls that have no questions mapped across any template. Use this to identify blind spots in your assessment coverage.",
+      "emptyTitle": "No gaps found",
+      "emptyDescription": "Every control in every framework has at least one question mapped to it.",
+      "covered": "{mapped}/{total} covered",
+      "allCovered": "All {count, plural, one {# control} other {# controls}} have at least one question mapped.",
+      "errorTitle": "Something went wrong",
+      "errorDescription": "The compliance gap view could not be loaded. Please try again.",
+      "retry": "Try again"
+    },
+    "import": {
+      "metadataTitle": "Import framework",
+      "title": "Import framework",
+      "subtitle": "Upload a CSV file with controls to create a new framework.",
+      "breadcrumb": "Import",
+      "cardTitle": "Import framework from CSV",
+      "steps": {
+        "setup": "Setup & Upload",
+        "review": "Review"
+      },
+      "form": {
+        "name": "Framework name",
+        "namePlaceholder": "e.g. PCI DSS",
+        "version": "Version",
+        "versionPlaceholder": "e.g. 4.0",
+        "description": "Description (optional)",
+        "descriptionPlaceholder": "Brief description of the framework",
+        "csvFile": "CSV file",
+        "downloadTemplate": "Template",
+        "csvHint": "CSV must have columns: domain, code, title, guidance (guidance is optional). Optional: is_shared_responsibility (true/false, defaults to false). Max 1 MB.",
+        "controlsFound": "{count, plural, one {# control found} other {# controls found}}",
+        "domain": "Domain",
+        "code": "Code",
+        "titleColumn": "Title",
+        "showingFirst": "Showing first {shown} of {total} rows",
+        "next": "Next →",
+        "back": "← Back",
+        "importing": "Importing…",
+        "import": "Import framework",
+        "reviewIntro": "You are about to create framework {name} v{version} with {count, plural, one {# control} other {# controls}}.",
+        "success": "Imported \"{name} v{version}\" with {count, plural, one {# control} other {# controls}}."
+      },
+      "errors": {
+        "noFile": "A CSV file is required.",
+        "invalidFileType": "File must be a .csv file.",
+        "tooLarge": "CSV file is too large (max 1 MB).",
+        "noRows": "CSV file contains no data rows.",
+        "missingColumns": "Missing CSV columns: {columns}. Expected: {expected}",
+        "invalidInput": "Invalid input.",
+        "nameRequired": "Framework name is required",
+        "nameTooLong": "Framework name must be 200 characters or fewer",
+        "versionRequired": "Version is required",
+        "versionTooLong": "Version must be 50 characters or fewer",
+        "descriptionTooLong": "Description must be 500 characters or fewer",
+        "rowDomainRequired": "Row {row}: domain is required",
+        "rowCodeRequired": "Row {row}: control code is required",
+        "rowTitleRequired": "Row {row}: control title is required",
+        "rowInvalid": "Row {row}: invalid input.",
+        "duplicateCode": "Row {row}: duplicate control code \"{code}\".",
+        "duplicateFramework": "A framework named \"{name}\" version \"{version}\" already exists."
+      }
+    },
+    "shared": "Shared",
+    "error": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again or contact support.",
+      "retry": "Try again"
+    },
+    "radar": {
+      "title": "Domain compliance radar",
+      "current": "Current assessment",
+      "previous": "Previous assessment",
+      "ariaLabel": "Domain compliance radar: {values}",
+      "tableCaption": "Domain compliance by percentage",
+      "domain": "Domain",
+      "currentShort": "Current",
+      "previousShort": "Previous",
+      "noPrevious": "Only one completed assessment — no previous data to compare."
+    },
+    "heatmap": {
+      "metadataNotFound": "Vendor not found",
+      "metadataTitle": "Heatmap — {name}",
+      "breadcrumbs": "Vendors",
+      "subtitle": "Domain compliance radar and control-level heatmap from recent assessments.",
+      "downloadReport": "Download PDF report",
+      "preparingReport": "Preparing report…",
+      "emptyTitle": "No data available",
+      "emptyDescription": "No assessment data is available for this framework yet."
     }
   },
   "Shell": {

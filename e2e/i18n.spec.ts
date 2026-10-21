@@ -442,4 +442,81 @@ test.describe("internal shell", () => {
       page.getByRole("button", { name: "Importar plantilla" }),
     ).toBeVisible();
   });
+
+  test("translates the frameworks list, gaps and import pages", async ({
+    page,
+  }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto("/frameworks");
+
+    await expect(page.getByRole("heading", { name: "Marcos" })).toBeVisible();
+    await expect(
+      page.getByText(
+        "Bibliotecas de controles usadas para asignar las respuestas del cuestionario a requisitos.",
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Importar marco" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Brechas de cobertura" }),
+    ).toBeVisible();
+
+    await page.goto("/frameworks/gaps");
+
+    await expect(
+      page.getByRole("heading", { name: "Brechas de cobertura de controles" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText(/Controles que no tienen preguntas asignadas/),
+    ).toBeVisible();
+
+    await page.goto("/frameworks/import");
+
+    await expect(
+      page.getByRole("heading", { name: "Importar marco" }),
+    ).toBeVisible();
+    await expect(page.getByLabel("Nombre del marco")).toBeVisible();
+    await expect(page.getByLabel("Versión")).toBeVisible();
+    await expect(page.getByLabel("Archivo CSV")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Plantilla" })).toBeVisible();
+  });
+
+  test("translates the framework detail page", async ({ page }) => {
+    const framework = await prisma.framework.findFirst({
+      orderBy: { name: "asc" },
+    });
+    if (!framework) {
+      throw new Error("The test database has no frameworks.");
+    }
+
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto(`/frameworks/${framework.id}`);
+
+    await expect(page.locator("h1")).toContainText(framework.name);
+    await expect(
+      page.getByRole("link", { name: "Marcos" }).first(),
+    ).toBeVisible();
+    await expect(page.getByPlaceholder("Buscar controles…")).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Eliminar marco" }),
+    ).toBeVisible();
+    await expect(page.getByText("Compartido").first()).toBeVisible();
+  });
 });

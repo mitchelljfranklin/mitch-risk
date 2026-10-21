@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { useTranslations } from "next-intl";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { toggleSharedResponsibilityAction } from "@/lib/actions/frameworks";
@@ -14,6 +15,7 @@ export function SharedResponsibilityToggle({
   frameworkId: string;
   defaultValue: boolean;
 }) {
+  const translations = useTranslations("Frameworks");
   const formRef = useRef<HTMLFormElement>(null);
 
   return (
@@ -38,7 +40,9 @@ export function SharedResponsibilityToggle({
           formRef.current?.requestSubmit();
         }}
       />
-      <span className="text-muted-foreground text-xs">Shared</span>
+      <span className="text-muted-foreground text-xs">
+        {translations("shared")}
+      </span>
     </form>
   );
 }

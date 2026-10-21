@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { Prisma } from "../../prisma/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -32,6 +33,8 @@ export async function importFrameworkAction(
   formData: FormData,
 ): Promise<FrameworkImportState> {
   const user = await requirePermission(PERMISSIONS.FRAMEWORKS_EDIT);
+  const translations = await getTranslations("Frameworks.import");
+  const errors = await getTranslations("Frameworks.import.errors");
 
   const name = (formData.get("name") as string)?.trim();
   const version = (formData.get("version") as string)?.trim();
@@ -40,25 +43,48 @@ export async function importFrameworkAction(
 
   const meta = frameworkImportSchema.safeParse({ name, version, description });
   if (!meta.success) {
-    return { ok: false, message: meta.error.issues[0].message };
+    const firstIssue = meta.error.issues[0];
+    const field = firstIssue?.path[0];
+    if (field === "name") {
+      return {
+        ok: false,
+        message:
+          firstIssue?.code === "too_big"
+            ? errors("nameTooLong")
+            : errors("nameRequired"),
+      };
+    }
+    if (field === "version") {
+      return {
+        ok: false,
+        message:
+          firstIssue?.code === "too_big"
+            ? errors("versionTooLong")
+            : errors("versionRequired"),
+      };
+    }
+    if (field === "description") {
+      return { ok: false, message: errors("descriptionTooLong") };
+    }
+    return { ok: false, message: errors("invalidInput") };
   }
 
   if (!file || !(file instanceof File)) {
-    return { ok: false, message: "A CSV file is required." };
+    return { ok: false, message: errors("noFile") };
   }
 
   if (!file.name.endsWith(".csv")) {
-    return { ok: false, message: "File must be a .csv file." };
+    return { ok: false, message: errors("invalidFileType") };
   }
 
   const text = await file.text();
   if (text.length > 1_000_000) {
-    return { ok: false, message: "CSV file is too large (max 1 MB)." };
+    return { ok: false, message: errors("tooLarge") };
   }
 
   const rows = parseCsvRows(text);
   if (rows.length === 0) {
-    return { ok: false, message: "CSV file contains no data rows." };
+    return { ok: false, message: errors("noRows") };
   }
 
   const expectedHeaders = ["domain", "code", "title", "guidance"];
@@ -69,7 +95,10 @@ export async function importFrameworkAction(
   if (missing.length > 0) {
     return {
       ok: false,
-      message: `Missing CSV columns: ${missing.join(", ")}. Expected: ${expectedHeaders.join(", ")}`,
+      message: errors("missingColumns", {
+        columns: missing.join(", "),
+        expected: expectedHeaders.join(", "),
+      }),
     };
   }
 
@@ -102,16 +131,26 @@ export async function importFrameworkAction(
     });
 
     if (!parsed.success) {
-      return {
-        ok: false,
-        message: `Row ${i + 1}: ${parsed.error.issues[0].message}`,
-      };
+      const firstIssue = parsed.error.issues[0];
+      const field = firstIssue?.path[0];
+      let message = errors("rowInvalid", { row: i + 1 });
+      if (field === "domain") {
+        message = errors("rowDomainRequired", { row: i + 1 });
+      } else if (field === "code") {
+        message = errors("rowCodeRequired", { row: i + 1 });
+      } else if (field === "title") {
+        message = errors("rowTitleRequired", { row: i + 1 });
+      }
+      return { ok: false, message };
     }
 
     if (seenCodes.has(parsed.data.code)) {
       return {
         ok: false,
-        message: `Row ${i + 1}: duplicate control code "${parsed.data.code}".`,
+        message: errors("duplicateCode", {
+          row: i + 1,
+          code: parsed.data.code,
+        }),
       };
     }
     seenCodes.add(parsed.data.code);
@@ -148,7 +187,10 @@ export async function importFrameworkAction(
     ) {
       return {
         ok: false,
-        message: `A framework named "${meta.data.name}" version "${meta.data.version}" already exists.`,
+        message: errors("duplicateFramework", {
+          name: meta.data.name,
+          version: meta.data.version,
+        }),
       };
     }
     throw error;
@@ -163,7 +205,11 @@ export async function importFrameworkAction(
 
   return {
     ok: true,
-    message: `Imported "${framework.name} v${framework.version}" with ${controls.length} controls.`,
+    message: translations("form.success", {
+      name: framework.name,
+      version: framework.version,
+      count: controls.length,
+    }),
     frameworkId: framework.id,
   };
 }

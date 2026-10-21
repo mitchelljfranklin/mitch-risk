@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 
 export default function FrameworkGapsErrorPage({
@@ -9,15 +11,17 @@ export default function FrameworkGapsErrorPage({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const translations = useTranslations("Frameworks.gaps");
+
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 p-6">
       <h1 className="text-2xl font-semibold tracking-tight">
-        Something went wrong
+        {translations("errorTitle")}
       </h1>
       <p className="text-muted-foreground text-sm">
-        The compliance gap view could not be loaded. Please try again.
+        {translations("errorDescription")}
       </p>
-      <Button onClick={() => reset()}>Try again</Button>
+      <Button onClick={() => reset()}>{translations("retry")}</Button>
     </div>
   );
 }
