@@ -1078,6 +1078,32 @@
       "retry": "Try again"
     }
   },
+  "SelfAssessment": {
+    "metaTitle": "Self-assessment",
+    "title": "Self-assessment",
+    "subtitle": "Assess your own organization against compliance frameworks using the same questionnaire portal your vendors use.",
+    "start": "Start new assessment",
+    "emptyTitle": "No self-assessments yet",
+    "emptyDescription": "Start your first self-assessment to evaluate your organization against ISO 27001, SOC 2, or other frameworks.",
+    "noTemplate": "No template",
+    "new": {
+      "metaTitle": "New self-assessment",
+      "breadcrumb": "New",
+      "title": "New self-assessment",
+      "cardTitle": "Assessment details",
+      "form": {
+        "title": "Title",
+        "titlePlaceholder": "e.g. ISO 27001:2022 self-assessment",
+        "template": "Questionnaire template",
+        "templatePlaceholder": "Select a published template",
+        "noTemplates": "No templates found.",
+        "dueDate": "Due date (optional)",
+        "publishFirst": "Publish a template first to start a self-assessment.",
+        "starting": "Starting...",
+        "start": "Start assessment"
+      }
+    }
+  },
   "Shell": {
     "workspace": {
       "dashboard": "Dashboard",

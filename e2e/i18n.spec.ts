@@ -569,4 +569,43 @@ test.describe("internal shell", () => {
       page.getByRole("button", { name: "Filtrar", exact: true }),
     ).toBeVisible();
   });
+
+  test("translates self-assessment", async ({ page }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto("/self-assessment");
+
+    await expect(
+      page.getByRole("heading", { name: "Autoevaluación" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        "Evalúa tu propia organización frente a marcos de cumplimiento usando el mismo portal de cuestionarios que tus proveedores.",
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Iniciar nueva evaluación" }),
+    ).toBeVisible();
+
+    await page.goto("/self-assessment/new");
+
+    await expect(
+      page.getByRole("heading", { name: "Nueva autoevaluación" }),
+    ).toBeVisible();
+    await expect(page.getByLabel("Título")).toBeVisible();
+    await expect(page.getByText("Plantilla del cuestionario")).toBeVisible();
+    await expect(
+      page.getByLabel("Fecha de vencimiento (opcional)"),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Iniciar evaluación" }),
+    ).toBeVisible();
+  });
 });

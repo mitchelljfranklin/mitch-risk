@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -11,10 +12,15 @@ import { NewSelfAssessmentForm } from "./new-self-assessment-form";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "New self-assessment" };
+export async function generateMetadata() {
+  const translations = await getTranslations("SelfAssessment.new");
+  return { title: translations("metaTitle") };
+}
 
 export default async function NewSelfAssessmentPage() {
   const user = await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
+  const translations = await getTranslations("SelfAssessment.new");
+  const listTranslations = await getTranslations("SelfAssessment");
 
   const vendor = await findOrCreateInternalVendor(user.id, "My Organization");
 
@@ -28,16 +34,19 @@ export default async function NewSelfAssessmentPage() {
     <div className="flex max-w-2xl flex-col gap-6">
       <Breadcrumbs
         segments={[
-          { label: "Self-assessment", href: "/self-assessment" },
-          { label: "New" },
+          {
+            label: listTranslations("title"),
+            href: "/self-assessment",
+          },
+          { label: translations("breadcrumb") },
         ]}
       />
       <h1 className="text-2xl font-semibold tracking-tight">
-        New self-assessment
+        {translations("title")}
       </h1>
       <Card>
         <CardHeader>
-          <CardTitle>Assessment details</CardTitle>
+          <CardTitle>{translations("cardTitle")}</CardTitle>
         </CardHeader>
         <CardContent>
           <NewSelfAssessmentForm

@@ -1078,6 +1078,32 @@
       "retry": "Reintentar"
     }
   },
+  "SelfAssessment": {
+    "metaTitle": "Autoevaluación",
+    "title": "Autoevaluación",
+    "subtitle": "Evalúa tu propia organización frente a marcos de cumplimiento usando el mismo portal de cuestionarios que tus proveedores.",
+    "start": "Iniciar nueva evaluación",
+    "emptyTitle": "Todavía no hay autoevaluaciones",
+    "emptyDescription": "Inicia tu primera autoevaluación para evaluar tu organización frente a ISO 27001, SOC 2 u otros marcos.",
+    "noTemplate": "Sin plantilla",
+    "new": {
+      "metaTitle": "Nueva autoevaluación",
+      "breadcrumb": "Nueva",
+      "title": "Nueva autoevaluación",
+      "cardTitle": "Detalles de la evaluación",
+      "form": {
+        "title": "Título",
+        "titlePlaceholder": "p. ej., autoevaluación ISO 27001:2022",
+        "template": "Plantilla del cuestionario",
+        "templatePlaceholder": "Selecciona una plantilla publicada",
+        "noTemplates": "No se encontraron plantillas.",
+        "dueDate": "Fecha de vencimiento (opcional)",
+        "publishFirst": "Publica primero una plantilla para iniciar una autoevaluación.",
+        "starting": "Iniciando...",
+        "start": "Iniciar evaluación"
+      }
+    }
+  },
   "Shell": {
     "workspace": {
       "dashboard": "Panel",

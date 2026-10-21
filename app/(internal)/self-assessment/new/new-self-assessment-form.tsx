@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
@@ -26,6 +27,7 @@ export function NewSelfAssessmentForm({
   vendorId,
   templates,
 }: NewSelfAssessmentFormProps) {
+  const translations = useTranslations("SelfAssessment.new.form");
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(
     async (_prev: AssessmentFormState, formData: FormData) => {
@@ -43,31 +45,31 @@ export function NewSelfAssessmentForm({
     <form action={formAction} className="grid gap-4">
       <input type="hidden" name="vendorId" value={vendorId} />
       <div className="grid gap-2">
-        <Label htmlFor="title">Title</Label>
+        <Label htmlFor="title">{translations("title")}</Label>
         <Input
           id="title"
           name="title"
-          placeholder="e.g. ISO 27001:2022 self-assessment"
+          placeholder={translations("titlePlaceholder")}
           required
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="templateId">Questionnaire template</Label>
+        <Label htmlFor="templateId">{translations("template")}</Label>
         <Combobox
           name="templateId"
           options={templates}
-          placeholder="Select a published template"
-          emptyText="No templates found."
+          placeholder={translations("templatePlaceholder")}
+          emptyText={translations("noTemplates")}
           required
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="dueDate">Due date (optional)</Label>
+        <Label htmlFor="dueDate">{translations("dueDate")}</Label>
         <Input id="dueDate" name="dueDate" type="date" />
       </div>
       {templates.length === 0 ? (
         <p className="text-muted-foreground text-sm">
-          Publish a template first to start a self-assessment.
+          {translations("publishFirst")}
         </p>
       ) : null}
       {state?.error ? (
@@ -77,7 +79,7 @@ export function NewSelfAssessmentForm({
       ) : null}
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending || templates.length === 0}>
-          {isPending ? "Starting..." : "Start assessment"}
+          {isPending ? translations("starting") : translations("start")}
         </Button>
       </div>
     </form>
