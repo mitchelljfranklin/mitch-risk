@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { Prisma } from "../../prisma/generated/prisma/client";
 import { requirePermission, getCurrentUser } from "@/lib/auth";
@@ -26,18 +27,40 @@ function parseRoleForm(formData: FormData) {
   });
 }
 
+function roleErrorKey(error: unknown): string | null {
+  if (!(error instanceof Error)) return null;
+  switch (error.message) {
+    case "Role not found.":
+      return "errors.notFound";
+    case "The Admin role permissions cannot be changed.":
+      return "errors.adminLocked";
+    case "System roles cannot be deleted.":
+      return "errors.systemCannotDelete";
+    case "This role is assigned to one or more users. Reassign them before deleting.":
+      return "errors.assignedUsers";
+    default:
+      return null;
+  }
+}
+
 export async function createRoleAction(
   previousState: RoleActionState,
   formData: FormData,
 ): Promise<RoleActionState> {
   await requirePermission(PERMISSIONS.ROLES_MANAGE);
+  const translations = await getTranslations("Admin.roles");
 
   const parsed = parseRoleForm(formData);
   if (!parsed.success) {
-    return {
-      ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
-    };
+    const issue = parsed.error.issues[0];
+    let messageKey = "errors.invalidInput";
+    if (issue?.path[0] === "name") {
+      messageKey =
+        issue.code === "too_big" ? "errors.nameTooLong" : "errors.nameRequired";
+    } else if (issue?.path[0] === "description") {
+      messageKey = "errors.descriptionTooLong";
+    }
+    return { ok: false, message: translations(messageKey) };
   }
 
   try {
@@ -51,18 +74,15 @@ export async function createRoleAction(
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
-      return { ok: false, message: "A role with this name already exists." };
+      return { ok: false, message: translations("errors.roleExists") };
     }
-    return {
-      ok: false,
-      message: "Could not create the role. Please try again.",
-    };
+    return { ok: false, message: translations("errors.createFailed") };
   }
 
   // No revalidatePath here: this result is consumed by useActionState in a modal.
   // Revalidating the current route re-renders the modal and drops the returned
   // state in production builds. The client refreshes after closing instead.
-  return { ok: true, message: "Role created." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function updateRoleAction(
@@ -70,18 +90,24 @@ export async function updateRoleAction(
   formData: FormData,
 ): Promise<RoleActionState> {
   await requirePermission(PERMISSIONS.ROLES_MANAGE);
+  const translations = await getTranslations("Admin.roles");
 
   const roleId = getField(formData, "roleId");
   if (!roleId) {
-    return { ok: false, message: "Missing role." };
+    return { ok: false, message: translations("errors.missingRole") };
   }
 
   const parsed = parseRoleForm(formData);
   if (!parsed.success) {
-    return {
-      ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
-    };
+    const issue = parsed.error.issues[0];
+    let messageKey = "errors.invalidInput";
+    if (issue?.path[0] === "name") {
+      messageKey =
+        issue.code === "too_big" ? "errors.nameTooLong" : "errors.nameRequired";
+    } else if (issue?.path[0] === "description") {
+      messageKey = "errors.descriptionTooLong";
+    }
+    return { ok: false, message: translations(messageKey) };
   }
 
   try {
@@ -91,19 +117,22 @@ export async function updateRoleAction(
       await logAudit(actor.id, AUDIT_ACTIONS.UPDATE_ROLE, "Role", roleId);
     }
   } catch (error: unknown) {
+    const messageKey = roleErrorKey(error);
     return {
       ok: false,
-      message:
-        error instanceof Error ? error.message : "Could not update the role.",
+      message: messageKey
+        ? translations(messageKey)
+        : translations("errors.updateFailed"),
     };
   }
 
   // See createRoleAction: the client refreshes after closing the modal.
-  return { ok: true, message: "Role updated." };
+  return { ok: true, message: translations("updated") };
 }
 
 export async function duplicateRoleAction(formData: FormData): Promise<void> {
   await requirePermission(PERMISSIONS.ROLES_MANAGE);
+  const translations = await getTranslations("Admin.roles");
 
   const roleId = getField(formData, "roleId");
   if (!roleId) {
@@ -125,16 +154,26 @@ export async function duplicateRoleAction(formData: FormData): Promise<void> {
       error instanceof Error ? error.message : String(error),
     );
     // Surface the failure - without this the admin sees a dead button.
-    const reason =
-      error instanceof Error ? error.message : "Unknown database error";
+    const messageKey = roleErrorKey(error);
+    let reason: string;
+    if (messageKey) {
+      reason = translations(messageKey);
+    } else if (error instanceof Error) {
+      reason = error.message;
+    } else {
+      reason = translations("errors.invalidInput");
+    }
     redirect(
-      `/admin/roles?roleError=${encodeURIComponent(`Could not duplicate the role: ${reason}`)}`,
+      `/admin/roles?roleError=${encodeURIComponent(
+        translations("errors.duplicateFailed", { reason }),
+      )}`,
     );
   }
 }
 
 export async function deleteRoleAction(formData: FormData): Promise<void> {
   await requirePermission(PERMISSIONS.ROLES_MANAGE);
+  const translations = await getTranslations("Admin.roles");
 
   const roleId = getField(formData, "roleId");
   if (!roleId) {
@@ -153,10 +192,19 @@ export async function deleteRoleAction(formData: FormData): Promise<void> {
       `[roles] failed to delete role ${roleId}:`,
       error instanceof Error ? error.message : String(error),
     );
-    const reason =
-      error instanceof Error ? error.message : "Unknown database error";
+    const messageKey = roleErrorKey(error);
+    let reason: string;
+    if (messageKey) {
+      reason = translations(messageKey);
+    } else if (error instanceof Error) {
+      reason = error.message;
+    } else {
+      reason = translations("errors.invalidInput");
+    }
     redirect(
-      `/admin/roles?roleError=${encodeURIComponent(`Could not delete the role: ${reason}`)}`,
+      `/admin/roles?roleError=${encodeURIComponent(
+        translations("errors.deleteFailed", { reason }),
+      )}`,
     );
   }
 }

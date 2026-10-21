@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { PERMISSION_GROUPS } from "@/lib/permissions";
+import { PERMISSION_GROUPS, permissionLabelKey } from "@/lib/permissions";
 
 type PermissionSelectorProps = {
   defaultFullAccess?: boolean;
@@ -38,7 +38,9 @@ export function PermissionSelector({
         <div className="flex flex-col gap-4 border-t pt-4">
           {PERMISSION_GROUPS.map((group) => (
             <fieldset key={group.resource} className="flex flex-col gap-2">
-              <legend className="text-xs font-semibold">{group.label}</legend>
+              <legend className="text-xs font-semibold">
+                {translations(`groups.${group.resource}`)}
+              </legend>
               <div className="flex flex-wrap gap-x-4 gap-y-2">
                 {group.permissions.map((permission) => (
                   <div key={permission.key} className="flex items-center gap-2">
@@ -51,7 +53,9 @@ export function PermissionSelector({
                       htmlFor={`perm-${permission.key}`}
                       className="text-xs font-normal"
                     >
-                      {permission.label}
+                      {translations(
+                        `items.${permissionLabelKey(permission.key)}`,
+                      )}
                     </Label>
                   </div>
                 ))}

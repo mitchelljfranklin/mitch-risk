@@ -875,4 +875,74 @@ test.describe("internal shell", () => {
       page.getByRole("button", { name: "Guardar Trust Center" }),
     ).toBeVisible();
   });
+
+  test("translates admin users, roles, audit and health", async ({ page }) => {
+    await signInAsAdmin(page);
+
+    await page.getByRole("button", { name: "E2E Admin" }).click();
+    await page.getByRole("menuitem", { name: "Language" }).hover();
+    await page.getByRole("menuitem", { name: "Español" }).click();
+    await expect(
+      page.getByRole("link", { name: "Proveedores" }).first(),
+    ).toBeVisible();
+
+    await page.goto("/admin/users");
+
+    await expect(page.getByRole("heading", { name: "Usuarios" })).toBeVisible();
+    await expect(
+      page.getByText("Cuentas del personal", { exact: true }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Nuevo usuario" }).click();
+    const userDialog = page.getByRole("dialog");
+    await expect(userDialog.getByText("Añadir usuario")).toBeVisible();
+    await expect(userDialog.getByLabel("Nombre")).toBeVisible();
+    await expect(userDialog.getByLabel("Correo electrónico")).toBeVisible();
+    await expect(userDialog.getByLabel("Contraseña")).toBeVisible();
+    await expect(userDialog.getByLabel("Rol")).toBeVisible();
+    await userDialog.getByRole("button", { name: "Cancelar" }).click();
+
+    await page.goto("/admin/roles");
+
+    await expect(
+      page.getByRole("heading", { name: "Roles", exact: true }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Nuevo rol" }).click();
+    const roleDialog = page.getByRole("dialog");
+    await expect(roleDialog.getByLabel("Nombre")).toBeVisible();
+    await expect(
+      roleDialog.getByText("Seleccionar todos los permisos"),
+    ).toBeVisible();
+    await expect(
+      roleDialog.getByText("Proveedores", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      roleDialog.getByText("Ver proveedores", { exact: true }),
+    ).toBeVisible();
+    await roleDialog.getByRole("button", { name: "Cancelar" }).click();
+
+    await page.goto("/admin/audit");
+
+    await expect(
+      page.getByRole("heading", { name: "Registro de auditoría" }),
+    ).toBeVisible();
+    await expect(page.getByText("Conservación", { exact: true })).toBeVisible();
+    await expect(
+      page.getByLabel("Conservación del registro de auditoría (días)"),
+    ).toBeVisible();
+    await expect(page.getByRole("button", { name: "Filtrar" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Exportar" })).toBeVisible();
+    await expect(
+      page.getByRole("columnheader", { name: "Acción" }),
+    ).toBeVisible();
+
+    await page.goto("/admin/health");
+
+    await expect(page.getByRole("heading", { name: "Salud" })).toBeVisible();
+    await expect(page.getByText("Aplicación", { exact: true })).toBeVisible();
+    await expect(
+      page.getByText("Base de datos", { exact: true }),
+    ).toBeVisible();
+    await expect(page.getByText("En ejecución", { exact: true })).toBeVisible();
+    await expect(page.getByText("Conectada", { exact: true })).toBeVisible();
+  });
 });

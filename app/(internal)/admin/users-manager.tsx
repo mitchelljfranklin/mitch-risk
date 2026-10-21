@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useActionState } from "react";
+import { useFormatter, useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,7 +36,6 @@ import {
 } from "@/lib/actions/users";
 import type { DeletionImpact } from "@/lib/db/users";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
-import { formatDate } from "@/lib/utils";
 
 export type UserView = {
   id: string;
@@ -62,6 +62,7 @@ function NewUserForm({
   roles: RoleOption[];
   onClose: () => void;
 }) {
+  const translations = useTranslations("Admin.users");
   const [state, formAction, isPending] = useActionState(
     addUserAction,
     initialState,
@@ -80,15 +81,15 @@ function NewUserForm({
   return (
     <form action={formAction} className="flex flex-1 flex-col gap-4 px-4">
       <div className="grid gap-2">
-        <Label htmlFor="new-name">Name</Label>
+        <Label htmlFor="new-name">{translations("name")}</Label>
         <Input id="new-name" name="name" required />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="new-email">Email</Label>
+        <Label htmlFor="new-email">{translations("email")}</Label>
         <Input id="new-email" name="email" type="email" required />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="new-password">Password</Label>
+        <Label htmlFor="new-password">{translations("password")}</Label>
         <Input
           id="new-password"
           name="password"
@@ -99,7 +100,7 @@ function NewUserForm({
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="new-role">Role</Label>
+        <Label htmlFor="new-role">{translations("role")}</Label>
         <Select name="roleId" defaultValue={defaultRole?.id}>
           <SelectTrigger id="new-role">
             <SelectValue />
@@ -115,10 +116,10 @@ function NewUserForm({
       </div>
       <SheetFooter className="px-0">
         <Button type="submit" disabled={isPending}>
-          {isPending ? "Creating..." : "Create user"}
+          {isPending ? translations("creating") : translations("create")}
         </Button>
         <Button type="button" variant="outline" onClick={onClose}>
-          Cancel
+          {translations("cancel")}
         </Button>
       </SheetFooter>
     </form>
@@ -134,6 +135,7 @@ function EditUserForm({
   roles: RoleOption[];
   isSelf: boolean;
 }) {
+  const translations = useTranslations("Admin.users");
   const [deletionImpact, setDeletionImpact] = useState<DeletionImpact | null>(
     null,
   );
@@ -151,7 +153,7 @@ function EditUserForm({
   return (
     <div className="flex flex-1 flex-col gap-6 px-4">
       <div className="grid gap-2">
-        <Label htmlFor={`role-${user.id}`}>Role</Label>
+        <Label htmlFor={`role-${user.id}`}>{translations("role")}</Label>
         <form action={changeRoleAction} className="flex items-center gap-2">
           <input type="hidden" name="userId" value={user.id} />
           <Select key={user.roleId} name="roleId" defaultValue={user.roleId}>
@@ -167,13 +169,13 @@ function EditUserForm({
             </SelectContent>
           </Select>
           <SubmitButton type="submit" size="sm" variant="secondary">
-            Save
+            {translations("save")}
           </SubmitButton>
         </form>
       </div>
 
       <div className="grid gap-2">
-        <Label>Access</Label>
+        <Label>{translations("access")}</Label>
         <form id={`toggle-user-${user.id}`} action={toggleUserAction}>
           <input type="hidden" name="userId" value={user.id} />
           <input
@@ -183,17 +185,19 @@ function EditUserForm({
           />
           {user.disabled ? (
             <SubmitButton type="submit" size="sm" variant="secondary">
-              Enable sign-in
+              {translations("enableSignIn")}
             </SubmitButton>
           ) : (
             <ConfirmDialog
-              title="Disable user?"
-              description={`${user.name} will no longer be able to sign in. Their data is preserved.`}
-              confirmLabel="Disable"
+              title={translations("disableTitle")}
+              description={translations("disableDescription", {
+                name: user.name,
+              })}
+              confirmLabel={translations("disable")}
               formId={`toggle-user-${user.id}`}
             >
               <Button type="button" size="sm" variant="secondary">
-                Disable sign-in
+                {translations("disableSignIn")}
               </Button>
             </ConfirmDialog>
           )}
@@ -201,7 +205,9 @@ function EditUserForm({
       </div>
 
       <div className="grid gap-2">
-        <Label htmlFor={`password-${user.id}`}>Password</Label>
+        <Label htmlFor={`password-${user.id}`}>
+          {translations("password")}
+        </Label>
         {user.hasLocalPassword ? (
           <form
             id={`reset-password-${user.id}`}
@@ -214,85 +220,87 @@ function EditUserForm({
               name="password"
               type="password"
               autoComplete="new-password"
-              placeholder="New password"
+              placeholder={translations("newPasswordPlaceholder")}
               minLength={12}
               className="flex-1"
             />
             <ConfirmDialog
-              title="Reset password?"
-              description={`This overwrites ${user.name}'s current password. They must use the new password to sign in.`}
-              confirmLabel="Reset"
+              title={translations("resetTitle")}
+              description={translations("resetDescription", {
+                name: user.name,
+              })}
+              confirmLabel={translations("reset")}
               variant="default"
               formId={`reset-password-${user.id}`}
             >
               <Button type="button" size="sm" variant="secondary">
-                Reset
+                {translations("reset")}
               </Button>
             </ConfirmDialog>
           </form>
         ) : (
           <p className="text-muted-foreground text-sm">
-            This account signs in via SSO — its password is managed by the
-            identity provider.
+            {translations("ssoPassword")}
           </p>
         )}
       </div>
 
       {!isSelf ? (
         <div className="grid gap-2 border-t pt-4">
-          <Label>Danger zone</Label>
+          <Label>{translations("dangerZone")}</Label>
           {deletionImpact ? (
             <form id={`delete-user-${user.id}`} action={deleteUserAction}>
               <input type="hidden" name="userId" value={user.id} />
               <ConfirmDialog
-                title="Delete user?"
+                title={translations("deleteTitle")}
                 description={
                   <span>
-                    {user.name} will be permanently removed. This cannot be
-                    undone.
+                    {translations("deleteDescription", { name: user.name })}
                     <ul className="mt-2 list-disc pl-4 text-sm">
                       {deletionImpact.ownedVendors > 0 && (
                         <li>
-                          {deletionImpact.ownedVendors} vendor(s) will lose
-                          their owner assignment
+                          {translations("ownedVendors", {
+                            count: deletionImpact.ownedVendors,
+                          })}
                         </li>
                       )}
                       {deletionImpact.reviewingAssessments > 0 && (
                         <li>
-                          {deletionImpact.reviewingAssessments} assessment(s)
-                          will lose their reviewer
+                          {translations("reviewingAssessments", {
+                            count: deletionImpact.reviewingAssessments,
+                          })}
                         </li>
                       )}
                       {deletionImpact.resolvedFindings > 0 && (
                         <li>
-                          {deletionImpact.resolvedFindings} finding(s) will have
-                          their resolver cleared
+                          {translations("resolvedFindings", {
+                            count: deletionImpact.resolvedFindings,
+                          })}
                         </li>
                       )}
                       {deletionImpact.answerReviews > 0 && (
                         <li>
-                          {deletionImpact.answerReviews} answer review(s) will
-                          be anonymized
+                          {translations("answerReviews", {
+                            count: deletionImpact.answerReviews,
+                          })}
                         </li>
                       )}
                       {deletionImpact.createdApiKeys > 0 && (
                         <li>
-                          {deletionImpact.createdApiKeys} API key(s) will lose
-                          their creator reference
+                          {translations("createdApiKeys", {
+                            count: deletionImpact.createdApiKeys,
+                          })}
                         </li>
                       )}
                     </ul>
-                    <p className="mt-2">
-                      Audit history is preserved (shown as &quot;Deleted
-                      user&quot;).
-                    </p>
+                    <p className="mt-2">{translations("auditPreserved")}</p>
                   </span>
                 }
-                confirmLabel="Delete"
+                confirmLabel={translations("delete")}
                 formId={`delete-user-${user.id}`}
               >
                 <Button type="button" size="sm" variant="destructive">
-                  Delete user
+                  {translations("deleteUser")}
                 </Button>
               </ConfirmDialog>
             </form>
@@ -304,7 +312,9 @@ function EditUserForm({
               onClick={loadImpact}
               disabled={loadingImpact}
             >
-              {loadingImpact ? "Loading..." : "Delete user"}
+              {loadingImpact
+                ? translations("loading")
+                : translations("deleteUser")}
             </Button>
           )}
         </div>
@@ -322,6 +332,8 @@ export function UsersManager({
   roles: RoleOption[];
   currentUserId: string;
 }) {
+  const translations = useTranslations("Admin.users");
+  const dateFormatter = useFormatter();
   const [query, setQuery] = useState("");
   const [editing, setEditing] = useState<EditorTarget | null>(null);
 
@@ -348,20 +360,20 @@ export function UsersManager({
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <Input
-          aria-label="Search staff"
-          placeholder="Search staff…"
+          aria-label={translations("searchLabel")}
+          placeholder={translations("searchPlaceholder")}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           className="max-w-xs"
         />
         <Button size="sm" onClick={() => setEditing("new")}>
-          New user
+          {translations("newUser")}
         </Button>
       </div>
 
       {filtered.length === 0 ? (
         <p className="text-muted-foreground text-sm">
-          {users.length === 0 ? "No users yet." : "No staff match your search."}
+          {users.length === 0 ? translations("empty") : translations("noMatch")}
         </p>
       ) : (
         <div className="flex flex-col divide-y rounded-lg border">
@@ -380,7 +392,13 @@ export function UsersManager({
                   </span>
                 </span>
                 <span className="text-muted-foreground text-xs">
-                  Added {formatDate(user.createdAt)}
+                  {translations("added", {
+                    date: dateFormatter.dateTime(new Date(user.createdAt), {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    }),
+                  })}
                 </span>
               </div>
               <div className="flex flex-wrap items-center gap-1.5">
@@ -388,11 +406,11 @@ export function UsersManager({
                   {user.roleName}
                 </Badge>
                 <Badge variant="outline" className="text-xs">
-                  {user.isSsoUser ? "SSO" : "Local"}
+                  {user.isSsoUser ? translations("sso") : translations("local")}
                 </Badge>
                 {user.disabled ? (
                   <Badge variant="destructive" className="text-xs">
-                    Disabled
+                    {translations("disabled")}
                   </Badge>
                 ) : null}
               </div>
@@ -410,9 +428,9 @@ export function UsersManager({
         {editing === "new" ? (
           <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
             <SheetHeader>
-              <SheetTitle>Add user</SheetTitle>
+              <SheetTitle>{translations("addTitle")}</SheetTitle>
               <SheetDescription>
-                Create a staff account with a starting role and password.
+                {translations("addDescription")}
               </SheetDescription>
             </SheetHeader>
             <NewUserForm roles={roles} onClose={() => setEditing(null)} />

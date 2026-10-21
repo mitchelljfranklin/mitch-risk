@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ import {
   ALL_PERMISSIONS,
   PERMISSION_GROUPS,
   SYSTEM_ROLE_NAMES,
+  permissionLabelKey,
   summarizeRolePermissions,
 } from "@/lib/permissions";
 import {
@@ -49,6 +51,7 @@ const COVERAGE_VARIANT = {
 } as const;
 
 function PermissionSummary({ permissions }: { permissions: string[] }) {
+  const translations = useTranslations("Admin.permissions");
   const summary = summarizeRolePermissions(permissions);
   const active = summary.filter((group) => group.coverage !== "none");
   const granted = permissions.filter((permission) =>
@@ -58,7 +61,10 @@ function PermissionSummary({ permissions }: { permissions: string[] }) {
   return (
     <div className="flex flex-wrap items-center gap-1.5">
       <span className="text-muted-foreground text-xs">
-        {granted} / {ALL_PERMISSIONS.length} permissions
+        {translations("permissionCount", {
+          granted,
+          total: ALL_PERMISSIONS.length,
+        })}
       </span>
       {active.map((group) => (
         <Badge
@@ -66,7 +72,7 @@ function PermissionSummary({ permissions }: { permissions: string[] }) {
           variant={COVERAGE_VARIANT[group.coverage as "full" | "partial"]}
           className="text-xs"
         >
-          {group.label}
+          {translations(`groups.${group.resource}`)}
           {group.coverage === "partial"
             ? ` ${group.granted}/${group.total}`
             : ""}
@@ -96,6 +102,7 @@ function PermissionMatrix({
   onToggleGroup: (keys: string[], next: boolean) => void;
   onToggleAll: (next: boolean) => void;
 }) {
+  const translations = useTranslations("Admin.permissions");
   const allChecked = ALL_PERMISSIONS.every((key) => selected.has(key));
   const someChecked = ALL_PERMISSIONS.some((key) => selected.has(key));
 
@@ -106,9 +113,8 @@ function PermissionMatrix({
           checked={checkboxState(allChecked, someChecked)}
           onCheckedChange={(value) => onToggleAll(value === true)}
         />
-        Select all permissions
+        {translations("selectAll")}
       </label>
-
       <div className="grid gap-3">
         {PERMISSION_GROUPS.map((group) => {
           const keys = group.permissions.map((permission) => permission.key);
@@ -126,7 +132,7 @@ function PermissionMatrix({
                     onToggleGroup(keys, value === true)
                   }
                 />
-                {group.label}
+                {translations(`groups.${group.resource}`)}
               </label>
               <div className="grid gap-2 pl-6 sm:grid-cols-2">
                 {group.permissions.map((permission) => (
@@ -138,7 +144,9 @@ function PermissionMatrix({
                       checked={selected.has(permission.key)}
                       onCheckedChange={() => onToggle(permission.key)}
                     />
-                    {permission.label}
+                    {translations(
+                      `items.${permissionLabelKey(permission.key)}`,
+                    )}
                   </label>
                 ))}
               </div>
@@ -163,14 +171,15 @@ function RoleEditorSheet({
   const role = isNew ? null : target;
   const isAdmin = role?.name === SYSTEM_ROLE_NAMES.ADMIN;
   const nameLocked = role?.isSystem ?? false;
+  const translations = useTranslations("Admin.roles");
 
   const action = isNew ? createRoleAction : updateRoleAction;
   const [state, formAction, isPending] = useActionState(action, initialState);
 
   let submitLabel: string;
-  if (isPending) submitLabel = "Saving...";
-  else if (isNew) submitLabel = "Create role";
-  else submitLabel = "Save changes";
+  if (isPending) submitLabel = translations("saving");
+  else if (isNew) submitLabel = translations("create");
+  else submitLabel = translations("saveChanges");
   useActionFeedback(state);
 
   const [selected, setSelected] = useState<Set<string>>(
@@ -210,11 +219,13 @@ function RoleEditorSheet({
   return (
     <SheetContent className="w-full overflow-y-auto sm:max-w-2xl">
       <SheetHeader>
-        <SheetTitle>{isNew ? "Create role" : role?.name}</SheetTitle>
+        <SheetTitle>
+          {isNew ? translations("createTitle") : role?.name}
+        </SheetTitle>
         <SheetDescription>
           {isAdmin
-            ? "The Admin role always has every permission and cannot be changed."
-            : "Choose the permissions this role grants. Users assigned to this role gain exactly these permissions."}
+            ? translations("adminLocked")
+            : translations("editorDescription")}
         </SheetDescription>
       </SheetHeader>
 
@@ -232,7 +243,7 @@ function RoleEditorSheet({
           ))}
 
           <div className="grid gap-2">
-            <Label htmlFor="role-name">Name</Label>
+            <Label htmlFor="role-name">{translations("name")}</Label>
             <Input
               id="role-name"
               name="name"
@@ -243,7 +254,9 @@ function RoleEditorSheet({
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="role-description">Description</Label>
+            <Label htmlFor="role-description">
+              {translations("description")}
+            </Label>
             <Input
               id="role-description"
               name="description"
@@ -264,7 +277,7 @@ function RoleEditorSheet({
               {submitLabel}
             </Button>
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {translations("cancel")}
             </Button>
           </SheetFooter>
         </form>
@@ -274,6 +287,7 @@ function RoleEditorSheet({
 }
 
 export function RolesManager({ roles }: { roles: RoleView[] }) {
+  const translations = useTranslations("Admin.roles");
   const [query, setQuery] = useState("");
   const [editing, setEditing] = useState<EditorTarget | null>(null);
 
@@ -287,19 +301,19 @@ export function RolesManager({ roles }: { roles: RoleView[] }) {
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <Input
-          placeholder="Search roles…"
+          placeholder={translations("searchPlaceholder")}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           className="max-w-xs"
         />
         <Button size="sm" onClick={() => setEditing("new")}>
-          New role
+          {translations("newRole")}
         </Button>
       </div>
 
       {filtered.length === 0 ? (
         <p className="text-muted-foreground text-sm">
-          No roles match your search.
+          {translations("noMatch")}
         </p>
       ) : (
         <div className="flex flex-col divide-y rounded-lg border">
@@ -317,11 +331,11 @@ export function RolesManager({ roles }: { roles: RoleView[] }) {
                   {role.name}
                   {role.isSystem ? (
                     <Badge variant="outline" className="text-xs">
-                      System
+                      {translations("system")}
                     </Badge>
                   ) : null}
                   <span className="text-muted-foreground text-xs font-normal">
-                    {role.userCount} {role.userCount === 1 ? "user" : "users"}
+                    {translations("userCount", { count: role.userCount })}
                   </span>
                 </span>
                 <PermissionSummary permissions={role.permissions} />
@@ -334,25 +348,27 @@ export function RolesManager({ roles }: { roles: RoleView[] }) {
                   variant="ghost"
                   onClick={() => setEditing(role)}
                 >
-                  Edit
+                  {translations("edit")}
                 </Button>
                 <form action={duplicateRoleAction}>
                   <input type="hidden" name="roleId" value={role.id} />
                   <Button type="submit" size="sm" variant="ghost">
-                    Duplicate
+                    {translations("duplicate")}
                   </Button>
                 </form>
                 {!role.isSystem ? (
                   <form id={`delete-role-${role.id}`} action={deleteRoleAction}>
                     <input type="hidden" name="roleId" value={role.id} />
                     <ConfirmDialog
-                      title="Delete role?"
-                      description={`The "${role.name}" role will be permanently removed. This is only possible when no users are assigned to it.`}
-                      confirmLabel="Delete"
+                      title={translations("deleteTitle")}
+                      description={translations("deleteDescription", {
+                        name: role.name,
+                      })}
+                      confirmLabel={translations("delete")}
                       formId={`delete-role-${role.id}`}
                     >
                       <Button type="button" size="sm" variant="ghost">
-                        Delete
+                        {translations("delete")}
                       </Button>
                     </ConfirmDialog>
                   </form>

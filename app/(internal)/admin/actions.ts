@@ -889,16 +889,14 @@ export async function saveAuditRetentionSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.audit");
 
   const auditRetention = parseInt(
     (formData.get("auditRetention") as string) || "0",
     10,
   );
   if (isNaN(auditRetention) || auditRetention < 0) {
-    return {
-      ok: false,
-      message: "Audit retention must be 0 or a positive number.",
-    };
+    return { ok: false, message: translations("errors.retentionInvalid") };
   }
 
   const { updateAuditRetention } = await import("@/lib/settings");
@@ -908,7 +906,7 @@ export async function saveAuditRetentionSettings(
   if (user)
     await logAudit(user.id, AUDIT_ACTIONS.UPDATE_SETTINGS, "Setting", "audit");
 
-  return { ok: true, message: "Audit retention saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function saveEmailLogRetentionSettings(

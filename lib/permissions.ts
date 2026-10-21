@@ -181,6 +181,10 @@ export function isValidPermission(value: string): value is Permission {
   return (ALL_PERMISSIONS as readonly string[]).includes(value);
 }
 
+export function permissionLabelKey(permission: string): string {
+  return permission.replace(":", "_");
+}
+
 export function hasPermission(
   userPermissions: readonly string[],
   permission: Permission,
