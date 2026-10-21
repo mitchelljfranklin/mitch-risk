@@ -10,6 +10,7 @@ import { getFormatter, getTranslations } from "next-intl/server";
 
 import { formatPercent } from "@/lib/utils";
 import { getCustomerResponsibilityCompliance } from "@/lib/db/customer-responsibility";
+import { AUTOMATED_FINDING_DESCRIPTION } from "@/lib/schemas/findings";
 import {
   type PdfFormatter,
   type PdfTranslate,
@@ -332,7 +333,11 @@ function AssessmentPdfDocument({
                   )}
                   : {finding.title}
                 </Text>
-                <Text style={styles.findingMeta}>{finding.description}</Text>
+                <Text style={styles.findingMeta}>
+                  {finding.description === AUTOMATED_FINDING_DESCRIPTION
+                    ? translations("common.automatedFindingDescription")
+                    : finding.description}
+                </Text>
                 {finding.controls.length > 0 ? (
                   <View
                     style={{
@@ -398,10 +403,10 @@ export async function generateAssessmentPdf(
       (response) => response.assessmentQuestionId === question.id,
     );
     const answer = response?.isNotApplicable
-      ? "N/A"
+      ? translations("common.na")
       : response?.value !== null && response?.value !== undefined
         ? String(response.value)
-        : "--";
+        : translations("common.none");
 
     const weight = question.riskWeight;
     const maxScoreMap: Record<string, number> = {
@@ -436,7 +441,10 @@ export async function generateAssessmentPdf(
     title: finding.title,
     severity: finding.severity,
     controls: finding.controlCodes,
-    description: finding.description,
+    description:
+      finding.description === AUTOMATED_FINDING_DESCRIPTION
+        ? translations("common.automatedFindingDescription")
+        : finding.description,
   }));
 
   const data: AssessmentPdfData = {

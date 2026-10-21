@@ -1030,7 +1030,7 @@ test.describe("internal shell", () => {
     await page.goto("/trust-center");
 
     await expect(
-      page.getByRole("heading", { name: "Trust center" }),
+      page.getByRole("heading", { name: "Trust Center" }),
     ).toBeVisible();
     await expect(
       page.getByText("Insignias de cumplimiento", { exact: true }),

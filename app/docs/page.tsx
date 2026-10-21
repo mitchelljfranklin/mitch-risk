@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 
 function loadScript(src: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -19,6 +20,7 @@ function loadScript(src: string): Promise<void> {
 }
 
 export default function DocsPage() {
+  const translations = useTranslations("ApiDocs");
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const initialized = useRef(false);
@@ -43,7 +45,7 @@ export default function DocsPage() {
         ).SwaggerUIStandalonePreset as { default?: unknown } | undefined;
 
         if (!SwaggerUIBundle) {
-          setError("Swagger UI failed to load.");
+          setError(translations("loadFailed"));
           return;
         }
 
@@ -68,10 +70,10 @@ export default function DocsPage() {
         });
         setReady(true);
       })
-      .catch((error: Error) => {
-        setError(error.message);
+      .catch(() => {
+        setError(translations("loadFailed"));
       });
-  }, []);
+  }, [translations]);
 
   return (
     <>
@@ -83,7 +85,7 @@ export default function DocsPage() {
         <div id="swagger-ui" />
         {!ready && !error ? (
           <div className="text-muted-foreground p-10 text-center text-sm">
-            Loading API documentation...
+            {translations("loading")}
           </div>
         ) : null}
         {error ? (

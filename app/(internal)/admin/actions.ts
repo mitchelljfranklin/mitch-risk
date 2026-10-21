@@ -998,11 +998,19 @@ export async function retryEmailSendAction(
     | "reset";
 
   const { getOrganizationSettings } = await import("@/lib/settings");
-  const organizationName =
-    (await getOrganizationSettings()).name || "Mitch-Risk";
+  const { loadMessages } = await import("@/lib/i18n/messages");
+  const { createTranslator } = await import("next-intl");
+  const organization = await getOrganizationSettings();
+  const organizationName = organization.name || "Mitch-Risk";
+  const emailMessages = await loadMessages(organization.defaultLocale);
+  const emailTranslations = createTranslator({
+    locale: organization.defaultLocale,
+    messages: emailMessages,
+    namespace: "Email",
+  });
 
   const tokens: Record<string, string> = {
-    message: "Please review and resubmit your questionnaire.",
+    message: emailTranslations("retryMessage"),
     portalPassword: "",
     // Brand placeholder used across templates; without it {{appName}} would
     // reach the recipient verbatim on any template that references it.

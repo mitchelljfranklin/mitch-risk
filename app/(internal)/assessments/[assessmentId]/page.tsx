@@ -44,6 +44,7 @@ import {
   SEVERITY_ACCENT,
   SEVERITY_STYLES,
 } from "@/lib/schemas/assessment";
+import { AUTOMATED_FINDING_DESCRIPTION } from "@/lib/schemas/findings";
 import { cn, formatResponseValue } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -554,7 +555,9 @@ export default async function AssessmentDetailPage({
                     <span className="text-sm font-medium">{finding.title}</span>
                   </div>
                   <p className="text-muted-foreground mt-1 text-sm">
-                    {finding.description}
+                    {finding.description === AUTOMATED_FINDING_DESCRIPTION
+                      ? translations("findings.automatedDescription")
+                      : finding.description}
                   </p>
                   {finding.controlCodes.length > 0 ? (
                     <div className="mt-1 flex flex-wrap gap-1">

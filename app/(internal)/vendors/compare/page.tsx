@@ -352,7 +352,7 @@ export default async function CompareVendorsPage({
                         </span>
                         {diff.complianceChanged ? (
                           <Badge variant="outline" className="ml-1 text-[10px]">
-                            changed
+                            {translations("changed")}
                           </Badge>
                         ) : null}
                       </>

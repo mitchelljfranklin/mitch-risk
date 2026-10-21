@@ -8,6 +8,7 @@
     "sidebar": "Barra lateral",
     "sidebarDescription": "Muestra la barra lateral móvil.",
     "toggleSidebar": "Alternar barra lateral",
+    "step": "Paso {number}:",
     "tiers": {
       "CRITICAL": "Crítico",
       "HIGH": "Alto",
@@ -574,7 +575,8 @@
         "summary": "Hallazgos ({count} · {open, plural, one {# abierto} other {# abiertos}})",
         "deletedUser": "Usuario eliminado",
         "noneTitle": "Hallazgos",
-        "allCompliant": "Todas las respuestas cumplen: no hay hallazgos."
+        "allCompliant": "Todas las respuestas cumplen: no hay hallazgos.",
+        "automatedDescription": "La respuesta del proveedor no cumplió con la respuesta esperada."
       },
       "responses": {
         "title": "Respuestas",
@@ -1098,6 +1100,7 @@
       "applying": "Aplicando...",
       "clearSelection": "Borrar selección",
       "note": "Nota: {note}",
+      "automatedDescription": "La respuesta del proveedor no cumplió con la respuesta esperada.",
       "errors": {
         "invalidStatus": "Estado no válido.",
         "invalidSelection": "Datos de selección no válidos.",
@@ -1341,6 +1344,7 @@
       },
       "types": {
         "INVITE": "Invitación",
+        "INVITE-PASSWORD": "Invitación (protegida con contraseña)",
         "REMINDER": "Recordatorio",
         "ESCALATION": "Escalado",
         "SUBMISSION": "Envío",
@@ -2072,7 +2076,13 @@
     "comparisonSubtitle": "{vendorA} frente a {vendorB}",
     "statusLabel": "{title} · {status}",
     "question": "Pregunta",
+    "changed": "cambiada",
     "notApplicable": "N/A"
+  },
+  "ApiDocs": {
+    "metaTitle": "Documentación de la API",
+    "loading": "Cargando la documentación de la API...",
+    "loadFailed": "No se pudo cargar Swagger UI."
   },
   "CompareAssessments": {
     "metaTitle": "Comparar evaluaciones",
@@ -2080,7 +2090,7 @@
     "notFound": "Proveedor no encontrado",
     "title": "Comparar evaluaciones",
     "breadcrumb": "Comparar evaluaciones",
-    "instructions": "Selecciona dos evaluaciones en la página del proveedor para compararlas en paralelo. Después de abrir dos, guarda esta página en marcadores con ?left=<id>&right=<id>.",
+    "instructions": "Selecciona dos evaluaciones en la página del proveedor para compararlas en paralelo. Después de abrir dos, guarda esta página en marcadores con ?left=[id]&right=[id].",
     "comparisonSubtitle": "{leftTitle} ({leftStatus}) frente a {rightTitle} ({rightStatus})",
     "question": "Pregunta",
     "changed": "cambiada",
@@ -2120,8 +2130,8 @@
     }
   },
   "TrustCenterManager": {
-    "metaTitle": "Trust center",
-    "title": "Trust center",
+    "metaTitle": "Trust Center",
+    "title": "Trust Center",
     "subtitle": "Publica insignias de cumplimiento, documentos de seguridad, subencargados y secciones narrativas en tu página pública del Trust Center.",
     "viewPublic": "Ver página pública",
     "disabledBanner": "El Trust Center está actualmente desactivado. Actívalo en Configuración → Trust Center; hasta entonces la página pública muestra un mensaje de no encontrado.",
@@ -2508,7 +2518,8 @@
       "reviewer": "Revisor: {name}",
       "generated": "Generado el {date}",
       "due": "Vence: {date}",
-      "completed": "Completado: {date}"
+      "completed": "Completado: {date}",
+      "automatedFindingDescription": "La respuesta del proveedor no cumplió con la respuesta esperada."
     },
     "tiers": {
       "CRITICAL": "Crítico",
@@ -2604,7 +2615,9 @@
     "testBody": "Tus ajustes de SMTP funcionan correctamente.",
     "testSent": "Correo de prueba enviado.",
     "smtpNotConfigured": "SMTP no está configurado.",
-    "transporterFailed": "No se pudo crear el transporte."
+    "transporterFailed": "No se pudo crear el transporte.",
+    "sendFailed": "No se pudo enviar: {reason}",
+    "retryMessage": "Revisa y vuelve a enviar tu cuestionario."
   },
   "Auth": {
     "tagline": "Gestión del riesgo de proveedores",

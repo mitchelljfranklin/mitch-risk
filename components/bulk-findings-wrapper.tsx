@@ -23,6 +23,7 @@ import {
   SEVERITY_ACCENT,
   SEVERITY_STYLES,
 } from "@/lib/schemas/assessment";
+import { AUTOMATED_FINDING_DESCRIPTION } from "@/lib/schemas/findings";
 import { bulkUpdateFindingStatusesAction } from "@/lib/actions/findings";
 import type { RegisterFinding } from "@/lib/db/findings";
 
@@ -174,7 +175,9 @@ export function BulkFindingsWrapper({
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
             <p className="text-muted-foreground text-sm">
-              {finding.description}
+              {finding.description === AUTOMATED_FINDING_DESCRIPTION
+                ? translations("automatedDescription")
+                : finding.description}
             </p>
             {finding.controlCodes.length > 0 ? (
               <ControlCodePills codes={finding.controlCodes} />

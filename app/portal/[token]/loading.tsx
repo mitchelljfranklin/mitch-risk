@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 // Public first impression: no auth or data required, just a quiet placeholder
 // while the token lookup resolves.
 export default async function PortalLoading() {
-  const t = await getTranslations("Portal");
+  const translations = await getTranslations("Portal");
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-4 p-6">
@@ -17,7 +17,7 @@ export default async function PortalLoading() {
           <div className="bg-muted h-10 w-24 animate-pulse rounded-md" />
         </div>
       </div>
-      <p className="text-muted-foreground text-xs">{t("loading")}</p>
+      <p className="text-muted-foreground text-xs">{translations("loading")}</p>
     </div>
   );
 }

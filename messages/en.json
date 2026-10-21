@@ -8,6 +8,7 @@
     "sidebar": "Sidebar",
     "sidebarDescription": "Displays the mobile sidebar.",
     "toggleSidebar": "Toggle Sidebar",
+    "step": "Step {number}:",
     "tiers": {
       "CRITICAL": "Critical",
       "HIGH": "High",
@@ -574,7 +575,8 @@
         "summary": "Findings ({count} · {open, plural, one {# open} other {# open}})",
         "deletedUser": "Deleted user",
         "noneTitle": "Findings",
-        "allCompliant": "All answers compliant — no findings."
+        "allCompliant": "All answers compliant — no findings.",
+        "automatedDescription": "The vendor's answer did not meet the expected response."
       },
       "responses": {
         "title": "Responses",
@@ -1098,6 +1100,7 @@
       "applying": "Applying...",
       "clearSelection": "Clear selection",
       "note": "Note: {note}",
+      "automatedDescription": "The vendor's answer did not meet the expected response.",
       "errors": {
         "invalidStatus": "Invalid status.",
         "invalidSelection": "Invalid selection data.",
@@ -1341,6 +1344,7 @@
       },
       "types": {
         "INVITE": "Invite",
+        "INVITE-PASSWORD": "Invite (password protected)",
         "REMINDER": "Reminder",
         "ESCALATION": "Escalation",
         "SUBMISSION": "Submission",
@@ -2072,7 +2076,13 @@
     "comparisonSubtitle": "{vendorA} vs {vendorB}",
     "statusLabel": "{title} · {status}",
     "question": "Question",
+    "changed": "changed",
     "notApplicable": "N/A"
+  },
+  "ApiDocs": {
+    "metaTitle": "API Documentation",
+    "loading": "Loading API documentation...",
+    "loadFailed": "Swagger UI failed to load."
   },
   "CompareAssessments": {
     "metaTitle": "Compare assessments",
@@ -2080,7 +2090,7 @@
     "notFound": "Vendor not found",
     "title": "Compare assessments",
     "breadcrumb": "Compare assessments",
-    "instructions": "Select two assessments from the vendor page to compare them side-by-side. After opening two, bookmark this page with ?left=<id>&right=<id>.",
+    "instructions": "Select two assessments from the vendor page to compare them side-by-side. After opening two, bookmark this page with ?left=[id]&right=[id].",
     "comparisonSubtitle": "{leftTitle} ({leftStatus}) vs {rightTitle} ({rightStatus})",
     "question": "Question",
     "changed": "changed",
@@ -2120,8 +2130,8 @@
     }
   },
   "TrustCenterManager": {
-    "metaTitle": "Trust center",
-    "title": "Trust center",
+    "metaTitle": "Trust Center",
+    "title": "Trust Center",
     "subtitle": "Publish compliance badges, security documents, subprocessors and narrative sections to your public trust center page.",
     "viewPublic": "View public page",
     "disabledBanner": "The trust center is currently disabled. Enable it in Settings → Trust Center — until then the public page shows a not-found message.",
@@ -2254,7 +2264,7 @@
       "selfAssessment": "Self-assessment",
       "frameworks": "Frameworks",
       "templates": "Templates",
-      "trustCenter": "Trust center",
+      "trustCenter": "Trust Center",
       "admin": "Admin",
       "groups": {
         "risk": "Risk",
@@ -2508,7 +2518,8 @@
       "reviewer": "Reviewer: {name}",
       "generated": "Generated {date}",
       "due": "Due: {date}",
-      "completed": "Completed: {date}"
+      "completed": "Completed: {date}",
+      "automatedFindingDescription": "The vendor's answer did not meet the expected response."
     },
     "tiers": {
       "CRITICAL": "Critical",
@@ -2604,7 +2615,9 @@
     "testBody": "Your SMTP settings are working correctly.",
     "testSent": "Test email sent.",
     "smtpNotConfigured": "SMTP is not configured.",
-    "transporterFailed": "Failed to create transporter."
+    "transporterFailed": "Failed to create transporter.",
+    "sendFailed": "Failed to send: {reason}",
+    "retryMessage": "Please review and resubmit your questionnaire."
   },
   "Auth": {
     "tagline": "Vendor risk management",

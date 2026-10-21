@@ -185,7 +185,7 @@ export async function sendEmail(
     await updateNotificationLogStatus(
       notificationLogId,
       "FAILED",
-      "SMTP is not configured.",
+      translations("smtpNotConfigured"),
     );
     return { ok: false, subject: resolvedSubject, notificationLogId };
   }
@@ -214,13 +214,13 @@ export async function sendEmail(
     await updateNotificationLogStatus(notificationLogId, "SENT", null);
     return { ok: true, subject: resolvedSubject, notificationLogId };
   } catch (sendError: unknown) {
-    const errorMessage =
+    const reason =
       sendError instanceof Error ? sendError.message : "unknown error";
-    console.error("Failed to send email:", errorMessage);
+    console.error("Failed to send email:", reason);
     await updateNotificationLogStatus(
       notificationLogId,
       "FAILED",
-      errorMessage,
+      translations("sendFailed", { reason }),
     );
     return { ok: false, subject: resolvedSubject, notificationLogId };
   }
@@ -272,7 +272,9 @@ export async function sendTestEmail(
     await updateNotificationLogStatus(notificationLogId, "SENT", null);
     return { ok: true, message: translations("testSent") };
   } catch (sendError: unknown) {
-    const errorMessage = `Failed: ${sendError instanceof Error ? sendError.message : "unknown error"}`;
+    const reason =
+      sendError instanceof Error ? sendError.message : "unknown error";
+    const errorMessage = translations("sendFailed", { reason });
     await updateNotificationLogStatus(
       notificationLogId,
       "FAILED",

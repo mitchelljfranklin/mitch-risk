@@ -13,7 +13,7 @@ export async function validatePortalPassword(
   token: string,
   password: string,
 ): Promise<{ ok: boolean; message?: string }> {
-  const t = await getTranslations("Portal.password");
+  const translations = await getTranslations("Portal.password");
   const { portalPasswordAttemptsPerMin } = await getAssessmentSettings();
   const allowed = rateLimit(
     "portal-password",
@@ -21,17 +21,17 @@ export async function validatePortalPassword(
     portalPasswordAttemptsPerMin,
   );
   if (!allowed) {
-    return { ok: false, message: t("tooMany") };
+    return { ok: false, message: translations("tooMany") };
   }
 
   const assessment = await getAssessmentByToken(token);
   if (!assessment || !assessment.portalPasswordHash) {
-    return { ok: false, message: t("notSet") };
+    return { ok: false, message: translations("notSet") };
   }
 
   const valid = await bcrypt.compare(password, assessment.portalPasswordHash);
   if (!valid) {
-    return { ok: false, message: t("incorrect") };
+    return { ok: false, message: translations("incorrect") };
   }
 
   // The cookie must not simply echo the token — the token is public (it is

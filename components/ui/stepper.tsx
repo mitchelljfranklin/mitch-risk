@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 
@@ -1068,6 +1069,7 @@ function StepperIndicator({
   children,
   ...props
 }: StepperIndicatorProps) {
+  const translations = useTranslations("Common");
   const { index, stepState } = useStepperItemContext("StepperIndicator");
   const stepNumber = index >= 0 ? index + 1 : undefined;
   const content =
@@ -1083,7 +1085,11 @@ function StepperIndicator({
 
   return (
     <>
-      {stepNumber ? <span className="sr-only">Step {stepNumber}:</span> : null}
+      {stepNumber ? (
+        <span className="sr-only">
+          {translations("step", { number: stepNumber })}
+        </span>
+      ) : null}
       <span
         aria-hidden="true"
         data-slot="stepper-indicator"

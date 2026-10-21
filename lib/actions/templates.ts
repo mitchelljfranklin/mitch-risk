@@ -396,15 +396,15 @@ export async function importTemplateAction(
 ): Promise<TemplateImportState> {
   await requirePermission(PERMISSIONS.TEMPLATES_CREATE);
   const translations = await getTranslations("Templates.import");
-  const errors = await getTranslations("Templates.import.errors");
+  const errorTranslations = await getTranslations("Templates.import.errors");
 
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {
-    return { ok: false, error: errors("noFile") };
+    return { ok: false, error: errorTranslations("noFile") };
   }
 
   if (file.size > 1_000_000) {
-    return { ok: false, error: errors("fileTooLarge") };
+    return { ok: false, error: errorTranslations("fileTooLarge") };
   }
 
   let data: TemplateImportJson;
@@ -415,11 +415,11 @@ export async function importTemplateAction(
       "Failed to parse import JSON:",
       error instanceof Error ? error.message : String(error),
     );
-    return { ok: false, error: errors("invalidJson") };
+    return { ok: false, error: errorTranslations("invalidJson") };
   }
 
   try {
-    const result = await importTemplateFromJson(data, errors);
+    const result = await importTemplateFromJson(data, errorTranslations);
     if (!result.ok) {
       return { ok: false, error: result.error };
     }
@@ -446,7 +446,7 @@ export async function importTemplateAction(
     );
     return {
       ok: false,
-      error: errors("importFailed"),
+      error: errorTranslations("importFailed"),
     };
   }
 }

@@ -34,7 +34,7 @@ export async function importFrameworkAction(
 ): Promise<FrameworkImportState> {
   const user = await requirePermission(PERMISSIONS.FRAMEWORKS_EDIT);
   const translations = await getTranslations("Frameworks.import");
-  const errors = await getTranslations("Frameworks.import.errors");
+  const errorTranslations = await getTranslations("Frameworks.import.errors");
 
   const name = (formData.get("name") as string)?.trim();
   const version = (formData.get("version") as string)?.trim();
@@ -50,8 +50,8 @@ export async function importFrameworkAction(
         ok: false,
         message:
           firstIssue?.code === "too_big"
-            ? errors("nameTooLong")
-            : errors("nameRequired"),
+            ? errorTranslations("nameTooLong")
+            : errorTranslations("nameRequired"),
       };
     }
     if (field === "version") {
@@ -59,32 +59,32 @@ export async function importFrameworkAction(
         ok: false,
         message:
           firstIssue?.code === "too_big"
-            ? errors("versionTooLong")
-            : errors("versionRequired"),
+            ? errorTranslations("versionTooLong")
+            : errorTranslations("versionRequired"),
       };
     }
     if (field === "description") {
-      return { ok: false, message: errors("descriptionTooLong") };
+      return { ok: false, message: errorTranslations("descriptionTooLong") };
     }
-    return { ok: false, message: errors("invalidInput") };
+    return { ok: false, message: errorTranslations("invalidInput") };
   }
 
   if (!file || !(file instanceof File)) {
-    return { ok: false, message: errors("noFile") };
+    return { ok: false, message: errorTranslations("noFile") };
   }
 
   if (!file.name.endsWith(".csv")) {
-    return { ok: false, message: errors("invalidFileType") };
+    return { ok: false, message: errorTranslations("invalidFileType") };
   }
 
   const text = await file.text();
   if (text.length > 1_000_000) {
-    return { ok: false, message: errors("tooLarge") };
+    return { ok: false, message: errorTranslations("tooLarge") };
   }
 
   const rows = parseCsvRows(text);
   if (rows.length === 0) {
-    return { ok: false, message: errors("noRows") };
+    return { ok: false, message: errorTranslations("noRows") };
   }
 
   const expectedHeaders = ["domain", "code", "title", "guidance"];
@@ -95,7 +95,7 @@ export async function importFrameworkAction(
   if (missing.length > 0) {
     return {
       ok: false,
-      message: errors("missingColumns", {
+      message: errorTranslations("missingColumns", {
         columns: missing.join(", "),
         expected: expectedHeaders.join(", "),
       }),
@@ -133,13 +133,13 @@ export async function importFrameworkAction(
     if (!parsed.success) {
       const firstIssue = parsed.error.issues[0];
       const field = firstIssue?.path[0];
-      let message = errors("rowInvalid", { row: i + 1 });
+      let message = errorTranslations("rowInvalid", { row: i + 1 });
       if (field === "domain") {
-        message = errors("rowDomainRequired", { row: i + 1 });
+        message = errorTranslations("rowDomainRequired", { row: i + 1 });
       } else if (field === "code") {
-        message = errors("rowCodeRequired", { row: i + 1 });
+        message = errorTranslations("rowCodeRequired", { row: i + 1 });
       } else if (field === "title") {
-        message = errors("rowTitleRequired", { row: i + 1 });
+        message = errorTranslations("rowTitleRequired", { row: i + 1 });
       }
       return { ok: false, message };
     }
@@ -147,7 +147,7 @@ export async function importFrameworkAction(
     if (seenCodes.has(parsed.data.code)) {
       return {
         ok: false,
-        message: errors("duplicateCode", {
+        message: errorTranslations("duplicateCode", {
           row: i + 1,
           code: parsed.data.code,
         }),
@@ -187,7 +187,7 @@ export async function importFrameworkAction(
     ) {
       return {
         ok: false,
-        message: errors("duplicateFramework", {
+        message: errorTranslations("duplicateFramework", {
           name: meta.data.name,
           version: meta.data.version,
         }),

@@ -53,6 +53,13 @@ import { getField } from "@/lib/utils";
 export type TrustCenterActionState =
   { ok: boolean; message: string } | undefined;
 
+class TrustCenterValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "TrustCenterValidationError";
+  }
+}
+
 function refreshTrustPaths(): void {
   // The public page reads published rows on every request; the manager page
   // renders the same lists. Save actions consumed by useActionState must NOT
@@ -294,7 +301,7 @@ export async function saveTrustBadgeAction(
       }
     }
     await recordAudit(entityId);
-  } catch (error: unknown) {
+  } catch {
     // Roll back the just-saved image if the record write failed.
     if (image.imageKey) {
       await storage.delete(image.imageKey).catch(() => {
@@ -303,10 +310,7 @@ export async function saveTrustBadgeAction(
     }
     return {
       ok: false,
-      message:
-        error instanceof Error
-          ? error.message
-          : translations("errors.saveFailed"),
+      message: translations("errors.saveFailed"),
     };
   }
 
@@ -402,7 +406,7 @@ export async function saveTrustDocumentAction(
     return {
       ok: false,
       message:
-        error instanceof Error
+        error instanceof TrustCenterValidationError
           ? error.message
           : translations("errors.saveFailed"),
     };
@@ -434,18 +438,18 @@ async function prepareTrustDocumentFile(
 }> {
   const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
   if (!ALLOWED_ATTACHMENT_EXTS.includes(ext)) {
-    throw new Error(messages.fileType);
+    throw new TrustCenterValidationError(messages.fileType);
   }
   if (file.size > MAX_ATTACHMENT_BYTES) {
-    throw new Error(messages.fileTooLarge);
+    throw new TrustCenterValidationError(messages.fileTooLarge);
   }
   if (isDangerousUploadMime(file.type)) {
-    throw new Error(messages.fileType);
+    throw new TrustCenterValidationError(messages.fileType);
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
   if (!validateMagicBytes(ext, buffer)) {
-    throw new Error(messages.fileInvalid);
+    throw new TrustCenterValidationError(messages.fileInvalid);
   }
 
   return {
@@ -576,7 +580,7 @@ export async function saveTrustSubprocessorAction(
       await setTrustSubprocessorLogo(subprocessorId, newLogoKey);
     }
     await recordAudit(subprocessorId);
-  } catch (error: unknown) {
+  } catch {
     // Roll back the just-stored logo if the record write failed.
     if (newLogoKey) {
       await storage.delete(newLogoKey).catch(() => {
@@ -585,10 +589,7 @@ export async function saveTrustSubprocessorAction(
     }
     return {
       ok: false,
-      message:
-        error instanceof Error
-          ? error.message
-          : translations("errors.saveFailed"),
+      message: translations("errors.saveFailed"),
     };
   }
 
@@ -647,13 +648,10 @@ export async function saveTrustSectionAction(
       entityId = created.id;
     }
     await recordAudit(entityId);
-  } catch (error: unknown) {
+  } catch {
     return {
       ok: false,
-      message:
-        error instanceof Error
-          ? error.message
-          : translations("errors.saveFailed"),
+      message: translations("errors.saveFailed"),
     };
   }
 

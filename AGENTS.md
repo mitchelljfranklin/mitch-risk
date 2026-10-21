@@ -292,10 +292,10 @@ UI hiding is cosmetic; the server guard is the real control — **both are alway
   self-assessment; profile; Trust Center manager and public page; vendor portal; emails; PDFs;
   admin (all sections); and not-found. The catastrophic `app/global-error.tsx` fallback stays
   English because it renders outside the locale provider. Email templates are admin-authored; only
-  the built-in defaults are translated
-  (`lib/settings/email-template-defaults.ts`) — customized templates are sent as written. PDFs
-  follow the request locale via `getTranslations`/`getFormatter`; use those (not `formatDate()`,
-  which is fixed to en-GB) for dates on translated surfaces.
+  the built-in defaults are translated (`lib/settings/email-template-defaults.ts`) — customized
+  templates are sent as written. Emails render in the organization's default language (cron has no
+  request locale); PDFs follow the request locale via `getTranslations`/`getFormatter`; use those
+  (not `formatDate()`, which is fixed to en-GB) for dates on translated surfaces.
 
 ## Windows / PowerShell tooling notes
 
