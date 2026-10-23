@@ -1,12 +1,12 @@
 # Software Bill of Materials (SBOM)
 
-This document lists every direct software dependency used by Mitch‑Risk v1.5.1, organised by functional purpose. It is intended for security reviewers, compliance assessors, and procurement teams evaluating the platform for organisational use.
+This document lists every direct software dependency used by Mitch‑Risk v1.5.2, organised by functional purpose. It is intended for security reviewers, compliance assessors, and procurement teams evaluating the platform for organisational use.
 
 ## Runtime Requirements
 
 | Component | Minimum Version | Notes |
 |-----------|----------------|-------|
-| Node.js | 22 | JavaScript runtime (LTS) |
+| Node.js | 22.23.4 | JavaScript runtime (LTS) |
 | PostgreSQL | 17 | Relational database server |
 | Docker (optional) | 24+ | Container runtime for self-hosted deployment |
 

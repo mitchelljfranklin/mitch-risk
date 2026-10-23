@@ -181,7 +181,7 @@ extend it.
   `actions/checkout` and `COPY --from=build /app/public` then fail. Same for any explicitly
   copied directory.
 - **Healthchecks must use `curl -f`**, not `node -e` (nested `function(){return…}` breaks on
-  `dash`-based `node:22-slim`). `curl` is installed in the base stage.
+  `dash`-based `node:22.23.4-slim`). `curl` is installed in the base stage.
 - **`next-env.d.ts` is gitignored** — auto-generated, varies by environment, never commit it.
 - **GHCR is preferred over Docker Hub** (built-in `GITHUB_TOKEN`, no separate credentials).
 - **Branch protection required status checks must match the job name** (`quality`), not the
