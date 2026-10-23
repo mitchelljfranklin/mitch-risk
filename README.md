@@ -191,7 +191,7 @@ docker compose up -d
 
 | Layer | Technology |
 |-------|-----------|
-| Runtime | Node.js >= 22 |
+| Runtime | Node.js >= 22.23.4 |
 | Framework | Next.js 16 (App Router) + TypeScript ^6 |
 | Database | PostgreSQL + Prisma ^7 |
 | UI | Tailwind CSS v4 + shadcn/ui (light/dark) |
