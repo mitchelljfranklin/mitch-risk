@@ -1,3 +1,6 @@
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import {
   Card,
@@ -14,22 +17,33 @@ import { listUsers } from "@/lib/db/users";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "New vendor" };
+export async function generateMetadata(): Promise<Metadata> {
+  const translations = await getTranslations("Vendors");
+  return { title: translations("new.title") };
+}
 
 export default async function NewVendorPage() {
   await requirePermission(PERMISSIONS.VENDORS_CREATE);
   const owners = await listUsers();
+  const translations = await getTranslations("Vendors");
 
   return (
     <div className="flex max-w-3xl flex-col gap-6">
       <Breadcrumbs
-        segments={[{ label: "Vendors", href: "/vendors" }, { label: "New" }]}
+        segments={[
+          { label: translations("title"), href: "/vendors" },
+          { label: translations("new.breadcrumb") },
+        ]}
       />
-      <h1 className="text-2xl font-semibold tracking-tight">New vendor</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">
+        {translations("new.title")}
+      </h1>
       <Card>
         <CardHeader>
-          <CardTitle>Vendor details</CardTitle>
-          <CardDescription>Add a new vendor to track.</CardDescription>
+          <CardTitle>{translations("new.cardTitle")}</CardTitle>
+          <CardDescription>
+            {translations("new.cardDescription")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <VendorForm action={createVendorAction} owners={owners} />

@@ -1,14 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useFormatter, useTranslations } from "next-intl";
 import {
   ClipboardCheck,
   FileBadge,
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
-
-import { formatDate } from "@/lib/utils";
 
 type TimelineEvent = {
   id: string;
@@ -34,9 +33,12 @@ const ICON_COLORS: Record<TimelineEvent["type"], string> = {
 const ICON_SIZE = 23;
 
 export function VendorTimeline({ events }: { events: TimelineEvent[] }) {
+  const translations = useTranslations("Vendors.timeline");
+  const dateFormatter = useFormatter();
+
   if (events.length === 0) {
     return (
-      <p className="text-muted-foreground text-sm">No activity recorded yet.</p>
+      <p className="text-muted-foreground text-sm">{translations("empty")}</p>
     );
   }
 
@@ -76,7 +78,11 @@ export function VendorTimeline({ events }: { events: TimelineEvent[] }) {
                 )}
               </span>
               <span className="text-muted-foreground/60 text-[11px]">
-                {formatDate(event.createdAt)}
+                {dateFormatter.dateTime(event.createdAt, {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}
               </span>
             </div>
           </div>

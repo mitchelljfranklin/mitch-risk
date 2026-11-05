@@ -1,6 +1,7 @@
 "use server";
 
 import bcrypt from "bcryptjs";
+import { getTranslations } from "next-intl/server";
 import { type Prisma } from "../../prisma/generated/prisma/client";
 
 import { getCurrentUser, requirePermission, signOut } from "@/lib/auth";
@@ -21,9 +22,10 @@ export async function updateProfileAction(
   formData: FormData,
 ): Promise<ProfileState> {
   await requirePermission(PERMISSIONS.PROFILE_VIEW);
+  const translations = await getTranslations("Profile");
   const user = await getCurrentUser();
   if (!user) {
-    return { ok: false, message: "Not authenticated." };
+    return { ok: false, message: translations("errors.notAuthenticated") };
   }
 
   const existing = await prisma.user.findUnique({
@@ -31,7 +33,7 @@ export async function updateProfileAction(
     select: { passwordHash: true },
   });
   if (!existing) {
-    return { ok: false, message: "Account not found." };
+    return { ok: false, message: translations("errors.accountNotFound") };
   }
 
   // SSO-only accounts have no local password; their credentials (and email) are
@@ -41,9 +43,13 @@ export async function updateProfileAction(
       name: formData.get("name"),
     });
     if (!parsedName.success) {
+      const nameIssue = parsedName.error.issues[0];
       return {
         ok: false,
-        message: parsedName.error.issues[0]?.message ?? "Invalid input.",
+        message:
+          nameIssue?.path[0] === "name"
+            ? translations("errors.nameRequired")
+            : translations("errors.invalidInput"),
       };
     }
 
@@ -57,7 +63,7 @@ export async function updateProfileAction(
 
     // Result feeds useActionState; the client refreshes (useActionFeedback)
     // rather than revalidating the current route, which drops the toast in prod.
-    return { ok: true, message: "Profile updated." };
+    return { ok: true, message: translations("errors.success") };
   }
 
   const parsed = profileUpdateSchema.safeParse({
@@ -68,17 +74,28 @@ export async function updateProfileAction(
     confirmNewPassword: formData.get("confirmNewPassword"),
   });
   if (!parsed.success) {
-    return {
-      ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
-    };
+    const issue = parsed.error.issues[0];
+    let messageKey = "errors.invalidInput";
+    if (issue?.path[0] === "name") messageKey = "errors.nameRequired";
+    else if (issue?.path[0] === "email") messageKey = "errors.emailInvalid";
+    else if (issue?.path[0] === "currentPassword") {
+      messageKey = "errors.currentPasswordRequired";
+    } else if (issue?.path[0] === "newPassword") {
+      messageKey = "errors.passwordTooShort";
+    } else if (issue?.path[0] === "confirmNewPassword") {
+      messageKey = "errors.passwordMismatch";
+    }
+    return { ok: false, message: translations(messageKey) };
   }
 
   const { name, email, currentPassword, newPassword } = parsed.data;
 
   // Verify current password.
   if (!(await bcrypt.compare(currentPassword, existing.passwordHash))) {
-    return { ok: false, message: "Current password is incorrect." };
+    return {
+      ok: false,
+      message: translations("errors.currentPasswordIncorrect"),
+    };
   }
 
   // Update name/email if changed.
@@ -87,7 +104,7 @@ export async function updateProfileAction(
   if (email.toLowerCase() !== user.email?.toLowerCase()) {
     const duplicate = await findUserByEmail(email);
     if (duplicate && duplicate.id !== user.id) {
-      return { ok: false, message: "This email is already taken." };
+      return { ok: false, message: translations("errors.emailTaken") };
     }
     updates.email = email.toLowerCase();
   }
@@ -112,5 +129,5 @@ export async function updateProfileAction(
   }
 
   // See above: the client refreshes rather than revalidating the current route.
-  return { ok: true, message: "Profile updated." };
+  return { ok: true, message: translations("errors.success") };
 }

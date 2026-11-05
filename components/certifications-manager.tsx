@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useActionState } from "react";
+import { useFormatter, useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,12 +25,10 @@ import {
   saveCertificationAction,
 } from "@/lib/actions/certifications";
 import {
-  CERTIFICATION_STATUS_LABELS,
   CERTIFICATION_STATUS_STYLES,
   certificationStatus,
 } from "@/lib/schemas/certification";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
-import { formatDateUtc } from "@/lib/utils";
 import { Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -67,7 +66,8 @@ function CertificationEditor({
   onClose: () => void;
 }) {
   const isNew = target === "new";
-  const cert = isNew ? null : target;
+  const certification = isNew ? null : target;
+  const translations = useTranslations("Vendors.certifications.editor");
   const [state, formAction, isPending] = useActionState(
     saveCertificationAction,
     initialState,
@@ -86,66 +86,74 @@ function CertificationEditor({
   return (
     <SheetContent className="w-full overflow-y-auto sm:max-w-md">
       <SheetHeader>
-        <SheetTitle>{isNew ? "Add certification" : cert?.name}</SheetTitle>
-        <SheetDescription>
-          Track an attestation (SOC 2, ISO 27001, …) and its expiry.
-        </SheetDescription>
+        <SheetTitle>
+          {isNew ? translations("addTitle") : certification?.name}
+        </SheetTitle>
+        <SheetDescription>{translations("description")}</SheetDescription>
       </SheetHeader>
       <form
-        id="cert-editor-form"
+        id="certification-editor-form"
         action={formAction}
         className="flex flex-1 flex-col gap-4 px-4"
       >
         <input type="hidden" name="vendorId" value={vendorId} />
         {!isNew ? (
-          <input type="hidden" name="certificationId" value={cert?.id} />
+          <input
+            type="hidden"
+            name="certificationId"
+            value={certification?.id}
+          />
         ) : null}
         <div className="grid gap-2">
-          <Label htmlFor="cert-name">Name</Label>
+          <Label htmlFor="certification-name">{translations("name")}</Label>
           <Input
-            id="cert-name"
+            id="certification-name"
             name="name"
-            defaultValue={cert?.name ?? ""}
-            placeholder="e.g. SOC 2 Type II"
+            defaultValue={certification?.name ?? ""}
+            placeholder={translations("namePlaceholder")}
             required
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="cert-issuer">Issuer (optional)</Label>
+          <Label htmlFor="certification-issuer">{translations("issuer")}</Label>
           <Input
-            id="cert-issuer"
+            id="certification-issuer"
             name="issuer"
-            defaultValue={cert?.issuer ?? ""}
-            placeholder="e.g. Auditor / certification body"
+            defaultValue={certification?.issuer ?? ""}
+            placeholder={translations("issuerPlaceholder")}
           />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-2">
-            <Label htmlFor="cert-issued">Issued (optional)</Label>
+            <Label htmlFor="certification-issued">
+              {translations("issued")}
+            </Label>
             <Input
-              id="cert-issued"
+              id="certification-issued"
               name="issuedDate"
               type="date"
-              defaultValue={cert?.issuedDate ?? ""}
+              defaultValue={certification?.issuedDate ?? ""}
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="cert-expires">Expires</Label>
+            <Label htmlFor="certification-expires">
+              {translations("expires")}
+            </Label>
             <Input
-              id="cert-expires"
+              id="certification-expires"
               name="expiresDate"
               type="date"
-              defaultValue={cert?.expiresDate ?? ""}
+              defaultValue={certification?.expiresDate ?? ""}
               required
             />
           </div>
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="cert-notes">Notes (optional)</Label>
+          <Label htmlFor="certification-notes">{translations("notes")}</Label>
           <Textarea
-            id="cert-notes"
+            id="certification-notes"
             name="notes"
-            defaultValue={cert?.notes ?? ""}
+            defaultValue={certification?.notes ?? ""}
             rows={3}
           />
         </div>
@@ -164,7 +172,7 @@ function CertificationEditor({
               htmlFor="compliance-actions"
               className="cursor-pointer text-xs font-normal"
             >
-              Compliance actions required
+              {translations("complianceActions")}
             </Label>
             {complianceActionsEnabled ? (
               <Select
@@ -173,7 +181,7 @@ function CertificationEditor({
                 onValueChange={setSelectedFramework}
               >
                 <SelectTrigger className="h-7 text-xs">
-                  <SelectValue placeholder="Select a framework..." />
+                  <SelectValue placeholder={translations("selectFramework")} />
                 </SelectTrigger>
                 <SelectContent>
                   {frameworkOptions.map((option) => (
@@ -188,21 +196,25 @@ function CertificationEditor({
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="cert-file">Attachment (optional)</Label>
+          <Label htmlFor="certification-file">
+            {translations("attachment")}
+          </Label>
           <Input
-            id="cert-file"
+            id="certification-file"
             name="attachmentFile"
             type="file"
             accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx"
           />
           <p className="text-muted-foreground text-xs">
-            Upload a certificate, report, or contract. Max 20 MB.
+            {translations("attachmentHint")}
           </p>
         </div>
       </form>
       {attachments && attachments.length > 0 ? (
         <div className="border-t px-4 pt-4">
-          <span className="text-xs font-medium">Attachments</span>
+          <span className="text-xs font-medium">
+            {translations("attachments")}
+          </span>
           <div className="mt-2 flex flex-col gap-1.5">
             {attachments.map((attachment) => (
               <div
@@ -238,11 +250,15 @@ function CertificationEditor({
         </div>
       ) : null}
       <SheetFooter className="px-4">
-        <Button type="submit" form="cert-editor-form" disabled={isPending}>
-          {isPending ? "Saving..." : "Save certification"}
+        <Button
+          type="submit"
+          form="certification-editor-form"
+          disabled={isPending}
+        >
+          {isPending ? translations("saving") : translations("save")}
         </Button>
         <Button type="button" variant="outline" onClick={onClose}>
-          Cancel
+          {translations("cancel")}
         </Button>
       </SheetFooter>
     </SheetContent>
@@ -266,43 +282,56 @@ export function CertificationsManager({
   frameworkOptions: { name: string }[];
 }) {
   const [editing, setEditing] = useState<EditorTarget | null>(null);
+  const translations = useTranslations("Vendors.certifications");
+  const dateFormatter = useFormatter();
 
-  const editingCert =
+  const editingCertification =
     editing && editing !== "new"
-      ? (certifications.find((cert) => cert.id === editing.id) ?? null)
+      ? (certifications.find(
+          (certification) => certification.id === editing.id,
+        ) ?? null)
       : null;
-  const isOpen = editing === "new" || editingCert !== null;
+  const isOpen = editing === "new" || editingCertification !== null;
 
   return (
     <div className="flex flex-col gap-3">
       {certifications.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          No certifications tracked yet.
-        </p>
+        <p className="text-muted-foreground text-sm">{translations("empty")}</p>
       ) : (
         <div className="flex flex-col divide-y rounded-lg border">
-          {certifications.map((cert) => {
-            const status = certificationStatus(cert.expiresDate);
-            const certAttachments = attachments.get(cert.id) ?? [];
+          {certifications.map((certification) => {
+            const status = certificationStatus(certification.expiresDate);
+            const certificationAttachments =
+              attachments.get(certification.id) ?? [];
             return (
               <div
-                key={cert.id}
+                key={certification.id}
                 className="flex flex-wrap items-center justify-between gap-2 p-3"
               >
                 <div className="flex min-w-0 flex-col">
                   <span className="text-sm font-medium">
-                    {cert.name}
-                    {cert.issuer ? (
+                    {certification.name}
+                    {certification.issuer ? (
                       <span className="text-muted-foreground text-xs font-normal">
                         {" "}
-                        · {cert.issuer}
+                        · {certification.issuer}
                       </span>
                     ) : null}
                   </span>
                   <span className="text-muted-foreground text-xs">
-                    Expires {formatDateUtc(cert.expiresDate)}
+                    {translations("expires", {
+                      date: dateFormatter.dateTime(
+                        new Date(`${certification.expiresDate}T00:00:00Z`),
+                        {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                          timeZone: "UTC",
+                        },
+                      ),
+                    })}
                   </span>
-                  {certAttachments.map((attachment) => (
+                  {certificationAttachments.map((attachment) => (
                     <a
                       key={attachment.id}
                       href={`/api/attachments/${attachment.id}`}
@@ -316,7 +345,9 @@ export function CertificationsManager({
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
                   <Badge className={CERTIFICATION_STATUS_STYLES[status]}>
-                    {CERTIFICATION_STATUS_LABELS[status]}
+                    {translations.has(`statuses.${status}`)
+                      ? translations(`statuses.${status}`)
+                      : status}
                   </Badge>
                   {canEdit ? (
                     <>
@@ -324,27 +355,29 @@ export function CertificationsManager({
                         type="button"
                         size="sm"
                         variant="ghost"
-                        onClick={() => setEditing(cert)}
+                        onClick={() => setEditing(certification)}
                       >
-                        Edit
+                        {translations("edit")}
                       </Button>
                       <form
-                        id={`delete-cert-${cert.id}`}
+                        id={`delete-certification-${certification.id}`}
                         action={deleteCertificationAction}
                       >
                         <input
                           type="hidden"
                           name="certificationId"
-                          value={cert.id}
+                          value={certification.id}
                         />
                         <ConfirmDialog
-                          title="Delete certification?"
-                          description={`"${cert.name}" will be permanently removed.`}
-                          confirmLabel="Delete"
-                          formId={`delete-cert-${cert.id}`}
+                          title={translations("deleteTitle")}
+                          description={translations("deleteDescription", {
+                            name: certification.name,
+                          })}
+                          confirmLabel={translations("delete")}
+                          formId={`delete-certification-${certification.id}`}
                         >
                           <Button type="button" size="sm" variant="ghost">
-                            Delete
+                            {translations("delete")}
                           </Button>
                         </ConfirmDialog>
                       </form>
@@ -360,7 +393,7 @@ export function CertificationsManager({
       {canEdit ? (
         <div>
           <Button size="sm" variant="outline" onClick={() => setEditing("new")}>
-            Add certification
+            {translations("add")}
           </Button>
         </div>
       ) : null}
@@ -373,16 +406,20 @@ export function CertificationsManager({
       >
         {isOpen ? (
           <CertificationEditor
-            key={editing === "new" ? "new" : (editingCert?.id ?? "new")}
+            key={
+              editing === "new" ? "new" : (editingCertification?.id ?? "new")
+            }
             vendorId={vendorId}
             target={
-              editing === "new" ? "new" : (editingCert as CertificationView)
+              editing === "new"
+                ? "new"
+                : (editingCertification as CertificationView)
             }
             attachments={
               editing === "new"
                 ? undefined
-                : editingCert
-                  ? (attachments.get(editingCert.id) ?? [])
+                : editingCertification
+                  ? (attachments.get(editingCertification.id) ?? [])
                   : []
             }
             frameworkOptions={frameworkOptions}

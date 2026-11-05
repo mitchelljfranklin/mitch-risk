@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getFormatter, getTranslations } from "next-intl/server";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Badge } from "@/components/ui/badge";
@@ -39,14 +40,8 @@ import {
   getTemplateForBuilder,
   getTemplateVersionChain,
 } from "@/lib/db/templates";
-import {
-  QUESTION_TYPE_LABELS,
-  RISK_WEIGHT_LABELS,
-} from "@/lib/schemas/template";
 import { summarizeConditionalLogic } from "@/lib/portal";
 import { prisma } from "@/lib/prisma";
-
-import { formatDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -62,7 +57,10 @@ export async function generateMetadata({
     where: { id: templateId },
     select: { name: true },
   });
-  if (!template) return { title: "Template not found" };
+  if (!template) {
+    const translations = await getTranslations("Templates.builder");
+    return { title: translations("notFound") };
+  }
   return { title: template.name };
 }
 
@@ -70,6 +68,11 @@ export default async function TemplateBuilderPage({
   params,
 }: BuilderPageProps) {
   const user = await requirePermission(PERMISSIONS.TEMPLATES_VIEW);
+  const translations = await getTranslations("Templates.builder");
+  const statusTranslations = await getTranslations("Templates.statuses");
+  const commonTranslations = await getTranslations("Common");
+  const conditionTranslations = await getTranslations("Templates.conditions");
+  const dateFormatter = await getFormatter();
   const canEditTemplate = hasPermission(
     user.permissions,
     PERMISSIONS.TEMPLATES_EDIT,
@@ -103,7 +106,7 @@ export default async function TemplateBuilderPage({
     <div className="flex max-w-5xl flex-col gap-6">
       <Breadcrumbs
         segments={[
-          { label: "Templates", href: "/templates" },
+          { label: translations("breadcrumbs.templates"), href: "/templates" },
           { label: template.name },
         ]}
       />
@@ -113,14 +116,16 @@ export default async function TemplateBuilderPage({
             {template.name}
             <Badge variant="outline">v{template.version}</Badge>
             <Badge variant={isDraft ? "secondary" : "default"}>
-              {template.status.toLowerCase()}
+              {statusTranslations.has(template.status)
+                ? statusTranslations(template.status)
+                : template.status.toLowerCase()}
             </Badge>
           </h1>
           <ActionGroup>
             {canEditTemplate && isDraft ? (
               <form action={publishTemplateAction}>
                 <input type="hidden" name="templateId" value={template.id} />
-                <Button type="submit">Publish</Button>
+                <Button type="submit">{translations("actions.publish")}</Button>
               </form>
             ) : null}
             {canEditTemplate && !isDraft ? (
@@ -128,7 +133,7 @@ export default async function TemplateBuilderPage({
                 <form action={createNewVersionAction}>
                   <input type="hidden" name="templateId" value={template.id} />
                   <Button type="submit" variant="outline">
-                    Create new version
+                    {translations("actions.newVersion")}
                   </Button>
                 </form>
                 {template.status === "PUBLISHED" ? (
@@ -139,7 +144,7 @@ export default async function TemplateBuilderPage({
                       value={template.id}
                     />
                     <Button type="submit" variant="ghost">
-                      Unpublish
+                      {translations("actions.unpublish")}
                     </Button>
                   </form>
                 ) : null}
@@ -152,32 +157,38 @@ export default async function TemplateBuilderPage({
               >
                 <input type="hidden" name="templateId" value={template.id} />
                 <ConfirmDialog
-                  title="Delete template?"
-                  description={`This will permanently delete "${template.name}" and all its sections and questions. Assessments using this template will lose the template link. This action cannot be undone.`}
+                  title={translations("actions.deleteTitle")}
+                  description={translations("actions.deleteDescription", {
+                    name: template.name,
+                  })}
                   formId={`delete-template-${template.id}`}
                 >
                   <Button type="button" variant="outline">
-                    Delete
+                    {translations("actions.delete")}
                   </Button>
                 </ConfirmDialog>
               </form>
             ) : null}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" aria-label="Template actions">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  aria-label={translations("actions.menuAriaLabel")}
+                >
                   <MoreHorizontal className="size-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
                   <Link href={`/templates/${template.id}/preview`}>
-                    Preview
+                    {translations("actions.preview")}
                   </Link>
                 </DropdownMenuItem>
                 {canCreateTemplate ? <DuplicateTemplateMenuItem /> : null}
                 <DropdownMenuItem asChild>
                   <a href={`/api/templates/${template.id}/export`} download>
-                    Export
+                    {translations("actions.export")}
                   </a>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -198,13 +209,13 @@ export default async function TemplateBuilderPage({
       {versionChain.length > 1 ? (
         <Card>
           <CardHeader>
-            <CardTitle>Version history</CardTitle>
+            <CardTitle>{translations("versionHistory")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap items-center gap-2">
-              {versionChain.map((version, i) => (
+              {versionChain.map((version, versionIndex) => (
                 <span key={version.id} className="flex items-center gap-2">
-                  {i > 0 ? (
+                  {versionIndex > 0 ? (
                     <span className="text-muted-foreground text-xs">→</span>
                   ) : null}
                   <Link
@@ -226,10 +237,16 @@ export default async function TemplateBuilderPage({
                       }
                       className="text-xs"
                     >
-                      {version.status.toLowerCase()}
+                      {statusTranslations.has(version.status)
+                        ? statusTranslations(version.status)
+                        : version.status.toLowerCase()}
                     </Badge>
                     <span className="text-muted-foreground text-xs">
-                      {formatDate(version.updatedAt)}
+                      {dateFormatter.dateTime(version.updatedAt, {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </span>
                   </Link>
                 </span>
@@ -242,13 +259,13 @@ export default async function TemplateBuilderPage({
       {canEditDraft ? (
         <Card>
           <CardHeader>
-            <CardTitle>Template details</CardTitle>
+            <CardTitle>{translations("details")}</CardTitle>
           </CardHeader>
           <CardContent>
             <form action={updateTemplateAction} className="grid gap-4">
               <input type="hidden" name="templateId" value={template.id} />
               <div className="grid gap-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">{translations("name")}</Label>
                 <Input
                   id="name"
                   name="name"
@@ -257,7 +274,9 @@ export default async function TemplateBuilderPage({
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">
+                  {translations("description")}
+                </Label>
                 <Input
                   id="description"
                   name="description"
@@ -265,20 +284,22 @@ export default async function TemplateBuilderPage({
                 />
               </div>
               <Button type="submit" variant="secondary" className="w-fit">
-                Save details
+                {translations("saveDetails")}
               </Button>
             </form>
           </CardContent>
         </Card>
       ) : !isDraft ? (
         <p className="text-muted-foreground text-sm">
-          This version is published and read-only. Create a new version to make
-          changes.
+          {translations("readOnly")}
         </p>
       ) : null}
 
       {template.sections.length > 0 ? (
-        <nav aria-label="Jump to section" className="flex flex-wrap gap-2">
+        <nav
+          aria-label={translations("jumpToSection")}
+          className="flex flex-wrap gap-2"
+        >
           {template.sections.map((section) => (
             <a
               key={section.id}
@@ -312,7 +333,7 @@ export default async function TemplateBuilderPage({
                     className="max-w-sm"
                   />
                   <Button type="submit" variant="secondary" size="sm">
-                    Rename
+                    {translations("section.rename")}
                   </Button>
                 </form>
               ) : (
@@ -333,7 +354,7 @@ export default async function TemplateBuilderPage({
                       variant="ghost"
                       size="icon-sm"
                       disabled={sectionIndex === 0}
-                      aria-label="Move section up"
+                      aria-label={translations("section.moveUp")}
                     >
                       <ChevronUp size={14} />
                     </Button>
@@ -351,7 +372,7 @@ export default async function TemplateBuilderPage({
                       variant="ghost"
                       size="icon-sm"
                       disabled={sectionIndex === template.sections.length - 1}
-                      aria-label="Move section down"
+                      aria-label={translations("section.moveDown")}
                     >
                       <ChevronDown size={14} />
                     </Button>
@@ -366,12 +387,14 @@ export default async function TemplateBuilderPage({
                   <input type="hidden" name="templateId" value={template.id} />
                   <input type="hidden" name="sectionId" value={section.id} />
                   <ConfirmDialog
-                    title="Delete section?"
-                    description={`This will permanently delete "${section.title}" and all questions within it.`}
+                    title={translations("section.deleteTitle")}
+                    description={translations("section.deleteDescription", {
+                      title: section.title,
+                    })}
                     formId={`delete-section-${section.id}`}
                   >
                     <Button type="button" variant="ghost" size="sm">
-                      Delete section
+                      {translations("section.delete")}
                     </Button>
                   </ConfirmDialog>
                 </form>
@@ -383,19 +406,23 @@ export default async function TemplateBuilderPage({
               <EmptyState
                 compact
                 icon="templates"
-                title="No questions"
-                description="Add a question to get started with this section."
+                title={translations("section.noQuestionsTitle")}
+                description={translations("section.noQuestionsDescription")}
               />
             ) : (
               <details open className="group/questions">
                 <summary className="text-muted-foreground cursor-pointer list-none text-xs font-medium select-none">
                   <span className="inline-flex items-center gap-1 group-open/questions:hidden">
-                    <ChevronDown size={12} /> Show {section.questions.length}{" "}
-                    question{section.questions.length !== 1 ? "s" : ""}
+                    <ChevronDown size={12} />{" "}
+                    {translations("section.showQuestions", {
+                      count: section.questions.length,
+                    })}
                   </span>
                   <span className="hidden items-center gap-1 group-open/questions:inline-flex">
-                    <ChevronUp size={12} /> Hide {section.questions.length}{" "}
-                    question{section.questions.length !== 1 ? "s" : ""}
+                    <ChevronUp size={12} />{" "}
+                    {translations("section.hideQuestions", {
+                      count: section.questions.length,
+                    })}
                   </span>
                 </summary>
                 <div className="mt-3 flex flex-col gap-3">
@@ -403,6 +430,7 @@ export default async function TemplateBuilderPage({
                     const conditionSummary = summarizeConditionalLogic(
                       question.conditionalLogic,
                       questionText,
+                      conditionTranslations,
                     );
                     return (
                       <div
@@ -415,13 +443,27 @@ export default async function TemplateBuilderPage({
                           </span>
                           <div className="flex flex-wrap items-center gap-2">
                             <Badge variant="secondary">
-                              {QUESTION_TYPE_LABELS[question.type]}
+                              {commonTranslations.has(
+                                `questionTypes.${question.type}`,
+                              )
+                                ? commonTranslations(
+                                    `questionTypes.${question.type}`,
+                                  )
+                                : question.type}
                             </Badge>
                             <Badge variant="outline">
-                              {RISK_WEIGHT_LABELS[question.riskWeight]}
+                              {commonTranslations.has(
+                                `tiers.${question.riskWeight}`,
+                              )
+                                ? commonTranslations(
+                                    `tiers.${question.riskWeight}`,
+                                  )
+                                : question.riskWeight}
                             </Badge>
                             {question.required ? (
-                              <Badge variant="outline">Required</Badge>
+                              <Badge variant="outline">
+                                {translations("section.required")}
+                              </Badge>
                             ) : null}
                             {question.controls.length > 0 ? (
                               <span className="text-muted-foreground font-mono text-xs">
@@ -460,7 +502,9 @@ export default async function TemplateBuilderPage({
                                 variant="ghost"
                                 size="icon-sm"
                                 disabled={questionIndex === 0}
-                                aria-label="Move question up"
+                                aria-label={translations(
+                                  "section.moveQuestionUp",
+                                )}
                               >
                                 <ChevronUp size={14} />
                               </Button>
@@ -488,7 +532,9 @@ export default async function TemplateBuilderPage({
                                 disabled={
                                   questionIndex === section.questions.length - 1
                                 }
-                                aria-label="Move question down"
+                                aria-label={translations(
+                                  "section.moveQuestionDown",
+                                )}
                               >
                                 <ChevronDown size={14} />
                               </Button>
@@ -497,7 +543,7 @@ export default async function TemplateBuilderPage({
                               <Link
                                 href={`/templates/${template.id}/questions/${question.id}/edit`}
                               >
-                                Edit
+                                {translations("section.editQuestion")}
                               </Link>
                             </Button>
                             <form
@@ -515,12 +561,17 @@ export default async function TemplateBuilderPage({
                                 value={question.id}
                               />
                               <ConfirmDialog
-                                title="Delete question?"
-                                description={`This will permanently delete "${question.text.slice(0, 60)}".`}
+                                title={translations(
+                                  "section.deleteQuestionTitle",
+                                )}
+                                description={translations(
+                                  "section.deleteQuestionDescription",
+                                  { text: question.text.slice(0, 60) },
+                                )}
                                 formId={`delete-question-${question.id}`}
                               >
                                 <Button type="button" variant="ghost" size="sm">
-                                  Delete
+                                  {translations("section.deleteQuestion")}
                                 </Button>
                               </ConfirmDialog>
                             </form>
@@ -537,7 +588,7 @@ export default async function TemplateBuilderPage({
                 <Link
                   href={`/templates/${template.id}/sections/${section.id}/questions/new`}
                 >
-                  Add question
+                  {translations("section.addQuestion")}
                 </Link>
               </Button>
             ) : null}
@@ -548,19 +599,19 @@ export default async function TemplateBuilderPage({
       {canEditDraft ? (
         <Card>
           <CardHeader>
-            <CardTitle>Add section</CardTitle>
+            <CardTitle>{translations("addSection.title")}</CardTitle>
           </CardHeader>
           <CardContent>
             <form action={addSectionAction} className="flex items-center gap-2">
               <input type="hidden" name="templateId" value={template.id} />
               <Input
                 name="title"
-                placeholder="Section title"
+                placeholder={translations("addSection.placeholder")}
                 required
                 className="max-w-sm"
               />
               <Button type="submit" variant="secondary">
-                Add section
+                {translations("addSection.button")}
               </Button>
             </form>
           </CardContent>

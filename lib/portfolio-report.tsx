@@ -6,8 +6,20 @@ import {
   StyleSheet,
   renderToBuffer,
 } from "@react-pdf/renderer";
+import { getFormatter, getLocale, getTranslations } from "next-intl/server";
 
-import { formatDate, formatPercent } from "@/lib/utils";
+import { formatPercent } from "@/lib/utils";
+import { localeDirection } from "@/lib/i18n/config";
+import {
+  pdfFontFamily,
+  registerPdfFonts,
+  type PdfFontFamily,
+} from "@/lib/pdf/fonts";
+import {
+  type PdfFormatter,
+  type PdfTranslate,
+  translateOrRaw,
+} from "@/lib/pdf-i18n";
 
 type PortfolioPdfData = {
   organizationName: string;
@@ -140,15 +152,25 @@ const styles = StyleSheet.create({
   },
 });
 
-function StatsSummary({ data }: { data: PortfolioPdfData }) {
+function StatsSummary({
+  data,
+  translations,
+}: {
+  data: PortfolioPdfData;
+  translations: PdfTranslate;
+}) {
   return (
     <View style={styles.statGrid}>
       <View style={styles.statBox}>
-        <Text style={styles.statLabel}>Vendors</Text>
+        <Text style={styles.statLabel}>
+          {translations("portfolio.vendors")}
+        </Text>
         <Text style={styles.statValue}>{data.vendorCount}</Text>
       </View>
       <View style={styles.statBox}>
-        <Text style={styles.statLabel}>Average score</Text>
+        <Text style={styles.statLabel}>
+          {translations("portfolio.averageScore")}
+        </Text>
         <Text
           style={[styles.statValue, { color: scoreColor(data.averageScore) }]}
         >
@@ -156,13 +178,17 @@ function StatsSummary({ data }: { data: PortfolioPdfData }) {
         </Text>
       </View>
       <View style={styles.statBox}>
-        <Text style={styles.statLabel}>Open findings</Text>
+        <Text style={styles.statLabel}>
+          {translations("portfolio.openFindings")}
+        </Text>
         <Text style={[styles.statValue, { color: "#dc2626" }]}>
           {data.openFindings}
         </Text>
       </View>
       <View style={styles.statBox}>
-        <Text style={styles.statLabel}>Needs attention</Text>
+        <Text style={styles.statLabel}>
+          {translations("portfolio.needsAttention")}
+        </Text>
         <Text style={[styles.statValue, { color: "#d97706" }]}>
           {data.needsAttention}
         </Text>
@@ -171,98 +197,130 @@ function StatsSummary({ data }: { data: PortfolioPdfData }) {
   );
 }
 
-function ScoreDistribution({ data }: { data: PortfolioPdfData }) {
-  const dist = data.scoreDistribution;
-  const total = dist.green + dist.amber + dist.red + dist.unscored || 1;
+function ScoreDistribution({
+  data,
+  translations,
+}: {
+  data: PortfolioPdfData;
+  translations: PdfTranslate;
+}) {
+  const distribution = data.scoreDistribution;
+  const totalCount =
+    distribution.green +
+      distribution.amber +
+      distribution.red +
+      distribution.unscored || 1;
   const maxWidth = 200;
 
   return (
     <View>
       <View style={styles.distRow}>
-        <Text style={styles.distLabel}>Green (&ge;85%)</Text>
+        <Text style={styles.distLabel}>{translations("portfolio.green")}</Text>
         <View
           style={[
             styles.distBar,
             {
-              width: (dist.green / total) * maxWidth,
+              width: (distribution.green / totalCount) * maxWidth,
               backgroundColor: "#16a34a",
             },
           ]}
         />
-        <Text style={styles.distValue}>{dist.green}</Text>
+        <Text style={styles.distValue}>{distribution.green}</Text>
       </View>
       <View style={styles.distRow}>
-        <Text style={styles.distLabel}>Amber (60–84%)</Text>
+        <Text style={styles.distLabel}>{translations("portfolio.amber")}</Text>
         <View
           style={[
             styles.distBar,
             {
-              width: (dist.amber / total) * maxWidth,
+              width: (distribution.amber / totalCount) * maxWidth,
               backgroundColor: "#d97706",
             },
           ]}
         />
-        <Text style={styles.distValue}>{dist.amber}</Text>
+        <Text style={styles.distValue}>{distribution.amber}</Text>
       </View>
       <View style={styles.distRow}>
-        <Text style={styles.distLabel}>Red (&lt;60%)</Text>
+        <Text style={styles.distLabel}>{translations("portfolio.red")}</Text>
         <View
           style={[
             styles.distBar,
             {
-              width: (dist.red / total) * maxWidth,
+              width: (distribution.red / totalCount) * maxWidth,
               backgroundColor: "#dc2626",
             },
           ]}
         />
-        <Text style={styles.distValue}>{dist.red}</Text>
+        <Text style={styles.distValue}>{distribution.red}</Text>
       </View>
       <View style={styles.distRow}>
-        <Text style={styles.distLabel}>Unscored</Text>
+        <Text style={styles.distLabel}>
+          {translations("portfolio.unscored")}
+        </Text>
         <View
           style={[
             styles.distBar,
             {
-              width: (dist.unscored / total) * maxWidth,
+              width: (distribution.unscored / totalCount) * maxWidth,
               backgroundColor: "#9ca3af",
             },
           ]}
         />
-        <Text style={styles.distValue}>{dist.unscored}</Text>
+        <Text style={styles.distValue}>{distribution.unscored}</Text>
       </View>
     </View>
   );
 }
 
-function VendorsTable({ data }: { data: PortfolioPdfData }) {
-  const sorted = [...data.vendors].sort(
-    (a, b) => (a.overallScore ?? Infinity) - (b.overallScore ?? Infinity),
+function VendorsTable({
+  data,
+  translations,
+  dateFormatter,
+}: {
+  data: PortfolioPdfData;
+  translations: PdfTranslate;
+  dateFormatter: PdfFormatter;
+}) {
+  const sortedVendors = [...data.vendors].sort(
+    (firstVendor, secondVendor) =>
+      (firstVendor.overallScore ?? Infinity) -
+      (secondVendor.overallScore ?? Infinity),
   );
 
   return (
     <View>
       <View style={styles.tableHeader}>
         <Text style={styles.colName}>
-          <Text style={styles.label}>Vendor</Text>
+          <Text style={styles.label}>{translations("portfolio.vendor")}</Text>
         </Text>
         <Text style={styles.colTier}>
-          <Text style={styles.label}>Tier</Text>
+          <Text style={styles.label}>{translations("portfolio.tier")}</Text>
         </Text>
         <Text style={styles.colScore}>
-          <Text style={styles.label}>Score</Text>
+          <Text style={styles.label}>{translations("portfolio.score")}</Text>
         </Text>
         <Text style={styles.colDate}>
-          <Text style={styles.label}>Last assessed</Text>
+          <Text style={styles.label}>
+            {translations("portfolio.lastAssessed")}
+          </Text>
         </Text>
         <Text style={styles.colCount}>
-          <Text style={styles.label}>Assessments</Text>
+          <Text style={styles.label}>
+            {translations("portfolio.assessments")}
+          </Text>
         </Text>
       </View>
-      {sorted.map((vendor, i) => (
+      {sortedVendors.map((vendor, i) => (
         <View key={i} style={styles.tableRow}>
           <Text style={styles.colName}>{vendor.name}</Text>
           <Text style={styles.colTier}>
-            {vendor.tier ? (TIER_LABELS[vendor.tier] ?? vendor.tier) : "—"}
+            {vendor.tier
+              ? translateOrRaw(
+                  translations,
+                  `tiers.${vendor.tier}`,
+                  TIER_LABELS[vendor.tier] ?? vendor.tier,
+                )
+              : "—"}
           </Text>
           <Text
             style={[
@@ -276,8 +334,12 @@ function VendorsTable({ data }: { data: PortfolioPdfData }) {
           </Text>
           <Text style={styles.colDate}>
             {vendor.latestAssessmentDate
-              ? formatDate(vendor.latestAssessmentDate)
-              : "Not assessed"}
+              ? dateFormatter.dateTime(vendor.latestAssessmentDate, {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })
+              : translations("portfolio.notAssessed")}
           </Text>
           <Text style={styles.colCount}>{vendor.assessmentCount}</Text>
         </View>
@@ -286,43 +348,89 @@ function VendorsTable({ data }: { data: PortfolioPdfData }) {
   );
 }
 
-function PortfolioPdfDocument({ data }: { data: PortfolioPdfData }) {
+function PortfolioPdfDocument({
+  data,
+  translations,
+  dateFormatter,
+  fontFamily,
+  direction,
+}: {
+  data: PortfolioPdfData;
+  translations: PdfTranslate;
+  dateFormatter: PdfFormatter;
+  fontFamily: PdfFontFamily;
+  direction: "ltr" | "rtl";
+}) {
+  const pageStyle = [styles.page, { fontFamily, direction }];
+
   return (
     <Document>
       {/* Cover page */}
-      <Page size="A4" style={[styles.page, { justifyContent: "center" }]}>
+      <Page
+        size="A4"
+        style={[
+          styles.page,
+          { fontFamily, direction, justifyContent: "center" },
+        ]}
+      >
         <Text style={styles.orgName}>{data.organizationName}</Text>
-        <Text style={styles.coverTitle}>Vendor Risk{"\n"}Portfolio Report</Text>
-        <Text style={styles.coverSubtitle}>Generated {data.generatedDate}</Text>
-        <StatsSummary data={data} />
+        <Text style={styles.coverTitle}>{translations("portfolio.title")}</Text>
+        <Text style={styles.coverSubtitle}>
+          {translations("common.generated", {
+            date: dateFormatter.dateTime(new Date(data.generatedDate), {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              timeZone: "UTC",
+            }),
+          })}
+        </Text>
+        <StatsSummary data={data} translations={translations} />
         <Text
           style={styles.footer}
           render={({ pageNumber, totalPages }) =>
-            `Page ${pageNumber} of ${totalPages}`
+            translations("common.pageOf", {
+              page: pageNumber,
+              total: totalPages,
+            })
           }
           fixed
         />
       </Page>
 
       {/* Distribution page */}
-      <Page size="A4" style={styles.page}>
-        <Text style={styles.sectionTitle}>Score distribution</Text>
-        <ScoreDistribution data={data} />
+      <Page size="A4" style={pageStyle}>
+        <Text style={styles.sectionTitle}>
+          {translations("portfolio.scoreDistribution")}
+        </Text>
+        <ScoreDistribution data={data} translations={translations} />
 
-        <Text style={styles.sectionTitle}>Vendors by tier</Text>
+        <Text style={styles.sectionTitle}>
+          {translations("portfolio.vendorsByTier")}
+        </Text>
         {Object.entries(data.vendorsByTier).map(([tier, count]) => (
           <View key={tier} style={styles.distRow}>
-            <Text style={styles.distLabel}>{TIER_LABELS[tier] ?? tier}</Text>
+            <Text style={styles.distLabel}>
+              {translateOrRaw(
+                translations,
+                `tiers.${tier}`,
+                TIER_LABELS[tier] ?? tier,
+              )}
+            </Text>
             <Text style={styles.distValue}>{count}</Text>
           </View>
         ))}
 
-        <Text style={styles.sectionTitle}>Assessments by status</Text>
+        <Text style={styles.sectionTitle}>
+          {translations("portfolio.assessmentsByStatus")}
+        </Text>
         {Object.entries(data.assessmentStatusCounts)
           .filter(([, count]) => count > 0)
           .map(([status, count]) => (
             <View key={status} style={styles.distRow}>
-              <Text style={styles.distLabel}>{status}</Text>
+              <Text style={styles.distLabel}>
+                {translateOrRaw(translations, `statuses.${status}`, status)}
+              </Text>
               <Text style={styles.distValue}>{count}</Text>
             </View>
           ))}
@@ -330,21 +438,33 @@ function PortfolioPdfDocument({ data }: { data: PortfolioPdfData }) {
         <Text
           style={styles.footer}
           render={({ pageNumber, totalPages }) =>
-            `Page ${pageNumber} of ${totalPages}`
+            translations("common.pageOf", {
+              page: pageNumber,
+              total: totalPages,
+            })
           }
           fixed
         />
       </Page>
 
       {/* Vendor table (may span multiple pages) */}
-      <Page size="A4" style={styles.page}>
-        <Text style={styles.sectionTitle}>Vendors ({data.vendorCount})</Text>
-        <VendorsTable data={data} />
+      <Page size="A4" style={pageStyle}>
+        <Text style={styles.sectionTitle}>
+          {translations("portfolio.vendorsCount", { count: data.vendorCount })}
+        </Text>
+        <VendorsTable
+          data={data}
+          translations={translations}
+          dateFormatter={dateFormatter}
+        />
 
         <Text
           style={styles.footer}
           render={({ pageNumber, totalPages }) =>
-            `Page ${pageNumber} of ${totalPages}`
+            translations("common.pageOf", {
+              page: pageNumber,
+              total: totalPages,
+            })
           }
           fixed
         />
@@ -352,20 +472,28 @@ function PortfolioPdfDocument({ data }: { data: PortfolioPdfData }) {
 
       {/* Top deficient controls */}
       {data.topControls.length > 0 ? (
-        <Page size="A4" style={styles.page}>
+        <Page size="A4" style={pageStyle}>
           <Text style={styles.sectionTitle}>
-            Top deficient controls ({data.topControls.length})
+            {translations("portfolio.topDeficientControls", {
+              count: data.topControls.length,
+            })}
           </Text>
           <View>
             <View style={styles.tableHeader}>
               <Text style={styles.colCode}>
-                <Text style={styles.label}>Control</Text>
+                <Text style={styles.label}>
+                  {translations("portfolio.control")}
+                </Text>
               </Text>
               <Text style={styles.colControlTitle}>
-                <Text style={styles.label}>Title</Text>
+                <Text style={styles.label}>
+                  {translations("portfolio.title")}
+                </Text>
               </Text>
               <Text style={styles.colControlCount}>
-                <Text style={styles.label}>Vendors affected</Text>
+                <Text style={styles.label}>
+                  {translations("portfolio.vendorsAffected")}
+                </Text>
               </Text>
             </View>
             {data.topControls.map((control, i) => (
@@ -382,7 +510,10 @@ function PortfolioPdfDocument({ data }: { data: PortfolioPdfData }) {
           <Text
             style={styles.footer}
             render={({ pageNumber, totalPages }) =>
-              `Page ${pageNumber} of ${totalPages}`
+              translations("common.pageOf", {
+                page: pageNumber,
+                total: totalPages,
+              })
             }
             fixed
           />
@@ -450,16 +581,38 @@ export function buildPortfolioPdfData(
 }
 
 export async function generatePortfolioPdf(): Promise<Buffer> {
+  const translations = await getTranslations("Pdf");
+  const locale = await getLocale();
+  const fontFamily = pdfFontFamily(locale);
+  const direction = localeDirection(locale);
+  registerPdfFonts();
+  const formatter = await getFormatter();
+  const translate: PdfTranslate = Object.assign(
+    (key: string, values?: Record<string, string | number>) =>
+      translations(key, values),
+    { has: (key: string) => translations.has(key) },
+  );
+  const dateFormatter: PdfFormatter = {
+    dateTime: (value, options) => formatter.dateTime(value, options),
+  };
   const { getDashboardData } = await import("@/lib/db/compliance");
   const { getOrganizationSettings } = await import("@/lib/settings");
 
-  const [dashboard, org] = await Promise.all([
+  const [dashboard, organization] = await Promise.all([
     getDashboardData(),
     getOrganizationSettings(),
   ]);
 
   const today = new Date().toISOString().slice(0, 10);
-  const data = buildPortfolioPdfData(dashboard, org.name, today);
+  const data = buildPortfolioPdfData(dashboard, organization.name, today);
 
-  return renderToBuffer(<PortfolioPdfDocument data={data} />);
+  return renderToBuffer(
+    <PortfolioPdfDocument
+      data={data}
+      translations={translate}
+      dateFormatter={dateFormatter}
+      fontFamily={fontFamily}
+      direction={direction}
+    />,
+  );
 }

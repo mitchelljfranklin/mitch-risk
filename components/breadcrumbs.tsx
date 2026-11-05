@@ -1,18 +1,28 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 type BreadcrumbSegment = {
   label: string;
   href?: string;
 };
 
-export function Breadcrumbs({ segments }: { segments: BreadcrumbSegment[] }) {
+export async function Breadcrumbs({
+  segments,
+}: {
+  segments: BreadcrumbSegment[];
+}) {
+  const translations = await getTranslations("Shell.breadcrumbs");
+
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm">
+    <nav
+      aria-label={translations("label")}
+      className="flex items-center gap-1.5 text-sm"
+    >
       <Link
         href="/dashboard"
         className="text-muted-foreground hover:text-foreground transition-colors"
       >
-        Dashboard
+        {translations("dashboard")}
       </Link>
       {segments.map((segment) => (
         <span key={segment.label} className="flex min-w-0 items-center gap-1.5">

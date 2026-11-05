@@ -1,5 +1,6 @@
 import { computeTotalScore, scoreResponses } from "@/lib/scoring";
 import { prisma } from "@/lib/prisma";
+import { AUTOMATED_FINDING_DESCRIPTION } from "@/lib/schemas/findings";
 import { getScoringSettings } from "@/lib/settings";
 import { dispatchWebhook } from "@/lib/webhooks";
 import { type RiskWeight } from "../../prisma/generated/prisma/client";
@@ -183,8 +184,7 @@ export async function scoreAssessment(assessmentId: string): Promise<void> {
           assessmentId,
           responseId: finding.responseId,
           ...finding.data,
-          description:
-            "The vendor's answer did not meet the expected response.",
+          description: AUTOMATED_FINDING_DESCRIPTION,
         })),
         select: { id: true },
       });

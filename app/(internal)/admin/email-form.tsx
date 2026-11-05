@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +33,7 @@ export function EmailForm({
   fromName,
   smtpPasswordConfigured,
 }: EmailFormProps) {
+  const translations = useTranslations("Admin.email.form");
   const [state, formAction, isPending] = useActionState(
     saveEmailSettings,
     initialState,
@@ -41,11 +43,11 @@ export function EmailForm({
   return (
     <form action={formAction} className="grid max-w-md gap-4">
       <div className="grid gap-2">
-        <Label htmlFor="smtp-host">SMTP host</Label>
+        <Label htmlFor="smtp-host">{translations("host")}</Label>
         <Input id="smtp-host" name="smtpHost" defaultValue={smtpHost} />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="smtp-port">SMTP port</Label>
+        <Label htmlFor="smtp-port">{translations("port")}</Label>
         <Input
           id="smtp-port"
           name="smtpPort"
@@ -56,11 +58,11 @@ export function EmailForm({
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="smtp-user">SMTP username</Label>
+        <Label htmlFor="smtp-user">{translations("username")}</Label>
         <Input id="smtp-user" name="smtpUser" defaultValue={smtpUser} />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="smtp-password">SMTP password</Label>
+        <Label htmlFor="smtp-password">{translations("password")}</Label>
         <Input
           id="smtp-password"
           name="smtpPassword"
@@ -68,16 +70,16 @@ export function EmailForm({
           autoComplete="off"
           placeholder={
             smtpPasswordConfigured
-              ? "Leave blank to keep current password"
-              : "Enter SMTP password"
+              ? translations("passwordKeep")
+              : translations("passwordEnter")
           }
         />
         <p className="text-muted-foreground text-xs">
-          Stored encrypted at rest and never displayed.
+          {translations("passwordHint")}
         </p>
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="from-address">From address</Label>
+        <Label htmlFor="from-address">{translations("fromAddress")}</Label>
         <Input
           id="from-address"
           name="fromAddress"
@@ -86,12 +88,12 @@ export function EmailForm({
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="from-name">From name</Label>
+        <Label htmlFor="from-name">{translations("fromName")}</Label>
         <Input id="from-name" name="fromName" defaultValue={fromName} />
       </div>
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending} size="sm">
-          {isPending ? "Saving..." : "Save"}
+          {isPending ? translations("saving") : translations("save")}
         </Button>
       </div>
     </form>
@@ -103,6 +105,7 @@ export function SmtpTestForm({
 }: {
   currentUserEmail: string;
 }) {
+  const translations = useTranslations("Admin.email.test");
   const [testState, testAction, isTesting] = useActionState(
     sendSmtpTestAction,
     initialState,
@@ -111,14 +114,14 @@ export function SmtpTestForm({
 
   return (
     <form action={testAction} className="grid max-w-md gap-2">
-      <Label htmlFor="test-recipient">Send test email to</Label>
+      <Label htmlFor="test-recipient">{translations("label")}</Label>
       <div className="flex items-center gap-3">
         <Input
           id="test-recipient"
           name="recipient"
           type="email"
           defaultValue={currentUserEmail}
-          placeholder="you@company.com"
+          placeholder={translations("placeholder")}
         />
         <Button
           type="submit"
@@ -126,12 +129,10 @@ export function SmtpTestForm({
           size="sm"
           disabled={isTesting}
         >
-          {isTesting ? "Sending..." : "Send test"}
+          {isTesting ? translations("sending") : translations("send")}
         </Button>
       </div>
-      <p className="text-muted-foreground text-xs">
-        Sends using your saved SMTP settings. Save any changes first.
-      </p>
+      <p className="text-muted-foreground text-xs">{translations("hint")}</p>
     </form>
   );
 }

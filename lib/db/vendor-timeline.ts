@@ -7,38 +7,72 @@ type TimelineEvent = {
   link?: string;
 };
 
-export function buildVendorTimeline(args: {
-  vendorId: string;
-  assessments: {
-    id: string;
-    title: string;
-    status: string;
-    createdAt: Date;
-    accessToken: string | null;
-    submittedAt: Date | null;
-  }[];
-  findings: {
-    id: string;
-    title: string;
-    status: string;
-    createdAt: Date;
-    resolvedAt: Date | null;
-  }[];
-  certifications: {
-    id: string;
-    name: string;
-    issuedDate: Date | null;
-    expiresDate: Date | null;
-    createdAt: Date;
-  }[];
-}): TimelineEvent[] {
+type TimelineTranslate = (
+  key: string,
+  values?: Record<string, string | number>,
+) => string;
+
+type TimelineOptions = {
+  translate?: TimelineTranslate;
+  formatDate?: (date: Date) => string;
+};
+
+const DEFAULT_ACTIONS: Record<string, string> = {
+  assessmentCreated: "Assessment created",
+  assessmentSent: "Assessment sent",
+  assessmentSubmitted: "Assessment submitted",
+  findingOpened: "Finding opened",
+  remediated: "Remediated",
+  riskAccepted: "Risk accepted",
+  certificationAdded: "Certification added",
+  certificationExpiring: "Certification expiring",
+};
+
+function defaultTranslate(key: string): string {
+  return DEFAULT_ACTIONS[key] ?? key;
+}
+
+function defaultFormatDate(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+
+export function buildVendorTimeline(
+  args: {
+    vendorId: string;
+    assessments: {
+      id: string;
+      title: string;
+      status: string;
+      createdAt: Date;
+      accessToken: string | null;
+      submittedAt: Date | null;
+    }[];
+    findings: {
+      id: string;
+      title: string;
+      status: string;
+      createdAt: Date;
+      resolvedAt: Date | null;
+    }[];
+    certifications: {
+      id: string;
+      name: string;
+      issuedDate: Date | null;
+      expiresDate: Date | null;
+      createdAt: Date;
+    }[];
+  },
+  options?: TimelineOptions,
+): TimelineEvent[] {
+  const translate = options?.translate ?? defaultTranslate;
+  const formatDate = options?.formatDate ?? defaultFormatDate;
   const events: TimelineEvent[] = [];
 
   for (const assessment of args.assessments) {
     events.push({
       id: `assessment-created-${assessment.id}`,
       type: "assessment",
-      action: "Assessment created",
+      action: translate("assessmentCreated"),
       description: assessment.title,
       createdAt: assessment.createdAt,
       link: `/assessments/${assessment.id}`,
@@ -48,7 +82,7 @@ export function buildVendorTimeline(args: {
       events.push({
         id: `assessment-sent-${assessment.id}`,
         type: "assessment",
-        action: "Assessment sent",
+        action: translate("assessmentSent"),
         description: assessment.title,
         createdAt: assessment.createdAt,
         link: `/assessments/${assessment.id}`,
@@ -59,7 +93,7 @@ export function buildVendorTimeline(args: {
       events.push({
         id: `assessment-submitted-${assessment.id}`,
         type: "assessment",
-        action: "Assessment submitted",
+        action: translate("assessmentSubmitted"),
         description: assessment.title,
         createdAt: assessment.submittedAt,
         link: `/assessments/${assessment.id}`,
@@ -71,7 +105,7 @@ export function buildVendorTimeline(args: {
     events.push({
       id: `finding-created-${finding.id}`,
       type: "finding",
-      action: "Finding opened",
+      action: translate("findingOpened"),
       description: finding.title,
       createdAt: finding.createdAt,
       link: `/risk-register`,
@@ -79,7 +113,9 @@ export function buildVendorTimeline(args: {
 
     if (finding.status !== "OPEN" && finding.resolvedAt) {
       const label =
-        finding.status === "REMEDIATED" ? "Remediated" : "Risk accepted";
+        finding.status === "REMEDIATED"
+          ? translate("remediated")
+          : translate("riskAccepted");
       events.push({
         id: `finding-updated-${finding.id}`,
         type: "finding",
@@ -96,7 +132,7 @@ export function buildVendorTimeline(args: {
     events.push({
       id: `cert-created-${certification.id}`,
       type: "certification",
-      action: "Certification added",
+      action: translate("certificationAdded"),
       description: certification.name,
       createdAt: certDate,
     });
@@ -119,15 +155,21 @@ export function buildVendorTimeline(args: {
         events.push({
           id: `cert-expiring-${certification.id}`,
           type: "certification",
-          action: "Certification expiring",
-          description: `${certification.name} — expires ${certification.expiresDate.toISOString().slice(0, 10)}`,
+          action: translate("certificationExpiring"),
+          description: translate("certificationExpiringDescription", {
+            name: certification.name,
+            date: formatDate(certification.expiresDate),
+          }),
           createdAt: certification.expiresDate,
         });
       }
     }
   }
 
-  events.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  events.sort(
+    (firstEvent, secondEvent) =>
+      secondEvent.createdAt.getTime() - firstEvent.createdAt.getTime(),
+  );
 
   return events.slice(0, 30);
 }

@@ -13,6 +13,13 @@ vi.mock("@/lib/auth", () => ({
   getCurrentUser: vi.fn().mockResolvedValue(null),
 }));
 
+// Server actions request translations from the Next request context. These
+// tests invoke the actions directly, outside a request, so return a pass-through
+// translator; the assertions here cover settings isolation, not message text.
+vi.mock("next-intl/server", () => ({
+  getTranslations: vi.fn(async () => (key: string) => key),
+}));
+
 import { prisma } from "@/lib/prisma";
 import {
   getAssessmentSettings,

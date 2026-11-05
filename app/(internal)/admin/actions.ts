@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS, isValidPermission } from "@/lib/permissions";
@@ -63,16 +64,22 @@ export async function saveOrganizationSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.general");
 
   const parsed = organizationSettingsSchema.safeParse({
     name: formData.get("name"),
     supportEmail: formData.get("supportEmail") ?? "",
+    defaultLocale: formData.get("defaultLocale") ?? undefined,
   });
   if (!parsed.success) {
-    return {
-      ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
-    };
+    const field = parsed.error.issues[0]?.path[0];
+    let message = translations("errors.invalidInput");
+    if (field === "name") {
+      message = translations("errors.nameRequired");
+    } else if (field === "supportEmail") {
+      message = translations("errors.invalidEmail");
+    }
+    return { ok: false, message };
   }
 
   await updateOrganizationSettings(parsed.data);
@@ -84,7 +91,7 @@ export async function saveOrganizationSettings(
       "Setting",
       "organization",
     );
-  return { ok: true, message: "Organization settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function saveEmailSettings(
@@ -92,6 +99,7 @@ export async function saveEmailSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.email");
 
   const parsed = emailSettingsSchema.safeParse({
     smtpHost: formData.get("smtpHost") ?? "",
@@ -102,9 +110,16 @@ export async function saveEmailSettings(
     smtpPassword: formData.get("smtpPassword") ?? "",
   });
   if (!parsed.success) {
+    const field = parsed.error.issues[0]?.path[0];
+    let message = translations("errors.invalidInput");
+    if (field === "fromAddress") {
+      message = translations("errors.invalidEmail");
+    } else if (field === "smtpPort") {
+      message = translations("errors.invalidPort");
+    }
     return {
       ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
+      message,
     };
   }
 
@@ -112,7 +127,7 @@ export async function saveEmailSettings(
   const user = await getCurrentUser();
   if (user)
     await logAudit(user.id, AUDIT_ACTIONS.UPDATE_SETTINGS, "Setting", "email");
-  return { ok: true, message: "Email settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function sendSmtpTestAction(
@@ -120,6 +135,7 @@ export async function sendSmtpTestAction(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.email");
 
   const parsed = testRecipientSchema.safeParse(
     (formData.get("recipient") as string)?.trim() ?? "",
@@ -127,7 +143,7 @@ export async function sendSmtpTestAction(
   if (!parsed.success) {
     return {
       ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid recipient.",
+      message: translations("errors.invalidRecipient"),
     };
   }
 
@@ -136,7 +152,7 @@ export async function sendSmtpTestAction(
   if (!smtpHost) {
     return {
       ok: false,
-      message: "Save your SMTP settings before sending a test email.",
+      message: translations("errors.smtpNotConfigured"),
     };
   }
 
@@ -152,7 +168,10 @@ export async function sendSmtpTestAction(
         "Setting",
         "email.test",
       );
-    return { ok: true, message: `Test email sent to ${parsed.data}.` };
+    return {
+      ok: true,
+      message: translations("testSuccess", { email: parsed.data }),
+    };
   }
 
   return { ok: false, message: result.message };
@@ -168,11 +187,12 @@ export async function saveEmailTemplateAction(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.email");
 
   const type = (formData.get("type") as string) ?? "";
   const definition = getEmailTemplateDefinition(type);
   if (!definition) {
-    return { ok: false, message: "Unknown email template." };
+    return { ok: false, message: translations("errors.unknownTemplate") };
   }
 
   const parsed = emailTemplateFieldSchema.safeParse({
@@ -180,10 +200,12 @@ export async function saveEmailTemplateAction(
     body: formData.get("body") ?? "",
   });
   if (!parsed.success) {
-    return {
-      ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
-    };
+    const field = parsed.error.issues[0]?.path[0];
+    const message =
+      field === "body"
+        ? translations("errors.bodyRequired")
+        : translations("errors.subjectRequired");
+    return { ok: false, message };
   }
 
   await updateEmailTemplateFields({
@@ -198,7 +220,13 @@ export async function saveEmailTemplateAction(
       "Setting",
       `email.template.${type}`,
     );
-  return { ok: true, message: `${definition.label} saved.` };
+  const templateLabel = translations.has(`templateTypes.${type}.label`)
+    ? translations(`templateTypes.${type}.label`)
+    : definition.label;
+  return {
+    ok: true,
+    message: translations("templateSaved", { name: templateLabel }),
+  };
 }
 
 export async function resetEmailTemplateAction(
@@ -206,11 +234,12 @@ export async function resetEmailTemplateAction(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.email");
 
   const type = (formData.get("type") as string) ?? "";
   const definition = getEmailTemplateDefinition(type);
   if (!definition) {
-    return { ok: false, message: "Unknown email template." };
+    return { ok: false, message: translations("errors.unknownTemplate") };
   }
 
   const defaults = getEmailTemplateDefaults();
@@ -226,7 +255,13 @@ export async function resetEmailTemplateAction(
       "Setting",
       `email.template.${type}`,
     );
-  return { ok: true, message: `${definition.label} reset to default.` };
+  const templateLabel = translations.has(`templateTypes.${type}.label`)
+    ? translations(`templateTypes.${type}.label`)
+    : definition.label;
+  return {
+    ok: true,
+    message: translations("templateReset", { name: templateLabel }),
+  };
 }
 
 export async function saveScoringSettings(
@@ -234,6 +269,7 @@ export async function saveScoringSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.scoring");
 
   const parsed = scoringSettingsSchema.safeParse({
     riskWeights: {
@@ -250,7 +286,7 @@ export async function saveScoringSettings(
   if (!parsed.success) {
     return {
       ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
+      message: translations("errors.invalidInput"),
     };
   }
 
@@ -263,7 +299,7 @@ export async function saveScoringSettings(
       "Setting",
       "scoring",
     );
-  return { ok: true, message: "Scoring settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function saveSsoSettings(
@@ -271,6 +307,7 @@ export async function saveSsoSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.signIn");
 
   const parsed = ssoSettingsSchema.safeParse({
     entraIdEnabled: formData.get("entraIdEnabled") === "on",
@@ -288,7 +325,7 @@ export async function saveSsoSettings(
   if (!parsed.success) {
     return {
       ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
+      message: translations("errors.invalidInput"),
     };
   }
 
@@ -305,7 +342,7 @@ export async function saveSsoSettings(
   const user = await getCurrentUser();
   if (user)
     await logAudit(user.id, AUDIT_ACTIONS.UPDATE_SETTINGS, "Setting", "sso");
-  return { ok: true, message: "SSO settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function generateBreakGlassUrlAction(
@@ -314,6 +351,7 @@ export async function generateBreakGlassUrlAction(
 ): Promise<{ ok: boolean; message: string; url?: string }> {
   void formData;
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.signIn");
 
   const { generateBreakGlassToken, hashBreakGlassToken } =
     await import("@/lib/break-glass");
@@ -333,8 +371,7 @@ export async function generateBreakGlassUrlAction(
     );
   return {
     ok: true,
-    message:
-      "Break-glass URL generated. Copy it now — it won't be shown again.",
+    message: translations("breakGlass.success"),
     url: `${env.APP_URL}/login?breakGlass=${token}`,
   };
 }
@@ -344,6 +381,7 @@ export async function saveAppearanceSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.appearance");
 
   const primaryHex = (formData.get("primaryHex") as string) || "";
   const secondaryHex = (formData.get("secondaryHex") as string) || "";
@@ -360,26 +398,26 @@ export async function saveAppearanceSettings(
   if (primaryHex && !/^#[0-9a-fA-F]{6}$/.test(primaryHex)) {
     return {
       ok: false,
-      message: "Primary color must be a valid hex color (e.g. #3b82f6).",
+      message: translations("errors.primaryHex"),
     };
   }
   if (secondaryHex && !/^#[0-9a-fA-F]{6}$/.test(secondaryHex)) {
     return {
       ok: false,
-      message: "Secondary color must be a valid hex color (e.g. #f59e0b).",
+      message: translations("errors.secondaryHex"),
     };
   }
   if (ragGreenHex && !/^#[0-9a-fA-F]{6}$/.test(ragGreenHex)) {
-    return { ok: false, message: "RAG green must be a valid hex color." };
+    return { ok: false, message: translations("errors.ragGreen") };
   }
   if (ragAmberHex && !/^#[0-9a-fA-F]{6}$/.test(ragAmberHex)) {
-    return { ok: false, message: "RAG amber must be a valid hex color." };
+    return { ok: false, message: translations("errors.ragAmber") };
   }
   if (ragRedHex && !/^#[0-9a-fA-F]{6}$/.test(ragRedHex)) {
-    return { ok: false, message: "RAG red must be a valid hex color." };
+    return { ok: false, message: translations("errors.ragRed") };
   }
   if (ragUnscoredHex && !/^#[0-9a-fA-F]{6}$/.test(ragUnscoredHex)) {
-    return { ok: false, message: "RAG unscored must be a valid hex color." };
+    return { ok: false, message: translations("errors.ragUnscored") };
   }
 
   const previousLogoKey = (await getAppearanceSettings()).logoKey;
@@ -391,13 +429,13 @@ export async function saveAppearanceSettings(
     logoKey = "";
   } else if (logoFile && logoFile.size > 0) {
     if (logoFile.size > 2 * 1024 * 1024) {
-      return { ok: false, message: "Logo must be under 2 MB." };
+      return { ok: false, message: translations("errors.logoTooLarge") };
     }
     if (
       !logoFile.type.startsWith("image/") ||
       isDangerousUploadMime(logoFile.type)
     ) {
-      return { ok: false, message: "Logo must be an image file." };
+      return { ok: false, message: translations("errors.logoImage") };
     }
 
     // The declared MIME type is client-controlled, so the extension
@@ -407,14 +445,14 @@ export async function saveAppearanceSettings(
     if (!ALLOWED_LOGO_EXTENSIONS.has(ext)) {
       return {
         ok: false,
-        message: "Logo must be a PNG, JPG, GIF, or WEBP image.",
+        message: translations("errors.logoFormat"),
       };
     }
     const buffer = Buffer.from(await logoFile.arrayBuffer());
     if (!validateMagicBytes(ext, buffer)) {
       return {
         ok: false,
-        message: "Logo file content does not match its extension.",
+        message: translations("errors.logoContent"),
       };
     }
 
@@ -457,7 +495,7 @@ export async function saveAppearanceSettings(
       "Setting",
       "appearance",
     );
-  return { ok: true, message: "Appearance settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function createApiKeyAction(
@@ -465,9 +503,12 @@ export async function createApiKeyAction(
   formData: FormData,
 ): Promise<{ ok: boolean; message: string; key?: string }> {
   await requirePermission(PERMISSIONS.API_MANAGE);
+  const translations = await getTranslations("Admin.api");
 
   const name = (formData.get("name") as string)?.trim();
-  if (!name) return { ok: false, message: "Key name is required." };
+  if (!name) {
+    return { ok: false, message: translations("errors.nameRequired") };
+  }
 
   const expiresIn = (formData.get("expiresIn") as string) || "";
   const allowedIps = (formData.get("allowedIps") as string) || "";
@@ -481,7 +522,7 @@ export async function createApiKeyAction(
     if (permissions.length === 0) {
       return {
         ok: false,
-        message: "Select at least one permission or enable full access.",
+        message: translations("errors.permissionsRequired"),
       };
     }
   }
@@ -531,7 +572,7 @@ export async function createApiKeyAction(
   // the current route, which would drop the returned state in production.
   return {
     ok: true,
-    message: `Key created: ${displayPrefix}. Copy the key below — it won't be shown again.`,
+    message: translations("keyCreatedMessage", { prefix: displayPrefix }),
     key: fullKey,
   };
 }
@@ -582,6 +623,7 @@ export async function saveApiSettingsAction(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.API_MANAGE);
+  const translations = await getTranslations("Admin.api");
   const { prisma: db } = await import("@/lib/prisma");
 
   const enabled = formData.get("enabled") === "on";
@@ -595,7 +637,7 @@ export async function saveApiSettingsAction(
   // No revalidatePath: this result is consumed by useActionState. Revalidating
   // the current route races with the returned state in production builds and can
   // drop the success toast. The client refreshes after handling the result.
-  return { ok: true, message: "API settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function saveTrustCenterSettings(
@@ -603,6 +645,7 @@ export async function saveTrustCenterSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
+  const translations = await getTranslations("Admin.trustCenter");
 
   const parsed = trustCenterSettingsSchema.safeParse({
     enabled: formData.get("enabled") !== null,
@@ -613,10 +656,11 @@ export async function saveTrustCenterSettings(
     downloadsPerMin: (formData.get("downloadsPerMin") as string) || "30",
   });
   if (!parsed.success) {
-    return {
-      ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
-    };
+    const firstIssue = parsed.error.issues[0];
+    if (firstIssue?.path.includes("contactEmail")) {
+      return { ok: false, message: translations("errors.invalidEmail") };
+    }
+    return { ok: false, message: translations("errors.invalidInput") };
   }
 
   const { updateTrustCenterSettings } = await import("@/lib/settings");
@@ -632,7 +676,7 @@ export async function saveTrustCenterSettings(
     );
   }
 
-  return { ok: true, message: "Trust center settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function saveSchedulingSettings(
@@ -640,6 +684,7 @@ export async function saveSchedulingSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.scheduling");
 
   const escalationDays = parseInt(
     (formData.get("escalationDays") as string) || "3",
@@ -652,10 +697,10 @@ export async function saveSchedulingSettings(
   const reminderStr = (formData.get("reminderDays") as string) || "";
 
   if (isNaN(escalationDays) || escalationDays < 1) {
-    return { ok: false, message: "Escalation days must be at least 1." };
+    return { ok: false, message: translations("errors.escalationInvalid") };
   }
   if (isNaN(defaultDueDays) || defaultDueDays < 1) {
-    return { ok: false, message: "Default due days must be at least 1." };
+    return { ok: false, message: translations("errors.defaultDueInvalid") };
   }
 
   const reminders = reminderStr
@@ -690,7 +735,7 @@ export async function saveSchedulingSettings(
       "scheduling",
     );
 
-  return { ok: true, message: "Configuration saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function saveSignInSecuritySettings(
@@ -698,6 +743,7 @@ export async function saveSignInSecuritySettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.signIn");
 
   const loginRateLimit = parseInt(
     (formData.get("loginRateLimit") as string) || "10",
@@ -711,7 +757,7 @@ export async function saveSignInSecuritySettings(
   if (isNaN(loginRateLimit) || loginRateLimit < 1) {
     return {
       ok: false,
-      message: "Login rate limit must be at least 1 per minute.",
+      message: translations("errors.loginRateInvalid"),
     };
   }
   if (
@@ -721,7 +767,7 @@ export async function saveSignInSecuritySettings(
   ) {
     return {
       ok: false,
-      message: "Auto-logout must be 0 (disabled) or at least 5 minutes.",
+      message: translations("errors.autoLogoutInvalid"),
     };
   }
 
@@ -740,7 +786,7 @@ export async function saveSignInSecuritySettings(
       "sign-in",
     );
 
-  return { ok: true, message: "Sign-in settings saved." };
+  return { ok: true, message: translations("securitySuccess") };
 }
 
 export async function saveRateLimitSettings(
@@ -748,22 +794,20 @@ export async function saveRateLimitSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.rateLimits");
 
   const rateLimitFields = {
-    portalPageLoadsPerMin: { label: "Portal page loads", default: 30 },
-    portalUploadsPerMin: { label: "Portal uploads", default: 10 },
-    portalSubmitPerMin: { label: "Portal submissions", default: 5 },
-    portalCommentPerMin: { label: "Portal comments", default: 10 },
-    portalPasswordAttemptsPerMin: {
-      label: "Portal password attempts",
-      default: 5,
-    },
-    passwordResetPerMin: { label: "Password reset requests", default: 1 },
-    breakGlassPerMin: { label: "Break-glass attempts", default: 10 },
+    portalPageLoadsPerMin: { default: 30 },
+    portalUploadsPerMin: { default: 10 },
+    portalSubmitPerMin: { default: 5 },
+    portalCommentPerMin: { default: 10 },
+    portalPasswordAttemptsPerMin: { default: 5 },
+    passwordResetPerMin: { default: 1 },
+    breakGlassPerMin: { default: 10 },
   } as const;
 
   const rateLimits: Record<string, number> = {};
-  for (const [field, { label, default: fallback }] of Object.entries(
+  for (const [field, { default: fallback }] of Object.entries(
     rateLimitFields,
   )) {
     const value = parseInt(
@@ -771,7 +815,12 @@ export async function saveRateLimitSettings(
       10,
     );
     if (isNaN(value) || value < 1) {
-      return { ok: false, message: `${label} must be at least 1 per minute.` };
+      return {
+        ok: false,
+        message: translations("errors.minimum", {
+          field: translations(`fields.${field}.label`),
+        }),
+      };
     }
     rateLimits[field] = value;
   }
@@ -796,7 +845,7 @@ export async function saveRateLimitSettings(
       "rate-limits",
     );
 
-  return { ok: true, message: "Rate limits saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function saveUploadSettings(
@@ -804,13 +853,14 @@ export async function saveUploadSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.storage");
 
   const maxUploadMb = parseInt(
     (formData.get("maxUploadMb") as string) || "20",
     10,
   );
   if (isNaN(maxUploadMb) || maxUploadMb < 1) {
-    return { ok: false, message: "Maximum upload size must be at least 1 MB." };
+    return { ok: false, message: translations("errors.maxUploadInvalid") };
   }
 
   const allowedExtensions = formData.getAll("allowedExtensions").map(String);
@@ -831,7 +881,7 @@ export async function saveUploadSettings(
       "storage",
     );
 
-  return { ok: true, message: "Upload constraints saved." };
+  return { ok: true, message: translations("uploadsSuccess") };
 }
 
 export async function saveAuditRetentionSettings(
@@ -839,16 +889,14 @@ export async function saveAuditRetentionSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.audit");
 
   const auditRetention = parseInt(
     (formData.get("auditRetention") as string) || "0",
     10,
   );
   if (isNaN(auditRetention) || auditRetention < 0) {
-    return {
-      ok: false,
-      message: "Audit retention must be 0 or a positive number.",
-    };
+    return { ok: false, message: translations("errors.retentionInvalid") };
   }
 
   const { updateAuditRetention } = await import("@/lib/settings");
@@ -858,7 +906,7 @@ export async function saveAuditRetentionSettings(
   if (user)
     await logAudit(user.id, AUDIT_ACTIONS.UPDATE_SETTINGS, "Setting", "audit");
 
-  return { ok: true, message: "Audit retention saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function saveEmailLogRetentionSettings(
@@ -866,6 +914,7 @@ export async function saveEmailLogRetentionSettings(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.emailTracking");
 
   const emailLogRetention = parseInt(
     (formData.get("emailLogRetention") as string) || "14",
@@ -874,7 +923,7 @@ export async function saveEmailLogRetentionSettings(
   if (isNaN(emailLogRetention) || emailLogRetention < 0) {
     return {
       ok: false,
-      message: "Email log retention must be 0 or a positive number.",
+      message: translations("errors.retentionInvalid"),
     };
   }
 
@@ -890,7 +939,7 @@ export async function saveEmailLogRetentionSettings(
       "email-tracking",
     );
 
-  return { ok: true, message: "Email log retention saved." };
+  return { ok: true, message: translations("errors.retentionSaved") };
 }
 
 export async function retryEmailSendAction(
@@ -898,23 +947,23 @@ export async function retryEmailSendAction(
   formData: FormData,
 ): Promise<SettingsActionState> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.emailTracking");
 
   const logId = (formData.get("logId") as string) || "";
-  if (!logId) return { ok: false, message: "Missing email log entry." };
+  if (!logId) return { ok: false, message: translations("errors.missingLog") };
 
   const { getEmailLogById } = await import("@/lib/db/notifications");
   const { prisma: db } = await import("@/lib/prisma");
   const { env } = await import("@/lib/env");
 
   const log = await getEmailLogById(logId);
-  if (!log) return { ok: false, message: "Email log entry not found." };
+  if (!log) return { ok: false, message: translations("errors.notFound") };
   if (log.status !== "FAILED")
-    return { ok: false, message: "Only failed emails can be retried." };
+    return { ok: false, message: translations("errors.onlyFailed") };
   if (log.type === "RESET") {
     return {
       ok: false,
-      message:
-        "Reset links are single-use and cannot be resent. Ask the user to request a new reset.",
+      message: translations("errors.resetSingleUse"),
     };
   }
 
@@ -932,7 +981,7 @@ export async function retryEmailSendAction(
           "NotificationLog",
           logId,
         );
-      return { ok: true, message: "Test email resent." };
+      return { ok: true, message: translations("testResent") };
     }
     return { ok: false, message: result.message };
   }
@@ -949,11 +998,19 @@ export async function retryEmailSendAction(
     | "reset";
 
   const { getOrganizationSettings } = await import("@/lib/settings");
-  const organizationName =
-    (await getOrganizationSettings()).name || "Mitch-Risk";
+  const { loadMessages } = await import("@/lib/i18n/messages");
+  const { createTranslator } = await import("next-intl");
+  const organization = await getOrganizationSettings();
+  const organizationName = organization.name || "Mitch-Risk";
+  const emailMessages = await loadMessages(organization.defaultLocale);
+  const emailTranslations = createTranslator({
+    locale: organization.defaultLocale,
+    messages: emailMessages,
+    namespace: "Email",
+  });
 
   const tokens: Record<string, string> = {
-    message: "Please review and resubmit your questionnaire.",
+    message: emailTranslations("retryMessage"),
     portalPassword: "",
     // Brand placeholder used across templates; without it {{appName}} would
     // reach the recipient verbatim on any template that references it.
@@ -1001,12 +1058,12 @@ export async function retryEmailSendAction(
         "NotificationLog",
         logId,
       );
-    return { ok: true, message: `Email resent successfully.` };
+    return { ok: true, message: translations("retrySuccess") };
   }
 
   return {
     ok: false,
-    message: "Failed to resend email. Check the tracking tab for details.",
+    message: translations("errors.resendFailed"),
   };
 }
 
@@ -1015,6 +1072,7 @@ export async function saveStorageSettings(
   formData: FormData,
 ): Promise<{ ok: boolean; message: string }> {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.storage");
 
   const existing = await getStorageSettings();
   const raw: Record<string, string> = {
@@ -1041,7 +1099,7 @@ export async function saveStorageSettings(
   if (!parsed.success) {
     return {
       ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
+      message: translations("errors.invalidInput"),
     };
   }
 
@@ -1057,7 +1115,7 @@ export async function saveStorageSettings(
     );
   }
 
-  return { ok: true, message: "Storage settings saved." };
+  return { ok: true, message: translations("success") };
 }
 
 export type WebhookActionState = { ok?: boolean; message?: string } | undefined;
@@ -1075,6 +1133,7 @@ export async function createWebhookAction(
   formData: FormData,
 ): Promise<WebhookActionState> {
   const user = await requirePermission(PERMISSIONS.WEBHOOKS_MANAGE);
+  const translations = await getTranslations("Admin.webhooks");
 
   const url = getField(formData, "url");
   const name = getField(formData, "name")?.trim() || "";
@@ -1082,27 +1141,30 @@ export async function createWebhookAction(
   const events = formData.getAll("events").map(String);
 
   if (!url) {
-    return { ok: false, message: "URL is required." };
+    return { ok: false, message: translations("errors.urlRequired") };
   }
 
   if (url.length > 500) {
-    return { ok: false, message: "URL must be 500 characters or fewer." };
+    return { ok: false, message: translations("errors.urlTooLong") };
   }
   if (name.length > 100) {
-    return { ok: false, message: "Name must be 100 characters or fewer." };
+    return { ok: false, message: translations("errors.nameTooLong") };
   }
 
   const targetValidation = validateWebhookTarget(url);
   if (!targetValidation.ok) {
-    return { ok: false, message: targetValidation.reason };
+    return {
+      ok: false,
+      message: translations(`errors.${targetValidation.code}`),
+    };
   }
 
   if (!isWebhookPlatform(platform)) {
-    return { ok: false, message: "Unknown platform." };
+    return { ok: false, message: translations("errors.unknownPlatform") };
   }
   const validEvents = [...new Set(events.filter(isWebhookEvent))];
   if (validEvents.length === 0) {
-    return { ok: false, message: "At least one event must be selected." };
+    return { ok: false, message: translations("errors.eventRequired") };
   }
 
   const secret = randomBytes(32).toString("hex");
@@ -1119,7 +1181,7 @@ export async function createWebhookAction(
     await logAudit(user.id, AUDIT_ACTIONS.CREATE_WEBHOOK, "Webhook", url);
   }
 
-  return { ok: true, message: "Webhook endpoint created." };
+  return { ok: true, message: translations("success") };
 }
 
 export async function deleteWebhookAction(formData: FormData) {

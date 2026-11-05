@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { remapConditionalLogic } from "@/lib/portal";
 import {
   QUESTION_TYPES,
+  expectedAnswerErrorKey,
   type QuestionInput,
   type TemplateInput,
   validateExpectedAnswer,
@@ -559,6 +560,11 @@ export type TemplateImportJson = {
 export type TemplateImportResult =
   { ok: true; templateId: string; name: string } | { ok: false; error: string };
 
+export type TemplateImportTranslator = (
+  key: string,
+  values?: Record<string, string | number>,
+) => string;
+
 const CHOICE_QUESTION_TYPES = new Set([
   "MULTIPLE_CHOICE",
   "COMBOBOX",
@@ -597,12 +603,17 @@ export function findAmbiguousControlCodes(
     .sort();
 }
 
-function validateTemplateQuestions(data: TemplateImportJson): string | null {
+function validateTemplateQuestions(
+  data: TemplateImportJson,
+  translate?: TemplateImportTranslator,
+): string | null {
   if (!data.name || typeof data.name !== "string") {
-    return "Template name is required.";
+    return translate ? translate("nameRequired") : "Template name is required.";
   }
   if (!Array.isArray(data.sections) || data.sections.length === 0) {
-    return "Template must contain at least one section.";
+    return translate
+      ? translate("sectionsRequired")
+      : "Template must contain at least one section.";
   }
 
   const validTypes: string[] = [...QUESTION_TYPES];
@@ -610,55 +621,84 @@ function validateTemplateQuestions(data: TemplateImportJson): string | null {
 
   for (const [sectionIndex, section] of data.sections.entries()) {
     if (!section.title || typeof section.title !== "string") {
-      return `Section ${sectionIndex + 1}: title is required.`;
+      return translate
+        ? translate("sectionTitleRequired", { number: sectionIndex + 1 })
+        : `Section ${sectionIndex + 1}: title is required.`;
     }
     if (!Array.isArray(section.questions)) {
-      return `Section "${section.title}": questions must be an array.`;
+      return translate
+        ? translate("questionsArray", { title: section.title })
+        : `Section "${section.title}": questions must be an array.`;
     }
     for (const [questionIndex, question] of section.questions.entries()) {
       const where = `Section "${section.title}", question ${questionIndex + 1}`;
       if (typeof question.text !== "string" || question.text.trim() === "") {
-        return `${where}: text is required.`;
+        return translate
+          ? translate("textRequired", { where })
+          : `${where}: text is required.`;
       }
       if (
         question.helpText !== undefined &&
         typeof question.helpText !== "string"
       ) {
-        return `${where}: helpText must be a string when provided.`;
+        return translate
+          ? translate("helpTextType", { where })
+          : `${where}: helpText must be a string when provided.`;
       }
       if (!validTypes.includes(question.type)) {
-        return `${where}: unknown type "${question.type}".`;
+        return translate
+          ? translate("unknownType", { where, type: question.type })
+          : `${where}: unknown type "${question.type}".`;
       }
       if (!validWeights.includes(question.riskWeight)) {
-        return `${where}: unknown risk weight "${question.riskWeight}".`;
+        return translate
+          ? translate("unknownRiskWeight", {
+              where,
+              weight: question.riskWeight,
+            })
+          : `${where}: unknown risk weight "${question.riskWeight}".`;
       }
       if (
         question.required !== undefined &&
         typeof question.required !== "boolean"
       ) {
-        return `${where}: required must be a boolean when provided.`;
+        return translate
+          ? translate("requiredType", { where })
+          : `${where}: required must be a boolean when provided.`;
       }
       if (question.options !== undefined && !isStringArray(question.options)) {
-        return `${where}: options must be an array of strings.`;
+        return translate
+          ? translate("optionsType", { where })
+          : `${where}: options must be an array of strings.`;
       }
       if (
         question.expectedAnswer !== undefined &&
         !isSupportedExpectedAnswerShape(question.expectedAnswer)
       ) {
-        return `${where}: expectedAnswer must be a string, number, or array of strings.`;
+        return translate
+          ? translate("expectedAnswerType", { where })
+          : `${where}: expectedAnswer must be a string, number, or array of strings.`;
       }
-      const expectedAnswerError = validateExpectedAnswer(
+      const expectedAnswerKey = expectedAnswerErrorKey(
         question.type as QuestionType,
         question.expectedAnswer,
       );
-      if (expectedAnswerError) {
-        return `${where}: ${expectedAnswerError}`;
+      if (expectedAnswerKey) {
+        if (translate) {
+          return translate(`expectedAnswer.${expectedAnswerKey}`, { where });
+        }
+        return `${where}: ${validateExpectedAnswer(
+          question.type as QuestionType,
+          question.expectedAnswer,
+        )}`;
       }
       if (
         question.controlCodes !== undefined &&
         !isStringArray(question.controlCodes)
       ) {
-        return `${where}: controlCodes must be an array of strings.`;
+        return translate
+          ? translate("controlCodesType", { where })
+          : `${where}: controlCodes must be an array of strings.`;
       }
     }
   }
@@ -668,8 +708,9 @@ function validateTemplateQuestions(data: TemplateImportJson): string | null {
 
 export async function importTemplateFromJson(
   data: TemplateImportJson,
+  translate?: TemplateImportTranslator,
 ): Promise<TemplateImportResult> {
-  const validationError = validateTemplateQuestions(data);
+  const validationError = validateTemplateQuestions(data, translate);
   if (validationError) {
     return { ok: false, error: validationError };
   }
@@ -703,14 +744,22 @@ export async function importTemplateFromJson(
   }
   const ambiguous = findAmbiguousControlCodes(controls);
   if (ambiguous.length > 0) {
+    const quotedCodes = ambiguous.map((code) => `"${code}"`).join(", ");
     return {
       ok: false,
-      error: `Control code${ambiguous.length !== 1 ? "s" : ""} ${ambiguous.map((code) => `"${code}"`).join(", ")} ${ambiguous.length !== 1 ? "are" : "is"} ambiguous — ${ambiguous.length !== 1 ? "they exist" : "it exists"} in multiple frameworks. Remove the duplicate or rename one of the controls.`,
+      error: translate
+        ? translate("controlAmbiguous", { codes: quotedCodes })
+        : `Control code${ambiguous.length !== 1 ? "s" : ""} ${quotedCodes} ${ambiguous.length !== 1 ? "are" : "is"} ambiguous — ${ambiguous.length !== 1 ? "they exist" : "it exists"} in multiple frameworks. Remove the duplicate or rename one of the controls.`,
     };
   }
   for (const code of uniqueCodes) {
     if (!frameworksByCode.has(code)) {
-      return { ok: false, error: `Control code not found: ${code}` };
+      return {
+        ok: false,
+        error: translate
+          ? translate("controlNotFound", { code })
+          : `Control code not found: ${code}`,
+      };
     }
   }
   // Ambiguity was rejected above, so every remaining code maps to one control.

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
@@ -31,6 +32,7 @@ import {
   questionSchema,
   sectionSchema,
   templateSchema,
+  templateValidationErrorKey,
 } from "@/lib/schemas/template";
 
 export type FormState = { error: string } | undefined;
@@ -47,12 +49,13 @@ export async function createTemplateAction(
   formData: FormData,
 ): Promise<FormState> {
   await requirePermission(PERMISSIONS.TEMPLATES_CREATE);
+  const translations = await getTranslations("Templates.errors");
   const parsed = templateSchema.safeParse({
     name: getField(formData, "name"),
     description: getField(formData, "description"),
   });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+    return { error: translations(templateValidationErrorKey(parsed.error)) };
   }
   const template = await createTemplate(parsed.data);
   const user = await getCurrentUser();
@@ -173,6 +176,7 @@ export async function saveQuestionAction(
   formData: FormData,
 ): Promise<FormState> {
   const user = await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
+  const translations = await getTranslations("Templates.errors");
   const templateId = getField(formData, "templateId");
   await assertEditable(templateId);
   const sectionId = getField(formData, "sectionId");
@@ -213,7 +217,7 @@ export async function saveQuestionAction(
     // The rule builder produces a few hundred bytes; a runaway payload here
     // would be stored per-question and shipped to every portal load.
     if (conditionalRaw.length > 10_000) {
-      return { error: "Conditional logic payload is too large." };
+      return { error: translations("conditionalTooLarge") };
     }
     try {
       conditionalLogic = JSON.parse(conditionalRaw);
@@ -222,7 +226,7 @@ export async function saveQuestionAction(
         "Failed to parse conditional logic:",
         error instanceof Error ? error.message : String(error),
       );
-      return { error: "Invalid conditional logic." };
+      return { error: translations("conditionalInvalid") };
     }
   }
 
@@ -238,7 +242,7 @@ export async function saveQuestionAction(
     controlIds: formData.getAll("controlIds").map(String),
   });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+    return { error: translations(templateValidationErrorKey(parsed.error)) };
   }
 
   if (questionId) {
@@ -391,14 +395,16 @@ export async function importTemplateAction(
   formData: FormData,
 ): Promise<TemplateImportState> {
   await requirePermission(PERMISSIONS.TEMPLATES_CREATE);
+  const translations = await getTranslations("Templates.import");
+  const errorTranslations = await getTranslations("Templates.import.errors");
 
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {
-    return { ok: false, error: "No file selected." };
+    return { ok: false, error: errorTranslations("noFile") };
   }
 
   if (file.size > 1_000_000) {
-    return { ok: false, error: "File is too large (max 1 MB)." };
+    return { ok: false, error: errorTranslations("fileTooLarge") };
   }
 
   let data: TemplateImportJson;
@@ -409,11 +415,11 @@ export async function importTemplateAction(
       "Failed to parse import JSON:",
       error instanceof Error ? error.message : String(error),
     );
-    return { ok: false, error: "Invalid JSON file." };
+    return { ok: false, error: errorTranslations("invalidJson") };
   }
 
   try {
-    const result = await importTemplateFromJson(data);
+    const result = await importTemplateFromJson(data, errorTranslations);
     if (!result.ok) {
       return { ok: false, error: result.error };
     }
@@ -427,7 +433,10 @@ export async function importTemplateAction(
         result.templateId,
       );
     }
-    return { ok: true, message: `Imported "${result.name}" as a new DRAFT.` };
+    return {
+      ok: true,
+      message: translations("success", { name: result.name }),
+    };
   } catch (error: unknown) {
     // Validation above catches known shapes; anything reaching here is a
     // malformed payload our checks missed or an unexpected persistence error.
@@ -437,8 +446,7 @@ export async function importTemplateAction(
     );
     return {
       ok: false,
-      error:
-        "Import failed — the file structure could not be processed. Check it against the downloadable template and try again.",
+      error: errorTranslations("importFailed"),
     };
   }
 }

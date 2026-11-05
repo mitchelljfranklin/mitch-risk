@@ -191,22 +191,36 @@ export function remapConditionalLogic(
   return { match: parsed.match, rules };
 }
 
+export type ConditionalSummaryTranslator = (
+  key: string,
+  values?: Record<string, string | number>,
+) => string;
+
 export function summarizeConditionalLogic(
   logic: unknown,
   questionText: Map<string, string>,
+  translate?: ConditionalSummaryTranslator,
 ): string | null {
   const parsed = parseConditionalLogic(logic);
   if (!parsed) return null;
+  const fallbackQuestion = translate
+    ? translate("questionFallback")
+    : "a question";
+  const shownIf = translate ? translate("shownIf") : "Shown if";
+  const andJoiner = translate ? translate("and") : "AND";
+  const orJoiner = translate ? translate("or") : "OR";
   const parts = parsed.rules.map((rule) => {
-    const label = questionText.get(rule.questionId) ?? "a question";
+    const label = questionText.get(rule.questionId) ?? fallbackQuestion;
     const short = label.length > 40 ? `${label.slice(0, 40)}…` : label;
-    const operatorLabel = CONDITION_OPERATOR_LABELS[rule.operator];
+    const operatorLabel = translate
+      ? translate(`operators.${rule.operator}`)
+      : CONDITION_OPERATOR_LABELS[rule.operator];
     return VALUELESS_OPERATORS.includes(rule.operator)
       ? `“${short}” ${operatorLabel}`
       : `“${short}” ${operatorLabel} ${rule.value}`;
   });
-  const joiner = parsed.match === "any" ? " OR " : " AND ";
-  return `Shown if ${parts.join(joiner)}`;
+  const joiner = parsed.match === "any" ? orJoiner : andJoiner;
+  return `${shownIf} ${parts.join(` ${joiner} `)}`;
 }
 
 export function hasAnswer(answer: PortalAnswerValue | undefined): boolean {

@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -17,20 +19,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { sendBackToVendorAction } from "@/lib/actions/collaboration";
 
 export function SendBackDialog({ assessmentId }: { assessmentId: string }) {
+  const translations = useTranslations("Assessments.detail.sendBack");
   const formId = `send-back-${assessmentId}`;
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button type="button" variant="outline" size="sm">
-          Send back to vendor
+          {translations("trigger")}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Send back to vendor?</AlertDialogTitle>
+          <AlertDialogTitle>{translations("title")}</AlertDialogTitle>
           <AlertDialogDescription>
-            The vendor will be able to edit and resubmit their answers, and will
-            receive an email with your message. Their existing answers are kept.
+            {translations("description")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <form
@@ -40,17 +42,19 @@ export function SendBackDialog({ assessmentId }: { assessmentId: string }) {
         >
           <input type="hidden" name="assessmentId" value={assessmentId} />
           <Label htmlFor={`${formId}-message`}>
-            Message to the vendor (optional)
+            {translations("messageLabel")}
           </Label>
           <Textarea
             id={`${formId}-message`}
             name="message"
-            placeholder="Explain what additional information is needed…"
+            placeholder={translations("messagePlaceholder")}
             rows={4}
           />
           <AlertDialogFooter>
-            <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
-            <SubmitButton type="submit">Send back</SubmitButton>
+            <AlertDialogCancel type="button">
+              {translations("cancel")}
+            </AlertDialogCancel>
+            <SubmitButton type="submit">{translations("confirm")}</SubmitButton>
           </AlertDialogFooter>
         </form>
       </AlertDialogContent>

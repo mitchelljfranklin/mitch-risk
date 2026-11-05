@@ -203,6 +203,26 @@ test.describe.serial("trust center journeys", () => {
     expect(download.headers()["content-type"]).toBe("application/pdf");
   });
 
+  test("public page switches language", async ({ page }) => {
+    await enableTrustCenter();
+    await page.goto("/trust");
+
+    await page.getByRole("combobox").first().click();
+    await page.getByRole("option", { name: "Español" }).click();
+
+    await expect(
+      page.getByText("Cumplimiento y certificaciones").first(),
+    ).toBeVisible();
+    await expect(page.getByRole("link", { name: "Descargar" })).toBeVisible();
+
+    await page.getByRole("combobox").first().click();
+    await page.getByRole("option", { name: "English" }).click();
+
+    await expect(
+      page.getByText("Compliance & certifications").first(),
+    ).toBeVisible();
+  });
+
   test("disabling hides the public page and its files behind a 404", async ({
     page,
   }) => {

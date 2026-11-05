@@ -47,6 +47,7 @@ export default defineConfig({
   fullyParallel: false,
   use: {
     baseURL: "http://localhost:3000",
+    locale: "en-US",
     trace: "off",
   },
   projects: [{ name: "chromium", use: { browserName: "chromium" } }],

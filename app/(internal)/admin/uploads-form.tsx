@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -31,6 +32,7 @@ export function UploadsForm({
   maxUploadMb,
   allowedExtensions,
 }: UploadsFormProps) {
+  const translations = useTranslations("Admin.storage.uploads");
   const [state, action, isPending] = useActionState(
     saveUploadSettings,
     undefined,
@@ -40,9 +42,9 @@ export function UploadsForm({
   return (
     <form action={action} className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <Label htmlFor="maxUploadMb">Maximum file upload size (MB)</Label>
+        <Label htmlFor="maxUploadMb">{translations("maxSize")}</Label>
         <p className="text-muted-foreground text-xs">
-          Evidence files larger than this limit are rejected during upload.
+          {translations("maxSizeHint")}
         </p>
         <Input
           id="maxUploadMb"
@@ -55,9 +57,9 @@ export function UploadsForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label>Allowed file extensions</Label>
+        <Label>{translations("allowedExtensions")}</Label>
         <p className="text-muted-foreground text-xs">
-          File types vendors can upload as evidence. Select at least one.
+          {translations("allowedHint")}
         </p>
         <div className="flex flex-wrap gap-3">
           {ALL_EXTENSIONS.map((ext) => {
@@ -79,7 +81,7 @@ export function UploadsForm({
 
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending} size="sm">
-          {isPending ? "Saving..." : "Save"}
+          {isPending ? translations("saving") : translations("save")}
         </Button>
       </div>
     </form>

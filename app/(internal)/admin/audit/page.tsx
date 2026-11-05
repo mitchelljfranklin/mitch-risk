@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { getAuditRetention } from "@/lib/settings";
@@ -17,7 +18,10 @@ import { saveAuditRetentionSettings } from "../actions";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Admin — Audit log" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Admin.audit");
+  return { title: translations("metaTitle") };
+}
 
 export default async function AdminAuditPage({
   searchParams,
@@ -25,6 +29,7 @@ export default async function AdminAuditPage({
   searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const user = await requirePermission(PERMISSIONS.AUDIT_VIEW);
+  const translations = await getTranslations("Admin.audit");
   const sp = await searchParams;
 
   const [auditLogs, actions, staffAccounts, auditRetention] = await Promise.all(
@@ -63,27 +68,28 @@ export default async function AdminAuditPage({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Audit log</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {translations("title")}
+        </h1>
         <p className="text-muted-foreground text-sm">
-          Administrative and system activity across the platform.
+          {translations("subtitle")}
         </p>
       </div>
 
       {canManageRetention ? (
         <Card>
           <CardHeader>
-            <CardTitle>Retention</CardTitle>
+            <CardTitle>{translations("retentionTitle")}</CardTitle>
             <CardDescription>
-              Audit entries older than this many days are automatically pruned
-              by the scheduled cleanup. Set to 0 to keep indefinitely.
+              {translations("retentionDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <RetentionForm
               action={saveAuditRetentionSettings}
               fieldName="auditRetention"
-              label="Audit log retention (days)"
-              help="Applies on the next scheduled run."
+              label={translations("retentionLabel")}
+              help={translations("retentionHelp")}
               value={auditRetention}
             />
           </CardContent>
@@ -92,10 +98,8 @@ export default async function AdminAuditPage({
 
       <Card>
         <CardHeader>
-          <CardTitle>Audit log</CardTitle>
-          <CardDescription>
-            Track administrative and system activity across the platform.
-          </CardDescription>
+          <CardTitle>{translations("cardTitle")}</CardTitle>
+          <CardDescription>{translations("cardDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <AuditForm

@@ -66,7 +66,11 @@ beforeAll(async () => {
   await prisma.appSetting.deleteMany({
     where: { category: { in: MUTATED_CATEGORIES } },
   });
-  await updateOrganizationSettings({ name: "mitch-risk", supportEmail: "" });
+  await updateOrganizationSettings({
+    name: "mitch-risk",
+    supportEmail: "",
+    defaultLocale: "en",
+  });
 });
 
 afterAll(async () => {
@@ -76,9 +80,23 @@ afterAll(async () => {
 
 describe("settings persistence (integration)", () => {
   it("persists organization settings and reads them back", async () => {
-    await updateOrganizationSettings({ name: "Acme Risk", supportEmail: "" });
+    await updateOrganizationSettings({
+      name: "Acme Risk",
+      supportEmail: "",
+      defaultLocale: "en",
+    });
     const organization = await getOrganizationSettings();
     expect(organization.name).toBe("Acme Risk");
+  });
+
+  it("persists the default language", async () => {
+    await updateOrganizationSettings({
+      name: "Acme Risk",
+      supportEmail: "",
+      defaultLocale: "es",
+    });
+    const organization = await getOrganizationSettings();
+    expect(organization.defaultLocale).toBe("es");
   });
 
   it("stores the SMTP password encrypted at rest and redacts it on read", async () => {

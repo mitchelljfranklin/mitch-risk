@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { marked } from "marked";
 
 import { getClientIp } from "@/lib/client-ip";
@@ -17,6 +18,7 @@ import {
 } from "@/lib/db/trust-center";
 import { TRUST_CENTER_DOCUMENT_CATEGORY_LABELS } from "@/lib/schemas/trust-center";
 import { Badge } from "@/components/ui/badge";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ShieldCheck } from "lucide-react";
 
@@ -41,7 +43,8 @@ export default async function TrustCenterPublicPage() {
   if (!settings.enabled) notFound();
   if (!rateLimit("trust-page", clientIp, settings.pageLoadsPerMin)) notFound();
 
-  const [org, appearance, badges, documents, subprocessors, sections] =
+  const translations = await getTranslations("Trust");
+  const [organization, appearance, badges, documents, subprocessors, sections] =
     await Promise.all([
       getOrganizationSettings(),
       getAppearanceSettings(),
@@ -51,11 +54,12 @@ export default async function TrustCenterPublicPage() {
       listPublishedTrustCenterSections(),
     ]);
 
-  const contactEmail = settings.contactEmail || org.supportEmail;
+  const contactEmail = settings.contactEmail || organization.supportEmail;
   return (
     <div className="bg-background min-h-svh">
       <div className="mx-auto flex max-w-3xl flex-col gap-10 px-6 py-12">
-        <div className="flex justify-end">
+        <div className="flex items-center justify-end gap-2">
+          <LocaleSwitcher />
           <ThemeToggle />
         </div>
         <header className="flex flex-col items-center gap-3 text-center">
@@ -63,14 +67,14 @@ export default async function TrustCenterPublicPage() {
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={`/api/brand/logo?v=${appearance.logoKey}`}
-              alt={org.name}
+              alt={organization.name}
               className="h-16 w-auto"
             />
           ) : (
             <ShieldCheck className="text-muted-foreground size-10" />
           )}
           <h1 className="text-3xl font-semibold tracking-tight">
-            {org.name} Trust Center
+            {translations("title", { orgName: organization.name })}
           </h1>
           {settings.intro ? (
             <div
@@ -85,10 +89,16 @@ export default async function TrustCenterPublicPage() {
         {badges.length > 0 ? (
           <section className="flex flex-col gap-4">
             <h2 className="text-lg font-semibold">
-              Compliance &amp; certifications
+              {translations("compliance")}
             </h2>
             <div className="grid gap-3 sm:grid-cols-2">
               {badges.map((badge) => {
+                let badgeStatus: string | null = null;
+                if (badge.expired) {
+                  badgeStatus = translations("expired");
+                } else if (badge.expiringSoon) {
+                  badgeStatus = translations("expiringSoon");
+                }
                 return (
                   <div
                     key={badge.id}
@@ -109,13 +119,9 @@ export default async function TrustCenterPublicPage() {
                         <span className="text-sm font-medium">
                           {badge.title}
                         </span>
-                        {badge.expired ? (
+                        {badgeStatus ? (
                           <Badge variant="secondary" className="text-xs">
-                            Expired
-                          </Badge>
-                        ) : badge.expiringSoon ? (
-                          <Badge variant="secondary" className="text-xs">
-                            Expiring soon
+                            {badgeStatus}
                           </Badge>
                         ) : null}
                       </div>
@@ -136,7 +142,7 @@ export default async function TrustCenterPublicPage() {
                           rel="noopener noreferrer"
                           className="text-xs underline"
                         >
-                          Verify
+                          {translations("verify")}
                         </a>
                       ) : null}
                     </div>
@@ -149,7 +155,9 @@ export default async function TrustCenterPublicPage() {
 
         {documents.length > 0 ? (
           <section className="flex flex-col gap-4">
-            <h2 className="text-lg font-semibold">Security documents</h2>
+            <h2 className="text-lg font-semibold">
+              {translations("documents")}
+            </h2>
             <div className="flex flex-col divide-y rounded-lg border">
               {documents.map((document) => (
                 <div
@@ -166,9 +174,11 @@ export default async function TrustCenterPublicPage() {
                       </p>
                     ) : null}
                     <p className="text-muted-foreground truncate text-xs">
-                      {TRUST_CENTER_DOCUMENT_CATEGORY_LABELS[
-                        document.category
-                      ] ?? document.category}
+                      {translations.has(`categories.${document.category}`)
+                        ? translations(`categories.${document.category}`)
+                        : (TRUST_CENTER_DOCUMENT_CATEGORY_LABELS[
+                            document.category
+                          ] ?? document.category)}
                       {document.file
                         ? ` · ${(document.file.sizeBytes / 1024).toFixed(0)} KB`
                         : ""}
@@ -180,7 +190,7 @@ export default async function TrustCenterPublicPage() {
                       className="text-sm underline"
                       download={document.file.fileName}
                     >
-                      Download
+                      {translations("download")}
                     </a>
                   ) : null}
                 </div>
@@ -191,14 +201,22 @@ export default async function TrustCenterPublicPage() {
 
         {subprocessors.length > 0 ? (
           <section className="flex flex-col gap-4">
-            <h2 className="text-lg font-semibold">Subprocessors</h2>
+            <h2 className="text-lg font-semibold">
+              {translations("subprocessors")}
+            </h2>
             <div className="overflow-x-auto rounded-lg border">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-muted/50 border-b text-left">
-                    <th className="px-4 py-2 font-medium">Name</th>
-                    <th className="px-4 py-2 font-medium">Purpose</th>
-                    <th className="px-4 py-2 font-medium">Location</th>
+                    <th className="px-4 py-2 font-medium">
+                      {translations("name")}
+                    </th>
+                    <th className="px-4 py-2 font-medium">
+                      {translations("purpose")}
+                    </th>
+                    <th className="px-4 py-2 font-medium">
+                      {translations("location")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -259,7 +277,7 @@ export default async function TrustCenterPublicPage() {
 
         {contactEmail ? (
           <footer className="text-muted-foreground mt-4 border-t pt-6 text-center text-sm">
-            Questions about our security posture?{" "}
+            {translations("contactPrompt")}{" "}
             <a href={`mailto:${contactEmail}`} className="underline">
               {contactEmail}
             </a>

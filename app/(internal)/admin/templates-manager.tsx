@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 import MDEditor, { commands } from "@uiw/react-md-editor";
 
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,17 @@ function TemplateEditorSheet({
   body: string;
   onClose: () => void;
 }) {
+  const translations = useTranslations("Admin.email");
+  const templateLabel = translations.has(
+    `templateTypes.${definition.type}.label`,
+  )
+    ? translations(`templateTypes.${definition.type}.label`)
+    : definition.label;
+  const templateDescription = translations.has(
+    `templateTypes.${definition.type}.description`,
+  )
+    ? translations(`templateTypes.${definition.type}.description`)
+    : definition.description;
   const [saveState, saveAction, isSaving] = useActionState(
     saveEmailTemplateAction,
     initialState,
@@ -68,14 +80,14 @@ function TemplateEditorSheet({
   return (
     <SheetContent className="w-full overflow-y-auto sm:max-w-2xl">
       <SheetHeader>
-        <SheetTitle>{definition.label}</SheetTitle>
-        <SheetDescription>{definition.description}</SheetDescription>
+        <SheetTitle>{templateLabel}</SheetTitle>
+        <SheetDescription>{templateDescription}</SheetDescription>
       </SheetHeader>
 
       <form action={saveAction} className="flex flex-1 flex-col gap-4 px-4">
         <input type="hidden" name="type" value={definition.type} />
         <div className="grid gap-2">
-          <Label htmlFor="template-subject">Subject</Label>
+          <Label htmlFor="template-subject">{translations("subject")}</Label>
           <Input
             id="template-subject"
             name="subject"
@@ -84,7 +96,7 @@ function TemplateEditorSheet({
           />
         </div>
         <div className="grid gap-2">
-          <Label>Body</Label>
+          <Label>{translations("body")}</Label>
           <input type="hidden" name="body" value={liveBody} />
           <MDEditor
             value={liveBody}
@@ -105,27 +117,32 @@ function TemplateEditorSheet({
           />
         </div>
         <p className="text-muted-foreground text-xs">
-          Markdown formatting is supported — use **bold**, *italic*, lists, and
-          links. Tokens: {TEMPLATE_TOKENS}.
+          {translations("editorHint", { tokens: TEMPLATE_TOKENS })}
         </p>
 
         <SheetFooter className="px-0">
           <Button type="submit" disabled={isSaving}>
-            {isSaving ? "Saving..." : "Save changes"}
+            {isSaving
+              ? translations("savingChanges")
+              : translations("saveChanges")}
           </Button>
           <ConfirmDialog
-            title="Reset to default?"
-            description={`The "${definition.label}" subject and body will be replaced with the built-in default. Any customisation will be lost.`}
-            confirmLabel="Reset"
+            title={translations("resetTitle")}
+            description={translations("resetDescription", {
+              name: templateLabel,
+            })}
+            confirmLabel={translations("reset")}
             variant="default"
             formId={resetFormId}
           >
             <Button type="button" variant="outline" disabled={isResetting}>
-              {isResetting ? "Resetting..." : "Reset to default"}
+              {isResetting
+                ? translations("resetting")
+                : translations("resetToDefault")}
             </Button>
           </ConfirmDialog>
           <Button type="button" variant="outline" onClick={onClose}>
-            Cancel
+            {translations("cancel")}
           </Button>
           <Button
             type="button"
@@ -137,7 +154,7 @@ function TemplateEditorSheet({
               )
             }
           >
-            Preview
+            {translations("preview")}
           </Button>
         </SheetFooter>
       </form>
@@ -154,6 +171,7 @@ export function TemplatesManager({
 }: {
   templates: EmailTemplateSettings;
 }) {
+  const translations = useTranslations("Admin.email");
   const [editing, setEditing] = useState<EmailTemplateType | null>(null);
   const activeDefinition = editing
     ? EMAIL_TEMPLATE_DEFINITIONS.find(
@@ -171,9 +189,15 @@ export function TemplatesManager({
             onClick={() => setEditing(definition.type)}
             className="hover:bg-muted/50 flex flex-col items-start gap-1 p-3 text-left"
           >
-            <span className="text-sm font-medium">{definition.label}</span>
+            <span className="text-sm font-medium">
+              {translations.has(`templateTypes.${definition.type}.label`)
+                ? translations(`templateTypes.${definition.type}.label`)
+                : definition.label}
+            </span>
             <span className="text-muted-foreground text-xs">
-              {definition.description}
+              {translations.has(`templateTypes.${definition.type}.description`)
+                ? translations(`templateTypes.${definition.type}.description`)
+                : definition.description}
             </span>
             <span className="text-muted-foreground w-full truncate text-xs italic">
               {templates[definition.subjectField]}

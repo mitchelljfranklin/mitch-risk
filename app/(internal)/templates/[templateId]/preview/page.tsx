@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -19,14 +20,22 @@ export async function generateMetadata({
 }: PreviewPageProps): Promise<Metadata> {
   const { templateId } = await params;
   const template = await getTemplateForBuilder(templateId);
-  if (!template) return { title: "Template not found" };
-  return { title: `Preview — ${template.name}` };
+  if (!template) {
+    const translations = await getTranslations("Templates.preview");
+    return { title: translations("notFound") };
+  }
+  const translations = await getTranslations("Templates.preview");
+  return {
+    title: translations("title", { name: template.name }),
+  };
 }
 
 export default async function TemplatePreviewPage({
   params,
 }: PreviewPageProps) {
   await requirePermission(PERMISSIONS.TEMPLATES_VIEW);
+  const translations = await getTranslations("Templates.preview");
+  const builderTranslations = await getTranslations("Templates.builder");
   const { templateId } = await params;
   const template = await getTemplateForBuilder(templateId);
   if (!template) {
@@ -37,9 +46,12 @@ export default async function TemplatePreviewPage({
     <div className="mx-auto flex max-w-2xl flex-col gap-6">
       <Breadcrumbs
         segments={[
-          { label: "Templates", href: "/templates" },
+          {
+            label: builderTranslations("breadcrumbs.templates"),
+            href: "/templates",
+          },
           { label: template.name, href: `/templates/${templateId}` },
-          { label: "Preview" },
+          { label: translations("breadcrumb") },
         ]}
       />
       <div>
@@ -48,8 +60,7 @@ export default async function TemplatePreviewPage({
           <Badge variant="outline">v{template.version}</Badge>
         </h1>
         <p className="text-muted-foreground text-sm">
-          Read-only preview of how this questionnaire appears to a vendor.
-          Conditional questions are all shown here with their rule noted.
+          {translations("description")}
         </p>
       </div>
 

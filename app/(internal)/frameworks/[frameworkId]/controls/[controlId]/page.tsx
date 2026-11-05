@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { cache } from "react";
+import { getTranslations } from "next-intl/server";
 
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +29,8 @@ export async function generateMetadata({
   const { frameworkId, controlId } = await params;
   const control = await getControlForRequest(controlId);
   if (!control || control.frameworkId !== frameworkId) {
-    return { title: "Control not found" };
+    const translations = await getTranslations("Frameworks.control");
+    return { title: translations("notFound") };
   }
   return { title: `${control.code} — ${control.framework.name}` };
 }
@@ -37,6 +39,8 @@ export default async function ControlDetailPage({
   params,
 }: ControlDetailPageProps) {
   const user = await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
+  const translations = await getTranslations("Frameworks.control");
+  const statusTranslations = await getTranslations("Templates.statuses");
   const { frameworkId, controlId } = await params;
 
   const control = await getControlForRequest(controlId);
@@ -75,7 +79,7 @@ export default async function ControlDetailPage({
     <div className="flex max-w-2xl flex-col gap-6">
       <Breadcrumbs
         segments={[
-          { label: "Frameworks", href: "/frameworks" },
+          { label: translations("breadcrumbs"), href: "/frameworks" },
           {
             label: `${control.framework.name} ${control.framework.version}`,
             href: `/frameworks/${frameworkId}`,
@@ -106,7 +110,7 @@ export default async function ControlDetailPage({
 
       <Card>
         <CardHeader>
-          <CardTitle>Guidance</CardTitle>
+          <CardTitle>{translations("guidance")}</CardTitle>
         </CardHeader>
         <CardContent className="text-sm">{control.guidance}</CardContent>
       </Card>
@@ -114,7 +118,9 @@ export default async function ControlDetailPage({
       <Card>
         <CardHeader>
           <CardTitle>
-            Mapped questions ({control.questionControls.length})
+            {translations("mappedQuestions", {
+              count: control.questionControls.length,
+            })}
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
@@ -122,8 +128,8 @@ export default async function ControlDetailPage({
             <EmptyState
               compact
               icon="templates"
-              title="No mapped questions"
-              description="No questionnaire questions map to this control yet."
+              title={translations("noMappedTitle")}
+              description={translations("noMappedDescription")}
             />
           ) : (
             mappedTemplates.map((template) => (
@@ -137,7 +143,9 @@ export default async function ControlDetailPage({
                     v{template.version}
                   </Badge>
                   <Badge variant="secondary" className="text-xs">
-                    {template.status.toLowerCase()}
+                    {statusTranslations.has(template.status)
+                      ? statusTranslations(template.status)
+                      : template.status.toLowerCase()}
                   </Badge>
                 </Link>
                 <ul className="text-muted-foreground ml-4 list-disc text-sm">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useFormatter, useTranslations } from "next-intl";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { addCommentAction, reviewAction } from "@/lib/actions/collaboration";
-import { formatDate } from "@/lib/utils";
 
 const REVIEW_DECISION_VARIANT: Record<
   string,
@@ -49,6 +49,70 @@ type ReviewPanelProps = {
   isReviewable: boolean;
 };
 
+function VisibilityBadge({ visibility }: { visibility: string }) {
+  const translations = useTranslations("Assessments.detail.review");
+  if (visibility === "VENDOR") {
+    return (
+      <span className="rounded border border-[var(--rag-green)]/30 px-1 text-[10px] text-[var(--rag-green)]">
+        {translations("vendor")}
+      </span>
+    );
+  }
+  return (
+    <span className="text-muted-foreground/50 rounded border px-1 text-[10px]">
+      {translations("internal")}
+    </span>
+  );
+}
+
+type CommentComposerProps = {
+  assessmentId: string;
+  questionId: string;
+  parentId?: string;
+  placeholder: string;
+  submitLabel: string;
+};
+
+function CommentComposer({
+  assessmentId,
+  questionId,
+  parentId,
+  placeholder,
+  submitLabel,
+}: CommentComposerProps) {
+  const translations = useTranslations("Assessments.detail.review");
+
+  return (
+    <form action={addCommentAction} className="mt-1 flex gap-2">
+      <input type="hidden" name="assessmentId" value={assessmentId} />
+      <input type="hidden" name="assessmentQuestionId" value={questionId} />
+      {parentId ? (
+        <input type="hidden" name="parentId" value={parentId} />
+      ) : null}
+      <input
+        name="body"
+        placeholder={placeholder}
+        required
+        className="border-input bg-background h-8 flex-1 rounded-md border px-2 text-xs"
+      />
+      <Select name="visibility" defaultValue="INTERNAL">
+        <SelectTrigger className="h-8 w-24 text-xs">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="INTERNAL">
+            {translations("internalOption")}
+          </SelectItem>
+          <SelectItem value="VENDOR">{translations("vendorOption")}</SelectItem>
+        </SelectContent>
+      </Select>
+      <SubmitButton type="submit" size="sm" variant="ghost">
+        {submitLabel}
+      </SubmitButton>
+    </form>
+  );
+}
+
 export function ReviewPanel({
   assessmentId,
   questionId,
@@ -59,7 +123,19 @@ export function ReviewPanel({
   canReview,
   isReviewable,
 }: ReviewPanelProps) {
+  const translations = useTranslations("Assessments.detail.review");
+  const dateFormatter = useFormatter();
   const [expanded, setExpanded] = useState(false);
+
+  function decisionLabel(decision: string): string {
+    if (decision === "APPROVED") {
+      return translations("approved");
+    }
+    if (decision === "CLARIFICATION_REQUESTED") {
+      return translations("clarificationRequested");
+    }
+    return decision.toLowerCase();
+  }
 
   let replyCount = 0;
   for (const replyList of Object.values(replies)) {
@@ -72,18 +148,14 @@ export function ReviewPanel({
 
   const summaryParts: string[] = [];
   if (hasReview) {
-    const label =
-      review.decision === "CLARIFICATION_REQUESTED"
-        ? "Clarification requested"
-        : review.decision.toLowerCase();
-    summaryParts.push(label);
+    summaryParts.push(decisionLabel(review.decision));
     if (review.note) {
       summaryParts.push(review.note);
     }
   }
   if (hasComments) {
     summaryParts.push(
-      `${totalCommentCount} comment${totalCommentCount > 1 ? "s" : ""}`,
+      translations("commentCount", { count: totalCommentCount }),
     );
   }
 
@@ -95,9 +167,7 @@ export function ReviewPanel({
             variant={REVIEW_DECISION_VARIANT[review.decision] ?? "secondary"}
             className="text-xs"
           >
-            {review.decision === "CLARIFICATION_REQUESTED"
-              ? "Clarification requested"
-              : review.decision.toLowerCase()}
+            {decisionLabel(review.decision)}
           </Badge>
         ) : null}
         {!expanded && summaryParts.length > 0 ? (
@@ -107,7 +177,9 @@ export function ReviewPanel({
         ) : null}
         {!hasReview && !hasComments && !expanded ? (
           isReviewable && canReview ? (
-            <span className="text-muted-foreground text-xs">No review yet</span>
+            <span className="text-muted-foreground text-xs">
+              {translations("noReviewYet")}
+            </span>
           ) : null
         ) : null}
         {canReview || hasReview || hasComments ? (
@@ -121,12 +193,12 @@ export function ReviewPanel({
             {expanded ? (
               <>
                 <ChevronUp className="size-3" />
-                Collapse
+                {translations("collapse")}
               </>
             ) : (
               <>
                 <ChevronDown className="size-3" />
-                Expand
+                {translations("expand")}
               </>
             )}
           </Button>
@@ -141,23 +213,27 @@ export function ReviewPanel({
               <input type="hidden" name="responseId" value={responseId} />
               <Select name="decision" required>
                 <SelectTrigger className="h-8 w-48 text-xs">
-                  <SelectValue placeholder="Review" />
+                  <SelectValue
+                    placeholder={translations("reviewPlaceholder")}
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="APPROVED">Approve</SelectItem>
+                  <SelectItem value="APPROVED">
+                    {translations("approve")}
+                  </SelectItem>
                   <SelectItem value="CLARIFICATION_REQUESTED">
-                    Request clarification
+                    {translations("requestClarification")}
                   </SelectItem>
                 </SelectContent>
               </Select>
               <Textarea
                 name="note"
-                placeholder="Optional note (visible to vendor if clarification requested)"
+                placeholder={translations("notePlaceholder")}
                 className="h-16 min-h-16 text-xs"
                 rows={3}
               />
               <SubmitButton type="submit" size="sm">
-                Save
+                {translations("save")}
               </SubmitButton>
             </form>
           ) : review ? (
@@ -175,17 +251,14 @@ export function ReviewPanel({
               <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
                 {comment.authorName}{" "}
                 <span className="text-muted-foreground/50">
-                  · {formatDate(comment.createdAt)}
+                  ·{" "}
+                  {dateFormatter.dateTime(new Date(comment.createdAt), {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
                 </span>
-                {comment.visibility === "VENDOR" ? (
-                  <span className="rounded border border-[var(--rag-green)]/30 px-1 text-[10px] text-[var(--rag-green)]">
-                    vendor
-                  </span>
-                ) : (
-                  <span className="text-muted-foreground/50 rounded border px-1 text-[10px]">
-                    internal
-                  </span>
-                )}
+                <VisibilityBadge visibility={comment.visibility} />
               </p>
               <p className="text-sm">{comment.body}</p>
               {(replies[comment.id] ?? []).map((reply) => (
@@ -196,84 +269,37 @@ export function ReviewPanel({
                   <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
                     {reply.authorName}{" "}
                     <span className="text-muted-foreground/50">
-                      · {formatDate(reply.createdAt)}
+                      ·{" "}
+                      {dateFormatter.dateTime(new Date(reply.createdAt), {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </span>
-                    {reply.visibility === "VENDOR" ? (
-                      <span className="rounded border border-[var(--rag-green)]/30 px-1 text-[10px] text-[var(--rag-green)]">
-                        vendor
-                      </span>
-                    ) : (
-                      <span className="text-muted-foreground/50 rounded border px-1 text-[10px]">
-                        internal
-                      </span>
-                    )}
+                    <VisibilityBadge visibility={reply.visibility} />
                   </p>
                   <p className="text-sm">{reply.body}</p>
                 </div>
               ))}
               {canReview ? (
-                <form action={addCommentAction} className="mt-1 flex gap-2">
-                  <input
-                    type="hidden"
-                    name="assessmentId"
-                    value={assessmentId}
-                  />
-                  <input
-                    type="hidden"
-                    name="assessmentQuestionId"
-                    value={questionId}
-                  />
-                  <input type="hidden" name="parentId" value={comment.id} />
-                  <input
-                    name="body"
-                    placeholder="Reply"
-                    required
-                    className="border-input bg-background h-8 flex-1 rounded-md border px-2 text-xs"
-                  />
-                  <Select name="visibility" defaultValue="INTERNAL">
-                    <SelectTrigger className="h-8 w-24 text-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="INTERNAL">Internal</SelectItem>
-                      <SelectItem value="VENDOR">Visible to vendor</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <SubmitButton type="submit" size="sm" variant="ghost">
-                    Reply
-                  </SubmitButton>
-                </form>
+                <CommentComposer
+                  assessmentId={assessmentId}
+                  questionId={questionId}
+                  parentId={comment.id}
+                  placeholder={translations("replyPlaceholder")}
+                  submitLabel={translations("reply")}
+                />
               ) : null}
             </div>
           ))}
 
           {canReview ? (
-            <form action={addCommentAction} className="mt-1 flex gap-2">
-              <input type="hidden" name="assessmentId" value={assessmentId} />
-              <input
-                type="hidden"
-                name="assessmentQuestionId"
-                value={questionId}
-              />
-              <input
-                name="body"
-                placeholder="Add a comment"
-                required
-                className="border-input bg-background h-8 flex-1 rounded-md border px-2 text-xs"
-              />
-              <Select name="visibility" defaultValue="INTERNAL">
-                <SelectTrigger className="h-8 w-24 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="INTERNAL">Internal</SelectItem>
-                  <SelectItem value="VENDOR">Visible to vendor</SelectItem>
-                </SelectContent>
-              </Select>
-              <SubmitButton type="submit" size="sm" variant="ghost">
-                Comment
-              </SubmitButton>
-            </form>
+            <CommentComposer
+              assessmentId={assessmentId}
+              questionId={questionId}
+              placeholder={translations("commentPlaceholder")}
+              submitLabel={translations("comment")}
+            />
           ) : null}
         </div>
       ) : null}

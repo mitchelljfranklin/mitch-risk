@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { randomBytes } from "crypto";
+import { getTranslations } from "next-intl/server";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
@@ -21,6 +22,7 @@ export async function updateResponsibilityAction(
   formData: FormData,
 ): Promise<{ ok: boolean; message: string } | undefined> {
   await requirePermission(PERMISSIONS.VENDORS_EDIT);
+  const translations = await getTranslations("Vendors.customerResponsibility");
 
   const actionId = getField(formData, "actionId");
   const vendorId = getField(formData, "vendorId");
@@ -29,7 +31,7 @@ export async function updateResponsibilityAction(
   const notes = getField(formData, "notes");
 
   if (!actionId || !vendorId) {
-    return { ok: false, message: "Missing required fields." };
+    return { ok: false, message: translations("errors.missingFields") };
   }
 
   const data: Record<string, unknown> = {};
@@ -40,7 +42,7 @@ export async function updateResponsibilityAction(
         status,
       )
     ) {
-      return { ok: false, message: "Invalid status." };
+      return { ok: false, message: translations("errors.invalidStatus") };
     }
     data.status = status;
     data.completedAt = status === "COMPLETED" ? new Date() : null;
@@ -55,7 +57,7 @@ export async function updateResponsibilityAction(
   }
 
   if (Object.keys(data).length === 0 && !formData.get("attachmentFile")) {
-    return { ok: false, message: "No changes provided." };
+    return { ok: false, message: translations("errors.noChanges") };
   }
 
   if (Object.keys(data).length > 0) {
@@ -78,7 +80,7 @@ export async function updateResponsibilityAction(
     actionId,
   );
 
-  return { ok: true, message: "Saved." };
+  return { ok: true, message: translations("errors.saved") };
 }
 
 async function handleAttachmentUpload(

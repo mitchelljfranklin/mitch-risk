@@ -33,6 +33,11 @@ type DefaultSetting = {
 const defaultSettings: DefaultSetting[] = [
   { category: "organization", key: "organization.name", value: "mitch-risk" },
   { category: "organization", key: "organization.supportEmail", value: "" },
+  {
+    category: "organization",
+    key: "organization.defaultLocale",
+    value: "en",
+  },
   { category: "assessments", key: "assessments.defaultDueInDays", value: 21 },
   {
     category: "assessments",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useActionState, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -41,23 +42,26 @@ type BadgesManagerProps = {
 };
 
 export function BadgesManager({ badges }: BadgesManagerProps) {
+  const translations = useTranslations("TrustCenterManager.badges");
+  const commonTranslations = useTranslations("TrustCenterManager.common");
   const [editing, setEditing] = useState<"new" | TrustBadgeView | null>(null);
 
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-base">Compliance badges</CardTitle>
+          <CardTitle className="text-base">
+            {translations("cardTitle")}
+          </CardTitle>
           <Button size="sm" variant="outline" onClick={() => setEditing("new")}>
-            Add badge
+            {translations("add")}
           </Button>
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         {badges.length === 0 ? (
           <p className="text-muted-foreground text-sm">
-            No badges configured. Add certifications like SOC 2 or ISO 27001 to
-            display them on the public page.
+            {translations("empty")}
           </p>
         ) : (
           <div className="grid gap-2 sm:grid-cols-2">
@@ -77,7 +81,7 @@ export function BadgesManager({ badges }: BadgesManagerProps) {
                       </span>
                       {badge.published ? null : (
                         <Badge variant="secondary" className="text-xs">
-                          Draft
+                          {commonTranslations("draft")}
                         </Badge>
                       )}
                     </div>
@@ -93,7 +97,7 @@ export function BadgesManager({ badges }: BadgesManagerProps) {
                         rel="noopener noreferrer"
                         className="text-xs underline"
                       >
-                        Verification link
+                        {translations("verificationLink")}
                       </a>
                     ) : null}
                   </div>
@@ -111,7 +115,9 @@ export function BadgesManager({ badges }: BadgesManagerProps) {
                         size="sm"
                         className="h-5 w-6 p-0"
                         disabled={isFirst}
-                        aria-label={`Move ${badge.title} up`}
+                        aria-label={commonTranslations("moveUp", {
+                          name: badge.title,
+                        })}
                       >
                         <ChevronUp className="size-3.5" />
                       </Button>
@@ -123,7 +129,9 @@ export function BadgesManager({ badges }: BadgesManagerProps) {
                         size="sm"
                         className="h-5 w-6 p-0"
                         disabled={isLast}
-                        aria-label={`Move ${badge.title} down`}
+                        aria-label={commonTranslations("moveDown", {
+                          name: badge.title,
+                        })}
                       >
                         <ChevronDown className="size-3.5" />
                       </Button>
@@ -134,7 +142,7 @@ export function BadgesManager({ badges }: BadgesManagerProps) {
                       variant="ghost"
                       onClick={() => setEditing(badge)}
                     >
-                      Edit
+                      {commonTranslations("edit")}
                     </Button>
                     <form
                       id={`delete-trust-badge-${badge.id}`}
@@ -142,15 +150,19 @@ export function BadgesManager({ badges }: BadgesManagerProps) {
                     >
                       <input type="hidden" name="id" value={badge.id} />
                       <ConfirmDialog
-                        title="Delete badge?"
-                        description={`The "${badge.title}" badge will be removed from the trust center.`}
+                        title={translations("deleteTitle")}
+                        description={translations("deleteDescription", {
+                          name: badge.title,
+                        })}
                         formId={`delete-trust-badge-${badge.id}`}
                       >
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          aria-label={`Delete ${badge.title}`}
+                          aria-label={commonTranslations("deleteNamed", {
+                            name: badge.title,
+                          })}
                         >
                           <Trash2 className="size-4" />
                         </Button>
@@ -173,7 +185,9 @@ export function BadgesManager({ badges }: BadgesManagerProps) {
         <SheetContent className="w-full overflow-y-auto sm:max-w-md">
           <SheetHeader>
             <SheetTitle>
-              {editing === "new" ? "Add badge" : "Edit badge"}
+              {editing === "new"
+                ? translations("addTitle")
+                : translations("editTitle")}
             </SheetTitle>
           </SheetHeader>
           {editing !== null ? (
@@ -196,6 +210,8 @@ function BadgeEditor({
   badge: TrustBadgeView | null;
   onDone: () => void;
 }) {
+  const translations = useTranslations("TrustCenterManager.badges");
+  const commonTranslations = useTranslations("TrustCenterManager.common");
   const [state, formAction, isPending] = useActionState(
     saveTrustBadgeAction,
     undefined,
@@ -213,10 +229,10 @@ function BadgeEditor({
   return (
     <SheetContent className="w-full overflow-y-auto sm:max-w-md">
       <SheetHeader>
-        <SheetTitle>{isNew ? "Add badge" : "Edit badge"}</SheetTitle>
-        <SheetDescription>
-          Shown as a certification tile on the public trust center page.
-        </SheetDescription>
+        <SheetTitle>
+          {isNew ? translations("addTitle") : translations("editTitle")}
+        </SheetTitle>
+        <SheetDescription>{translations("editorDescription")}</SheetDescription>
       </SheetHeader>
       <form
         id="trust-badge-form"
@@ -225,7 +241,7 @@ function BadgeEditor({
       >
         {badge ? <input type="hidden" name="id" value={badge.id} /> : null}
         <div className="grid gap-2">
-          <Label htmlFor="badge-title">Title</Label>
+          <Label htmlFor="badge-title">{translations("titleLabel")}</Label>
           <Input
             id="badge-title"
             name="title"
@@ -234,26 +250,30 @@ function BadgeEditor({
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="badge-issuer">Issuer</Label>
+          <Label htmlFor="badge-issuer">{translations("issuer")}</Label>
           <Input
             id="badge-issuer"
             name="issuer"
             defaultValue={badge?.issuer ?? ""}
-            placeholder="e.g. AICPA, BSI"
+            placeholder={translations("issuerPlaceholder")}
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="badge-description">Description</Label>
+          <Label htmlFor="badge-description">
+            {translations("description")}
+          </Label>
           <Textarea
             id="badge-description"
             name="description"
             rows={2}
             defaultValue={badge?.description ?? ""}
-            placeholder="e.g. SOC 2 Type II audited annually"
+            placeholder={translations("descriptionPlaceholder")}
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="badge-externalUrl">Verification URL</Label>
+          <Label htmlFor="badge-externalUrl">
+            {translations("verificationUrl")}
+          </Label>
           <Input
             id="badge-externalUrl"
             name="externalUrl"
@@ -263,7 +283,7 @@ function BadgeEditor({
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="badge-image">Badge image</Label>
+          <Label htmlFor="badge-image">{translations("image")}</Label>
           <Input
             id="badge-image"
             name="imageFile"
@@ -271,8 +291,8 @@ function BadgeEditor({
             accept=".png,.jpg,.jpeg,.gif,.webp"
           />
           <p className="text-muted-foreground text-xs">
-            PNG, JPG, GIF or WebP. Max 2 MB. SVG is not allowed.
-            {badge?.imageKey ? " Leave empty to keep the current image." : ""}
+            {translations("imageHint")}
+            {badge?.imageKey ? translations("imageHintKeep") : ""}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -281,15 +301,17 @@ function BadgeEditor({
             name="published"
             defaultChecked={badge?.published ?? true}
           />
-          <Label htmlFor="badge-published">Published</Label>
+          <Label htmlFor="badge-published">
+            {commonTranslations("published")}
+          </Label>
         </div>
       </form>
       <SheetFooter className="px-4">
         <Button type="submit" form="trust-badge-form" disabled={isPending}>
-          {isPending ? "Saving..." : "Save badge"}
+          {isPending ? commonTranslations("saving") : translations("save")}
         </Button>
         <Button type="button" variant="outline" onClick={onDone}>
-          Cancel
+          {commonTranslations("cancel")}
         </Button>
       </SheetFooter>
     </SheetContent>

@@ -53,13 +53,13 @@ export async function listUpcomingKeyDates(
     Math.ceil((date.getTime() - now.getTime()) / MILLISECONDS_PER_DAY);
 
   const items: UpcomingKeyDate[] = [
-    ...certifications.map((cert) => ({
+    ...certifications.map((certification) => ({
       type: "Certification" as const,
-      label: cert.name,
-      vendorId: cert.vendorId,
-      vendorName: cert.vendor.name,
-      date: cert.expiresDate,
-      daysUntil: daysUntil(cert.expiresDate),
+      label: certification.name,
+      vendorId: certification.vendorId,
+      vendorName: certification.vendor.name,
+      date: certification.expiresDate,
+      daysUntil: daysUntil(certification.expiresDate),
     })),
     ...contracts.map((vendor) => ({
       type: "Contract" as const,
@@ -79,6 +79,9 @@ export async function listUpcomingKeyDates(
     })),
   ];
 
-  items.sort((a, b) => a.date.getTime() - b.date.getTime());
+  items.sort(
+    (firstItem, secondItem) =>
+      firstItem.date.getTime() - secondItem.date.getTime(),
+  );
   return items.slice(0, limit);
 }

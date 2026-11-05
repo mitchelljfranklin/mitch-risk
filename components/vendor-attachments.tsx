@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useFormatter, useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +12,6 @@ import {
   removeVendorAttachmentAction,
 } from "@/lib/actions/vendors";
 import { cn } from "@/lib/utils";
-import { formatDate } from "@/lib/utils";
 import { EmptyState } from "@/components/empty-state";
 import { FileUp, Trash2 } from "lucide-react";
 
@@ -25,9 +25,9 @@ type AttachmentData = {
 
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
-  const kb = bytes / 1024;
-  if (kb < 1024) return `${Math.round(kb)} KB`;
-  return `${(kb / 1024).toFixed(1)} MB`;
+  const kilobytes = bytes / 1024;
+  if (kilobytes < 1024) return `${Math.round(kilobytes)} KB`;
+  return `${(kilobytes / 1024).toFixed(1)} MB`;
 }
 
 export function VendorAttachments({
@@ -37,6 +37,8 @@ export function VendorAttachments({
   vendorId: string;
   attachments?: AttachmentData[];
 }) {
+  const translations = useTranslations("Vendors.attachments");
+  const dateFormatter = useFormatter();
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
@@ -65,13 +67,13 @@ export function VendorAttachments({
     const formData = new FormData();
     formData.append("vendorId", vendorId);
     formData.append("attachmentFile", file);
-    submitUpload(formData);
+    void submitUpload(formData);
   }
 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium">Attachments</span>
+        <span className="text-sm font-medium">{translations("title")}</span>
       </div>
 
       {(attachments ?? []).length > 0 ? (
@@ -92,7 +94,11 @@ export function VendorAttachments({
                 </a>
                 <span className="text-muted-foreground text-xs">
                   {formatFileSize(attachment.sizeBytes)} ·{" "}
-                  {formatDate(attachment.createdAt)}
+                  {dateFormatter.dateTime(new Date(attachment.createdAt), {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
                 </span>
               </div>
               <form action={removeVendorAttachmentAction} className="shrink-0">
@@ -107,7 +113,7 @@ export function VendorAttachments({
                   variant="ghost"
                   size="sm"
                   className="h-auto p-1"
-                  aria-label="Remove attachment"
+                  aria-label={translations("removeAria")}
                 >
                   <Trash2 className="size-3.5" />
                 </SubmitButton>
@@ -119,8 +125,8 @@ export function VendorAttachments({
         <EmptyState
           compact
           icon="vendors"
-          title="No attachments yet"
-          description="Upload contracts, letters, or other documents."
+          title={translations("emptyTitle")}
+          description={translations("emptyDescription")}
         />
       )}
 
@@ -137,8 +143,9 @@ export function VendorAttachments({
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
           onKeyDown={(event) => {
-            if (event.key === "Enter" || event.key === " ")
+            if (event.key === "Enter" || event.key === " ") {
               inputRef.current?.click();
+            }
           }}
           className={cn(
             "flex flex-col items-center justify-center gap-1 rounded-md border-2 border-dashed p-4 transition-colors",
@@ -149,7 +156,7 @@ export function VendorAttachments({
         >
           <FileUp className="text-muted-foreground size-5" />
           <span className="text-muted-foreground text-xs">
-            Drop a file or click to browse
+            {translations("dropHint")}
           </span>
           <Input
             ref={inputRef}
@@ -175,7 +182,7 @@ export function VendorAttachments({
           disabled={isUploading}
         >
           <FileUp className="size-3.5" />
-          {isUploading ? "Uploading…" : "Upload"}
+          {isUploading ? translations("uploading") : translations("upload")}
         </Button>
       </form>
     </div>

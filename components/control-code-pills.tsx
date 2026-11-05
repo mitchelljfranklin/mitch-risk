@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ type ControlCodePillsProps = {
 };
 
 export function ControlCodePills({ codes }: ControlCodePillsProps) {
+  const translations = useTranslations("Common.controlCodes");
   const [expanded, setExpanded] = useState(false);
   const visible = expanded ? codes : codes.slice(0, 3);
   const hiddenCount = codes.length - 3;
@@ -30,7 +32,7 @@ export function ControlCodePills({ codes }: ControlCodePillsProps) {
           className="text-muted-foreground h-auto p-0 text-xs"
           onClick={() => setExpanded(true)}
         >
-          Show {hiddenCount} more controls
+          {translations("showMore", { count: hiddenCount })}
         </Button>
       ) : null}
       {expanded && hiddenCount > 0 ? (
@@ -40,7 +42,7 @@ export function ControlCodePills({ codes }: ControlCodePillsProps) {
           className="text-muted-foreground h-auto p-0 text-xs"
           onClick={() => setExpanded(false)}
         >
-          Show less
+          {translations("showLess")}
         </Button>
       ) : null}
     </div>

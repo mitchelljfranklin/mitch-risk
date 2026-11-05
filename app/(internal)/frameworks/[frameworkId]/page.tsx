@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { SearchInput } from "@/components/search-input";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -26,7 +27,10 @@ export async function generateMetadata({
 }: FrameworkDetailPageProps): Promise<Metadata> {
   const { frameworkId } = await params;
   const framework = await getFramework(frameworkId);
-  if (!framework) return { title: "Framework not found" };
+  if (!framework) {
+    const translations = await getTranslations("Frameworks.detail");
+    return { title: translations("notFound") };
+  }
   return { title: framework.name };
 }
 
@@ -35,6 +39,8 @@ export default async function FrameworkDetailPage({
   searchParams,
 }: FrameworkDetailPageProps) {
   const user = await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
+  const translations = await getTranslations("Frameworks.detail");
+  const listTranslations = await getTranslations("Frameworks.list");
   const { frameworkId } = await params;
   const { q: searchQuery } = await searchParams;
 
@@ -61,7 +67,7 @@ export default async function FrameworkDetailPage({
     <div className="flex flex-col gap-6">
       <Breadcrumbs
         segments={[
-          { label: "Frameworks", href: "/frameworks" },
+          { label: translations("breadcrumbs"), href: "/frameworks" },
           { label: framework.name },
         ]}
       />
@@ -78,13 +84,18 @@ export default async function FrameworkDetailPage({
             >
               <input type="hidden" name="frameworkId" value={frameworkId} />
               <ConfirmDialog
-                title={`Delete framework "${framework.name} v${framework.version}"?`}
-                description={`This will permanently delete this framework and its ${controls.length} control${controls.length !== 1 ? "s" : ""}. Template questions mapped to these controls will lose their assignments. Existing assessments and findings are not affected.`}
-                confirmLabel="Delete"
+                title={listTranslations("deleteTitle", {
+                  name: framework.name,
+                  version: framework.version,
+                })}
+                description={listTranslations("deleteDescription", {
+                  count: controls.length,
+                })}
+                confirmLabel={listTranslations("delete")}
                 formId={`delete-framework-${frameworkId}`}
               >
                 <Button type="button" variant="destructive" size="sm">
-                  Delete framework
+                  {translations("deleteFramework")}
                 </Button>
               </ConfirmDialog>
             </form>
@@ -93,15 +104,15 @@ export default async function FrameworkDetailPage({
       </div>
 
       <div className="bg-background sticky top-14 z-10 pb-2">
-        <SearchInput placeholder="Search controls…" />
+        <SearchInput placeholder={translations("searchPlaceholder")} />
       </div>
 
       {controls.length === 0 ? (
         <EmptyState
           compact
           icon="frameworks"
-          title="No matching controls"
-          description="Try a different search term."
+          title={translations("noControlsTitle")}
+          description={translations("noControlsDescription")}
         />
       ) : (
         <div className="flex flex-col gap-6">

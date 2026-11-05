@@ -2,6 +2,29 @@ import { readFileSync } from "node:fs";
 
 import { expect, test } from "@playwright/test";
 
+test("the portal switches language", async ({ page }) => {
+  const token = readFileSync("e2e/.portal-token", "utf8").trim();
+  expect(token.length).toBeGreaterThan(0);
+
+  await page.goto(`/portal/${token}`);
+
+  await page.getByRole("combobox", { name: "Change language" }).click();
+  await page.getByRole("option", { name: "Español" }).click();
+
+  await expect(
+    page.getByText("Tus respuestas se guardan automáticamente", {
+      exact: false,
+    }),
+  ).toBeVisible();
+
+  await page.getByRole("combobox", { name: "Cambiar idioma" }).click();
+  await page.getByRole("option", { name: "English" }).click();
+
+  await expect(
+    page.getByText("Your answers are saved automatically", { exact: false }),
+  ).toBeVisible();
+});
+
 test("a vendor completes the questionnaire via the no-login portal", async ({
   page,
 }) => {

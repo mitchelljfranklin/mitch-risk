@@ -2,6 +2,7 @@
 
 import { type FindingStatus } from "../../prisma/generated/prisma/client";
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
@@ -61,24 +62,25 @@ export async function bulkUpdateFindingStatusesAction(
   formData: FormData,
 ): Promise<BulkFindingsResult> {
   const user = await requirePermission(PERMISSIONS.ASSESSMENTS_REVIEW);
+  const translations = await getTranslations("RiskRegister.bulk");
 
   const rawIds = getField(formData, "findingIds");
   const status = getField(formData, "status");
   const resolutionNote = getField(formData, "resolutionNote") || undefined;
 
   if (!FINDING_STATUSES.includes(status as FindingStatus)) {
-    return { ok: false, message: "Invalid status." };
+    return { ok: false, message: translations("errors.invalidStatus") };
   }
 
   let findingIds: string[] = [];
   try {
     findingIds = JSON.parse(rawIds);
   } catch {
-    return { ok: false, message: "Invalid selection data." };
+    return { ok: false, message: translations("errors.invalidSelection") };
   }
 
   if (!Array.isArray(findingIds) || findingIds.length === 0) {
-    return { ok: false, message: "No findings selected." };
+    return { ok: false, message: translations("errors.noFindings") };
   }
 
   // A concurrent delete (e.g. a rescore removing an auto-finding) must not
@@ -125,10 +127,15 @@ export async function bulkUpdateFindingStatusesAction(
   }
 
   const updatedCount = existingIds.length;
+  const updatedMessage = translations("errors.updated", {
+    count: updatedCount,
+  });
   const missingNote =
-    missingCount > 0 ? ` (${missingCount} already removed).` : "";
+    missingCount > 0
+      ? ` ${translations("errors.alreadyRemoved", { count: missingCount })}`
+      : "";
   return {
     ok: true,
-    message: `${updatedCount} finding${updatedCount !== 1 ? "s" : ""} updated${missingNote}`,
+    message: `${updatedMessage}${missingNote}`,
   };
 }

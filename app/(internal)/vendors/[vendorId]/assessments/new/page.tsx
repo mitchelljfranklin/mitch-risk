@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -12,7 +13,10 @@ import { NewAssessmentForm } from "./new-assessment-form";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "New assessment" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Assessments.new");
+  return { title: translations("breadcrumb") };
+}
 
 type NewAssessmentPageProps = {
   params: Promise<{ vendorId: string }>;
@@ -22,6 +26,8 @@ export default async function NewAssessmentPage({
   params,
 }: NewAssessmentPageProps) {
   await requirePermission(PERMISSIONS.ASSESSMENTS_CREATE);
+  const translations = await getTranslations("Assessments.new");
+  const shellTranslations = await getTranslations("Shell.workspace");
   const { vendorId } = await params;
   const vendor = await getVendor(vendorId);
   if (!vendor) {
@@ -37,17 +43,17 @@ export default async function NewAssessmentPage({
     <div className="flex max-w-2xl flex-col gap-6">
       <Breadcrumbs
         segments={[
-          { label: "Vendors", href: "/vendors" },
+          { label: shellTranslations("vendors"), href: "/vendors" },
           { label: vendor.name, href: `/vendors/${vendor.id}` },
-          { label: "New assessment" },
+          { label: translations("breadcrumb") },
         ]}
       />
       <h1 className="text-2xl font-semibold tracking-tight">
-        New assessment for {vendor.name}
+        {translations("title", { vendorName: vendor.name })}
       </h1>
       <Card>
         <CardHeader>
-          <CardTitle>Assessment details</CardTitle>
+          <CardTitle>{translations("cardTitle")}</CardTitle>
         </CardHeader>
         <CardContent>
           <NewAssessmentForm

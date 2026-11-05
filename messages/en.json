@@ -1,0 +1,2682 @@
+{
+  "Common": {
+    "changeLanguage": "Change language",
+    "skipToContent": "Skip to content",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "close": "Close",
+    "sidebar": "Sidebar",
+    "sidebarDescription": "Displays the mobile sidebar.",
+    "toggleSidebar": "Toggle Sidebar",
+    "step": "Step {number}:",
+    "tiers": {
+      "CRITICAL": "Critical",
+      "HIGH": "High",
+      "MEDIUM": "Medium",
+      "LOW": "Low"
+    },
+    "pagination": {
+      "pageOf": "Page {page} of {totalPages} · {totalCount} {itemLabel}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "viewToggle": {
+      "rows": "Row view",
+      "cards": "Card view"
+    },
+    "assessmentStatuses": {
+      "DRAFT": "Draft",
+      "SENT": "Sent",
+      "IN_PROGRESS": "In progress",
+      "SUBMITTED": "Submitted",
+      "UNDER_REVIEW": "Under review",
+      "COMPLETED": "Completed"
+    },
+    "findingStatuses": {
+      "OPEN": "Open",
+      "REMEDIATED": "Remediated",
+      "RISK_ACCEPTED": "Risk accepted"
+    },
+    "copyLink": {
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "pendingLink": {
+      "preparing": "Preparing…"
+    },
+    "evidencePreview": {
+      "preview": "Preview {fileName}"
+    },
+    "questionTypes": {
+      "YES_NO": "Yes / No",
+      "MULTIPLE_CHOICE": "Single choice (pick one)",
+      "FREE_TEXT": "Free text",
+      "FILE_UPLOAD": "File upload",
+      "DATE": "Date",
+      "NUMERIC": "Numeric",
+      "COMBOBOX": "Combobox",
+      "MULTI_SELECT": "Multi‑select (pick many)",
+      "RATING": "Rating (1‑5)",
+      "URL": "URL",
+      "EMAIL": "Email",
+      "CHECKBOX": "Checkbox (acknowledgment)"
+    },
+    "controlCodes": {
+      "showMore": "{count, plural, one {Show # more control} other {Show # more controls}}",
+      "showLess": "Show less"
+    },
+    "search": {
+      "placeholder": "Search…"
+    }
+  },
+  "Metadata": {
+    "description": "White-label third party vendor risk management solution"
+  },
+  "Dashboard": {
+    "metaTitle": "Dashboard",
+    "title": "Vendor risk overview",
+    "tracked": "{count, plural, one {# vendor tracked} other {# vendors tracked}}",
+    "newVendor": "New vendor",
+    "assessments": "Assessments",
+    "portfolioReport": "Portfolio report",
+    "emptyTitle": "No vendors yet",
+    "emptyCanCreate": "Add your first vendor to start tracking their risk.",
+    "emptyReadOnly": "No vendors are being tracked yet.",
+    "addVendor": "Add a vendor →",
+    "stats": {
+      "vendors": "Vendors tracked",
+      "averageScore": "Average score",
+      "openFindings": "Open findings",
+      "needsAttention": "Needs attention"
+    },
+    "topControls": "Top deficient controls",
+    "viewRiskRegister": "View risk register →",
+    "highestRisk": "Highest-risk vendors",
+    "viewAllVendors": "View all vendors →",
+    "noAssessments": "No assessments",
+    "overdue": "{count} overdue",
+    "attention": {
+      "title": "Needs attention",
+      "allClear": "All clear — nothing needs attention right now.",
+      "titleWithCount": "Needs attention ({count})",
+      "unreviewed": "unreviewed",
+      "clarification": "clarification",
+      "clarifications": "clarifications",
+      "failedEmail": "failed email (24h)",
+      "failedEmails": "failed emails (24h)",
+      "groups": {
+        "overdue": "Overdue assessments",
+        "belowThreshold": "Below score threshold",
+        "keyDates": "Key dates (60 days)"
+      },
+      "overdueAssessment": "{count, plural, one {# overdue assessment} other {# overdue assessments}}",
+      "oldestSince": "oldest since {date}",
+      "belowThreshold": "below {percent}% threshold",
+      "contractRenewal": "Contract renewal",
+      "daysOverdue": "{days}d overdue",
+      "inDays": "in {days}d"
+    },
+    "charts": {
+      "portfolioHealth": "Portfolio health",
+      "openFindingsBySeverity": "Open findings by severity",
+      "assessmentStatus": "Assessment status",
+      "riskByTier": "Risk by tier",
+      "vendors": "vendors",
+      "assessments": "Assessments",
+      "openFindings": "Open findings",
+      "ragShort": {
+        "green": "Green",
+        "amber": "Amber",
+        "red": "Red",
+        "unscored": "Unscored"
+      },
+      "rag": {
+        "green": "Green (≥85%)",
+        "amber": "Amber (60–84%)",
+        "red": "Red (<60%)",
+        "unscored": "Unscored"
+      },
+      "severity": {
+        "CRITICAL": "Critical",
+        "HIGH": "High",
+        "MEDIUM": "Medium",
+        "LOW": "Low"
+      },
+      "status": {
+        "DRAFT": "Draft",
+        "SENT": "Sent",
+        "IN_PROGRESS": "In progress",
+        "SUBMITTED": "Submitted",
+        "UNDER_REVIEW": "Under review",
+        "COMPLETED": "Completed",
+        "OVERDUE": "Overdue"
+      },
+      "tier": {
+        "CRITICAL": "Critical",
+        "HIGH": "High",
+        "MEDIUM": "Medium",
+        "LOW": "Low",
+        "Unspecified": "Unspecified"
+      },
+      "activity": {
+        "title": "Assessment activity",
+        "noActivity": "No activity in this period",
+        "timeRange": "Select a time range",
+        "ranges": {
+          "90d": "Last 3 months",
+          "30d": "Last 30 days",
+          "7d": "Last 7 days"
+        },
+        "assessments": "Assessments"
+      }
+    }
+  },
+  "Vendors": {
+    "metaTitle": "Vendors",
+    "title": "Vendors",
+    "subtitle": "Vendors you assess for security risk.",
+    "compare": "Compare",
+    "import": "Import",
+    "bulkSend": "Bulk send",
+    "newVendor": "New vendor",
+    "search": "Search",
+    "searchPlaceholder": "Name or email…",
+    "tier": "Tier",
+    "anyTier": "Any tier",
+    "filterTierAria": "Filter vendors by tier",
+    "sort": "Sort",
+    "sortAria": "Sort vendors",
+    "filter": "Filter",
+    "clear": "Clear",
+    "viewAria": "Vendor list view",
+    "noMatches": "No vendors match the selected filters.",
+    "emptyTitle": "No vendors yet",
+    "emptyDescription": "Add a vendor to start tracking their security risk.",
+    "assessed": "Assessed {date}",
+    "notAssessed": "Not assessed",
+    "assessmentCount": "{count, plural, one {# assessment} other {# assessments}}",
+    "openFindingCount": "{count, plural, one {# open finding} other {# open findings}}",
+    "list": {
+      "vendor": "Vendor",
+      "tier": "Tier",
+      "score": "Score",
+      "items": "vendors"
+    },
+    "sorts": {
+      "name": "Name (A–Z)",
+      "name-desc": "Name (Z–A)",
+      "score-asc": "Score (low → high)",
+      "score-desc": "Score (high → low)",
+      "tier": "Tier (A–Z)",
+      "tier-desc": "Tier (Z–A)",
+      "last-assessed": "Last assessed",
+      "assessments": "Most assessments"
+    },
+    "form": {
+      "vendorName": "Vendor name",
+      "externalId": "External ID",
+      "externalIdPlaceholder": "e.g. ERP-V-001",
+      "externalIdHint": "Optional reference to this vendor in another system",
+      "contactName": "Contact name",
+      "contactEmail": "Contact email",
+      "tier": "Tier",
+      "website": "Website",
+      "riskOwner": "Risk owner",
+      "dataSensitivity": "Data sensitivity",
+      "contractValue": "Contract value",
+      "geographicRisk": "Geographic risk",
+      "tags": "Tags",
+      "tagsPlaceholder": "e.g. saas, critical, finance",
+      "tagsHint": "Comma-separated labels for grouping and filtering",
+      "serviceProvided": "Service provided",
+      "servicePlaceholder": "e.g. Cloud email hosting",
+      "contractRenewalDate": "Contract renewal date",
+      "notes": "Notes",
+      "saving": "Saving...",
+      "saveChanges": "Save changes",
+      "create": "Create vendor",
+      "cancel": "Cancel",
+      "unspecified": "Unspecified",
+      "unassigned": "Unassigned",
+      "levels": {
+        "NONE": "None",
+        "LOW": "Low",
+        "MEDIUM": "Medium",
+        "HIGH": "High"
+      },
+      "dataSensitivities": {
+        "PUBLIC": "Public",
+        "INTERNAL": "Internal",
+        "CONFIDENTIAL": "Confidential",
+        "RESTRICTED": "Restricted"
+      }
+    },
+    "new": {
+      "title": "New vendor",
+      "cardTitle": "Vendor details",
+      "cardDescription": "Add a new vendor to track.",
+      "breadcrumb": "New"
+    },
+    "edit": {
+      "title": "Edit vendor",
+      "cardTitle": "Vendor details",
+      "cardDescription": "Update vendor details.",
+      "breadcrumb": "Edit"
+    },
+    "attachments": {
+      "title": "Attachments",
+      "emptyTitle": "No attachments yet",
+      "emptyDescription": "Upload contracts, letters, or other documents.",
+      "removeAria": "Remove attachment",
+      "dropHint": "Drop a file or click to browse",
+      "uploading": "Uploading…",
+      "upload": "Upload"
+    },
+    "export": {
+      "button": "Export CSV",
+      "all": "All vendors",
+      "currentPage": "Current page"
+    },
+    "errors": {
+      "invalidInput": "Invalid input.",
+      "duplicateExternalId": "A vendor with this external ID already exists.",
+      "vendorCreated": "Vendor created.",
+      "vendorUpdated": "Vendor updated.",
+      "noFile": "No file selected.",
+      "fileTypeNotAllowed": "File type not allowed.",
+      "fileTypeNotAccepted": "This file type is not accepted.",
+      "fileTooLarge": "File is too large (max {max} MB).",
+      "fileUploaded": "File uploaded.",
+      "fileAttached": "File attached to vendor."
+    },
+    "detail": {
+      "notFound": "Vendor not found",
+      "errorTitle": "Failed to load vendor",
+      "errorDescription": "An error occurred while loading this vendor's details. Please try again.",
+      "created": "Vendor created.",
+      "breadcrumbs": {
+        "riskRegister": "Risk register",
+        "vendors": "Vendors"
+      },
+      "edit": "Edit",
+      "exportCsv": "Export CSV",
+      "delete": "Delete",
+      "deleteTitle": "Delete vendor?",
+      "deleteDescription": "This will permanently delete {vendorName} and all {count, plural, one {# assessment} other {# assessments}}. This action cannot be undone.",
+      "tabs": {
+        "overview": "Overview",
+        "compliance": "Compliance",
+        "findings": "Findings",
+        "assessments": "Assessments"
+      },
+      "overview": {
+        "title": "Overview",
+        "serviceProvided": "Service provided",
+        "riskOwner": "Risk owner",
+        "unassigned": "Unassigned",
+        "externalId": "External ID",
+        "dataSensitivity": "Data sensitivity",
+        "unspecified": "Unspecified",
+        "website": "Website",
+        "contractRenewal": "Contract renewal",
+        "overdue": " · overdue",
+        "attachments": "Attachments",
+        "emptyTitle": "No overview details",
+        "emptyDescription": "Edit this vendor to add service details, a risk owner, and other profile information."
+      },
+      "riskProfile": {
+        "title": "Risk profile",
+        "inherent": "Inherent (pre-assessment)",
+        "residual": "Residual (assessed)",
+        "trendingUp": "Trending up ↑",
+        "trendingDown": "Trending down ↓",
+        "stable": "Stable →",
+        "noScore": "No score yet — submit an assessment",
+        "trend": "Trend",
+        "compareLastTwo": "Compare last two →"
+      },
+      "certifications": "Certifications & attestations",
+      "compliance": {
+        "vendorCompliance": "Vendor compliance",
+        "yourCompliance": "Your compliance",
+        "domainCompliance": "Domain compliance",
+        "noDataTitle": "No compliance data",
+        "noDataDescription": "Complete an assessment to see domain compliance scores.",
+        "frameworkHeatmaps": "Framework heatmaps",
+        "noAssessmentData": "No assessment data",
+        "noFrameworksTitle": "No frameworks available",
+        "noFrameworksDescription": "Import or seed framework libraries to map controls to assessment questions."
+      },
+      "findings": {
+        "title": "Findings",
+        "openCount": "{count, plural, one {# open} other {# open}}",
+        "viewAll": "{count, plural, one {View the finding in the risk register →} other {View all # findings in the risk register →}}",
+        "emptyTitle": "No findings",
+        "emptyDescription": "Findings are generated when assessment answers are non-compliant. Complete an assessment to see findings here."
+      },
+      "assessments": {
+        "title": "Assessments",
+        "new": "New assessment",
+        "emptyTitle": "No assessments",
+        "emptyDescription": "No assessments have been created for this vendor yet.",
+        "noTemplate": "No template",
+        "due": " · due {date}",
+        "viewAll": "{count, plural, one {View the assessment →} other {View all # assessments →}}",
+        "activity": "Activity"
+      }
+    },
+    "timeline": {
+      "empty": "No activity recorded yet.",
+      "assessmentCreated": "Assessment created",
+      "assessmentSent": "Assessment sent",
+      "assessmentSubmitted": "Assessment submitted",
+      "findingOpened": "Finding opened",
+      "remediated": "Remediated",
+      "riskAccepted": "Risk accepted",
+      "certificationAdded": "Certification added",
+      "certificationExpiring": "Certification expiring",
+      "certificationExpiringDescription": "{name} — expires {date}"
+    },
+    "certifications": {
+      "empty": "No certifications tracked yet.",
+      "expires": "Expires {date}",
+      "statuses": {
+        "valid": "Valid",
+        "expiring": "Expiring soon",
+        "expired": "Expired"
+      },
+      "add": "Add certification",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteTitle": "Delete certification?",
+      "deleteDescription": "\"{name}\" will be permanently removed.",
+      "editor": {
+        "addTitle": "Add certification",
+        "description": "Track an attestation (SOC 2, ISO 27001, …) and its expiry.",
+        "name": "Name",
+        "namePlaceholder": "e.g. SOC 2 Type II",
+        "issuer": "Issuer (optional)",
+        "issuerPlaceholder": "e.g. Auditor / certification body",
+        "issued": "Issued (optional)",
+        "expires": "Expires",
+        "notes": "Notes (optional)",
+        "complianceActions": "Compliance actions required",
+        "selectFramework": "Select a framework...",
+        "attachment": "Attachment (optional)",
+        "attachmentHint": "Upload a certificate, report, or contract. Max 20 MB.",
+        "attachments": "Attachments",
+        "saving": "Saving...",
+        "save": "Save certification",
+        "cancel": "Cancel"
+      },
+      "errors": {
+        "missingVendor": "Missing vendor.",
+        "invalidInput": "Invalid input.",
+        "wrongVendor": "Certification does not belong to this vendor.",
+        "saved": "Certification saved.",
+        "attachmentFailed": " Attachment failed: {reason}",
+        "fileType": "File type not allowed.",
+        "fileTooLarge": "File is too large (max {max} MB).",
+        "fileInvalid": "This file type is not accepted.",
+        "fileRecordFailed": "Failed to save file record.",
+        "fileUploaded": "File uploaded.",
+        "nameRequired": "Certification name is required.",
+        "expiryRequired": "Expiry date is required.",
+        "invalidExpiry": "Enter a valid expiry date.",
+        "added": "Certification \"{name}\" added with attachment.",
+        "missingEvidence": "Missing evidence.",
+        "evidenceNotFound": "Evidence not found."
+      }
+    },
+    "customerResponsibility": {
+      "title": "Customer Responsibility",
+      "collapse": "Collapse",
+      "expand": "Expand",
+      "progress": "{completed} of {total} · {percent}%",
+      "empty": "No shared-responsibility controls for this certification.",
+      "assignedTo": "Assigned to {name}",
+      "fileCount": "{count, plural, one {# file} other {# files}}",
+      "status": "Status",
+      "statuses": {
+        "PENDING": "Pending",
+        "IN_PROGRESS": "In Progress",
+        "COMPLETED": "Completed",
+        "NOT_APPLICABLE": "Not Applicable"
+      },
+      "assignedToLabel": "Assigned to",
+      "assignedToPlaceholder": "User ID (optional)",
+      "attachment": "Attachment",
+      "notes": "Notes",
+      "notesPlaceholder": "Add notes about implementation...",
+      "files": "Files",
+      "saving": "Saving...",
+      "save": "Save",
+      "cancel": "Cancel",
+      "errors": {
+        "missingFields": "Missing required fields.",
+        "invalidStatus": "Invalid status.",
+        "noChanges": "No changes provided.",
+        "saved": "Saved."
+      }
+    }
+  },
+  "Assessments": {
+    "list": {
+      "title": "Assessments",
+      "subtitle": "Assessments sent to vendors.",
+      "subtitleForVendor": "Assessments for {vendorName}.",
+      "filters": {
+        "search": "Search",
+        "searchPlaceholder": "Title or vendor...",
+        "status": "Status",
+        "allStatuses": "All statuses",
+        "statusAriaLabel": "Filter assessments by status",
+        "from": "From",
+        "to": "To",
+        "sort": "Sort",
+        "sortAriaLabel": "Sort assessments",
+        "overdueOnly": "Overdue only",
+        "apply": "Filter",
+        "clear": "Clear"
+      },
+      "sorts": {
+        "created": "Newest first",
+        "created-asc": "Oldest first",
+        "due-asc": "Due date (soonest)",
+        "due-desc": "Due date (latest)",
+        "score-asc": "Score (low → high)",
+        "score-desc": "Score (high → low)",
+        "vendor": "Vendor (A–Z)",
+        "status": "Status (A–Z)",
+        "status-desc": "Status (Z–A)"
+      },
+      "emptyFiltered": "No assessments match the selected filters.",
+      "emptyTitle": "No assessments yet",
+      "emptyDescription": "Create an assessment and send the vendor its link to complete it.",
+      "items": "assessments",
+      "columns": {
+        "assessmentVendor": "Assessment · Vendor",
+        "score": "Score",
+        "status": "Status",
+        "due": "Due"
+      },
+      "overdue": "Overdue",
+      "due": " · due {date}"
+    },
+    "new": {
+      "title": "New assessment for {vendorName}",
+      "breadcrumb": "New assessment",
+      "cardTitle": "Assessment details",
+      "form": {
+        "title": "Title",
+        "titlePlaceholder": "e.g. Annual security review",
+        "template": "Questionnaire template",
+        "templatePlaceholder": "Select a published template",
+        "noTemplates": "No templates found.",
+        "dueDate": "Due date",
+        "reviewer": "Reviewer",
+        "unassigned": "Unassigned",
+        "publishFirst": "Publish a template first to create an assessment.",
+        "creating": "Creating...",
+        "create": "Create assessment",
+        "cancel": "Cancel"
+      }
+    },
+    "detail": {
+      "notFound": "Assessment not found",
+      "breadcrumbs": {
+        "assessments": "Assessments",
+        "vendors": "Vendors"
+      },
+      "actions": {
+        "reopen": "Reopen review",
+        "exportCsv": "Export CSV",
+        "downloadPdf": "Download PDF",
+        "preparingReport": "Preparing report…",
+        "finalize": "Finalize",
+        "finalizing": "Finalizing…",
+        "delete": "Delete",
+        "deleteTitle": "Delete assessment?",
+        "deleteDescription": "This will permanently delete \"{title}\" and all responses, findings, and evidence. This action cannot be undone."
+      },
+      "meta": {
+        "due": " · due {date}",
+        "reviewer": " · reviewer {name}"
+      },
+      "draft": {
+        "createLinkTitle": "Create vendor link",
+        "createLinkDescription": "Generate a no-login vendor link for the assessment. Optionally set a password to protect access.",
+        "settingsTitle": "Draft settings",
+        "title": "Title",
+        "dueDate": "Due date",
+        "saving": "Saving…",
+        "save": "Save changes"
+      },
+      "link": {
+        "title": "Vendor link (no login required)",
+        "expires": "Expires {date}",
+        "noExpiry": "No expiry",
+        "passwordProtected": "Password protected",
+        "extend": "Extend 30 days",
+        "regenerate": "Regenerate link",
+        "revoke": "Revoke",
+        "revokeTitle": "Revoke vendor link?",
+        "revokeDescription": "The vendor will no longer be able to access the questionnaire. You can regenerate the link later if needed.",
+        "revokedTitle": "Vendor link",
+        "revokedDescription": "The link has been revoked."
+      },
+      "score": {
+        "title": "Score",
+        "low": "Low risk",
+        "moderate": "Moderate risk",
+        "high": "High risk"
+      },
+      "findings": {
+        "summary": "Findings ({count} · {open, plural, one {# open} other {# open}})",
+        "deletedUser": "Deleted user",
+        "noneTitle": "Findings",
+        "allCompliant": "All answers compliant — no findings.",
+        "automatedDescription": "The vendor's answer did not meet the expected response."
+      },
+      "responses": {
+        "title": "Responses",
+        "summary": "{approved} of {total} approved · {pending} pending",
+        "summaryClarifications": " · {count, plural, one {# clarification} other {# clarifications}}",
+        "filters": {
+          "all": "All",
+          "pending": "Pending ({count})",
+          "approved": "Approved ({count})",
+          "clarification": "Clarification ({count})"
+        },
+        "notApplicable": "N/A",
+        "evidenceAlt": "Evidence file: {fileName}",
+        "viewPdf": "View PDF: {fileName} ↗",
+        "attachToVendor": "Attach to vendor"
+      },
+      "sender": {
+        "password": "Portal password (optional)",
+        "passwordPlaceholder": "Require vendor to enter a password",
+        "passwordHint": "If set, vendors must enter this password before accessing the questionnaire.",
+        "sendToVendor": "Send to vendor",
+        "generateOnly": "Generate link only",
+        "customEmailPlaceholder": "custom@example.com",
+        "sendTo": "Send to"
+      },
+      "sendBack": {
+        "trigger": "Send back to vendor",
+        "title": "Send back to vendor?",
+        "description": "The vendor will be able to edit and resubmit their answers, and will receive an email with your message. Their existing answers are kept.",
+        "messageLabel": "Message to the vendor (optional)",
+        "messagePlaceholder": "Explain what additional information is needed…",
+        "cancel": "Cancel",
+        "confirm": "Send back",
+        "emailFallback": "Please review and resubmit your questionnaire."
+      },
+      "review": {
+        "approved": "Approved",
+        "clarificationRequested": "Clarification requested",
+        "noReviewYet": "No review yet",
+        "collapse": "Collapse",
+        "expand": "Expand",
+        "reviewPlaceholder": "Review",
+        "approve": "Approve",
+        "requestClarification": "Request clarification",
+        "notePlaceholder": "Optional note (visible to vendor if clarification requested)",
+        "save": "Save",
+        "vendor": "vendor",
+        "internal": "internal",
+        "replyPlaceholder": "Reply",
+        "internalOption": "Internal",
+        "vendorOption": "Visible to vendor",
+        "reply": "Reply",
+        "commentPlaceholder": "Add a comment",
+        "comment": "Comment",
+        "commentCount": "{count, plural, one {# comment} other {# comments}}",
+        "previousReview": "Previous review ({decision}): {note}"
+      },
+      "findingStatus": {
+        "resolutionNotePlaceholder": "Resolution note (optional)",
+        "save": "Save"
+      },
+      "attachEvidence": {
+        "trigger": "Attach",
+        "refreshing": "{message}. Refreshing…",
+        "attachAs": "Attach as",
+        "certificationOption": "Certification / attestation",
+        "generalOption": "General attachment",
+        "certificationName": "Certification name",
+        "namePlaceholder": "e.g. SOC 2 Type II",
+        "issuer": "Issuer (optional)",
+        "issuerPlaceholder": "e.g. Audit firm",
+        "expiryDate": "Expiry date",
+        "displayNameForFile": "Display name for file",
+        "notes": "Notes (optional)",
+        "notesPlaceholder": "Additional context…",
+        "complianceActions": "Compliance actions required",
+        "selectFramework": "Select a framework...",
+        "displayName": "Display name",
+        "generalNotesPlaceholder": "Why this was attached…",
+        "adding": "Adding…",
+        "addCertification": "Add certification",
+        "attachToVendor": "Attach to vendor",
+        "cancel": "Cancel"
+      },
+      "error": {
+        "title": "Failed to load assessment",
+        "description": "An error occurred while loading this assessment. Please try again.",
+        "retry": "Try again"
+      }
+    },
+    "errors": {
+      "invalidInput": "Invalid input.",
+      "titleRequired": "Title is required",
+      "titleTooLong": "Title must be 200 characters or fewer",
+      "templateRequired": "Select a template",
+      "invalidDueDate": "Enter a valid due date",
+      "saved": "Saved.",
+      "started": "Assessment started.",
+      "portalLinkFailed": "Assessment created but portal link could not be generated.",
+      "missingReviews": "{count, plural, one {# response still needs to be reviewed.} other {# responses still need to be reviewed.}}"
+    }
+  },
+  "Templates": {
+    "list": {
+      "title": "Templates",
+      "subtitle": "Build and version security questionnaires.",
+      "new": "New template",
+      "import": "Import",
+      "emptyTitle": "No templates yet",
+      "emptyDescription": "Create your first assessment template.",
+      "sections": "{count, plural, one {# section} other {# sections}}"
+    },
+    "statuses": {
+      "DRAFT": "Draft",
+      "PUBLISHED": "Published",
+      "ARCHIVED": "Archived"
+    },
+    "new": {
+      "breadcrumb": "New",
+      "title": "New template",
+      "cardTitle": "Template details",
+      "form": {
+        "name": "Name",
+        "description": "Description",
+        "creating": "Creating…",
+        "create": "Create template",
+        "cancel": "Cancel"
+      }
+    },
+    "builder": {
+      "notFound": "Template not found",
+      "breadcrumbs": {
+        "templates": "Templates"
+      },
+      "actions": {
+        "publish": "Publish",
+        "newVersion": "Create new version",
+        "unpublish": "Unpublish",
+        "delete": "Delete",
+        "deleteTitle": "Delete template?",
+        "deleteDescription": "This will permanently delete \"{name}\" and all its sections and questions. Assessments using this template will lose the template link. This action cannot be undone.",
+        "menuAriaLabel": "Template actions",
+        "preview": "Preview",
+        "duplicate": "Duplicate",
+        "export": "Export"
+      },
+      "versionHistory": "Version history",
+      "details": "Template details",
+      "name": "Name",
+      "description": "Description",
+      "saveDetails": "Save details",
+      "readOnly": "This version is published and read-only. Create a new version to make changes.",
+      "jumpToSection": "Jump to section",
+      "section": {
+        "rename": "Rename",
+        "moveUp": "Move section up",
+        "moveDown": "Move section down",
+        "deleteTitle": "Delete section?",
+        "deleteDescription": "This will permanently delete \"{title}\" and all questions within it.",
+        "delete": "Delete section",
+        "noQuestionsTitle": "No questions",
+        "noQuestionsDescription": "Add a question to get started with this section.",
+        "showQuestions": "Show {count, plural, one {# question} other {# questions}}",
+        "hideQuestions": "Hide {count, plural, one {# question} other {# questions}}",
+        "required": "Required",
+        "moveQuestionUp": "Move question up",
+        "moveQuestionDown": "Move question down",
+        "editQuestion": "Edit",
+        "deleteQuestionTitle": "Delete question?",
+        "deleteQuestionDescription": "This will permanently delete \"{text}\".",
+        "deleteQuestion": "Delete",
+        "addQuestion": "Add question"
+      },
+      "addSection": {
+        "title": "Add section",
+        "placeholder": "Section title",
+        "button": "Add section"
+      }
+    },
+    "question": {
+      "text": "Question text",
+      "help": "Help text",
+      "helpHint": "Markdown formatting is supported — use **bold**, *italic*, lists, and links.",
+      "answerType": "Answer type",
+      "riskWeight": "Risk weight",
+      "required": "Required",
+      "options": "Options (one per line)",
+      "expectedAnswer": "Expected answer",
+      "noExpectedAnswer": "No expected answer",
+      "yes": "Yes",
+      "no": "No",
+      "acceptedAnswers": "Accepted answers",
+      "acceptedHint": "Tick every answer that should score as compliant.",
+      "acceptedEmpty": "Add options above to choose which answers are acceptable.",
+      "expectedNumber": "Expected number",
+      "expectedSelections": "Expected selections",
+      "selectionsHint": "Tick the exact set the vendor must select to score compliant.",
+      "selectionsEmpty": "Add options above to choose the required selections.",
+      "manualScoring": "This answer type is scored manually during review.",
+      "checked": "Checked",
+      "unchecked": "Unchecked",
+      "conditionalLegend": "Conditional visibility rules",
+      "controlsLegend": "Mapped compliance controls",
+      "saving": "Saving...",
+      "save": "Save question",
+      "cancel": "Cancel"
+    },
+    "conditions": {
+      "questionFallback": "a question",
+      "shownIf": "Shown if",
+      "and": "AND",
+      "or": "OR",
+      "editing": {
+        "title": "Conditional visibility",
+        "match": "Match",
+        "all": "All (AND)",
+        "any": "Any (OR)",
+        "noQuestions": "Add other questions first to make this one conditional.",
+        "alwaysShown": "Always shown. Add a rule to show this question only when other answers match.",
+        "selectQuestion": "Select a question",
+        "value": "Value",
+        "remove": "Remove",
+        "addRule": "Add rule",
+        "legend": "Conditional logic",
+        "yes": "Yes",
+        "no": "No",
+        "checked": "Checked",
+        "unchecked": "Unchecked"
+      },
+      "operators": {
+        "equals": "equals",
+        "notEquals": "does not equal",
+        "contains": "contains",
+        "notContains": "does not contain",
+        "gt": "greater than",
+        "lt": "less than",
+        "gte": "greater than or equal to",
+        "lte": "less than or equal to",
+        "answered": "is answered",
+        "notAnswered": "is not answered"
+      }
+    },
+    "controls": {
+      "mappedControls": "Mapped controls",
+      "selectedCount": "{count} selected",
+      "hint": "Tick a framework heading to map every one of its controls — useful for “are you certified?” questions where a compliant answer should satisfy the whole framework.",
+      "allFrameworks": "All frameworks",
+      "filterPlaceholder": "Filter controls…",
+      "noMatch": "No controls match the current filter."
+    },
+    "import": {
+      "metadataTitle": "Import template",
+      "title": "Import template",
+      "subtitle": "Upload a JSON file to create a new template.",
+      "breadcrumb": "Import",
+      "cardTitle": "Import template from JSON",
+      "steps": {
+        "upload": "Upload",
+        "review": "Review"
+      },
+      "file": {
+        "label": "JSON file",
+        "downloadTemplate": "Template",
+        "hint": "Upload a valid JSON template file. Export an existing template from the template builder (Actions → Export) to see the expected structure."
+      },
+      "parse": {
+        "invalidStructure": "Invalid template structure. Expected name and sections array.",
+        "invalidJson": "Invalid JSON file."
+      },
+      "summary": {
+        "sections": "{count, plural, one {# section} other {# sections}}",
+        "questions": "{count, plural, one {# question} other {# questions}}",
+        "controlCodes": "{count, plural, one {# control code} other {# control codes}}"
+      },
+      "table": {
+        "section": "Section",
+        "questions": "Questions"
+      },
+      "review": {
+        "introPrefix": "You are about to import template"
+      },
+      "next": "Next →",
+      "back": "← Back",
+      "importing": "Importing…",
+      "import": "Import template",
+      "success": "Imported \"{name}\" as a new DRAFT.",
+      "errors": {
+        "noFile": "No file selected.",
+        "fileTooLarge": "File is too large (max 1 MB).",
+        "invalidJson": "Invalid JSON file.",
+        "importFailed": "Import failed — the file structure could not be processed. Check it against the downloadable template and try again.",
+        "nameRequired": "Template name is required.",
+        "sectionsRequired": "Template must contain at least one section.",
+        "sectionTitleRequired": "Section {number}: title is required.",
+        "questionsArray": "Section \"{title}\": questions must be an array.",
+        "textRequired": "{where}: text is required.",
+        "helpTextType": "{where}: helpText must be a string when provided.",
+        "unknownType": "{where}: unknown type \"{type}\".",
+        "unknownRiskWeight": "{where}: unknown risk weight \"{weight}\".",
+        "requiredType": "{where}: required must be a boolean when provided.",
+        "optionsType": "{where}: options must be an array of strings.",
+        "controlCodesType": "{where}: controlCodes must be an array of strings.",
+        "expectedAnswerType": "{where}: expectedAnswer must be a string, number, or array of strings.",
+        "expectedAnswer": {
+          "multiSelectArray": "{where}: expectedAnswer must be an array of strings.",
+          "choiceStringOrArray": "{where}: expectedAnswer must be a string or an array of strings.",
+          "numeric": "{where}: expectedAnswer must be a number.",
+          "yesNoCheckboxString": "{where}: expectedAnswer must be a string."
+        },
+        "controlAmbiguous": "Control codes {codes} are ambiguous — the same code exists in multiple frameworks. Remove the duplicate or rename one of the controls.",
+        "controlNotFound": "Control code not found: {code}"
+      }
+    },
+    "preview": {
+      "notFound": "Template not found",
+      "breadcrumb": "Preview",
+      "title": "Preview — {name}",
+      "description": "Read-only preview of how this questionnaire appears to a vendor. Conditional questions are all shown here with their rule noted.",
+      "noSectionsTitle": "No sections yet",
+      "noQuestionsTitle": "No questions.",
+      "yes": "Yes",
+      "no": "No",
+      "select": "Select…",
+      "freeTextPlaceholder": "Free-text answer",
+      "attachmentUpload": "Attachment upload",
+      "numberPlaceholder": "Number",
+      "acknowledge": "I acknowledge"
+    },
+    "questionPages": {
+      "editTitle": "Edit question",
+      "editBreadcrumb": "Edit question",
+      "addTitle": "Add question",
+      "addBreadcrumb": "Add question"
+    },
+    "error": {
+      "title": "Failed to load template",
+      "description": "An error occurred while loading this template. Please try again.",
+      "retry": "Try again"
+    },
+    "errors": {
+      "invalidInput": "Invalid input.",
+      "nameRequired": "Template name is required",
+      "questionTextRequired": "Question text is required",
+      "conditionalTooLarge": "Conditional logic payload is too large.",
+      "conditionalInvalid": "Invalid conditional logic."
+    }
+  },
+  "Frameworks": {
+    "list": {
+      "title": "Frameworks",
+      "subtitle": "Control libraries used to map questionnaire answers to requirements.",
+      "import": "Import framework",
+      "gaps": "Coverage gaps",
+      "deleteBlocked": "{count, plural, one {Cannot delete: # control is still mapped to questionnaire questions. Unmap it first.} other {Cannot delete: # controls are still mapped to questionnaire questions. Unmap them first.}}",
+      "emptyTitle": "No frameworks",
+      "emptyDescription": "Framework data could not be loaded.",
+      "controls": "{count, plural, one {# control} other {# controls}}",
+      "deleteTitle": "Delete framework \"{name} v{version}\"?",
+      "deleteDescription": "This will permanently delete this framework and its {count, plural, one {# control} other {# controls}}. Template questions mapped to these controls will lose their assignments. Existing assessments and findings are not affected.",
+      "delete": "Delete"
+    },
+    "detail": {
+      "notFound": "Framework not found",
+      "breadcrumbs": "Frameworks",
+      "deleteFramework": "Delete framework",
+      "searchPlaceholder": "Search controls…",
+      "noControlsTitle": "No matching controls",
+      "noControlsDescription": "Try a different search term."
+    },
+    "control": {
+      "notFound": "Control not found",
+      "breadcrumbs": "Frameworks",
+      "guidance": "Guidance",
+      "mappedQuestions": "Mapped questions ({count})",
+      "noMappedTitle": "No mapped questions",
+      "noMappedDescription": "No questionnaire questions map to this control yet."
+    },
+    "gaps": {
+      "title": "Control coverage gaps",
+      "subtitle": "Controls that have no questions mapped across any template. Use this to identify blind spots in your assessment coverage.",
+      "emptyTitle": "No gaps found",
+      "emptyDescription": "Every control in every framework has at least one question mapped to it.",
+      "covered": "{mapped}/{total} covered",
+      "allCovered": "All {count, plural, one {# control} other {# controls}} have at least one question mapped.",
+      "errorTitle": "Something went wrong",
+      "errorDescription": "The compliance gap view could not be loaded. Please try again.",
+      "retry": "Try again"
+    },
+    "import": {
+      "metadataTitle": "Import framework",
+      "title": "Import framework",
+      "subtitle": "Upload a CSV file with controls to create a new framework.",
+      "breadcrumb": "Import",
+      "cardTitle": "Import framework from CSV",
+      "steps": {
+        "setup": "Setup & Upload",
+        "review": "Review"
+      },
+      "form": {
+        "name": "Framework name",
+        "namePlaceholder": "e.g. PCI DSS",
+        "version": "Version",
+        "versionPlaceholder": "e.g. 4.0",
+        "description": "Description (optional)",
+        "descriptionPlaceholder": "Brief description of the framework",
+        "csvFile": "CSV file",
+        "downloadTemplate": "Template",
+        "csvHint": "CSV must have columns: domain, code, title, guidance (guidance is optional). Optional: is_shared_responsibility (true/false, defaults to false). Max 1 MB.",
+        "controlsFound": "{count, plural, one {# control found} other {# controls found}}",
+        "domain": "Domain",
+        "code": "Code",
+        "titleColumn": "Title",
+        "showingFirst": "Showing first {shown} of {total} rows",
+        "next": "Next →",
+        "back": "← Back",
+        "importing": "Importing…",
+        "import": "Import framework",
+        "reviewIntro": "You are about to create framework {name} v{version} with {count, plural, one {# control} other {# controls}}.",
+        "success": "Imported \"{name} v{version}\" with {count, plural, one {# control} other {# controls}}."
+      },
+      "errors": {
+        "noFile": "A CSV file is required.",
+        "invalidFileType": "File must be a .csv file.",
+        "tooLarge": "CSV file is too large (max 1 MB).",
+        "noRows": "CSV file contains no data rows.",
+        "missingColumns": "Missing CSV columns: {columns}. Expected: {expected}",
+        "invalidInput": "Invalid input.",
+        "nameRequired": "Framework name is required",
+        "nameTooLong": "Framework name must be 200 characters or fewer",
+        "versionRequired": "Version is required",
+        "versionTooLong": "Version must be 50 characters or fewer",
+        "descriptionTooLong": "Description must be 500 characters or fewer",
+        "rowDomainRequired": "Row {row}: domain is required",
+        "rowCodeRequired": "Row {row}: control code is required",
+        "rowTitleRequired": "Row {row}: control title is required",
+        "rowInvalid": "Row {row}: invalid input.",
+        "duplicateCode": "Row {row}: duplicate control code \"{code}\".",
+        "duplicateFramework": "A framework named \"{name}\" version \"{version}\" already exists."
+      }
+    },
+    "shared": "Shared",
+    "error": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again or contact support.",
+      "retry": "Try again"
+    },
+    "radar": {
+      "title": "Domain compliance radar",
+      "current": "Current assessment",
+      "previous": "Previous assessment",
+      "ariaLabel": "Domain compliance radar: {values}",
+      "tableCaption": "Domain compliance by percentage",
+      "domain": "Domain",
+      "currentShort": "Current",
+      "previousShort": "Previous",
+      "noPrevious": "Only one completed assessment — no previous data to compare."
+    },
+    "heatmap": {
+      "metadataNotFound": "Vendor not found",
+      "metadataTitle": "Heatmap — {name}",
+      "breadcrumbs": "Vendors",
+      "subtitle": "Domain compliance radar and control-level heatmap from recent assessments.",
+      "downloadReport": "Download PDF report",
+      "preparingReport": "Preparing report…",
+      "emptyTitle": "No data available",
+      "emptyDescription": "No assessment data is available for this framework yet."
+    }
+  },
+  "RiskRegister": {
+    "metaTitle": "Risk register",
+    "title": "Risk register",
+    "subtitle": "Every finding across your vendors in one place.",
+    "stats": {
+      "open": "Open findings",
+      "criticalOpen": "Critical open",
+      "remediated": "Remediated",
+      "riskAccepted": "Risk accepted"
+    },
+    "filters": {
+      "status": "Status",
+      "allFindings": "All findings",
+      "statusAriaLabel": "Filter findings by status",
+      "severity": "Severity",
+      "anySeverity": "Any severity",
+      "severityAriaLabel": "Filter findings by severity",
+      "vendor": "Vendor",
+      "allVendors": "All vendors",
+      "vendorAriaLabel": "Filter findings by vendor",
+      "sort": "Sort",
+      "sortAriaLabel": "Sort findings",
+      "show": "Show",
+      "findingsOnly": "Findings only",
+      "responsibilityAriaLabel": "Filter by responsibility",
+      "customerResponsibility": "Customer responsibility",
+      "apply": "Filter",
+      "clear": "Clear",
+      "sorts": {
+        "priority": "Priority",
+        "newest": "Newest",
+        "severity": "Severity"
+      }
+    },
+    "emptyFiltered": "No findings match the selected filters.",
+    "emptyTitle": "No findings yet",
+    "emptyDescription": "Findings are raised automatically when vendors submit assessments with deficient answers.",
+    "items": "findings",
+    "responsibility": {
+      "title": "Customer Responsibility",
+      "noMatch": "No customer responsibility items match the selected filters.",
+      "vendorFallback": "Vendor",
+      "assignedTo": "Assigned to {name}"
+    },
+    "bulk": {
+      "selected": "{count} selected",
+      "statusRemediated": "Remediated",
+      "statusRiskAccepted": "Risk accepted",
+      "statusReopen": "Reopen",
+      "updateTitle": "{count, plural, one {Update # finding?} other {Update # findings?}}",
+      "updateDescription": "{count, plural, one {Set # finding to \"{status}\".} other {Set # findings to \"{status}\".}}",
+      "apply": "Apply",
+      "applying": "Applying...",
+      "clearSelection": "Clear selection",
+      "note": "Note: {note}",
+      "automatedDescription": "The vendor's answer did not meet the expected response.",
+      "errors": {
+        "invalidStatus": "Invalid status.",
+        "invalidSelection": "Invalid selection data.",
+        "noFindings": "No findings selected.",
+        "updated": "{count, plural, one {# finding updated} other {# findings updated}}",
+        "alreadyRemoved": "({count} already removed)."
+      }
+    },
+    "error": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again or contact support.",
+      "retry": "Try again"
+    }
+  },
+  "SelfAssessment": {
+    "metaTitle": "Self-assessment",
+    "title": "Self-assessment",
+    "subtitle": "Assess your own organization against compliance frameworks using the same questionnaire portal your vendors use.",
+    "start": "Start new assessment",
+    "emptyTitle": "No self-assessments yet",
+    "emptyDescription": "Start your first self-assessment to evaluate your organization against ISO 27001, SOC 2, or other frameworks.",
+    "noTemplate": "No template",
+    "new": {
+      "metaTitle": "New self-assessment",
+      "breadcrumb": "New",
+      "title": "New self-assessment",
+      "cardTitle": "Assessment details",
+      "form": {
+        "title": "Title",
+        "titlePlaceholder": "e.g. ISO 27001:2022 self-assessment",
+        "template": "Questionnaire template",
+        "templatePlaceholder": "Select a published template",
+        "noTemplates": "No templates found.",
+        "dueDate": "Due date (optional)",
+        "publishFirst": "Publish a template first to start a self-assessment.",
+        "starting": "Starting...",
+        "start": "Start assessment"
+      }
+    }
+  },
+  "Admin": {
+    "metaTitle": "Admin",
+    "general": {
+      "metaTitle": "Admin — General",
+      "title": "General",
+      "subtitle": "Organization identity shown across the app.",
+      "cardTitle": "Organization",
+      "cardDescription": "The name, support email, and default language shown in emails and the interface.",
+      "form": {
+        "name": "Organization name",
+        "supportEmail": "Support email",
+        "defaultLanguage": "Default language",
+        "defaultLanguageHint": "Used when a visitor has not chosen a language. Individual choices override it.",
+        "saving": "Saving...",
+        "save": "Save"
+      },
+      "success": "Organization settings saved.",
+      "errors": {
+        "nameRequired": "Organization name is required",
+        "invalidEmail": "Enter a valid email address",
+        "invalidInput": "Invalid input."
+      }
+    },
+    "appearance": {
+      "metaTitle": "Admin — Appearance",
+      "title": "Appearance",
+      "subtitle": "Branding across the app — logo, colours, and layout.",
+      "cardTitle": "Appearance",
+      "cardDescription": "Customise the logo, primary colour (buttons), and secondary colour (tags/pills). Leave a field blank to use the default.",
+      "logo": "Logo",
+      "currentLogoAlt": "Current logo",
+      "removeLogoTitle": "Remove logo?",
+      "removeLogoDescription": "The current logo will be removed from all pages. You can upload a new logo at any time.",
+      "remove": "Remove",
+      "removeLogo": "Remove logo",
+      "noLogo": "No logo uploaded. Upload a PNG or JPG (max 2 MB).",
+      "primaryColour": "Primary colour",
+      "primaryColourHint": "Used for main buttons, links, and active states.",
+      "secondaryColour": "Secondary colour",
+      "secondaryColourHint": "Used for tags, pills, badges, and secondary elements.",
+      "reset": "Reset",
+      "ragTitle": "RAG indicator colours",
+      "ragHint": "Used for score indicators, progress bars, and the vendor risk heatmap.",
+      "ragGreen": "Green (compliant)",
+      "ragGreenHint": "Score ≥ 85%",
+      "ragAmber": "Amber (needs attention)",
+      "ragAmberHint": "Score 60–84%",
+      "ragRed": "Red (deficient)",
+      "ragRedHint": "Score < 60%",
+      "ragUnscored": "Unscored (neutral)",
+      "ragUnscoredHint": "Not yet assessed",
+      "layoutTitle": "Layout",
+      "layoutHint": "Adjust the overall look and feel of the platform.",
+      "borderRadius": "Border radius (px)",
+      "borderRadiusHint": "Controls how rounded corners are across the app.",
+      "pageWidth": "Page width",
+      "pageWidthHint": "Constrain content to a readable width or use the full screen.",
+      "constrained": "Constrained",
+      "full": "Full width",
+      "saving": "Saving...",
+      "save": "Save appearance",
+      "success": "Appearance settings saved.",
+      "errors": {
+        "primaryHex": "Primary colour must be a valid hex colour (e.g. #3b82f6).",
+        "secondaryHex": "Secondary colour must be a valid hex colour (e.g. #f59e0b).",
+        "ragGreen": "RAG green must be a valid hex colour.",
+        "ragAmber": "RAG amber must be a valid hex colour.",
+        "ragRed": "RAG red must be a valid hex colour.",
+        "ragUnscored": "RAG unscored must be a valid hex colour.",
+        "logoTooLarge": "Logo must be under 2 MB.",
+        "logoImage": "Logo must be an image file.",
+        "logoFormat": "Logo must be a PNG, JPG, GIF, or WEBP image.",
+        "logoContent": "Logo file content does not match its extension.",
+        "invalidInput": "Invalid input."
+      }
+    },
+    "error": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again or contact support.",
+      "retry": "Try again"
+    },
+    "email": {
+      "metaTitle": "Admin — Email",
+      "title": "Email",
+      "subtitle": "SMTP delivery and the templates used for vendor and reviewer emails.",
+      "smtpTitle": "SMTP",
+      "smtpDescription": "Used to send vendor invites and reminders. The password is encrypted at rest.",
+      "form": {
+        "host": "SMTP host",
+        "port": "SMTP port",
+        "username": "SMTP username",
+        "password": "SMTP password",
+        "passwordKeep": "Leave blank to keep current password",
+        "passwordEnter": "Enter SMTP password",
+        "passwordHint": "Stored encrypted at rest and never displayed.",
+        "fromAddress": "From address",
+        "fromName": "From name",
+        "saving": "Saving...",
+        "save": "Save"
+      },
+      "test": {
+        "label": "Send test email to",
+        "placeholder": "you@company.com",
+        "sending": "Sending...",
+        "send": "Send test",
+        "hint": "Sends using your saved SMTP settings. Save any changes first."
+      },
+      "templatesTitle": "Email templates",
+      "templatesDescription": "Select a template to edit its subject and body. Dynamic values use double-brace tokens.",
+      "subject": "Subject",
+      "body": "Body",
+      "editorHint": "Markdown formatting is supported — use **bold**, *italic*, lists, and links. Tokens: {tokens}.",
+      "savingChanges": "Saving...",
+      "saveChanges": "Save changes",
+      "resetTitle": "Reset to default?",
+      "resetDescription": "The \"{name}\" subject and body will be replaced with the built-in default. Any customisation will be lost.",
+      "reset": "Reset",
+      "resetting": "Resetting...",
+      "resetToDefault": "Reset to default",
+      "cancel": "Cancel",
+      "preview": "Preview",
+      "templateTypes": {
+        "invite": {
+          "label": "Invite email",
+          "description": "Sent to a vendor when a questionnaire is first shared."
+        },
+        "invite-password": {
+          "label": "Invite email (password protected)",
+          "description": "Invite variant that includes the portal access password."
+        },
+        "reminder": {
+          "label": "Reminder email",
+          "description": "Nudge sent to a vendor as the due date approaches."
+        },
+        "escalation": {
+          "label": "Escalation email",
+          "description": "Sent to the reviewer when a questionnaire becomes overdue."
+        },
+        "submission": {
+          "label": "Submission received email",
+          "description": "Notifies the reviewer that a vendor has submitted answers."
+        },
+        "clarification": {
+          "label": "Sent back for clarification email",
+          "description": "Sent to a vendor when the assessment is reopened for more information."
+        },
+        "reset": {
+          "label": "Password reset email",
+          "description": "Sent to internal staff who request a password reset."
+        },
+        "expiry": {
+          "label": "Expiry reminder email",
+          "description": "Sent to a vendor's risk owner when a certification or contract is nearing expiry."
+        }
+      },
+      "success": "Email settings saved.",
+      "testSuccess": "Test email sent to {email}.",
+      "templateSaved": "{name} saved.",
+      "templateReset": "{name} reset to default.",
+      "errors": {
+        "invalidInput": "Invalid input.",
+        "invalidEmail": "Enter a valid email address",
+        "invalidPort": "SMTP port must be between 1 and 65535",
+        "invalidRecipient": "Invalid recipient.",
+        "smtpNotConfigured": "Save your SMTP settings before sending a test email.",
+        "unknownTemplate": "Unknown email template.",
+        "subjectRequired": "Subject is required.",
+        "bodyRequired": "Body is required."
+      }
+    },
+    "emailTracking": {
+      "metaTitle": "Admin — Email tracking",
+      "title": "Email tracking",
+      "subtitle": "Delivery status for every email the platform has sent.",
+      "retentionTitle": "Retention",
+      "retentionDescription": "Email send records older than this many days are automatically pruned by the scheduled cleanup. Set to 0 to keep indefinitely.",
+      "retentionLabel": "Email log retention (days)",
+      "retentionHelp": "Applies on the next scheduled run.",
+      "cardTitle": "Email tracking",
+      "cardDescription": "View the status of every email sent by the platform. Entries are retained according to the configured retention policy.",
+      "description": "Track every email sent by the platform — invites, reminders, escalations, and test messages. The SMTP server confirms acceptance; this does not guarantee inbox delivery. Logs are retained according to the configured retention policy.",
+      "filters": {
+        "status": "Status",
+        "allStatuses": "All statuses",
+        "statusAria": "Filter emails by status",
+        "type": "Type",
+        "allTypes": "All types",
+        "typeAria": "Filter emails by type",
+        "recipient": "Recipient",
+        "recipientPlaceholder": "email@example.com",
+        "from": "From",
+        "to": "To",
+        "rows": "Rows",
+        "pageSizeAria": "Email log page size",
+        "filter": "Filter",
+        "clear": "Clear"
+      },
+      "statuses": {
+        "SENT": "Sent",
+        "FAILED": "Failed"
+      },
+      "types": {
+        "INVITE": "Invite",
+        "INVITE-PASSWORD": "Invite (password protected)",
+        "REMINDER": "Reminder",
+        "ESCALATION": "Escalation",
+        "SUBMISSION": "Submission",
+        "CLARIFICATION": "Clarification",
+        "RESET": "Password reset",
+        "EXPIRY": "Expiry",
+        "TEST": "Test"
+      },
+      "table": {
+        "date": "Date",
+        "recipient": "Recipient",
+        "subject": "Subject",
+        "type": "Type",
+        "status": "Status",
+        "detail": "Detail",
+        "assessment": "Assessment",
+        "sentBy": "Sent by"
+      },
+      "noLogs": "No email logs found.",
+      "pagination": "Page {page} of {totalPages} ({total} entries)",
+      "previous": "Previous",
+      "next": "Next",
+      "accepted": "Accepted by SMTP server",
+      "system": "System",
+      "retry": "Retry",
+      "retrying": "Retrying...",
+      "retrySuccess": "Email resent successfully.",
+      "testResent": "Test email resent.",
+      "errors": {
+        "missingLog": "Missing email log entry.",
+        "notFound": "Email log entry not found.",
+        "onlyFailed": "Only failed emails can be retried.",
+        "resetSingleUse": "Reset links are single-use and cannot be resent. Ask the user to request a new reset.",
+        "resendFailed": "Failed to resend email. Check the tracking tab for details.",
+        "retentionInvalid": "Email log retention must be 0 or a positive number.",
+        "retentionSaved": "Email log retention saved."
+      }
+    },
+    "scoring": {
+      "metaTitle": "Admin — Scoring",
+      "title": "Scoring",
+      "subtitle": "Risk weights and RAG cut-offs for vendor profiles and the heatmap.",
+      "cardTitle": "Scoring",
+      "cardDescription": "Risk weights and the red/amber/green cut-offs used for vendor profiles and the gap heatmap.",
+      "riskWeights": "Risk weights (numeric)",
+      "ragThresholds": "RAG thresholds",
+      "ragHint": "Green at or above, amber at or above, red below.",
+      "green": "Green ≥",
+      "amber": "Amber ≥",
+      "saving": "Saving...",
+      "save": "Save scoring",
+      "success": "Scoring settings saved.",
+      "errors": {
+        "invalidInput": "Invalid input."
+      }
+    },
+    "scheduling": {
+      "metaTitle": "Admin — Scheduling",
+      "title": "Scheduling",
+      "subtitle": "Reminders, escalations, and the built-in scheduler.",
+      "cardTitle": "Scheduling",
+      "cardDescription": "Automated reminders before the due date and reviewer escalations for overdue assessments.",
+      "reminderLabel": "Reminder offset days",
+      "reminderHint": "Comma-separated list of days before the due date to send reminders. Example: 7, 1 sends reminders 7 days and 1 day before the due date.",
+      "reminderPlaceholder": "7, 1",
+      "escalationLabel": "Escalation after (days)",
+      "escalationHint": "Days after the due date before the reviewer receives an escalation email.",
+      "defaultDueLabel": "Default assessment due (days)",
+      "defaultDueHint": "New assessments default to this many days until the due date.",
+      "schedulerLabel": "Run scheduled jobs inside the app",
+      "schedulerHint": "When enabled, the application checks every five minutes for due reminders, escalations, expiry notices, recurring assessments, log pruning, and orphaned file cleanup — no external cron job or scheduler is needed. Disable this only if you trigger {endpoint} yourself (for example from a system crontab or Azure Function).",
+      "saving": "Saving...",
+      "save": "Save scheduling",
+      "lastRun": "Last scheduled run: {when}",
+      "never": "Never",
+      "justNow": "just now",
+      "lessThanMinute": "less than a minute ago",
+      "minuteAgo": "1 minute ago",
+      "minutesAgo": "{count} minutes ago",
+      "hourAgo": "1 hour ago",
+      "hoursAgo": "{count} hours ago",
+      "dayAgo": "1 day ago",
+      "daysAgo": "{count} days ago",
+      "success": "Configuration saved.",
+      "errors": {
+        "escalationInvalid": "Escalation days must be at least 1.",
+        "defaultDueInvalid": "Default due days must be at least 1."
+      }
+    },
+    "retention": {
+      "saving": "Saving...",
+      "save": "Save"
+    },
+    "storage": {
+      "metaTitle": "Admin — Storage",
+      "title": "Storage",
+      "subtitle": "Where evidence files live, and what vendors can upload.",
+      "fileStorageTitle": "File storage",
+      "fileStorageDescription": "Configure where evidence files and attachments are stored. Changing providers does not migrate existing files.",
+      "uploadConstraintsTitle": "Upload constraints",
+      "uploadConstraintsDescription": "Size and file-type limits applied to vendor evidence uploads.",
+      "form": {
+        "provider": "Provider",
+        "providerHint": "Changing providers does not migrate existing files. Files stored with the previous provider remain accessible only if you switch back.",
+        "local": "Local disk",
+        "s3": "Amazon S3",
+        "azure": "Azure Blob",
+        "s3Title": "Amazon S3",
+        "bucket": "Bucket",
+        "region": "Region",
+        "regionPlaceholder": "e.g. us-east-1",
+        "accessKeyId": "Access key ID",
+        "secretAccessKey": "Secret access key",
+        "secretHint": "Stored encrypted at rest. Leave blank to keep the existing value.",
+        "azureTitle": "Azure Blob",
+        "containerName": "Container name",
+        "connectionString": "Connection string",
+        "saving": "Saving…",
+        "save": "Save storage settings"
+      },
+      "uploads": {
+        "maxSize": "Maximum file upload size (MB)",
+        "maxSizeHint": "Evidence files larger than this limit are rejected during upload.",
+        "allowedExtensions": "Allowed file extensions",
+        "allowedHint": "File types vendors can upload as evidence. Select at least one.",
+        "saving": "Saving...",
+        "save": "Save"
+      },
+      "success": "Storage settings saved.",
+      "uploadsSuccess": "Upload constraints saved.",
+      "errors": {
+        "invalidInput": "Invalid input.",
+        "maxUploadInvalid": "Maximum upload size must be at least 1 MB."
+      }
+    },
+    "signIn": {
+      "metaTitle": "Admin — Sign-in",
+      "title": "Sign-in",
+      "subtitle": "How staff authenticate, and how long they stay signed in.",
+      "ssoTitle": "Single sign-on",
+      "ssoDescription": "Allow staff to sign in with Microsoft Entra ID, Google Workspace, or a custom OIDC provider. Client credentials are encrypted at rest.",
+      "sessionsTitle": "Sessions",
+      "sessionsDescription": "Sign-in throttling and automatic logout for idle sessions.",
+      "sso": {
+        "entraId": "Microsoft Entra ID",
+        "google": "Google Workspace",
+        "oidc": "Custom OIDC",
+        "enabled": "Enabled",
+        "clientId": "Client ID",
+        "clientSecret": "Client secret",
+        "secretKeep": "Leave blank to keep current",
+        "secretEnter": "Client secret",
+        "secretHint": "Stored encrypted at rest and never displayed.",
+        "displayName": "Provider display name",
+        "displayNamePlaceholder": "Okta / Auth0 / Keycloak",
+        "issuerUrl": "Issuer URL",
+        "issuerPlaceholder": "https://example.okta.com",
+        "defaultRole": "Default role for new SSO users",
+        "allowedDomain": "Restrict to domain (optional)",
+        "allowedDomainPlaceholder": "@company.com",
+        "disableLocalAuth": "Disable email/password sign-in (SSO only)",
+        "disableLocalAuthHint": "Hides the local login form so staff can only sign in via SSO. Ignored unless at least one SSO provider is enabled, so a misconfiguration cannot lock everyone out. Use the break-glass URL below for emergency access.",
+        "saving": "Saving...",
+        "save": "Save SSO"
+      },
+      "breakGlass": {
+        "title": "Break-glass access",
+        "description": "When local sign-in is disabled, this secret URL still shows the email/password form so an admin can sign in if SSO is unavailable. Generating a new URL immediately revokes the previous one.",
+        "configured": "A break-glass URL is currently configured.",
+        "notConfigured": "No break-glass URL is configured yet.",
+        "generating": "Generating...",
+        "regenerate": "Regenerate break-glass URL",
+        "generate": "Generate break-glass URL",
+        "success": "Break-glass URL generated. Copy it now — it won't be shown again."
+      },
+      "security": {
+        "loginRateLimit": "Login rate limit (per minute)",
+        "loginRateLimitHint": "Maximum sign-in attempts per IP address per minute. Increase for shared-office environments behind a single public IP.",
+        "autoLogout": "Auto-logout (minutes)",
+        "autoLogoutHint": "Automatically sign out after this many minutes of inactivity. Set to 0 to disable. Minimum 5 minutes when enabled.",
+        "saving": "Saving...",
+        "save": "Save"
+      },
+      "success": "SSO settings saved.",
+      "securitySuccess": "Sign-in settings saved.",
+      "errors": {
+        "invalidInput": "Invalid input.",
+        "loginRateInvalid": "Login rate limit must be at least 1 per minute.",
+        "autoLogoutInvalid": "Auto-logout must be 0 (disabled) or at least 5 minutes."
+      }
+    },
+    "rateLimits": {
+      "metaTitle": "Admin — Rate limits",
+      "title": "Rate limits",
+      "subtitle": "Abuse protection for the vendor portal and account recovery.",
+      "cardTitle": "Rate limits (per minute)",
+      "cardDescription": "Raise these for busy vendors or shared-office IPs; the defaults suit most deployments.",
+      "fields": {
+        "portalPageLoadsPerMin": {
+          "label": "Portal page loads / min (per visitor)",
+          "help": "How often a vendor's browser can load the vendor link. Guards against link-enumeration."
+        },
+        "portalUploadsPerMin": {
+          "label": "Portal evidence uploads / min (per visitor)",
+          "help": "Maximum evidence file uploads a vendor can make per minute."
+        },
+        "portalSubmitPerMin": {
+          "label": "Portal submissions / min (per link)",
+          "help": "Maximum submit attempts for a single vendor link."
+        },
+        "portalCommentPerMin": {
+          "label": "Portal comments / min (per link)",
+          "help": "Maximum comments a vendor can post on a single vendor link."
+        },
+        "portalPasswordAttemptsPerMin": {
+          "label": "Portal password attempts / min (per link)",
+          "help": "Guards a password-protected questionnaire against brute-force."
+        },
+        "passwordResetPerMin": {
+          "label": "Password reset requests / min (per email)",
+          "help": "Limits staff password-reset emails for a given address."
+        },
+        "breakGlassPerMin": {
+          "label": "Break-glass attempts / min (per IP)",
+          "help": "Limits validation of the SSO break-glass recovery link."
+        }
+      },
+      "saving": "Saving...",
+      "save": "Save rate limits",
+      "success": "Rate limits saved.",
+      "errors": {
+        "minimum": "{field} must be at least 1 per minute."
+      }
+    },
+    "api": {
+      "metaTitle": "Admin — API",
+      "title": "API",
+      "subtitle": "Programmatic access to the REST API.",
+      "cardTitle": "API access",
+      "cardDescription": "Generate API keys for programmatic access to the REST API. Keys use Bearer authentication and can be restricted by IP address. Keys are shown only once when created.",
+      "enabled": "Enable API key authentication",
+      "enabledHint": "API keys allow external tools to call the REST API without a browser login. Keys have full access to every endpoint and remain valid independently of the account that created them. Keys are shown only once and cannot be retrieved later. Keys created before the lookup prefix update were disabled for security and must be regenerated.",
+      "saving": "Saving...",
+      "save": "Save",
+      "docs": "API documentation →",
+      "keysTitle": "API keys ({count})",
+      "keyCreatedTitle": "Key created — copy it now",
+      "keyCreatedHint": "This key will not be shown again. Store it securely.",
+      "copy": "Copy",
+      "done": "Done",
+      "createTitle": "Create new key",
+      "name": "Name",
+      "namePlaceholder": "e.g. CI pipeline",
+      "expiry": "Expiry",
+      "expiryOptions": {
+        "30": "30 days",
+        "90": "90 days",
+        "180": "180 days",
+        "365": "1 year",
+        "permanent": "Permanent"
+      },
+      "allowedIps": "Allowed IPs (optional)",
+      "allowedIpsPlaceholder": "192.168.1.0/24",
+      "rateLimit": "Rate limit/min",
+      "rateLimitPlaceholder": "Default",
+      "creating": "Creating...",
+      "create": "Create key",
+      "empty": "No API keys created yet.",
+      "permissionCount": "{count, plural, one {# permission} other {# permissions}}",
+      "fullAccess": "Full access",
+      "revoked": "Revoked",
+      "expired": "Expired",
+      "lastUsed": "Last used {date}",
+      "neverUsed": "Never used",
+      "requestCount": "{count, plural, one {# request} other {# requests}}",
+      "ips": "IPs: {ips}",
+      "rateLimitSuffix": "Rate limit: {value}/min",
+      "enable": "Enable",
+      "revokeTitle": "Revoke API key?",
+      "revokeDescription": "Any integrations using \"{name}\" will stop working immediately. This can be re-enabled later.",
+      "revoke": "Revoke",
+      "deleteTitle": "Delete API key?",
+      "deleteDescription": "\"{name}\" will be permanently deleted. Any integrations using this key will break permanently. This cannot be undone.",
+      "delete": "Delete",
+      "keyCreatedMessage": "Key created: {prefix}. Copy the key below — it won't be shown again.",
+      "success": "API settings saved.",
+      "errors": {
+        "nameRequired": "Key name is required.",
+        "permissionsRequired": "Select at least one permission or enable full access.",
+        "invalidInput": "Invalid input."
+      }
+    },
+    "webhooks": {
+      "metaTitle": "Admin — Webhooks",
+      "title": "Webhooks",
+      "subtitle": "Event notifications pushed to your endpoints.",
+      "cardTitle": "Webhooks",
+      "cardDescription": "Configure endpoints to receive event notifications when assessments are submitted, findings change, or certifications expire.",
+      "endpointsTitle": "Webhook endpoints ({count})",
+      "add": "Add endpoint",
+      "newTitle": "New webhook",
+      "name": "Name",
+      "namePlaceholder": "e.g. Slack alerts, Teams compliance",
+      "url": "URL",
+      "urlPlaceholder": "https://example.com/webhooks/mitch-risk",
+      "platform": "Platform",
+      "platformPlaceholder": "Select platform",
+      "platforms": {
+        "GENERIC": "Generic (HTTP)",
+        "SLACK": "Slack",
+        "MICROSOFT_TEAMS": "Microsoft Teams",
+        "DISCORD": "Discord"
+      },
+      "events": "Events",
+      "eventLabels": {
+        "ASSESSMENT_SUBMITTED": "Assessment submitted",
+        "ASSESSMENT_OVERDUE": "Assessment overdue",
+        "FINDING_CREATED": "Finding created",
+        "FINDING_RESOLVED": "Finding resolved",
+        "CERTIFICATION_EXPIRING": "Certification expiring"
+      },
+      "creating": "Creating...",
+      "create": "Create",
+      "cancel": "Cancel",
+      "empty": "No webhooks configured. Add an endpoint to receive event notifications.",
+      "active": "Active",
+      "disabled": "Disabled",
+      "disable": "Disable",
+      "enable": "Enable",
+      "deleteTitle": "Delete webhook?",
+      "deleteDescription": "This endpoint will stop receiving events: {url}",
+      "delete": "Delete",
+      "success": "Webhook endpoint created.",
+      "errors": {
+        "urlRequired": "URL is required.",
+        "urlTooLong": "URL must be 500 characters or fewer.",
+        "nameTooLong": "Name must be 100 characters or fewer.",
+        "invalidUrl": "Enter a valid URL.",
+        "httpsRequired": "Webhook URLs must use HTTPS.",
+        "publicOnly": "Webhook URLs must point to a public address — internal and loopback hosts are not allowed.",
+        "unknownPlatform": "Unknown platform.",
+        "eventRequired": "At least one event must be selected."
+      }
+    },
+    "trustCenter": {
+      "metaTitle": "Admin — Trust Center",
+      "title": "Trust Center",
+      "subtitle": "Public-facing compliance page configuration.",
+      "cardTitle": "Trust Center",
+      "cardDescription": "Public page at /trust sharing compliance badges, security documents, subprocessors and narrative sections with vendors and partners. Curate the content under Manage → Trust center.",
+      "enabled": "Enable the trust center",
+      "enabledHint": "While disabled, /trust shows a not-found message and no content is served publicly.",
+      "intro": "Intro (markdown)",
+      "introHint": "Short paragraph shown under the organisation name on the public page.",
+      "introPlaceholder": "Our commitment to security and privacy…",
+      "contactEmail": "Contact email",
+      "contactEmailHint": "Shown at the foot of the public page. Falls back to the organisation's support email when empty.",
+      "contactEmailPlaceholder": "security@example.com",
+      "includeInInvites": "Link to the trust center in vendor invite emails",
+      "includeInInvitesHint": "Adds a footer line to invite emails pointing at /trust. Templates are not modified — the link is added at send time.",
+      "pageLoads": "Public page loads / min (per IP)",
+      "downloads": "Document downloads / min (per IP)",
+      "saving": "Saving...",
+      "save": "Save trust center",
+      "success": "Trust center settings saved.",
+      "errors": {
+        "invalidInput": "Invalid input.",
+        "invalidEmail": "Enter a valid email address."
+      }
+    },
+    "permissions": {
+      "fullAccess": "Full access",
+      "fullAccessHint": "When selected, the key grants all permissions. Uncheck to restrict the key to a specific set of permissions.",
+      "selectAll": "Select all permissions",
+      "permissionCount": "{granted} / {total} permissions",
+      "groups": {
+        "vendors": "Vendors",
+        "assessments": "Assessments",
+        "templates": "Templates",
+        "frameworks": "Frameworks",
+        "administration": "Administration",
+        "webhooks": "Webhooks",
+        "trustcenter": "Trust Center",
+        "profile": "Profile"
+      },
+      "items": {
+        "vendors_view": "View vendors",
+        "vendors_create": "Create vendors",
+        "vendors_edit": "Edit vendors",
+        "vendors_delete": "Delete vendors",
+        "assessments_view": "View assessments",
+        "assessments_create": "Create & send assessments",
+        "assessments_edit": "Edit & manage links",
+        "assessments_review": "Review & finalize",
+        "assessments_delete": "Delete assessments",
+        "templates_view": "View templates",
+        "templates_create": "Create templates",
+        "templates_edit": "Edit & publish templates",
+        "templates_delete": "Delete templates",
+        "frameworks_view": "View frameworks",
+        "frameworks_edit": "Edit frameworks",
+        "frameworks_delete": "Delete frameworks",
+        "audit_view": "View audit & email logs",
+        "users_manage": "Manage users",
+        "roles_manage": "Manage roles",
+        "settings_manage": "Manage settings",
+        "api_manage": "Manage API access",
+        "webhooks_manage": "Manage webhooks",
+        "trustcenter_manage": "Manage trust center content",
+        "profile_view": "View and edit own profile"
+      }
+    },
+    "users": {
+      "metaTitle": "Admin — Users",
+      "title": "Users",
+      "subtitle": "Staff accounts and their access.",
+      "cardTitle": "Staff accounts",
+      "cardDescription": "Create staff accounts and manage their role, access, and password.",
+      "searchLabel": "Search staff",
+      "searchPlaceholder": "Search staff…",
+      "newUser": "New user",
+      "empty": "No users yet.",
+      "noMatch": "No staff match your search.",
+      "added": "Added {date}",
+      "sso": "SSO",
+      "local": "Local",
+      "disabled": "Disabled",
+      "addTitle": "Add user",
+      "addDescription": "Create a staff account with a starting role and password.",
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "role": "Role",
+      "creating": "Creating...",
+      "create": "Create user",
+      "cancel": "Cancel",
+      "save": "Save",
+      "access": "Access",
+      "enableSignIn": "Enable sign-in",
+      "disableSignIn": "Disable sign-in",
+      "disableTitle": "Disable user?",
+      "disableDescription": "{name} will no longer be able to sign in. Their data is preserved.",
+      "disable": "Disable",
+      "newPasswordPlaceholder": "New password",
+      "resetTitle": "Reset password?",
+      "resetDescription": "This overwrites {name}'s current password. They must use the new password to sign in.",
+      "reset": "Reset",
+      "ssoPassword": "This account signs in via SSO — its password is managed by the identity provider.",
+      "dangerZone": "Danger zone",
+      "deleteTitle": "Delete user?",
+      "deleteDescription": "{name} will be permanently removed. This cannot be undone.",
+      "ownedVendors": "{count, plural, one {# vendor will lose its owner assignment} other {# vendors will lose their owner assignment}}",
+      "reviewingAssessments": "{count, plural, one {# assessment will lose its reviewer} other {# assessments will lose their reviewer}}",
+      "resolvedFindings": "{count, plural, one {# finding will have its resolver cleared} other {# findings will have their resolver cleared}}",
+      "answerReviews": "{count, plural, one {# answer review will be anonymized} other {# answer reviews will be anonymized}}",
+      "createdApiKeys": "{count, plural, one {# API key will lose its creator reference} other {# API keys will lose their creator reference}}",
+      "auditPreserved": "Audit history is preserved (shown as \"Deleted user\").",
+      "delete": "Delete",
+      "deleteUser": "Delete user",
+      "loading": "Loading...",
+      "success": "User created.",
+      "errors": {
+        "nameRequired": "Name is required.",
+        "emailInvalid": "Enter a valid email address.",
+        "passwordTooShort": "Use at least 12 characters.",
+        "roleRequired": "Role is required.",
+        "invalidInput": "Invalid input.",
+        "roleNotFound": "Selected role does not exist.",
+        "emailExists": "A user with this email already exists.",
+        "createFailed": "Could not create the user. Please try again."
+      }
+    },
+    "roles": {
+      "metaTitle": "Admin — Roles",
+      "title": "Roles",
+      "subtitle": "Permission sets assigned to staff accounts.",
+      "cardTitle": "Roles",
+      "cardDescription": "Define permission sets and assign them to staff accounts.",
+      "searchPlaceholder": "Search roles…",
+      "newRole": "New role",
+      "noMatch": "No roles match your search.",
+      "system": "System",
+      "userCount": "{count, plural, one {# user} other {# users}}",
+      "edit": "Edit",
+      "duplicate": "Duplicate",
+      "deleteTitle": "Delete role?",
+      "deleteDescription": "The \"{name}\" role will be permanently removed. This is only possible when no users are assigned to it.",
+      "delete": "Delete",
+      "createTitle": "Create role",
+      "adminLocked": "The Admin role always has every permission and cannot be changed.",
+      "editorDescription": "Choose the permissions this role grants. Users assigned to this role gain exactly these permissions.",
+      "name": "Name",
+      "description": "Description",
+      "saving": "Saving...",
+      "create": "Create role",
+      "saveChanges": "Save changes",
+      "cancel": "Cancel",
+      "success": "Role created.",
+      "updated": "Role updated.",
+      "errors": {
+        "nameRequired": "Role name is required.",
+        "nameTooLong": "Role name must be 50 characters or fewer.",
+        "descriptionTooLong": "Description must be 200 characters or fewer.",
+        "invalidInput": "Invalid input.",
+        "roleExists": "A role with this name already exists.",
+        "createFailed": "Could not create the role. Please try again.",
+        "missingRole": "Missing role.",
+        "notFound": "Role not found.",
+        "adminLocked": "The Admin role permissions cannot be changed.",
+        "updateFailed": "Could not update the role. Please try again.",
+        "duplicateFailed": "Could not duplicate the role: {reason}",
+        "deleteFailed": "Could not delete the role: {reason}",
+        "systemCannotDelete": "System roles cannot be deleted.",
+        "assignedUsers": "This role is assigned to one or more users. Reassign them before deleting."
+      }
+    },
+    "audit": {
+      "metaTitle": "Admin — Audit log",
+      "title": "Audit log",
+      "subtitle": "Administrative and system activity across the platform.",
+      "retentionTitle": "Retention",
+      "retentionDescription": "Audit entries older than this many days are automatically pruned by the scheduled cleanup. Set to 0 to keep indefinitely.",
+      "retentionLabel": "Audit log retention (days)",
+      "retentionHelp": "Applies on the next scheduled run.",
+      "cardTitle": "Audit log",
+      "cardDescription": "Track administrative and system activity across the platform.",
+      "action": "Action",
+      "user": "User",
+      "from": "From",
+      "to": "To",
+      "rows": "Rows",
+      "allActions": "All actions",
+      "allUsers": "All users",
+      "actionFilterLabel": "Filter audit log by action",
+      "userFilterLabel": "Filter audit log by user",
+      "pageSizeLabel": "Audit log page size",
+      "filter": "Filter",
+      "clear": "Clear",
+      "export": "Export",
+      "allResults": "All results",
+      "currentPage": "Current page",
+      "empty": "No audit entries found.",
+      "date": "Date",
+      "entity": "Entity",
+      "deleted": "Deleted",
+      "pageSummary": "Page {page} of {totalPages} ({totalCount, plural, one {# entry} other {# entries}})",
+      "previous": "Previous",
+      "next": "Next",
+      "csvHeader": "Date,User,Action,Entity,ID",
+      "success": "Audit retention saved.",
+      "clarificationRequested": "clarification requested",
+      "errors": {
+        "retentionInvalid": "Audit retention must be 0 or a positive number.",
+        "invalidInput": "Invalid input."
+      },
+      "actions": {
+        "LOGIN": "Login",
+        "CREATE_ASSESSMENT": "Created assessment",
+        "DELETE_ASSESSMENT": "Deleted assessment",
+        "SEND_ASSESSMENT": "Sent assessment",
+        "REVOKE_ASSESSMENT": "Revoked assessment link",
+        "EXTEND_ASSESSMENT": "Extended assessment link",
+        "REGENERATE_ASSESSMENT": "Regenerated assessment link",
+        "SUBMIT_ASSESSMENT": "Submitted assessment",
+        "REVIEW_DECISION": "Review decision",
+        "SEND_BACK_TO_VENDOR": "Sent back to vendor",
+        "REOPEN_REVIEW": "Reopened review",
+        "UPDATE_FINDING": "Updated finding",
+        "ADD_COMMENT": "Added comment",
+        "REOPEN_ASSESSMENT": "Reopened assessment",
+        "FINALIZE_ASSESSMENT": "Finalized assessment",
+        "CREATE_VENDOR": "Created vendor",
+        "UPDATE_VENDOR": "Updated vendor",
+        "DELETE_VENDOR": "Deleted vendor",
+        "IMPORT_VENDOR": "Imported vendor",
+        "CREATE_TEMPLATE": "Created template",
+        "UPDATE_TEMPLATE": "Updated template",
+        "DELETE_TEMPLATE": "Deleted template",
+        "PUBLISH_TEMPLATE": "Published template",
+        "UNPUBLISH_TEMPLATE": "Unpublished template",
+        "CREATE_TEMPLATE_VERSION": "Created template version",
+        "DUPLICATE_TEMPLATE": "Duplicated template",
+        "IMPORT_TEMPLATE": "Imported template",
+        "CREATE_USER": "Created user",
+        "DELETE_USER": "Deleted user",
+        "DISABLE_USER": "Disabled user",
+        "ENABLE_USER": "Enabled user",
+        "CHANGE_ROLE": "Changed role",
+        "CREATE_ROLE": "Created role",
+        "UPDATE_ROLE": "Updated role",
+        "UPDATE_PROFILE": "Updated profile",
+        "DELETE_ROLE": "Deleted role",
+        "DUPLICATE_ROLE": "Duplicated role",
+        "RESET_PASSWORD": "Reset password",
+        "UPDATE_SETTINGS": "Updated settings",
+        "API_KEY_CREATED": "Created API key",
+        "API_KEY_REVOKED": "Revoked API key",
+        "API_KEY_ENABLED": "Enabled API key",
+        "API_KEY_DELETED": "Deleted API key",
+        "CREATE_CERTIFICATION": "Added certification",
+        "UPDATE_CERTIFICATION": "Updated certification",
+        "DELETE_CERTIFICATION": "Deleted certification",
+        "CREATE_FRAMEWORK": "Imported framework",
+        "DELETE_FRAMEWORK": "Deleted framework",
+        "UPDATE_RESPONSIBILITY_ACTION": "Updated responsibility action",
+        "MARK_CONTROL_SHARED": "Marked control as shared responsibility",
+        "UNMARK_CONTROL_SHARED": "Unmarked control as shared responsibility",
+        "RETRY_EMAIL_SEND": "Retried email send",
+        "CREATE_WEBHOOK": "Created webhook",
+        "DELETE_WEBHOOK": "Deleted webhook",
+        "ENABLE_WEBHOOK": "Enabled webhook",
+        "DISABLE_WEBHOOK": "Disabled webhook",
+        "UPDATE_TRUST_CENTER": "Updated trust center"
+      }
+    },
+    "health": {
+      "metaTitle": "Admin — Health",
+      "title": "Health",
+      "subtitle": "System diagnostics and scheduled-job status.",
+      "application": "Application",
+      "status": "Status",
+      "running": "Running",
+      "version": "Version",
+      "commit": "Commit",
+      "buildTime": "Build time",
+      "uptime": "Uptime",
+      "memory": "Memory (heap)",
+      "lessThanMinute": "less than 1m",
+      "database": "Database",
+      "connection": "Connection",
+      "connected": "Connected",
+      "error": "Error"
+    }
+  },
+  "NotFound": {
+    "description": "The page you are looking for does not exist or has been moved.",
+    "backToDashboard": "Back to dashboard"
+  },
+  "BulkSend": {
+    "metaTitle": "Bulk send",
+    "title": "Bulk send",
+    "subtitle": "Send the same questionnaire to multiple vendors at once.",
+    "breadcrumb": "Bulk send",
+    "steps": {
+      "configure": "Configure",
+      "vendors": "Vendors",
+      "send": "Send"
+    },
+    "template": "Template",
+    "selectTemplate": "Select template",
+    "dueDate": "Due date",
+    "reviewer": "Reviewer",
+    "unassigned": "Unassigned",
+    "portalPassword": "Portal password (optional)",
+    "portalPasswordPlaceholder": "Shared password for all vendors",
+    "next": "Next →",
+    "back": "← Back",
+    "filterPlaceholder": "Filter vendors...",
+    "selectAll": "Select all",
+    "selectedCount": "{count} selected",
+    "noMatch": "No vendors match your search.",
+    "noEmail": "No email",
+    "sendingTo": "Sending {template} to {count, plural, one {# vendor} other {# vendors}}",
+    "due": "Due: {date}",
+    "reviewerLabel": "Reviewer: {name}",
+    "portalPasswordSet": "Portal password set",
+    "sending": "Sending...",
+    "sendTo": "Send to {count, plural, one {# vendor} other {# vendors}}",
+    "sentCount": "{count, plural, one {Sent # assessment} other {Sent # assessments}}",
+    "skippedCount": "{count, plural, one {# could not be sent} other {# could not be sent}}",
+    "emailFailedCount": "{count, plural, one {# email failed to deliver} other {# emails failed to deliver}}",
+    "errors": {
+      "noTemplate": "No template selected.",
+      "noVendors": "No vendors selected."
+    }
+  },
+  "VendorImport": {
+    "metaTitle": "Import vendors",
+    "title": "Import vendors",
+    "subtitle": "Upload a CSV file to bulk-create vendors.",
+    "breadcrumb": "Import",
+    "cardTitle": "Import vendors from CSV",
+    "steps": {
+      "upload": "Upload",
+      "review": "Review"
+    },
+    "csvFile": "CSV file",
+    "template": "Template",
+    "columnsHelp": "CSV must have columns: id (optional), name, contactemail, plus optional: externalid, contactname, tier, website, notes, servicedescription, datasensitivity, contractrenewaldate, contractvalue, geographicrisk, tags. Only name and contactemail are required. Max 1 MB. Include a vendor id or externalid to update an existing vendor instead of creating a new one.",
+    "found": "{count, plural, one {# vendor found} other {# vendors found}}",
+    "showingFirst": "Showing first 10 of {count} rows",
+    "next": "Next →",
+    "back": "← Back",
+    "aboutToImport": "You are about to import {count, plural, one {# vendor} other {# vendors}}.",
+    "skippedNote": "Some rows may be skipped if they fail validation (duplicate emails, missing required fields).",
+    "importing": "Importing…",
+    "importVendors": "Import vendors",
+    "errors": {
+      "noFile": "No file selected.",
+      "fileTooLarge": "File is too large (max 1 MB).",
+      "noRows": "No rows found in CSV. The first row must be a header.",
+      "noValidVendors": "No valid vendors found. First error: {reason}",
+      "rowInvalid": "Row {row}: invalid input.",
+      "rowNameRequired": "Row {row}: vendor name is required.",
+      "rowContactEmailRequired": "Row {row}: contact email is required.",
+      "duplicateExternalId": "{name}: duplicate external ID",
+      "rowFailed": "{name}: {reason}",
+      "updateRequiresEdit": "This import would update existing vendors. Updating requires vendor edit permission.",
+      "unknown": "unknown",
+      "importComplete": "Import complete: {summary}.",
+      "created": "{count} created",
+      "updated": "{count} updated",
+      "skipped": "{count, plural, one {# row skipped} other {# rows skipped}}"
+    }
+  },
+  "CompareVendors": {
+    "metaTitle": "Compare vendors",
+    "title": "Compare vendors",
+    "subtitle": "Pick two vendors to compare their latest completed assessments side-by-side.",
+    "breadcrumb": "Compare",
+    "notEnoughVendorsTitle": "Not enough vendors",
+    "notEnoughVendorsDescription": "You need at least two vendors to compare. Create more vendors first.",
+    "vendorA": "Vendor A",
+    "vendorB": "Vendor B",
+    "selectVendor": "Select a vendor",
+    "compare": "Compare",
+    "notEnoughAssessmentsTitle": "Not enough assessments",
+    "notEnoughAssessmentsDescription": "Both vendors must have at least one completed or under-review assessment to compare.",
+    "comparisonSubtitle": "{vendorA} vs {vendorB}",
+    "statusLabel": "{title} · {status}",
+    "question": "Question",
+    "changed": "changed",
+    "notApplicable": "N/A"
+  },
+  "ApiDocs": {
+    "metaTitle": "API Documentation",
+    "loading": "Loading API documentation...",
+    "loadFailed": "Swagger UI failed to load."
+  },
+  "CompareAssessments": {
+    "metaTitle": "Compare assessments",
+    "metadataTitle": "Compare assessments — {vendorName}",
+    "notFound": "Vendor not found",
+    "title": "Compare assessments",
+    "breadcrumb": "Compare assessments",
+    "instructions": "Select two assessments from the vendor page to compare them side-by-side. After opening two, bookmark this page with ?left=[id]&right=[id].",
+    "comparisonSubtitle": "{leftTitle} ({leftStatus}) vs {rightTitle} ({rightStatus})",
+    "question": "Question",
+    "changed": "changed",
+    "notApplicable": "N/A"
+  },
+  "Profile": {
+    "metaTitle": "Profile",
+    "title": "Profile",
+    "subtitle": "Manage your account details.",
+    "accountDetails": "Account details",
+    "ssoDescription": "You sign in via single sign-on. Your email is managed by your identity provider.",
+    "localDescription": "Your name and sign-in email.",
+    "name": "Name",
+    "email": "Email",
+    "passwordTitle": "Password",
+    "passwordDescription": "You must enter your current password to make any changes.",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "optional": "(optional)",
+    "confirmNewPassword": "Confirm new password",
+    "ssoPasswordNote": "Your password is managed by your identity provider (SSO), so there is nothing to change here.",
+    "saving": "Saving...",
+    "saveChanges": "Save changes",
+    "errorDescription": "Your profile could not be loaded. Please try again or contact support.",
+    "errors": {
+      "notAuthenticated": "Not authenticated.",
+      "accountNotFound": "Account not found.",
+      "currentPasswordIncorrect": "Current password is incorrect.",
+      "emailTaken": "This email is already taken.",
+      "nameRequired": "Name is required.",
+      "emailInvalid": "Enter a valid email address.",
+      "currentPasswordRequired": "Current password is required.",
+      "passwordTooShort": "New password must be at least 12 characters.",
+      "passwordMismatch": "Passwords do not match.",
+      "invalidInput": "Invalid input.",
+      "success": "Profile updated."
+    }
+  },
+  "TrustCenterManager": {
+    "metaTitle": "Trust Center",
+    "title": "Trust Center",
+    "subtitle": "Publish compliance badges, security documents, subprocessors and narrative sections to your public trust center page.",
+    "viewPublic": "View public page",
+    "disabledBanner": "The trust center is currently disabled. Enable it in Settings → Trust Center — until then the public page shows a not-found message.",
+    "errorDescription": "The trust center manager could not be loaded. Please try again.",
+    "common": {
+      "edit": "Edit",
+      "draft": "Draft",
+      "published": "Published",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "moveUp": "Move {name} up",
+      "moveDown": "Move {name} down",
+      "deleteNamed": "Delete {name}"
+    },
+    "badges": {
+      "cardTitle": "Compliance badges",
+      "add": "Add badge",
+      "empty": "No badges configured. Add certifications like SOC 2 or ISO 27001 to display them on the public page.",
+      "verificationLink": "Verification link",
+      "deleteTitle": "Delete badge?",
+      "deleteDescription": "The \"{name}\" badge will be removed from the trust center.",
+      "addTitle": "Add badge",
+      "editTitle": "Edit badge",
+      "editorDescription": "Shown as a certification tile on the public trust center page.",
+      "titleLabel": "Title",
+      "issuer": "Issuer",
+      "issuerPlaceholder": "e.g. AICPA, BSI",
+      "description": "Description",
+      "descriptionPlaceholder": "e.g. SOC 2 Type II audited annually",
+      "verificationUrl": "Verification URL",
+      "image": "Badge image",
+      "imageHint": "PNG, JPG, GIF or WebP. Max 2 MB. SVG is not allowed.",
+      "imageHintKeep": " Leave empty to keep the current image.",
+      "save": "Save badge"
+    },
+    "documents": {
+      "cardTitle": "Security documents",
+      "add": "Add document",
+      "empty": "No documents configured. Upload policies, security reports or compliance artefacts for public download.",
+      "noFile": "No file uploaded",
+      "deleteTitle": "Delete document?",
+      "deleteDescription": "\"{name}\" and its file will be removed from the trust center.",
+      "addTitle": "Add document",
+      "editTitle": "Edit document",
+      "editorDescription": "Published documents are downloadable from the public trust center page.",
+      "titleLabel": "Title",
+      "description": "Description",
+      "descriptionPlaceholder": "What this document covers",
+      "category": "Category",
+      "file": "File",
+      "replaceFile": "Replace file",
+      "fileHint": "PDF, PNG, JPG, DOCX or XLSX. Max 20 MB.",
+      "fileHintCurrent": " Current: {fileName}. Replacing deletes the old file.",
+      "save": "Save document",
+      "categories": {
+        "POLICY": "Policy",
+        "SECURITY": "Security report",
+        "COMPLIANCE": "Compliance",
+        "PRIVACY": "Privacy",
+        "OTHER": "Other"
+      }
+    },
+    "sections": {
+      "cardTitle": "Custom sections",
+      "add": "Add section",
+      "empty": "No custom sections. Add markdown blocks for an overview, FAQ or anything else the structured types do not cover.",
+      "deleteTitle": "Delete section?",
+      "deleteDescription": "\"{name}\" will be removed from the trust center.",
+      "addTitle": "Add section",
+      "editTitle": "Edit section",
+      "editorDescription": "Free markdown blocks rendered on the public trust center page.",
+      "titleLabel": "Title",
+      "body": "Body (markdown)",
+      "bodyPlaceholder": "Supports markdown formatting.",
+      "save": "Save section"
+    },
+    "subprocessors": {
+      "cardTitle": "Subprocessors",
+      "add": "Add subprocessor",
+      "empty": "No subprocessors configured. List third parties that process data on your behalf.",
+      "deleteTitle": "Delete subprocessor?",
+      "deleteDescription": "\"{name}\" will be removed from the trust center.",
+      "addTitle": "Add subprocessor",
+      "editTitle": "Edit subprocessor",
+      "editorDescription": "Third parties that process data on your behalf, listed on the public trust center page.",
+      "name": "Name",
+      "purpose": "Purpose",
+      "purposePlaceholder": "e.g. Cloud hosting of application data",
+      "location": "Data location",
+      "locationPlaceholder": "e.g. Australia (Sydney)",
+      "website": "Website",
+      "websitePlaceholder": "https://…",
+      "logo": "Logo image",
+      "logoHint": "PNG, JPG, GIF or WebP. Max 2 MB. SVG is not allowed.",
+      "logoHintKeep": " Leave empty to keep the current logo.",
+      "logoUrl": "…or fetch a logo from a URL",
+      "logoUrlPlaceholder": "https://example.com/logo.png",
+      "logoUrlHint": "The image is downloaded and stored with the other trust center files — the public page never loads external hosts. An uploaded file takes priority over a URL.",
+      "save": "Save subprocessor"
+    },
+    "errors": {
+      "invalidInput": "Invalid input.",
+      "titleRequired": "Title is required.",
+      "nameRequired": "Name is required.",
+      "invalidUrl": "Enter a valid URL.",
+      "sectionTooLong": "Section body is too long (max 10,000 characters).",
+      "badgeNotFound": "Badge not found.",
+      "documentFileRequired": "A document file is required.",
+      "saveFailed": "Save failed.",
+      "badgeSaved": "Badge saved.",
+      "documentSaved": "Document saved.",
+      "sectionSaved": "Section saved.",
+      "subprocessorSaved": "Subprocessor saved.",
+      "imageType": "Images must be PNG, JPG, GIF or WebP (SVG is not allowed).",
+      "imageInvalid": "This image is not valid.",
+      "imageTooLarge": "Image is too large (max {max} MB).",
+      "fileTooLarge": "File is too large (max {max} MB).",
+      "fileInvalid": "File content does not match its extension.",
+      "fileType": "This file type is not accepted.",
+      "imageFetchFailed": "Image URL could not be fetched.",
+      "imageContent": "Image URL must return PNG, JPG, GIF or WebP content."
+    }
+  },
+  "Shell": {
+    "workspace": {
+      "dashboard": "Dashboard",
+      "vendors": "Vendors",
+      "assessments": "Assessments",
+      "riskRegister": "Risk register",
+      "selfAssessment": "Self-assessment",
+      "frameworks": "Frameworks",
+      "templates": "Templates",
+      "trustCenter": "Trust Center",
+      "admin": "Admin",
+      "groups": {
+        "risk": "Risk",
+        "frameworks": "Frameworks",
+        "manage": "Manage"
+      }
+    },
+    "admin": {
+      "backToWorkspace": "Back to workspace",
+      "groups": {
+        "workspace": "Workspace",
+        "email": "Email",
+        "assessments": "Assessments",
+        "files": "Files",
+        "accessSecurity": "Access & security",
+        "integrations": "Integrations",
+        "platform": "Platform"
+      },
+      "sections": {
+        "general": "General",
+        "appearance": "Appearance",
+        "email": "Email",
+        "emailTracking": "Email tracking",
+        "scoring": "Scoring",
+        "scheduling": "Scheduling",
+        "storage": "Storage",
+        "users": "Users",
+        "roles": "Roles",
+        "signIn": "Sign-in",
+        "rateLimits": "Rate limits",
+        "api": "API",
+        "webhooks": "Webhooks",
+        "trustCenter": "Trust Center",
+        "auditLog": "Audit log",
+        "health": "Health"
+      }
+    },
+    "header": {
+      "admin": "Admin",
+      "toggleTheme": "Toggle theme",
+      "themeLight": "Light",
+      "themeDark": "Dark",
+      "themeSystem": "System",
+      "profile": "Profile",
+      "language": "Language",
+      "signOut": "Sign out"
+    },
+    "sidebar": {
+      "toggle": "Toggle sidebar"
+    },
+    "breadcrumbs": {
+      "label": "Breadcrumb",
+      "dashboard": "Dashboard"
+    },
+    "commandPalette": {
+      "label": "Command palette",
+      "searchPlaceholder": "Search pages...",
+      "noResults": "No results.",
+      "navigate": "navigate",
+      "open": "open",
+      "close": "close",
+      "or": "or",
+      "items": {
+        "dashboard": {
+          "label": "Dashboard",
+          "subtitle": "Vendor risk overview"
+        },
+        "vendors": {
+          "label": "Vendors",
+          "subtitle": "Manage vendors"
+        },
+        "assessments": {
+          "label": "Assessments",
+          "subtitle": "Questionnaires"
+        },
+        "frameworks": {
+          "label": "Frameworks",
+          "subtitle": "Compliance controls"
+        },
+        "templates": {
+          "label": "Templates",
+          "subtitle": "Questionnaire builder"
+        },
+        "profile": {
+          "label": "Profile",
+          "subtitle": "Your account"
+        },
+        "adminGeneral": {
+          "label": "Admin · General",
+          "subtitle": "Organization"
+        },
+        "adminUsers": {
+          "label": "Admin · Users",
+          "subtitle": "Staff accounts"
+        },
+        "adminRoles": {
+          "label": "Admin · Roles",
+          "subtitle": "Permissions"
+        },
+        "adminApi": {
+          "label": "Admin · API",
+          "subtitle": "API access"
+        },
+        "adminAudit": {
+          "label": "Admin · Audit log",
+          "subtitle": "Activity trail"
+        },
+        "apiDocs": {
+          "label": "API Docs",
+          "subtitle": "OpenAPI / Swagger"
+        }
+      }
+    },
+    "idle": {
+      "title": "Session expiring",
+      "description": "You will be signed out in {countdown, plural, one {# second} other {# seconds}} due to inactivity. Move your mouse or press any key to stay signed in.",
+      "staySignedIn": "Stay signed in"
+    },
+    "scrollToTop": "Scroll to top",
+    "error": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again or contact support.",
+      "retry": "Try again"
+    }
+  },
+  "Trust": {
+    "title": "{orgName} Trust Center",
+    "compliance": "Compliance & certifications",
+    "expired": "Expired",
+    "expiringSoon": "Expiring soon",
+    "verify": "Verify",
+    "documents": "Security documents",
+    "download": "Download",
+    "subprocessors": "Subprocessors",
+    "name": "Name",
+    "purpose": "Purpose",
+    "location": "Location",
+    "contactPrompt": "Questions about our security posture?",
+    "categories": {
+      "POLICY": "Policy",
+      "SECURITY": "Security report",
+      "COMPLIANCE": "Compliance",
+      "PRIVACY": "Privacy",
+      "OTHER": "Other"
+    }
+  },
+  "Portal": {
+    "metaTitle": "Vendor questionnaire",
+    "noscript": "JavaScript is required to complete this questionnaire. Please enable JavaScript in your browser settings.",
+    "logoAlt": "Logo",
+    "linkNotFound": "Link not found",
+    "linkInvalid": "This questionnaire link is invalid.",
+    "linkExpiredTitle": "Link expired",
+    "linkExpiredBody": "This questionnaire link has expired. Please contact the requester for a new link.",
+    "submittedTitle": "{title} — submitted",
+    "submittedBanner": "✓ Your responses have been submitted.",
+    "submittedBody": "The requester will review your answers and may request clarifications. You can return to this link to see any updates.",
+    "notApplicableShort": "N/A",
+    "decisions": {
+      "APPROVED": "Approved",
+      "CLARIFICATION_REQUESTED": "Clarification requested"
+    },
+    "notAvailableTitle": "Not available",
+    "notAvailableBody": "This questionnaire is not currently available.",
+    "additionalInfoTitle": "Additional information has been requested.",
+    "additionalInfoBody": "Please review the flagged questions and resubmit when ready.",
+    "password": {
+      "title": "Password required",
+      "description": "This questionnaire is password protected. Enter the password provided by the requester to continue.",
+      "label": "Password",
+      "placeholder": "Enter password",
+      "verifying": "Verifying...",
+      "continue": "Continue",
+      "tooMany": "Too many attempts. Please wait a minute.",
+      "notSet": "No password is set for this link.",
+      "incorrect": "Incorrect password."
+    },
+    "error": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred while loading the questionnaire. Please contact the organisation that sent you this link for assistance.",
+      "retry": "Try again"
+    },
+    "loading": "Loading questionnaire…",
+    "upload": {
+      "tooMany": "Too many uploads. Please wait a moment.",
+      "linkInvalid": "This link is no longer valid.",
+      "noFile": "No file selected.",
+      "invalidQuestion": "Invalid question.",
+      "tooLarge": "File exceeds the {max} MB limit.",
+      "badType": "Files of type .{ext} are not allowed.",
+      "dangerousType": "This file type is not allowed.",
+      "mismatch": "The file content does not match a .{ext} file."
+    },
+    "questionnaire": {
+      "yes": "Yes",
+      "no": "No",
+      "maxUpload": "Max {maxUploadMb} MB. Allowed: {extensions}.",
+      "uploading": " Uploading…",
+      "uploaded": "Uploaded: {fileName}",
+      "remove": "Remove",
+      "selectPlaceholder": "Select…",
+      "confirmStatement": "I confirm this statement",
+      "clarification": "The reviewer requested clarification on this answer.",
+      "notApplicable": "Not applicable",
+      "commentPlaceholder": "Add a comment…",
+      "send": "Send",
+      "autosaveHint": "Your answers are saved automatically — you can close this page and return using the same link at any time.",
+      "saveExpired": "This link has expired — your recent changes could not be saved.",
+      "saveError": "We couldn't save your latest changes. Check your connection and retry.",
+      "retrySave": "Retry save",
+      "expiry": {
+        "expired": "This link has expired.",
+        "hours": "This link expires in {hours, plural, one {# hour} other {# hours}}.",
+        "minutes": "This link expires in {minutes, plural, one {# minute} other {# minutes}}."
+      },
+      "sectionCounter": "· Section {current} of {total}",
+      "saving": "Saving…",
+      "saveFailed": "Save failed",
+      "savedAt": "Saved at {time}",
+      "lastSavedAt": "Last saved at {time}",
+      "expires": "Expires {date}",
+      "back": "Back",
+      "continue": "Continue",
+      "reviewAnswers": "Review answers",
+      "continueWarning": "{count, plural, one {# required question on this section still needs an answer.} other {# required questions on this section still need answers.}} You can continue and come back.",
+      "reviewHeading": "Review your answers",
+      "reviewAnswered": "{answered}/{total} answered",
+      "reviewMissing": "{count} required missing",
+      "openSection": "Open section",
+      "submitting": "Submitting…",
+      "submit": "Submit questionnaire",
+      "submitTitle": "Submit questionnaire?",
+      "submitDescription": "You will not be able to edit your answers after submission. Are you sure you are ready to submit?",
+      "cancel": "Cancel",
+      "submitConfirm": "Submit",
+      "missingRequired": "{count, plural, one {Please answer # required question before submitting.} other {Please answer # required questions before submitting.}}",
+      "linkInvalid": "This link is no longer valid.",
+      "vendorAuthor": "Vendor"
+    }
+  },
+  "Pdf": {
+    "common": {
+      "pageOf": "Page {page} of {total}",
+      "na": "N/A",
+      "none": "--",
+      "yes": "Yes",
+      "no": "No",
+      "notScored": "Not scored",
+      "tier": "Tier: {tier}",
+      "template": "Template: {name} v{version}",
+      "reviewer": "Reviewer: {name}",
+      "generated": "Generated {date}",
+      "due": "Due: {date}",
+      "completed": "Completed: {date}",
+      "automatedFindingDescription": "The vendor's answer did not meet the expected response."
+    },
+    "tiers": {
+      "CRITICAL": "Critical",
+      "HIGH": "High",
+      "MEDIUM": "Medium",
+      "LOW": "Low"
+    },
+    "questionTypes": {
+      "YES_NO": "Yes / No",
+      "MULTIPLE_CHOICE": "Single choice",
+      "FREE_TEXT": "Free text",
+      "FILE_UPLOAD": "File upload",
+      "DATE": "Date",
+      "NUMERIC": "Numeric",
+      "COMBOBOX": "Combobox",
+      "MULTI_SELECT": "Multi-select",
+      "RATING": "Rating",
+      "URL": "URL",
+      "EMAIL": "Email",
+      "CHECKBOX": "Checkbox"
+    },
+    "statuses": {
+      "DRAFT": "Draft",
+      "SENT": "Sent",
+      "IN_PROGRESS": "In progress",
+      "SUBMITTED": "Submitted",
+      "UNDER_REVIEW": "Under review",
+      "COMPLETED": "Completed"
+    },
+    "assessment": {
+      "score": "Score",
+      "customerResponsibility": "Customer Responsibility: {percent}% ({completed}/{total} completed)",
+      "responses": "Responses ({count})",
+      "question": "Question",
+      "answer": "Answer",
+      "type": "Type",
+      "weight": "Weight",
+      "compliant": "Compliant",
+      "scoreColumn": "Score",
+      "findings": "Findings ({count})"
+    },
+    "framework": {
+      "complianceReport": "{frameworkName} {version} — Compliance Report",
+      "summary": "Summary",
+      "overallScore": "Overall score:",
+      "domainsAssessed": "Domains assessed:",
+      "controlsMapped": "Controls mapped:",
+      "domainCompliance": "Domain compliance",
+      "domain": "Domain",
+      "current": "Current",
+      "previous": "Previous",
+      "change": "Change",
+      "controlHeatmap": "Control heatmap",
+      "control": "Control",
+      "title": "Title",
+      "compliance": "Compliance",
+      "status": "Status",
+      "ragGreen": "Green",
+      "ragAmber": "Amber",
+      "ragRed": "Red",
+      "ragNone": "Not assessed"
+    },
+    "portfolio": {
+      "title": "Vendor Risk\nPortfolio Report",
+      "vendors": "Vendors",
+      "averageScore": "Average score",
+      "openFindings": "Open findings",
+      "needsAttention": "Needs attention",
+      "scoreDistribution": "Score distribution",
+      "green": "Green (≥85%)",
+      "amber": "Amber (60–84%)",
+      "red": "Red (<60%)",
+      "unscored": "Unscored",
+      "vendorsByTier": "Vendors by tier",
+      "assessmentsByStatus": "Assessments by status",
+      "vendorsCount": "Vendors ({count})",
+      "vendor": "Vendor",
+      "tier": "Tier",
+      "score": "Score",
+      "lastAssessed": "Last assessed",
+      "assessments": "Assessments",
+      "notAssessed": "Not assessed",
+      "topDeficientControls": "Top deficient controls ({count})",
+      "control": "Control",
+      "title": "Title",
+      "vendorsAffected": "Vendors affected"
+    }
+  },
+  "Email": {
+    "footer": "This email was sent by {appName}. If the button does not work, copy and paste the link into your browser.",
+    "trustFooter": "Learn more about our security posture: {url}",
+    "testSubject": "{appName} — SMTP test",
+    "testBody": "Your SMTP settings are working correctly.",
+    "testSent": "Test email sent.",
+    "smtpNotConfigured": "SMTP is not configured.",
+    "transporterFailed": "Failed to create transporter.",
+    "sendFailed": "Failed to send: {reason}",
+    "retryMessage": "Please review and resubmit your questionnaire."
+  },
+  "Auth": {
+    "tagline": "Vendor risk management",
+    "login": {
+      "title": "Sign in",
+      "description": "Sign in to your account.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "forgot": "Forgot password?",
+      "or": "or",
+      "invalid": "Invalid email or password.",
+      "tooMany": "Too many attempts. Please wait a moment and try again."
+    },
+    "forgot": {
+      "title": "Forgot password",
+      "description": "Enter your email and we will send you a reset link.",
+      "email": "Email",
+      "submit": "Send reset link",
+      "submitting": "Sending...",
+      "back": "Back to sign in",
+      "invalidEmail": "Enter a valid email address.",
+      "rateLimited": "If an account with that email exists, a reset link has already been sent recently.",
+      "sent": "If an account with that email exists, a reset link has been sent."
+    },
+    "reset": {
+      "title": "Reset password",
+      "description": "Choose a new password for your account.",
+      "missing": "This reset link is missing or invalid. Request a new one on the",
+      "expired": "This reset link has expired or has already been used. Request a new one on the",
+      "forgotLink": "forgot-password page",
+      "forUser": "Choose a new password for {email}.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "submit": "Reset password",
+      "submitting": "Resetting...",
+      "back": "Back to sign in",
+      "invalidLink": "Invalid reset link.",
+      "invalidPassword": "Use a password that meets the requirements.",
+      "expiredToken": "This reset link is invalid or has expired."
+    },
+    "setup": {
+      "title": "Create admin",
+      "cardTitle": "Create the first admin",
+      "description": "Set up the initial administrator account to start managing vendor risk.",
+      "fullName": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "passwordHint": "At least 12 characters.",
+      "submit": "Create admin",
+      "submitting": "Creating…",
+      "alreadyDone": "Setup has already been completed.",
+      "invalid": "Check the name, email, and password (at least 12 characters).",
+      "roleError": "Could not initialize the Admin role. Please try again.",
+      "createdSignIn": "Account created. Please sign in."
+    },
+    "sso": {
+      "orSignInWith": "or sign in with"
+    }
+  }
+}

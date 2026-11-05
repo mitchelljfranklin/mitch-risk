@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useActionState, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,7 +31,7 @@ import {
   moveTrustDocumentAction,
   saveTrustDocumentAction,
 } from "@/lib/actions/trust-center";
-import { TRUST_CENTER_DOCUMENT_CATEGORY_LABELS } from "@/lib/schemas/trust-center";
+import { TRUST_CENTER_DOCUMENT_CATEGORIES } from "@/lib/schemas/trust-center";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
 import { ChevronDown, ChevronUp, FileText, Trash2 } from "lucide-react";
 
@@ -58,6 +59,8 @@ function formatSize(bytes: number): string {
 }
 
 export function DocumentsManager({ documents }: DocumentsManagerProps) {
+  const translations = useTranslations("TrustCenterManager.documents");
+  const commonTranslations = useTranslations("TrustCenterManager.common");
   const [editing, setEditing] = useState<"new" | TrustDocumentView | null>(
     null,
   );
@@ -66,17 +69,18 @@ export function DocumentsManager({ documents }: DocumentsManagerProps) {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-base">Security documents</CardTitle>
+          <CardTitle className="text-base">
+            {translations("cardTitle")}
+          </CardTitle>
           <Button size="sm" variant="outline" onClick={() => setEditing("new")}>
-            Add document
+            {translations("add")}
           </Button>
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         {documents.length === 0 ? (
           <p className="text-muted-foreground text-sm">
-            No documents configured. Upload policies, security reports or
-            compliance artefacts for public download.
+            {translations("empty")}
           </p>
         ) : (
           <div className="flex flex-col divide-y rounded-lg border">
@@ -95,13 +99,11 @@ export function DocumentsManager({ documents }: DocumentsManagerProps) {
                         {document.title}
                       </span>
                       <Badge variant="secondary" className="text-xs">
-                        {TRUST_CENTER_DOCUMENT_CATEGORY_LABELS[
-                          document.category
-                        ] ?? document.category}
+                        {translations(`categories.${document.category}`)}
                       </Badge>
                       {document.published ? null : (
                         <Badge variant="secondary" className="text-xs">
-                          Draft
+                          {commonTranslations("draft")}
                         </Badge>
                       )}
                     </div>
@@ -113,7 +115,7 @@ export function DocumentsManager({ documents }: DocumentsManagerProps) {
                     <p className="text-muted-foreground text-xs">
                       {document.file
                         ? `${document.file.fileName} · ${formatSize(document.file.sizeBytes)}`
-                        : "No file uploaded"}
+                        : translations("noFile")}
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-1">
@@ -130,7 +132,9 @@ export function DocumentsManager({ documents }: DocumentsManagerProps) {
                         size="sm"
                         className="h-5 w-6 p-0"
                         disabled={isFirst}
-                        aria-label={`Move ${document.title} up`}
+                        aria-label={commonTranslations("moveUp", {
+                          name: document.title,
+                        })}
                       >
                         <ChevronUp className="size-3.5" />
                       </Button>
@@ -142,7 +146,9 @@ export function DocumentsManager({ documents }: DocumentsManagerProps) {
                         size="sm"
                         className="h-5 w-6 p-0"
                         disabled={isLast}
-                        aria-label={`Move ${document.title} down`}
+                        aria-label={commonTranslations("moveDown", {
+                          name: document.title,
+                        })}
                       >
                         <ChevronDown className="size-3.5" />
                       </Button>
@@ -153,7 +159,7 @@ export function DocumentsManager({ documents }: DocumentsManagerProps) {
                       variant="ghost"
                       onClick={() => setEditing(document)}
                     >
-                      Edit
+                      {commonTranslations("edit")}
                     </Button>
                     <form
                       id={`delete-trust-document-${document.id}`}
@@ -161,15 +167,19 @@ export function DocumentsManager({ documents }: DocumentsManagerProps) {
                     >
                       <input type="hidden" name="id" value={document.id} />
                       <ConfirmDialog
-                        title="Delete document?"
-                        description={`"${document.title}" and its file will be removed from the trust center.`}
+                        title={translations("deleteTitle")}
+                        description={translations("deleteDescription", {
+                          name: document.title,
+                        })}
                         formId={`delete-trust-document-${document.id}`}
                       >
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          aria-label={`Delete ${document.title}`}
+                          aria-label={commonTranslations("deleteNamed", {
+                            name: document.title,
+                          })}
                         >
                           <Trash2 className="size-4" />
                         </Button>
@@ -192,7 +202,9 @@ export function DocumentsManager({ documents }: DocumentsManagerProps) {
         <SheetContent className="w-full overflow-y-auto sm:max-w-md">
           <SheetHeader>
             <SheetTitle>
-              {editing === "new" ? "Add document" : "Edit document"}
+              {editing === "new"
+                ? translations("addTitle")
+                : translations("editTitle")}
             </SheetTitle>
           </SheetHeader>
           {editing !== null ? (
@@ -215,6 +227,8 @@ function DocumentEditor({
   document: TrustDocumentView | null;
   onDone: () => void;
 }) {
+  const translations = useTranslations("TrustCenterManager.documents");
+  const commonTranslations = useTranslations("TrustCenterManager.common");
   const [state, formAction, isPending] = useActionState(
     saveTrustDocumentAction,
     undefined,
@@ -232,11 +246,10 @@ function DocumentEditor({
   return (
     <SheetContent className="w-full overflow-y-auto sm:max-w-md">
       <SheetHeader>
-        <SheetTitle>{isNew ? "Add document" : "Edit document"}</SheetTitle>
-        <SheetDescription>
-          Published documents are downloadable from the public trust center
-          page.
-        </SheetDescription>
+        <SheetTitle>
+          {isNew ? translations("addTitle") : translations("editTitle")}
+        </SheetTitle>
+        <SheetDescription>{translations("editorDescription")}</SheetDescription>
       </SheetHeader>
       <form
         id="trust-document-form"
@@ -247,7 +260,7 @@ function DocumentEditor({
           <input type="hidden" name="id" value={document.id} />
         ) : null}
         <div className="grid gap-2">
-          <Label htmlFor="document-title">Title</Label>
+          <Label htmlFor="document-title">{translations("titleLabel")}</Label>
           <Input
             id="document-title"
             name="title"
@@ -256,35 +269,37 @@ function DocumentEditor({
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="document-description">Description</Label>
+          <Label htmlFor="document-description">
+            {translations("description")}
+          </Label>
           <Textarea
             id="document-description"
             name="description"
             rows={2}
             defaultValue={document?.description ?? ""}
-            placeholder="What this document covers"
+            placeholder={translations("descriptionPlaceholder")}
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="document-category">Category</Label>
+          <Label htmlFor="document-category">{translations("category")}</Label>
           <Select name="category" defaultValue={document?.category ?? "OTHER"}>
             <SelectTrigger id="document-category">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(TRUST_CENTER_DOCUMENT_CATEGORY_LABELS).map(
-                ([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ),
-              )}
+              {TRUST_CENTER_DOCUMENT_CATEGORIES.map((category) => (
+                <SelectItem key={category} value={category}>
+                  {translations(`categories.${category}`)}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
         <div className="grid gap-2">
           <Label htmlFor="document-file">
-            {document?.file ? "Replace file" : "File"}
+            {document?.file
+              ? translations("replaceFile")
+              : translations("file")}
           </Label>
           <Input
             id="document-file"
@@ -294,9 +309,11 @@ function DocumentEditor({
             required={!document?.file}
           />
           <p className="text-muted-foreground text-xs">
-            PDF, PNG, JPG, DOCX or XLSX. Max 20 MB.
+            {translations("fileHint")}
             {document?.file
-              ? ` Current: ${document.file.fileName}. Replacing deletes the old file.`
+              ? translations("fileHintCurrent", {
+                  fileName: document.file.fileName,
+                })
               : ""}
           </p>
         </div>
@@ -306,15 +323,17 @@ function DocumentEditor({
             name="published"
             defaultChecked={document?.published ?? true}
           />
-          <Label htmlFor="document-published">Published</Label>
+          <Label htmlFor="document-published">
+            {commonTranslations("published")}
+          </Label>
         </div>
       </form>
       <SheetFooter className="px-4">
         <Button type="submit" form="trust-document-form" disabled={isPending}>
-          {isPending ? "Saving..." : "Save document"}
+          {isPending ? commonTranslations("saving") : translations("save")}
         </Button>
         <Button type="button" variant="outline" onClick={onDone}>
-          Cancel
+          {commonTranslations("cancel")}
         </Button>
       </SheetFooter>
     </SheetContent>

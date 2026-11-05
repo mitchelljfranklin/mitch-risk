@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useFormatter, useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,6 @@ import {
 } from "@/components/ui/table";
 import { AUDIT_ACTION_LABELS, type AuditLogResult } from "@/lib/db/audit-types";
 import type { Prisma } from "../../../prisma/generated/prisma/client";
-import { formatDate } from "@/lib/utils";
 
 function entityLink(entityType: string, entityId: string): string | null {
   switch (entityType) {
@@ -58,7 +58,10 @@ function entityLink(entityType: string, entityId: string): string | null {
   }
 }
 
-function formatMeta(meta: Prisma.JsonValue): string {
+function formatMeta(
+  meta: Prisma.JsonValue,
+  clarificationLabel: string,
+): string {
   if (Array.isArray(meta)) {
     return meta.map(String).join(", ");
   }
@@ -70,7 +73,7 @@ function formatMeta(meta: Prisma.JsonValue): string {
   if (typeof record.decision === "string") {
     const label =
       record.decision === "CLARIFICATION_REQUESTED"
-        ? "clarification requested"
+        ? clarificationLabel
         : (record.decision as string).toLowerCase();
     parts.push(label);
   }
@@ -130,9 +133,15 @@ export function AuditForm({
   users,
   filterQuery,
 }: AuditFormProps) {
+  const translations = useTranslations("Admin.audit");
+  const dateFormatter = useFormatter();
   const { entries, totalCount, page, pageSize } = result;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
   const searchParams = useSearchParams();
+  const actionLabel = (action: string) =>
+    translations.has(`actions.${action}`)
+      ? translations(`actions.${action}`)
+      : (AUDIT_ACTION_LABELS[action] ?? action);
   const hasFilters =
     Boolean(searchParams.get("action")) ||
     Boolean(searchParams.get("userId")) ||
@@ -147,34 +156,34 @@ export function AuditForm({
         <input type="hidden" name="tab" value="audit" />
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="action">
-            Action
+            {translations("action")}
           </label>
           <AutoSubmitSelect
             name="action"
             defaultValue={searchParams.get("action") ?? ""}
             key={`action-${searchParams.get("action") ?? ""}`}
-            emptyOptionLabel="All actions"
+            emptyOptionLabel={translations("allActions")}
             id="action"
             className="w-44"
-            ariaLabel="Filter audit log by action"
+            ariaLabel={translations("actionFilterLabel")}
             options={actions.map((action) => ({
               value: action,
-              label: AUDIT_ACTION_LABELS[action] ?? action,
+              label: actionLabel(action),
             }))}
           />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="userId">
-            User
+            {translations("user")}
           </label>
           <AutoSubmitSelect
             name="userId"
             defaultValue={searchParams.get("userId") ?? ""}
             key={`userId-${searchParams.get("userId") ?? ""}`}
-            emptyOptionLabel="All users"
+            emptyOptionLabel={translations("allUsers")}
             id="userId"
             className="w-44"
-            ariaLabel="Filter audit log by user"
+            ariaLabel={translations("userFilterLabel")}
             options={users.map((user) => ({
               value: user.id,
               label: user.name,
@@ -183,13 +192,13 @@ export function AuditForm({
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="fromDate">
-            From
+            {translations("from")}
           </label>
           <Input id="fromDate" name="fromDate" type="date" className="w-36" />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="toDate">
-            To
+            {translations("to")}
           </label>
           <Input id="toDate" name="toDate" type="date" className="w-36" />
         </div>
@@ -198,14 +207,14 @@ export function AuditForm({
             className="text-muted-foreground text-xs"
             htmlFor="auditPageSize"
           >
-            Rows
+            {translations("rows")}
           </label>
           <AutoSubmitSelect
             name="auditPageSize"
             defaultValue={String(pageSize)}
             id="auditPageSize"
             className="w-24"
-            ariaLabel="Audit log page size"
+            ariaLabel={translations("pageSizeLabel")}
             options={[
               { value: "10", label: "10" },
               { value: "25", label: "25" },
@@ -215,17 +224,17 @@ export function AuditForm({
           />
         </div>
         <Button type="submit" size="sm">
-          Filter
+          {translations("filter")}
         </Button>
         {hasFilters ? (
           <Button asChild variant="ghost" size="sm">
-            <Link href="/admin/audit">Clear</Link>
+            <Link href="/admin/audit">{translations("clear")}</Link>
           </Button>
         ) : null}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm">
-              Export
+              {translations("export")}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -241,17 +250,17 @@ export function AuditForm({
                 anchor.click();
               }}
             >
-              All results
+              {translations("allResults")}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
-                const header = "Date,User,Action,Entity,ID\n";
+                const header = `${translations("csvHeader")}\n`;
                 const rows = entries
                   .map((log) =>
                     [
                       new Date(log.createdAt).toISOString(),
                       log.user.name,
-                      AUDIT_ACTION_LABELS[log.action] ?? log.action,
+                      actionLabel(log.action),
                       log.entityType ?? "",
                       log.entityId ?? "",
                     ]
@@ -269,24 +278,24 @@ export function AuditForm({
                 URL.revokeObjectURL(anchor.href);
               }}
             >
-              Current page
+              {translations("currentPage")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </form>
 
       {entries.length === 0 ? (
-        <p className="text-muted-foreground text-sm">No audit entries found.</p>
+        <p className="text-muted-foreground text-sm">{translations("empty")}</p>
       ) : (
         <>
           <div className="overflow-x-auto rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>User</TableHead>
-                  <TableHead>Action</TableHead>
-                  <TableHead>Entity</TableHead>
+                  <TableHead>{translations("date")}</TableHead>
+                  <TableHead>{translations("user")}</TableHead>
+                  <TableHead>{translations("action")}</TableHead>
+                  <TableHead>{translations("entity")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -295,14 +304,18 @@ export function AuditForm({
                     log.entityId && log.entityType
                       ? entityLink(log.entityType, log.entityId)
                       : null;
-                  const entityLabel = log.entityName ?? "Deleted";
+                  const entityLabel = log.entityName ?? translations("deleted");
 
                   return (
                     <TableRow key={log.id}>
                       <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
-                        {formatDate(log.createdAt)}{" "}
-                        {log.createdAt.getHours().toString().padStart(2, "0")}:
-                        {log.createdAt.getMinutes().toString().padStart(2, "0")}
+                        {dateFormatter.dateTime(log.createdAt, {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </TableCell>
                       <TableCell className="font-medium">
                         {log.user.name}
@@ -312,7 +325,7 @@ export function AuditForm({
                           variant={ACTION_VARIANT[log.action] ?? "outline"}
                           className="text-xs"
                         >
-                          {AUDIT_ACTION_LABELS[log.action] ?? log.action}
+                          {actionLabel(log.action)}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-muted-foreground text-xs">
@@ -333,7 +346,10 @@ export function AuditForm({
                           )}
                           {log.meta ? (
                             <span className="text-muted-foreground/60">
-                              {formatMeta(log.meta)}
+                              {formatMeta(
+                                log.meta,
+                                translations("clarificationRequested"),
+                              )}
                             </span>
                           ) : null}
                         </div>
@@ -346,7 +362,11 @@ export function AuditForm({
           </div>
           <div className="flex items-center justify-between gap-4">
             <span className="text-muted-foreground text-xs">
-              Page {page} of {totalPages} ({totalCount} entries)
+              {translations("pageSummary", {
+                page,
+                totalPages,
+                totalCount,
+              })}
             </span>
             <div className="flex items-center gap-2">
               <Button asChild variant="outline" size="sm" disabled={page <= 1}>
@@ -356,7 +376,7 @@ export function AuditForm({
                     if (page <= 1) event.preventDefault();
                   }}
                 >
-                  Previous
+                  {translations("previous")}
                 </a>
               </Button>
               <Button
@@ -371,7 +391,7 @@ export function AuditForm({
                     if (page >= totalPages) event.preventDefault();
                   }}
                 >
-                  Next
+                  {translations("next")}
                 </a>
               </Button>
             </div>

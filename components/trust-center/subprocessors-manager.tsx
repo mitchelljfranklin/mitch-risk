@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useActionState, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -43,6 +44,8 @@ type SubprocessorsManagerProps = {
 export function SubprocessorsManager({
   subprocessors,
 }: SubprocessorsManagerProps) {
+  const translations = useTranslations("TrustCenterManager.subprocessors");
+  const commonTranslations = useTranslations("TrustCenterManager.common");
   const [editing, setEditing] = useState<"new" | TrustSubprocessorView | null>(
     null,
   );
@@ -51,17 +54,18 @@ export function SubprocessorsManager({
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-base">Subprocessors</CardTitle>
+          <CardTitle className="text-base">
+            {translations("cardTitle")}
+          </CardTitle>
           <Button size="sm" variant="outline" onClick={() => setEditing("new")}>
-            Add subprocessor
+            {translations("add")}
           </Button>
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         {subprocessors.length === 0 ? (
           <p className="text-muted-foreground text-sm">
-            No subprocessors configured. List third parties that process data on
-            your behalf.
+            {translations("empty")}
           </p>
         ) : (
           <div className="flex flex-col divide-y rounded-lg border">
@@ -88,7 +92,7 @@ export function SubprocessorsManager({
                       </span>
                       {subprocessor.published ? null : (
                         <Badge variant="secondary" className="text-xs">
-                          Draft
+                          {commonTranslations("draft")}
                         </Badge>
                       )}
                     </div>
@@ -117,7 +121,9 @@ export function SubprocessorsManager({
                         size="sm"
                         className="h-5 w-6 p-0"
                         disabled={isFirst}
-                        aria-label={`Move ${subprocessor.name} up`}
+                        aria-label={commonTranslations("moveUp", {
+                          name: subprocessor.name,
+                        })}
                       >
                         <ChevronUp className="size-3.5" />
                       </Button>
@@ -129,7 +135,9 @@ export function SubprocessorsManager({
                         size="sm"
                         className="h-5 w-6 p-0"
                         disabled={isLast}
-                        aria-label={`Move ${subprocessor.name} down`}
+                        aria-label={commonTranslations("moveDown", {
+                          name: subprocessor.name,
+                        })}
                       >
                         <ChevronDown className="size-3.5" />
                       </Button>
@@ -140,7 +148,7 @@ export function SubprocessorsManager({
                       variant="ghost"
                       onClick={() => setEditing(subprocessor)}
                     >
-                      Edit
+                      {commonTranslations("edit")}
                     </Button>
                     <form
                       id={`delete-trust-subprocessor-${subprocessor.id}`}
@@ -148,15 +156,19 @@ export function SubprocessorsManager({
                     >
                       <input type="hidden" name="id" value={subprocessor.id} />
                       <ConfirmDialog
-                        title="Delete subprocessor?"
-                        description={`"${subprocessor.name}" will be removed from the trust center.`}
+                        title={translations("deleteTitle")}
+                        description={translations("deleteDescription", {
+                          name: subprocessor.name,
+                        })}
                         formId={`delete-trust-subprocessor-${subprocessor.id}`}
                       >
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          aria-label={`Delete ${subprocessor.name}`}
+                          aria-label={commonTranslations("deleteNamed", {
+                            name: subprocessor.name,
+                          })}
                         >
                           <Trash2 className="size-4" />
                         </Button>
@@ -179,7 +191,9 @@ export function SubprocessorsManager({
         <SheetContent className="w-full overflow-y-auto sm:max-w-md">
           <SheetHeader>
             <SheetTitle>
-              {editing === "new" ? "Add subprocessor" : "Edit subprocessor"}
+              {editing === "new"
+                ? translations("addTitle")
+                : translations("editTitle")}
             </SheetTitle>
           </SheetHeader>
           {editing !== null ? (
@@ -202,6 +216,8 @@ function SubprocessorEditor({
   subprocessor: TrustSubprocessorView | null;
   onDone: () => void;
 }) {
+  const translations = useTranslations("TrustCenterManager.subprocessors");
+  const commonTranslations = useTranslations("TrustCenterManager.common");
   const [state, formAction, isPending] = useActionState(
     saveTrustSubprocessorAction,
     undefined,
@@ -220,12 +236,9 @@ function SubprocessorEditor({
     <SheetContent className="w-full overflow-y-auto sm:max-w-md">
       <SheetHeader>
         <SheetTitle>
-          {isNew ? "Add subprocessor" : "Edit subprocessor"}
+          {isNew ? translations("addTitle") : translations("editTitle")}
         </SheetTitle>
-        <SheetDescription>
-          Third parties that process data on your behalf, listed on the public
-          trust center page.
-        </SheetDescription>
+        <SheetDescription>{translations("editorDescription")}</SheetDescription>
       </SheetHeader>
       <form
         id="trust-subprocessor-form"
@@ -236,7 +249,7 @@ function SubprocessorEditor({
           <input type="hidden" name="id" value={subprocessor.id} />
         ) : null}
         <div className="grid gap-2">
-          <Label htmlFor="subprocessor-name">Name</Label>
+          <Label htmlFor="subprocessor-name">{translations("name")}</Label>
           <Input
             id="subprocessor-name"
             name="name"
@@ -245,26 +258,32 @@ function SubprocessorEditor({
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="subprocessor-purpose">Purpose</Label>
+          <Label htmlFor="subprocessor-purpose">
+            {translations("purpose")}
+          </Label>
           <Textarea
             id="subprocessor-purpose"
             name="purpose"
             rows={2}
             defaultValue={subprocessor?.purpose ?? ""}
-            placeholder="e.g. Cloud hosting of application data"
+            placeholder={translations("purposePlaceholder")}
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="subprocessor-location">Data location</Label>
+          <Label htmlFor="subprocessor-location">
+            {translations("location")}
+          </Label>
           <Input
             id="subprocessor-location"
             name="location"
             defaultValue={subprocessor?.location ?? ""}
-            placeholder="e.g. Australia (Sydney)"
+            placeholder={translations("locationPlaceholder")}
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="subprocessor-websiteUrl">Website</Label>
+          <Label htmlFor="subprocessor-websiteUrl">
+            {translations("website")}
+          </Label>
           <Input
             id="subprocessor-websiteUrl"
             name="websiteUrl"
@@ -274,7 +293,7 @@ function SubprocessorEditor({
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="subprocessor-logoFile">Logo image</Label>
+          <Label htmlFor="subprocessor-logoFile">{translations("logo")}</Label>
           <Input
             id="subprocessor-logoFile"
             name="logoFile"
@@ -282,26 +301,22 @@ function SubprocessorEditor({
             accept=".png,.jpg,.jpeg,.gif,.webp"
           />
           <p className="text-muted-foreground text-xs">
-            PNG, JPG, GIF or WebP. Max 2 MB. SVG is not allowed.
-            {subprocessor?.logoKey
-              ? " Leave empty to keep the current logo."
-              : ""}
+            {translations("logoHint")}
+            {subprocessor?.logoKey ? translations("logoHintKeep") : ""}
           </p>
         </div>
         <div className="grid gap-2">
           <Label htmlFor="subprocessor-logoUrl">
-            …or fetch a logo from a URL
+            {translations("logoUrl")}
           </Label>
           <Input
             id="subprocessor-logoUrl"
             name="logoUrl"
             type="url"
-            placeholder="https://example.com/logo.png"
+            placeholder={translations("logoUrlPlaceholder")}
           />
           <p className="text-muted-foreground text-xs">
-            The image is downloaded and stored with the other trust center files
-            — the public page never loads external hosts. An uploaded file takes
-            priority over a URL.
+            {translations("logoUrlHint")}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -310,7 +325,9 @@ function SubprocessorEditor({
             name="published"
             defaultChecked={subprocessor?.published ?? true}
           />
-          <Label htmlFor="subprocessor-published">Published</Label>
+          <Label htmlFor="subprocessor-published">
+            {commonTranslations("published")}
+          </Label>
         </div>
       </form>
       <SheetFooter className="px-4">
@@ -319,10 +336,10 @@ function SubprocessorEditor({
           form="trust-subprocessor-form"
           disabled={isPending}
         >
-          {isPending ? "Saving..." : "Save subprocessor"}
+          {isPending ? commonTranslations("saving") : translations("save")}
         </Button>
         <Button type="button" variant="outline" onClick={onDone}>
-          Cancel
+          {commonTranslations("cancel")}
         </Button>
       </SheetFooter>
     </SheetContent>

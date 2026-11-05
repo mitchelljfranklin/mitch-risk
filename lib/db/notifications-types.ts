@@ -28,11 +28,3 @@ export type EmailLogEntry = {
   assessmentTitle: string | null;
   sentBy: { name: string } | null;
 };
-
-export const EMAIL_TYPE_LABELS: Record<string, string> = {
-  INVITE: "Invite",
-  REMINDER: "Reminder",
-  ESCALATION: "Escalation",
-  EXPIRY: "Expiry",
-  TEST: "Test",
-};

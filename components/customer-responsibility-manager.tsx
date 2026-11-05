@@ -32,12 +32,16 @@ export async function CustomerResponsibilityManager({
     return null;
   }
 
-  const groupMap = new Map<string | null, ResponsibilityAction[]>();
+  const actionsByCertification = new Map<
+    string | null,
+    ResponsibilityAction[]
+  >();
 
   for (const action of actions) {
-    const key = action.certificationId;
-    const list = groupMap.get(key) ?? [];
-    list.push({
+    const certificationId = action.certificationId;
+    const certificationActions =
+      actionsByCertification.get(certificationId) ?? [];
+    certificationActions.push({
       id: action.id,
       frameworkName: action.frameworkName,
       controlCode: action.controlCode,
@@ -47,16 +51,19 @@ export async function CustomerResponsibilityManager({
       notes: action.notes,
       completedAt: action.completedAt,
     });
-    groupMap.set(key, list);
+    actionsByCertification.set(certificationId, certificationActions);
   }
 
   const groups: ResponsibilityCertGroup[] = [];
 
-  for (const [certId, certActions] of groupMap) {
+  for (const [
+    certificationId,
+    actionsForCertification,
+  ] of actionsByCertification) {
     groups.push({
-      certificationId: certId,
-      certificationName: certActions[0]?.frameworkName ?? "",
-      actions: certActions,
+      certificationId,
+      certificationName: actionsForCertification[0]?.frameworkName ?? "",
+      actions: actionsForCertification,
     });
   }
 
@@ -74,13 +81,13 @@ export async function CustomerResponsibilityManager({
     { id: string; fileName: string; displayName: string | null }[]
   >();
   for (const attachment of responsibilityAttachments) {
-    const list = attachmentMap.get(attachment.entityId) ?? [];
-    list.push({
+    const attachmentsForAction = attachmentMap.get(attachment.entityId) ?? [];
+    attachmentsForAction.push({
       id: attachment.id,
       fileName: attachment.fileName,
       displayName: attachment.displayName,
     });
-    attachmentMap.set(attachment.entityId, list);
+    attachmentMap.set(attachment.entityId, attachmentsForAction);
   }
 
   return (

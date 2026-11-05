@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { QuestionForm } from "@/components/question-form";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -9,7 +10,10 @@ import { getTemplateStatus, listTemplateQuestions } from "@/lib/db/templates";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Add question" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Templates.questionPages");
+  return { title: translations("addTitle") };
+}
 
 type NewQuestionPageProps = {
   params: Promise<{ templateId: string; sectionId: string }>;
@@ -19,6 +23,8 @@ export default async function NewQuestionPage({
   params,
 }: NewQuestionPageProps) {
   await requirePermission(PERMISSIONS.TEMPLATES_EDIT);
+  const translations = await getTranslations("Templates.questionPages");
+  const builderTranslations = await getTranslations("Templates.builder");
   const { templateId, sectionId } = await params;
 
   const template = await getTemplateStatus(templateId);
@@ -35,15 +41,20 @@ export default async function NewQuestionPage({
     <div className="flex max-w-4xl flex-col gap-6">
       <Breadcrumbs
         segments={[
-          { label: "Templates", href: "/templates" },
+          {
+            label: builderTranslations("breadcrumbs.templates"),
+            href: "/templates",
+          },
           {
             label: template.name,
             href: `/templates/${templateId}`,
           },
-          { label: "Add question" },
+          { label: translations("addBreadcrumb") },
         ]}
       />
-      <h1 className="text-2xl font-semibold tracking-tight">Add question</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">
+        {translations("addTitle")}
+      </h1>
       <QuestionForm
         templateId={templateId}
         sectionId={sectionId}

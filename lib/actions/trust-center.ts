@@ -2,6 +2,7 @@
 
 import { randomBytes } from "node:crypto";
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 import { type z } from "zod";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
@@ -52,6 +53,13 @@ import { getField } from "@/lib/utils";
 export type TrustCenterActionState =
   { ok: boolean; message: string } | undefined;
 
+class TrustCenterValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "TrustCenterValidationError";
+  }
+}
+
 function refreshTrustPaths(): void {
   // The public page reads published rows on every request; the manager page
   // renders the same lists. Save actions consumed by useActionState must NOT
@@ -64,10 +72,18 @@ function refreshTrustPaths(): void {
 
 // Generic form -> zod bridge: text fields pass through, checkboxes are
 // absent when unchecked so they must be materialised explicitly.
+type TrustCenterErrorKey =
+  | "errors.invalidInput"
+  | "errors.titleRequired"
+  | "errors.nameRequired"
+  | "errors.invalidUrl"
+  | "errors.sectionTooLong";
+
 function parseForm<T>(
   schema: z.ZodType<T>,
   formData: FormData,
   boolFields: string[],
+  translate: (key: TrustCenterErrorKey) => string,
 ): { ok: true; data: T } | { ok: false; message: string } {
   const raw: Record<string, unknown> = {};
   for (const [key, value] of formData.entries()) {
@@ -79,10 +95,14 @@ function parseForm<T>(
   }
   const parsed = schema.safeParse(raw);
   if (!parsed.success) {
-    return {
-      ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
-    };
+    const path = String(parsed.error.issues[0]?.path[0] ?? "");
+    let messageKey: TrustCenterErrorKey = "errors.invalidInput";
+    if (path === "title") messageKey = "errors.titleRequired";
+    else if (path === "name") messageKey = "errors.nameRequired";
+    else if (path === "externalUrl" || path === "websiteUrl") {
+      messageKey = "errors.invalidUrl";
+    } else if (path === "body") messageKey = "errors.sectionTooLong";
+    return { ok: false, message: translate(messageKey) };
   }
   return { ok: true, data: parsed.data };
 }
@@ -100,29 +120,34 @@ async function recordAudit(entityId: string): Promise<void> {
 }
 
 // Shared raster-image validation for badge and subprocessor images.
+type TrustCenterImageMessages = {
+  imageType: string;
+  imageInvalid: string;
+  imageTooLarge: string;
+  fileType: string;
+  imageFetchFailed: string;
+  imageContent: string;
+  invalidUrl: string;
+};
+
 async function validateImageBuffer(
   buffer: Buffer,
   ext: string,
-  label: string,
+  messages: TrustCenterImageMessages,
 ): Promise<{ ok: true } | { ok: false; message: string }> {
   if (!TRUST_CENTER_IMAGE_EXTS.includes(ext)) {
-    return {
-      ok: false,
-      message: `${label} images must be PNG, JPG, GIF or WebP (SVG is not allowed).`,
-    };
+    return { ok: false, message: messages.imageType };
   }
   if (!validateMagicBytes(ext, buffer)) {
-    return {
-      ok: false,
-      message: `This ${label.toLowerCase()} image is not valid.`,
-    };
+    return { ok: false, message: messages.imageInvalid };
   }
   return { ok: true };
 }
 
 async function saveBadgeImage(
   file: File | null,
-  keyPrefix = "trust-badge",
+  keyPrefix: string,
+  messages: TrustCenterImageMessages,
 ): Promise<{ ok: true; imageKey: string } | { ok: false; message: string }> {
   if (!file || !(file instanceof File) || file.size === 0) {
     return { ok: true, imageKey: "" };
@@ -130,24 +155,17 @@ async function saveBadgeImage(
 
   const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
   if (!["png", "jpg", "jpeg", "gif", "webp"].includes(ext)) {
-    return {
-      ok: false,
-      message:
-        "Badge images must be PNG, JPG, GIF or WebP (SVG is not allowed).",
-    };
+    return { ok: false, message: messages.imageType };
   }
   if (file.size > MAX_TRUST_CENTER_IMAGE_BYTES) {
-    return {
-      ok: false,
-      message: `Badge image is too large (max ${MAX_TRUST_CENTER_IMAGE_BYTES / (1024 * 1024)} MB).`,
-    };
+    return { ok: false, message: messages.imageTooLarge };
   }
   if (isDangerousUploadMime(file.type)) {
-    return { ok: false, message: "This file type is not accepted." };
+    return { ok: false, message: messages.fileType };
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const validation = await validateImageBuffer(buffer, ext, "Badge");
+  const validation = await validateImageBuffer(buffer, ext, messages);
   if (!validation.ok) return validation;
 
   const imageKey = `${keyPrefix}-${randomBytes(12).toString("hex")}.${ext}`;
@@ -164,10 +182,10 @@ async function saveBadgeImage(
 async function fetchAndStoreRemoteImage(
   rawUrl: string,
   prefix: string,
-  label: string,
+  messages: TrustCenterImageMessages,
 ): Promise<{ ok: true; imageKey: string } | { ok: false; message: string }> {
   const target = validateWebhookTarget(rawUrl);
-  if (!target.ok) return { ok: false, message: target.reason };
+  if (!target.ok) return { ok: false, message: messages.invalidUrl };
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 10_000);
@@ -177,21 +195,15 @@ async function fetchAndStoreRemoteImage(
       redirect: "follow",
     });
     if (!response.ok) {
-      return { ok: false, message: `${label} image URL could not be fetched.` };
+      return { ok: false, message: messages.imageFetchFailed };
     }
     const declaredLength = Number(response.headers.get("content-length") ?? 0);
     if (declaredLength > MAX_TRUST_CENTER_IMAGE_BYTES) {
-      return {
-        ok: false,
-        message: `Image is too large (max ${MAX_TRUST_CENTER_IMAGE_BYTES / (1024 * 1024)} MB).`,
-      };
+      return { ok: false, message: messages.imageTooLarge };
     }
     const buffer = Buffer.from(await response.arrayBuffer());
     if (buffer.length > MAX_TRUST_CENTER_IMAGE_BYTES) {
-      return {
-        ok: false,
-        message: `Image is too large (max ${MAX_TRUST_CENTER_IMAGE_BYTES / (1024 * 1024)} MB).`,
-      };
+      return { ok: false, message: messages.imageTooLarge };
     }
 
     // Derive the extension from the response content type (URLs may omit
@@ -208,19 +220,16 @@ async function fetchAndStoreRemoteImage(
     };
     const ext = extByMime[contentType] ?? "";
     if (!ext) {
-      return {
-        ok: false,
-        message: `${label} image URL must return PNG, JPG, GIF or WebP content.`,
-      };
+      return { ok: false, message: messages.imageContent };
     }
-    const validation = await validateImageBuffer(buffer, ext, label);
+    const validation = await validateImageBuffer(buffer, ext, messages);
     if (!validation.ok) return validation;
 
     const imageKey = `${prefix}-${randomBytes(12).toString("hex")}.${ext}`;
     await storage.save(imageKey, buffer);
     return { ok: true, imageKey };
   } catch {
-    return { ok: false, message: `${label} image URL could not be fetched.` };
+    return { ok: false, message: messages.imageFetchFailed };
   } finally {
     clearTimeout(timeout);
   }
@@ -233,15 +242,32 @@ export async function saveTrustBadgeAction(
   formData: FormData,
 ): Promise<TrustCenterActionState> {
   await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
+  const translations = await getTranslations("TrustCenterManager");
+  const imageMessages = {
+    imageType: translations("errors.imageType"),
+    imageInvalid: translations("errors.imageInvalid"),
+    imageTooLarge: translations("errors.imageTooLarge", {
+      max: MAX_TRUST_CENTER_IMAGE_BYTES / (1024 * 1024),
+    }),
+    fileType: translations("errors.fileType"),
+    imageFetchFailed: translations("errors.imageFetchFailed"),
+    imageContent: translations("errors.imageContent"),
+    invalidUrl: translations("errors.invalidUrl"),
+  };
 
-  const parsed = parseForm(trustCenterBadgeSchema, formData, ["published"]);
+  const parsed = parseForm(
+    trustCenterBadgeSchema,
+    formData,
+    ["published"],
+    translations,
+  );
   if (!parsed.ok) return { ok: false, message: parsed.message };
 
   const id = getField(formData, "id");
   const imageFile = formData.get("imageFile");
   const image =
     imageFile instanceof File && imageFile.size > 0
-      ? await saveBadgeImage(imageFile)
+      ? await saveBadgeImage(imageFile, "trust-badge", imageMessages)
       : { ok: true as const, imageKey: "" };
 
   if (!image.ok) return { ok: false, message: image.message };
@@ -250,7 +276,12 @@ export async function saveTrustBadgeAction(
     let entityId = id;
     if (id) {
       const existing = await getTrustBadge(id);
-      if (!existing) return { ok: false, message: "Badge not found." };
+      if (!existing) {
+        return {
+          ok: false,
+          message: translations("errors.badgeNotFound"),
+        };
+      }
 
       await updateTrustBadge(id, parsed.data);
       if (image.imageKey) {
@@ -270,7 +301,7 @@ export async function saveTrustBadgeAction(
       }
     }
     await recordAudit(entityId);
-  } catch (error: unknown) {
+  } catch {
     // Roll back the just-saved image if the record write failed.
     if (image.imageKey) {
       await storage.delete(image.imageKey).catch(() => {
@@ -279,13 +310,13 @@ export async function saveTrustBadgeAction(
     }
     return {
       ok: false,
-      message: error instanceof Error ? error.message : "Save failed.",
+      message: translations("errors.saveFailed"),
     };
   }
 
   // useActionState-consumed save: no revalidatePath (Node streaming bug +
   // toast race) — useActionFeedback refreshes the manager lists instead.
-  return { ok: true, message: "Badge saved." };
+  return { ok: true, message: translations("errors.badgeSaved") };
 }
 
 export async function deleteTrustBadgeAction(
@@ -316,8 +347,21 @@ export async function saveTrustDocumentAction(
   formData: FormData,
 ): Promise<TrustCenterActionState> {
   await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
+  const translations = await getTranslations("TrustCenterManager");
+  const documentMessages = {
+    fileType: translations("errors.fileType"),
+    fileTooLarge: translations("errors.fileTooLarge", {
+      max: MAX_ATTACHMENT_BYTES / (1024 * 1024),
+    }),
+    fileInvalid: translations("errors.fileInvalid"),
+  };
 
-  const parsed = parseForm(trustCenterDocumentSchema, formData, ["published"]);
+  const parsed = parseForm(
+    trustCenterDocumentSchema,
+    formData,
+    ["published"],
+    translations,
+  );
   if (!parsed.ok) return { ok: false, message: parsed.message };
 
   const id = getField(formData, "id");
@@ -328,16 +372,19 @@ export async function saveTrustDocumentAction(
     if (id) {
       await updateTrustDocument(id, parsed.data);
       if (file instanceof File && file.size > 0) {
-        const prepared = await prepareTrustDocumentFile(file);
+        const prepared = await prepareTrustDocumentFile(file, documentMessages);
         await persistTrustDocumentFile(id, prepared);
       }
     } else {
       if (!(file instanceof File) || file.size === 0) {
-        return { ok: false, message: "A document file is required." };
+        return {
+          ok: false,
+          message: translations("errors.documentFileRequired"),
+        };
       }
       // Validate the upload BEFORE creating the record so a rejected file
       // never leaves an orphan document row behind.
-      const prepared = await prepareTrustDocumentFile(file);
+      const prepared = await prepareTrustDocumentFile(file, documentMessages);
       const document = await createTrustDocument(parsed.data);
       entityId = document.id;
       try {
@@ -358,19 +405,31 @@ export async function saveTrustDocumentAction(
   } catch (error: unknown) {
     return {
       ok: false,
-      message: error instanceof Error ? error.message : "Save failed.",
+      message:
+        error instanceof TrustCenterValidationError
+          ? error.message
+          : translations("errors.saveFailed"),
     };
   }
 
   // useActionState-consumed save: no revalidatePath (Node streaming bug +
   // toast race) — useActionFeedback refreshes the manager lists instead.
-  return { ok: true, message: "Document saved." };
+  return { ok: true, message: translations("errors.documentSaved") };
 }
 
 // Validates then prepares a document file with the shared upload rules:
 // extension allowlist, size cap, magic bytes. Pure validation + buffer read
 // so callers can reject before creating any records.
-async function prepareTrustDocumentFile(file: File): Promise<{
+type TrustCenterDocumentMessages = {
+  fileType: string;
+  fileTooLarge: string;
+  fileInvalid: string;
+};
+
+async function prepareTrustDocumentFile(
+  file: File,
+  messages: TrustCenterDocumentMessages,
+): Promise<{
   fileName: string;
   buffer: Buffer;
   storageKey: string;
@@ -379,20 +438,18 @@ async function prepareTrustDocumentFile(file: File): Promise<{
 }> {
   const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
   if (!ALLOWED_ATTACHMENT_EXTS.includes(ext)) {
-    throw new Error("File type not allowed.");
+    throw new TrustCenterValidationError(messages.fileType);
   }
   if (file.size > MAX_ATTACHMENT_BYTES) {
-    throw new Error(
-      `File is too large (max ${MAX_ATTACHMENT_BYTES / (1024 * 1024)} MB).`,
-    );
+    throw new TrustCenterValidationError(messages.fileTooLarge);
   }
   if (isDangerousUploadMime(file.type)) {
-    throw new Error("This file type is not accepted.");
+    throw new TrustCenterValidationError(messages.fileType);
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
   if (!validateMagicBytes(ext, buffer)) {
-    throw new Error("This file type is not accepted.");
+    throw new TrustCenterValidationError(messages.fileInvalid);
   }
 
   return {
@@ -457,10 +514,25 @@ export async function saveTrustSubprocessorAction(
   formData: FormData,
 ): Promise<TrustCenterActionState> {
   await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
+  const translations = await getTranslations("TrustCenterManager");
+  const imageMessages = {
+    imageType: translations("errors.imageType"),
+    imageInvalid: translations("errors.imageInvalid"),
+    imageTooLarge: translations("errors.imageTooLarge", {
+      max: MAX_TRUST_CENTER_IMAGE_BYTES / (1024 * 1024),
+    }),
+    fileType: translations("errors.fileType"),
+    imageFetchFailed: translations("errors.imageFetchFailed"),
+    imageContent: translations("errors.imageContent"),
+    invalidUrl: translations("errors.invalidUrl"),
+  };
 
-  const parsed = parseForm(trustCenterSubprocessorSchema, formData, [
-    "published",
-  ]);
+  const parsed = parseForm(
+    trustCenterSubprocessorSchema,
+    formData,
+    ["published"],
+    translations,
+  );
   if (!parsed.ok) return { ok: false, message: parsed.message };
 
   const id = getField(formData, "id");
@@ -472,14 +544,18 @@ export async function saveTrustSubprocessorAction(
   // external hosts directly.
   let newLogoKey: string | undefined;
   if (logoFile instanceof File && logoFile.size > 0) {
-    const image = await saveBadgeImage(logoFile, "trust-subprocessor");
+    const image = await saveBadgeImage(
+      logoFile,
+      "trust-subprocessor",
+      imageMessages,
+    );
     if (!image.ok) return { ok: false, message: image.message };
     if (image.imageKey) newLogoKey = image.imageKey;
   } else if (logoUrl) {
     const fetched = await fetchAndStoreRemoteImage(
       logoUrl,
       "trust-subprocessor",
-      "Logo",
+      imageMessages,
     );
     if (!fetched.ok) return { ok: false, message: fetched.message };
     newLogoKey = fetched.imageKey;
@@ -504,7 +580,7 @@ export async function saveTrustSubprocessorAction(
       await setTrustSubprocessorLogo(subprocessorId, newLogoKey);
     }
     await recordAudit(subprocessorId);
-  } catch (error: unknown) {
+  } catch {
     // Roll back the just-stored logo if the record write failed.
     if (newLogoKey) {
       await storage.delete(newLogoKey).catch(() => {
@@ -513,13 +589,13 @@ export async function saveTrustSubprocessorAction(
     }
     return {
       ok: false,
-      message: error instanceof Error ? error.message : "Save failed.",
+      message: translations("errors.saveFailed"),
     };
   }
 
   // useActionState-consumed save: no revalidatePath (Node streaming bug +
   // toast race) — useActionFeedback refreshes the manager lists instead.
-  return { ok: true, message: "Subprocessor saved." };
+  return { ok: true, message: translations("errors.subprocessorSaved") };
 }
 
 export async function deleteTrustSubprocessorAction(
@@ -552,8 +628,14 @@ export async function saveTrustSectionAction(
   formData: FormData,
 ): Promise<TrustCenterActionState> {
   await requirePermission(PERMISSIONS.TRUSTCENTER_MANAGE);
+  const translations = await getTranslations("TrustCenterManager");
 
-  const parsed = parseForm(trustCenterSectionSchema, formData, ["published"]);
+  const parsed = parseForm(
+    trustCenterSectionSchema,
+    formData,
+    ["published"],
+    translations,
+  );
   if (!parsed.ok) return { ok: false, message: parsed.message };
 
   const id = getField(formData, "id");
@@ -566,16 +648,16 @@ export async function saveTrustSectionAction(
       entityId = created.id;
     }
     await recordAudit(entityId);
-  } catch (error: unknown) {
+  } catch {
     return {
       ok: false,
-      message: error instanceof Error ? error.message : "Save failed.",
+      message: translations("errors.saveFailed"),
     };
   }
 
   // useActionState-consumed save: no revalidatePath (Node streaming bug +
   // toast race) — useActionFeedback refreshes the manager lists instead.
-  return { ok: true, message: "Section saved." };
+  return { ok: true, message: translations("errors.sectionSaved") };
 }
 
 export async function deleteTrustSectionAction(

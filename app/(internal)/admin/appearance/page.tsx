@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getAppearanceSettings } from "@/lib/settings";
@@ -12,28 +13,31 @@ import { AppearanceForm } from "../appearance-form";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Admin — Appearance" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Admin.appearance");
+  return { title: translations("metaTitle") };
+}
 
 export default async function AdminAppearancePage() {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.appearance");
   const appearance = await getAppearanceSettings();
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Appearance</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {translations("title")}
+        </h1>
         <p className="text-muted-foreground text-sm">
-          Branding across the app — logo, colours, and layout.
+          {translations("subtitle")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Appearance</CardTitle>
-          <CardDescription>
-            Customise the logo, primary colour (buttons), and secondary colour
-            (tags/pills). Leave a field blank to use the default.
-          </CardDescription>
+          <CardTitle>{translations("cardTitle")}</CardTitle>
+          <CardDescription>{translations("cardDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <AppearanceForm

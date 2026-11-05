@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +31,7 @@ export function ProfileForm({
   hasLocalPassword,
   isSsoUser,
 }: ProfileFormProps) {
+  const translations = useTranslations("Profile");
   const [state, formAction, isPending] = useActionState(
     updateProfileAction,
     initialState,
@@ -40,20 +42,20 @@ export function ProfileForm({
     <form action={formAction} className="flex flex-col gap-6">
       <Card>
         <CardHeader>
-          <CardTitle>Account details</CardTitle>
+          <CardTitle>{translations("accountDetails")}</CardTitle>
           <CardDescription>
             {isSsoUser
-              ? "You sign in via single sign-on. Your email is managed by your identity provider."
-              : "Your name and sign-in email."}
+              ? translations("ssoDescription")
+              : translations("localDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">{translations("name")}</Label>
             <Input id="name" name="name" defaultValue={name} required />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{translations("email")}</Label>
             <Input
               id="email"
               name="email"
@@ -73,14 +75,16 @@ export function ProfileForm({
       {hasLocalPassword ? (
         <Card>
           <CardHeader>
-            <CardTitle>Password</CardTitle>
+            <CardTitle>{translations("passwordTitle")}</CardTitle>
             <CardDescription>
-              You must enter your current password to make any changes.
+              {translations("passwordDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="currentPassword">Current password</Label>
+              <Label htmlFor="currentPassword">
+                {translations("currentPassword")}
+              </Label>
               <Input
                 id="currentPassword"
                 name="currentPassword"
@@ -92,9 +96,9 @@ export function ProfileForm({
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="grid gap-2">
                 <Label htmlFor="newPassword">
-                  New password{" "}
+                  {translations("newPassword")}{" "}
                   <span className="text-muted-foreground font-normal">
-                    (optional)
+                    {translations("optional")}
                   </span>
                 </Label>
                 <Input
@@ -106,7 +110,9 @@ export function ProfileForm({
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="confirmNewPassword">Confirm new password</Label>
+                <Label htmlFor="confirmNewPassword">
+                  {translations("confirmNewPassword")}
+                </Label>
                 <Input
                   id="confirmNewPassword"
                   name="confirmNewPassword"
@@ -120,8 +126,7 @@ export function ProfileForm({
         </Card>
       ) : (
         <p className="text-muted-foreground text-sm">
-          Your password is managed by your identity provider (SSO), so there is
-          nothing to change here.
+          {translations("ssoPasswordNote")}
         </p>
       )}
 
@@ -133,7 +138,7 @@ export function ProfileForm({
 
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending}>
-          {isPending ? "Saving..." : "Save changes"}
+          {isPending ? translations("saving") : translations("saveChanges")}
         </Button>
       </div>
     </form>

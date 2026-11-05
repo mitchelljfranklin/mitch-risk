@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { ExternalLink } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,7 @@ export function EvidencePreview({
   mimeType,
   children,
 }: EvidencePreviewProps) {
+  const translations = useTranslations("Common.evidencePreview");
   const [open, setOpen] = useState(false);
 
   const isPdf = mimeType === "application/pdf";
@@ -68,7 +70,7 @@ export function EvidencePreview({
         variant="ghost"
         size="sm"
         className="ml-1 h-auto px-1.5 py-0.5"
-        aria-label={`Preview ${fileName}`}
+        aria-label={translations("preview", { fileName })}
         onClick={() => setOpen(true)}
       >
         <ExternalLink className="size-3" />

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 
@@ -20,13 +21,14 @@ export function Pagination({
   pageParam = "page",
   itemLabel = "items",
 }: PaginationProps) {
+  const translations = useTranslations("Common.pagination");
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
 
-  function hrefForPage(target: number): string {
+  function hrefForPage(targetPage: number): string {
     const params = new URLSearchParams(searchParams.toString());
-    params.set(pageParam, String(target));
+    params.set(pageParam, String(targetPage));
     return `${pathname}?${params.toString()}`;
   }
 
@@ -35,29 +37,34 @@ export function Pagination({
   return (
     <div className="flex items-center justify-between gap-3">
       <p className="text-muted-foreground text-xs" aria-live="polite">
-        Page {page} of {totalPages} · {totalCount} {itemLabel}
+        {translations("pageOf", {
+          page,
+          totalPages,
+          totalCount,
+          itemLabel,
+        })}
       </p>
       <div className="flex items-center gap-2">
         {page > 1 ? (
           <Button asChild variant="outline" size="sm">
             <Link href={hrefForPage(page - 1)} rel="prev">
-              Previous
+              {translations("previous")}
             </Link>
           </Button>
         ) : (
           <Button variant="outline" size="sm" disabled>
-            Previous
+            {translations("previous")}
           </Button>
         )}
         {page < totalPages ? (
           <Button asChild variant="outline" size="sm">
             <Link href={hrefForPage(page + 1)} rel="next">
-              Next
+              {translations("next")}
             </Link>
           </Button>
         ) : (
           <Button variant="outline" size="sm" disabled>
-            Next
+            {translations("next")}
           </Button>
         )}
       </div>

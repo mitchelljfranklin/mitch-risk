@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState, startTransition } from "react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,7 +29,6 @@ import {
 } from "@/components/ui/stepper";
 import { useFormToast } from "@/hooks/use-form-toast";
 import { sendBulkAssessmentsAction } from "@/lib/actions/assessments";
-import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
 
 type VendorOption = {
   id: string;
@@ -58,6 +58,8 @@ export function BulkSendForm({
   templates,
   reviewers,
 }: BulkSendFormProps) {
+  const translations = useTranslations("BulkSend");
+  const tierTranslations = useTranslations("Common.tiers");
   const [state, formAction, isPending] = useActionState(
     sendBulkAssessmentsAction,
     undefined as BulkSendState,
@@ -114,7 +116,7 @@ export function BulkSendForm({
           <StepperTrigger className="flex flex-col items-center gap-1">
             <StepperIndicator className="flex size-8 items-center justify-center rounded-full border-2 text-sm font-medium" />
             <StepperLabel className="text-xs font-medium">
-              Configure
+              {translations("steps.configure")}
             </StepperLabel>
           </StepperTrigger>
           <StepperSeparator className="bg-muted-foreground/20 mx-2 h-0.5 w-12" />
@@ -122,14 +124,18 @@ export function BulkSendForm({
         <StepperItem value="select">
           <StepperTrigger className="flex flex-col items-center gap-1">
             <StepperIndicator className="flex size-8 items-center justify-center rounded-full border-2 text-sm font-medium" />
-            <StepperLabel className="text-xs font-medium">Vendors</StepperLabel>
+            <StepperLabel className="text-xs font-medium">
+              {translations("steps.vendors")}
+            </StepperLabel>
           </StepperTrigger>
           <StepperSeparator className="bg-muted-foreground/20 mx-2 h-0.5 w-12" />
         </StepperItem>
         <StepperItem value="review">
           <StepperTrigger className="flex flex-col items-center gap-1">
             <StepperIndicator className="flex size-8 items-center justify-center rounded-full border-2 text-sm font-medium" />
-            <StepperLabel className="text-xs font-medium">Send</StepperLabel>
+            <StepperLabel className="text-xs font-medium">
+              {translations("steps.send")}
+            </StepperLabel>
           </StepperTrigger>
         </StepperItem>
       </StepperList>
@@ -137,10 +143,10 @@ export function BulkSendForm({
       <StepperContent value="configure" className="flex flex-col gap-4">
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="grid gap-2">
-            <Label htmlFor="templateId">Template</Label>
+            <Label htmlFor="templateId">{translations("template")}</Label>
             <Select value={templateId} onValueChange={setTemplateId} required>
               <SelectTrigger id="templateId">
-                <SelectValue placeholder="Select template" />
+                <SelectValue placeholder={translations("selectTemplate")} />
               </SelectTrigger>
               <SelectContent>
                 {templates.map((template) => (
@@ -152,7 +158,7 @@ export function BulkSendForm({
             </Select>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="dueDate">Due date</Label>
+            <Label htmlFor="dueDate">{translations("dueDate")}</Label>
             <Input
               id="dueDate"
               type="date"
@@ -161,10 +167,10 @@ export function BulkSendForm({
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="reviewerId">Reviewer</Label>
+            <Label htmlFor="reviewerId">{translations("reviewer")}</Label>
             <Select value={reviewerId} onValueChange={setReviewerId}>
               <SelectTrigger id="reviewerId">
-                <SelectValue placeholder="Unassigned" />
+                <SelectValue placeholder={translations("unassigned")} />
               </SelectTrigger>
               <SelectContent>
                 {reviewers.map((reviewer) => (
@@ -178,19 +184,21 @@ export function BulkSendForm({
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="portalPassword">Portal password (optional)</Label>
+          <Label htmlFor="portalPassword">
+            {translations("portalPassword")}
+          </Label>
           <Input
             id="portalPassword"
             value={portalPassword}
             onChange={(event) => setPortalPassword(event.target.value)}
-            placeholder="Shared password for all vendors"
+            placeholder={translations("portalPasswordPlaceholder")}
             className="w-72"
           />
         </div>
 
         <StepperNext asChild>
           <Button size="sm" className="w-fit" disabled={!templateId}>
-            Next →
+            {translations("next")}
           </Button>
         </StepperNext>
       </StepperContent>
@@ -198,7 +206,7 @@ export function BulkSendForm({
       <StepperContent value="select" className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <Input
-            placeholder="Filter vendors..."
+            placeholder={translations("filterPlaceholder")}
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             className="w-64"
@@ -208,16 +216,16 @@ export function BulkSendForm({
               checked={allSelected}
               onCheckedChange={(c) => toggleAll(c === true)}
             />
-            Select all
+            {translations("selectAll")}
           </label>
           <span className="text-muted-foreground text-xs">
-            {selectedIds.size} selected
+            {translations("selectedCount", { count: selectedIds.size })}
           </span>
         </div>
 
         {filtered.length === 0 ? (
           <p className="text-muted-foreground text-sm">
-            No vendors match your search.
+            {translations("noMatch")}
           </p>
         ) : (
           <div className="max-h-96 overflow-y-auto rounded-lg border">
@@ -241,14 +249,14 @@ export function BulkSendForm({
                   <div className="flex flex-col">
                     <span className="text-sm font-medium">{vendor.name}</span>
                     <span className="text-muted-foreground text-xs">
-                      {vendor.contactEmail || "No email"}
+                      {vendor.contactEmail || translations("noEmail")}
                     </span>
                   </div>
                   {vendor.tier ? (
                     <Badge variant="outline" className="text-xs">
-                      {VENDOR_TIER_LABELS[
-                        vendor.tier as keyof typeof VENDOR_TIER_LABELS
-                      ] ?? vendor.tier}
+                      {tierTranslations.has(vendor.tier)
+                        ? tierTranslations(vendor.tier)
+                        : vendor.tier}
                     </Badge>
                   ) : null}
                 </div>
@@ -260,12 +268,12 @@ export function BulkSendForm({
         <div className="flex items-center gap-3">
           <StepperPrevious asChild>
             <Button variant="outline" size="sm">
-              ← Back
+              {translations("back")}
             </Button>
           </StepperPrevious>
           <StepperNext asChild>
             <Button size="sm" disabled={selectedIds.size === 0}>
-              Next →
+              {translations("next")}
             </Button>
           </StepperNext>
         </div>
@@ -274,21 +282,22 @@ export function BulkSendForm({
       <StepperContent value="review" className="flex flex-col gap-4">
         <div className="rounded-md border p-4">
           <p className="text-sm">
-            Sending{" "}
-            <span className="font-semibold">{templateLabel || templateId}</span>{" "}
-            to{" "}
-            <span className="font-semibold">
-              {selectedVendors.length} vendor
-              {selectedVendors.length !== 1 ? "s" : ""}
-            </span>
+            {translations("sendingTo", {
+              template: templateLabel || templateId,
+              count: selectedVendors.length,
+            })}
           </p>
           {dueDate ? (
             <p className="text-muted-foreground mt-1 text-xs">
-              Due: {dueDate}
+              {translations("due", { date: dueDate })}
               {reviewerId
-                ? ` · Reviewer: ${reviewers.find((reviewer) => reviewer.id === reviewerId)?.label ?? reviewerId}`
+                ? ` · ${translations("reviewerLabel", {
+                    name:
+                      reviewers.find((reviewer) => reviewer.id === reviewerId)
+                        ?.label ?? reviewerId,
+                  })}`
                 : ""}
-              {portalPassword ? " · Portal password set" : ""}
+              {portalPassword ? ` · ${translations("portalPasswordSet")}` : ""}
             </p>
           ) : null}
           <div className="mt-3 flex flex-wrap gap-1">
@@ -308,7 +317,7 @@ export function BulkSendForm({
         <div className="flex items-center gap-3">
           <StepperPrevious asChild>
             <Button variant="outline" size="sm">
-              ← Back
+              {translations("back")}
             </Button>
           </StepperPrevious>
           <Button
@@ -317,8 +326,8 @@ export function BulkSendForm({
             onClick={handleSend}
           >
             {isPending
-              ? "Sending..."
-              : `Send to ${selectedIds.size} vendor${selectedIds.size !== 1 ? "s" : ""}`}
+              ? translations("sending")
+              : translations("sendTo", { count: selectedIds.size })}
           </Button>
         </div>
 

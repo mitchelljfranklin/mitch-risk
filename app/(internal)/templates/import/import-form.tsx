@@ -8,6 +8,7 @@ import {
   startTransition,
 } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -93,6 +94,7 @@ const initialState: TemplateImportState = undefined;
 
 export function ImportTemplateForm() {
   const router = useRouter();
+  const translations = useTranslations("Templates.import");
   const formRef = useRef<HTMLFormElement>(null);
   const [state, formAction, isPending] = useActionState(
     (previous: TemplateImportState, data: FormData) => {
@@ -131,15 +133,13 @@ export function ImportTemplateForm() {
           typeof template.name !== "string" ||
           !Array.isArray(template.sections)
         ) {
-          setParseError(
-            "Invalid template structure. Expected name and sections array.",
-          );
+          setParseError(translations("parse.invalidStructure"));
           setParsed(null);
           return;
         }
         setParsed(template);
       } catch {
-        setParseError("Invalid JSON file.");
+        setParseError(translations("parse.invalidJson"));
         setParsed(null);
       }
     };
@@ -178,7 +178,7 @@ export function ImportTemplateForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Import template from JSON</CardTitle>
+        <CardTitle>{translations("cardTitle")}</CardTitle>
       </CardHeader>
       <CardContent>
         <Stepper defaultValue="upload" className="flex flex-col gap-6">
@@ -187,7 +187,7 @@ export function ImportTemplateForm() {
               <StepperTrigger className="flex flex-col items-center gap-1">
                 <StepperIndicator className="flex size-8 items-center justify-center rounded-full border-2 text-sm font-medium" />
                 <StepperLabel className="text-xs font-medium">
-                  Upload
+                  {translations("steps.upload")}
                 </StepperLabel>
               </StepperTrigger>
               <StepperSeparator className="bg-muted-foreground/20 mx-2 h-0.5 w-12" />
@@ -196,7 +196,7 @@ export function ImportTemplateForm() {
               <StepperTrigger className="flex flex-col items-center gap-1">
                 <StepperIndicator className="flex size-8 items-center justify-center rounded-full border-2 text-sm font-medium" />
                 <StepperLabel className="text-xs font-medium">
-                  Review
+                  {translations("steps.review")}
                 </StepperLabel>
               </StepperTrigger>
             </StepperItem>
@@ -205,7 +205,7 @@ export function ImportTemplateForm() {
           <StepperContent value="upload" className="flex flex-col gap-4">
             <div className="grid gap-2">
               <div className="flex items-center justify-between gap-2">
-                <Label htmlFor="file">JSON file</Label>
+                <Label htmlFor="file">{translations("file.label")}</Label>
                 <Button
                   type="button"
                   variant="ghost"
@@ -224,7 +224,7 @@ export function ImportTemplateForm() {
                   }}
                 >
                   <Download className="size-3" />
-                  Template
+                  {translations("file.downloadTemplate")}
                 </Button>
               </div>
               <Input
@@ -235,9 +235,7 @@ export function ImportTemplateForm() {
                 required
               />
               <p className="text-muted-foreground text-xs">
-                Upload a valid JSON template file. Export an existing template
-                from the template builder (Actions → Export) to see the expected
-                structure.
+                {translations("file.hint")}
               </p>
             </div>
 
@@ -257,17 +255,20 @@ export function ImportTemplateForm() {
                 ) : null}
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Badge variant="secondary" className="text-xs">
-                    {parsed.sections.length} section
-                    {parsed.sections.length !== 1 ? "s" : ""}
+                    {translations("summary.sections", {
+                      count: parsed.sections.length,
+                    })}
                   </Badge>
                   <Badge variant="secondary" className="text-xs">
-                    {totalQuestions} question
-                    {totalQuestions !== 1 ? "s" : ""}
+                    {translations("summary.questions", {
+                      count: totalQuestions,
+                    })}
                   </Badge>
                   {totalControls > 0 ? (
                     <Badge variant="secondary" className="text-xs">
-                      {totalControls} control code
-                      {totalControls !== 1 ? "s" : ""}
+                      {translations("summary.controlCodes", {
+                        count: totalControls,
+                      })}
                     </Badge>
                   ) : null}
                 </div>
@@ -275,8 +276,12 @@ export function ImportTemplateForm() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="text-xs">Section</TableHead>
-                        <TableHead className="text-xs">Questions</TableHead>
+                        <TableHead className="text-xs">
+                          {translations("table.section")}
+                        </TableHead>
+                        <TableHead className="text-xs">
+                          {translations("table.questions")}
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -300,7 +305,7 @@ export function ImportTemplateForm() {
 
             <StepperNext asChild>
               <Button size="sm" className="w-fit" disabled={!parsed}>
-                Next →
+                {translations("next")}
               </Button>
             </StepperNext>
           </StepperContent>
@@ -309,7 +314,7 @@ export function ImportTemplateForm() {
             {parsed ? (
               <div className="rounded-md border p-4">
                 <p className="text-sm">
-                  You are about to import template{" "}
+                  {translations("review.introPrefix")}{" "}
                   <span className="font-semibold">{parsed.name}</span>
                   {parsed.description ? (
                     <span className="text-muted-foreground">
@@ -320,13 +325,21 @@ export function ImportTemplateForm() {
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2 text-xs">
                   <span className="text-muted-foreground">
-                    {parsed.sections.length} section
-                    {parsed.sections.length !== 1 ? "s" : ""} · {totalQuestions}{" "}
-                    question
-                    {totalQuestions !== 1 ? "s" : ""}
-                    {totalControls > 0
-                      ? ` · ${totalControls} control code${totalControls !== 1 ? "s" : ""}`
-                      : ""}
+                    {[
+                      translations("summary.sections", {
+                        count: parsed.sections.length,
+                      }),
+                      translations("summary.questions", {
+                        count: totalQuestions,
+                      }),
+                      ...(totalControls > 0
+                        ? [
+                            translations("summary.controlCodes", {
+                              count: totalControls,
+                            }),
+                          ]
+                        : []),
+                    ].join(" · ")}
                   </span>
                 </div>
               </div>
@@ -335,11 +348,11 @@ export function ImportTemplateForm() {
             <div className="flex items-center gap-3">
               <StepperPrevious asChild>
                 <Button variant="outline" size="sm">
-                  ← Back
+                  {translations("back")}
                 </Button>
               </StepperPrevious>
               <Button size="sm" disabled={isPending} onClick={handleImport}>
-                {isPending ? "Importing…" : "Import template"}
+                {isPending ? translations("importing") : translations("import")}
               </Button>
             </div>
 

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 
 import { requirePermission, getCurrentUser } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
@@ -35,6 +36,7 @@ export async function addUserAction(
   formData: FormData,
 ): Promise<UserActionState> {
   await requirePermission(PERMISSIONS.USERS_MANAGE);
+  const translations = await getTranslations("Admin.users");
 
   const parsed = userCreateSchema.safeParse({
     name: getField(formData, "name"),
@@ -43,31 +45,34 @@ export async function addUserAction(
     roleId: getField(formData, "roleId"),
   });
   if (!parsed.success) {
-    return {
-      ok: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid input.",
-    };
+    const issue = parsed.error.issues[0];
+    let messageKey = "errors.invalidInput";
+    if (issue?.path[0] === "name") messageKey = "errors.nameRequired";
+    else if (issue?.path[0] === "email") messageKey = "errors.emailInvalid";
+    else if (issue?.path[0] === "password") {
+      messageKey = "errors.passwordTooShort";
+    } else if (issue?.path[0] === "roleId") {
+      messageKey = "errors.roleRequired";
+    }
+    return { ok: false, message: translations(messageKey) };
   }
 
   const role = await getRole(parsed.data.roleId);
   if (!role) {
-    return { ok: false, message: "Selected role does not exist." };
+    return { ok: false, message: translations("errors.roleNotFound") };
   }
 
   try {
     await createUser(parsed.data);
   } catch (error: unknown) {
     if (isUniqueConstraintError(error)) {
-      return { ok: false, message: "A user with this email already exists." };
+      return { ok: false, message: translations("errors.emailExists") };
     }
     console.error(
       `[users] failed to create user ${parsed.data.email}:`,
       error instanceof Error ? error.message : String(error),
     );
-    return {
-      ok: false,
-      message: "Could not create the user. Please try again.",
-    };
+    return { ok: false, message: translations("errors.createFailed") };
   }
 
   const actor = await getCurrentUser();
@@ -82,7 +87,7 @@ export async function addUserAction(
 
   // Result is consumed by useActionState in a modal; the client refreshes after
   // closing (see useActionFeedback) rather than revalidating the current route.
-  return { ok: true, message: "User created." };
+  return { ok: true, message: translations("success") };
 }
 
 async function wouldRemoveLastAdmin(userId: string): Promise<boolean> {

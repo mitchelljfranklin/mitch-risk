@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import dynamicImport from "next/dynamic";
+import { getFormatter, getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,8 +17,6 @@ import { getFindingSummary } from "@/lib/db/findings";
 import { listUpcomingKeyDates } from "@/lib/db/dashboard";
 import { getNotificationCounts } from "@/lib/db/notifications";
 import { prisma } from "@/lib/prisma";
-import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
-import { formatDate } from "@/lib/utils";
 
 const DashboardCharts = dynamicImport(
   () =>
@@ -45,33 +45,39 @@ const AssessmentTimeline = dynamicImport(
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Dashboard" };
+export async function generateMetadata(): Promise<Metadata> {
+  const translations = await getTranslations("Dashboard");
+  return { title: translations("metaTitle") };
+}
 
 function generateContributionDays(dates: Date[]) {
-  const map = new Map<string, number>();
+  const assessmentsByDay = new Map<string, number>();
   for (const date of dates) {
-    const key = date.toISOString().slice(0, 10);
-    map.set(key, (map.get(key) ?? 0) + 1);
+    const dateKey = date.toISOString().slice(0, 10);
+    assessmentsByDay.set(dateKey, (assessmentsByDay.get(dateKey) ?? 0) + 1);
   }
-  const result: { date: string; count: number }[] = [];
+  const days: { date: string; count: number }[] = [];
   const today = new Date();
-  for (let i = 365; i >= 0; i--) {
+  for (let index = 365; index >= 0; index--) {
     const date = new Date(today);
-    date.setDate(date.getDate() - i);
-    const key = date.toISOString().slice(0, 10);
-    result.push({ date: key, count: map.get(key) ?? 0 });
+    date.setDate(date.getDate() - index);
+    const dateKey = date.toISOString().slice(0, 10);
+    days.push({ date: dateKey, count: assessmentsByDay.get(dateKey) ?? 0 });
   }
-  return result;
+  return days;
 }
 
 export default async function DashboardPage() {
   const user = await requirePermission(PERMISSIONS.VENDORS_VIEW);
+  const translations = await getTranslations("Dashboard");
+  const commonTranslations = await getTranslations("Common");
+  const dateFormatter = await getFormatter();
   const canCreateVendor = hasPermission(
     user.permissions,
     PERMISSIONS.VENDORS_CREATE,
   );
 
-  const [data, findingSummary, upcoming, notificationCounts] =
+  const [dashboardData, findingSummary, upcoming, notificationCounts] =
     await Promise.all([
       getDashboardData(),
       getFindingSummary(),
@@ -99,14 +105,18 @@ export default async function DashboardPage() {
     scoreTrend,
     portfolioScoreTrend,
     attentionGroups,
-  } = data;
+  } = dashboardData;
 
   const RAIL_LIST_LIMIT = 5;
   const VENDOR_LIST_LIMIT = 6;
 
   // Highest-risk snapshot: lowest scores first, unassessed vendors last.
   const topRiskVendors = [...portfolio]
-    .sort((a, b) => (a.overallScore ?? Infinity) - (b.overallScore ?? Infinity))
+    .sort(
+      (firstVendor, secondVendor) =>
+        (firstVendor.overallScore ?? Infinity) -
+        (secondVendor.overallScore ?? Infinity),
+    )
     .slice(0, VENDOR_LIST_LIMIT);
 
   return (
@@ -114,25 +124,24 @@ export default async function DashboardPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            Vendor risk overview
+            {translations("title")}
           </h1>
           <p className="text-muted-foreground text-sm">
-            {portfolio.length} vendor
-            {portfolio.length !== 1 ? "s" : ""} tracked
+            {translations("tracked", { count: portfolio.length })}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {canCreateVendor ? (
             <Button asChild variant="outline" size="sm">
-              <Link href="/vendors/new">New vendor</Link>
+              <Link href="/vendors/new">{translations("newVendor")}</Link>
             </Button>
           ) : null}
           <Button asChild size="sm">
-            <Link href="/assessments">Assessments</Link>
+            <Link href="/assessments">{translations("assessments")}</Link>
           </Button>
           <Button asChild variant="outline" size="sm">
             <a href="/api/dashboard/report" download>
-              Portfolio report
+              {translations("portfolioReport")}
             </a>
           </Button>
         </div>
@@ -141,20 +150,20 @@ export default async function DashboardPage() {
       {portfolio.length === 0 ? (
         <Card>
           <CardHeader>
-            <CardTitle>No vendors yet</CardTitle>
+            <CardTitle>{translations("emptyTitle")}</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground text-sm">
               {canCreateVendor
-                ? "Add your first vendor to start tracking their risk."
-                : "No vendors are being tracked yet."}
+                ? translations("emptyCanCreate")
+                : translations("emptyReadOnly")}
             </p>
             {canCreateVendor ? (
               <Link
                 href="/vendors/new"
                 className="text-primary mt-2 inline-block text-sm hover:underline"
               >
-                Add a vendor →
+                {translations("addVendor")}
               </Link>
             ) : null}
           </CardContent>
@@ -164,30 +173,33 @@ export default async function DashboardPage() {
           {/* Summary stats */}
           <div className="grid gap-4 sm:grid-cols-4">
             <StatCard
-              label="Vendors tracked"
-              value={data.vendorCount}
+              label={translations("stats.vendors")}
+              value={dashboardData.vendorCount}
               trend={vendorTrend}
             />
             <ScoreStatCard
-              label="Average score"
-              score={data.averageScore}
+              label={translations("stats.averageScore")}
+              score={dashboardData.averageScore}
               trend={scoreTrend}
               sparklineData={portfolioScoreTrend}
             />
             <StatCard
-              label="Open findings"
-              value={data.openFindings}
+              label={translations("stats.openFindings")}
+              value={dashboardData.openFindings}
               trend={findingTrend}
             />
-            <StatCard label="Needs attention" value={data.needsAttention} />
+            <StatCard
+              label={translations("stats.needsAttention")}
+              value={dashboardData.needsAttention}
+            />
           </div>
 
           {/* Charts */}
           <DashboardCharts
             scoreDistribution={scoreDistribution}
             findingsBySeverity={findingSummary.openBySeverity}
-            riskByTier={data.riskByTier}
-            assessmentStatusCounts={data.assessmentStatusCounts}
+            riskByTier={dashboardData.riskByTier}
+            assessmentStatusCounts={dashboardData.assessmentStatusCounts}
           />
 
           {/* Insight rail: actionable lists side-by-side */}
@@ -207,7 +219,7 @@ export default async function DashboardPage() {
             {topDeficientControls.length > 0 ? (
               <Card>
                 <CardHeader>
-                  <CardTitle>Top deficient controls</CardTitle>
+                  <CardTitle>{translations("topControls")}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-2">
                   {topDeficientControls
@@ -235,7 +247,7 @@ export default async function DashboardPage() {
                     href="/risk-register"
                     className="text-muted-foreground hover:text-primary mt-1 inline-block text-xs"
                   >
-                    View risk register →
+                    {translations("viewRiskRegister")}
                   </Link>
                 </CardContent>
               </Card>
@@ -244,12 +256,12 @@ export default async function DashboardPage() {
             {/* Highest-risk vendors (compact) */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between gap-2">
-                <CardTitle>Highest-risk vendors</CardTitle>
+                <CardTitle>{translations("highestRisk")}</CardTitle>
                 <Link
                   href="/vendors"
                   className="text-muted-foreground hover:text-primary text-xs font-normal"
                 >
-                  View all vendors →
+                  {translations("viewAllVendors")}
                 </Link>
               </CardHeader>
               <CardContent>
@@ -265,24 +277,32 @@ export default async function DashboardPage() {
                           {vendor.name}
                         </span>
                         <span className="text-muted-foreground truncate text-xs">
-                          {vendor.latestAssessmentTitle ?? "No assessments"}
+                          {vendor.latestAssessmentTitle ??
+                            translations("noAssessments")}
                           {vendor.latestAssessmentDate
-                            ? ` · ${formatDate(vendor.latestAssessmentDate)}`
+                            ? ` · ${dateFormatter.dateTime(
+                                vendor.latestAssessmentDate,
+                                {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                },
+                              )}`
                             : ""}
                         </span>
                       </div>
                       <div className="flex shrink-0 items-center gap-3">
                         {vendor.overdueCount > 0 ? (
                           <Badge variant="destructive">
-                            {vendor.overdueCount} overdue
+                            {translations("overdue", {
+                              count: vendor.overdueCount,
+                            })}
                           </Badge>
                         ) : vendor.tier ? (
                           <Badge variant="outline">
-                            {
-                              VENDOR_TIER_LABELS[
-                                vendor.tier as keyof typeof VENDOR_TIER_LABELS
-                              ]
-                            }
+                            {commonTranslations.has(`tiers.${vendor.tier}`)
+                              ? commonTranslations(`tiers.${vendor.tier}`)
+                              : vendor.tier}
                           </Badge>
                         ) : null}
                         <ScoreBadge score={vendor.overallScore} size="sm" />

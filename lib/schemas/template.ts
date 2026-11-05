@@ -51,6 +51,25 @@ export const templateSchema = z.object({
 });
 export type TemplateInput = z.infer<typeof templateSchema>;
 
+export type TemplateValidationErrorKey =
+  "invalidInput" | "nameRequired" | "questionTextRequired";
+
+export function templateValidationErrorKey(
+  error: z.ZodError,
+): TemplateValidationErrorKey {
+  const firstIssue = error.issues[0];
+  if (!firstIssue) {
+    return "invalidInput";
+  }
+  if (firstIssue.path[0] === "name") {
+    return "nameRequired";
+  }
+  if (firstIssue.path[0] === "text") {
+    return "questionTextRequired";
+  }
+  return "invalidInput";
+}
+
 export const sectionSchema = z.object({
   title: z.string().min(1, "Section title is required"),
 });
@@ -86,10 +105,16 @@ export type QuestionInput = z.infer<typeof questionSchema>;
 
 export type QuestionType = (typeof QUESTION_TYPES)[number];
 
-export function validateExpectedAnswer(
+export type ExpectedAnswerErrorKey =
+  | "multiSelectArray"
+  | "choiceStringOrArray"
+  | "numeric"
+  | "yesNoCheckboxString";
+
+export function expectedAnswerErrorKey(
   type: QuestionType,
   value: unknown,
-): string | null {
+): ExpectedAnswerErrorKey | null {
   if (value === null || value === undefined) {
     return null;
   }
@@ -98,7 +123,7 @@ export function validateExpectedAnswer(
       !Array.isArray(value) ||
       value.some((entry) => typeof entry !== "string")
     ) {
-      return "MULTI_SELECT expectedAnswer must be an array of strings.";
+      return "multiSelectArray";
     }
     return null;
   }
@@ -112,21 +137,34 @@ export function validateExpectedAnswer(
     ) {
       return null;
     }
-    return `${type} expectedAnswer must be a string or an array of strings.`;
+    return "choiceStringOrArray";
   }
   if (type === "NUMERIC" || type === "RATING") {
-    if (typeof value !== "number") {
-      return "NUMERIC/RATING expectedAnswer must be a number.";
-    }
-    return null;
+    return typeof value === "number" ? null : "numeric";
   }
   if (type === "YES_NO" || type === "CHECKBOX") {
-    if (typeof value !== "string") {
-      return `${type} expectedAnswer must be a string.`;
-    }
-    return null;
+    return typeof value === "string" ? null : "yesNoCheckboxString";
   }
   return null;
+}
+
+export function validateExpectedAnswer(
+  type: QuestionType,
+  value: unknown,
+): string | null {
+  const errorKey = expectedAnswerErrorKey(type, value);
+  switch (errorKey) {
+    case "multiSelectArray":
+      return "MULTI_SELECT expectedAnswer must be an array of strings.";
+    case "choiceStringOrArray":
+      return `${type} expectedAnswer must be a string or an array of strings.`;
+    case "numeric":
+      return "NUMERIC/RATING expectedAnswer must be a number.";
+    case "yesNoCheckboxString":
+      return `${type} expectedAnswer must be a string.`;
+    default:
+      return null;
+  }
 }
 
 export function normalizeExpectedAnswerForEditor(

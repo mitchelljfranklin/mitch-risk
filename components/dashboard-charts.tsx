@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { useTranslations } from "next-intl";
 import {
   Cell,
   Pie,
@@ -18,50 +19,28 @@ import {
 } from "@/components/ui/chart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const DONUT_CONFIG = {
-  green: { label: "Green (≥85%)", color: "var(--rag-green, #16a34a)" },
-  amber: { label: "Amber (60–84%)", color: "var(--rag-amber, #d97706)" },
-  red: { label: "Red (<60%)", color: "var(--rag-red, #dc2626)" },
-  unscored: { label: "Unscored", color: "var(--rag-unscored, #9ca3af)" },
-};
-
 const GREEN_FILL = "var(--rag-green, #16a34a)";
 const AMBER_FILL = "var(--rag-amber, #d97706)";
 const RED_FILL = "var(--rag-red, #dc2626)";
 const UNSCORED_FILL = "var(--rag-unscored, #9ca3af)";
 const PRIMARY_FILL = "var(--primary)";
+const MEDIUM_FILL = "color-mix(in oklab, var(--rag-amber) 65%, transparent)";
 
-const SEVERITY_CONFIG = {
-  value: { label: "Open findings", color: RED_FILL },
-};
-const SEVERITY_FILLS: Record<string, string> = {
-  Critical: RED_FILL,
-  High: AMBER_FILL,
-  Medium: "color-mix(in oklab, var(--rag-amber) 65%, transparent)",
-  Low: UNSCORED_FILL,
-};
-const STATUS_CONFIG = {
-  draft: { label: "Draft", color: "var(--muted-foreground)" },
-  sent: { label: "Sent", color: "var(--primary)" },
-  inProgress: {
-    label: "In progress",
+const STATUS_ROWS = [
+  { key: "DRAFT", color: "var(--muted-foreground)" },
+  { key: "SENT", color: PRIMARY_FILL },
+  {
+    key: "IN_PROGRESS",
     color: "color-mix(in oklab, var(--primary), transparent 40%)",
   },
-  submitted: { label: "Submitted", color: "var(--primary)" },
-  underReview: {
-    label: "Under review",
+  { key: "SUBMITTED", color: PRIMARY_FILL },
+  {
+    key: "UNDER_REVIEW",
     color: "color-mix(in oklab, var(--primary) 60%, var(--destructive) 40%)",
   },
-  completed: { label: "Completed", color: "var(--success)" },
-  overdue: { label: "Overdue", color: "var(--destructive)" },
-};
-
-const TIER_CONFIG = {
-  green: { label: "Green", color: GREEN_FILL },
-  amber: { label: "Amber", color: AMBER_FILL },
-  red: { label: "Red", color: RED_FILL },
-  unscored: { label: "Unscored", color: UNSCORED_FILL },
-};
+  { key: "COMPLETED", color: "var(--success)" },
+  { key: "OVERDUE", color: "var(--destructive)" },
+] as const;
 
 type RiskByTierRow = {
   tier: string;
@@ -88,30 +67,35 @@ type ChartsProps = {
   assessmentStatusCounts: Record<string, number>;
 };
 
-const TIER_LABELS: Record<string, string> = {
-  CRITICAL: "Critical",
-  HIGH: "High",
-  MEDIUM: "Medium",
-  LOW: "Low",
-  Unspecified: "Unspecified",
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT: "Draft",
-  SENT: "Sent",
-  IN_PROGRESS: "In progress",
-  SUBMITTED: "Submitted",
-  UNDER_REVIEW: "Under review",
-  COMPLETED: "Completed",
-  OVERDUE: "Overdue",
-};
-
 export function DashboardCharts({
   scoreDistribution,
   findingsBySeverity,
   riskByTier,
   assessmentStatusCounts,
 }: ChartsProps) {
+  const translations = useTranslations("Dashboard.charts");
+
+  const donutConfig = {
+    green: { label: translations("rag.green"), color: GREEN_FILL },
+    amber: { label: translations("rag.amber"), color: AMBER_FILL },
+    red: { label: translations("rag.red"), color: RED_FILL },
+    unscored: { label: translations("rag.unscored"), color: UNSCORED_FILL },
+  };
+
+  const severityConfig = {
+    value: { label: translations("openFindings"), color: RED_FILL },
+  };
+
+  const tierConfig = {
+    green: { label: translations("ragShort.green"), color: GREEN_FILL },
+    amber: { label: translations("ragShort.amber"), color: AMBER_FILL },
+    red: { label: translations("ragShort.red"), color: RED_FILL },
+    unscored: {
+      label: translations("ragShort.unscored"),
+      color: UNSCORED_FILL,
+    },
+  };
+
   const donutData = [
     { name: "green", value: scoreDistribution.green, fill: GREEN_FILL },
     { name: "amber", value: scoreDistribution.amber, fill: AMBER_FILL },
@@ -131,35 +115,40 @@ export function DashboardCharts({
     scoreDistribution.unscored;
 
   const severityData = [
-    { name: "Critical", value: findingsBySeverity.CRITICAL },
-    { name: "High", value: findingsBySeverity.HIGH },
-    { name: "Medium", value: findingsBySeverity.MEDIUM },
-    { name: "Low", value: findingsBySeverity.LOW },
+    {
+      name: translations("severity.CRITICAL"),
+      value: findingsBySeverity.CRITICAL,
+      fill: RED_FILL,
+    },
+    {
+      name: translations("severity.HIGH"),
+      value: findingsBySeverity.HIGH,
+      fill: AMBER_FILL,
+    },
+    {
+      name: translations("severity.MEDIUM"),
+      value: findingsBySeverity.MEDIUM,
+      fill: MEDIUM_FILL,
+    },
+    {
+      name: translations("severity.LOW"),
+      value: findingsBySeverity.LOW,
+      fill: UNSCORED_FILL,
+    },
   ];
   const hasSeverity = severityData.some((datum) => datum.value > 0);
 
-  const statusDonutData = Object.keys(STATUS_LABELS)
-    .map((key) => {
-      const configKey = key.toLowerCase().replace(/_/g, "");
-      const camelKey =
-        configKey === "inprogress"
-          ? "inProgress"
-          : configKey === "underreview"
-            ? "underReview"
-            : configKey;
-      const statusConfig =
-        STATUS_CONFIG[camelKey as keyof typeof STATUS_CONFIG];
-      return {
-        name: STATUS_LABELS[key],
-        value: assessmentStatusCounts[key] ?? 0,
-        fill: statusConfig?.color ?? PRIMARY_FILL,
-      };
-    })
-    .filter((datum) => datum.value > 0);
+  const statusDonutData = STATUS_ROWS.map((row) => ({
+    name: translations(`status.${row.key}`),
+    value: assessmentStatusCounts[row.key] ?? 0,
+    fill: row.color,
+  })).filter((datum) => datum.value > 0);
   const hasStatus = statusDonutData.length > 0;
 
   const tierData = riskByTier.map((row) => ({
-    tier: TIER_LABELS[row.tier] ?? row.tier,
+    tier: translations.has(`tier.${row.tier}`)
+      ? translations(`tier.${row.tier}`)
+      : row.tier,
     green: row.green,
     amber: row.amber,
     red: row.red,
@@ -176,11 +165,11 @@ export function DashboardCharts({
       {hasDonut ? (
         <Card>
           <CardHeader>
-            <CardTitle>Portfolio health</CardTitle>
+            <CardTitle>{translations("portfolioHealth")}</CardTitle>
           </CardHeader>
           <CardContent>
             <ChartContainer
-              config={DONUT_CONFIG}
+              config={donutConfig}
               className="mx-auto aspect-square max-h-[250px]"
             >
               <PieChart>
@@ -217,11 +206,12 @@ export function DashboardCharts({
                               y={(viewBox.cy || 0) + 24}
                               className="fill-muted-foreground"
                             >
-                              vendors
+                              {translations("vendors")}
                             </tspan>
                           </text>
                         );
                       }
+                      return null;
                     }}
                   />
                   {donutData.map((entry) => (
@@ -237,8 +227,8 @@ export function DashboardCharts({
                     className="size-2.5 rounded-full"
                     style={{ backgroundColor: datum.fill }}
                   />
-                  {DONUT_CONFIG[datum.name as keyof typeof DONUT_CONFIG]?.label}
-                  : {datum.value}
+                  {donutConfig[datum.name as keyof typeof donutConfig]?.label}:
+                  {datum.value}
                 </span>
               ))}
             </div>
@@ -249,10 +239,10 @@ export function DashboardCharts({
       {hasSeverity ? (
         <Card>
           <CardHeader>
-            <CardTitle>Open findings by severity</CardTitle>
+            <CardTitle>{translations("openFindingsBySeverity")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={SEVERITY_CONFIG}>
+            <ChartContainer config={severityConfig}>
               <BarChart
                 data={severityData}
                 layout="vertical"
@@ -270,10 +260,7 @@ export function DashboardCharts({
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Bar dataKey="value" radius={4} barSize={20}>
                   {severityData.map((entry) => (
-                    <Cell
-                      key={entry.name}
-                      fill={SEVERITY_FILLS[entry.name] ?? RED_FILL}
-                    />
+                    <Cell key={entry.name} fill={entry.fill} />
                   ))}
                 </Bar>
               </BarChart>
@@ -285,10 +272,12 @@ export function DashboardCharts({
       {hasStatus ? (
         <Card>
           <CardHeader>
-            <CardTitle>Assessment status</CardTitle>
+            <CardTitle>{translations("assessmentStatus")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={{ value: { label: "Assessments" } }}>
+            <ChartContainer
+              config={{ value: { label: translations("assessments") } }}
+            >
               <BarChart
                 data={statusDonutData}
                 layout="vertical"
@@ -318,10 +307,10 @@ export function DashboardCharts({
       {hasTier ? (
         <Card>
           <CardHeader>
-            <CardTitle>Risk by tier</CardTitle>
+            <CardTitle>{translations("riskByTier")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={TIER_CONFIG}>
+            <ChartContainer config={tierConfig}>
               <BarChart
                 data={tierData}
                 layout="vertical"
@@ -350,15 +339,17 @@ export function DashboardCharts({
               </BarChart>
             </ChartContainer>
             <div className="mt-3 flex flex-wrap justify-center gap-4 text-xs">
-              {(["green", "amber", "red", "unscored"] as const).map((key) => (
-                <span key={key} className="flex items-center gap-1">
-                  <span
-                    className="size-2.5 rounded-full"
-                    style={{ backgroundColor: TIER_CONFIG[key].color }}
-                  />
-                  {TIER_CONFIG[key].label}
-                </span>
-              ))}
+              {(["green", "amber", "red", "unscored"] as const).map(
+                (colorKey) => (
+                  <span key={colorKey} className="flex items-center gap-1">
+                    <span
+                      className="size-2.5 rounded-full"
+                      style={{ backgroundColor: tierConfig[colorKey].color }}
+                    />
+                    {tierConfig[colorKey].label}
+                  </span>
+                ),
+              )}
             </div>
           </CardContent>
         </Card>

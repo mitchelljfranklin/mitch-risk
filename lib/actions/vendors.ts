@@ -3,6 +3,7 @@
 import { randomBytes } from "crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { Prisma } from "../../prisma/generated/prisma/client";
 
@@ -41,6 +42,7 @@ export async function createVendorAction(
   formData: FormData,
 ): Promise<VendorFormState> {
   await requirePermission(PERMISSIONS.VENDORS_CREATE);
+  const translations = await getTranslations("Vendors.errors");
   const parsed = vendorSchema.safeParse({
     name: getField(formData, "name"),
     externalId: getField(formData, "externalId"),
@@ -61,7 +63,7 @@ export async function createVendorAction(
     ownerId: getField(formData, "ownerId"),
   });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+    return { error: translations("invalidInput") };
   }
 
   let vendor;
@@ -70,7 +72,7 @@ export async function createVendorAction(
   } catch (error: unknown) {
     if (isDuplicateExternalId(error)) {
       return {
-        error: "A vendor with this external ID already exists.",
+        error: translations("duplicateExternalId"),
       };
     }
     throw error;
@@ -88,6 +90,7 @@ export async function updateVendorAction(
   formData: FormData,
 ): Promise<VendorFormState> {
   await requirePermission(PERMISSIONS.VENDORS_EDIT);
+  const translations = await getTranslations("Vendors.errors");
   const vendorId = getField(formData, "vendorId");
   const parsed = vendorSchema.safeParse({
     name: getField(formData, "name"),
@@ -109,14 +112,14 @@ export async function updateVendorAction(
     ownerId: getField(formData, "ownerId"),
   });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+    return { error: translations("invalidInput") };
   }
   try {
     await updateVendor(vendorId, parsed.data);
   } catch (error: unknown) {
     if (isDuplicateExternalId(error)) {
       return {
-        error: "A vendor with this external ID already exists.",
+        error: translations("duplicateExternalId"),
       };
     }
     throw error;
@@ -125,7 +128,7 @@ export async function updateVendorAction(
   if (user) {
     await logAudit(user.id, AUDIT_ACTIONS.UPDATE_VENDOR, "Vendor", vendorId);
   }
-  return { ok: true, message: "Vendor updated." };
+  return { ok: true, message: translations("vendorUpdated") };
 }
 
 export async function deleteVendorAction(formData: FormData) {
@@ -149,23 +152,21 @@ export async function importVendorsAction(
   formData: FormData,
 ): Promise<VendorsImportState> {
   const actor = await requirePermission(PERMISSIONS.VENDORS_CREATE);
+  const translations = await getTranslations("VendorImport");
 
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {
-    return { ok: false, error: "No file selected." };
+    return { ok: false, error: translations("errors.noFile") };
   }
 
   if (file.size > 1_000_000) {
-    return { ok: false, error: "File is too large (max 1 MB)." };
+    return { ok: false, error: translations("errors.fileTooLarge") };
   }
 
   const text = await file.text();
   const rows = parseCsvWithHeaders(text);
   if (rows.length === 0) {
-    return {
-      ok: false,
-      error: "No rows found in CSV. The first row must be a header.",
-    };
+    return { ok: false, error: translations("errors.noRows") };
   }
 
   const vendorRows: { id: string; input: VendorInput }[] = [];
@@ -217,17 +218,27 @@ export async function importVendorsAction(
         },
       });
     } else {
-      rowErrors.push(
-        `Row ${i + 2}: ${parsed.error.issues[0]?.message ?? "invalid"}`,
-      );
+      const issue = parsed.error.issues[0];
+      let rowMessage: string;
+      if (issue?.path[0] === "name") {
+        rowMessage = translations("errors.rowNameRequired", { row: i + 2 });
+      } else if (issue?.path[0] === "contactEmail") {
+        rowMessage = translations("errors.rowContactEmailRequired", {
+          row: i + 2,
+        });
+      } else {
+        rowMessage = translations("errors.rowInvalid", { row: i + 2 });
+      }
+      rowErrors.push(rowMessage);
     }
   }
 
   if (vendorRows.length === 0) {
     return {
       ok: false,
-      error:
-        "No valid vendors found. First error: " + (rowErrors[0] ?? "unknown"),
+      error: translations("errors.noValidVendors", {
+        reason: rowErrors[0] ?? translations("errors.unknown"),
+      }),
     };
   }
 
@@ -275,8 +286,7 @@ export async function importVendorsAction(
     if (!canEdit) {
       return {
         ok: false,
-        error:
-          "This import would update existing vendors. Updating requires vendor edit permission.",
+        error: translations("errors.updateRequiresEdit"),
       };
     }
   }
@@ -318,10 +328,18 @@ export async function importVendorsAction(
       createdCount++;
     } catch (error: unknown) {
       if (isDuplicateExternalId(error)) {
-        rowErrors.push(`${input.name}: duplicate external ID`);
+        rowErrors.push(
+          translations("errors.duplicateExternalId", { name: input.name }),
+        );
       } else {
         rowErrors.push(
-          `${input.name}: ${error instanceof Error ? error.message : "failed"}`,
+          translations("errors.rowFailed", {
+            name: input.name,
+            reason:
+              error instanceof Error
+                ? error.message
+                : translations("errors.unknown"),
+          }),
         );
       }
     }
@@ -330,20 +348,20 @@ export async function importVendorsAction(
 
   const parts: string[] = [];
   if (createdCount > 0) {
-    parts.push(`${createdCount} created`);
+    parts.push(translations("errors.created", { count: createdCount }));
   }
   if (updatedCount > 0) {
-    parts.push(`${updatedCount} updated`);
+    parts.push(translations("errors.updated", { count: updatedCount }));
   }
   if (rowErrors.length > 0) {
-    parts.push(
-      `${rowErrors.length} row${rowErrors.length !== 1 ? "s" : ""} skipped`,
-    );
+    parts.push(translations("errors.skipped", { count: rowErrors.length }));
   }
 
   return {
     ok: true,
-    message: `Import complete: ${parts.join(", ")}.`,
+    message: translations("errors.importComplete", {
+      summary: parts.join(", "),
+    }),
     count: createdCount + updatedCount,
   };
 }
@@ -352,31 +370,34 @@ export async function addVendorAttachmentAction(
   formData: FormData,
 ): Promise<{ ok: boolean; message: string }> {
   const user = await requirePermission(PERMISSIONS.VENDORS_EDIT);
+  const translations = await getTranslations("Vendors.errors");
 
   const vendorId = getField(formData, "vendorId");
   const file = formData.get("attachmentFile") as File | null;
 
   if (!vendorId || !file || !(file instanceof File) || file.size === 0) {
-    return { ok: false, message: "No file selected." };
+    return { ok: false, message: translations("noFile") };
   }
 
-  const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
-  if (!ALLOWED_ATTACHMENT_EXTS.includes(ext)) {
-    return { ok: false, message: "File type not allowed." };
+  const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+  if (!ALLOWED_ATTACHMENT_EXTS.includes(extension)) {
+    return { ok: false, message: translations("fileTypeNotAllowed") };
   }
 
   if (file.size > MAX_ATTACHMENT_BYTES) {
     return {
       ok: false,
-      message: `File is too large (max ${MAX_ATTACHMENT_BYTES / (1024 * 1024)} MB).`,
+      message: translations("fileTooLarge", {
+        max: MAX_ATTACHMENT_BYTES / (1024 * 1024),
+      }),
     };
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  if (!validateMagicBytes(ext, buffer)) {
-    return { ok: false, message: "This file type is not accepted." };
+  if (!validateMagicBytes(extension, buffer)) {
+    return { ok: false, message: translations("fileTypeNotAccepted") };
   }
-  const storageKey = `attachment-${randomBytes(12).toString("hex")}.${ext}`;
+  const storageKey = `attachment-${randomBytes(12).toString("hex")}.${extension}`;
 
   await storage.save(storageKey, buffer);
 
@@ -396,7 +417,7 @@ export async function addVendorAttachmentAction(
   }
 
   revalidatePath(`/vendors/${vendorId}`);
-  return { ok: true, message: "File uploaded." };
+  return { ok: true, message: translations("fileUploaded") };
 }
 
 export async function removeVendorAttachmentAction(formData: FormData) {
@@ -438,6 +459,7 @@ async function handleGeneralAttachment(
   },
   newKey: string,
   user: { id: string } | null,
+  message: string,
 ) {
   const displayName = getField(formData, "displayName").trim();
   const notes = getField(formData, "notes").trim() || undefined;
@@ -465,8 +487,15 @@ async function handleGeneralAttachment(
   revalidatePath(`/assessments/${evidence.assessmentId}`);
   revalidatePath(`/vendors/${vendorId}`);
 
-  return { ok: true, message: "File attached to vendor." } as const;
+  return { ok: true, message } as const;
 }
+
+type CertificationAttachmentMessages = {
+  nameRequired: string;
+  expiryRequired: string;
+  invalidExpiry: string;
+  added: (name: string) => string;
+};
 
 async function handleCertificationAttachment(
   formData: FormData,
@@ -479,6 +508,7 @@ async function handleCertificationAttachment(
   },
   newKey: string,
   user: { id: string } | null,
+  messages: CertificationAttachmentMessages,
 ) {
   const name = getField(formData, "name").trim();
   const issuer = getField(formData, "issuer").trim() || undefined;
@@ -487,12 +517,12 @@ async function handleCertificationAttachment(
   const displayName = getField(formData, "displayName").trim();
   const frameworkName = getField(formData, "frameworkName").trim() || undefined;
 
-  if (!name) return { ok: false, message: "Certification name is required." };
-  if (!expiresDate) return { ok: false, message: "Expiry date is required." };
+  if (!name) return { ok: false, message: messages.nameRequired };
+  if (!expiresDate) return { ok: false, message: messages.expiryRequired };
   // Validate before any write - a garbage date previously crashed after the
   // storage copy had already happened.
   if (!isValidIsoDateString(expiresDate)) {
-    return { ok: false, message: "Enter a valid expiry date." };
+    return { ok: false, message: messages.invalidExpiry };
   }
 
   await prisma.$transaction(async (tx) => {
@@ -538,7 +568,7 @@ async function handleCertificationAttachment(
 
   return {
     ok: true,
-    message: `Certification "${name}" added with attachment.`,
+    message: messages.added(name),
   };
 }
 
@@ -547,17 +577,31 @@ export async function attachEvidenceToCertificationAction(
   formData: FormData,
 ): Promise<{ ok: boolean; message: string }> {
   const user = await requirePermission(PERMISSIONS.VENDORS_EDIT);
+  const translations = await getTranslations("Vendors.errors");
+  const certificationTranslations = await getTranslations(
+    "Vendors.certifications",
+  );
 
   const evidenceId = getField(formData, "evidenceId");
   const attachType = getField(formData, "attachType");
 
-  if (!evidenceId) return { ok: false, message: "Missing evidence." };
+  if (!evidenceId) {
+    return {
+      ok: false,
+      message: certificationTranslations("errors.missingEvidence"),
+    };
+  }
 
   const evidence = await prisma.evidence.findUnique({
     where: { id: evidenceId },
     include: { assessment: { select: { vendorId: true } } },
   });
-  if (!evidence) return { ok: false, message: "Evidence not found." };
+  if (!evidence) {
+    return {
+      ok: false,
+      message: certificationTranslations("errors.evidenceNotFound"),
+    };
+  }
 
   const vendorId = evidence.assessment.vendorId;
   const file = await storage.read(evidence.storageKey);
@@ -574,6 +618,7 @@ export async function attachEvidenceToCertificationAction(
       evidence,
       newKey,
       user,
+      translations("fileAttached"),
     );
   }
 
@@ -583,5 +628,11 @@ export async function attachEvidenceToCertificationAction(
     evidence,
     newKey,
     user,
+    {
+      nameRequired: certificationTranslations("errors.nameRequired"),
+      expiryRequired: certificationTranslations("errors.expiryRequired"),
+      invalidExpiry: certificationTranslations("errors.invalidExpiry"),
+      added: (name) => certificationTranslations("errors.added", { name }),
+    },
   );
 }

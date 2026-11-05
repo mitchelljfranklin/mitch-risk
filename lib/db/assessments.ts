@@ -17,19 +17,19 @@ import { type AssessmentInput } from "@/lib/schemas/assessment";
 import { type SaveProgressInput } from "@/lib/schemas/portal";
 import { expiryFromNow, generateAccessToken, hashToken } from "@/lib/tokens";
 
-export const ASSESSMENT_SORTS = {
-  created: "Newest first",
-  "created-asc": "Oldest first",
-  "due-asc": "Due date (soonest)",
-  "due-desc": "Due date (latest)",
-  "score-asc": "Score (low → high)",
-  "score-desc": "Score (high → low)",
-  vendor: "Vendor (A–Z)",
-  status: "Status (A–Z)",
-  "status-desc": "Status (Z–A)",
-} as const;
+export const ASSESSMENT_SORTS = [
+  "created",
+  "created-asc",
+  "due-asc",
+  "due-desc",
+  "score-asc",
+  "score-desc",
+  "vendor",
+  "status",
+  "status-desc",
+] as const;
 
-export type AssessmentSort = keyof typeof ASSESSMENT_SORTS;
+export type AssessmentSort = (typeof ASSESSMENT_SORTS)[number];
 
 const OVERDUE_STATUSES: AssessmentStatus[] = ["SENT", "IN_PROGRESS"];
 

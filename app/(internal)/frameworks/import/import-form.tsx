@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState, startTransition } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,6 +48,7 @@ const initialState: FrameworkImportState = { ok: false, message: "" };
 
 export function FrameworkImportForm() {
   const router = useRouter();
+  const translations = useTranslations("Frameworks.import");
   const [state, formAction, pending] = useActionState(
     importFrameworkAction,
     initialState,
@@ -97,7 +99,7 @@ export function FrameworkImportForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Import framework from CSV</CardTitle>
+        <CardTitle>{translations("cardTitle")}</CardTitle>
       </CardHeader>
       <CardContent>
         <Stepper defaultValue="setup" className="flex flex-col gap-6">
@@ -106,7 +108,7 @@ export function FrameworkImportForm() {
               <StepperTrigger className="flex flex-col items-center gap-1">
                 <StepperIndicator className="flex size-8 items-center justify-center rounded-full border-2 text-sm font-medium" />
                 <StepperLabel className="text-xs font-medium">
-                  Setup &amp; Upload
+                  {translations("steps.setup")}
                 </StepperLabel>
               </StepperTrigger>
               <StepperSeparator className="bg-muted-foreground/20 mx-2 h-0.5 w-12" />
@@ -115,7 +117,7 @@ export function FrameworkImportForm() {
               <StepperTrigger className="flex flex-col items-center gap-1">
                 <StepperIndicator className="flex size-8 items-center justify-center rounded-full border-2 text-sm font-medium" />
                 <StepperLabel className="text-xs font-medium">
-                  Review
+                  {translations("steps.review")}
                 </StepperLabel>
               </StepperTrigger>
             </StepperItem>
@@ -123,39 +125,41 @@ export function FrameworkImportForm() {
 
           <StepperContent value="setup" className="flex flex-col gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="name">Framework name</Label>
+              <Label htmlFor="name">{translations("form.name")}</Label>
               <Input
                 id="name"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 required
-                placeholder="e.g. PCI DSS"
+                placeholder={translations("form.namePlaceholder")}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="version">Version</Label>
+              <Label htmlFor="version">{translations("form.version")}</Label>
               <Input
                 id="version"
                 value={version}
                 onChange={(event) => setVersion(event.target.value)}
                 required
-                placeholder="e.g. 4.0"
+                placeholder={translations("form.versionPlaceholder")}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="description">Description (optional)</Label>
+              <Label htmlFor="description">
+                {translations("form.description")}
+              </Label>
               <Textarea
                 id="description"
                 value={description}
                 onChange={(event) => setDescription(event.target.value)}
                 rows={2}
-                placeholder="Brief description of the framework"
+                placeholder={translations("form.descriptionPlaceholder")}
               />
             </div>
 
             <div className="grid gap-2">
               <div className="flex items-center justify-between gap-2">
-                <Label htmlFor="csvFile">CSV file</Label>
+                <Label htmlFor="csvFile">{translations("form.csvFile")}</Label>
                 <Button
                   type="button"
                   variant="ghost"
@@ -174,7 +178,7 @@ export function FrameworkImportForm() {
                   }}
                 >
                   <Download className="size-3" />
-                  Template
+                  {translations("form.downloadTemplate")}
                 </Button>
               </div>
               <Input
@@ -185,26 +189,30 @@ export function FrameworkImportForm() {
                 onChange={handleFileChange}
               />
               <p className="text-muted-foreground text-xs">
-                CSV must have columns: <code>domain</code>, <code>code</code>,{" "}
-                <code>title</code>, <code>guidance</code> (guidance is
-                optional). Optional: <code>is_shared_responsibility</code>{" "}
-                (true/false, defaults to false). Max 1 MB.
+                {translations("form.csvHint")}
               </p>
             </div>
 
             {parsedRows.length > 0 ? (
               <div>
                 <p className="text-muted-foreground mb-2 text-sm">
-                  {parsedRows.length} control
-                  {parsedRows.length !== 1 ? "s" : ""} found
+                  {translations("form.controlsFound", {
+                    count: parsedRows.length,
+                  })}
                 </p>
                 <div className="max-h-64 overflow-auto rounded-md border">
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="text-xs">Domain</TableHead>
-                        <TableHead className="text-xs">Code</TableHead>
-                        <TableHead className="text-xs">Title</TableHead>
+                        <TableHead className="text-xs">
+                          {translations("form.domain")}
+                        </TableHead>
+                        <TableHead className="text-xs">
+                          {translations("form.code")}
+                        </TableHead>
+                        <TableHead className="text-xs">
+                          {translations("form.titleColumn")}
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -226,7 +234,10 @@ export function FrameworkImportForm() {
                 </div>
                 {parsedRows.length > 10 ? (
                   <p className="text-muted-foreground mt-1 text-xs">
-                    Showing first 10 of {parsedRows.length} rows
+                    {translations("form.showingFirst", {
+                      shown: 10,
+                      total: parsedRows.length,
+                    })}
                   </p>
                 ) : null}
               </div>
@@ -234,7 +245,7 @@ export function FrameworkImportForm() {
 
             <StepperNext asChild>
               <Button size="sm" className="w-fit" disabled={!canProceed}>
-                Next →
+                {translations("form.next")}
               </Button>
             </StepperNext>
           </StepperContent>
@@ -242,14 +253,11 @@ export function FrameworkImportForm() {
           <StepperContent value="confirm" className="flex flex-col gap-4">
             <div className="rounded-md border p-4">
               <p className="text-sm">
-                You are about to create framework{" "}
-                <span className="font-semibold">{name}</span> v
-                <span className="font-semibold">{version}</span> with{" "}
-                <span className="font-semibold">
-                  {parsedRows.length} control
-                  {parsedRows.length !== 1 ? "s" : ""}
-                </span>
-                .
+                {translations("form.reviewIntro", {
+                  name,
+                  version,
+                  count: parsedRows.length,
+                })}
               </p>
               {description ? (
                 <p className="text-muted-foreground mt-1 text-xs">
@@ -261,11 +269,13 @@ export function FrameworkImportForm() {
             <div className="flex items-center gap-3">
               <StepperPrevious asChild>
                 <Button variant="outline" size="sm">
-                  ← Back
+                  {translations("form.back")}
                 </Button>
               </StepperPrevious>
               <Button size="sm" disabled={pending} onClick={handleImport}>
-                {pending ? "Importing…" : "Import framework"}
+                {pending
+                  ? translations("form.importing")
+                  : translations("form.import")}
               </Button>
             </div>
 

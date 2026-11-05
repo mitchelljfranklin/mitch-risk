@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,12 +17,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { type VendorFormState } from "@/lib/actions/vendors";
-import {
-  DATA_SENSITIVITIES,
-  DATA_SENSITIVITY_LABELS,
-  VENDOR_TIER_LABELS,
-  VENDOR_TIERS,
-} from "@/lib/schemas/vendor";
+import { DATA_SENSITIVITIES, VENDOR_TIERS } from "@/lib/schemas/vendor";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
 import { VendorAttachments } from "./vendor-attachments";
 
@@ -60,6 +56,8 @@ type VendorFormProps = {
   };
 };
 
+const RISK_LEVELS = ["NONE", "LOW", "MEDIUM", "HIGH"] as const;
+
 const initialState: VendorFormState = undefined;
 
 export function VendorForm({
@@ -70,10 +68,19 @@ export function VendorForm({
   attachments,
   defaults,
 }: VendorFormProps) {
+  const translations = useTranslations("Vendors.form");
+  const commonTranslations = useTranslations("Common");
   const [state, formAction, isPending] = useActionState(action, initialState);
   useActionFeedback(state);
   const cancelHref = vendorId ? `/vendors/${vendorId}` : "/vendors";
   const isEdit = mode === "edit" || Boolean(vendorId);
+
+  let submitLabel = translations("create");
+  if (isPending) {
+    submitLabel = translations("saving");
+  } else if (isEdit) {
+    submitLabel = translations("saveChanges");
+  }
 
   return (
     <>
@@ -82,24 +89,24 @@ export function VendorForm({
           <input type="hidden" name="vendorId" value={vendorId} />
         ) : null}
         <div className="grid gap-2">
-          <Label htmlFor="name">Vendor name</Label>
+          <Label htmlFor="name">{translations("vendorName")}</Label>
           <Input id="name" name="name" defaultValue={defaults?.name} required />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="externalId">External ID</Label>
+          <Label htmlFor="externalId">{translations("externalId")}</Label>
           <Input
             id="externalId"
             name="externalId"
-            placeholder="e.g. ERP-V-001"
+            placeholder={translations("externalIdPlaceholder")}
             defaultValue={defaults?.externalId}
           />
           <span className="text-muted-foreground text-[11px]">
-            Optional reference to this vendor in another system
+            {translations("externalIdHint")}
           </span>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-2">
-            <Label htmlFor="contactName">Contact name</Label>
+            <Label htmlFor="contactName">{translations("contactName")}</Label>
             <Input
               id="contactName"
               name="contactName"
@@ -107,7 +114,7 @@ export function VendorForm({
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="contactEmail">Contact email</Label>
+            <Label htmlFor="contactEmail">{translations("contactEmail")}</Label>
             <Input
               id="contactEmail"
               name="contactEmail"
@@ -120,22 +127,22 @@ export function VendorForm({
         <Separator className="my-1" />
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-2">
-            <Label htmlFor="tier">Tier</Label>
+            <Label htmlFor="tier">{translations("tier")}</Label>
             <Select name="tier" defaultValue={defaults?.tier ?? ""}>
               <SelectTrigger id="tier">
-                <SelectValue placeholder="Unspecified" />
+                <SelectValue placeholder={translations("unspecified")} />
               </SelectTrigger>
               <SelectContent>
                 {VENDOR_TIERS.map((tier) => (
                   <SelectItem key={tier} value={tier}>
-                    {VENDOR_TIER_LABELS[tier]}
+                    {commonTranslations(`tiers.${tier}`)}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="website">Website</Label>
+            <Label htmlFor="website">{translations("website")}</Label>
             <Input
               id="website"
               name="website"
@@ -145,10 +152,10 @@ export function VendorForm({
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-2">
-            <Label htmlFor="ownerId">Risk owner</Label>
+            <Label htmlFor="ownerId">{translations("riskOwner")}</Label>
             <Select name="ownerId" defaultValue={defaults?.ownerId ?? ""}>
               <SelectTrigger id="ownerId">
-                <SelectValue placeholder="Unassigned" />
+                <SelectValue placeholder={translations("unassigned")} />
               </SelectTrigger>
               <SelectContent>
                 {owners.map((owner) => (
@@ -160,82 +167,94 @@ export function VendorForm({
             </Select>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="dataSensitivity">Data sensitivity</Label>
+            <Label htmlFor="dataSensitivity">
+              {translations("dataSensitivity")}
+            </Label>
             <Select
               name="dataSensitivity"
               defaultValue={defaults?.dataSensitivity ?? ""}
             >
               <SelectTrigger id="dataSensitivity">
-                <SelectValue placeholder="Unspecified" />
+                <SelectValue placeholder={translations("unspecified")} />
               </SelectTrigger>
               <SelectContent>
                 {DATA_SENSITIVITIES.map((level) => (
                   <SelectItem key={level} value={level}>
-                    {DATA_SENSITIVITY_LABELS[level]}
+                    {translations(`dataSensitivities.${level}`)}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <div className="grid gap-2">
-              <Label htmlFor="contractValue">Contract value</Label>
+              <Label htmlFor="contractValue">
+                {translations("contractValue")}
+              </Label>
               <Select
                 name="contractValue"
                 defaultValue={defaults?.contractValue ?? ""}
               >
                 <SelectTrigger id="contractValue">
-                  <SelectValue placeholder="Unspecified" />
+                  <SelectValue placeholder={translations("unspecified")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="NONE">None</SelectItem>
-                  <SelectItem value="LOW">Low</SelectItem>
-                  <SelectItem value="MEDIUM">Medium</SelectItem>
-                  <SelectItem value="HIGH">High</SelectItem>
+                  {RISK_LEVELS.map((level) => (
+                    <SelectItem key={level} value={level}>
+                      {translations(`levels.${level}`)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="geographicRisk">Geographic risk</Label>
+              <Label htmlFor="geographicRisk">
+                {translations("geographicRisk")}
+              </Label>
               <Select
                 name="geographicRisk"
                 defaultValue={defaults?.geographicRisk ?? ""}
               >
                 <SelectTrigger id="geographicRisk">
-                  <SelectValue placeholder="Unspecified" />
+                  <SelectValue placeholder={translations("unspecified")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="NONE">None</SelectItem>
-                  <SelectItem value="LOW">Low</SelectItem>
-                  <SelectItem value="MEDIUM">Medium</SelectItem>
-                  <SelectItem value="HIGH">High</SelectItem>
+                  {RISK_LEVELS.map((level) => (
+                    <SelectItem key={level} value={level}>
+                      {translations(`levels.${level}`)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="flex flex-col gap-1">
-              <Label htmlFor="tags">Tags</Label>
+              <Label htmlFor="tags">{translations("tags")}</Label>
               <Input
                 id="tags"
                 name="tags"
-                placeholder="e.g. saas, critical, finance"
+                placeholder={translations("tagsPlaceholder")}
                 defaultValue={defaults?.tags ?? ""}
               />
               <span className="text-muted-foreground text-[11px]">
-                Comma-separated labels for grouping and filtering
+                {translations("tagsHint")}
               </span>
             </div>
           </div>
         </div>
         <Separator className="my-1" />
         <div className="grid gap-2">
-          <Label htmlFor="serviceDescription">Service provided</Label>
+          <Label htmlFor="serviceDescription">
+            {translations("serviceProvided")}
+          </Label>
           <Input
             id="serviceDescription"
             name="serviceDescription"
-            placeholder="e.g. Cloud email hosting"
+            placeholder={translations("servicePlaceholder")}
             defaultValue={defaults?.serviceDescription}
           />
         </div>
         <div className="grid gap-2 sm:max-w-xs">
-          <Label htmlFor="contractRenewalDate">Contract renewal date</Label>
+          <Label htmlFor="contractRenewalDate">
+            {translations("contractRenewalDate")}
+          </Label>
           <Input
             id="contractRenewalDate"
             name="contractRenewalDate"
@@ -245,7 +264,7 @@ export function VendorForm({
         </div>
         <Separator className="my-1" />
         <div className="grid gap-2">
-          <Label htmlFor="notes">Notes</Label>
+          <Label htmlFor="notes">{translations("notes")}</Label>
           <Textarea
             id="notes"
             name="notes"
@@ -266,10 +285,10 @@ export function VendorForm({
       ) : null}
       <div className="flex items-center gap-3">
         <Button type="submit" form="vendor-edit-form" disabled={isPending}>
-          {isPending ? "Saving..." : isEdit ? "Save changes" : "Create vendor"}
+          {submitLabel}
         </Button>
         <Button asChild variant="outline">
-          <Link href={cancelHref}>Cancel</Link>
+          <Link href={cancelHref}>{translations("cancel")}</Link>
         </Button>
       </div>
     </>

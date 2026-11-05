@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -7,7 +8,6 @@ import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getAssessment } from "@/lib/db/assessments";
 import { getVendor } from "@/lib/db/vendors";
-import { QUESTION_TYPE_LABELS } from "@/lib/schemas/template";
 
 import { formatResponseValue } from "@/lib/utils";
 import { compareResponses } from "@/lib/compare";
@@ -22,10 +22,13 @@ type ComparePageProps = {
 export async function generateMetadata({
   params,
 }: ComparePageProps): Promise<Metadata> {
+  const translations = await getTranslations("CompareAssessments");
   const { vendorId } = await params;
   const vendor = await getVendor(vendorId);
-  if (!vendor) return { title: "Vendor not found" };
-  return { title: `Compare assessments — ${vendor.name}` };
+  if (!vendor) return { title: translations("notFound") };
+  return {
+    title: translations("metadataTitle", { vendorName: vendor.name }),
+  };
 }
 
 export default async function ComparePage({
@@ -33,6 +36,12 @@ export default async function ComparePage({
   searchParams,
 }: ComparePageProps) {
   await requirePermission(PERMISSIONS.VENDORS_VIEW);
+  const translations = await getTranslations("CompareAssessments");
+  const shellTranslations = await getTranslations("Shell.workspace");
+  const questionTypeTranslations = await getTranslations(
+    "Common.questionTypes",
+  );
+  const statusTranslations = await getTranslations("Common.assessmentStatuses");
   const { vendorId } = await params;
   const { left: leftId, right: rightId } = await searchParams;
 
@@ -44,21 +53,18 @@ export default async function ComparePage({
       <div className="flex flex-col gap-6">
         <Breadcrumbs
           segments={[
-            { label: "Vendors", href: "/vendors" },
+            { label: shellTranslations("vendors"), href: "/vendors" },
             { label: vendor.name, href: `/vendors/${vendorId}` },
-            { label: "Compare assessments" },
+            { label: translations("breadcrumb") },
           ]}
         />
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            Compare assessments
+            {translations("title")}
           </h1>
         </div>
         <p className="text-muted-foreground text-sm">
-          Select two assessments from the vendor page to compare them
-          side‑by‑side. After opening two, bookmark this page with{" "}
-          <code className="text-xs">?left=&lt;id&gt;&amp;right=&lt;id&gt;</code>
-          .
+          {translations("instructions")}
         </p>
       </div>
     );
@@ -91,18 +97,26 @@ export default async function ComparePage({
     <div className="flex flex-col gap-6">
       <Breadcrumbs
         segments={[
-          { label: "Vendors", href: "/vendors" },
+          { label: shellTranslations("vendors"), href: "/vendors" },
           { label: vendor.name, href: `/vendors/${vendorId}` },
-          { label: "Compare assessments" },
+          { label: translations("breadcrumb") },
         ]}
       />
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">
-          Compare assessments
+          {translations("title")}
         </h1>
         <p className="text-muted-foreground text-sm">
-          {left.title} ({left.status.toLowerCase()}) vs {right.title} (
-          {right.status.toLowerCase()})
+          {translations("comparisonSubtitle", {
+            leftTitle: left.title,
+            leftStatus: statusTranslations.has(left.status)
+              ? statusTranslations(left.status)
+              : left.status.toLowerCase(),
+            rightTitle: right.title,
+            rightStatus: statusTranslations.has(right.status)
+              ? statusTranslations(right.status)
+              : right.status.toLowerCase(),
+          })}
         </p>
       </div>
 
@@ -111,7 +125,7 @@ export default async function ComparePage({
           <thead>
             <tr className="bg-muted/50 border-b">
               <th scope="col" className="p-3 text-left font-medium">
-                Question
+                {translations("question")}
               </th>
               <th scope="col" className="p-3 text-left font-medium">
                 {left.title}
@@ -152,11 +166,11 @@ export default async function ComparePage({
                     <span>{lq?.text ?? rq?.text ?? "—"}</span>
                     <br />
                     <Badge variant="secondary" className="text-xs">
-                      {
-                        QUESTION_TYPE_LABELS[
-                          lq?.type ?? rq?.type ?? "FREE_TEXT"
-                        ]
-                      }
+                      {questionTypeTranslations.has(lq?.type ?? rq?.type ?? "")
+                        ? questionTypeTranslations(
+                            lq?.type ?? rq?.type ?? "FREE_TEXT",
+                          )
+                        : (lq?.type ?? rq?.type ?? "FREE_TEXT")}
                     </Badge>
                   </td>
                   <td className="p-3 align-top">
@@ -170,7 +184,7 @@ export default async function ComparePage({
                       }
                     >
                       {lr?.isNotApplicable
-                        ? "N/A"
+                        ? translations("notApplicable")
                         : formatResponseValue(lr?.value)}
                     </span>
                     {diff.complianceDegraded ? (
@@ -195,12 +209,12 @@ export default async function ComparePage({
                         }
                       >
                         {rr?.isNotApplicable
-                          ? "N/A"
+                          ? translations("notApplicable")
                           : formatResponseValue(rr?.value)}
                       </span>
                       {diff.complianceChanged ? (
                         <Badge variant="outline" className="ml-1 text-[10px]">
-                          changed
+                          {translations("changed")}
                         </Badge>
                       ) : null}
                     </>

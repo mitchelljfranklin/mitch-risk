@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
 import { getEmailSettings, getEmailTemplateSettings } from "@/lib/settings";
@@ -13,10 +14,14 @@ import { TemplatesManager } from "../templates-manager";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Admin — Email" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Admin.email");
+  return { title: translations("metaTitle") };
+}
 
 export default async function AdminEmailPage() {
   const user = await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
+  const translations = await getTranslations("Admin.email");
   const [email, templates] = await Promise.all([
     getEmailSettings(),
     getEmailTemplateSettings(),
@@ -25,19 +30,18 @@ export default async function AdminEmailPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Email</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {translations("title")}
+        </h1>
         <p className="text-muted-foreground text-sm">
-          SMTP delivery and the templates used for vendor and reviewer emails.
+          {translations("subtitle")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>SMTP</CardTitle>
-          <CardDescription>
-            Used to send vendor invites and reminders. The password is encrypted
-            at rest.
-          </CardDescription>
+          <CardTitle>{translations("smtpTitle")}</CardTitle>
+          <CardDescription>{translations("smtpDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <EmailForm
@@ -56,10 +60,9 @@ export default async function AdminEmailPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Email templates</CardTitle>
+          <CardTitle>{translations("templatesTitle")}</CardTitle>
           <CardDescription>
-            Select a template to edit its subject and body. Use {"{{"}tokens
-            {"}}"} for dynamic values.
+            {translations("templatesDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>

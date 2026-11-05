@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useFormatter, useTranslations } from "next-intl";
 import {
   type ColumnDef,
   type SortingState,
@@ -28,7 +29,6 @@ import { Pagination } from "@/components/pagination";
 import { ScoreBadge } from "@/components/score-badge";
 import { type AssessmentSort } from "@/lib/db/assessments";
 import { isAssessmentOverdue } from "@/lib/schemas/assessment";
-import { formatDateUtc } from "@/lib/utils";
 
 type AssessmentRow = {
   id: string;
@@ -53,9 +53,9 @@ const SORT_KEY_MAP: Record<
 
 function sortParamToState(sort: AssessmentSort | undefined): SortingState {
   if (!sort) return [{ id: "created", desc: true }];
-  for (const [col, { asc, desc }] of Object.entries(SORT_KEY_MAP)) {
-    if (sort === asc) return [{ id: col, desc: false }];
-    if (sort === desc) return [{ id: col, desc: true }];
+  for (const [columnId, mapping] of Object.entries(SORT_KEY_MAP)) {
+    if (sort === mapping.asc) return [{ id: columnId, desc: false }];
+    if (sort === mapping.desc) return [{ id: columnId, desc: true }];
   }
   return [{ id: "created", desc: true }];
 }
@@ -63,9 +63,9 @@ function sortParamToState(sort: AssessmentSort | undefined): SortingState {
 function stateToSortParam(state: SortingState): AssessmentSort {
   if (state.length === 0) return "created";
   const { id, desc } = state[0];
-  const map = SORT_KEY_MAP[id];
-  if (!map) return "created";
-  return desc ? map.desc : map.asc;
+  const mapping = SORT_KEY_MAP[id];
+  if (!mapping) return "created";
+  return desc ? mapping.desc : mapping.asc;
 }
 
 const STATUS_ACCENT: Record<string, string> = {
@@ -92,6 +92,8 @@ export function AssessmentsTable({
   totalCount,
 }: AssessmentsTableProps) {
   const router = useRouter();
+  const translations = useTranslations("Assessments.list");
+  const dateFormatter = useFormatter();
 
   const [sorting, setSorting] = useState<SortingState>(() =>
     sortParamToState(initialSort),
@@ -115,7 +117,10 @@ export function AssessmentsTable({
       accessorKey: "title",
       enableSorting: true,
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Assessment · Vendor" />
+        <DataTableColumnHeader
+          column={column}
+          title={translations("columns.assessmentVendor")}
+        />
       ),
       cell: ({ row }) => {
         const assessment = row.original;
@@ -138,7 +143,14 @@ export function AssessmentsTable({
                 : ""}
               {assessment.dueDate ? (
                 <span className={overdue ? "text-[var(--rag-red)]" : ""}>
-                  {` · due ${formatDateUtc(assessment.dueDate)}`}
+                  {translations("due", {
+                    date: dateFormatter.dateTime(new Date(assessment.dueDate), {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                      timeZone: "UTC",
+                    }),
+                  })}
                 </span>
               ) : (
                 ""
@@ -153,7 +165,10 @@ export function AssessmentsTable({
       accessorKey: "score",
       enableSorting: true,
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Score" />
+        <DataTableColumnHeader
+          column={column}
+          title={translations("columns.score")}
+        />
       ),
       cell: ({ row }) => {
         const score = row.original.score;
@@ -165,7 +180,10 @@ export function AssessmentsTable({
       accessorKey: "status",
       enableSorting: true,
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Status" />
+        <DataTableColumnHeader
+          column={column}
+          title={translations("columns.status")}
+        />
       ),
       cell: ({ row }) => {
         const assessment = row.original;
@@ -177,7 +195,7 @@ export function AssessmentsTable({
           <span>
             {overdue ? (
               <Badge variant="destructive" className="mr-1">
-                Overdue
+                {translations("overdue")}
               </Badge>
             ) : null}
             <AssessmentStatusBadge status={assessment.status} />
@@ -190,11 +208,21 @@ export function AssessmentsTable({
       accessorKey: "dueDate",
       enableSorting: true,
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Due" />
+        <DataTableColumnHeader
+          column={column}
+          title={translations("columns.due")}
+        />
       ),
       cell: ({ row }) => (
         <span className="text-muted-foreground text-xs">
-          {row.original.dueDate ? formatDateUtc(row.original.dueDate) : "—"}
+          {row.original.dueDate
+            ? dateFormatter.dateTime(new Date(row.original.dueDate), {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                timeZone: "UTC",
+              })
+            : "—"}
         </span>
       ),
     },
@@ -276,7 +304,7 @@ export function AssessmentsTable({
         page={page}
         pageSize={pageSize}
         totalCount={totalCount}
-        itemLabel="assessments"
+        itemLabel={translations("items")}
       />
     </div>
   );

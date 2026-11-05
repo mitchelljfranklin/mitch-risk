@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -24,6 +25,7 @@ export function SchedulingForm({
   cronLastRun,
   internalSchedulerEnabled,
 }: SchedulingFormProps) {
+  const translations = useTranslations("Admin.scheduling");
   const [state, action, isPending] = useActionState(
     saveSchedulingSettings,
     undefined,
@@ -35,20 +37,20 @@ export function SchedulingForm({
   );
 
   const cronLabel = (() => {
-    if (!cronLastRun) return "Never";
+    if (!cronLastRun) return translations("never");
     const then = new Date(cronLastRun);
     const diffMs = new Date().getTime() - then.getTime();
-    if (diffMs < 0) return "just now";
+    if (diffMs < 0) return translations("justNow");
     const minutes = Math.floor(diffMs / 60000);
-    if (minutes < 1) return "less than a minute ago";
-    if (minutes === 1) return "1 minute ago";
-    if (minutes < 60) return `${minutes} minutes ago`;
+    if (minutes < 1) return translations("lessThanMinute");
+    if (minutes === 1) return translations("minuteAgo");
+    if (minutes < 60) return translations("minutesAgo", { count: minutes });
     const hours = Math.floor(minutes / 60);
-    if (hours === 1) return "1 hour ago";
-    if (hours < 24) return `${hours} hours ago`;
+    if (hours === 1) return translations("hourAgo");
+    if (hours < 24) return translations("hoursAgo", { count: hours });
     const days = Math.floor(hours / 24);
-    if (days === 1) return "1 day ago";
-    return `${days} days ago`;
+    if (days === 1) return translations("dayAgo");
+    return translations("daysAgo", { count: days });
   })();
 
   return (
@@ -64,24 +66,24 @@ export function SchedulingForm({
       />
 
       <div className="flex flex-col gap-2">
-        <Label>Reminder offset days</Label>
+        <Label>{translations("reminderLabel")}</Label>
         <p className="text-muted-foreground text-xs">
-          Comma-separated list of days before the due date to send reminders.
-          Example: 7, 1 sends reminders 7 days and 1 day before the due date.
+          {translations("reminderHint")}
         </p>
         <Input
           value={reminderDays}
           onChange={(event) => setReminderDays(event.target.value)}
-          placeholder="7, 1"
+          placeholder={translations("reminderPlaceholder")}
           className="w-48"
         />
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="escalationDays">Escalation after (days)</Label>
+        <Label htmlFor="escalationDays">
+          {translations("escalationLabel")}
+        </Label>
         <p className="text-muted-foreground text-xs">
-          Days after the due date before the reviewer receives an escalation
-          email.
+          {translations("escalationHint")}
         </p>
         <Input
           id="escalationDays"
@@ -94,9 +96,11 @@ export function SchedulingForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="defaultDueDays">Default assessment due (days)</Label>
+        <Label htmlFor="defaultDueDays">
+          {translations("defaultDueLabel")}
+        </Label>
         <p className="text-muted-foreground text-xs">
-          New assessments default to this many days until the due date.
+          {translations("defaultDueHint")}
         </p>
         <Input
           id="defaultDueDays"
@@ -117,29 +121,22 @@ export function SchedulingForm({
             defaultChecked={internalSchedulerEnabled}
           />
           <Label htmlFor="internalSchedulerEnabled">
-            Run scheduled jobs inside the app
+            {translations("schedulerLabel")}
           </Label>
         </div>
         <p className="text-muted-foreground text-xs">
-          When enabled, the application checks every five minutes for due
-          reminders, escalations, expiry notices, recurring assessments, log
-          pruning, and orphaned file cleanup — no external cron job or scheduler
-          is needed. Disable this only if you trigger
-          <code className="bg-muted mx-1 rounded px-1 py-0.5 text-[11px]">
-            /api/cron/run
-          </code>
-          yourself (for example from a system crontab or Azure Function).
+          {translations("schedulerHint", { endpoint: "/api/cron/run" })}
         </p>
       </div>
 
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending} size="sm">
-          {isPending ? "Saving..." : "Save scheduling"}
+          {isPending ? translations("saving") : translations("save")}
         </Button>
       </div>
 
       <p className="text-muted-foreground text-xs">
-        Last scheduled run: {cronLabel}
+        {translations("lastRun", { when: cronLabel })}
       </p>
     </form>
   );

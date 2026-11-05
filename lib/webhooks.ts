@@ -30,18 +30,29 @@ export const WEBHOOK_PLATFORM_VALUES = [
 // Admin-entered webhook URLs are fetched server-side by dispatchWebhook, so
 // the target must be a public HTTPS address — otherwise the webhook feature
 // becomes an SSRF pivot into whatever network the container sits on.
+export type WebhookTargetErrorCode =
+  "invalidUrl" | "httpsRequired" | "publicOnly";
+
 export function validateWebhookTarget(
   rawUrl: string,
-): { ok: true } | { ok: false; reason: string } {
+): { ok: true } | { ok: false; reason: string; code: WebhookTargetErrorCode } {
   let parsedUrl: URL;
   try {
     parsedUrl = new URL(rawUrl);
   } catch {
-    return { ok: false, reason: "Enter a valid URL." };
+    return {
+      ok: false,
+      reason: "Enter a valid URL.",
+      code: "invalidUrl",
+    };
   }
 
   if (parsedUrl.protocol !== "https:") {
-    return { ok: false, reason: "Webhook URLs must use HTTPS." };
+    return {
+      ok: false,
+      reason: "Webhook URLs must use HTTPS.",
+      code: "httpsRequired",
+    };
   }
 
   const hostname = parsedUrl.hostname.toLowerCase().replace(/^\[|\]$/g, "");
@@ -50,6 +61,7 @@ export function validateWebhookTarget(
       ok: false,
       reason:
         "Webhook URLs must point to a public address — internal and loopback hosts are not allowed.",
+      code: "publicOnly",
     };
   }
 

@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useFormatter, useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,12 +17,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  EMAIL_TYPE_LABELS,
-  type EmailLogEntry,
-} from "@/lib/db/notifications-types";
+import { type EmailLogEntry } from "@/lib/db/notifications-types";
 import type { EmailLogResult } from "@/lib/db/notifications-types";
-import { formatDate } from "@/lib/utils";
 import { useActionFeedback } from "@/hooks/use-action-feedback";
 import { retryEmailSendAction } from "./actions";
 
@@ -48,6 +45,7 @@ export function EmailTrackingForm({
   types,
   filterQuery,
 }: EmailTrackingFormProps) {
+  const translations = useTranslations("Admin.emailTracking");
   const { entries, totalCount, page, pageSize } = result;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
   const searchParams = useSearchParams();
@@ -64,10 +62,7 @@ export function EmailTrackingForm({
     <div className="flex flex-col gap-6">
       <div>
         <p className="text-muted-foreground text-sm">
-          Track every email sent by the platform — invites, reminders,
-          escalations, and test messages. The SMTP server confirms acceptance;
-          this does not guarantee inbox delivery. Logs are retained according to
-          the configured retention policy.
+          {translations("description")}
         </p>
       </div>
 
@@ -75,66 +70,65 @@ export function EmailTrackingForm({
         <input type="hidden" name="tab" value="email-tracking" />
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="status">
-            Status
+            {translations("filters.status")}
           </label>
           <AutoSubmitSelect
             name="status"
             defaultValue={searchParams.get("status") ?? ""}
             key={`status-${searchParams.get("status") ?? ""}`}
-            emptyOptionLabel="All statuses"
+            emptyOptionLabel={translations("filters.allStatuses")}
             id="status"
             className="w-32"
-            ariaLabel="Filter emails by status"
+            ariaLabel={translations("filters.statusAria")}
             options={statuses.map((status) => ({
               value: status,
-              label:
-                status === "SENT"
-                  ? "Sent"
-                  : status === "FAILED"
-                    ? "Failed"
-                    : status,
+              label: translations.has(`statuses.${status}`)
+                ? translations(`statuses.${status}`)
+                : status,
             }))}
           />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="type">
-            Type
+            {translations("filters.type")}
           </label>
           <AutoSubmitSelect
             name="type"
             defaultValue={searchParams.get("type") ?? ""}
             key={`type-${searchParams.get("type") ?? ""}`}
-            emptyOptionLabel="All types"
+            emptyOptionLabel={translations("filters.allTypes")}
             id="type"
             className="w-40"
-            ariaLabel="Filter emails by type"
+            ariaLabel={translations("filters.typeAria")}
             options={types.map((type) => ({
               value: type,
-              label: EMAIL_TYPE_LABELS[type] ?? type,
+              label: translations.has(`types.${type}`)
+                ? translations(`types.${type}`)
+                : type,
             }))}
           />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="recipient">
-            Recipient
+            {translations("filters.recipient")}
           </label>
           <Input
             id="recipient"
             name="recipient"
             type="text"
-            placeholder="email@example.com"
+            placeholder={translations("filters.recipientPlaceholder")}
             className="w-48"
           />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="fromDate">
-            From
+            {translations("filters.from")}
           </label>
           <Input id="fromDate" name="fromDate" type="date" className="w-36" />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-muted-foreground text-xs" htmlFor="toDate">
-            To
+            {translations("filters.to")}
           </label>
           <Input id="toDate" name="toDate" type="date" className="w-36" />
         </div>
@@ -143,14 +137,14 @@ export function EmailTrackingForm({
             className="text-muted-foreground text-xs"
             htmlFor="emailLogPageSize"
           >
-            Rows
+            {translations("filters.rows")}
           </label>
           <AutoSubmitSelect
             name="emailLogPageSize"
             defaultValue={String(pageSize)}
             id="emailLogPageSize"
             className="w-24"
-            ariaLabel="Email log page size"
+            ariaLabel={translations("filters.pageSizeAria")}
             options={[
               { value: "10", label: "10" },
               { value: "25", label: "25" },
@@ -160,31 +154,35 @@ export function EmailTrackingForm({
           />
         </div>
         <Button type="submit" size="sm">
-          Filter
+          {translations("filters.filter")}
         </Button>
         {hasFilters ? (
           <Button asChild variant="ghost" size="sm">
-            <Link href="/admin/email-tracking">Clear</Link>
+            <Link href="/admin/email-tracking">
+              {translations("filters.clear")}
+            </Link>
           </Button>
         ) : null}
       </form>
 
       {entries.length === 0 ? (
-        <p className="text-muted-foreground text-sm">No email logs found.</p>
+        <p className="text-muted-foreground text-sm">
+          {translations("noLogs")}
+        </p>
       ) : (
         <>
           <div className="overflow-x-auto rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Recipient</TableHead>
-                  <TableHead>Subject</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Detail</TableHead>
-                  <TableHead>Assessment</TableHead>
-                  <TableHead>Sent by</TableHead>
+                  <TableHead>{translations("table.date")}</TableHead>
+                  <TableHead>{translations("table.recipient")}</TableHead>
+                  <TableHead>{translations("table.subject")}</TableHead>
+                  <TableHead>{translations("table.type")}</TableHead>
+                  <TableHead>{translations("table.status")}</TableHead>
+                  <TableHead>{translations("table.detail")}</TableHead>
+                  <TableHead>{translations("table.assessment")}</TableHead>
+                  <TableHead>{translations("table.sentBy")}</TableHead>
                   <TableHead />
                 </TableRow>
               </TableHeader>
@@ -197,7 +195,11 @@ export function EmailTrackingForm({
           </div>
           <div className="flex items-center justify-between gap-4">
             <span className="text-muted-foreground text-xs">
-              Page {page} of {totalPages} ({totalCount} entries)
+              {translations("pagination", {
+                page,
+                totalPages,
+                total: totalCount,
+              })}
             </span>
             <div className="flex items-center gap-2">
               <Button asChild variant="outline" size="sm" disabled={page <= 1}>
@@ -207,7 +209,7 @@ export function EmailTrackingForm({
                     if (page <= 1) event.preventDefault();
                   }}
                 >
-                  Previous
+                  {translations("previous")}
                 </a>
               </Button>
               <Button
@@ -222,7 +224,7 @@ export function EmailTrackingForm({
                     if (page >= totalPages) event.preventDefault();
                   }}
                 >
-                  Next
+                  {translations("next")}
                 </a>
               </Button>
             </div>
@@ -234,6 +236,8 @@ export function EmailTrackingForm({
 }
 
 function EmailLogRow({ log }: { log: EmailLogEntry }) {
+  const translations = useTranslations("Admin.emailTracking");
+  const dateFormatter = useFormatter();
   const [retryState, action, isPending] = useActionState(
     retryEmailSendAction,
     undefined,
@@ -243,9 +247,13 @@ function EmailLogRow({ log }: { log: EmailLogEntry }) {
   return (
     <TableRow>
       <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
-        {formatDate(log.sentAt)}{" "}
-        {log.sentAt.getHours().toString().padStart(2, "0")}:
-        {log.sentAt.getMinutes().toString().padStart(2, "0")}
+        {dateFormatter.dateTime(log.sentAt, {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
       </TableCell>
       <TableCell className="font-mono text-xs">{log.sentTo}</TableCell>
       <TableCell
@@ -259,7 +267,9 @@ function EmailLogRow({ log }: { log: EmailLogEntry }) {
           variant={TYPE_VARIANT[log.type] ?? "outline"}
           className="text-xs"
         >
-          {EMAIL_TYPE_LABELS[log.type] ?? log.type}
+          {translations.has(`types.${log.type}`)
+            ? translations(`types.${log.type}`)
+            : log.type}
         </Badge>
       </TableCell>
       <TableCell className="p-3">
@@ -273,18 +283,16 @@ function EmailLogRow({ log }: { log: EmailLogEntry }) {
           }
           className="text-xs"
         >
-          {log.status === "SENT"
-            ? "Sent"
-            : log.status === "FAILED"
-              ? "Failed"
-              : log.status}
+          {translations.has(`statuses.${log.status}`)
+            ? translations(`statuses.${log.status}`)
+            : log.status}
         </Badge>
       </TableCell>
       <TableCell className="text-muted-foreground max-w-36 truncate text-xs">
         {log.status === "FAILED" && log.errorMessage ? (
           <span title={log.errorMessage}>{log.errorMessage}</span>
         ) : log.status === "SENT" ? (
-          "Accepted by SMTP server"
+          translations("accepted")
         ) : (
           "—"
         )}
@@ -302,7 +310,7 @@ function EmailLogRow({ log }: { log: EmailLogEntry }) {
         )}
       </TableCell>
       <TableCell className="text-muted-foreground text-xs">
-        {log.sentBy?.name ?? "System"}
+        {log.sentBy?.name ?? translations("system")}
       </TableCell>
       <TableCell>
         {log.status === "FAILED" && log.type !== "RESET" ? (
@@ -314,7 +322,7 @@ function EmailLogRow({ log }: { log: EmailLogEntry }) {
               size="sm"
               disabled={isPending}
             >
-              {isPending ? "Retrying..." : "Retry"}
+              {isPending ? translations("retrying") : translations("retry")}
             </Button>
           </form>
         ) : null}

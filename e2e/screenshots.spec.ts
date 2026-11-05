@@ -4,6 +4,15 @@ import { signInAsAdmin } from "./helpers";
 
 const SCREENSHOT_DIR = "docs/screenshots";
 
+// Message catalogs are serialized into the RSC payload, so asserting on the
+// absence of a literal loading string can never settle. Wait for the route
+// skeleton to unmount instead.
+async function waitForPageReady(page: import("@playwright/test").Page) {
+  await page.waitForFunction(
+    () => document.querySelector('[data-slot="skeleton"]') === null,
+  );
+}
+
 // These capture the images embedded in the docs site and are regenerated
 // locally. They are not a CI gate: the same pages are smoke-tested by the rbac
 // and settings specs, and image generation is timing-sensitive enough to flake
@@ -14,9 +23,7 @@ test.use({ viewport: { width: 1280, height: 800 } });
 
 test("capture dashboard screenshot", async ({ page }) => {
   await signInAsAdmin(page);
-  await page.waitForFunction(
-    () => !document.body.textContent?.includes("Loading..."),
-  );
+  await waitForPageReady(page);
   await page.waitForTimeout(3000);
   // Landmark asserts make this a real prod-build smoke test: a broken
   // page fails here instead of silently capturing a blank screenshot.
@@ -35,9 +42,7 @@ async function navigateToFirstVendor(page: import("@playwright/test").Page) {
     .filter({ hasText: "Vendors" })
     .click();
   await page.waitForURL("**/vendors");
-  await page.waitForFunction(
-    () => !document.body.textContent?.includes("Loading..."),
-  );
+  await waitForPageReady(page);
   await page.waitForTimeout(2000);
   const vendorLink = page
     .locator(
@@ -49,9 +54,7 @@ async function navigateToFirstVendor(page: import("@playwright/test").Page) {
   await expect(vendorLink).toBeVisible({ timeout: 30_000 });
   await vendorLink.click();
   await page.waitForURL("**/vendors/**");
-  await page.waitForFunction(
-    () => !document.body.textContent?.includes("Loading..."),
-  );
+  await waitForPageReady(page);
   await page.waitForTimeout(2000);
 }
 
@@ -91,14 +94,10 @@ test("capture assessment review screenshot", async ({ page }) => {
     .filter({ hasText: "Assessments" })
     .click();
   await page.waitForURL("**/assessments");
-  await page.waitForFunction(
-    () => !document.body.textContent?.includes("Loading..."),
-  );
+  await waitForPageReady(page);
   await page.getByText("E2E Assessment").click();
   await page.waitForURL("**/assessments/**");
-  await page.waitForFunction(
-    () => !document.body.textContent?.includes("Loading..."),
-  );
+  await waitForPageReady(page);
   await page.waitForTimeout(2000);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect(
@@ -116,14 +115,10 @@ test("capture template builder screenshot", async ({ page }) => {
     .filter({ hasText: "Templates" })
     .click();
   await page.waitForURL("**/templates");
-  await page.waitForFunction(
-    () => !document.body.textContent?.includes("Loading..."),
-  );
+  await waitForPageReady(page);
   await page.getByText("E2E Template").click();
   await page.waitForURL("**/templates/**");
-  await page.waitForFunction(
-    () => !document.body.textContent?.includes("Loading..."),
-  );
+  await waitForPageReady(page);
   await page.waitForTimeout(2000);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   // Published templates render read-only previews (no section editor).
@@ -136,9 +131,7 @@ test("capture template builder screenshot", async ({ page }) => {
 test("capture admin scoring screenshot", async ({ page }) => {
   await signInAsAdmin(page);
   await page.goto("/admin/scoring");
-  await page.waitForFunction(
-    () => !document.body.textContent?.includes("Loading..."),
-  );
+  await waitForPageReady(page);
   await page.waitForTimeout(2000);
   // CardTitle divs are not real headings; anchor on the form's own control.
   await expect(

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,10 +11,14 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Control coverage gaps" };
+export async function generateMetadata() {
+  const translations = await getTranslations("Frameworks.gaps");
+  return { title: translations("title") };
+}
 
 export default async function FrameworkGapsPage() {
   await requirePermission(PERMISSIONS.FRAMEWORKS_VIEW);
+  const translations = await getTranslations("Frameworks.gaps");
 
   const frameworks = await listAllFrameworks();
   const mappedControlIds = await getAllMappedControlIds();
@@ -47,19 +52,18 @@ export default async function FrameworkGapsPage() {
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">
-          Control coverage gaps
+          {translations("title")}
         </h1>
         <p className="text-muted-foreground text-sm">
-          Controls that have no questions mapped across any template. Use this
-          to identify blind spots in your assessment coverage.
+          {translations("subtitle")}
         </p>
       </div>
 
       {!hasAnyGaps ? (
         <EmptyState
           icon="frameworks"
-          title="No gaps found"
-          description="Every control in every framework has at least one question mapped to it."
+          title={translations("emptyTitle")}
+          description={translations("emptyDescription")}
         />
       ) : (
         <div className="flex flex-col gap-6">
@@ -74,14 +78,17 @@ export default async function FrameworkGapsPage() {
                     </span>
                   ) : null}
                   <Badge variant="secondary" className="ml-2 text-xs">
-                    {gap.mapped}/{gap.total} covered
+                    {translations("covered", {
+                      mapped: gap.mapped,
+                      total: gap.total,
+                    })}
                   </Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {gap.unmapped.length === 0 ? (
                   <p className="text-muted-foreground text-sm">
-                    All {gap.total} controls have at least one question mapped.
+                    {translations("allCovered", { count: gap.total })}
                   </p>
                 ) : (
                   <div className="flex flex-col gap-1">

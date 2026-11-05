@@ -27,6 +27,33 @@ export const assessmentSchema = z.object({
 
 export type AssessmentInput = z.infer<typeof assessmentSchema>;
 
+export type AssessmentValidationErrorKey =
+  | "invalidInput"
+  | "titleRequired"
+  | "titleTooLong"
+  | "templateRequired"
+  | "invalidDueDate";
+
+export function assessmentValidationErrorKey(
+  error: z.ZodError,
+): AssessmentValidationErrorKey {
+  const firstIssue = error.issues[0];
+  if (!firstIssue) {
+    return "invalidInput";
+  }
+  const field = firstIssue.path[0];
+  if (field === "title") {
+    return firstIssue.code === "too_big" ? "titleTooLong" : "titleRequired";
+  }
+  if (field === "templateId") {
+    return "templateRequired";
+  }
+  if (field === "dueDate") {
+    return "invalidDueDate";
+  }
+  return "invalidInput";
+}
+
 export const updateAssessmentSchema = z.object({
   title: assessmentTitleSchema,
   dueDate: assessmentDueDateSchema,

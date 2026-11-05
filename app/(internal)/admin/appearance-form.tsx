@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -42,6 +43,7 @@ function ColorField({
   defaultHex: string;
   name: string;
 }) {
+  const translations = useTranslations("Admin.appearance");
   const [color, setColor] = useState(hexValue || defaultHex);
 
   return (
@@ -69,7 +71,7 @@ function ColorField({
           size="sm"
           onClick={() => setColor(defaultHex)}
         >
-          Reset
+          {translations("reset")}
         </Button>
       </div>
     </div>
@@ -88,6 +90,7 @@ export function AppearanceForm({
   borderRadius,
   pageWidth,
 }: AppearanceFormProps) {
+  const translations = useTranslations("Admin.appearance");
   const [state, action, isPending] = useActionState(
     saveAppearanceSettings,
     undefined,
@@ -104,7 +107,7 @@ export function AppearanceForm({
         value="false"
       />
       <div className="grid gap-2">
-        <Label htmlFor="logoFile">Logo</Label>
+        <Label htmlFor="logoFile">{translations("logo")}</Label>
         <Input
           id="logoFile"
           name="logoFile"
@@ -121,15 +124,15 @@ export function AppearanceForm({
           <div className="flex flex-col gap-2">
             <img
               src={`/api/brand/logo?v=${logoKey}`}
-              alt="Current logo"
+              alt={translations("currentLogoAlt")}
               width={48}
               height={48}
               className="h-12 w-auto rounded-md border object-contain"
             />
             <ConfirmDialog
-              title="Remove logo?"
-              description="The current logo will be removed from all pages. You can upload a new logo at any time."
-              confirmLabel="Remove"
+              title={translations("removeLogoTitle")}
+              description={translations("removeLogoDescription")}
+              confirmLabel={translations("remove")}
               formId="appearance-form"
             >
               <Button
@@ -144,65 +147,65 @@ export function AppearanceForm({
                   if (input) input.value = "true";
                 }}
               >
-                Remove logo
+                {translations("removeLogo")}
               </Button>
             </ConfirmDialog>
           </div>
         ) : (
           <p className="text-muted-foreground text-xs">
-            No logo uploaded. Upload a PNG or JPG (max 2 MB).
+            {translations("noLogo")}
           </p>
         )}
       </div>
 
       <ColorField
-        label="Primary colour"
-        description="Used for main buttons, links, and active states."
+        label={translations("primaryColour")}
+        description={translations("primaryColourHint")}
         hexValue={primaryHex}
         defaultHex="#0a0a0a"
         name="primaryHex"
       />
 
       <ColorField
-        label="Secondary colour"
-        description="Used for tags, pills, badges, and secondary elements."
+        label={translations("secondaryColour")}
+        description={translations("secondaryColourHint")}
         hexValue={secondaryHex}
         defaultHex="#f5f5f5"
         name="secondaryHex"
       />
 
       <div className="border-t pt-6">
-        <p className="text-sm font-medium">RAG indicator colours</p>
+        <p className="text-sm font-medium">{translations("ragTitle")}</p>
         <p className="text-muted-foreground text-xs">
-          Used for score indicators, progress bars, and the vendor risk heatmap.
+          {translations("ragHint")}
         </p>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">
         <ColorField
-          label="Green (compliant)"
-          description="Score ≥ 85%"
+          label={translations("ragGreen")}
+          description={translations("ragGreenHint")}
           hexValue={ragGreenHex}
           defaultHex="#16a34a"
           name="ragGreenHex"
         />
         <ColorField
-          label="Amber (needs attention)"
-          description="Score 60–84%"
+          label={translations("ragAmber")}
+          description={translations("ragAmberHint")}
           hexValue={ragAmberHex}
           defaultHex="#d97706"
           name="ragAmberHex"
         />
         <ColorField
-          label="Red (deficient)"
-          description="Score &lt; 60%"
+          label={translations("ragRed")}
+          description={translations("ragRedHint")}
           hexValue={ragRedHex}
           defaultHex="#dc2626"
           name="ragRedHex"
         />
         <ColorField
-          label="Unscored (neutral)"
-          description="Not yet assessed"
+          label={translations("ragUnscored")}
+          description={translations("ragUnscoredHint")}
           hexValue={ragUnscoredHex}
           defaultHex="#9ca3af"
           name="ragUnscoredHex"
@@ -210,17 +213,17 @@ export function AppearanceForm({
       </div>
 
       <div className="border-t pt-6">
-        <p className="text-sm font-medium">Layout</p>
+        <p className="text-sm font-medium">{translations("layoutTitle")}</p>
         <p className="text-muted-foreground text-xs">
-          Adjust the overall look and feel of the platform.
+          {translations("layoutHint")}
         </p>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="grid gap-2">
-          <Label htmlFor="borderRadius">Border radius (px)</Label>
+          <Label htmlFor="borderRadius">{translations("borderRadius")}</Label>
           <p className="text-muted-foreground text-xs">
-            Controls how rounded corners are across the app.
+            {translations("borderRadiusHint")}
           </p>
           <Input
             id="borderRadius"
@@ -234,17 +237,19 @@ export function AppearanceForm({
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="pageWidth">Page width</Label>
+          <Label htmlFor="pageWidth">{translations("pageWidth")}</Label>
           <p className="text-muted-foreground text-xs">
-            Constrain content to a readable width or use the full screen.
+            {translations("pageWidthHint")}
           </p>
           <Select name="pageWidth" defaultValue={pageWidth} key={pageWidth}>
             <SelectTrigger id="pageWidth" className="w-40">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="constrained">Constrained</SelectItem>
-              <SelectItem value="full">Full width</SelectItem>
+              <SelectItem value="constrained">
+                {translations("constrained")}
+              </SelectItem>
+              <SelectItem value="full">{translations("full")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -252,7 +257,7 @@ export function AppearanceForm({
 
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={isPending} size="sm">
-          {isPending ? "Saving..." : "Save appearance"}
+          {isPending ? translations("saving") : translations("save")}
         </Button>
       </div>
     </form>

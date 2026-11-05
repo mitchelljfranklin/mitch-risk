@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,11 +27,14 @@ type ConfirmDialogProps = {
 export function ConfirmDialog({
   title,
   description,
-  confirmLabel = "Delete",
+  confirmLabel,
   variant = "destructive",
   formId,
   children,
 }: ConfirmDialogProps) {
+  const translations = useTranslations("Common");
+  const resolvedConfirmLabel = confirmLabel ?? translations("delete");
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -40,7 +44,7 @@ export function ConfirmDialog({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>{translations("cancel")}</AlertDialogCancel>
           <AlertDialogAction
             form={formId}
             type={formId ? "submit" : "button"}
@@ -48,7 +52,7 @@ export function ConfirmDialog({
               variant: variant === "destructive" ? "destructive" : "default",
             })}
           >
-            {confirmLabel}
+            {resolvedConfirmLabel}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

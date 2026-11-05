@@ -1,6 +1,8 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { AlertTriangle } from "lucide-react";
+import { getFormatter, getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,14 +30,16 @@ import {
   type VendorSort,
 } from "@/lib/db/vendors";
 import { getOpenFindingsSummaryByVendor } from "@/lib/db/findings";
-import { VENDOR_TIER_LABELS } from "@/lib/schemas/vendor";
-import { formatDate } from "@/lib/utils";
+import { VENDOR_TIERS } from "@/lib/schemas/vendor";
 import { parseListView, VENDOR_VIEW_COOKIE } from "@/lib/view-preference";
 import { buildBackParam } from "@/lib/nav";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Vendors" };
+export async function generateMetadata(): Promise<Metadata> {
+  const translations = await getTranslations("Vendors");
+  return { title: translations("metaTitle") };
+}
 
 type VendorsPageProps = {
   searchParams: Promise<Record<string, string | undefined>>;
@@ -43,6 +47,9 @@ type VendorsPageProps = {
 
 export default async function VendorsPage({ searchParams }: VendorsPageProps) {
   const user = await requirePermission(PERMISSIONS.VENDORS_VIEW);
+  const translations = await getTranslations("Vendors");
+  const commonTranslations = await getTranslations("Common");
+  const dateFormatter = await getFormatter();
   const canCreateVendor = hasPermission(
     user.permissions,
     PERMISSIONS.VENDORS_CREATE,
@@ -52,18 +59,23 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
     PERMISSIONS.ASSESSMENTS_CREATE,
   );
 
-  const sp = await searchParams;
-  const sort = (sp.sort as VendorSort) || "name";
-  const page = sp.page ? parseInt(sp.page, 10) || 1 : 1;
+  const searchParameters = await searchParams;
+  const sort = (searchParameters.sort as VendorSort) || "name";
+  const requestedPage = searchParameters.page
+    ? Number.parseInt(searchParameters.page, 10)
+    : 1;
+  const page =
+    Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1;
   const { vendors, totalCount, pageSize } = await listVendors({
-    query: sp.query,
-    tier: sp.tier || undefined,
+    query: searchParameters.query,
+    tier: searchParameters.tier || undefined,
     sort,
     page,
   });
   const exportVendors = await exportAllVendors();
-  const hasFilters = Boolean(sp.query) || Boolean(sp.tier);
-  const backParam = buildBackParam("/vendors", sp, [
+  const hasFilters =
+    Boolean(searchParameters.query) || Boolean(searchParameters.tier);
+  const backParam = buildBackParam("/vendors", searchParameters, [
     "query",
     "tier",
     "sort",
@@ -81,14 +93,16 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Vendors</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {translations("title")}
+          </h1>
           <p className="text-muted-foreground text-sm">
-            Vendors you assess for security risk.
+            {translations("subtitle")}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button asChild variant="outline">
-            <Link href="/vendors/compare">Compare</Link>
+            <Link href="/vendors/compare">{translations("compare")}</Link>
           </Button>
           <VendorExportButton
             currentVendors={vendors.map((vendor) => ({
@@ -128,17 +142,17 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
           />
           {canCreateVendor ? (
             <Button asChild variant="outline">
-              <Link href="/vendors/import">Import</Link>
+              <Link href="/vendors/import">{translations("import")}</Link>
             </Button>
           ) : null}
           {canSendAssessment ? (
             <Button asChild variant="outline">
-              <Link href="/vendors/bulk-send">Bulk send</Link>
+              <Link href="/vendors/bulk-send">{translations("bulkSend")}</Link>
             </Button>
           ) : null}
           {canCreateVendor ? (
             <Button asChild>
-              <Link href="/vendors/new">New vendor</Link>
+              <Link href="/vendors/new">{translations("newVendor")}</Link>
             </Button>
           ) : null}
         </div>
@@ -148,167 +162,175 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
         <form className="flex flex-wrap items-end gap-2">
           <div className="flex flex-col gap-1">
             <label className="text-muted-foreground text-xs" htmlFor="query">
-              Search
+              {translations("search")}
             </label>
             <Input
               id="query"
               name="query"
-              placeholder="Name or email…"
-              defaultValue={sp.query ?? ""}
+              placeholder={translations("searchPlaceholder")}
+              defaultValue={searchParameters.query ?? ""}
               className="w-48"
             />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-muted-foreground text-xs" htmlFor="tier">
-              Tier
+              {translations("tier")}
             </label>
             <AutoSubmitSelect
               name="tier"
-              defaultValue={sp.tier ?? ""}
-              key={`tier-${sp.tier ?? ""}`}
-              emptyOptionLabel="Any tier"
+              defaultValue={searchParameters.tier ?? ""}
+              key={`tier-${searchParameters.tier ?? ""}`}
+              emptyOptionLabel={translations("anyTier")}
               id="tier"
               className="w-40"
-              ariaLabel="Filter vendors by tier"
-              options={Object.entries(VENDOR_TIER_LABELS).map(
-                ([value, label]) => ({
-                  value,
-                  label,
-                }),
-              )}
+              ariaLabel={translations("filterTierAria")}
+              options={VENDOR_TIERS.map((tier) => ({
+                value: tier,
+                label: commonTranslations(`tiers.${tier}`),
+              }))}
             />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-muted-foreground text-xs" htmlFor="sort">
-              Sort
+              {translations("sort")}
             </label>
             <AutoSubmitSelect
               name="sort"
               defaultValue={sort}
               id="sort"
               className="w-48"
-              ariaLabel="Sort vendors"
-              options={Object.entries(VENDOR_SORTS).map(([value, label]) => ({
+              ariaLabel={translations("sortAria")}
+              options={Object.keys(VENDOR_SORTS).map((value) => ({
                 value,
-                label,
+                label: translations(`sorts.${value}`),
               }))}
             />
           </div>
           <Button type="submit" variant="secondary" size="sm" className="mb-px">
-            Filter
+            {translations("filter")}
           </Button>
           {hasFilters ? (
             <Button asChild variant="ghost" size="sm" className="mb-px">
-              <Link href="/vendors">Clear</Link>
+              <Link href="/vendors">{translations("clear")}</Link>
             </Button>
           ) : null}
         </form>
         <ViewToggle
           value={view}
           cookieName={VENDOR_VIEW_COOKIE}
-          ariaLabel="Vendor list view"
+          ariaLabel={translations("viewAria")}
         />
       </div>
 
       {vendors.length === 0 ? (
         hasFilters ? (
           <p className="text-muted-foreground text-sm">
-            No vendors match the selected filters.
+            {translations("noMatches")}
           </p>
         ) : (
           <EmptyState
             icon="vendors"
-            title="No vendors yet"
-            description="Add a vendor to start tracking their security risk."
+            title={translations("emptyTitle")}
+            description={translations("emptyDescription")}
           />
         )
       ) : (
         <>
           {view === "cards" ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {vendors.map((vendor) => (
-                <Link
-                  key={vendor.id}
-                  href={`/vendors/${vendor.id}${backParam}`}
-                >
-                  <Card className="hover:bg-accent/40 h-full transition-colors">
-                    <CardHeader>
-                      <div className="flex items-start justify-between gap-2">
-                        <CardTitle className="truncate">
-                          {vendor.name}
-                        </CardTitle>
-                        {vendor.tier ? (
-                          <Badge variant="outline" className="shrink-0">
-                            {VENDOR_TIER_LABELS[vendor.tier]}
-                          </Badge>
-                        ) : null}
-                      </div>
-                      <CardDescription className="truncate">
-                        {vendor.contactEmail}
-                      </CardDescription>
-                      {vendor.tags?.length > 0 ? (
-                        <div className="mt-1 flex flex-wrap gap-1">
-                          {vendor.tags.map((tag) => (
-                            <Badge
-                              key={tag}
-                              variant="secondary"
-                              className="text-[10px]"
-                            >
-                              {tag}
+              {vendors.map((vendor) => {
+                const vendorFindings = findingsSummaryByVendor[vendor.id];
+                return (
+                  <Link
+                    key={vendor.id}
+                    href={`/vendors/${vendor.id}${backParam}`}
+                  >
+                    <Card className="hover:bg-accent/40 h-full transition-colors">
+                      <CardHeader>
+                        <div className="flex items-start justify-between gap-2">
+                          <CardTitle className="truncate">
+                            {vendor.name}
+                          </CardTitle>
+                          {vendor.tier ? (
+                            <Badge variant="outline" className="shrink-0">
+                              {commonTranslations.has(`tiers.${vendor.tier}`)
+                                ? commonTranslations(`tiers.${vendor.tier}`)
+                                : vendor.tier}
                             </Badge>
-                          ))}
+                          ) : null}
                         </div>
-                      ) : null}
-                    </CardHeader>
-                    <CardContent className="flex items-end justify-between gap-2">
-                      <div className="text-muted-foreground flex flex-col gap-0.5 text-xs">
-                        <span>
-                          {vendor.lastAssessedAt
-                            ? `Assessed ${formatDate(vendor.lastAssessedAt)}`
-                            : "Not assessed"}
-                        </span>
-                        <span>
-                          {vendor._count.assessments}{" "}
-                          {vendor._count.assessments === 1
-                            ? "assessment"
-                            : "assessments"}
-                        </span>
-                        {(findingsSummaryByVendor[vendor.id]?.openCount ?? 0) >
-                        0 ? (
-                          <span className="text-destructive flex items-center gap-1">
-                            <AlertTriangle className="size-3" />
-                            {findingsSummaryByVendor[vendor.id]!.openCount} open
-                            finding
-                            {findingsSummaryByVendor[vendor.id]!.openCount !== 1
-                              ? "s"
-                              : ""}
-                          </span>
-                        ) : null}
-                      </div>
-                      <div className="flex flex-col items-end gap-1.5">
-                        <ScoreBadge score={vendor.overallScore} size="lg" />
-                        {findingsSummaryByVendor[vendor.id]?.severityDots
-                          .length ? (
-                          <div className="flex gap-0.5">
-                            {findingsSummaryByVendor[
-                              vendor.id
-                            ]!.severityDots.map((severity, index) => (
-                              <span
-                                key={index}
-                                className={`size-1.5 rounded-full ${
-                                  severity === "CRITICAL" || severity === "HIGH"
-                                    ? "bg-[var(--rag-red)]"
-                                    : "bg-[var(--rag-amber)]"
-                                }`}
-                              />
+                        <CardDescription className="truncate">
+                          {vendor.contactEmail}
+                        </CardDescription>
+                        {vendor.tags?.length > 0 ? (
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {vendor.tags.map((tag) => (
+                              <Badge
+                                key={tag}
+                                variant="secondary"
+                                className="text-[10px]"
+                              >
+                                {tag}
+                              </Badge>
                             ))}
                           </div>
                         ) : null}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
+                      </CardHeader>
+                      <CardContent className="flex items-end justify-between gap-2">
+                        <div className="text-muted-foreground flex flex-col gap-0.5 text-xs">
+                          <span>
+                            {vendor.lastAssessedAt
+                              ? translations("assessed", {
+                                  date: dateFormatter.dateTime(
+                                    vendor.lastAssessedAt,
+                                    {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                    },
+                                  ),
+                                })
+                              : translations("notAssessed")}
+                          </span>
+                          <span>
+                            {translations("assessmentCount", {
+                              count: vendor._count.assessments,
+                            })}
+                          </span>
+                          {(vendorFindings?.openCount ?? 0) > 0 ? (
+                            <span className="text-destructive flex items-center gap-1">
+                              <AlertTriangle className="size-3" />
+                              {translations("openFindingCount", {
+                                count: vendorFindings?.openCount ?? 0,
+                              })}
+                            </span>
+                          ) : null}
+                        </div>
+                        <div className="flex flex-col items-end gap-1.5">
+                          <ScoreBadge score={vendor.overallScore} size="lg" />
+                          {vendorFindings?.severityDots.length ? (
+                            <div className="flex gap-0.5">
+                              {vendorFindings.severityDots.map(
+                                (severity, index) => (
+                                  <span
+                                    key={`${severity}-${index}`}
+                                    className={`size-1.5 rounded-full ${
+                                      severity === "CRITICAL" ||
+                                      severity === "HIGH"
+                                        ? "bg-[var(--rag-red)]"
+                                        : "bg-[var(--rag-amber)]"
+                                    }`}
+                                  />
+                                ),
+                              )}
+                            </div>
+                          ) : null}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                );
+              })}
             </div>
           ) : (
             <VendorsTable
@@ -331,7 +353,7 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
               page={page}
               pageSize={pageSize}
               totalCount={totalCount}
-              itemLabel="vendors"
+              itemLabel={translations("list.items")}
             />
           ) : null}
         </>

@@ -2,6 +2,7 @@
 
 import { type ReactNode } from "react";
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -52,6 +53,7 @@ function BreakGlassSection({
 }: {
   breakGlassConfigured: boolean;
 }) {
+  const translations = useTranslations("Admin.signIn.breakGlass");
   const [state, formAction, isPending] = useActionState(
     generateBreakGlassUrlAction,
     breakGlassInitialState,
@@ -60,23 +62,21 @@ function BreakGlassSection({
 
   return (
     <div className="grid gap-3 rounded-md border p-3">
-      <p className="text-sm font-medium">Break-glass access</p>
+      <p className="text-sm font-medium">{translations("title")}</p>
       <p className="text-muted-foreground text-xs">
-        When local sign-in is disabled, this secret URL still shows the
-        email/password form so an admin can sign in if SSO is unavailable.
-        Generating a new URL immediately revokes the previous one.
+        {translations("description")}{" "}
         {breakGlassConfigured
-          ? " A break-glass URL is currently configured."
-          : " No break-glass URL is configured yet."}
+          ? translations("configured")
+          : translations("notConfigured")}
       </p>
       {state?.ok && state.url ? <CopyLink value={state.url} /> : null}
       <form action={formAction}>
         <Button type="submit" variant="outline" size="sm" disabled={isPending}>
           {isPending
-            ? "Generating..."
+            ? translations("generating")
             : breakGlassConfigured
-              ? "Regenerate break-glass URL"
-              : "Generate break-glass URL"}
+              ? translations("regenerate")
+              : translations("generate")}
         </Button>
       </form>
     </div>
@@ -102,6 +102,8 @@ function ProviderSection({
   secretConfigured: boolean;
   children?: ReactNode;
 }) {
+  const translations = useTranslations("Admin.signIn.sso");
+
   return (
     <div className="grid gap-3 rounded-md border p-3">
       <div className="flex items-center justify-between">
@@ -112,7 +114,7 @@ function ProviderSection({
             name={enabledName}
             defaultChecked={enabledDefault}
           />
-          Enabled
+          {translations("enabled")}
         </label>
       </div>
       {children ? (
@@ -120,7 +122,7 @@ function ProviderSection({
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-2">
-            <Label htmlFor={clientIdName}>Client ID</Label>
+            <Label htmlFor={clientIdName}>{translations("clientId")}</Label>
             <Input
               id={clientIdName}
               name={clientIdName}
@@ -128,7 +130,9 @@ function ProviderSection({
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor={clientSecretName}>Client secret</Label>
+            <Label htmlFor={clientSecretName}>
+              {translations("clientSecret")}
+            </Label>
             <Input
               id={clientSecretName}
               name={clientSecretName}
@@ -136,12 +140,12 @@ function ProviderSection({
               autoComplete="off"
               placeholder={
                 secretConfigured
-                  ? "Leave blank to keep current"
-                  : "Client secret"
+                  ? translations("secretKeep")
+                  : translations("secretEnter")
               }
             />
             <p className="text-muted-foreground text-xs">
-              Stored encrypted at rest and never displayed.
+              {translations("secretHint")}
             </p>
           </div>
         </div>
@@ -168,6 +172,7 @@ export function SsoForm({
   disableLocalAuth,
   breakGlassConfigured,
 }: SsoFormProps) {
+  const translations = useTranslations("Admin.signIn.sso");
   const [state, formAction, isPending] = useActionState(
     saveSsoSettings,
     initialState,
@@ -178,7 +183,7 @@ export function SsoForm({
     <div className="grid gap-6">
       <form action={formAction} className="grid gap-4">
         <ProviderSection
-          label="Microsoft Entra ID"
+          label={translations("entraId")}
           enabledName="entraIdEnabled"
           enabledDefault={entraIdEnabled}
           clientIdName="entraIdClientId"
@@ -188,7 +193,7 @@ export function SsoForm({
         />
 
         <ProviderSection
-          label="Google Workspace"
+          label={translations("google")}
           enabledName="googleEnabled"
           enabledDefault={googleEnabled}
           clientIdName="googleClientId"
@@ -198,7 +203,7 @@ export function SsoForm({
         />
 
         <ProviderSection
-          label="Custom OIDC"
+          label={translations("oidc")}
           enabledName="oidcEnabled"
           enabledDefault={oidcEnabled}
           clientIdName="oidcClientId"
@@ -207,26 +212,26 @@ export function SsoForm({
           secretConfigured={oidcSecretConfigured}
         >
           <div className="grid gap-2">
-            <Label htmlFor="oidcName">Provider display name</Label>
+            <Label htmlFor="oidcName">{translations("displayName")}</Label>
             <Input
               id="oidcName"
               name="oidcName"
               defaultValue={oidcName}
-              placeholder="Okta / Auth0 / Keycloak"
+              placeholder={translations("displayNamePlaceholder")}
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="oidcIssuer">Issuer URL</Label>
+            <Label htmlFor="oidcIssuer">{translations("issuerUrl")}</Label>
             <Input
               id="oidcIssuer"
               name="oidcIssuer"
               defaultValue={oidcIssuer}
-              placeholder="https://example.okta.com"
+              placeholder={translations("issuerPlaceholder")}
             />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="grid gap-2">
-              <Label htmlFor="oidcClientId">Client ID</Label>
+              <Label htmlFor="oidcClientId">{translations("clientId")}</Label>
               <Input
                 id="oidcClientId"
                 name="oidcClientId"
@@ -234,7 +239,9 @@ export function SsoForm({
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="oidcClientSecret">Client secret</Label>
+              <Label htmlFor="oidcClientSecret">
+                {translations("clientSecret")}
+              </Label>
               <Input
                 id="oidcClientSecret"
                 name="oidcClientSecret"
@@ -242,12 +249,12 @@ export function SsoForm({
                 autoComplete="off"
                 placeholder={
                   oidcSecretConfigured
-                    ? "Leave blank to keep current"
-                    : "Client secret"
+                    ? translations("secretKeep")
+                    : translations("secretEnter")
                 }
               />
               <p className="text-muted-foreground text-xs">
-                Stored encrypted at rest and never displayed.
+                {translations("secretHint")}
               </p>
             </div>
           </div>
@@ -256,7 +263,7 @@ export function SsoForm({
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-2">
             <Label htmlFor="autoProvisionRoleId">
-              Default role for new SSO users
+              {translations("defaultRole")}
             </Label>
             <Select
               key={autoProvisionRoleId}
@@ -279,11 +286,13 @@ export function SsoForm({
             </Select>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="allowedDomain">Restrict to domain (optional)</Label>
+            <Label htmlFor="allowedDomain">
+              {translations("allowedDomain")}
+            </Label>
             <Input
               id="allowedDomain"
               name="allowedDomain"
-              placeholder="@company.com"
+              placeholder={translations("allowedDomainPlaceholder")}
               defaultValue={allowedDomain}
             />
           </div>
@@ -296,19 +305,16 @@ export function SsoForm({
               name="disableLocalAuth"
               defaultChecked={disableLocalAuth}
             />
-            Disable email/password sign-in (SSO only)
+            {translations("disableLocalAuth")}
           </label>
           <p className="text-muted-foreground text-xs">
-            Hides the local login form so staff can only sign in via SSO.
-            Ignored unless at least one SSO provider is enabled, so a
-            misconfiguration cannot lock everyone out. Use the break-glass URL
-            below for emergency access.
+            {translations("disableLocalAuthHint")}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <Button type="submit" disabled={isPending} size="sm">
-            {isPending ? "Saving..." : "Save SSO"}
+            {isPending ? translations("saving") : translations("save")}
           </Button>
         </div>
       </form>

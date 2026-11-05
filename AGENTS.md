@@ -59,11 +59,14 @@ lib/                 cross-cutting logic
   settings/            DB-backed operational config (schema, accessor, read/write)
   storage/             storage interface + local-disk/s3/azure + orphan-sweep
   email/               Nodemailer mailer + token replacer
+  i18n/                cookie-based locale config, resolver, and request config
+  pdf/                 PDF font registration + bundled Noto fonts (per-locale families)
   permissions.ts       PERMISSIONS catalog, SYSTEM_ROLE_DEFINITIONS/NAMES, hasPermission()
   auth.ts              Auth.js config + requirePermission()
   prisma.ts            shared Prisma client instance
-hooks/               use-form-toast, use-action-feedback, use-mobile
+hooks/               use-form-toast, use-action-feedback, use-locale-switch, use-mobile
 emails/              React Email templates rendered from Settings via token replacement
+messages/            locale catalogs (12 languages; key parity enforced by a unit test)
 prisma/              schema.prisma, migrations, seed.ts, seed-demo.ts, seed-data/
 scripts/             backup, bump-version.mjs, prepare-standalone.mjs
 e2e/                 Playwright end-to-end tests
@@ -277,6 +280,27 @@ UI hiding is cosmetic; the server guard is the real control — **both are alway
   user-configurable `--rag-*` palette (score/compliance indicators only).
 - **No copy-paste.** If markup or logic appears twice, extract a component/function; a reused
   Prisma query belongs in `lib/db/`.
+- **i18n is cookie-based** (`NEXT_LOCALE`): there are no `/[locale]/` URL segments and no
+  next-intl middleware. Server components/actions use `getTranslations`; client components use
+  `useTranslations`. Name the translator `translations`, **never `t`** — the repo bans
+  single-letter variables. Keep every `messages/*.json` catalog key-identical — a unit
+  test enforces it. Resolution is cookie → org default (Admin → General) → `Accept-Language` →
+  `en`. `setLocaleAction` only writes the cookie; the switcher calls `router.refresh()` (never
+  `revalidatePath`). Translated into English, Spanish, French, German, Portuguese (Brazil), Italian,
+  Dutch, Japanese, Korean, Simplified Chinese, Arabic, and Hindi: auth screens; internal shell
+  (sidebar, user menu, command palette, breadcrumbs, idle timeout, scroll-to-top); dashboard; vendors
+  list/create/edit/detail/import/compare/bulk-send; assessments list/create/detail/review; templates
+  list/builder/preview/import; frameworks list/detail/controls/gaps/import; risk register;
+  self-assessment; profile; Trust Center manager and public page; vendor portal; emails; PDFs;
+  admin (all sections); and not-found. The catastrophic `app/global-error.tsx` fallback stays
+  English because it renders outside the locale provider. Email templates are admin-authored; only
+  the built-in defaults are translated (`lib/settings/email-template-defaults.ts`) — customized
+  templates are sent as written. Emails render in the organization's default language (cron has no
+  request locale); PDFs follow the request locale via `getTranslations`/`getFormatter`; use those
+  (not `formatDate()`, which is fixed to en-GB) for dates on translated surfaces. PDFs use the
+  bundled Noto families in `lib/pdf/fonts/`; keep `outputFileTracingIncludes` in `next.config.ts` so
+  standalone builds include them. Arabic sets `dir="rtl"` at the root, in PDFs, and in outbound HTML
+  email, but the layout is only RTL best-effort.
 
 ## Windows / PowerShell tooling notes
 

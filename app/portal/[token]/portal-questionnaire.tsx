@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useFormatter, useTranslations } from "next-intl";
 import { type ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 
 import {
@@ -27,7 +28,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ThemeToggle } from "@/components/theme-toggle";
 import ReactMarkdown from "react-markdown";
 import { ProgressBar } from "@/components/progress-bar";
 import {
@@ -37,7 +37,6 @@ import {
   uploadEvidenceAction,
   vendorAddCommentAction,
 } from "@/lib/actions/portal";
-import { formatDate } from "@/lib/utils";
 import {
   findMissingRequiredQuestions,
   hasAnswer,
@@ -113,16 +112,17 @@ function buildInitialAnswers(initial: PortalInitialAnswer[]): PortalAnswers {
 }
 
 function buildInitialEvidence(initial: PortalEvidence[]): EvidenceMap {
-  const map: EvidenceMap = {};
+  const evidenceByQuestion: EvidenceMap = {};
   for (const item of initial) {
     if (!item.assessmentQuestionId) {
       continue;
     }
-    const list = map[item.assessmentQuestionId] ?? [];
-    list.push({ id: item.id, fileName: item.fileName });
-    map[item.assessmentQuestionId] = list;
+    const filesForQuestion =
+      evidenceByQuestion[item.assessmentQuestionId] ?? [];
+    filesForQuestion.push({ id: item.id, fileName: item.fileName });
+    evidenceByQuestion[item.assessmentQuestionId] = filesForQuestion;
   }
-  return map;
+  return evidenceByQuestion;
 }
 
 type VisibleSection = { title: string; questions: PortalQuestion[] };
@@ -133,16 +133,17 @@ function groupVisibleSections(
   questions: PortalQuestion[],
   answers: PortalAnswers,
 ): VisibleSection[] {
-  const map = new Map<string, PortalQuestion[]>();
+  const questionsBySection = new Map<string, PortalQuestion[]>();
   for (const question of questions) {
     if (!isQuestionVisible(question.conditionalLogic, answers)) {
       continue;
     }
-    const list = map.get(question.sectionTitle) ?? [];
-    list.push(question);
-    map.set(question.sectionTitle, list);
+    const questionsForSection =
+      questionsBySection.get(question.sectionTitle) ?? [];
+    questionsForSection.push(question);
+    questionsBySection.set(question.sectionTitle, questionsForSection);
   }
-  return [...map.entries()].map(([title, sectionQuestions]) => ({
+  return [...questionsBySection.entries()].map(([title, sectionQuestions]) => ({
     title,
     questions: sectionQuestions,
   }));
@@ -166,6 +167,8 @@ export function PortalQuestionnaire({
   allowedExtensions = ["pdf", "docx", "xlsx"],
 }: PortalQuestionnaireProps) {
   const router = useRouter();
+  const translations = useTranslations("Portal.questionnaire");
+  const dateFormatter = useFormatter();
   const [answers, setAnswers] = useState<PortalAnswers>(() =>
     buildInitialAnswers(initialAnswers),
   );
@@ -211,7 +214,9 @@ export function PortalQuestionnaire({
   const [comments, setComments] = useState<PortalComment[]>(initialComments);
   const [commentText, setCommentText] = useState<Record<string, string>>({});
   const [sendingComment, setSendingComment] = useState(false);
-  const [expiryLabel, setExpiryLabel] = useState<string | null>(null);
+  const [expiry, setExpiry] = useState<
+    { kind: "expired" } | { kind: "hours" | "minutes"; value: number } | null
+  >(null);
   const [isLinkExpired, setIsLinkExpired] = useState(false);
 
   async function handleVendorComment(questionId: string) {
@@ -228,7 +233,7 @@ export function PortalQuestionnaire({
           id: `local-${Date.now()}`,
           assessmentQuestionId: questionId,
           authorType: "VENDOR",
-          authorName: "Vendor",
+          authorName: translations("vendorAuthor"),
           body,
           createdAt: new Date(),
         },
@@ -242,7 +247,7 @@ export function PortalQuestionnaire({
     setEvidence((current) => ({
       ...current,
       [questionId]: (current[questionId] ?? []).filter(
-        (f) => f.id !== evidenceId,
+        (file) => file.id !== evidenceId,
       ),
     }));
     await removePortalEvidenceAction(evidenceId, token);
@@ -299,7 +304,7 @@ export function PortalQuestionnaire({
     function update() {
       const remaining = new Date(tokenExpiresAt!).getTime() - Date.now();
       if (remaining <= 0) {
-        setExpiryLabel("This link has expired.");
+        setExpiry({ kind: "expired" });
         setIsLinkExpired(true);
         return;
       }
@@ -307,17 +312,13 @@ export function PortalQuestionnaire({
       const hours = Math.floor(remaining / (1000 * 60 * 60));
       const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
       if (hours > 24) {
-        setExpiryLabel(null);
+        setExpiry(null);
         return;
       }
       if (hours > 0) {
-        setExpiryLabel(
-          `This link expires in ${hours} hour${hours > 1 ? "s" : ""}.`,
-        );
+        setExpiry({ kind: "hours", value: hours });
       } else {
-        setExpiryLabel(
-          `This link expires in ${minutes} minute${minutes > 1 ? "s" : ""}.`,
-        );
+        setExpiry({ kind: "minutes", value: minutes });
       }
     }
     update();
@@ -325,14 +326,15 @@ export function PortalQuestionnaire({
     return () => clearInterval(interval);
   }, [tokenExpiresAt]);
 
-  const sections = useMemo(() => {
-    const map = new Map<string, PortalQuestion[]>();
+  const questionSections = useMemo(() => {
+    const questionsBySection = new Map<string, PortalQuestion[]>();
     for (const question of questions) {
-      const list = map.get(question.sectionTitle) ?? [];
-      list.push(question);
-      map.set(question.sectionTitle, list);
+      const questionsForSection =
+        questionsBySection.get(question.sectionTitle) ?? [];
+      questionsForSection.push(question);
+      questionsBySection.set(question.sectionTitle, questionsForSection);
     }
-    return [...map.entries()];
+    return [...questionsBySection.entries()];
   }, [questions]);
 
   // Sections containing only currently-visible questions — the step list for
@@ -411,7 +413,7 @@ export function PortalQuestionnaire({
 
     if (result.missingQuestionIds.length > 0) {
       setSubmitError(
-        `Please answer ${result.missing} required question(s) before submitting.`,
+        translations("missingRequired", { count: result.missing }),
       );
       // Jump to the section containing the first missing answer and highlight
       // it so the vendor never has to hunt.
@@ -428,7 +430,7 @@ export function PortalQuestionnaire({
       return;
     }
 
-    setSubmitError("This link is no longer valid.");
+    setSubmitError(translations("linkInvalid"));
   }
 
   function renderInput(question: PortalQuestion) {
@@ -443,17 +445,19 @@ export function PortalQuestionnaire({
       return (
         <RadioGroup
           value={typeof value === "string" ? value : ""}
-          onValueChange={(v) => setAnswer(question.id, { value: v })}
+          onValueChange={(nextValue) =>
+            setAnswer(question.id, { value: nextValue })
+          }
           disabled={disabled}
           className="flex gap-4"
         >
           <div className="flex items-center gap-2">
             <RadioGroupItem value="YES" id={`${question.id}-yes`} />
-            <Label htmlFor={`${question.id}-yes`}>Yes</Label>
+            <Label htmlFor={`${question.id}-yes`}>{translations("yes")}</Label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="NO" id={`${question.id}-no`} />
-            <Label htmlFor={`${question.id}-no`}>No</Label>
+            <Label htmlFor={`${question.id}-no`}>{translations("no")}</Label>
           </div>
         </RadioGroup>
       );
@@ -463,7 +467,9 @@ export function PortalQuestionnaire({
       return (
         <RadioGroup
           value={typeof value === "string" ? value : ""}
-          onValueChange={(v) => setAnswer(question.id, { value: v })}
+          onValueChange={(nextValue) =>
+            setAnswer(question.id, { value: nextValue })
+          }
           disabled={disabled}
         >
           {question.options.map((option) => (
@@ -521,7 +527,9 @@ export function PortalQuestionnaire({
 
     if (question.type === "FILE_UPLOAD") {
       const isUploading = uploadingQuestion === question.id;
-      const accept = allowedExtensions.map((ext) => `.${ext}`).join(",");
+      const accept = allowedExtensions
+        .map((extension) => `.${extension}`)
+        .join(",");
       return (
         <div className="flex flex-col gap-2">
           <Input
@@ -531,21 +539,24 @@ export function PortalQuestionnaire({
             onChange={(event) => handleFileUpload(question.id, event)}
           />
           <p className="text-muted-foreground text-xs">
-            Max {maxUploadMb} MB. Allowed: {allowedExtensions.join(", ")}.
-            {isUploading ? " Uploading…" : null}
+            {translations("maxUpload", {
+              maxUploadMb,
+              extensions: allowedExtensions.join(", "),
+            })}
+            {isUploading ? translations("uploading") : null}
           </p>
           {(evidence[question.id] ?? []).map((file) => (
             <span
               key={file.id}
               className="text-muted-foreground flex items-center gap-2 text-xs"
             >
-              Uploaded: {file.fileName}
+              {translations("uploaded", { fileName: file.fileName })}
               <button
                 type="button"
                 className="text-destructive hover:underline"
                 onClick={() => handleRemoveEvidence(file.id, question.id)}
               >
-                Remove
+                {translations("remove")}
               </button>
             </span>
           ))}
@@ -557,11 +568,13 @@ export function PortalQuestionnaire({
       return (
         <Select
           value={typeof value === "string" ? value : ""}
-          onValueChange={(v) => setAnswer(question.id, { value: v })}
+          onValueChange={(nextValue) =>
+            setAnswer(question.id, { value: nextValue })
+          }
           disabled={disabled}
         >
           <SelectTrigger className="max-w-xs">
-            <SelectValue placeholder="Select…" />
+            <SelectValue placeholder={translations("selectPlaceholder")} />
           </SelectTrigger>
           <SelectContent>
             {question.options.map((option) => (
@@ -607,7 +620,9 @@ export function PortalQuestionnaire({
       return (
         <RadioGroup
           value={value !== null && value !== undefined ? String(value) : ""}
-          onValueChange={(v) => setAnswer(question.id, { value: Number(v) })}
+          onValueChange={(nextValue) =>
+            setAnswer(question.id, { value: Number(nextValue) })
+          }
           disabled={disabled}
           className="flex gap-3"
         >
@@ -666,7 +681,7 @@ export function PortalQuestionnaire({
             }
           />
           <Label htmlFor={`${question.id}-checkbox`}>
-            I confirm this statement
+            {translations("confirmStatement")}
           </Label>
         </div>
       );
@@ -720,7 +735,7 @@ export function PortalQuestionnaire({
           return (
             <div className="bg-muted/50 border-l-warning rounded-md border-l-2 p-2 text-sm">
               <p className="text-xs font-medium">
-                The reviewer requested clarification on this answer.
+                {translations("clarification")}
               </p>
               {review.note ? (
                 <p className="text-muted-foreground mt-1 text-xs">
@@ -745,12 +760,12 @@ export function PortalQuestionnaire({
             htmlFor={`${question.id}-na`}
             className="text-muted-foreground text-xs"
           >
-            Not applicable
+            {translations("notApplicable")}
           </Label>
         </div>
         {(() => {
           const questionComments = comments.filter(
-            (c) => c.assessmentQuestionId === question.id,
+            (comment) => comment.assessmentQuestionId === question.id,
           );
           const isClarifying =
             reviewByQuestionId[question.id]?.decision ===
@@ -775,7 +790,7 @@ export function PortalQuestionnaire({
                 <div className="flex items-start gap-2">
                   <Textarea
                     className="min-h-16 text-xs"
-                    placeholder="Add a comment…"
+                    placeholder={translations("commentPlaceholder")}
                     value={commentText[question.id] ?? ""}
                     onChange={(event) =>
                       setCommentText((previous) => ({
@@ -794,7 +809,7 @@ export function PortalQuestionnaire({
                     }
                     onClick={() => handleVendorComment(question.id)}
                   >
-                    Send
+                    {translations("send")}
                   </Button>
                 </div>
               ) : null}
@@ -860,22 +875,44 @@ export function PortalQuestionnaire({
   }
 
   const expiresLabel = tokenExpiresAt
-    ? `Expires ${formatDate(tokenExpiresAt)}`
+    ? translations("expires", {
+        date: dateFormatter.dateTime(new Date(tokenExpiresAt), {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }),
+      })
     : null;
+
+  let expiryMessage: string | null = null;
+  if (expiry?.kind === "expired") {
+    expiryMessage = translations("expiry.expired");
+  } else if (expiry?.kind === "hours") {
+    expiryMessage = translations("expiry.hours", { hours: expiry.value });
+  } else if (expiry?.kind === "minutes") {
+    expiryMessage = translations("expiry.minutes", { minutes: expiry.value });
+  }
+
+  let saveStatusMessage = "";
+  if (saveStatus === "saving") {
+    saveStatusMessage = translations("saving");
+  } else if (saveStatus === "error") {
+    saveStatusMessage = translations("saveFailed");
+  } else if (saveStatus === "saved" && lastSavedAt) {
+    saveStatusMessage = translations("savedAt", { time: lastSavedAt });
+  } else if (lastSavedAt) {
+    saveStatusMessage = translations("lastSavedAt", { time: lastSavedAt });
+  }
 
   return (
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-            <p className="text-muted-foreground text-sm">{vendorName}</p>
-          </div>
-          <ThemeToggle />
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+          <p className="text-muted-foreground text-sm">{vendorName}</p>
         </div>
         <p className="text-muted-foreground text-xs">
-          Your answers are saved automatically — you can close this page and
-          return using the same link at any time.
+          {translations("autosaveHint")}
         </p>
         {saveStatus === "error" ? (
           <div
@@ -884,8 +921,8 @@ export function PortalQuestionnaire({
           >
             <p className="text-destructive text-xs font-medium">
               {isLinkExpired
-                ? "This link has expired — your recent changes could not be saved."
-                : "We couldn't save your latest changes. Check your connection and retry."}
+                ? translations("saveExpired")
+                : translations("saveError")}
             </p>
             {!isLinkExpired ? (
               <Button
@@ -894,15 +931,15 @@ export function PortalQuestionnaire({
                 variant="outline"
                 onClick={() => void performSave()}
               >
-                Retry save
+                {translations("retrySave")}
               </Button>
             ) : null}
           </div>
         ) : null}
-        {expiryLabel ? (
+        {expiryMessage ? (
           <div className="border-warning/50 bg-warning/10 rounded-md border px-4 py-2">
             <p className="text-muted-foreground text-xs font-medium">
-              {expiryLabel}
+              {expiryMessage}
             </p>
           </div>
         ) : null}
@@ -926,8 +963,10 @@ export function PortalQuestionnaire({
             className="text-muted-foreground shrink-0 text-xs"
             aria-live="polite"
           >
-            · Section {Math.min(sectionCursor + 1, steppedSections.length)} of{" "}
-            {steppedSections.length}
+            {translations("sectionCounter", {
+              current: Math.min(sectionCursor + 1, steppedSections.length),
+              total: steppedSections.length,
+            })}
           </span>
         ) : null}
         {expiresLabel ? (
@@ -942,15 +981,7 @@ export function PortalQuestionnaire({
               : "text-muted-foreground shrink-0 text-xs"
           }
         >
-          {saveStatus === "saving"
-            ? "Saving…"
-            : saveStatus === "error"
-              ? "Save failed"
-              : saveStatus === "saved" && lastSavedAt
-                ? `Saved at ${lastSavedAt}`
-                : lastSavedAt
-                  ? `Last saved at ${lastSavedAt}`
-                  : ""}
+          {saveStatusMessage}
         </span>
       </div>
 
@@ -965,7 +996,7 @@ export function PortalQuestionnaire({
         : null}
 
       {!isStepped
-        ? sections.map(([sectionTitle, sectionQuestions]) =>
+        ? questionSections.map(([sectionTitle, sectionQuestions]) =>
             renderSectionBlock(sectionTitle, sectionQuestions),
           )
         : null}
@@ -981,7 +1012,7 @@ export function PortalQuestionnaire({
               setSectionCursor((cursor) => cursor - 1);
             }}
           >
-            Back
+            {translations("back")}
           </Button>
           <div className="flex flex-col items-end gap-1">
             {continueWarned && currentMissingCount > 0 ? (
@@ -989,13 +1020,15 @@ export function PortalQuestionnaire({
                 className="text-destructive max-w-sm text-right text-xs"
                 role="alert"
               >
-                {currentMissingCount} required question
-                {currentMissingCount !== 1 ? "s" : ""} on this section still
-                need answers. You can continue and come back.
+                {translations("continueWarning", {
+                  count: currentMissingCount,
+                })}
               </p>
             ) : null}
             <Button type="button" onClick={goToNextStep}>
-              {isLastStep ? "Review answers" : "Continue"}
+              {isLastStep
+                ? translations("reviewAnswers")
+                : translations("continue")}
             </Button>
           </div>
         </div>
@@ -1007,7 +1040,7 @@ export function PortalQuestionnaire({
           className="flex flex-col gap-4"
         >
           <h2 id="review-heading" className="text-lg font-medium">
-            Review your answers
+            {translations("reviewHeading")}
           </h2>
           {steppedSections.map((group, index) => {
             const answered = group.questions.filter((question) =>
@@ -1025,8 +1058,13 @@ export function PortalQuestionnaire({
                 <div>
                   <p className="text-sm font-medium">{group.title}</p>
                   <p className="text-muted-foreground text-xs">
-                    {answered}/{group.questions.length} answered
-                    {missing > 0 ? ` · ${missing} required missing` : ""}
+                    {translations("reviewAnswered", {
+                      answered,
+                      total: group.questions.length,
+                    })}
+                    {missing > 0
+                      ? ` · ${translations("reviewMissing", { count: missing })}`
+                      : ""}
                   </p>
                 </div>
                 <Button
@@ -1039,7 +1077,7 @@ export function PortalQuestionnaire({
                     setContinueWarned(false);
                   }}
                 >
-                  Open section
+                  {translations("openSection")}
                 </Button>
               </div>
             );
@@ -1070,24 +1108,27 @@ export function PortalQuestionnaire({
                 size="lg"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Submitting…" : "Submit questionnaire"}
+                {isSubmitting
+                  ? translations("submitting")
+                  : translations("submit")}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Submit questionnaire?</AlertDialogTitle>
+                <AlertDialogTitle>
+                  {translations("submitTitle")}
+                </AlertDialogTitle>
                 <AlertDialogDescription>
-                  You will not be able to edit your answers after submission.
-                  Are you sure you are ready to submit?
+                  {translations("submitDescription")}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>{translations("cancel")}</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={() => handleSubmit()}
                   className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
-                  Submit
+                  {translations("submitConfirm")}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

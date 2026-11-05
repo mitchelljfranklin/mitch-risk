@@ -6,8 +6,20 @@ import {
   StyleSheet,
   renderToBuffer,
 } from "@react-pdf/renderer";
+import { getFormatter, getLocale, getTranslations } from "next-intl/server";
 
 import { formatPercent } from "@/lib/utils";
+import { localeDirection } from "@/lib/i18n/config";
+import {
+  pdfFontFamily,
+  registerPdfFonts,
+  type PdfFontFamily,
+} from "@/lib/pdf/fonts";
+import {
+  type PdfFormatter,
+  type PdfTranslate,
+  translateOrRaw,
+} from "@/lib/pdf-i18n";
 
 type RagThresholds = { green: number; amber: number };
 
@@ -135,16 +147,19 @@ function ragColor(rag: "green" | "amber" | "red" | "none"): string {
   }
 }
 
-function ragLabel(rag: "green" | "amber" | "red" | "none"): string {
+function ragLabel(
+  translations: PdfTranslate,
+  rag: "green" | "amber" | "red" | "none",
+): string {
   switch (rag) {
     case "green":
-      return "Green";
+      return translations("framework.ragGreen");
     case "amber":
-      return "Amber";
+      return translations("framework.ragAmber");
     case "red":
-      return "Red";
+      return translations("framework.ragRed");
     default:
-      return "Not assessed";
+      return translations("framework.ragNone");
   }
 }
 
@@ -154,35 +169,67 @@ function changeLabel(change: number | null): string {
   return String(change);
 }
 
-function FrameworkReportDocument({ data }: { data: FrameworkReportData }) {
-  const grouped = new Map<string, typeof data.controls>();
+function FrameworkReportDocument({
+  data,
+  translations,
+  dateFormatter,
+  fontFamily,
+  direction,
+}: {
+  data: FrameworkReportData;
+  translations: PdfTranslate;
+  dateFormatter: PdfFormatter;
+  fontFamily: PdfFontFamily;
+  direction: "ltr" | "rtl";
+}) {
+  const controlsByDomain = new Map<string, typeof data.controls>();
   for (const control of data.controls) {
-    const list = grouped.get(control.domain) ?? [];
-    list.push(control);
-    grouped.set(control.domain, list);
+    const domainControls = controlsByDomain.get(control.domain) ?? [];
+    domainControls.push(control);
+    controlsByDomain.set(control.domain, domainControls);
   }
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size="A4" style={[styles.page, { fontFamily, direction }]}>
         <View style={styles.header}>
           <Text style={styles.orgName}>{data.organizationName}</Text>
           <Text style={styles.title}>{data.vendorName}</Text>
           <Text style={styles.subtitle}>
-            {data.frameworkName} {data.frameworkVersion} — Compliance Report
+            {translations("framework.complianceReport", {
+              frameworkName: data.frameworkName,
+              version: data.frameworkVersion,
+            })}
           </Text>
           <Text style={styles.vendorInfo}>
             {data.vendorContact}
-            {data.vendorTier ? ` | Tier: ${data.vendorTier}` : ""}
-            {` | Generated: ${data.generatedDate}`}
+            {data.vendorTier
+              ? ` | ${translations("common.tier", {
+                  tier: translateOrRaw(
+                    translations,
+                    `tiers.${data.vendorTier}`,
+                    data.vendorTier,
+                  ),
+                })}`
+              : ""}
+            {` | ${translations("common.generated", {
+              date: dateFormatter.dateTime(new Date(data.generatedDate), {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                timeZone: "UTC",
+              }),
+            })}`}
           </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Summary</Text>
+          <Text style={styles.sectionTitle}>
+            {translations("framework.summary")}
+          </Text>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryItem}>
-              Overall score:{" "}
+              {translations("framework.overallScore")}{" "}
               <Text
                 style={[
                   styles.summaryValue,
@@ -191,15 +238,15 @@ function FrameworkReportDocument({ data }: { data: FrameworkReportData }) {
               >
                 {data.overallScore !== null
                   ? formatPercent(data.overallScore)
-                  : "Not scored"}
+                  : translations("common.notScored")}
               </Text>
             </Text>
             <Text style={styles.summaryItem}>
-              Domains assessed:{" "}
+              {translations("framework.domainsAssessed")}{" "}
               <Text style={styles.summaryValue}>{data.domains.length}</Text>
             </Text>
             <Text style={styles.summaryItem}>
-              Controls mapped:{" "}
+              {translations("framework.controlsMapped")}{" "}
               <Text style={styles.summaryValue}>{data.controls.length}</Text>
             </Text>
           </View>
@@ -207,19 +254,29 @@ function FrameworkReportDocument({ data }: { data: FrameworkReportData }) {
 
         {data.domains.length > 0 ? (
           <View style={styles.section} wrap={false}>
-            <Text style={styles.sectionTitle}>Domain compliance</Text>
+            <Text style={styles.sectionTitle}>
+              {translations("framework.domainCompliance")}
+            </Text>
             <View style={styles.tableHeader}>
               <Text style={styles.domainCol}>
-                <Text style={styles.label}>Domain</Text>
+                <Text style={styles.label}>
+                  {translations("framework.domain")}
+                </Text>
               </Text>
               <Text style={styles.valueCol}>
-                <Text style={styles.label}>Current</Text>
+                <Text style={styles.label}>
+                  {translations("framework.current")}
+                </Text>
               </Text>
               <Text style={styles.valueCol}>
-                <Text style={styles.label}>Previous</Text>
+                <Text style={styles.label}>
+                  {translations("framework.previous")}
+                </Text>
               </Text>
               <Text style={styles.valueCol}>
-                <Text style={styles.label}>Change</Text>
+                <Text style={styles.label}>
+                  {translations("framework.change")}
+                </Text>
               </Text>
             </View>
             {data.domains.map((domain) => {
@@ -256,57 +313,72 @@ function FrameworkReportDocument({ data }: { data: FrameworkReportData }) {
 
         {data.controls.length > 0 ? (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Control heatmap</Text>
-            {[...grouped.entries()].map(([domain, domainControls]) => (
-              <View key={domain}>
-                <Text style={styles.domainHeading}>{domain}</Text>
-                <View style={styles.tableHeader}>
-                  <Text style={styles.codeCol}>
-                    <Text style={styles.label}>Control</Text>
-                  </Text>
-                  <Text style={styles.titleCol}>
-                    <Text style={styles.label}>Title</Text>
-                  </Text>
-                  <Text style={styles.ratioCol}>
-                    <Text style={styles.label}>Compliance</Text>
-                  </Text>
-                  <Text style={styles.statusCol}>
-                    <Text style={styles.label}>Status</Text>
-                  </Text>
-                </View>
-                {domainControls.map((control) => (
-                  <View key={control.code} style={styles.tableRow}>
-                    <Text style={styles.codeCol}>{control.code}</Text>
-                    <Text style={styles.titleCol}>{control.title}</Text>
-                    <Text
-                      style={[
-                        styles.ratioCol,
-                        { color: ragColor(control.rag) },
-                      ]}
-                    >
-                      {control.rag === "none"
-                        ? "—"
-                        : formatPercent(control.complianceRatio)}
+            <Text style={styles.sectionTitle}>
+              {translations("framework.controlHeatmap")}
+            </Text>
+            {[...controlsByDomain.entries()].map(
+              ([domain, controlsForDomain]) => (
+                <View key={domain}>
+                  <Text style={styles.domainHeading}>{domain}</Text>
+                  <View style={styles.tableHeader}>
+                    <Text style={styles.codeCol}>
+                      <Text style={styles.label}>
+                        {translations("framework.control")}
+                      </Text>
                     </Text>
-                    <Text
-                      style={[
-                        styles.statusCol,
-                        { color: ragColor(control.rag) },
-                      ]}
-                    >
-                      {ragLabel(control.rag)}
+                    <Text style={styles.titleCol}>
+                      <Text style={styles.label}>
+                        {translations("framework.title")}
+                      </Text>
+                    </Text>
+                    <Text style={styles.ratioCol}>
+                      <Text style={styles.label}>
+                        {translations("framework.compliance")}
+                      </Text>
+                    </Text>
+                    <Text style={styles.statusCol}>
+                      <Text style={styles.label}>
+                        {translations("framework.status")}
+                      </Text>
                     </Text>
                   </View>
-                ))}
-              </View>
-            ))}
+                  {controlsForDomain.map((control) => (
+                    <View key={control.code} style={styles.tableRow}>
+                      <Text style={styles.codeCol}>{control.code}</Text>
+                      <Text style={styles.titleCol}>{control.title}</Text>
+                      <Text
+                        style={[
+                          styles.ratioCol,
+                          { color: ragColor(control.rag) },
+                        ]}
+                      >
+                        {control.rag === "none"
+                          ? "—"
+                          : formatPercent(control.complianceRatio)}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.statusCol,
+                          { color: ragColor(control.rag) },
+                        ]}
+                      >
+                        {ragLabel(translations, control.rag)}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              ),
+            )}
           </View>
         ) : null}
 
         <Text
           style={styles.footer}
           render={({ pageNumber, totalPages }) =>
-            `Page ${pageNumber} of ${totalPages}`
+            translations("common.pageOf", {
+              page: pageNumber,
+              total: totalPages,
+            })
           }
           fixed
         />
@@ -319,6 +391,20 @@ export async function generateFrameworkReportPdf(
   vendorId: string,
   frameworkId: string,
 ): Promise<Buffer | null> {
+  const translations = await getTranslations("Pdf");
+  const locale = await getLocale();
+  const fontFamily = pdfFontFamily(locale);
+  const direction = localeDirection(locale);
+  registerPdfFonts();
+  const formatter = await getFormatter();
+  const translate: PdfTranslate = Object.assign(
+    (key: string, values?: Record<string, string | number>) =>
+      translations(key, values),
+    { has: (key: string) => translations.has(key) },
+  );
+  const dateFormatter: PdfFormatter = {
+    dateTime: (value, options) => formatter.dateTime(value, options),
+  };
   const { getVendor } = await import("@/lib/db/vendors");
   const { getFramework } = await import("@/lib/db/frameworks");
   const { getVendorHeatmap, getVendorDomainRadar } =
@@ -326,21 +412,22 @@ export async function generateFrameworkReportPdf(
   const { getOrganizationSettings, getScoringSettings } =
     await import("@/lib/settings");
 
-  const [vendor, framework, controls, radar, org, scoring] = await Promise.all([
-    getVendor(vendorId),
-    getFramework(frameworkId),
-    getVendorHeatmap(vendorId, frameworkId),
-    getVendorDomainRadar(vendorId, frameworkId),
-    getOrganizationSettings(),
-    getScoringSettings(),
-  ]);
+  const [vendor, framework, controls, radar, organization, scoring] =
+    await Promise.all([
+      getVendor(vendorId),
+      getFramework(frameworkId),
+      getVendorHeatmap(vendorId, frameworkId),
+      getVendorDomainRadar(vendorId, frameworkId),
+      getOrganizationSettings(),
+      getScoringSettings(),
+    ]);
 
   if (!vendor || !framework) {
     return null;
   }
 
   const data: FrameworkReportData = {
-    organizationName: org.name,
+    organizationName: organization.name,
     vendorName: vendor.name,
     vendorContact: vendor.contactEmail,
     vendorTier: vendor.tier,
@@ -359,5 +446,13 @@ export async function generateFrameworkReportPdf(
     })),
   };
 
-  return renderToBuffer(<FrameworkReportDocument data={data} />);
+  return renderToBuffer(
+    <FrameworkReportDocument
+      data={data}
+      translations={translate}
+      dateFormatter={dateFormatter}
+      fontFamily={fontFamily}
+      direction={direction}
+    />,
+  );
 }
