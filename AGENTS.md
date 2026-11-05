@@ -66,7 +66,7 @@ lib/                 cross-cutting logic
   prisma.ts            shared Prisma client instance
 hooks/               use-form-toast, use-action-feedback, use-locale-switch, use-mobile
 emails/              React Email templates rendered from Settings via token replacement
-messages/            en/es translation catalogs (key parity enforced by a unit test)
+messages/            locale catalogs (12 languages; key parity enforced by a unit test)
 prisma/              schema.prisma, migrations, seed.ts, seed-demo.ts, seed-data/
 scripts/             backup, bump-version.mjs, prepare-standalone.mjs
 e2e/                 Playwright end-to-end tests
@@ -184,7 +184,7 @@ extend it.
   `actions/checkout` and `COPY --from=build /app/public` then fail. Same for any explicitly
   copied directory.
 - **Healthchecks must use `curl -f`**, not `node -e` (nested `function(){return…}` breaks on
-  `dash`-based `node:22-slim`). `curl` is installed in the base stage.
+  `dash`-based `node:22.23.4-slim`). `curl` is installed in the base stage.
 - **`next-env.d.ts` is gitignored** — auto-generated, varies by environment, never commit it.
 - **GHCR is preferred over Docker Hub** (built-in `GITHUB_TOKEN`, no separate credentials).
 - **Branch protection required status checks must match the job name** (`quality`), not the

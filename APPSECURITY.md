@@ -621,7 +621,7 @@ External input is validated comprehensively via **zod** schemas at every boundar
 
 | Aspect | Current State | Recommendation |
 |--------|---------------|----------------|
-| Base image | `node:22-slim` (Debian) | Appropriate — slim variant reduces attack surface |
+| Base image | `node:22.23.4-slim` (Debian) | Appropriate — slim variant reduces attack surface |
 | Non-root user | `USER node` (non-root) | H-1 fix — directories `/app/.storage/evidence` and `/app/data/uploads` created with `node:node` ownership before user switch |
 | Read-only root filesystem | Not configured | Deploying with `read_only: true` would require additional writable volume mounts |
 | Resource limits | Configured (1.0 CPU / 1 GB app, 0.5 CPU / 512 MB db) | L-4 fix — env-overridable: `APP_CPU_LIMIT`, `APP_MEMORY_LIMIT`, `DB_CPU_LIMIT`, `DB_MEMORY_LIMIT` |
@@ -862,4 +862,4 @@ The platform provides mechanics (controls mapping, scoring, findings, audit trai
 This document is maintained as part of the Mitch‑Risk project. Security findings should be reported via the project's issue tracker.
 
 **Last reviewed:** August 2026
-**App version:** 1.5.1
+**App version:** 1.5.2

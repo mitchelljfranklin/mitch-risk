@@ -62,7 +62,7 @@ This page summarises the security threats Mitch‑Risk is designed to mitigate, 
 | **Replay attack** | Captured HTTP traffic replayed | TLS enforced at reverse proxy (HTTPS). `secure` cookie flag prevents cookie transmission over plain HTTP. JWT session is stateless (server does not maintain session state to correlate replays). API keys can be revoked instantly | Low |
 | **Information disclosure** | Sensitive data in logs, error messages, or API responses | File evidence served only through authenticated route (never public URLs). API error wrapper (`runApiHandler`) catches unexpected errors → generic 500, logs details server-side only. Zod validation errors return structured messages without exposing internals | Low |
 | **Denial of service** | Resource exhaustion via excessive requests | Fixed-window rate limiter on login, portal access, file uploads, submissions, password reset, break-glass, and API endpoints. Configurable limits per concern. Max 100,000 tracked keys with per-namespace 5K cap; rejects when full | Medium |
-| **Dependency vulnerability** | Known CVE in third-party library | CI pipeline runs lint + typecheck + build on every push. npm audit on dependencies. Node 22 LTS pinned. All dependencies are regular (not optional peer) for reproducible installs | Low |
+| **Dependency vulnerability** | Known CVE in third-party library | CI pipeline runs lint + typecheck + build on every push. npm audit on dependencies. Node 22.23.4 LTS pinned. All dependencies are regular (not optional peer) for reproducible installs | Low |
 
 ## What We Don't Protect Against (Out of Scope)
 

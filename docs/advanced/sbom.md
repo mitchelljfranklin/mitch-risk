@@ -1,12 +1,12 @@
 # Software Bill of Materials (SBOM)
 
-This document lists every direct software dependency used by Mitch‑Risk v1.5.1, organised by functional purpose. It is intended for security reviewers, compliance assessors, and procurement teams evaluating the platform for organisational use.
+This document lists every direct software dependency used by Mitch‑Risk v1.5.2, organised by functional purpose. It is intended for security reviewers, compliance assessors, and procurement teams evaluating the platform for organisational use.
 
 ## Runtime Requirements
 
 | Component | Minimum Version | Notes |
 |-----------|----------------|-------|
-| Node.js | 22 | JavaScript runtime (LTS) |
+| Node.js | 22.23.4 | JavaScript runtime (LTS) |
 | PostgreSQL | 17 | Relational database server |
 | Docker (optional) | 24+ | Container runtime for self-hosted deployment |
 
@@ -16,7 +16,7 @@ This document lists every direct software dependency used by Mitch‑Risk v1.5.1
 
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
-| [next](https://npmjs.com/package/next) | 16.3.7 | MIT | Full-stack React framework (App Router, Server Components, Server Actions) |
+| [next](https://npmjs.com/package/next) | 16.4.2 | MIT | Full-stack React framework (App Router, Server Components, Server Actions) |
 | [react](https://npmjs.com/package/react) | 19.3.0 | MIT | UI library |
 | [react-dom](https://npmjs.com/package/react-dom) | 19.3.0 | MIT | React DOM renderer |
 
@@ -24,9 +24,9 @@ This document lists every direct software dependency used by Mitch‑Risk v1.5.1
 
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
-| [prisma](https://npmjs.com/package/prisma) | 7.10.0 | Apache-2.0 | Type-safe ORM — schema management, migrations, query engine |
-| [@prisma/client](https://npmjs.com/package/@prisma/client) | 7.10.0 | Apache-2.0 | Generated Prisma client for type-safe database access |
-| [@prisma/adapter-pg](https://npmjs.com/package/@prisma/adapter-pg) | 7.10.0 | Apache-2.0 | Driver adapter connecting Prisma to PostgreSQL via node-postgres |
+| [prisma](https://npmjs.com/package/prisma) | 7.10.1 | Apache-2.0 | Type-safe ORM — schema management, migrations, query engine |
+| [@prisma/client](https://npmjs.com/package/@prisma/client) | 7.10.1 | Apache-2.0 | Generated Prisma client for type-safe database access |
+| [@prisma/adapter-pg](https://npmjs.com/package/@prisma/adapter-pg) | 7.10.1 | Apache-2.0 | Driver adapter connecting Prisma to PostgreSQL via node-postgres |
 | [pg](https://npmjs.com/package/pg) | 8.23.0 | MIT | PostgreSQL client library used by the Prisma driver adapter |
 
 ### Authentication & Security
@@ -68,13 +68,13 @@ This document lists every direct software dependency used by Mitch‑Risk v1.5.1
 | [react-markdown](https://npmjs.com/package/react-markdown) | 10.1.0 | MIT | Renders Markdown help text in the vendor portal |
 | [@uiw/react-md-editor](https://npmjs.com/package/@uiw/react-md-editor) | 4.1.2 | MIT | WYSIWYG Markdown editor for question help text (template builder) |
 | [marked](https://npmjs.com/package/marked) | 18.0.14 | MIT | Markdown parser used server-side |
-| [@tailwindcss/typography](https://npmjs.com/package/@tailwindcss/typography) | 0.5.20 | MIT | Typography presets for rendered Markdown |
+| [@tailwindcss/typography](https://npmjs.com/package/@tailwindcss/typography) | 0.5.20 | MIT | Typography presets for rendered Markdown (dev dependency, compiled at build time) |
 
 ### Email
 
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
-| [nodemailer](https://npmjs.com/package/nodemailer) | 9.1.1 | MIT-0 | SMTP email delivery (invites, reminders, escalations) |
+| [nodemailer](https://npmjs.com/package/nodemailer) | 10.2.1 | MIT-0 | SMTP email delivery (invites, reminders, escalations) |
 | [@react-email/components](https://npmjs.com/package/@react-email/components) | 1.0.12 | MIT | React components for email template rendering |
 
 ### File Storage
@@ -105,7 +105,7 @@ These packages are used during development and CI only — they are not included
 |---------|---------|---------|---------|
 | [typescript](https://npmjs.com/package/typescript) | 6.x | Apache-2.0 | Static type checking |
 | [eslint](https://npmjs.com/package/eslint) | 9.x | MIT | Code quality linting |
-| [eslint-config-next](https://npmjs.com/package/eslint-config-next) | 16.3.7 | MIT | Next.js-specific lint rules |
+| [eslint-config-next](https://npmjs.com/package/eslint-config-next) | 16.4.2 | MIT | Next.js-specific lint rules |
 | [prettier](https://npmjs.com/package/prettier) | 3.x | MIT | Code formatting |
 | [prettier-plugin-tailwindcss](https://npmjs.com/package/prettier-plugin-tailwindcss) | 0.8.0 | MIT | Tailwind class sorting |
 | [tailwindcss](https://npmjs.com/package/tailwindcss) | 4.x | MIT | CSS framework (compiled at build) |
