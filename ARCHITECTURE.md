@@ -1,7 +1,7 @@
 # Mitch‑Risk — Architecture Solution Design Document
 
-> **Version:** 1.5.2  
-> **Last Updated:** August 2026  
+> **Version:** 1.6.0  
+> **Last Updated:** November 2026  
 > **Audience:** Engineering, Security, Operations  
 > **Status:** Approved
 
