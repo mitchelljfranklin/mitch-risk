@@ -136,7 +136,7 @@ All dependencies use permissive open-source licenses (MIT, Apache-2.0, BSD, ISC,
 ## Audit Notes
 
 - Runtime is pinned to Node.js **22.23.5** (the current patched 22.x release).
-- Production `npm audit` reports only four **low-severity** `deepmerge` advisories via `@react-email/render` → `html-to-text`; there is no upstream fix at this time.
+- Full `npm audit` and `npm audit --omit=dev` report **0 vulnerabilities** as of 19 November 2026.
 - Build-time overrides pin `minimatch` to `11.0.4` and `postcss-selector-parser` to `6.1.5`.
 - Documentation uses the VitePress 2 alpha line with Vite 8; it is development-only and excluded from the production image.
 - The Node.js release line is monitored for security patches; apply new 22.x patch releases promptly.

@@ -40,7 +40,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "push" ]; then
             TAG="${GITHUB_REF#refs/tags/}"
-            echo "tags=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${TAG}" >> "$GITHUB_OUTPUT"
+            echo "tags=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${TAG},${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" >> "$GITHUB_OUTPUT"
           else
             echo "tags=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
           fi
@@ -49,7 +49,21 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
+          pull: true
           push: true
           tags: ${{ steps.tags.outputs.tags }}
+          provenance: mode=max
+          sbom: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Verify published image runtime
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+          else
+            TAG="${{ inputs.tag }}"
+          fi
+          IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${TAG}"
+          docker pull "$IMAGE"
+          docker run --rm "$IMAGE" node -v
