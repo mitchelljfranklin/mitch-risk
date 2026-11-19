@@ -60,7 +60,7 @@ This document lists every direct software dependency used by Mitch‑Risk v1.6.1
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
 | [recharts](https://npmjs.com/package/recharts) | 3.10.1 | MIT | Radar charts and bar charts on the dashboard |
-| [@tanstack/react-table](https://npmjs.com/package/@tanstack/react-table) | 8.21.3 | MIT | Sortable, filterable table primitives |
+| [@tanstack/react-table](https://npmjs.com/package/@tanstack/react-table) | 9.3.1 | MIT | Sortable, filterable table primitives |
 
 ### Rich Text & Markdown
 

@@ -7,11 +7,10 @@ import { useTranslations } from "next-intl";
 import {
   type ColumnDef,
   type SortingState,
+  type StockFeatures,
   flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
+  stockFeatures,
+  useTable,
 } from "@tanstack/react-table";
 
 import { Badge } from "@/components/ui/badge";
@@ -98,7 +97,7 @@ export function VendorsTable({
     router.replace(`?${params.toString()}`, { scroll: false });
   }, [sorting, router]);
 
-  const columns: ColumnDef<VendorRow>[] = [
+  const columns: ColumnDef<StockFeatures, VendorRow>[] = [
     {
       id: "name",
       accessorKey: "name",
@@ -149,12 +148,10 @@ export function VendorsTable({
     },
   ];
 
-  const table = useReactTable({
+  const table = useTable({
     data: vendors,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    features: stockFeatures,
     manualSorting: true,
     manualPagination: true,
     onSortingChange: setSorting,
