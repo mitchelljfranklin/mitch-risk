@@ -105,8 +105,8 @@ These packages are used during development and CI only — they are not included
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
 | [typescript](https://npmjs.com/package/typescript) | 6.x | Apache-2.0 | Static type checking |
-| [eslint](https://npmjs.com/package/eslint) | 9.x | MIT | Code quality linting |
-| [eslint-config-next](https://npmjs.com/package/eslint-config-next) | 16.4.5 | MIT | Next.js-specific lint rules |
+| [eslint](https://npmjs.com/package/eslint) | 10.15.0 | MIT | Code quality linting |
+| [eslint-config-next](https://npmjs.com/package/eslint-config-next) | 16.4.6 | MIT | Next.js-specific lint rules |
 | [prettier](https://npmjs.com/package/prettier) | 3.9.10 | MIT | Code formatting |
 | [prettier-plugin-tailwindcss](https://npmjs.com/package/prettier-plugin-tailwindcss) | 0.8.1 | MIT | Tailwind class sorting |
 | [tailwindcss](https://npmjs.com/package/tailwindcss) | 4.3.4 | MIT | CSS framework (compiled at build) |
