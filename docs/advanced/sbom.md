@@ -111,7 +111,7 @@ These packages are used during development and CI only — they are not included
 | [prettier-plugin-tailwindcss](https://npmjs.com/package/prettier-plugin-tailwindcss) | 0.8.1 | MIT | Tailwind class sorting |
 | [tailwindcss](https://npmjs.com/package/tailwindcss) | 4.3.4 | MIT | CSS framework (compiled at build) |
 | [@tailwindcss/postcss](https://npmjs.com/package/@tailwindcss/postcss) | 4.3.4 | MIT | PostCSS integration for Tailwind |
-| [vitest](https://npmjs.com/package/vitest) | 4.1.12 | MIT | Unit and integration test framework |
+| [vitest](https://npmjs.com/package/vitest) | 5.1.1 | MIT | Unit and integration test framework |
 | [@playwright/test](https://npmjs.com/package/@playwright/test) | 1.64.1 | Apache-2.0 | End-to-end browser testing |
 | [vitepress](https://npmjs.com/package/vitepress) | 2.0.0-alpha.21 | MIT | Documentation site generator |
 | [vite-tsconfig-paths](https://npmjs.com/package/vite-tsconfig-paths) | 6.1.1 | MIT | Path alias resolution for tests |

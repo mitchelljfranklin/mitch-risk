@@ -46,7 +46,7 @@ afterAll(async () => {
   await prisma.$disconnect();
 });
 
-describe.sequential("notification counts (integration)", () => {
+describe("notification counts (integration)", () => {
   it("returns non-negative counts whose total is the sum of its parts", async () => {
     const counts = await getNotificationCounts();
     expect(counts.unreviewedSubmissions).toBeGreaterThanOrEqual(0);
