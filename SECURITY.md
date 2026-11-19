@@ -7,9 +7,9 @@ branch receives security patches. We do not backport fixes to older tags.
 
 | Version   | Supported          |
 | --------- | ------------------ |
-| 1.3.x     | :white_check_mark: |
+| 1.6.x     | :white_check_mark: |
 | `master`  | :white_check_mark: |
-| < 1.3     | :x:                |
+| < 1.6     | :x:                |
 
 ## Reporting a vulnerability
 
