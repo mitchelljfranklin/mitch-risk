@@ -1,4 +1,4 @@
-FROM node:22.23.5-slim AS base
+FROM node:23.11.1-slim AS base
 WORKDIR /app
 RUN apt-get update \
   && apt-get install -y --no-install-recommends curl openssl \
