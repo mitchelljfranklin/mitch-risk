@@ -138,7 +138,7 @@ All dependencies use permissive open-source licenses (MIT, Apache-2.0, BSD, ISC,
 
 - **Prisma 8 is not planned for adoption while it remains a release candidate.** Stay on Prisma 7.10.x until Prisma 8 is generally available and a full schema/client migration has been validated against this application.
 - **`@types/node` 26 is not planned for adoption.** Type definitions must track the supported Node.js 22 runtime, so the project stays on the 22.x type line.
-- **TypeScript 7 is deferred until the toolchain supports it.** The native compiler is a major rewrite, and the current `typescript-eslint` line only accepts TypeScript `<6.1.0`. TypeScript 7 is revisited once ESLint, `typescript-eslint`, Next.js, and Prisma all declare support.
+- **TypeScript 7 is deferred until the toolchain supports it.** The native compiler is a major rewrite, and the current `typescript-eslint` line only accepts TypeScript `<6.1.0`. TypeScript 7 is revisited once ESLint, `typescript-eslint`, Next.js, and Prisma all declare support. Dependabot is configured to ignore major updates for Prisma, TypeScript, `@types/node`, and the Node Docker image; remove those ignore entries when a hold is lifted.
 
 ## Audit Notes
 
