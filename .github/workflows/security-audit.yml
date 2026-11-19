@@ -20,9 +20,9 @@ jobs:
       - run: npm ci --no-audit --no-fund --legacy-peer-deps
       - run: npm audit --audit-level=high
       - run: npm audit --omit=dev --audit-level=moderate
-      - run: npm sbom --sbom-format=cyclonedx > sbom.json
+      - run: npm sbom --sbom-format=cyclonedx > "$RUNNER_TEMP/sbom.json"
       - uses: actions/upload-artifact@v7
         with:
           name: cyclonedx-sbom
-          path: sbom.json
+          path: ${{ runner.temp }}/sbom.json
           retention-days: 30
