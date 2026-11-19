@@ -1,4 +1,4 @@
-import { render } from "@react-email/components";
+import { render } from "react-email";
 import { type Prisma } from "../../prisma/generated/prisma/client";
 import { marked } from "marked";
 import nodemailer, { type Transporter } from "nodemailer";

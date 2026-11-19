@@ -8,7 +8,7 @@ Mitch‑Risk supports two authentication paths for internal staff:
 
 - Passwords hashed with **bcryptjs** (12 rounds)
 - 12 character minimum enforced at creation
-- Password reset: SHA-256 hashed tokens, 1-hour expiry, single-use, rate-limited
+- Password reset: 256-bit random secret, bcrypt-hashed at rest, 1-hour expiry, single-use, rate-limited
 
 ### SSO (Single Sign-On)
 

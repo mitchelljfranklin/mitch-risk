@@ -414,6 +414,9 @@ test.describe("settings hardening regression", () => {
       "/api/settings/email-preview?templateType=invite",
     );
     expect(response.status()).toBe(200);
+    expect(response.headers()["content-security-policy"]).toContain(
+      "default-src 'none'",
+    );
     const body = await response.text();
     expect(body).toContain("Acme Logistics");
   });
