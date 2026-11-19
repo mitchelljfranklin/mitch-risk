@@ -95,7 +95,7 @@ This document lists every direct software dependency used by Mitch‑Risk v1.6.1
 
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
-| [dotenv](https://npmjs.com/package/dotenv) | 17.4.2 | BSD-2-Clause | Environment variable loading |
+| [dotenv](https://npmjs.com/package/dotenv) | 18.0.10 | BSD-2-Clause | Environment variable loading |
 | [tsx](https://npmjs.com/package/tsx) | 4.23.15 | MIT | TypeScript execution for seed scripts |
 
 ## Build & Development Dependencies
