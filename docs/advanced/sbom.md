@@ -133,6 +133,11 @@ These packages are used during development and CI only — they are not included
 
 All dependencies use permissive open-source licenses (MIT, Apache-2.0, BSD, ISC, MIT-0). No copyleft-licensed dependencies (GPL, AGPL, LGPL) are present in the dependency tree. Mitch‑Risk itself is licensed under AGPL-3.0.
 
+## Deliberate Upgrade Holds
+
+- **Prisma 8 is not planned for adoption while it remains a release candidate.** Stay on Prisma 7.10.x until Prisma 8 is generally available and a full schema/client migration has been validated against this application.
+- **`@types/node` 26 is not planned for adoption.** Type definitions must track the supported Node.js 22 runtime, so the project stays on the 22.x type line.
+
 ## Audit Notes
 
 - Runtime is pinned to Node.js **22.23.5** (the current patched 22.x release).
