@@ -104,7 +104,7 @@ These packages are used during development and CI only — they are not included
 
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
-| [typescript](https://npmjs.com/package/typescript) | 6.x | Apache-2.0 | Static type checking |
+| [typescript](https://npmjs.com/package/typescript) | 6.0.3 | Apache-2.0 | Static type checking |
 | [eslint](https://npmjs.com/package/eslint) | 10.15.0 | MIT | Code quality linting |
 | [eslint-config-next](https://npmjs.com/package/eslint-config-next) | 16.4.6 | MIT | Next.js-specific lint rules |
 | [prettier](https://npmjs.com/package/prettier) | 3.9.10 | MIT | Code formatting |
@@ -137,6 +137,7 @@ All dependencies use permissive open-source licenses (MIT, Apache-2.0, BSD, ISC,
 
 - **Prisma 8 is not planned for adoption while it remains a release candidate.** Stay on Prisma 7.10.x until Prisma 8 is generally available and a full schema/client migration has been validated against this application.
 - **`@types/node` 26 is not planned for adoption.** Type definitions must track the supported Node.js 22 runtime, so the project stays on the 22.x type line.
+- **TypeScript 7 is deferred until the toolchain supports it.** The native compiler is a major rewrite, and the current `typescript-eslint` line only accepts TypeScript `<6.1.0`. TypeScript 7 is revisited once ESLint, `typescript-eslint`, Next.js, and Prisma all declare support.
 
 ## Audit Notes
 
