@@ -7,11 +7,10 @@ import { useFormatter, useTranslations } from "next-intl";
 import {
   type ColumnDef,
   type SortingState,
+  type StockFeatures,
   flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
+  stockFeatures,
+  useTable,
 } from "@tanstack/react-table";
 
 import { Badge } from "@/components/ui/badge";
@@ -111,7 +110,7 @@ export function AssessmentsTable({
     router.replace(`?${params.toString()}`, { scroll: false });
   }, [sorting, router]);
 
-  const columns: ColumnDef<AssessmentRow>[] = [
+  const columns: ColumnDef<StockFeatures, AssessmentRow>[] = [
     {
       id: "created",
       accessorKey: "title",
@@ -228,12 +227,10 @@ export function AssessmentsTable({
     },
   ];
 
-  const table = useReactTable({
+  const table = useTable({
     data: assessments,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    features: stockFeatures,
     manualSorting: true,
     manualPagination: true,
     onSortingChange: setSorting,

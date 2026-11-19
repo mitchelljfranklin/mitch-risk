@@ -60,7 +60,7 @@ This document lists every direct software dependency used by Mitch‑Risk v1.6.1
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
 | [recharts](https://npmjs.com/package/recharts) | 3.10.1 | MIT | Radar charts and bar charts on the dashboard |
-| [@tanstack/react-table](https://npmjs.com/package/@tanstack/react-table) | 8.21.3 | MIT | Sortable, filterable table primitives |
+| [@tanstack/react-table](https://npmjs.com/package/@tanstack/react-table) | 9.3.1 | MIT | Sortable, filterable table primitives |
 
 ### Rich Text & Markdown
 
@@ -95,7 +95,7 @@ This document lists every direct software dependency used by Mitch‑Risk v1.6.1
 
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
-| [dotenv](https://npmjs.com/package/dotenv) | 17.4.2 | BSD-2-Clause | Environment variable loading |
+| [dotenv](https://npmjs.com/package/dotenv) | 18.0.10 | BSD-2-Clause | Environment variable loading |
 | [tsx](https://npmjs.com/package/tsx) | 4.23.15 | MIT | TypeScript execution for seed scripts |
 
 ## Build & Development Dependencies
@@ -104,14 +104,14 @@ These packages are used during development and CI only — they are not included
 
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
-| [typescript](https://npmjs.com/package/typescript) | 6.x | Apache-2.0 | Static type checking |
-| [eslint](https://npmjs.com/package/eslint) | 9.x | MIT | Code quality linting |
-| [eslint-config-next](https://npmjs.com/package/eslint-config-next) | 16.4.5 | MIT | Next.js-specific lint rules |
+| [typescript](https://npmjs.com/package/typescript) | 6.0.3 | Apache-2.0 | Static type checking |
+| [eslint](https://npmjs.com/package/eslint) | 10.15.0 | MIT | Code quality linting |
+| [eslint-config-next](https://npmjs.com/package/eslint-config-next) | 16.4.6 | MIT | Next.js-specific lint rules |
 | [prettier](https://npmjs.com/package/prettier) | 3.9.10 | MIT | Code formatting |
 | [prettier-plugin-tailwindcss](https://npmjs.com/package/prettier-plugin-tailwindcss) | 0.8.1 | MIT | Tailwind class sorting |
 | [tailwindcss](https://npmjs.com/package/tailwindcss) | 4.3.4 | MIT | CSS framework (compiled at build) |
 | [@tailwindcss/postcss](https://npmjs.com/package/@tailwindcss/postcss) | 4.3.4 | MIT | PostCSS integration for Tailwind |
-| [vitest](https://npmjs.com/package/vitest) | 4.1.12 | MIT | Unit and integration test framework |
+| [vitest](https://npmjs.com/package/vitest) | 5.1.1 | MIT | Unit and integration test framework |
 | [@playwright/test](https://npmjs.com/package/@playwright/test) | 1.64.1 | Apache-2.0 | End-to-end browser testing |
 | [vitepress](https://npmjs.com/package/vitepress) | 2.0.0-alpha.21 | MIT | Documentation site generator |
 | [vite-tsconfig-paths](https://npmjs.com/package/vite-tsconfig-paths) | 6.1.1 | MIT | Path alias resolution for tests |
@@ -137,6 +137,7 @@ All dependencies use permissive open-source licenses (MIT, Apache-2.0, BSD, ISC,
 
 - **Prisma 8 is not planned for adoption while it remains a release candidate.** Stay on Prisma 7.10.x until Prisma 8 is generally available and a full schema/client migration has been validated against this application.
 - **`@types/node` 26 is not planned for adoption.** Type definitions must track the supported Node.js 22 runtime, so the project stays on the 22.x type line.
+- **TypeScript 7 is deferred until the toolchain supports it.** The native compiler is a major rewrite, and the current `typescript-eslint` line only accepts TypeScript `<6.1.0`. TypeScript 7 is revisited once ESLint, `typescript-eslint`, Next.js, and Prisma all declare support.
 
 ## Audit Notes
 
