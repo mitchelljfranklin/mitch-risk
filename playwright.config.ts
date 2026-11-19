@@ -40,10 +40,11 @@ export default defineConfig({
   // Absorb the intermittent action/toast timing on shared runners. A real
   // failure still fails all attempts; local runs stay strict.
   retries: isCi ? 2 : 0,
-  // CI runners are slower and the whole suite shares one app server and one
-  // database, so parallel workers make heavy revalidations time out and race
-  // on shared settings (e.g. the scheduler toggle). One worker in CI.
-  workers: isCi ? 1 : undefined,
+  // The whole suite shares one app server and one database, so parallel workers
+  // race on organization-wide settings: the i18n spec temporarily switches the
+  // default locale to Spanish, which made concurrent sign-ins fail on translated
+  // labels. Run one worker everywhere so local runs match CI.
+  workers: 1,
   fullyParallel: false,
   use: {
     baseURL: "http://localhost:3000",
