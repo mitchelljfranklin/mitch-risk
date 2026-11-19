@@ -54,8 +54,8 @@ Key SSO security features:
 
 ### 2.3 Password Reset Flow
 
-- Token generated via `crypto.randomBytes(24)` → hex string
-- Token is **SHA-256 hashed** before storage (not plaintext in DB)
+- Token format is `<id>.<secret>`: a 128-bit random row id plus a 256-bit random secret
+- Only the **secret is bcrypt-hashed (12 rounds)** before storage; lookup uses the indexed id, then a constant-time hash comparison
 - **1-hour expiry**, single-use (atomically consumed in a transaction)
 - `sendResetEmailAction` returns the same generic message for known and unknown emails (no account enumeration)
 - SSO-only accounts (empty `passwordHash`) are skipped for reset issuance
@@ -67,7 +67,7 @@ Key SSO security features:
 - bcryptjs 12 rounds for all password hashing
 - SSO auto-provisioned users cannot bypass to local auth (empty password hash)
 - Break-glass mechanism provides emergency access without permanent local-auth exposure
-- Password reset tokens: SHA-256 hashed, single-use, 1-hour TTL, atomic consumption
+- Password reset tokens: bcrypt-hashed (12 rounds), single-use, 1-hour TTL, atomic consumption
 - No SSO credentials in environment variables
 - MFA is enforced at the IdP level — organisations using SSO with an enterprise IdP (Microsoft Entra ID, Google Workspace, any OIDC provider) can configure conditional access / 2FA rules at the IdP; Mitch‑Risk inherits the IdP's full authentication posture
 
@@ -287,7 +287,7 @@ If `APP_ENCRYPTION_KEY` changes (making stored secrets undecryptable), the platf
 | API key storage | bcryptjs | 12 rounds |
 | Break-glass tokens | bcryptjs | 12 rounds |
 | Portal access tokens | SHA-256 | None (single-pass) |
-| Password reset tokens | SHA-256 | None (single-pass) |
+| Password reset tokens | bcryptjs | 12 rounds |
 | App encryption key | SHA-256 | Single-pass for key derivation |
 
 ### 6.5 Strengths & Considerations
@@ -701,7 +701,7 @@ Backup scripts (`scripts/backup.sh` / `scripts/backup.ps1`) are provided for `pg
 | SMTP password | DB Settings | AES-256-GCM encrypted |
 | SSO client secrets | DB Settings | AES-256-GCM encrypted |
 | Portal tokens | `Assessment.tokenHash` (DB) | SHA-256 hashed |
-| Password reset tokens | DB | SHA-256 hashed |
+| Password reset tokens | DB | bcrypt hashed (secret), random id indexed |
 | Break-glass tokens | DB Settings | bcryptjs 12 rounds |
 | Vendor data | DB | Unencrypted (standard DB access controls) |
 | Assessment responses | DB | Unencrypted (standard DB access controls) |

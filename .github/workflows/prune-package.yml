@@ -1,0 +1,47 @@
+name: Prune container tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Container tag to delete (for example v1.6.1)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete matching package versions
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+          OWNER: ${{ github.repository_owner }}
+          PACKAGE: ${{ github.event.repository.name }}
+        run: |
+          set -euo pipefail
+          if [ -z "${TAG}" ]; then
+            echo "A tag is required."
+            exit 1
+          fi
+          if [ "${TAG}" = "latest" ]; then
+            echo "Refusing to delete the latest tag."
+            exit 1
+          fi
+
+          versions=$(gh api --paginate "users/${OWNER}/packages/container/${PACKAGE}/versions" \
+            | jq -r --arg tag "${TAG}" '.[] | select(.metadata.container.tags | index($tag)) | .id')
+
+          if [ -z "${versions}" ]; then
+            echo "No package version is tagged ${TAG}."
+            exit 0
+          fi
+
+          for version_id in ${versions}; do
+            echo "Deleting package version ${version_id} tagged ${TAG}."
+            gh api -X DELETE "users/${OWNER}/packages/container/${PACKAGE}/versions/${version_id}"
+          done

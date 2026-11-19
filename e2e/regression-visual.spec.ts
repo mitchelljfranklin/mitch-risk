@@ -106,6 +106,31 @@ test.describe("visual regression guards", () => {
     await expect(sortTrigger).toBeVisible();
   });
 
+  test("vendor table sorting rewrites the URL and reloads ordered rows", async ({
+    page,
+  }) => {
+    await signInAsAdmin(page);
+    await page.goto("/vendors");
+
+    await page.getByRole("button", { name: "Row view" }).click();
+
+    const table = page.locator("table").first();
+    await expect(table).toBeVisible({ timeout: 15000 });
+
+    await page.getByRole("button", { name: "Vendor" }).click();
+    await page.waitForURL(/sort=name-desc/, { timeout: 15000 });
+
+    const names = await table
+      .locator("tbody tr td:first-child a span:first-child")
+      .allTextContents();
+    expect(names.length).toBeGreaterThan(1);
+
+    const descendingNames = [...names].sort((first, second) =>
+      second.localeCompare(first, "en", { sensitivity: "base" }),
+    );
+    expect(names).toEqual(descendingNames);
+  });
+
   test("dark mode swaps status chrome to token-based colours", async ({
     page,
   }) => {

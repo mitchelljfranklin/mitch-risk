@@ -1,11 +1,5 @@
-import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Html,
-  Text,
-} from "@react-email/components";
+import { Body, Container, Head, Heading, Html, Text } from "react-email";
+import sanitizeHtml from "sanitize-html";
 
 type DynamicEmailProps = {
   heading: string;
@@ -18,6 +12,53 @@ type DynamicEmailProps = {
 
 const DEFAULT_FOOTER =
   "This email was sent by mitch-risk. If the button does not work, copy and paste the link into your browser.";
+
+const ALLOWED_BODY_TAGS = [
+  "p",
+  "br",
+  "strong",
+  "b",
+  "em",
+  "i",
+  "u",
+  "s",
+  "del",
+  "code",
+  "pre",
+  "blockquote",
+  "ul",
+  "ol",
+  "li",
+  "a",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "hr",
+  "table",
+  "thead",
+  "tbody",
+  "tr",
+  "th",
+  "td",
+  "img",
+];
+
+function sanitizeBodyHtml(html: string): string {
+  return sanitizeHtml(html, {
+    allowedTags: ALLOWED_BODY_TAGS,
+    allowedAttributes: {
+      a: ["href", "title", "target", "rel"],
+      img: ["src", "alt", "title", "width", "height"],
+      th: ["align"],
+      td: ["align"],
+    },
+    allowedSchemes: ["http", "https", "mailto"],
+    allowProtocolRelative: false,
+  });
+}
 
 export function DynamicEmail({
   heading,
@@ -38,7 +79,7 @@ export function DynamicEmail({
           {htmlBody ? (
             <section
               style={{ lineHeight: "1.6", color: "#333" }}
-              dangerouslySetInnerHTML={{ __html: htmlBody }}
+              dangerouslySetInnerHTML={{ __html: sanitizeBodyHtml(htmlBody) }}
             />
           ) : (
             paragraphs.map((line) => (

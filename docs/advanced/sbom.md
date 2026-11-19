@@ -16,10 +16,10 @@ This document lists every direct software dependency used by Mitch‑Risk v1.6.1
 
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
-| [next](https://npmjs.com/package/next) | 16.4.5 | MIT | Full-stack React framework (App Router, Server Components, Server Actions) |
+| [next](https://npmjs.com/package/next) | 16.4.6 | MIT | Full-stack React framework (App Router, Server Components, Server Actions) |
 | [react](https://npmjs.com/package/react) | 19.3.1 | MIT | UI library |
 | [react-dom](https://npmjs.com/package/react-dom) | 19.3.1 | MIT | React DOM renderer |
-| [next-intl](https://npmjs.com/package/next-intl) | 4.14.9 | MIT | Cookie-based locale resolution, message catalogs, and localized formatting |
+| [next-intl](https://npmjs.com/package/next-intl) | 4.15.1 | MIT | Cookie-based locale resolution, message catalogs, and localized formatting |
 
 ### Database & ORM
 
@@ -50,7 +50,7 @@ This document lists every direct software dependency used by Mitch‑Risk v1.6.1
 | [class-variance-authority](https://npmjs.com/package/class-variance-authority) | 0.7.1 | Apache-2.0 | Component variant management (cva pattern) |
 | [clsx](https://npmjs.com/package/clsx) | 2.1.1 | MIT | Conditional class name builder |
 | [tw-animate-css](https://npmjs.com/package/tw-animate-css) | 1.4.0 | MIT | Animation utilities for Tailwind |
-| [lucide-react](https://npmjs.com/package/lucide-react) | 1.69.0 | ISC | Icon library |
+| [lucide-react](https://npmjs.com/package/lucide-react) | 1.76.0 | ISC | Icon library |
 | [sonner](https://npmjs.com/package/sonner) | 2.0.8 | MIT | Toast notification system |
 | [cmdk](https://npmjs.com/package/cmdk) | 1.1.1 | MIT | Command palette / combobox primitive |
 | [next-themes](https://npmjs.com/package/next-themes) | 0.4.6 | MIT | Light/dark theme switching |
@@ -59,7 +59,7 @@ This document lists every direct software dependency used by Mitch‑Risk v1.6.1
 
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
-| [recharts](https://npmjs.com/package/recharts) | 3.10.1 | MIT | Radar charts and bar charts on the dashboard |
+| [recharts](https://npmjs.com/package/recharts) | 3.11.0 | MIT | Radar charts and bar charts on the dashboard |
 | [@tanstack/react-table](https://npmjs.com/package/@tanstack/react-table) | 9.3.1 | MIT | Sortable, filterable table primitives |
 
 ### Rich Text & Markdown
@@ -67,22 +67,23 @@ This document lists every direct software dependency used by Mitch‑Risk v1.6.1
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
 | [react-markdown](https://npmjs.com/package/react-markdown) | 10.1.0 | MIT | Renders Markdown help text in the vendor portal |
-| [@uiw/react-md-editor](https://npmjs.com/package/@uiw/react-md-editor) | 4.2.3 | MIT | WYSIWYG Markdown editor for question help text (template builder) |
-| [marked](https://npmjs.com/package/marked) | 18.1.3 | MIT | Markdown parser used server-side |
+| [@uiw/react-md-editor](https://npmjs.com/package/@uiw/react-md-editor) | 4.2.4 | MIT | WYSIWYG Markdown editor for question help text (template builder) |
+| [marked](https://npmjs.com/package/marked) | 18.2.1 | MIT | Markdown parser used server-side |
 | [@tailwindcss/typography](https://npmjs.com/package/@tailwindcss/typography) | 0.5.20 | MIT | Typography presets for rendered Markdown (dev dependency, compiled at build time) |
 
 ### Email
 
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
-| [nodemailer](https://npmjs.com/package/nodemailer) | 10.3.1 | MIT-0 | SMTP email delivery (invites, reminders, escalations) |
-| [@react-email/components](https://npmjs.com/package/@react-email/components) | 1.0.12 | MIT | React components for email template rendering |
+| [nodemailer](https://npmjs.com/package/nodemailer) | 10.6.0 | MIT-0 | SMTP email delivery (invites, reminders, escalations) |
+| [react-email](https://npmjs.com/package/react-email) | 6.11.16 | MIT | Email components and HTML rendering |
+| [sanitize-html](https://npmjs.com/package/sanitize-html) | 2.18.2 | MIT | Sanitizes rendered email HTML before injection |
 
 ### File Storage
 
 | Package | Version | License | Purpose |
 |---------|---------|---------|---------|
-| [@aws-sdk/client-s3](https://npmjs.com/package/@aws-sdk/client-s3) | 3.1162.0 | Apache-2.0 | S3-compatible file storage (evidence, attachments) |
+| [@aws-sdk/client-s3](https://npmjs.com/package/@aws-sdk/client-s3) | 3.1172.0 | Apache-2.0 | S3-compatible file storage (evidence, attachments) |
 | [@azure/storage-blob](https://npmjs.com/package/@azure/storage-blob) | 12.34.0 | MIT | Azure Blob Storage alternative for file storage |
 
 ### Document Generation
@@ -107,12 +108,12 @@ These packages are used during development and CI only — they are not included
 | [typescript](https://npmjs.com/package/typescript) | 6.0.3 | Apache-2.0 | Static type checking |
 | [eslint](https://npmjs.com/package/eslint) | 10.15.0 | MIT | Code quality linting |
 | [eslint-config-next](https://npmjs.com/package/eslint-config-next) | 16.4.6 | MIT | Next.js-specific lint rules |
-| [prettier](https://npmjs.com/package/prettier) | 3.9.10 | MIT | Code formatting |
+| [prettier](https://npmjs.com/package/prettier) | 3.10.1 | MIT | Code formatting |
 | [prettier-plugin-tailwindcss](https://npmjs.com/package/prettier-plugin-tailwindcss) | 0.8.1 | MIT | Tailwind class sorting |
-| [tailwindcss](https://npmjs.com/package/tailwindcss) | 4.3.4 | MIT | CSS framework (compiled at build) |
-| [@tailwindcss/postcss](https://npmjs.com/package/@tailwindcss/postcss) | 4.3.4 | MIT | PostCSS integration for Tailwind |
+| [tailwindcss](https://npmjs.com/package/tailwindcss) | 4.3.5 | MIT | CSS framework (compiled at build) |
+| [@tailwindcss/postcss](https://npmjs.com/package/@tailwindcss/postcss) | 4.3.5 | MIT | PostCSS integration for Tailwind |
 | [vitest](https://npmjs.com/package/vitest) | 5.1.1 | MIT | Unit and integration test framework |
-| [@playwright/test](https://npmjs.com/package/@playwright/test) | 1.64.1 | Apache-2.0 | End-to-end browser testing |
+| [@playwright/test](https://npmjs.com/package/@playwright/test) | 1.65.1 | Apache-2.0 | End-to-end browser testing |
 | [vitepress](https://npmjs.com/package/vitepress) | 2.0.0-alpha.21 | MIT | Documentation site generator |
 | [vite-tsconfig-paths](https://npmjs.com/package/vite-tsconfig-paths) | 6.1.1 | MIT | Path alias resolution for tests |
 | [@types/node](https://npmjs.com/package/@types/node) | 22.20.5 | MIT | Node.js type definitions |

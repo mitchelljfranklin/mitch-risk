@@ -1,4 +1,5 @@
-import { render } from "@react-email/components";
+import { render } from "react-email";
+import { marked } from "marked";
 
 import { requirePermission } from "@/lib/auth";
 import { PERMISSIONS } from "@/lib/permissions";
@@ -16,6 +17,15 @@ function replaceTokens(text: string, tokens: Record<string, string>): string {
     (_, key: string) => tokens[key] ?? `{{${key}}}`,
   );
 }
+
+const PREVIEW_HEADERS = {
+  "Content-Type": "text/html; charset=utf-8",
+  "Content-Security-Policy":
+    "default-src 'none'; img-src https: data:; style-src 'unsafe-inline'; font-src data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+  "X-Content-Type-Options": "nosniff",
+  "Cache-Control": "no-store",
+  "Referrer-Policy": "no-referrer",
+};
 
 export async function GET(request: Request) {
   await requirePermission(PERMISSIONS.SETTINGS_MANAGE);
@@ -68,18 +78,19 @@ export async function GET(request: Request) {
   const bodyText = replaceTokens(rawBody, sampleTokens);
 
   try {
+    const htmlBody = await marked.parse(bodyText);
     const html = await render(
       DynamicEmail({
         heading,
         body: bodyText,
-        htmlBody: bodyText,
+        htmlBody,
         language: organization.defaultLocale,
         direction: localeDirection(organization.defaultLocale),
       }),
     );
 
     return new Response(html, {
-      headers: { "Content-Type": "text/html" },
+      headers: PREVIEW_HEADERS,
     });
   } catch (error) {
     console.error(
@@ -145,18 +156,19 @@ export async function POST(request: Request) {
   const bodyText = replaceTokens(rawBody, sampleTokens);
 
   try {
+    const htmlBody = await marked.parse(bodyText);
     const html = await render(
       DynamicEmail({
         heading,
         body: bodyText,
-        htmlBody: bodyText,
+        htmlBody,
         language: organization.defaultLocale,
         direction: localeDirection(organization.defaultLocale),
       }),
     );
 
     return new Response(html, {
-      headers: { "Content-Type": "text/html" },
+      headers: PREVIEW_HEADERS,
     });
   } catch (error) {
     console.error(

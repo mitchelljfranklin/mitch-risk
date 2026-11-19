@@ -5,6 +5,8 @@
 // Prerequisites: `npm run db:seed` must have been run at least once to ensure
 // starter templates and system roles exist.
 
+import { randomInt as cryptoRandomInt } from "node:crypto";
+
 import { prisma } from "../lib/prisma";
 import {
   createAssessment,
@@ -24,17 +26,29 @@ const SHOULD_RESET = process.argv.includes("--reset");
 // ---------------------------------------------------------------------------
 
 function randomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  return cryptoRandomInt(min, max + 1);
 }
 
 function pick<T>(arr: readonly T[]): T {
   return arr[randomInt(0, arr.length - 1)];
 }
 
+function shuffle<T>(items: readonly T[]): T[] {
+  const shuffled = [...items];
+  for (let index = shuffled.length - 1; index > 0; index--) {
+    const swapIndex = randomInt(0, index);
+    [shuffled[index], shuffled[swapIndex]] = [
+      shuffled[swapIndex],
+      shuffled[index],
+    ];
+  }
+  return shuffled;
+}
+
 function pickWeighted<T extends string>(weights: Record<T, number>): T {
   const entries = Object.entries(weights) as [T, number][];
   const total = entries.reduce((sum, [, weight]) => sum + weight, 0);
-  let randomValue = Math.random() * total;
+  let randomValue = (cryptoRandomInt(0, 1_000_000) / 1_000_000) * total;
   for (const [key, weight] of entries) {
     randomValue -= weight;
     if (randomValue <= 0) return key;
@@ -504,9 +518,7 @@ async function main() {
   // -----------------------------------------------------------------------
   console.log("\nCreating certifications...");
   const certVendorCount = randomInt(10, 15);
-  const certVendors = [...vendorResults]
-    .sort(() => Math.random() - 0.5)
-    .slice(0, certVendorCount);
+  const certVendors = shuffle(vendorResults).slice(0, certVendorCount);
   let certCount = 0;
   for (const vId of certVendors) {
     const name = pick(CERTIFICATION_NAMES);
