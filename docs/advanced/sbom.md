@@ -1,12 +1,12 @@
 # Software Bill of Materials (SBOM)
 
-This document lists every direct software dependency used by Mitch‑Risk v1.6.0, organised by functional purpose. It is intended for security reviewers, compliance assessors, and procurement teams evaluating the platform for organisational use.
+This document lists every direct software dependency used by Mitch‑Risk v1.6.1, organised by functional purpose. It is intended for security reviewers, compliance assessors, and procurement teams evaluating the platform for organisational use.
 
 ## Runtime Requirements
 
 | Component | Minimum Version | Notes |
 |-----------|----------------|-------|
-| Node.js | 22.23.4 | JavaScript runtime (LTS) |
+| Node.js | 22.23.5 | JavaScript runtime (LTS) |
 | PostgreSQL | 17 | Relational database server |
 | Docker (optional) | 24+ | Container runtime for self-hosted deployment |
 
@@ -135,11 +135,11 @@ All dependencies use permissive open-source licenses (MIT, Apache-2.0, BSD, ISC,
 
 ## Audit Notes
 
-- Runtime is pinned to Node.js **22.23.4** (the current patched 22.x release).
+- Runtime is pinned to Node.js **22.23.5** (the current patched 22.x release).
 - Production `npm audit` reports only four **low-severity** `deepmerge` advisories via `@react-email/render` → `html-to-text`; there is no upstream fix at this time.
 - Build-time overrides pin `minimatch` to `11.0.4` and `postcss-selector-parser` to `6.1.5`.
 - Documentation uses the VitePress 2 alpha line with Vite 8; it is development-only and excluded from the production image.
-- The next Node.js security release is scheduled for **11 November 2026**.
+- The Node.js release line is monitored for security patches; apply new 22.x patch releases promptly.
 
 ## Regenerating
 

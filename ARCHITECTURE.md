@@ -1,6 +1,6 @@
 # Mitch‑Risk — Architecture Solution Design Document
 
-> **Version:** 1.6.0  
+> **Version:** 1.6.1  
 > **Last Updated:** November 2026  
 > **Audience:** Engineering, Security, Operations  
 > **Status:** Approved
@@ -208,7 +208,7 @@ The platform is designed around three principles:
 
 | Layer | Technology | Version | Purpose |
 |---|---|---|---|
-| **Runtime** | Node.js | >= 22.23.4 | Application runtime |
+| **Runtime** | Node.js | >= 22.23.5 | Application runtime |
 | **Framework** | Next.js | 16 (App Router) | Full-stack server + client |
 | **Language** | TypeScript | ^6 | Strict type safety |
 | **Database** | PostgreSQL | >= 17 | Relational persistence |
@@ -1783,7 +1783,7 @@ Server Components CANNOT:
 │  ┌────────────────────┐    ┌────────────────────┐               │
 │  │   app (Next.js)    │    │   db (PostgreSQL)  │               │
 │  │────────────────────│    │────────────────────│               │
-│  │  node:22.23.4-slim │    │  image: postgres:17│               │
+│  │  node:22.23.5-slim │    │  image: postgres:17│               │
 │  │  port: 3000        │    │  port: 5432        │               │
 │  │  env:              │    │  env:              │               │
 │  │    DATABASE_URL    │───▶│    POSTGRES_USER   │               │
